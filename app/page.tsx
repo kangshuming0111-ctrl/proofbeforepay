@@ -14,7 +14,7 @@ import type {
 } from "@/lib/contracts";
 import { runLayoutProbe } from "@/lib/layout-probe";
 import { LayoutCheckPanel } from "./components/LayoutCheckPanel";
-import { CollaborationPanel, type FeedbackSuggestion } from "./components/CollaborationPanel";
+import { CollaborationPanel, type CollaborationHistoryHandle, type FeedbackSuggestion } from "./components/CollaborationPanel";
 import { VersionViewer } from "./components/VersionViewer";
 import { RequirementsIntake } from "./components/RequirementsIntake";
 import { DeliveryAssessment } from "./components/DeliveryAssessment";
@@ -137,6 +137,8 @@ export default function Home() {
   const layoutController = useRef<AbortController | null>(null);
   const currentDelivery = useRef("");
   const acceptanceRef = useRef<HTMLDivElement>(null);
+  const completedCollaborationRef = useRef<HTMLDetailsElement>(null);
+  const collaborationHistoryRef = useRef<CollaborationHistoryHandle>(null);
 
   const proof = quote?.proof;
   const collaboration = proof?.collaboration;
@@ -508,6 +510,18 @@ export default function Home() {
     await run("versions", async () => setVersions((await request<{versions: ProofDeliveryVersion[]}>(`/api/proofs/${quote.id}/versions`)).versions));
   }
 
+  function openVersionHistory() {
+    if (!quote) return;
+    setWorkspaceView("workbench"); setWorkspacePanel("payment");
+    window.requestAnimationFrame(() => {
+      const history = collaborationHistoryRef.current;
+      if (!history || history.quoteId !== quote.id) return;
+      if (completedCollaborationRef.current) completedCollaborationRef.current.open = true;
+      history.reveal();
+    });
+    void loadVersions();
+  }
+
   async function viewVersion(deliveryId: string) {
     if (!quote) return;
     await run("version", async () => setViewedVersion((await request<{version: ProofDeliveryVersion}>(`/api/proofs/${quote.id}/versions/${encodeURIComponent(deliveryId)}`)).version));
@@ -554,9 +568,9 @@ export default function Home() {
       label: tr("查看验收与付款状态", "View acceptance & payment"), help: tr("交付决定和付款分开处理。", "Delivery decisions and payment remain separate."), action: () => focusPanel("payment"),
     };
     if (acceptedCurrent) return {
-      label: !buyer && roleplay ? tr("切换买家确认付款", "Continue payment as buyer") : authorized ? tr("继续确认测试付款", "Confirm test payment") : sandboxRoleplay ? tr("继续 PayPal Sandbox 预授权", "Continue to PayPal Sandbox") : tr("继续模拟付款", "Continue simulated payment"),
+      label: !buyer ? roleplay ? tr("切换买家确认付款", "Continue payment as buyer") : tr("查看买家付款状态", "View buyer payment status") : authorized ? tr("继续确认测试付款", "Confirm test payment") : quote?.paymentMode === "sandbox" ? tr("继续 PayPal Sandbox 预授权", "Continue to PayPal Sandbox") : tr("继续模拟付款", "Continue simulated payment"),
       help: tr("当前交付已验收。已确认的人工检查会保留；付款仍需单独同意。", "This delivery is accepted. Saved human checks remain valid; payment needs separate consent."),
-      action: () => !buyer && roleplay ? switchWorkspaceRole("buyer") : focusPanel("payment", authorized ? ".pay-consent input" : ".authorization-action button"),
+      action: () => !buyer && roleplay ? switchWorkspaceRole("buyer") : focusPanel("payment", buyer ? authorized ? ".pay-consent input" : ".authorization-action button" : undefined),
     };
     if (quote?.status === "draft") return {label: buyer ? tr("查看并确认标准", "Review and confirm scope") : tr("切换买家确认标准", "Confirm scope as buyer"), help: tr("先核对范围、金额和验收标准。", "Check scope, amount and criteria."), action: () => buyer ? focusPanel("agreement", ".scope-approval button") : switchWorkspaceRole("buyer")};
     if (collaboration?.stage === "awaiting_seller") return {label: tr("邀请卖家加入", "Invite your seller"), help: tr("发送邀请链接后，等待卖家交付。", "Share an invitation and await the seller's delivery."), action: () => focusPanel("payment", ".collaboration-invite-form input")};
@@ -862,7 +876,7 @@ export default function Home() {
     : busy ? tr("正在保存或读取项目，请稍候…", "Saving or loading the project…") : "";
 
   const terminalPayment = captured || voided || closedUnpaid;
-  const collaborationPanel = (quote && collaboration && <CollaborationPanel key={quote.id} quote={quote} role={displayRole} language={language} busy={!!busy}
+  const collaborationPanel = (quote && collaboration && <CollaborationPanel key={quote.id} quote={quote} role={displayRole} language={language} busy={!!busy} historyRef={collaborationHistoryRef}
     invitation={invitation} versions={versions} feedbackSuggestion={feedbackSuggestion} onInvite={inviteSeller} onRevokeInvite={revokeInvitation}
     onSubmit={note => mutate("submit_delivery", {deliveryId: delivery?.id, note}, tr("此版本已提交买家验收。", "This delivery was submitted for buyer acceptance."))}
     onReturn={feedback => mutate("return", {deliveryId: delivery?.id, feedback}, tr("修改意见已关联此版本，等待卖家修订。", "Change requests are linked to this delivery. Await the seller's revision."))}
@@ -1008,7 +1022,7 @@ export default function Home() {
                 onOpenLayout={canCheckDelivery || delivery.layoutReport ? () => {setWorkspacePanel("delivery"); setDeliveryTab("layout");} : undefined}
                 onInspectLayout={(file, width) => {setPreviewFile(file); setPreviewWidth(width === 375 ? "mobile" : "desktop"); setPreviewEntry(value => value + 1); setDeliveryTab("preview"); setWorkspacePanel("delivery");}}
                 onInspect={openCriterion} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked ? prepareFeedback : undefined}
-                onViewHistory={() => {void loadVersions();}}/>}
+                onViewHistory={openVersionHistory}/>}
               {delivery && <ResourceChecks delivery={delivery} language={language}/>}
               {delivery && proof && <DeliveryComparison delivery={delivery} review={proof.review} criteria={proof.criteria} previousVersion={versions.find(version => isOlderDelivery(version,delivery))} feedback={collaboration?.feedback} language={language} onInspectCurrent={openCriterion}/>}
               {!quote && <GettingStarted language={language} busy={!!busy || loading} onExample={fillExampleRequirements} onDemo={() => {void startRoleDemo();}}/>}
@@ -1083,7 +1097,7 @@ export default function Home() {
           <aside className="payment-panel" aria-label={tr("验收与付款", "Acceptance and payment")}>
             <div className="payment-panel-heading"><span className="section-kicker">03 / YOUR DECISION</span><h2>{collaboration && !buyer ? tr("交付进度", "Delivery progress") : tr("验收与付款", "Accept & pay")}</h2></div>
             {terminalPayment && <>{paymentSummary}{paymentReceipt}</>}
-            {collaborationPanel && (terminalPayment ? <details className="completed-collaboration" key={`${quote?.id}:${proof?.paymentState}`}>
+            {collaborationPanel && (terminalPayment ? <details className="completed-collaboration" ref={completedCollaborationRef} key={`${quote?.id}:${proof?.paymentState}`}>
               <summary>{tr("交付与协作记录（已锁定）", "Delivery & collaboration record (locked)")}</summary>
               {collaborationPanel}
             </details> : collaborationPanel)}

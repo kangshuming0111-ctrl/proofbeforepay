@@ -4,7 +4,7 @@ import { FileCheck2, LoaderCircle, ShieldCheck } from "lucide-react";
 import type { Currency, Language, ProofCriterion } from "@/lib/contracts";
 import "../collaboration.css";
 
-type InvitationPreview = {project: {id: string; reference: string; title: string; summary: string; currency: Currency; totalCents: number; language: Language; criteria: ProofCriterion[]}; email: string; expiresAt: string};
+type InvitationPreview = {project: {id: string; reference: string; title: string; summary: string; currency: Currency; totalCents: number; language: Language; paymentMode: "demo" | "sandbox"; criteria: ProofCriterion[]}; email: string; expiresAt: string};
 
 async function invitationRequest<T>(action: string, input: unknown): Promise<T> {
   const response = await fetch(`/api/proof-invitations/${action}`, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(input)});
@@ -54,7 +54,7 @@ export default function JoinProject() {
         <h2>{preview.project.title}</h2><p>{preview.project.summary}</p>
         <strong className="join-project-amount">{new Intl.NumberFormat(preview.project.language === "zh" ? "zh-CN" : "en-AU", {style: "currency", currency: preview.project.currency}).format(preview.project.totalCents / 100)}</strong>
         <ol>{preview.project.criteria.map(criterion => <li key={criterion.id}><strong>{criterion.title}</strong><p>{criterion.source}</p></li>)}</ol>
-        <p className="collab-muted">{tr("此项目使用模拟付款，不会向卖家转账。加入后可提交和修订交付；验收与付款确认由买家操作。", "This project uses simulated payment and does not transfer funds to the seller. You can submit and revise deliveries; the buyer controls acceptance and payment confirmation.")}</p>
+        <p className="collab-muted">{preview.project.paymentMode === "sandbox" ? tr("此项目使用 PayPal Sandbox 虚拟测试资金，收款方是服务端配置的测试商户，不向实际卖家结算。加入后可提交和修订交付；仅买家能在验收后单独确认授权与扣款。", "This project uses PayPal Sandbox virtual test funds paid to the configured test merchant, with no actual seller settlement. You can submit and revise deliveries. Only the buyer can authorize and capture test payment after acceptance.") : tr("此项目使用模拟付款，不会向卖家转账。加入后可提交和修订交付；验收与付款确认由买家操作。", "This project uses simulated payment and does not transfer funds to the seller. You can submit and revise deliveries; the buyer controls acceptance and payment confirmation.")}</p>
         <label htmlFor="sellerDisplayName">{tr("你的展示名称", "Your display name")}</label>
         <input id="sellerDisplayName" maxLength={100} value={name} onChange={event => setName(event.target.value)} disabled={busy}/>
         <label className="join-project-confirm"><input type="checkbox" checked={confirmed} onChange={event => setConfirmed(event.target.checked)} disabled={busy}/><span>{tr("我已阅读并确认以上范围、金额和验收标准，同意作为卖家参与此项目。", "I have read and agree to this scope, amount and acceptance criteria, and agree to join this project as the seller.")}</span></label>

@@ -94,7 +94,7 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
 
       {!report ? <>
         {readOnly ? <p className="assessment-empty">{tr("此交付快照没有保存 AI 内容评估。", "No AI delivery assessment was saved with this delivery snapshot.")}</p> : <>
-          <p className="assessment-consent" id={`${id}-consent`}>{tr("点击后，将把当前验收标准和交付源码发送给 DeepSeek 分析。可以直接填写要求，无需添加合同。", "When you click, the current acceptance criteria and delivery source files will be sent to DeepSeek for analysis. You can enter requirements directly; a contract is optional.")}</p>
+          <p className="assessment-consent" id={`${id}-consent`}>{tr("点击后，将把已确认的项目范围／简介、当前验收标准、交付文本源码和文件清单发送给 DeepSeek 分析，不发送图片像素。合同可选。", "When you click, the confirmed project scope/summary, current acceptance criteria, delivery text source and file inventory will be sent to DeepSeek. Image pixels are not sent. A contract is optional.")}</p>
           <button className="assessment-run no-print" type="button" onClick={onRun} disabled={!enabled || !configured || busy || !onRun} aria-describedby={`${id}-consent ${id}-limits`}>
             {busy ? <LoaderCircle className="assessment-spinner" size={14} aria-hidden="true" /> : <FileSearch size={14} aria-hidden="true" />}
             {busy ? tr("正在逐项评估…", "Assessing criteria…") : tr("用 DeepSeek 评估当前交付", "Assess current delivery with DeepSeek")}

@@ -74,6 +74,9 @@ def main():
     api.ok(buyer, path + "/approve", {}, role="seller")
     api.reject(buyer, path + "/checkout", {}, codes=(409,))
     invitation = api.ok(buyer, path + "/invite", {"email": seller.email})["invitation"]
+    preview = api.ok(seller, "/api/proof-invitations/inspect", {"token": invitation["token"]})
+    assert preview["project"]["paymentMode"] == "sandbox", "Seller must see the server-derived Sandbox mode before joining"
+    roles.private_columns_absent(preview)
     api.reject(outsider, "/api/proof-invitations/accept", {"token": invitation["token"], "confirm": True, "sellerName": "Wrong seller"}, codes=(404,))
     quote = quote_response(api.ok(seller, "/api/proof-invitations/accept", {"token": invitation["token"], "confirm": True, "sellerName": "Synthetic invited seller"}), "seller")
     assert quote["proof"]["collaboration"]["stage"] == "in_progress"

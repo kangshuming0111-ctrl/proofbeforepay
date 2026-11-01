@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useImperativeHandle, useRef, useState, type FormEvent, type Ref } from "react";
 import { ArrowUpRight, Check, ChevronDown, Copy, History, Link2, LoaderCircle, Send, Users } from "lucide-react";
 import type { Language, ProofDeliveryVersion, ProofQuote, ProofRole } from "@/lib/contracts";
 import { criterionDisplayTitle } from "@/lib/delivery-overview";
 
 export type FeedbackSuggestion = { quoteId: string; deliveryId: string; criterionId: string; comment: string; serial: number };
+export type CollaborationHistoryHandle = { quoteId: string; reveal: () => void };
 
 export type CollaborationPanelProps = {
   quote: ProofQuote;
@@ -22,6 +23,7 @@ export type CollaborationPanelProps = {
   onAccept: () => void;
   onLoadVersions: () => void;
   onViewVersion: (deliveryId: string) => void;
+  historyRef?: Ref<CollaborationHistoryHandle>;
 };
 
 const stageLabels = {
@@ -37,7 +39,7 @@ function displayTime(value: string) {
   return Number.isFinite(date.getTime()) ? `${date.toISOString().slice(0, 16).replace("T", " ")} UTC` : value;
 }
 
-export function CollaborationPanel({ quote, role, language, busy, invitation, versions, feedbackSuggestion, onInvite, onRevokeInvite, onSubmit, onReturn, onAccept, onLoadVersions, onViewVersion }: CollaborationPanelProps) {
+export function CollaborationPanel({ quote, role, language, busy, invitation, versions, feedbackSuggestion, onInvite, onRevokeInvite, onSubmit, onReturn, onAccept, onLoadVersions, onViewVersion, historyRef }: CollaborationPanelProps) {
   const zh = language === "zh";
   const tr = (chinese: string, english: string) => zh ? chinese : english;
   const collaboration = quote.proof.collaboration;
@@ -61,6 +63,7 @@ export function CollaborationPanel({ quote, role, language, busy, invitation, ve
   const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
   const invitationInput = useRef<HTMLInputElement>(null);
   const historyDetails = useRef<HTMLDetailsElement>(null);
+  const historySummary = useRef<HTMLElement>(null);
   const handledSuggestion = useRef<string | null>(null);
   const pendingCommentFocus = useRef<string | null>(null);
   const commentFields = useRef(new Map<string, HTMLTextAreaElement>());
@@ -69,6 +72,16 @@ export function CollaborationPanel({ quote, role, language, busy, invitation, ve
   const feedbackDraft = criteria.filter(criterion => selectedCriteria[criterion.id]).map(criterion => ({ criterionId: criterion.id, comment: (comments[criterion.id] ?? "").trim() }));
   const returnReady = feedbackDraft.length > 0 && feedbackDraft.every(item => item.comment.length > 0 && item.comment.length <= 1000);
   const submitReady = Boolean(delivery && reviewCurrent && note.trim().length > 0 && note.trim().length <= 2000);
+
+  useImperativeHandle(historyRef, () => ({
+    quoteId: quote.id,
+    reveal() {
+      if (!historyDetails.current || !historySummary.current) return;
+      historyDetails.current.open = true;
+      historySummary.current.scrollIntoView({ block: "nearest", behavior: "auto" });
+      historySummary.current.focus({ preventScroll: true });
+    },
+  }), [quote.id]);
 
   useEffect(() => {
     setEmail(invitation?.email ?? "");
@@ -162,7 +175,7 @@ export function CollaborationPanel({ quote, role, language, busy, invitation, ve
       <span className="collaboration-role">{tr("当前角色：", "Your role: ")}{isBuyer ? tr("买家", "Buyer") : tr("卖家", "Seller")}</span>
     </header>
 
-    <p className="collaboration-payment-note">{quote.proof.sandboxRehearsal ? tr("Sandbox 双端演练：同一账号体验双方；验收后单独向已配置的测试商户支付虚拟资金，不向真实卖家结算。", "Sandbox role rehearsal: one account tries both sides, then separately pays the configured test merchant with test funds. No real seller settlement.") : demoRoleplay ? tr("双端演示：同一账号切换买家与卖家；不创建真实对方账号，不转账。", "Two-sided demo: switch between buyer and seller using this account. No separate counterparty account is created and no funds are transferred.") : tr("双人协作的付款为本地模拟，不向卖家转账。", "Payments in this two-person workflow are local simulations. No funds are transferred to the seller.")}</p>
+    <p className="collaboration-payment-note">{quote.proof.sandboxCollaboration ? tr("双账号 Sandbox 测试：买卖双方使用独立账号；验收后仅买家可单独确认虚拟付款，收款方为配置的测试商户，不向实际卖家结算。", "Two-account Sandbox test: buyer and seller use separate accounts. Only the buyer confirms virtual payment after acceptance, to the configured test merchant. No actual seller settlement.") : quote.proof.sandboxRehearsal ? tr("Sandbox 双端演练：同一账号体验双方；验收后单独向已配置的测试商户支付虚拟资金，不向真实卖家结算。", "Sandbox role rehearsal: one account tries both sides, then separately pays the configured test merchant with test funds. No real seller settlement.") : demoRoleplay ? tr("双端演示：同一账号切换买家与卖家；不创建真实对方账号，不转账。", "Two-sided demo: switch between buyer and seller using this account. No separate counterparty account is created and no funds are transferred.") : tr("双人协作的付款为本地模拟，不向卖家转账。", "Payments in this two-person workflow are local simulations. No funds are transferred to the seller.")}</p>
 
     <div className="collaboration-body">
       {collaboration?.sellerName && <p className="collaboration-person">{tr("卖家：", "Seller: ")}<strong>{collaboration.sellerName}</strong>{collaboration.sellerJoinedAt && <span> · <time dateTime={collaboration.sellerJoinedAt}>{displayTime(collaboration.sellerJoinedAt)}</time> {tr("加入", "joined")}</span>}</p>}
@@ -233,7 +246,7 @@ export function CollaborationPanel({ quote, role, language, busy, invitation, ve
       </section>
 
       <details className="collaboration-details collaboration-history" ref={historyDetails}>
-        <summary onClick={() => { if (!historyDetails.current?.open && !busy) onLoadVersions(); }}><span><History size={14} aria-hidden="true" />{tr("版本历史", "Version history")} <small>{tr(`${versions.length} 个已加载`, `${versions.length} loaded`)}</small></span><ChevronDown size={14} aria-hidden="true" /></summary>
+        <summary ref={historySummary} onClick={() => { if (!historyDetails.current?.open && !busy) onLoadVersions(); }}><span><History size={14} aria-hidden="true" />{tr("版本历史", "Version history")} <small>{tr(`${versions.length} 个已加载`, `${versions.length} loaded`)}</small></span><ChevronDown size={14} aria-hidden="true" /></summary>
         <div className="collaboration-details-body">
           <div className="collaboration-history-toolbar no-print"><button className="collaboration-text-button" type="button" onClick={onLoadVersions} disabled={busy}>{busy && <LoaderCircle className="collaboration-spinner" size={12} aria-hidden="true" />}{tr("刷新版本列表", "Refresh version list")}</button></div>
           {versions.length ? <ul className="collaboration-version-list">{versions.map(version => <li key={version.delivery.id}>

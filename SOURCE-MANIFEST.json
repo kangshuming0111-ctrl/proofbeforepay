@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-01T15:17:26.357Z",
+  "generatedAt": "2026-11-01T15:52:21.476Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -38,8 +38,8 @@
     },
     {
       "file": "README.md",
-      "bytes": 54484,
-      "sha256": "e7a59ded546250e4c8b72b360b73d8472672ca4ee6dfb71d469604e3d7926076"
+      "bytes": 58255,
+      "sha256": "2ac055927e5031ef3c887544d9ffd09587f7ba4cab943cb8f856e950669e3895"
     },
     {
       "file": "app/api/config/route.ts",
@@ -48,8 +48,8 @@
     },
     {
       "file": "app/api/proof-invitations/[action]/route.ts",
-      "bytes": 1068,
-      "sha256": "297a5b0e133c4b6d757b3b6cc53fd219106432fb8d9196ff0556871e2b35c3f7"
+      "bytes": 1100,
+      "sha256": "1e23c3cd7d697e410f14b3e560070213bf5ffea87f0f1b470f0626c4b6495eb1"
     },
     {
       "file": "app/api/proofs/[id]/[action]/route.ts",
@@ -133,13 +133,13 @@
     },
     {
       "file": "app/components/CollaborationPanel.tsx",
-      "bytes": 24638,
-      "sha256": "b65a1ffd8f1d018edea32a93ed84f0d5fcf1dcdd91ea85c9c8f0a3cde24c99ab"
+      "bytes": 25654,
+      "sha256": "64d8d04b2c7490735f5d40805b94820620a6f0c00a26269032c1e51a10220e6d"
     },
     {
       "file": "app/components/DeliveryAssessment.tsx",
-      "bytes": 13044,
-      "sha256": "3993edf28753bb2f52d430662ada4c2bca9a2a85d2c86a8274c27135482b9ffc"
+      "bytes": 13117,
+      "sha256": "18cd2b13923cce9d043903513a08ba4a5971b8e35006442431ca4ba14ee3308c"
     },
     {
       "file": "app/components/DeliveryComparison.tsx",
@@ -223,8 +223,8 @@
     },
     {
       "file": "app/join/page.tsx",
-      "bytes": 5417,
-      "sha256": "c1e900bdf84d2b574ccf659f665fe4f8829e6dfbebb0c77fd549271350abbdc4"
+      "bytes": 5954,
+      "sha256": "d7efc9fd07241a985ff7a52cfcec0de36c46c1784ba0fa0ef2e24238c10c7dbf"
     },
     {
       "file": "app/layout-check.css",
@@ -238,8 +238,8 @@
     },
     {
       "file": "app/page.tsx",
-      "bytes": 128131,
-      "sha256": "8be222acb07b7fbfbd37d0dd5fbfca0efd50ea2e7764e2d760d1d870b2821657"
+      "bytes": 128900,
+      "sha256": "5819297915134d8917729492623f27fae3d4078021cc4be23bf6f321c8b662e9"
     },
     {
       "file": "app/proof-versions/[id]/[deliveryId]/[...file]/route.ts",
@@ -623,13 +623,13 @@
     },
     {
       "file": "docs/PROJECT-STORY.md",
-      "bytes": 4272,
-      "sha256": "897d854217b0a376d725edb2c84691f48aa9efb6529214ad16b5606c9cb4b929"
+      "bytes": 6704,
+      "sha256": "aefe7aa999ee352da580d1c2ceec66789417a08624b97a8dfd7d913e0db821ed"
     },
     {
       "file": "docs/WINNER-GAP-REVIEW-2026-11-02.md",
-      "bytes": 9110,
-      "sha256": "b1f3159deb7315ff17ee6e3b6d2bb0de00921c3cf4bf3342fed211ad502c9296"
+      "bytes": 10520,
+      "sha256": "10a1486d95398f39fc6beba2bff6cd053f8becff9c11d947fa3f41010324785b"
     },
     {
       "file": "drizzle.config.ts",
@@ -713,8 +713,8 @@
     },
     {
       "file": "lib/delivery-assessment.ts",
-      "bytes": 23811,
-      "sha256": "8190f60fe1a6990aa766b6d2f846a97922b1fa3918dd53c5e53fada49917371f"
+      "bytes": 27358,
+      "sha256": "dc2f41bafda08cbab08878a5929ae99a7eb05298bf662b3edd9f2350a7480621"
     },
     {
       "file": "lib/delivery-comparison.ts",
@@ -863,8 +863,8 @@
     },
     {
       "file": "scripts/build-judge-pack.mjs",
-      "bytes": 14629,
-      "sha256": "b268be4e3ed9ef272ba74b8d1d295eb52ee775d0cc2f091479c69c5fdb7de32a"
+      "bytes": 15097,
+      "sha256": "1e6cba729f29693a7e1f7739ad9b23359ad91d7735ef4ba4356cbe941efb06ab"
     },
     {
       "file": "scripts/build-showcase.mjs",
@@ -1038,8 +1038,8 @@
     },
     {
       "file": "tests/collaborative-sandbox-api-smoke.py",
-      "bytes": 8895,
-      "sha256": "cf7a8dd115792848d1d18c352894d9077b8f33939092c30c8e94eb84397fb878"
+      "bytes": 9156,
+      "sha256": "29654f8d7506aa5ba9fe285c33f4de78d9e97cc60258d520586c06e5aed71a0d"
     },
     {
       "file": "tests/custom-project-api-smoke.py",
@@ -1053,8 +1053,8 @@
     },
     {
       "file": "tests/delivery-assessment.test.ts",
-      "bytes": 43293,
-      "sha256": "dd25540aaa1f33a75b9c0f54a7c48a0d231ee796c1f8a1dd60125c4d0ff7af92"
+      "bytes": 47733,
+      "sha256": "a3ad4a8d9fef2ba8f553b0d07dd88ae31d2c1545b5a81d0b9161f3a12d8fd2b3"
     },
     {
       "file": "tests/delivery-comparison.test.ts",
@@ -1173,8 +1173,8 @@
     },
     {
       "file": "tests/run-collaborative-sandbox-local.mjs",
-      "bytes": 6297,
-      "sha256": "a39aae8cec4b80f7c6ce62c28c304aae0fdac8e1036d753c45883e8100150c7c"
+      "bytes": 8977,
+      "sha256": "1dcf01aefc4ab81404bbc8d270d89b75e946de869515841c87d31f4099ced2ca"
     },
     {
       "file": "tests/sandbox-provider-worker.mjs",
@@ -1253,13 +1253,13 @@
     },
     {
       "file": "JUDGE-README.md",
-      "bytes": 6191,
-      "sha256": "e1a732cdb121ea0692031b481b8a01015f297ebfaed1b88ba94acef42a93fdce"
+      "bytes": 6472,
+      "sha256": "4d8c4a80f8a313815c48118d15039df2b41dc4cebbf11f3e435ce36ac141e629"
     },
     {
       "file": "DEMO-SCRIPT.md",
-      "bytes": 2142,
-      "sha256": "a68a0abcd83897ceb9ce69f8d666449013e583561514f8e28df405cb8d8595f1"
+      "bytes": 2329,
+      "sha256": "caf4c9007c89f881458aee4f129614133a2ad60c8c4520c82dc3f8e81032fcfc"
     }
   ]
 }

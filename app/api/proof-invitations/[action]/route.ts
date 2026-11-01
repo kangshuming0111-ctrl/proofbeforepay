@@ -12,7 +12,7 @@ export async function POST(request: Request, context: {params: Promise<{action: 
     if (action === "accept") return json(await acceptInvitation(record, actor, input.sellerName, input.confirm));
     const quote = record.quote;
     return json({project: {id: quote.id, reference: quote.reference, title: quote.title, summary: quote.summary,
-      currency: quote.currency, totalCents: quote.totalCents, language: quote.language, criteria: quote.proof.criteria},
+      currency: quote.currency, totalCents: quote.totalCents, language: quote.language, paymentMode: quote.paymentMode, criteria: quote.proof.criteria},
       expiresAt: record.invitationExpiresAt, email: actor.email});
   });
 }
