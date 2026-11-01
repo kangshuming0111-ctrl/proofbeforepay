@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1793276438423,
+      "tag": "0000_flashy_master_chief",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1793336899270,
+      "tag": "0001_low_chimera",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1793340694478,
+      "tag": "0002_flawless_lake",
+      "breakpoints": true
+    }
+  ]
+}

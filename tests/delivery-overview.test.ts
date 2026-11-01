@@ -1,0 +1,88 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import type { ProofAssessment, ProofCriterion, ProofDelivery, ProofDeliveryVersion, ProofEvidence } from "../lib/contracts.ts";
+import { criterionDisplayTitle, deliveryOverview, overviewFeedbackDraft } from "../lib/delivery-overview.ts";
+
+const criteria: ProofCriterion[] = [
+  { id: "page-1", title: "Separate page: index.html", source: "Deliver index.html." },
+  { id: "manual-1", title: "Manual requirement 1", source: "Display the opening hours Monday to Friday 11am–8pm." },
+  { id: "mobile", title: "Mobile usability", source: "Check the delivered website on a mobile screen." },
+];
+const evidence = (criterionId: string, finding: ProofEvidence["finding"]): ProofEvidence => ({ id: criterionId, criterionId, finding, file: "index.html", excerpt: "saved source", explanation: `Rule explanation: ${criterionId}` });
+const report = (deliveryId: string, status: ProofAssessment["items"][number]["status"] = "changes_suggested"): ProofAssessment => ({
+  id: "report", deliveryId, mode: "live", model: "synthetic-no-provider-call", method: "source-ai-v1", assessedAt: "2026-11-01T00:01:00Z",
+  items: criteria.map(criterion => ({ criterionId: criterion.id, status: criterion.id === "manual-1" ? status : "insufficient_evidence", explanation: `AI explanation: ${criterion.id}`, citations: [], ruleEvidenceIds: [] })),
+  risks: [], limitations: [], coverage: { includedFiles: [], truncatedFiles: [], omittedFiles: [] },
+});
+const delivery = (id = "v2", sequence = 2): ProofDelivery => ({ id, sequence, variant: "upload", label: id, submittedAt: `2026-11-01T00:0${sequence}:00Z`, evidence: [evidence("page-1", "pass"), evidence("manual-1", "needs_human"), evidence("mobile", "needs_human")], assessment: report(id) });
+const review = (deliveryId = "v2") => ({ deliveryId, reviewedAt: "2026-11-01T00:02:00Z", mode: "demo" as const, summary: "Rules only" });
+
+test("AI changes and human checks remain separate when the same criterion needs both", () => {
+  const result = deliveryOverview({ delivery: delivery(), criteria, review: review(), manualChecks: [] });
+  assert.equal(result.ruleFailures, 0); assert.equal(result.aiChanges, 1); assert.equal(result.humanRemaining, 2);
+  assert.equal(result.rows[0].criterion.id, "manual-1"); assert.equal(result.rows[0].humanPending, true);
+  assert.equal(result.rows.length, 3);
+});
+
+test("stale review and stale assessment never become current success counts", () => {
+  const item = delivery(); item.assessment = report("old");
+  const result = deliveryOverview({ delivery: item, criteria, review: review("old"), manualChecks: ["mobile", "manual-1"] });
+  assert.equal(result.reviewCurrent, false); assert.equal(result.assessmentCurrent, false);
+  assert.equal(result.ruleFailures, undefined); assert.equal(result.aiChanges, undefined); assert.equal(result.humanRemaining, undefined);
+  assert.equal(result.unreviewed, 3); assert.ok(result.rows.every(row => row.rule === "unreviewed" && !row.ai));
+});
+
+test("a rule failure outranks other evidence and any AI supported suggestion", () => {
+  const item = delivery(); item.evidence.push(evidence("manual-1", "fail")); item.assessment = report(item.id, "supported");
+  const result = deliveryOverview({ delivery: item, criteria, review: review(), manualChecks: ["manual-1"] });
+  assert.equal(result.ruleFailures, 1); assert.equal(result.rows[0].rule, "fail");
+  assert.equal(result.rows[0].explanation, "Rule explanation: manual-1");
+  assert.equal(result.humanRemaining, 1);
+});
+
+test("missing criterion evidence remains unreviewed even when a saved AI report supports it", () => {
+  const item = delivery(); item.evidence = [evidence("page-1", "pass")]; item.assessment = report(item.id, "supported");
+  const result = deliveryOverview({ delivery: item, criteria, review: review(), manualChecks: [] });
+  assert.equal(result.unreviewed, 2); assert.equal(result.rows.find(row => row.criterion.id === "manual-1")?.rule, "unreviewed");
+});
+
+test("human progress counts only required IDs, never unknown checks or AI support", () => {
+  const item = delivery(); item.assessment = report(item.id, "supported");
+  const result = deliveryOverview({ delivery: item, criteria, review: review(), manualChecks: ["manual-1", "unknown-id", "manual-1"] });
+  assert.equal(result.humanRemaining, 1); assert.equal(result.rows[0].criterion.id, "mobile");
+});
+
+test("history compares only independently bound rule and AI reports", () => {
+  const previous = delivery("v1", 1); previous.evidence.push(evidence("page-1", "fail"));
+  const version: ProofDeliveryVersion = { delivery: previous, review: review(previous.id), feedback: [], archivedAt: "2026-11-01T00:02:00Z" };
+  const result = deliveryOverview({ delivery: delivery(), criteria, review: review(), manualChecks: [], previousVersion: version });
+  assert.equal(result.previous?.ruleFailures, 1); assert.equal(result.ruleFailures, 0); assert.equal(result.previous?.aiChanges, 1);
+  version.review = review("wrong-version"); previous.assessment = report("wrong-version");
+  const stale = deliveryOverview({ delivery: delivery(), criteria, review: review(), manualChecks: [], previousVersion: version });
+  assert.equal(stale.previous?.ruleFailures, undefined); assert.equal(stale.previous?.aiChanges, undefined);
+});
+
+test("current or later versions cannot be presented as historical improvement", () => {
+  for (const previous of [delivery("v2", 2), delivery("v3", 3)]) {
+    const result = deliveryOverview({ delivery: delivery(), criteria, review: review(), manualChecks: [], previousVersion: { delivery: previous, review: review(previous.id), feedback: [], archivedAt: "2026-11-01T00:04:00Z" } });
+    assert.equal(result.previous, undefined);
+  }
+});
+
+test("friendly titles are display-only and do not mutate requirements or reports", () => {
+  const item = delivery(), original = structuredClone(item), originalCriteria = structuredClone(criteria);
+  assert.equal(criterionDisplayTitle(criteria[1], "en"), criteria[1].source);
+  assert.equal(criterionDisplayTitle(criteria[0], "en"), criteria[0].title);
+  assert.equal(criterionDisplayTitle({ id: "manual-2", title: "人工要求 2", source: "😀".repeat(70) }, "zh"), `${"😀".repeat(55)}…`);
+  deliveryOverview({ delivery: item, criteria, review: review(), manualChecks: [] });
+  assert.deepEqual(item, original); assert.deepEqual(criteria, originalCriteria);
+});
+
+test("feedback is an exact-version bounded advisory draft and never marks evidence accepted", () => {
+  const result = deliveryOverview({ delivery: delivery(), criteria, review: review(), manualChecks: [] });
+  const row = result.rows[0], draft = overviewFeedbackDraft(row, "v2", "zh");
+  assert.equal(draft.deliveryId, "v2"); assert.equal(draft.criterionId, "manual-1"); assert.match(draft.comment, /AI 修改建议（待买家核对）/);
+  assert.match(draft.comment, /Display the opening hours/); assert.equal(row.rule, "needs_human"); assert.equal(row.humanPending, true);
+  row.explanation = "😀".repeat(1000);
+  const bounded = overviewFeedbackDraft(row, "v2", "en"); assert.ok(bounded.comment.length <= 1000); assert.doesNotMatch(bounded.comment, /[\uD800-\uDBFF]$/u);
+});

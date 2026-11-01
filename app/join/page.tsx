@@ -1,0 +1,65 @@
+"use client";
+import { useEffect, useState } from "react";
+import { FileCheck2, LoaderCircle, ShieldCheck } from "lucide-react";
+import type { Currency, Language, ProofCriterion } from "@/lib/contracts";
+import "../collaboration.css";
+
+type InvitationPreview = {project: {id: string; reference: string; title: string; summary: string; currency: Currency; totalCents: number; language: Language; criteria: ProofCriterion[]}; email: string; expiresAt: string};
+
+async function invitationRequest<T>(action: string, input: unknown): Promise<T> {
+  const response = await fetch(`/api/proof-invitations/${action}`, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(input)});
+  const data: unknown = await response.json();
+  if (!response.ok) throw new Error(data && typeof data === "object" && "error" in data && typeof data.error === "string" ? data.error : "Invitation could not be opened.");
+  return data as T;
+}
+
+export default function JoinProject() {
+  const [token, setToken] = useState("");
+  const [preview, setPreview] = useState<InvitationPreview>();
+  const [name, setName] = useState("");
+  const [confirmed, setConfirmed] = useState(false);
+  const [busy, setBusy] = useState(true);
+  const [error, setError] = useState("");
+  const tr = (zh: string, en: string) => preview?.project.language === "en" ? en : zh;
+  useEffect(() => {
+    let active = true;
+    const value = new URLSearchParams(window.location.hash.slice(1)).get("invite") ?? "";
+    if (!/^[0-9a-f]{64}$/u.test(value)) {setError("邀请链接不完整，请重新打开买家发给你的原始链接。 / Open the original invitation link from the buyer."); setBusy(false); return;}
+    setToken(value);
+    invitationRequest<InvitationPreview>("inspect", {token: value}).then(result => {if (active) setPreview(result);})
+      .catch(cause => {if (active) setError(cause instanceof Error ? cause.message : "Invitation unavailable.");})
+      .finally(() => {if (active) setBusy(false);});
+    return () => {active = false;};
+  }, []);
+
+  async function accept() {
+    if (!preview || !token || !confirmed || !name.trim() || busy) return;
+    setBusy(true); setError("");
+    try {
+      await invitationRequest("accept", {token, confirm: true, sellerName: name.trim()});
+      window.history.replaceState({}, "", "/join");
+      window.location.assign(`/?proof=${encodeURIComponent(preview.project.id)}`);
+    } catch (cause) {setError(cause instanceof Error ? cause.message : "Could not join project."); setBusy(false);}
+  }
+
+  return <main className="join-project-page">
+    <a className="brand" href="/"><span className="brand-mark"><FileCheck2 size={22}/></span><span>proof<span className="brand-light">before</span>pay.</span></a>
+    <section className="join-project-card">
+      <span className="section-kicker">SELLER INVITATION</span>
+      <h1>{tr("确认约定，加入交付", "Confirm the scope and join as seller")}</h1>
+      {busy && !preview && <p role="status"><LoaderCircle size={16} className="spin"/> {tr("正在检查邀请…", "Checking invitation…")}</p>}
+      {error && <p role="alert" className="collab-error">{error}</p>}
+      {preview ? <>
+        <p className="collab-muted">{preview.project.reference} · {tr("受邀账号", "Invited account")} {preview.email}</p>
+        <h2>{preview.project.title}</h2><p>{preview.project.summary}</p>
+        <strong className="join-project-amount">{new Intl.NumberFormat(preview.project.language === "zh" ? "zh-CN" : "en-AU", {style: "currency", currency: preview.project.currency}).format(preview.project.totalCents / 100)}</strong>
+        <ol>{preview.project.criteria.map(criterion => <li key={criterion.id}><strong>{criterion.title}</strong><p>{criterion.source}</p></li>)}</ol>
+        <p className="collab-muted">{tr("此项目使用模拟付款，不会向卖家转账。加入后可提交和修订交付；验收与付款确认由买家操作。", "This project uses simulated payment and does not transfer funds to the seller. You can submit and revise deliveries; the buyer controls acceptance and payment confirmation.")}</p>
+        <label htmlFor="sellerDisplayName">{tr("你的展示名称", "Your display name")}</label>
+        <input id="sellerDisplayName" maxLength={100} value={name} onChange={event => setName(event.target.value)} disabled={busy}/>
+        <label className="join-project-confirm"><input type="checkbox" checked={confirmed} onChange={event => setConfirmed(event.target.checked)} disabled={busy}/><span>{tr("我已阅读并确认以上范围、金额和验收标准，同意作为卖家参与此项目。", "I have read and agree to this scope, amount and acceptance criteria, and agree to join this project as the seller.")}</span></label>
+        <button className="button primary" disabled={busy || !confirmed || !name.trim()} onClick={accept}>{busy ? <LoaderCircle size={16} className="spin"/> : <ShieldCheck size={16}/>} {tr("确认约定并加入", "Confirm scope and join")}</button>
+      </> : !busy && <p className="collab-muted">{tr("请使用受邀邮箱登录，并确认你已有此网站的访问权限。若登录后邀请未恢复，请重新打开买家发来的原始链接。", "Sign in using the invited email and make sure you have access to this website. If the invitation is lost during sign-in, reopen the original link from the buyer.")}</p>}
+    </section>
+  </main>;
+}

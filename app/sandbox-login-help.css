@@ -1,0 +1,25 @@
+.proof-app .sandbox-login-help {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  margin: 10px 0 14px;
+  padding: 10px 12px;
+  border-left: 2px solid #365e45;
+  background: #edf2e3;
+  color: #344c3d;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  line-height: 1.65;
+}
+.proof-app .sandbox-login-help p { margin: 0; color: inherit; font-size: inherit; line-height: inherit; }
+.proof-app .sandbox-login-help-title strong { color: #344c3d; font-size: 12px; font-weight: 600; }
+.proof-app .sandbox-login-help .sandbox-login-help-note { margin: 4px 0 7px; color: #526347; font-size: 11px; }
+.proof-app .sandbox-login-help-link { color: #28513b; text-decoration: underline; text-underline-offset: 3px; }
+.proof-app .sandbox-login-help > .button { margin: 4px 0 9px; }
+.proof-app .sandbox-login-help-steps { margin-top: 6px; }
+.proof-app .sandbox-login-help-steps > summary { min-height: 32px; padding: 5px 0; color: #365e45; cursor: pointer; }
+.proof-app .sandbox-login-help-steps ol { margin: 4px 0 8px; padding-inline-start: 19px; }
+.proof-app .sandbox-login-help-steps li + li { margin-top: 6px; }
+.proof-app .sandbox-login-help-steps > p { color: #526347; font-size: 11px; }
+.proof-app .sandbox-login-help-link:focus-visible,
+.proof-app .sandbox-login-help-steps > summary:focus-visible { outline: 2px solid #365e45; outline-offset: 3px; border-radius: 2px; }

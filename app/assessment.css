@@ -1,0 +1,93 @@
+.delivery-assessment { min-width: 0; flex-shrink: 0; margin-top: 10px; border: 1px solid #d6e0cc; border-radius: 6px; background: #fcfdf7; color: #344b32; font-size: 12px; line-height: 1.65; }
+.delivery-assessment *, .delivery-assessment *::before, .delivery-assessment *::after { box-sizing: border-box; }
+.assessment-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 9px; padding: 10px 11px; cursor: pointer; list-style: none; }
+.assessment-heading::-webkit-details-marker, .delivery-assessment details > summary::-webkit-details-marker { display: none; }
+.assessment-title { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 650; }
+.assessment-state { margin-left: auto; color: #61764d; font-size: 10px; }
+.assessment-chevron { flex-shrink: 0; }
+.delivery-assessment[open] > .assessment-heading { border-bottom: 1px solid #dce4d5; }
+.delivery-assessment[open] > .assessment-heading .assessment-chevron { transform: rotate(180deg); }
+.assessment-body { padding: 10px 11px 11px; min-width: 0; }
+.assessment-purpose, .assessment-consent, .assessment-empty, .assessment-unavailable, .assessment-limits, .assessment-saved-note { margin: 0 0 8px; overflow-wrap: anywhere; }
+.assessment-purpose { color: #5b7050; font-size: 11px; }
+.assessment-consent { color: #394e35; }
+.assessment-body .assessment-run { display: inline-flex; align-items: center; justify-content: center; gap: 6px; max-width: 100%; min-height: 34px; padding: 7px 10px; margin: 0 0 8px; border: 1px solid #c4d3b4; border-radius: 4px; background: #edf3e4; color: #34572e; font: inherit; line-height: 1.5; cursor: pointer; }
+.assessment-body .assessment-run:hover:not(:disabled) { background: #e0ead4; }
+.assessment-body .assessment-run:disabled { opacity: .6; cursor: not-allowed; }
+.assessment-unavailable { color: #77643e; font-size: 11px; }
+.assessment-report-meta { display: flex; flex-wrap: wrap; gap: 3px 11px; margin-bottom: 4px; font-size: 10px; color: #627454; overflow-wrap: anywhere; }
+.assessment-report-meta > span { min-width: 0; }
+.assessment-report-meta code { font-family: inherit; font-size: inherit; }
+.assessment-saved-note { font-size: 10px; color: #637451; }
+.assessment-findings { min-width: 0; }
+.assessment-item { padding: 10px 0; border-bottom: 1px solid #dce4d4; min-width: 0; }
+.assessment-item-selected { padding-top: 3px; }
+.assessment-item-heading { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
+.assessment-item-heading h4, .assessment-risk h4 { margin: 0; min-width: 0; font: inherit; font-weight: 650; color: #344f2f; overflow-wrap: anywhere; }
+.assessment-status { display: inline-block; padding: 2px 5px; border-radius: 3px; font-size: 10px; line-height: 1.5; overflow-wrap: anywhere; }
+.assessment-status-supported { background: #e5efda; color: #385b2b; }
+.assessment-status-changes_suggested { background: #f5e7db; color: #8b482b; }
+.assessment-status-insufficient_evidence { background: #f0eddc; color: #716132; }
+.assessment-explanation { margin: 6px 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.assessment-feedback-action { display: flex; align-items: center; flex-wrap: wrap; gap: 5px 8px; margin-top: 7px; }
+.assessment-feedback-action > span { color: #6c775b; font-size: 10px; }
+.assessment-body .assessment-feedback-button { max-width: 100%; min-height: 32px; padding: 5px 8px; border: 1px solid #c4d3b4; border-radius: 4px; background: #edf3e4; color: #34572e; font: inherit; font-size: 11px; line-height: 1.5; cursor: pointer; }
+.assessment-body .assessment-feedback-button:hover:not(:disabled) { background: #e0ead4; }
+.assessment-body .assessment-feedback-button:disabled { opacity: .6; cursor: not-allowed; }
+.assessment-rule-refs, .assessment-no-citation { margin: 5px 0 0; font-size: 10px; color: #6c775b; overflow-wrap: anywhere; }
+.delivery-assessment details > summary { display: flex; align-items: center; gap: 5px; cursor: pointer; list-style: none; }
+.delivery-assessment details > summary > svg:last-child { flex-shrink: 0; margin-left: auto; }
+.assessment-citations > summary { color: #4e6b3f; font-size: 11px; padding: 3px 0; }
+.assessment-citations ol { list-style: none; margin: 3px 0 0; padding: 0; }
+.assessment-citations li { min-width: 0; padding: 6px 0; }
+.assessment-citation-location { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; min-width: 0; font-size: 10px; color: #647455; }
+.assessment-citation-location code { max-width: 100%; overflow-wrap: anywhere; }
+.assessment-citations pre { min-width: 0; max-width: 100%; margin: 5px 0 0; padding: 8px; border-left: 2px solid #b7cba1; background: #eef2e6; color: #3e5434; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 10px; line-height: 1.7; tab-size: 2; }
+.assessment-citations pre code { white-space: inherit; overflow-wrap: inherit; }
+.assessment-other-items > summary, .assessment-risks > summary, .assessment-coverage > summary { padding: 8px 0; color: #49643b; font-size: 11px; }
+.assessment-other-items .assessment-item:last-child { border-bottom: 0; }
+.assessment-risks { border-top: 1px solid #dce4d4; }
+.assessment-risk-body { min-width: 0; }
+.assessment-risk-notice { margin: 0 0 7px; font-size: 10px; color: #79653d; }
+.assessment-risk { padding: 7px 0; border-top: 1px solid #e1e7d9; }
+.assessment-risk p { margin: 5px 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.assessment-risk-suggestion { color: #62704d; font-size: 11px; }
+.assessment-coverage { border-top: 1px solid #dce4d4; }
+.assessment-coverage-body { min-width: 0; font-size: 10px; }
+.assessment-coverage-body dl { margin: 0 0 8px; }
+.assessment-coverage-body dl > div { margin-bottom: 6px; }
+.assessment-coverage-body dt { font-weight: 650; color: #526844; }
+.assessment-coverage-body dd { margin: 1px 0 0; color: #657454; overflow-wrap: anywhere; }
+.assessment-coverage-body dd code { display: inline-block; max-width: 100%; margin-right: 7px; overflow-wrap: anywhere; }
+.assessment-coverage-body ul { padding-left: 16px; margin: 8px 0; }
+.assessment-coverage-body li { overflow-wrap: anywhere; margin: 3px 0; }
+.assessment-delivery-id { overflow-wrap: anywhere; color: #68785a; }
+.assessment-limits { padding-top: 8px; margin-bottom: 0; border-top: 1px solid #dce4d4; color: #6c765c; font-size: 10px; }
+.assessment-progress { display: block; font-size: 11px; color: #5a7148; overflow-wrap: anywhere; }
+.assessment-progress:empty { display: none; }
+.assessment-heading:focus-visible, .delivery-assessment summary:focus-visible, .delivery-assessment button:focus-visible, .assessment-findings:focus-visible { outline: 2px solid #68844f; outline-offset: 3px; }
+.assessment-spinner { animation: assessment-spin 1s linear infinite; flex-shrink: 0; }
+@keyframes assessment-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .assessment-spinner { animation: none; } }
+@media (min-width: 1100px) and (min-height: 700px) {
+  .cockpit-grid .delivery-evidence-view { overflow-y: auto; overscroll-behavior-y: contain; scrollbar-width: thin; }
+  .cockpit-grid .delivery-evidence-view > * { flex-shrink: 0; }
+  .cockpit-grid .delivery-evidence-view .criteria-evidence-list { flex: 0 0 auto; min-height: 0; overflow: visible; }
+  .cockpit-grid .delivery-evidence-view .review-summary[open] { max-height: none; overflow: visible; }
+}
+@media (max-width: 600px) {
+  .assessment-heading { padding: 9px; gap: 5px; }
+  .assessment-title { font-size: 11px; }
+  .assessment-state { font-size: 9px; }
+  .assessment-body { padding: 9px; }
+  .assessment-item-heading { display: block; }
+  .assessment-status { margin-top: 4px; }
+}
+@media print {
+  .delivery-assessment[data-has-report="false"] { display: none !important; }
+  .delivery-assessment { background: white; color: #263226; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .delivery-assessment > .assessment-body, .delivery-assessment details > :not(summary) { display: block !important; }
+  .delivery-assessment::details-content, .delivery-assessment details::details-content { content-visibility: visible !important; }
+  .assessment-body, .assessment-findings, .assessment-risk-body, .assessment-coverage-body, .assessment-citations pre { max-height: none; overflow: visible; }
+  .delivery-assessment .no-print { display: none !important; }
+}

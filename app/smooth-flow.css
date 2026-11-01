@@ -1,0 +1,67 @@
+.guided-workspace-bar { padding: 4px 0; }
+.guided-workspace-bar > strong { flex-shrink: 0; display: inline-flex; align-items: baseline; gap: 7px; }
+.guided-workspace-bar > strong small { font-size: 10px; font-weight: 400; color: #74816b; }
+.guided-workspace-bar > span { flex: 1; display: flex; align-items: center; gap: 6px; min-width: 0; overflow-wrap: anywhere; }
+.guided-workspace-bar > .workspace-next-action { margin-left: auto; flex-shrink: 0; display: inline-flex; align-items: center; gap: 7px; min-height: 34px; padding: 6px 10px; font-size: 12px; }
+.guided-workspace-bar > .workspace-refresh { margin-left: 0; flex-shrink: 0; min-height: 32px; padding: 6px; }
+.human-check-navigation { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 7px; padding: 9px 0 3px; color: #5d704e; font-size: 11px; }
+.human-check-navigation button { min-height: 34px; display: inline-flex; align-items: center; gap: 5px; }
+.criterion-evidence:focus-visible { outline: 2px solid #68844f; outline-offset: -2px; }
+
+/* Strong fill identifies the current continuation path, not every available action. */
+.proof-app :is(
+  .guided-workspace-bar > .workspace-next-action,
+  .cockpit-grid .button.primary,
+  .cockpit-grid .human-check-navigation > .text-button,
+  .cockpit-grid .review-toolbar > .subtle-button,
+  .cockpit-grid .collaboration-invite-fields > .collaboration-button:not(.collaboration-button-secondary),
+  .cockpit-grid .collaboration-submission-form > .collaboration-button,
+  .cockpit-grid .collaboration-accept > .collaboration-button
+):not(:disabled) {
+  background: #214e42;
+  border-color: #214e42;
+  color: #fffefa;
+  font-weight: 650;
+}
+.proof-app :is(
+  .guided-workspace-bar > .workspace-next-action,
+  .cockpit-grid .button.primary,
+  .cockpit-grid .human-check-navigation > .text-button,
+  .cockpit-grid .review-toolbar > .subtle-button,
+  .cockpit-grid .collaboration-invite-fields > .collaboration-button:not(.collaboration-button-secondary),
+  .cockpit-grid .collaboration-submission-form > .collaboration-button,
+  .cockpit-grid .collaboration-accept > .collaboration-button
+):hover:not(:disabled) {
+  background: #173f34;
+  border-color: #173f34;
+  color: #fffefa;
+}
+.proof-app :is(
+  .guided-workspace-bar > .workspace-next-action,
+  .cockpit-grid .button.primary,
+  .cockpit-grid .human-check-navigation > .text-button,
+  .cockpit-grid .review-toolbar > .subtle-button,
+  .cockpit-grid .collaboration-invite-fields > .collaboration-button:not(.collaboration-button-secondary),
+  .cockpit-grid .collaboration-submission-form > .collaboration-button,
+  .cockpit-grid .collaboration-accept > .collaboration-button
+):disabled {
+  background: #e5eadf;
+  border-color: #d4ddca;
+  color: #65705f;
+  opacity: 1;
+}
+.proof-app .human-check-navigation > .text-button {
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+.proof-app .workspace-next-action:focus-visible {
+  outline: 2px solid #214e42;
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .guided-workspace-bar { gap: 6px; }
+  .guided-workspace-bar > strong small { display: none; }
+  .guided-workspace-bar > .workspace-next-action { max-width: calc(100% - 116px); min-width: 0; white-space: normal; font-size: 11px; }
+  .guided-workspace-bar > .workspace-refresh { margin-left: 0; }
+}
