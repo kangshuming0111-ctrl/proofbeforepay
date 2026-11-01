@@ -1,6 +1,6 @@
 # ProofBeforePay — local judge handoff
 
-This is a sanitized source export, not a public GitHub publication, a live judge-access grant, a measured AI benchmark or a Devpost submission. The hosted Site may remain owner-private. Do not assume its URL works for another account.
+Generating this source export does not by itself publish a repository or submit a Devpost entry. It does not grant live judge access or establish measured AI results. The hosted Site may remain owner-private. Do not assume its URL works for another account. See the [dated evaluation](docs/EVALUATION-2026-11-02.md) for separately recorded results and limits.
 
 ## What to try
 

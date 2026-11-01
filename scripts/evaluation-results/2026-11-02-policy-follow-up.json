@@ -1,0 +1,643 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-01T13:51:02.907Z",
+  "mode": "live",
+  "model": "deepseek-flash",
+  "pricing": {
+    "model": "deepseek-flash",
+    "modelVersionAtVerification": "DeepSeek-V4.1-Flash-1017",
+    "inputUsdPerMillion": 0.3,
+    "outputUsdPerMillion": 1.2,
+    "maxOutputTokens": 1800,
+    "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+    "verifiedOn": "2026-11-02",
+    "assumption": "Peak cache-miss input and peak output rates, ignoring any discounts; estimated from reported usage, not an invoice."
+  },
+  "limits": {
+    "maxCalls": 6,
+    "maxUsd": 0.05,
+    "outputTokensPerCall": 1800,
+    "applicationRequestTimeoutMilliseconds": 30000,
+    "automaticRetries": 0
+  },
+  "accounting": {
+    "calls": 6,
+    "conservativeReportedUsageCostUsd": 0.0035952,
+    "unknownUsageReservedUsd": 0,
+    "stopReason": "all_cases_completed"
+  },
+  "measurementNotes": [
+    "Reference labels never enter a provider request.",
+    "Raw model and application policy statuses are reported separately; application abstention does not prove the model abstained.",
+    "Four strata are reported separately; do not pool coverage-limited cases into complete-literal error rates.",
+    "Status agreement is not a human semantic accuracy result; every case still needs human review.",
+    "Input reservation uses request UTF-8 byte count plus 4096 tokens for template overhead; it is a deliberately conservative estimate, not tokenizer output or a provider-enforced spending cap.",
+    "Missing/invalid usage or network ambiguity stops further calls and records that call's reserved estimate.",
+    "No payment, database writes, customer data or application credentials are included in this evaluation."
+  ],
+  "summaryByStratum": {
+    "complete-literal": {
+      "planned": 5,
+      "attempted": 5,
+      "applicationErrors": 0,
+      "rawStatusAgreement": {
+        "count": 5,
+        "total": 5,
+        "fraction": 1
+      },
+      "applicationStatusAgreement": {
+        "count": 5,
+        "total": 5,
+        "fraction": 1
+      },
+      "mismatchRecall": {
+        "raw": {
+          "count": 3,
+          "total": 3,
+          "fraction": 1
+        },
+        "application": {
+          "count": 3,
+          "total": 3,
+          "fraction": 1
+        }
+      },
+      "falsePositiveOnClean": {
+        "raw": {
+          "count": 0,
+          "total": 2,
+          "fraction": 0
+        },
+        "application": {
+          "count": 0,
+          "total": 2,
+          "fraction": 0
+        }
+      },
+      "correctAbstention": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "invalidCitationResponses": 0,
+      "unknownUsage": 0,
+      "reportedUsageCostUsd": 0.0029360999999999996,
+      "latency": {
+        "samples": 5,
+        "meanMilliseconds": 1827.2,
+        "p50Milliseconds": 1843,
+        "p95Milliseconds": 2356
+      }
+    },
+    "untrusted-source": {
+      "planned": 0,
+      "attempted": 0,
+      "applicationErrors": 0,
+      "rawStatusAgreement": {
+        "count": 0,
+        "total": 0,
+        "fraction": null
+      },
+      "applicationStatusAgreement": {
+        "count": 0,
+        "total": 0,
+        "fraction": null
+      },
+      "mismatchRecall": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "falsePositiveOnClean": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "correctAbstention": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "invalidCitationResponses": 0,
+      "unknownUsage": 0,
+      "reportedUsageCostUsd": 0,
+      "latency": {
+        "samples": 0,
+        "meanMilliseconds": null,
+        "p50Milliseconds": null,
+        "p95Milliseconds": null
+      }
+    },
+    "runtime-or-subjective": {
+      "planned": 1,
+      "attempted": 1,
+      "applicationErrors": 0,
+      "rawStatusAgreement": {
+        "count": 1,
+        "total": 1,
+        "fraction": 1
+      },
+      "applicationStatusAgreement": {
+        "count": 1,
+        "total": 1,
+        "fraction": 1
+      },
+      "mismatchRecall": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "falsePositiveOnClean": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "correctAbstention": {
+        "raw": {
+          "count": 1,
+          "total": 1,
+          "fraction": 1
+        },
+        "application": {
+          "count": 1,
+          "total": 1,
+          "fraction": 1
+        }
+      },
+      "invalidCitationResponses": 0,
+      "unknownUsage": 0,
+      "reportedUsageCostUsd": 0.0006590999999999999,
+      "latency": {
+        "samples": 1,
+        "meanMilliseconds": 2186,
+        "p50Milliseconds": 2186,
+        "p95Milliseconds": 2186
+      }
+    },
+    "coverage-limited": {
+      "planned": 0,
+      "attempted": 0,
+      "applicationErrors": 0,
+      "rawStatusAgreement": {
+        "count": 0,
+        "total": 0,
+        "fraction": null
+      },
+      "applicationStatusAgreement": {
+        "count": 0,
+        "total": 0,
+        "fraction": null
+      },
+      "mismatchRecall": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "falsePositiveOnClean": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "correctAbstention": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "invalidCitationResponses": 0,
+      "unknownUsage": 0,
+      "reportedUsageCostUsd": 0,
+      "latency": {
+        "samples": 0,
+        "meanMilliseconds": null,
+        "p50Milliseconds": null,
+        "p95Milliseconds": null
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "appointment-policy-v1-contradiction",
+      "category": "semantic-policy-mismatch",
+      "stratum": "complete-literal",
+      "referenceStatus": "changes_suggested",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "e2a760bae5c1ade78081c1758c14978ffb1a7a90e7fab8d14d2d505742d5132e",
+        "requestUtf8Bytes": 5845,
+        "promptTokenUpperEstimate": 9941,
+        "reservedCostUsd": 0.005142299999999999,
+        "coverage": {
+          "includedFiles": [
+            "index.html",
+            "services.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "changes_suggested",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "services.html",
+            "excerpt": "Visit our studio whenever it suits you. No prior appointment is needed, and walk-ins are welcome."
+          }
+        ],
+        "explanation": "Services page says no appointment is needed and walk-ins are welcome, contradicting an appointment-only policy."
+      },
+      "usage": {
+        "promptTokens": 1140,
+        "completionTokens": 214
+      },
+      "conservativeUsageCostUsd": 0.0005987999999999999,
+      "application": {
+        "status": "changes_suggested",
+        "explanation": "Services page says no appointment is needed and walk-ins are welcome, contradicting an appointment-only policy.",
+        "citations": [
+          {
+            "file": "services.html",
+            "start": 115,
+            "end": 212,
+            "excerpt": "Visit our studio whenever it suits you. No prior appointment is needed, and walk-ins are welcome."
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1805
+    },
+    {
+      "id": "appointment-policy-v2-equivalent",
+      "category": "semantic-policy-supported",
+      "stratum": "complete-literal",
+      "referenceStatus": "supported",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "ac59e80ec20ccc60ea09b6f3d6ec7f07f8f7e60b6fc145f03d800feff26607ad",
+        "requestUtf8Bytes": 5876,
+        "promptTokenUpperEstimate": 9972,
+        "reservedCostUsd": 0.0051516,
+        "coverage": {
+          "includedFiles": [
+            "index.html",
+            "services.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "supported",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "services.html",
+            "excerpt": "Every consultation is arranged in advance. We cannot accommodate walk-ins; please agree a time with our florist before visiting."
+          }
+        ],
+        "explanation": "services.html states consultations are arranged in advance and walk-ins cannot be accommodated, expressing appointment-only policy."
+      },
+      "usage": {
+        "promptTokens": 1144,
+        "completionTokens": 140
+      },
+      "conservativeUsageCostUsd": 0.0005112,
+      "application": {
+        "status": "supported",
+        "explanation": "services.html states consultations are arranged in advance and walk-ins cannot be accommodated, expressing appointment-only policy.",
+        "citations": [
+          {
+            "file": "services.html",
+            "start": 115,
+            "end": 243,
+            "excerpt": "Every consultation is arranged in advance. We cannot accommodate walk-ins; please agree a time with our florist before visiting."
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1211
+    },
+    {
+      "id": "delivery-only-policy-contradiction",
+      "category": "semantic-policy-mismatch",
+      "stratum": "complete-literal",
+      "referenceStatus": "changes_suggested",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "2d164fabdbef0cefd0c1a8edc2cb335ce859d8c0c8ecd994cee5fddcb0314537",
+        "requestUtf8Bytes": 5824,
+        "promptTokenUpperEstimate": 9920,
+        "reservedCostUsd": 0.005136,
+        "coverage": {
+          "includedFiles": [
+            "index.html",
+            "services.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "changes_suggested",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "services.html",
+            "excerpt": "Take a seat in our dining room and enjoy table service. We offer both meals at the restaurant and home delivery."
+          }
+        ],
+        "explanation": "services.html copy offers dining-room seating and restaurant meals, contradicting the required delivery-only policy."
+      },
+      "usage": {
+        "promptTokens": 1142,
+        "completionTokens": 211
+      },
+      "conservativeUsageCostUsd": 0.0005958,
+      "application": {
+        "status": "changes_suggested",
+        "explanation": "services.html copy offers dining-room seating and restaurant meals, contradicting the required delivery-only policy.",
+        "citations": [
+          {
+            "file": "services.html",
+            "start": 105,
+            "end": 217,
+            "excerpt": "Take a seat in our dining room and enjoy table service. We offer both meals at the restaurant and home delivery."
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1921
+    },
+    {
+      "id": "preorder-only-policy-equivalent",
+      "category": "semantic-policy-supported",
+      "stratum": "complete-literal",
+      "referenceStatus": "supported",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "03cb9eba87756003274e74fd7d477ba6719b1f97e898c2178188678938376d23",
+        "requestUtf8Bytes": 5929,
+        "promptTokenUpperEstimate": 10025,
+        "reservedCostUsd": 0.0051675,
+        "coverage": {
+          "includedFiles": [
+            "index.html",
+            "services.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "supported",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "services.html",
+            "excerpt": "We prepare bouquets exclusively for advance orders. Please arrange your purchase before the day you need it; buying a bouquet on that day is not available."
+          }
+        ],
+        "explanation": "services.html states bouquets are prepared exclusively for advance orders and same-day buying is not available, matching the policy meaning."
+      },
+      "usage": {
+        "promptTokens": 1164,
+        "completionTokens": 220
+      },
+      "conservativeUsageCostUsd": 0.0006132,
+      "application": {
+        "status": "supported",
+        "explanation": "services.html states bouquets are prepared exclusively for advance orders and same-day buying is not available, matching the policy meaning.",
+        "citations": [
+          {
+            "file": "services.html",
+            "start": 110,
+            "end": 265,
+            "excerpt": "We prepare bouquets exclusively for advance orders. Please arrange your purchase before the day you need it; buying a bouquet on that day is not available."
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1843
+    },
+    {
+      "id": "appointment-policy-explicit-exact-phrase",
+      "category": "semantic-policy-exact-wording-mismatch",
+      "stratum": "complete-literal",
+      "referenceStatus": "changes_suggested",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "397233552761f859a66bd5401333e997723fee59d0e27990ae22faffe346c5ef",
+        "requestUtf8Bytes": 5858,
+        "promptTokenUpperEstimate": 9954,
+        "reservedCostUsd": 0.0051462,
+        "coverage": {
+          "includedFiles": [
+            "index.html",
+            "services.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "changes_suggested",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "services.html",
+            "excerpt": "Every consultation is arranged in advance. We cannot accommodate walk-ins; please agree a time with our florist before visiting."
+          },
+          {
+            "file": "index.html",
+            "excerpt": "Read our services for consultation details."
+          }
+        ],
+        "explanation": "Exact required phrase does not appear; services page uses different wording instead."
+      },
+      "usage": {
+        "promptTokens": 1145,
+        "completionTokens": 228
+      },
+      "conservativeUsageCostUsd": 0.0006170999999999999,
+      "application": {
+        "status": "changes_suggested",
+        "explanation": "Exact required phrase does not appear; services page uses different wording instead.",
+        "citations": [
+          {
+            "file": "services.html",
+            "start": 115,
+            "end": 243,
+            "excerpt": "Every consultation is arranged in advance. We cannot accommodate walk-ins; please agree a time with our florist before visiting."
+          },
+          {
+            "file": "index.html",
+            "start": 110,
+            "end": 153,
+            "excerpt": "Read our services for consultation details."
+          }
+        ]
+      },
+      "elapsedMilliseconds": 2356
+    },
+    {
+      "id": "appointment-form-runtime-boundary",
+      "category": "semantic-policy-runtime-boundary",
+      "stratum": "runtime-or-subjective",
+      "referenceStatus": "insufficient_evidence",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "ff69b59ee9b8704d60aaae3574f45e3434741567096142a47f68d8663bb90293",
+        "requestUtf8Bytes": 5942,
+        "promptTokenUpperEstimate": 10038,
+        "reservedCostUsd": 0.0051714,
+        "coverage": {
+          "includedFiles": [
+            "index.html",
+            "services.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "insufficient_evidence",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "services.html",
+            "excerpt": "<form><label>Email<input name=\"email\" type=\"email\"></label><button type=\"submit\">Request a time</button></form>"
+          }
+        ],
+        "explanation": "Form submission success and owner confirmation email require runtime/backend verification; source markup alone cannot prove delivery."
+      },
+      "usage": {
+        "promptTokens": 1157,
+        "completionTokens": 260
+      },
+      "conservativeUsageCostUsd": 0.0006590999999999999,
+      "application": {
+        "status": "insufficient_evidence",
+        "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+        "citations": [
+          {
+            "file": "services.html",
+            "start": 166,
+            "end": 277,
+            "excerpt": "<form><label>Email<input name=\"email\" type=\"email\"></label><button type=\"submit\">Request a time</button></form>"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 2186
+    }
+  ],
+  "evaluationGroup": "appointment-policy-follow-up",
+  "baselineCorpusUnmodified": true,
+  "requiresIndependentSemanticReview": true
+}

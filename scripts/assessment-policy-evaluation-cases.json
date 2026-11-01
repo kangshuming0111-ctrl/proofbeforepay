@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Separately declared follow-up fixtures for the observed appointment-policy semantic error. These cases are not added to or substituted into the original 19-case baseline. No provider calls are made by this file.",
+  "synthetic": true,
+  "evaluationGroup": "appointment-policy-follow-up",
+  "baselineCorpusUnmodified": true,
+  "providerCallsMadeByThisFile": 0,
+  "interpretation": "Offline mocked responses validate request construction and policy preservation, not model semantic accuracy. Report all six separately from the original baseline, including two policy domains not exemplified in the prompt, an explicit exact-phrase counterexample and a runtime boundary. A later paid run requires separate authorization and does not establish broad generalization.",
+  "cases": [
+    {
+      "id": "appointment-policy-v1-contradiction",
+      "category": "semantic-policy-mismatch",
+      "language": "en",
+      "evaluationStratum": "complete-literal",
+      "criterion": {
+        "id": "manual-1",
+        "title": "Consultation policy copy",
+        "source": "The page copy must clearly say consultations are by appointment only; walk-ins are not accepted."
+      },
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><title>Fictional florist</title></head><body><h1>Seasonal flowers</h1><p>Read our services for consultation details.</p></body></html>",
+        "services.html": "<!doctype html><html lang=\"en\"><head><title>Consultation policy</title></head><body><h1>Consultation policy</h1><p>Visit our studio whenever it suits you. No prior appointment is needed, and walk-ins are welcome.</p></body></html>"
+      },
+      "reference": {
+        "expectedStatus": "changes_suggested",
+        "rationale": "The delivered text explicitly permits visits without a prior appointment and welcomes walk-ins, contradicting both parts of the agreed copy policy. This is a text-content conclusion, not a test of actual appointment operations.",
+        "requiresHumanSemanticReview": true
+      }
+    },
+    {
+      "id": "appointment-policy-v2-equivalent",
+      "category": "semantic-policy-supported",
+      "language": "en",
+      "evaluationStratum": "complete-literal",
+      "criterion": {
+        "id": "manual-1",
+        "title": "Consultation policy copy",
+        "source": "The page copy must clearly say consultations are by appointment only; walk-ins are not accepted."
+      },
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><title>Fictional florist</title></head><body><h1>Seasonal flowers</h1><p>Read our services for consultation details.</p></body></html>",
+        "services.html": "<!doctype html><html lang=\"en\"><head><title>Consultation policy</title></head><body><h1>Consultation policy</h1><p>Every consultation is arranged in advance. We cannot accommodate walk-ins; please agree a time with our florist before visiting.</p></body></html>"
+      },
+      "reference": {
+        "expectedStatus": "supported",
+        "rationale": "Advance arrangement and refusal of walk-ins express the agreed appointment-only policy in different words. The buyer did not require a verbatim phrase or specify the homepage. Supporting this textual meaning does not establish that booking, forms or email work.",
+        "requiresHumanSemanticReview": true
+      }
+    },
+    {
+      "id": "delivery-only-policy-contradiction",
+      "category": "semantic-policy-mismatch",
+      "language": "en",
+      "evaluationStratum": "complete-literal",
+      "criterion": {
+        "id": "manual-1",
+        "title": "Dining policy copy",
+        "source": "The page copy must clearly say orders are for delivery only; customers cannot dine in."
+      },
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><title>Fictional noodle shop</title></head><body><h1>Handmade noodles</h1><p>Read our services for ordering details.</p></body></html>",
+        "services.html": "<!doctype html><html lang=\"en\"><head><title>Dining policy</title></head><body><h1>Enjoy your meal</h1><p>Take a seat in our dining room and enjoy table service. We offer both meals at the restaurant and home delivery.</p></body></html>"
+      },
+      "reference": {
+        "expectedStatus": "changes_suggested",
+        "rationale": "The text expressly offers dining-room/table service, contradicting delivery-only and no-dine-in copy. This policy domain is not an example in the changed model prompt. Actual ordering or delivery operations are not tested.",
+        "requiresHumanSemanticReview": true
+      }
+    },
+    {
+      "id": "preorder-only-policy-equivalent",
+      "category": "semantic-policy-supported",
+      "language": "en",
+      "evaluationStratum": "complete-literal",
+      "criterion": {
+        "id": "manual-1",
+        "title": "Bouquet ordering policy copy",
+        "source": "The page copy must clearly say all bouquets are available by preorder only; same-day purchases are not offered."
+      },
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><title>Fictional florist</title></head><body><h1>Seasonal bouquets</h1><p>Read our services for ordering details.</p></body></html>",
+        "services.html": "<!doctype html><html lang=\"en\"><head><title>Bouquet ordering</title></head><body><h1>Plan your flowers</h1><p>We prepare bouquets exclusively for advance orders. Please arrange your purchase before the day you need it; buying a bouquet on that day is not available.</p></body></html>"
+      },
+      "reference": {
+        "expectedStatus": "supported",
+        "rationale": "Exclusively for advance orders expresses preorder-only; purchasing before the required day with same-day buying unavailable expresses the second clause. No exact phrase was requested. This policy domain is absent from the prompt examples; actual order fulfillment is not established.",
+        "requiresHumanSemanticReview": true
+      }
+    },
+    {
+      "id": "appointment-policy-explicit-exact-phrase",
+      "category": "semantic-policy-exact-wording-mismatch",
+      "language": "en",
+      "evaluationStratum": "complete-literal",
+      "criterion": {
+        "id": "manual-1",
+        "title": "Required exact policy phrase",
+        "source": "The page copy must include the exact phrase \"By appointment only. No walk-ins.\""
+      },
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><title>Fictional florist</title></head><body><h1>Seasonal flowers</h1><p>Read our services for consultation details.</p></body></html>",
+        "services.html": "<!doctype html><html lang=\"en\"><head><title>Consultation policy</title></head><body><h1>Consultation policy</h1><p>Every consultation is arranged in advance. We cannot accommodate walk-ins; please agree a time with our florist before visiting.</p></body></html>"
+      },
+      "reference": {
+        "expectedStatus": "changes_suggested",
+        "rationale": "Here the buyer explicitly asks for an exact phrase. The equivalent policy meaning does not supply the requested literal string. This contrasts with the non-verbatim requirement in the v2 case and prevents treating every paraphrase as sufficient.",
+        "requiresHumanSemanticReview": true
+      }
+    },
+    {
+      "id": "appointment-form-runtime-boundary",
+      "category": "semantic-policy-runtime-boundary",
+      "language": "en",
+      "evaluationStratum": "runtime-or-subjective",
+      "criterion": {
+        "id": "manual-1",
+        "title": "Appointment request processing",
+        "source": "The appointment request form must submit successfully and the owner must receive a confirmation email."
+      },
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><title>Fictional florist</title></head><body><h1>Seasonal flowers</h1><p>Read our services for consultation details.</p></body></html>",
+        "services.html": "<!doctype html><html lang=\"en\"><head><title>Appointment requests</title></head><body><h1>Appointment request</h1><p>Arrange your visit with our fictional florist.</p><form><label>Email<input name=\"email\" type=\"email\"></label><button type=\"submit\">Request a time</button></form></body></html>"
+      },
+      "reference": {
+        "expectedStatus": "insufficient_evidence",
+        "rationale": "Form markup and text do not prove submission, server processing or receipt of email. Policy-copy semantic guidance must not convert runtime requirements into source-supported success. Report raw model and final application policy separately.",
+        "requiresHumanSemanticReview": true
+      }
+    }
+  ]
+}

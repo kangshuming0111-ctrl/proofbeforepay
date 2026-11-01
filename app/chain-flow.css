@@ -19,8 +19,15 @@
 .completed-collaboration > summary:focus-visible { outline: 2px solid #365e45; outline-offset: 3px; }
 .completed-collaboration > .collaboration-panel { margin-top: 10px; }
 @media (min-width: 1000px) {
+  /* One workspace scroller: result cards must not squeeze the active view to zero. */
   .proof-app .cockpit-grid .delivery-workspace.is-custom { overflow-y: auto; }
-  .proof-app .cockpit-grid .is-custom > .delivery-preview-view { flex: 0 0 auto; min-height: 360px; overflow: visible; }
+  .proof-app .cockpit-grid .is-custom > .delivery-preview-view,
+  .proof-app .cockpit-grid .is-custom > .delivery-evidence-view,
+  .proof-app .cockpit-grid .is-custom > .delivery-layout-view { flex: 0 0 auto; height: auto; overflow: visible; }
+  .proof-app .cockpit-grid .is-custom > .delivery-preview-view { min-height: 360px; }
+  .proof-app .cockpit-grid .is-custom > .delivery-evidence-view,
+  .proof-app .cockpit-grid .is-custom > .delivery-layout-view { min-height: min-content; }
+  .proof-app .cockpit-grid .is-custom .criteria-evidence-list { flex: 0 0 auto; height: auto; overflow: visible; }
   .proof-app .cockpit-grid .preview-section { flex: 0 0 auto; }
   .proof-app .cockpit-grid .preview-scroll { flex: 0 0 280px; min-height: 280px; }
   .proof-app .cockpit-grid .preview-frame,

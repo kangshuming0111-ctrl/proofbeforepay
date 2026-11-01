@@ -1,0 +1,904 @@
+{
+  "kind": "whole-seven-criterion-project-follow-up",
+  "baselineUnchanged": true,
+  "hostedSavedAssessmentUnchanged": true,
+  "live": true,
+  "calls": 2,
+  "maxCalls": 2,
+  "maxUsd": 0.05,
+  "conservativeAccountedCostUsd": 0.0053034,
+  "results": [
+    {
+      "version": "v1",
+      "criteria": [
+        {
+          "id": "page-1",
+          "title": "Separate page: index.html",
+          "source": "Deliver index.html as a separate nonempty HTML document with an HTML doctype, a nonempty title and a body."
+        },
+        {
+          "id": "page-2",
+          "title": "Separate page: services.html",
+          "source": "Deliver services.html as a separate nonempty HTML document with an HTML doctype, a nonempty title and a body."
+        },
+        {
+          "id": "page-3",
+          "title": "Separate page: contact.html",
+          "source": "Deliver contact.html as a separate nonempty HTML document with an HTML doctype, a nonempty title and a body."
+        },
+        {
+          "id": "link",
+          "title": "Local link destination",
+          "source": "index.html contains a link labelled “Book a call” pointing to contact.html#consultation."
+        },
+        {
+          "id": "mobile",
+          "title": "Mobile usability",
+          "source": "All delivered pages must be usable on a mobile screen; a person must check them directly."
+        },
+        {
+          "id": "manual-1",
+          "title": "Manual requirement 1",
+          "source": "Display opening hours: Monday to Friday, 11am–8pm."
+        },
+        {
+          "id": "manual-2",
+          "title": "Manual requirement 2",
+          "source": "The page copy must clearly say consultations are by appointment only; walk-ins are not accepted."
+        }
+      ],
+      "files": {
+        "index.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Home | Juniper &amp; Stem</title><link rel=\"stylesheet\" href=\"styles.css\"></head><body>\n<aside class=\"sample\">Fictional website-delivery case for ProofBeforePay. No real shop, orders or email service.</aside>\n<header><a class=\"brand\" href=\"index.html\">juniper &amp; stem.</a><nav aria-label=\"Main navigation\"><a href=\"index.html\">Home</a><a href=\"services.html\">Services</a><a href=\"contact.html\">Contact</a></nav></header>\n<main><section class=\"hero\"><div><p class=\"kicker\">Melbourne · independent floral studio</p><h1>A little wild.<br>A little wonderful.</h1><p class=\"lead\">Seasonal flowers, thoughtful gifts and a quiet appreciation for the everyday. Made one stem at a time.</p><a class=\"primary\" href=\"contact.html#consultation\">Book a call</a></div><div class=\"art\" role=\"img\" aria-label=\"Decorative bouquet illustration\"><span class=\"stem\"></span><span class=\"stem\"></span><span class=\"stem\"></span><span class=\"vase\"></span></div></section><div class=\"facts\"><span>Opening hours: Monday to Friday, 10am–6pm</span><span>Seasonal arrangements · thoughtful gifts</span></div><section class=\"intro\"><h2>Flowers with a little character.</h2><p class=\"lead\">Meet our three illustrative services.</p></section><section class=\"cards\" aria-label=\"Floral services\"><article class=\"card\"><h3>The daily posy</h3><p>Seasonal stems, wrapped simply. A small pleasure for an everyday table.</p><span class=\"price\">From AUD 45</span></article><article class=\"card\"><h3>Seasonal bouquet</h3><p>A generous hand-tied arrangement, chosen for colour and texture.</p><span class=\"price\">From AUD 85</span></article><article class=\"card\"><h3>Table flowers</h3><p>Thoughtful details for intimate gatherings and small celebrations.</p><span class=\"price\">From AUD 160</span></article></section></main><footer><span>Juniper &amp; Stem · Fictional Melbourne floral studio<br>hello@juniper.example.test · sample address, not monitored</span><span>Opening hours: Monday to Friday, 10am–6pm<br>All prices are illustrative AUD amounts.</span></footer></body></html>\n",
+        "services.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Services | Juniper &amp; Stem</title><link rel=\"stylesheet\" href=\"styles.css\"></head><body>\n<aside class=\"sample\">Fictional website-delivery case for ProofBeforePay. No real shop, orders or email service.</aside>\n<header><a class=\"brand\" href=\"index.html\">juniper &amp; stem.</a><nav aria-label=\"Main navigation\"><a href=\"index.html\">Home</a><a href=\"services.html\">Services</a><a href=\"contact.html\">Contact</a></nav></header>\n<main><section class=\"intro\"><p class=\"kicker\">Flowers for your moments</p><h1>Made with care.<br>Given with love.</h1><p class=\"lead\">From an everyday posy to a small celebration, tell us what you have in mind.</p></section><section class=\"cards\" aria-label=\"Floral services\"><article class=\"card\"><h3>The daily posy</h3><p>Seasonal stems, wrapped simply. A small pleasure for an everyday table.</p><span class=\"price\">From AUD 45</span></article><article class=\"card\"><h3>Seasonal bouquet</h3><p>A generous hand-tied arrangement, chosen for colour and texture.</p><span class=\"price\">From AUD 85</span></article><article class=\"card\"><h3>Table flowers</h3><p>Thoughtful details for intimate gatherings and small celebrations.</p><span class=\"price\">From AUD 160</span></article></section><section class=\"policy\"><h2>Consultation policy</h2><p>Visit whenever inspiration strikes. Drop in without arranging a time and our florist will happily start a consultation.</p></section><a class=\"primary\" href=\"contact.html#consultation\">Book a call</a></main><footer><span>Juniper &amp; Stem · Fictional Melbourne floral studio<br>hello@juniper.example.test · sample address, not monitored</span><span>Opening hours: Monday to Friday, 10am–6pm<br>All prices are illustrative AUD amounts.</span></footer></body></html>\n",
+        "contact.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Contact | Juniper &amp; Stem</title><link rel=\"stylesheet\" href=\"styles.css\"></head><body>\n<aside class=\"sample\">Fictional website-delivery case for ProofBeforePay. No real shop, orders or email service.</aside>\n<header><a class=\"brand\" href=\"index.html\">juniper &amp; stem.</a><nav aria-label=\"Main navigation\"><a href=\"index.html\">Home</a><a href=\"services.html\">Services</a><a href=\"contact.html\">Contact</a></nav></header>\n<main><section class=\"intro\"><p class=\"kicker\">Let's make something lovely</p><h1>Start a conversation.</h1></section><div class=\"contact\"><section id=\"enquiry\"><h2>Consultation request</h2><p>Tell our fictional florist when you would like to talk.</p><form class=\"request\"><label for=\"name\">Your name</label><input id=\"name\" name=\"name\" autocomplete=\"name\"><label for=\"email\">Your email</label><input id=\"email\" name=\"email\" type=\"email\" autocomplete=\"email\"><button class=\"primary\" type=\"submit\">Request a time</button></form><p class=\"quiet\">This demonstration form has no connected backend and does not send email. Source review cannot verify successful submission.</p></section><section><h2>Before you visit</h2><p>Visit whenever inspiration strikes. Drop in without arranging a time and our florist will happily start a consultation.</p><p>Opening hours: Monday to Friday, 10am–6pm</p><p class=\"quiet\">Fictional Melbourne location; no shop visits or real appointments.</p></section></div></main><footer><span>Juniper &amp; Stem · Fictional Melbourne floral studio<br>hello@juniper.example.test · sample address, not monitored</span><span>Opening hours: Monday to Friday, 10am–6pm<br>All prices are illustrative AUD amounts.</span></footer></body></html>\n",
+        "styles.css": ":root{font-family:Arial,sans-serif;color:#203d32;background:#faf7ee;font-synthesis:none}*{box-sizing:border-box}body{margin:0}a{color:inherit;text-underline-offset:4px}a:focus-visible,input:focus-visible,button:focus-visible{outline:3px solid #9f593f;outline-offset:4px}.sample{margin:0;padding:9px 5%;font-size:11px;background:#e7eedf;text-align:center;line-height:1.5}header,main,footer{max-width:1120px;margin:auto;padding-inline:5%}header{padding-block:22px;display:flex;align-items:center;justify-content:space-between;gap:18px;border-bottom:1px solid #d5deca}.brand{font:italic 28px Georgia,serif;text-decoration:none;white-space:nowrap}nav{display:flex;gap:22px;font-size:13px}nav a{text-decoration:none}nav a:hover{text-decoration:underline}.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:42px;align-items:center;padding-block:42px}.kicker{font-size:11px;letter-spacing:1.5px;text-transform:uppercase}h1{font:normal clamp(44px,6vw,72px)/1.05 Georgia,serif;letter-spacing:-2px;margin:17px 0}h2{font:normal 30px Georgia,serif;margin:0 0 13px}h3{font:normal 25px Georgia,serif;margin:10px 0}.lead{font-size:15px;line-height:1.8;max-width:440px;color:#516151}.primary{display:inline-block;padding:13px 20px;background:#294b3b;color:white;font-size:13px;text-decoration:none;border:0;font-family:inherit;cursor:pointer}.art{height:320px;background:#e7ddc9;border-radius:48% 48% 0 0;position:relative;overflow:hidden}.vase{position:absolute;bottom:-10px;left:calc(50% - 55px);width:110px;height:145px;background:repeating-linear-gradient(90deg,#a65a42 0 8px,#b36c4e 8px 13px);border-radius:7% 7% 35% 35%}.stem{position:absolute;bottom:105px;left:50%;width:3px;height:170px;background:#62774d;transform-origin:bottom}.stem:nth-child(2){transform:rotate(-28deg);height:155px}.stem:nth-child(3){transform:rotate(25deg);height:165px}.stem:before{content:\"\";position:absolute;left:-29px;top:-10px;width:62px;height:62px;border-radius:40%;background:#d9997a;box-shadow:9px 6px 0 -4px #e4b18e,-9px 7px 0 -3px #e3b792}.stem:nth-child(3):before{background:#ecd4a2}.stem:after{content:\"\";position:absolute;top:95px;left:0;width:40px;height:18px;background:#718250;border-radius:0 90% 0 90%;transform:rotate(-25deg)}.facts{display:flex;gap:15px;justify-content:space-between;border-block:1px solid #d5deca;padding:17px 0;font-size:12px;line-height:1.7}.intro{padding-block:35px 24px}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding-block:15px 25px}.card{background:#eeecde;padding:23px;border-top:2px solid #a76b48}.card p,.policy p,.contact p{font-size:14px;line-height:1.8;color:#53604d}.price{font-weight:bold;font-size:14px}.policy{background:#e9eddf;padding:25px;margin-block:10px 28px}.contact{display:grid;grid-template-columns:1fr 1fr;gap:22px;padding-bottom:30px}.contact section{background:#eeecde;padding:24px}.request label{display:block;font-size:13px;margin:14px 0 5px}.request input{display:block;width:100%;min-width:0;padding:11px;border:1px solid #afbaa3;background:#fffdf5;font:inherit}.request button{margin-top:17px}.quiet{font-size:11px!important;line-height:1.6!important}footer{border-top:1px solid #d5deca;padding-block:22px;font-size:11px;line-height:1.7;color:#53604d;display:flex;justify-content:space-between;gap:20px}@media(max-width:620px){header{align-items:start;flex-direction:column;padding-block:18px}.hero{grid-template-columns:1fr;gap:25px;padding-block:28px}.art{height:270px;width:100%;max-width:360px;margin:auto}h1{font-size:48px}.cards,.contact{grid-template-columns:1fr}.facts,footer{flex-direction:column;gap:7px}.cards{padding-block:10px 24px}.intro{padding-top:25px}}\n\n/* Deliberate delivered defect: service cards overflow a narrow viewport. */\n.cards{min-width:760px}\n"
+      },
+      "networkAttempted": true,
+      "reservedUsd": 0.00897,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "parsed": {
+          "items": [
+            {
+              "criterionId": "page-1",
+              "status": "supported",
+              "explanation": "index.html has an HTML doctype, a nonempty title and a body; server rule also passed.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "excerpt": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Home | Juniper &amp; Stem</title>"
+                },
+                {
+                  "file": "index.html",
+                  "excerpt": "</head><body>"
+                }
+              ]
+            },
+            {
+              "criterionId": "page-2",
+              "status": "supported",
+              "explanation": "services.html has an HTML doctype, a nonempty title and a body; server rule also passed.",
+              "citations": [
+                {
+                  "file": "services.html",
+                  "excerpt": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Services | Juniper &amp; Stem</title>"
+                },
+                {
+                  "file": "services.html",
+                  "excerpt": "</head><body>"
+                }
+              ]
+            },
+            {
+              "criterionId": "page-3",
+              "status": "supported",
+              "explanation": "contact.html has an HTML doctype, a nonempty title and a body; server rule also passed.",
+              "citations": [
+                {
+                  "file": "contact.html",
+                  "excerpt": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Contact | Juniper &amp; Stem</title>"
+                },
+                {
+                  "file": "contact.html",
+                  "excerpt": "</head><body>"
+                }
+              ]
+            },
+            {
+              "criterionId": "link",
+              "status": "insufficient_evidence",
+              "explanation": "Server rule failed on anchor text/target; the quoted index link appears to match, but authoritative rule result stands.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "excerpt": "<a class=\"primary\" href=\"contact.html#consultation\">Book a call</a>"
+                }
+              ]
+            },
+            {
+              "criterionId": "mobile",
+              "status": "insufficient_evidence",
+              "explanation": "Mobile usability requires direct human inspection; static source cannot prove rendering or usable controls.",
+              "citations": [
+                {
+                  "file": "styles.css",
+                  "excerpt": ".cards{min-width:760px}"
+                }
+              ]
+            },
+            {
+              "criterionId": "manual-1",
+              "status": "changes_suggested",
+              "explanation": "Delivered copy shows opening hours as 10am–6pm, not the required Monday to Friday, 11am–8pm.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "excerpt": "<span>Opening hours: Monday to Friday, 10am–6pm</span>"
+                },
+                {
+                  "file": "services.html",
+                  "excerpt": "<span>Opening hours: Monday to Friday, 10am–6pm<br>"
+                },
+                {
+                  "file": "contact.html",
+                  "excerpt": "<p>Opening hours: Monday to Friday, 10am–6pm</p>"
+                }
+              ]
+            },
+            {
+              "criterionId": "manual-2",
+              "status": "changes_suggested",
+              "explanation": "Copy invites drop-ins without arranging a time, contradicting appointment-only with no walk-ins.",
+              "citations": [
+                {
+                  "file": "services.html",
+                  "excerpt": "<p>Visit whenever inspiration strikes. Drop in without arranging a time and our florist will happily start a consultation.</p>"
+                },
+                {
+                  "file": "contact.html",
+                  "excerpt": "<p>Visit whenever inspiration strikes. Drop in without arranging a time and our florist will happily start a consultation.</p>"
+                }
+              ]
+            }
+          ],
+          "risks": [
+            {
+              "title": "Opening hours copy differs from required hours",
+              "explanation": "The delivered pages state Monday to Friday, 10am–6pm instead of 11am–8pm.",
+              "suggestion": "Check every page and footer instance of opening hours and reconcile against the agreed 11am–8pm hours.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "excerpt": "<span>Opening hours: Monday to Friday, 10am–6pm<br>All prices are illustrative AUD amounts.</span>"
+                },
+                {
+                  "file": "services.html",
+                  "excerpt": "<span>Opening hours: Monday to Friday, 10am–6pm<br>All prices are illustrative AUD amounts.</span>"
+                }
+              ]
+            },
+            {
+              "title": "Consultation policy contradicts appointment-only requirement",
+              "explanation": "Pages explicitly welcome dropping in without arranging a time.",
+              "suggestion": "Confirm with the buyer whether consultations are appointment-only and align copy accordingly.",
+              "citations": [
+                {
+                  "file": "services.html",
+                  "excerpt": "<p>Visit whenever inspiration strikes. Drop in without arranging a time and our florist will happily start a consultation.</p>"
+                }
+              ]
+            },
+            {
+              "title": "Service cards set to a wide minimum width",
+              "explanation": "A min-width of 760px is applied to the cards grid, which may cause overflow on narrow screens.",
+              "suggestion": "Have a person inspect the services layout on a narrow mobile viewport.",
+              "citations": [
+                {
+                  "file": "styles.css",
+                  "excerpt": ".cards{min-width:760px}"
+                }
+              ]
+            },
+            {
+              "title": "Contact anchor id differs from requested link fragment",
+              "explanation": "The contact page uses id=\"enquiry\" rather than the #consultation fragment targeted by the index link.",
+              "suggestion": "Verify whether the Book a call link resolves to a visible consultation section.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "excerpt": "href=\"contact.html#consultation\">Book a call</a>"
+                },
+                {
+                  "file": "contact.html",
+                  "excerpt": "<section id=\"enquiry\"><h2>Consultation request</h2>"
+                }
+              ]
+            }
+          ],
+          "limitations": [
+            "Static source review cannot verify rendered mobile appearance, overflow or interaction.",
+            "The Book a call link behavior and anchor resolution were not tested in a browser.",
+            "No conclusion is made about pages or assets outside the supplied files.",
+            "Form submission and email delivery were not tested and are explicitly not connected.",
+            "Only supplied text excerpts are considered; complete-page content beyond prefixes is not assessed."
+          ]
+        }
+      },
+      "application": {
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-01T13:52:09.548Z",
+        "items": [
+          {
+            "criterionId": "page-1",
+            "status": "supported",
+            "explanation": "index.html has an HTML doctype, a nonempty title and a body; server rule also passed.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 0,
+                "end": 167,
+                "excerpt": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Home | Juniper &amp; Stem</title>"
+              },
+              {
+                "file": "index.html",
+                "start": 208,
+                "end": 221,
+                "excerpt": "</head><body>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-page-1"
+            ]
+          },
+          {
+            "criterionId": "page-2",
+            "status": "supported",
+            "explanation": "services.html has an HTML doctype, a nonempty title and a body; server rule also passed.",
+            "citations": [
+              {
+                "file": "services.html",
+                "start": 0,
+                "end": 171,
+                "excerpt": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Services | Juniper &amp; Stem</title>"
+              },
+              {
+                "file": "services.html",
+                "start": 212,
+                "end": 225,
+                "excerpt": "</head><body>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-page-2"
+            ]
+          },
+          {
+            "criterionId": "page-3",
+            "status": "supported",
+            "explanation": "contact.html has an HTML doctype, a nonempty title and a body; server rule also passed.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 0,
+                "end": 170,
+                "excerpt": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Contact | Juniper &amp; Stem</title>"
+              },
+              {
+                "file": "contact.html",
+                "start": 211,
+                "end": 224,
+                "excerpt": "</head><body>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-page-3"
+            ]
+          },
+          {
+            "criterionId": "link",
+            "status": "changes_suggested",
+            "explanation": "Server rules found a failed check for this requirement. Resolve the linked rule evidence first; AI source suggestions cannot override it.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 818,
+                "end": 885,
+                "excerpt": "<a class=\"primary\" href=\"contact.html#consultation\">Book a call</a>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-link"
+            ]
+          },
+          {
+            "criterionId": "mobile",
+            "status": "insufficient_evidence",
+            "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+            "citations": [
+              {
+                "file": "styles.css",
+                "start": 3725,
+                "end": 3748,
+                "excerpt": ".cards{min-width:760px}"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-mobile"
+            ]
+          },
+          {
+            "criterionId": "manual-1",
+            "status": "changes_suggested",
+            "explanation": "Delivered copy shows opening hours as 10am–6pm, not the required Monday to Friday, 11am–8pm.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 1103,
+                "end": 1157,
+                "excerpt": "<span>Opening hours: Monday to Friday, 10am–6pm</span>"
+              },
+              {
+                "file": "services.html",
+                "start": 1751,
+                "end": 1802,
+                "excerpt": "<span>Opening hours: Monday to Friday, 10am–6pm<br>"
+              },
+              {
+                "file": "contact.html",
+                "start": 1404,
+                "end": 1452,
+                "excerpt": "<p>Opening hours: Monday to Friday, 10am–6pm</p>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-manual-1"
+            ]
+          },
+          {
+            "criterionId": "manual-2",
+            "status": "changes_suggested",
+            "explanation": "Copy invites drop-ins without arranging a time, contradicting appointment-only with no walk-ins.",
+            "citations": [
+              {
+                "file": "services.html",
+                "start": 1404,
+                "end": 1530,
+                "excerpt": "<p>Visit whenever inspiration strikes. Drop in without arranging a time and our florist will happily start a consultation.</p>"
+              },
+              {
+                "file": "contact.html",
+                "start": 1278,
+                "end": 1404,
+                "excerpt": "<p>Visit whenever inspiration strikes. Drop in without arranging a time and our florist will happily start a consultation.</p>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-manual-2"
+            ]
+          }
+        ],
+        "risks": [
+          {
+            "title": "Opening hours copy differs from required hours",
+            "explanation": "The delivered pages state Monday to Friday, 10am–6pm instead of 11am–8pm.",
+            "suggestion": "Check every page and footer instance of opening hours and reconcile against the agreed 11am–8pm hours.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 2056,
+                "end": 2154,
+                "excerpt": "<span>Opening hours: Monday to Friday, 10am–6pm<br>All prices are illustrative AUD amounts.</span>"
+              },
+              {
+                "file": "services.html",
+                "start": 1751,
+                "end": 1849,
+                "excerpt": "<span>Opening hours: Monday to Friday, 10am–6pm<br>All prices are illustrative AUD amounts.</span>"
+              }
+            ]
+          },
+          {
+            "title": "Consultation policy contradicts appointment-only requirement",
+            "explanation": "Pages explicitly welcome dropping in without arranging a time.",
+            "suggestion": "Confirm with the buyer whether consultations are appointment-only and align copy accordingly.",
+            "citations": [
+              {
+                "file": "services.html",
+                "start": 1404,
+                "end": 1530,
+                "excerpt": "<p>Visit whenever inspiration strikes. Drop in without arranging a time and our florist will happily start a consultation.</p>"
+              }
+            ]
+          },
+          {
+            "title": "Service cards set to a wide minimum width",
+            "explanation": "A min-width of 760px is applied to the cards grid, which may cause overflow on narrow screens.",
+            "suggestion": "Have a person inspect the services layout on a narrow mobile viewport.",
+            "citations": [
+              {
+                "file": "styles.css",
+                "start": 3725,
+                "end": 3748,
+                "excerpt": ".cards{min-width:760px}"
+              }
+            ]
+          },
+          {
+            "title": "Contact anchor id differs from requested link fragment",
+            "explanation": "The contact page uses id=\"enquiry\" rather than the #consultation fragment targeted by the index link.",
+            "suggestion": "Verify whether the Book a call link resolves to a visible consultation section.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 837,
+                "end": 885,
+                "excerpt": "href=\"contact.html#consultation\">Book a call</a>"
+              },
+              {
+                "file": "contact.html",
+                "start": 700,
+                "end": 751,
+                "excerpt": "<section id=\"enquiry\"><h2>Consultation request</h2>"
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "Static source review cannot verify rendered mobile appearance, overflow or interaction.",
+          "The Book a call link behavior and anchor resolution were not tested in a browser.",
+          "No conclusion is made about pages or assets outside the supplied files.",
+          "Form submission and email delivery were not tested and are explicitly not connected.",
+          "Only supplied text excerpts are considered; complete-page content beyond prefixes is not assessed.",
+          "Only the supplied static source excerpts were assessed. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "coverage": {
+          "includedFiles": [
+            "index.html",
+            "services.html",
+            "contact.html",
+            "styles.css"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "usage": {
+          "promptTokens": 4612,
+          "completionTokens": 1231
+        }
+      },
+      "error": null,
+      "usage": {
+        "promptTokens": 4612,
+        "completionTokens": 1231
+      },
+      "conservativeUsageCostUsd": 0.0028608
+    },
+    {
+      "version": "v2",
+      "criteria": [
+        {
+          "id": "page-1",
+          "title": "Separate page: index.html",
+          "source": "Deliver index.html as a separate nonempty HTML document with an HTML doctype, a nonempty title and a body."
+        },
+        {
+          "id": "page-2",
+          "title": "Separate page: services.html",
+          "source": "Deliver services.html as a separate nonempty HTML document with an HTML doctype, a nonempty title and a body."
+        },
+        {
+          "id": "page-3",
+          "title": "Separate page: contact.html",
+          "source": "Deliver contact.html as a separate nonempty HTML document with an HTML doctype, a nonempty title and a body."
+        },
+        {
+          "id": "link",
+          "title": "Local link destination",
+          "source": "index.html contains a link labelled “Book a call” pointing to contact.html#consultation."
+        },
+        {
+          "id": "mobile",
+          "title": "Mobile usability",
+          "source": "All delivered pages must be usable on a mobile screen; a person must check them directly."
+        },
+        {
+          "id": "manual-1",
+          "title": "Manual requirement 1",
+          "source": "Display opening hours: Monday to Friday, 11am–8pm."
+        },
+        {
+          "id": "manual-2",
+          "title": "Manual requirement 2",
+          "source": "The page copy must clearly say consultations are by appointment only; walk-ins are not accepted."
+        }
+      ],
+      "files": {
+        "index.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Home | Juniper &amp; Stem</title><link rel=\"stylesheet\" href=\"styles.css\"></head><body>\n<aside class=\"sample\">Fictional website-delivery case for ProofBeforePay. No real shop, orders or email service.</aside>\n<header><a class=\"brand\" href=\"index.html\">juniper &amp; stem.</a><nav aria-label=\"Main navigation\"><a href=\"index.html\">Home</a><a href=\"services.html\">Services</a><a href=\"contact.html\">Contact</a></nav></header>\n<main><section class=\"hero\"><div><p class=\"kicker\">Melbourne · independent floral studio</p><h1>A little wild.<br>A little wonderful.</h1><p class=\"lead\">Seasonal flowers, thoughtful gifts and a quiet appreciation for the everyday. Made one stem at a time.</p><a class=\"primary\" href=\"contact.html#consultation\">Book a call</a></div><div class=\"art\" role=\"img\" aria-label=\"Decorative bouquet illustration\"><span class=\"stem\"></span><span class=\"stem\"></span><span class=\"stem\"></span><span class=\"vase\"></span></div></section><div class=\"facts\"><span>Opening hours: Monday to Friday, 11am–8pm</span><span>Seasonal arrangements · thoughtful gifts</span></div><section class=\"intro\"><h2>Flowers with a little character.</h2><p class=\"lead\">Meet our three illustrative services.</p></section><section class=\"cards\" aria-label=\"Floral services\"><article class=\"card\"><h3>The daily posy</h3><p>Seasonal stems, wrapped simply. A small pleasure for an everyday table.</p><span class=\"price\">From AUD 45</span></article><article class=\"card\"><h3>Seasonal bouquet</h3><p>A generous hand-tied arrangement, chosen for colour and texture.</p><span class=\"price\">From AUD 85</span></article><article class=\"card\"><h3>Table flowers</h3><p>Thoughtful details for intimate gatherings and small celebrations.</p><span class=\"price\">From AUD 160</span></article></section></main><footer><span>Juniper &amp; Stem · Fictional Melbourne floral studio<br>hello@juniper.example.test · sample address, not monitored</span><span>Opening hours: Monday to Friday, 11am–8pm<br>All prices are illustrative AUD amounts.</span></footer></body></html>\n",
+        "services.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Services | Juniper &amp; Stem</title><link rel=\"stylesheet\" href=\"styles.css\"></head><body>\n<aside class=\"sample\">Fictional website-delivery case for ProofBeforePay. No real shop, orders or email service.</aside>\n<header><a class=\"brand\" href=\"index.html\">juniper &amp; stem.</a><nav aria-label=\"Main navigation\"><a href=\"index.html\">Home</a><a href=\"services.html\">Services</a><a href=\"contact.html\">Contact</a></nav></header>\n<main><section class=\"intro\"><p class=\"kicker\">Flowers for your moments</p><h1>Made with care.<br>Given with love.</h1><p class=\"lead\">From an everyday posy to a small celebration, tell us what you have in mind.</p></section><section class=\"cards\" aria-label=\"Floral services\"><article class=\"card\"><h3>The daily posy</h3><p>Seasonal stems, wrapped simply. A small pleasure for an everyday table.</p><span class=\"price\">From AUD 45</span></article><article class=\"card\"><h3>Seasonal bouquet</h3><p>A generous hand-tied arrangement, chosen for colour and texture.</p><span class=\"price\">From AUD 85</span></article><article class=\"card\"><h3>Table flowers</h3><p>Thoughtful details for intimate gatherings and small celebrations.</p><span class=\"price\">From AUD 160</span></article></section><section class=\"policy\"><h2>Consultation policy</h2><p>Every consultation is arranged in advance. We cannot accommodate walk-ins; please agree a time with our florist before visiting.</p></section><a class=\"primary\" href=\"contact.html#consultation\">Book a call</a></main><footer><span>Juniper &amp; Stem · Fictional Melbourne floral studio<br>hello@juniper.example.test · sample address, not monitored</span><span>Opening hours: Monday to Friday, 11am–8pm<br>All prices are illustrative AUD amounts.</span></footer></body></html>\n",
+        "contact.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Contact | Juniper &amp; Stem</title><link rel=\"stylesheet\" href=\"styles.css\"></head><body>\n<aside class=\"sample\">Fictional website-delivery case for ProofBeforePay. No real shop, orders or email service.</aside>\n<header><a class=\"brand\" href=\"index.html\">juniper &amp; stem.</a><nav aria-label=\"Main navigation\"><a href=\"index.html\">Home</a><a href=\"services.html\">Services</a><a href=\"contact.html\">Contact</a></nav></header>\n<main><section class=\"intro\"><p class=\"kicker\">Let's make something lovely</p><h1>Start a conversation.</h1></section><div class=\"contact\"><section id=\"consultation\"><h2>Consultation request</h2><p>Tell our fictional florist when you would like to talk.</p><form class=\"request\"><label for=\"name\">Your name</label><input id=\"name\" name=\"name\" autocomplete=\"name\"><label for=\"email\">Your email</label><input id=\"email\" name=\"email\" type=\"email\" autocomplete=\"email\"><button class=\"primary\" type=\"submit\">Request a time</button></form><p class=\"quiet\">This demonstration form has no connected backend and does not send email. Source review cannot verify successful submission.</p></section><section><h2>Before you visit</h2><p>Every consultation is arranged in advance. We cannot accommodate walk-ins; please agree a time with our florist before visiting.</p><p>Opening hours: Monday to Friday, 11am–8pm</p><p class=\"quiet\">Fictional Melbourne location; no shop visits or real appointments.</p></section></div></main><footer><span>Juniper &amp; Stem · Fictional Melbourne floral studio<br>hello@juniper.example.test · sample address, not monitored</span><span>Opening hours: Monday to Friday, 11am–8pm<br>All prices are illustrative AUD amounts.</span></footer></body></html>\n",
+        "styles.css": ":root{font-family:Arial,sans-serif;color:#203d32;background:#faf7ee;font-synthesis:none}*{box-sizing:border-box}body{margin:0}a{color:inherit;text-underline-offset:4px}a:focus-visible,input:focus-visible,button:focus-visible{outline:3px solid #9f593f;outline-offset:4px}.sample{margin:0;padding:9px 5%;font-size:11px;background:#e7eedf;text-align:center;line-height:1.5}header,main,footer{max-width:1120px;margin:auto;padding-inline:5%}header{padding-block:22px;display:flex;align-items:center;justify-content:space-between;gap:18px;border-bottom:1px solid #d5deca}.brand{font:italic 28px Georgia,serif;text-decoration:none;white-space:nowrap}nav{display:flex;gap:22px;font-size:13px}nav a{text-decoration:none}nav a:hover{text-decoration:underline}.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:42px;align-items:center;padding-block:42px}.kicker{font-size:11px;letter-spacing:1.5px;text-transform:uppercase}h1{font:normal clamp(44px,6vw,72px)/1.05 Georgia,serif;letter-spacing:-2px;margin:17px 0}h2{font:normal 30px Georgia,serif;margin:0 0 13px}h3{font:normal 25px Georgia,serif;margin:10px 0}.lead{font-size:15px;line-height:1.8;max-width:440px;color:#516151}.primary{display:inline-block;padding:13px 20px;background:#294b3b;color:white;font-size:13px;text-decoration:none;border:0;font-family:inherit;cursor:pointer}.art{height:320px;background:#e7ddc9;border-radius:48% 48% 0 0;position:relative;overflow:hidden}.vase{position:absolute;bottom:-10px;left:calc(50% - 55px);width:110px;height:145px;background:repeating-linear-gradient(90deg,#a65a42 0 8px,#b36c4e 8px 13px);border-radius:7% 7% 35% 35%}.stem{position:absolute;bottom:105px;left:50%;width:3px;height:170px;background:#62774d;transform-origin:bottom}.stem:nth-child(2){transform:rotate(-28deg);height:155px}.stem:nth-child(3){transform:rotate(25deg);height:165px}.stem:before{content:\"\";position:absolute;left:-29px;top:-10px;width:62px;height:62px;border-radius:40%;background:#d9997a;box-shadow:9px 6px 0 -4px #e4b18e,-9px 7px 0 -3px #e3b792}.stem:nth-child(3):before{background:#ecd4a2}.stem:after{content:\"\";position:absolute;top:95px;left:0;width:40px;height:18px;background:#718250;border-radius:0 90% 0 90%;transform:rotate(-25deg)}.facts{display:flex;gap:15px;justify-content:space-between;border-block:1px solid #d5deca;padding:17px 0;font-size:12px;line-height:1.7}.intro{padding-block:35px 24px}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding-block:15px 25px}.card{background:#eeecde;padding:23px;border-top:2px solid #a76b48}.card p,.policy p,.contact p{font-size:14px;line-height:1.8;color:#53604d}.price{font-weight:bold;font-size:14px}.policy{background:#e9eddf;padding:25px;margin-block:10px 28px}.contact{display:grid;grid-template-columns:1fr 1fr;gap:22px;padding-bottom:30px}.contact section{background:#eeecde;padding:24px}.request label{display:block;font-size:13px;margin:14px 0 5px}.request input{display:block;width:100%;min-width:0;padding:11px;border:1px solid #afbaa3;background:#fffdf5;font:inherit}.request button{margin-top:17px}.quiet{font-size:11px!important;line-height:1.6!important}footer{border-top:1px solid #d5deca;padding-block:22px;font-size:11px;line-height:1.7;color:#53604d;display:flex;justify-content:space-between;gap:20px}@media(max-width:620px){header{align-items:start;flex-direction:column;padding-block:18px}.hero{grid-template-columns:1fr;gap:25px;padding-block:28px}.art{height:270px;width:100%;max-width:360px;margin:auto}h1{font-size:48px}.cards,.contact{grid-template-columns:1fr}.facts,footer{flex-direction:column;gap:7px}.cards{padding-block:10px 24px}.intro{padding-top:25px}}\n\n/* Revised delivery: service cards can shrink at mobile widths. */\n.cards{min-width:0}\n"
+      },
+      "networkAttempted": true,
+      "reservedUsd": 0.0089901,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "parsed": {
+          "items": [
+            {
+              "criterionId": "page-1",
+              "status": "supported",
+              "explanation": "Rule evidence passes; source shows doctype, nonempty title and body in index.html.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "excerpt": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
+                },
+                {
+                  "file": "index.html",
+                  "excerpt": "<title>Home | Juniper &amp; Stem</title>"
+                },
+                {
+                  "file": "index.html",
+                  "excerpt": "</head><body>"
+                }
+              ]
+            },
+            {
+              "criterionId": "page-2",
+              "status": "supported",
+              "explanation": "Rule evidence passes; source shows doctype, nonempty title and body in services.html.",
+              "citations": [
+                {
+                  "file": "services.html",
+                  "excerpt": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
+                },
+                {
+                  "file": "services.html",
+                  "excerpt": "<title>Services | Juniper &amp; Stem</title>"
+                },
+                {
+                  "file": "services.html",
+                  "excerpt": "</head><body>"
+                }
+              ]
+            },
+            {
+              "criterionId": "page-3",
+              "status": "supported",
+              "explanation": "Rule evidence passes; source shows doctype, nonempty title and body in contact.html.",
+              "citations": [
+                {
+                  "file": "contact.html",
+                  "excerpt": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
+                },
+                {
+                  "file": "contact.html",
+                  "excerpt": "<title>Contact | Juniper &amp; Stem</title>"
+                },
+                {
+                  "file": "contact.html",
+                  "excerpt": "</head><body>"
+                }
+              ]
+            },
+            {
+              "criterionId": "link",
+              "status": "supported",
+              "explanation": "Rule evidence passes; index.html has a \"Book a call\" anchor pointing to contact.html#consultation.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "excerpt": "<a class=\"primary\" href=\"contact.html#consultation\">Book a call</a>"
+                },
+                {
+                  "file": "contact.html",
+                  "excerpt": "<section id=\"consultation\">"
+                }
+              ]
+            },
+            {
+              "criterionId": "mobile",
+              "status": "insufficient_evidence",
+              "explanation": "Rule evidence needs human review; static source cannot prove mobile usability.",
+              "citations": [
+                {
+                  "file": "styles.css",
+                  "excerpt": "@media(max-width:620px){header{align-items:start;flex-direction:column;padding-block:18px}"
+                }
+              ]
+            },
+            {
+              "criterionId": "manual-1",
+              "status": "supported",
+              "explanation": "Literal opening hours text appears in page copy on the homepage.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "excerpt": "Opening hours: Monday to Friday, 11am–8pm"
+                }
+              ]
+            },
+            {
+              "criterionId": "manual-2",
+              "status": "supported",
+              "explanation": "Copy says consultations are arranged in advance and walk-ins cannot be accommodated.",
+              "citations": [
+                {
+                  "file": "services.html",
+                  "excerpt": "Every consultation is arranged in advance. We cannot accommodate walk-ins; please agree a time with our florist before visiting."
+                }
+              ]
+            }
+          ],
+          "risks": [
+            {
+              "title": "Services page \"Book a call\" link sits outside the main content closure",
+              "explanation": "In services.html the anchor appears after </section> and before </main>, which is valid HTML but layout may be unintended.",
+              "suggestion": "Check rendered placement of the Book a call button on the Services page across viewport sizes.",
+              "citations": [
+                {
+                  "file": "services.html",
+                  "excerpt": "</section><a class=\"primary\" href=\"contact.html#consultation\">Book a call</a></main>"
+                }
+              ]
+            },
+            {
+              "title": "Contact form explicitly has no backend",
+              "explanation": "Page copy states the form has no connected backend and does not send email.",
+              "suggestion": "Confirm the buyer understands this demonstration limitation and does not expect working submissions.",
+              "citations": [
+                {
+                  "file": "contact.html",
+                  "excerpt": "This demonstration form has no connected backend and does not send email. Source review cannot verify successful submission."
+                }
+              ]
+            }
+          ],
+          "limitations": [
+            "Rendered mobile usability and layout were not inspected in a browser.",
+            "Static source cannot confirm link clicks or navigation behavior.",
+            "Only supplied file prefixes were reviewed; omitted files were not assessed.",
+            "Rule evidence for manual-1 and manual-2 was flagged needs_human despite the literal copy present.",
+            "Visual design quality and branding are outside static source verification."
+          ]
+        }
+      },
+      "application": {
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-01T13:52:13.903Z",
+        "items": [
+          {
+            "criterionId": "page-1",
+            "status": "supported",
+            "explanation": "Rule evidence passes; source shows doctype, nonempty title and body in index.html.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 0,
+                "end": 60,
+                "excerpt": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
+              },
+              {
+                "file": "index.html",
+                "start": 127,
+                "end": 167,
+                "excerpt": "<title>Home | Juniper &amp; Stem</title>"
+              },
+              {
+                "file": "index.html",
+                "start": 208,
+                "end": 221,
+                "excerpt": "</head><body>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-page-1"
+            ]
+          },
+          {
+            "criterionId": "page-2",
+            "status": "supported",
+            "explanation": "Rule evidence passes; source shows doctype, nonempty title and body in services.html.",
+            "citations": [
+              {
+                "file": "services.html",
+                "start": 0,
+                "end": 60,
+                "excerpt": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
+              },
+              {
+                "file": "services.html",
+                "start": 127,
+                "end": 171,
+                "excerpt": "<title>Services | Juniper &amp; Stem</title>"
+              },
+              {
+                "file": "services.html",
+                "start": 212,
+                "end": 225,
+                "excerpt": "</head><body>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-page-2"
+            ]
+          },
+          {
+            "criterionId": "page-3",
+            "status": "supported",
+            "explanation": "Rule evidence passes; source shows doctype, nonempty title and body in contact.html.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 0,
+                "end": 60,
+                "excerpt": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
+              },
+              {
+                "file": "contact.html",
+                "start": 127,
+                "end": 170,
+                "excerpt": "<title>Contact | Juniper &amp; Stem</title>"
+              },
+              {
+                "file": "contact.html",
+                "start": 211,
+                "end": 224,
+                "excerpt": "</head><body>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-page-3"
+            ]
+          },
+          {
+            "criterionId": "link",
+            "status": "supported",
+            "explanation": "Rule evidence passes; index.html has a \"Book a call\" anchor pointing to contact.html#consultation.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 818,
+                "end": 885,
+                "excerpt": "<a class=\"primary\" href=\"contact.html#consultation\">Book a call</a>"
+              },
+              {
+                "file": "contact.html",
+                "start": 700,
+                "end": 727,
+                "excerpt": "<section id=\"consultation\">"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-link"
+            ]
+          },
+          {
+            "criterionId": "mobile",
+            "status": "insufficient_evidence",
+            "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+            "citations": [
+              {
+                "file": "styles.css",
+                "start": 3279,
+                "end": 3369,
+                "excerpt": "@media(max-width:620px){header{align-items:start;flex-direction:column;padding-block:18px}"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-mobile"
+            ]
+          },
+          {
+            "criterionId": "manual-1",
+            "status": "supported",
+            "explanation": "Literal opening hours text appears in page copy on the homepage.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 1109,
+                "end": 1150,
+                "excerpt": "Opening hours: Monday to Friday, 11am–8pm"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-manual-1"
+            ]
+          },
+          {
+            "criterionId": "manual-2",
+            "status": "supported",
+            "explanation": "Copy says consultations are arranged in advance and walk-ins cannot be accommodated.",
+            "citations": [
+              {
+                "file": "services.html",
+                "start": 1407,
+                "end": 1535,
+                "excerpt": "Every consultation is arranged in advance. We cannot accommodate walk-ins; please agree a time with our florist before visiting."
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-manual-2"
+            ]
+          }
+        ],
+        "risks": [
+          {
+            "title": "Services page \"Book a call\" link sits outside the main content closure",
+            "explanation": "In services.html the anchor appears after </section> and before </main>, which is valid HTML but layout may be unintended.",
+            "suggestion": "Check rendered placement of the Book a call button on the Services page across viewport sizes.",
+            "citations": [
+              {
+                "file": "services.html",
+                "start": 1539,
+                "end": 1623,
+                "excerpt": "</section><a class=\"primary\" href=\"contact.html#consultation\">Book a call</a></main>"
+              }
+            ]
+          },
+          {
+            "title": "Contact form explicitly has no backend",
+            "explanation": "Page copy states the form has no connected backend and does not send email.",
+            "suggestion": "Confirm the buyer understands this demonstration limitation and does not expect working submissions.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 1111,
+                "end": 1235,
+                "excerpt": "This demonstration form has no connected backend and does not send email. Source review cannot verify successful submission."
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "Rendered mobile usability and layout were not inspected in a browser.",
+          "Static source cannot confirm link clicks or navigation behavior.",
+          "Only supplied file prefixes were reviewed; omitted files were not assessed.",
+          "Rule evidence for manual-1 and manual-2 was flagged needs_human despite the literal copy present.",
+          "Visual design quality and branding are outside static source verification.",
+          "Only the supplied static source excerpts were assessed. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "coverage": {
+          "includedFiles": [
+            "index.html",
+            "services.html",
+            "contact.html",
+            "styles.css"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "usage": {
+          "promptTokens": 4622,
+          "completionTokens": 880
+        }
+      },
+      "error": null,
+      "usage": {
+        "promptTokens": 4622,
+        "completionTokens": 880
+      },
+      "conservativeUsageCostUsd": 0.0024426
+    }
+  ],
+  "publicationSanitization": {
+    "originSha256": "634027b11c53f6039b8c2f6723db5423ab9f4895aae1a87eefcdfe5c73985175",
+    "removedFields": [
+      "results[].application.id",
+      "results[].application.deliveryId"
+    ],
+    "sourceIsFictional": true,
+    "databaseWrites": 0,
+    "hostedSavedAssessmentUnchanged": true
+  }
+}

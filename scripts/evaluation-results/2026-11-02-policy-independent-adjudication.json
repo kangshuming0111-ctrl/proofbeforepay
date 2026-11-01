@@ -1,0 +1,301 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-11-02T00:52:22.406845+11:00",
+  "reviewer": "Independent Codex source-and-semantics review",
+  "reviewMethod": "Read-only review of the complete synthetic source, declared references, full raw explanations/quotes and saved application outputs. This is an independent agent review, not a human panel or new model inference.",
+  "providerCallsByThisReview": 0,
+  "inputs": [
+    {
+      "file": "outputs/five-issues-2026-11-02/evaluation-policy-live.json",
+      "sha256": "8ba04e5d19c30137bc5cf6d4b5b4d9339000a3f9cc561fb253ef4cf3c2d5139e"
+    },
+    {
+      "file": "scripts/assessment-policy-evaluation-cases.json",
+      "sha256": "459fda8af1335880cb2931443c3c28b923b03cfc95e04a1100d86ddfe5996ac0"
+    }
+  ],
+  "summary": {
+    "cases": 6,
+    "rawStatusAgreement": {
+      "count": 6,
+      "total": 6
+    },
+    "applicationStatusAgreement": {
+      "count": 6,
+      "total": 6
+    },
+    "entireResponseDecisions": {
+      "accepted": 6,
+      "rejected": 0,
+      "uncertain": 0
+    },
+    "citationCount": 7,
+    "allRawQuotesExactInCompleteSource": true,
+    "allApplicationUtf16OffsetsExact": true,
+    "conservativeUsageCostUsd": 0.0035952,
+    "grouping": {
+      "appointmentPolicyExampleCases": 2,
+      "additionalPolicyDomainsNotExemplifiedInPrompt": 2,
+      "explicitExactPhraseCounterexample": 1,
+      "runtimeBoundary": 1
+    }
+  },
+  "baselineNineteenResultsUnmodified": true,
+  "originalHostedV2ReportUnmodified": true,
+  "limits": [
+    "The six cases were developed during remediation of an observed policy error. Two reuse the appointment-policy examples in the prompt; the additional delivery-only and preorder-only domains do not make this an independent held-out generalization study.",
+    "Five cases test text-content meaning or explicit exact wording; one checks runtime abstention. This is not a complete operational website test.",
+    "The raw model correctly abstained on the runtime case; this is not merely a status manufactured by an application override.",
+    "The exact-phrase absence result is supported by reviewing both complete files. Its short quotations alone cannot prove absence throughout a larger unknown website.",
+    "Six successful follow-up responses do not replace the original 19-case baseline or erase the stored seven-item hosted policy misclassification.",
+    "No production accuracy, broad multilingual coverage, security guarantee or whole-chain Sandbox completion is established by this set."
+  ],
+  "cases": [
+    {
+      "id": "appointment-policy-v1-contradiction",
+      "criterion": {
+        "id": "manual-1",
+        "title": "Consultation policy copy",
+        "source": "The page copy must clearly say consultations are by appointment only; walk-ins are not accepted."
+      },
+      "reference": {
+        "expectedStatus": "changes_suggested",
+        "rationale": "The delivered text explicitly permits visits without a prior appointment and welcomes walk-ins, contradicting both parts of the agreed copy policy. This is a text-content conclusion, not a test of actual appointment operations.",
+        "requiresHumanSemanticReview": true
+      },
+      "rawStatus": "changes_suggested",
+      "rawExplanation": "Services page says no appointment is needed and walk-ins are welcome, contradicting an appointment-only policy.",
+      "applicationStatus": "changes_suggested",
+      "applicationExplanation": "Services page says no appointment is needed and walk-ins are welcome, contradicting an appointment-only policy.",
+      "decision": "accepted",
+      "statusDecision": "accepted",
+      "explanationDecision": "accepted",
+      "rationale": "The cited services text expressly permits visits without prior appointment and welcomes walk-ins. This contradicts both clauses of the appointment-only/no-walk-ins copy requirement. The explanation correctly names the services page and does not assert anything about operating a scheduling system.",
+      "quotationEntailment": "supported within stated static-source or runtime-abstention boundary",
+      "rawCitationChecks": [
+        {
+          "file": "services.html",
+          "excerpt": "Visit our studio whenever it suits you. No prior appointment is needed, and walk-ins are welcome.",
+          "exactInCompleteOriginal": true,
+          "startUtf16": 115
+        }
+      ],
+      "applicationOffsetChecks": [
+        {
+          "file": "services.html",
+          "start": 115,
+          "end": 212,
+          "exactOffsetMatch": true
+        }
+      ],
+      "explicitPromptExampleExposure": true
+    },
+    {
+      "id": "appointment-policy-v2-equivalent",
+      "criterion": {
+        "id": "manual-1",
+        "title": "Consultation policy copy",
+        "source": "The page copy must clearly say consultations are by appointment only; walk-ins are not accepted."
+      },
+      "reference": {
+        "expectedStatus": "supported",
+        "rationale": "Advance arrangement and refusal of walk-ins express the agreed appointment-only policy in different words. The buyer did not require a verbatim phrase or specify the homepage. Supporting this textual meaning does not establish that booking, forms or email work.",
+        "requiresHumanSemanticReview": true
+      },
+      "rawStatus": "supported",
+      "rawExplanation": "services.html states consultations are arranged in advance and walk-ins cannot be accommodated, expressing appointment-only policy.",
+      "applicationStatus": "supported",
+      "applicationExplanation": "services.html states consultations are arranged in advance and walk-ins cannot be accommodated, expressing appointment-only policy.",
+      "decision": "accepted",
+      "statusDecision": "accepted",
+      "explanationDecision": "accepted",
+      "rationale": "Arrange every consultation in advance is a clear paraphrase of appointment-only, and cannot accommodate walk-ins conveys no walk-ins. The requirement does not request verbatim text or home-page placement. The explanation accepts this text meaning and correctly locates it on services.html.",
+      "quotationEntailment": "supported within stated static-source or runtime-abstention boundary",
+      "rawCitationChecks": [
+        {
+          "file": "services.html",
+          "excerpt": "Every consultation is arranged in advance. We cannot accommodate walk-ins; please agree a time with our florist before visiting.",
+          "exactInCompleteOriginal": true,
+          "startUtf16": 115
+        }
+      ],
+      "applicationOffsetChecks": [
+        {
+          "file": "services.html",
+          "start": 115,
+          "end": 243,
+          "exactOffsetMatch": true
+        }
+      ],
+      "explicitPromptExampleExposure": true
+    },
+    {
+      "id": "delivery-only-policy-contradiction",
+      "criterion": {
+        "id": "manual-1",
+        "title": "Dining policy copy",
+        "source": "The page copy must clearly say orders are for delivery only; customers cannot dine in."
+      },
+      "reference": {
+        "expectedStatus": "changes_suggested",
+        "rationale": "The text expressly offers dining-room/table service, contradicting delivery-only and no-dine-in copy. This policy domain is not an example in the changed model prompt. Actual ordering or delivery operations are not tested.",
+        "requiresHumanSemanticReview": true
+      },
+      "rawStatus": "changes_suggested",
+      "rawExplanation": "services.html copy offers dining-room seating and restaurant meals, contradicting the required delivery-only policy.",
+      "applicationStatus": "changes_suggested",
+      "applicationExplanation": "services.html copy offers dining-room seating and restaurant meals, contradicting the required delivery-only policy.",
+      "decision": "accepted",
+      "statusDecision": "accepted",
+      "explanationDecision": "accepted",
+      "rationale": "Dining-room seating, table service and meals at the restaurant contradict delivery-only/no-dine-in copy even though the same paragraph also offers home delivery. The model identifies the conflicting service rather than mistaking delivery availability for delivery-only compliance.",
+      "quotationEntailment": "supported within stated static-source or runtime-abstention boundary",
+      "rawCitationChecks": [
+        {
+          "file": "services.html",
+          "excerpt": "Take a seat in our dining room and enjoy table service. We offer both meals at the restaurant and home delivery.",
+          "exactInCompleteOriginal": true,
+          "startUtf16": 105
+        }
+      ],
+      "applicationOffsetChecks": [
+        {
+          "file": "services.html",
+          "start": 105,
+          "end": 217,
+          "exactOffsetMatch": true
+        }
+      ],
+      "explicitPromptExampleExposure": false
+    },
+    {
+      "id": "preorder-only-policy-equivalent",
+      "criterion": {
+        "id": "manual-1",
+        "title": "Bouquet ordering policy copy",
+        "source": "The page copy must clearly say all bouquets are available by preorder only; same-day purchases are not offered."
+      },
+      "reference": {
+        "expectedStatus": "supported",
+        "rationale": "Exclusively for advance orders expresses preorder-only; purchasing before the required day with same-day buying unavailable expresses the second clause. No exact phrase was requested. This policy domain is absent from the prompt examples; actual order fulfillment is not established.",
+        "requiresHumanSemanticReview": true
+      },
+      "rawStatus": "supported",
+      "rawExplanation": "services.html states bouquets are prepared exclusively for advance orders and same-day buying is not available, matching the policy meaning.",
+      "applicationStatus": "supported",
+      "applicationExplanation": "services.html states bouquets are prepared exclusively for advance orders and same-day buying is not available, matching the policy meaning.",
+      "decision": "accepted",
+      "statusDecision": "accepted",
+      "explanationDecision": "accepted",
+      "rationale": "Exclusively for advance orders conveys preorder-only. Arranging purchase before the day the bouquet is needed and saying purchase on that day is unavailable express the no-same-day clause in this synthetic copy context. The explanation is supported by the quoted paragraph; it makes no claim about real fulfillment.",
+      "quotationEntailment": "supported within stated static-source or runtime-abstention boundary",
+      "rawCitationChecks": [
+        {
+          "file": "services.html",
+          "excerpt": "We prepare bouquets exclusively for advance orders. Please arrange your purchase before the day you need it; buying a bouquet on that day is not available.",
+          "exactInCompleteOriginal": true,
+          "startUtf16": 110
+        }
+      ],
+      "applicationOffsetChecks": [
+        {
+          "file": "services.html",
+          "start": 110,
+          "end": 265,
+          "exactOffsetMatch": true
+        }
+      ],
+      "explicitPromptExampleExposure": false
+    },
+    {
+      "id": "appointment-policy-explicit-exact-phrase",
+      "criterion": {
+        "id": "manual-1",
+        "title": "Required exact policy phrase",
+        "source": "The page copy must include the exact phrase \"By appointment only. No walk-ins.\""
+      },
+      "reference": {
+        "expectedStatus": "changes_suggested",
+        "rationale": "Here the buyer explicitly asks for an exact phrase. The equivalent policy meaning does not supply the requested literal string. This contrasts with the non-verbatim requirement in the v2 case and prevents treating every paraphrase as sufficient.",
+        "requiresHumanSemanticReview": true
+      },
+      "rawStatus": "changes_suggested",
+      "rawExplanation": "Exact required phrase does not appear; services page uses different wording instead.",
+      "applicationStatus": "changes_suggested",
+      "applicationExplanation": "Exact required phrase does not appear; services page uses different wording instead.",
+      "decision": "accepted",
+      "statusDecision": "accepted",
+      "explanationDecision": "accepted",
+      "rationale": "This criterion explicitly asks for the exact string By appointment only. No walk-ins. Independent inspection of both complete files confirms that string is absent. Equivalent wording is insufficient for this exact-text requirement. The two quotes are valid page context; the absence conclusion additionally depends on checking all complete supplied text, not the quotes alone.",
+      "quotationEntailment": "valid context plus complete-source inspection required for absence claim",
+      "rawCitationChecks": [
+        {
+          "file": "services.html",
+          "excerpt": "Every consultation is arranged in advance. We cannot accommodate walk-ins; please agree a time with our florist before visiting.",
+          "exactInCompleteOriginal": true,
+          "startUtf16": 115
+        },
+        {
+          "file": "index.html",
+          "excerpt": "Read our services for consultation details.",
+          "exactInCompleteOriginal": true,
+          "startUtf16": 110
+        }
+      ],
+      "applicationOffsetChecks": [
+        {
+          "file": "services.html",
+          "start": 115,
+          "end": 243,
+          "exactOffsetMatch": true
+        },
+        {
+          "file": "index.html",
+          "start": 110,
+          "end": 153,
+          "exactOffsetMatch": true
+        }
+      ],
+      "explicitPromptExampleExposure": false
+    },
+    {
+      "id": "appointment-form-runtime-boundary",
+      "criterion": {
+        "id": "manual-1",
+        "title": "Appointment request processing",
+        "source": "The appointment request form must submit successfully and the owner must receive a confirmation email."
+      },
+      "reference": {
+        "expectedStatus": "insufficient_evidence",
+        "rationale": "Form markup and text do not prove submission, server processing or receipt of email. Policy-copy semantic guidance must not convert runtime requirements into source-supported success. Report raw model and final application policy separately.",
+        "requiresHumanSemanticReview": true
+      },
+      "rawStatus": "insufficient_evidence",
+      "rawExplanation": "Form submission success and owner confirmation email require runtime/backend verification; source markup alone cannot prove delivery.",
+      "applicationStatus": "insufficient_evidence",
+      "applicationExplanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+      "decision": "accepted",
+      "statusDecision": "accepted",
+      "explanationDecision": "accepted",
+      "rationale": "The exact form markup demonstrates an interface, not successful processing or owner email receipt. The raw model itself correctly abstains. The application preserves that status but replaces the explanation with its broader conservative policy, so the two layers must remain distinct.",
+      "quotationEntailment": "supported within stated static-source or runtime-abstention boundary",
+      "rawCitationChecks": [
+        {
+          "file": "services.html",
+          "excerpt": "<form><label>Email<input name=\"email\" type=\"email\"></label><button type=\"submit\">Request a time</button></form>",
+          "exactInCompleteOriginal": true,
+          "startUtf16": 166
+        }
+      ],
+      "applicationOffsetChecks": [
+        {
+          "file": "services.html",
+          "start": 166,
+          "end": 277,
+          "exactOffsetMatch": true
+        }
+      ],
+      "explicitPromptExampleExposure": false
+    }
+  ]
+}

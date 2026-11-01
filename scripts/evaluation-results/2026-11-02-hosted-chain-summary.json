@@ -1,0 +1,51 @@
+{
+  "kind": "sanitized-hosted-same-project-chain-summary",
+  "recordedAt": "2026-11-02T01:00:00.960502+11:00",
+  "originEvidenceSha256": "33133316f5b71e94b78a724a40844dc240a301818b152e293ee019b3537d52f7",
+  "scope": "Actual owner-scoped Sandbox rehearsal with one authenticated owner and a simulated seller perspective. Not real seller onboarding, escrow, or real seller settlement.",
+  "savedState": {
+    "status": "paid",
+    "paymentState": "captured",
+    "paymentMode": "sandbox",
+    "collaborationStage": "accepted",
+    "amountCents": 48000,
+    "currency": "AUD",
+    "deliverySequence": 2,
+    "sameCurrentDeliveryBoundToSubmission": true,
+    "sameCurrentDeliveryBoundToAcceptanceAndCapture": true,
+    "sameSavedAiAssessmentBoundToDelivery": true,
+    "buyerConfirmedChecks": [
+      "mobile",
+      "manual-1",
+      "manual-2"
+    ],
+    "receiptGenerated": true,
+    "realFundsUsed": false
+  },
+  "observedChain": {
+    "version1": "Seller delivery generated rule/layout findings; buyer saved four specific change requests. The first AI assessment failed generically and was not saved.",
+    "version2": "Seller supplied a revision and an assessment was saved; the original policy-copy false abstention remained visible.",
+    "acceptance": "Buyer separately checked mobile presentation, opening hours and policy source, then explicitly accepted this exact version. Form processing/email were excluded from scope.",
+    "payment": "PayPal Sandbox approval, authorization and separate confirmed capture completed for the same accepted delivery. The parent verified captured state after refresh."
+  },
+  "savedAssessment": {
+    "itemCount": 7,
+    "riskCount": 2,
+    "model": "deepseek-flash",
+    "manual2SavedStatus": "insufficient_evidence",
+    "policyErrorWasNotOverwritten": true,
+    "meaning": "The buyer accepted independently verified policy copy despite this advisory uncertainty; the report was not silently changed to match a later experiment."
+  },
+  "separateFollowups": {
+    "sixPolicyCases": "Separate direct source evaluations; no hosted database writes.",
+    "twoWholeProjectVersions": "Separate direct assessDelivery calls; these did not replace the saved hosted report."
+  },
+  "publicationSanitization": {
+    "excluded": "Private owner/quote/delivery/report identifiers, authenticated URLs, PayPal order/authorization/capture identifiers, provider credentials and transport metadata."
+  },
+  "limits": [
+    "The seller side is simulated and the configured test merchant receives virtual test funds only.",
+    "The chain does not establish that every AI explanation or risk was correct, or that unimplemented form/email behavior works.",
+    "This summary is dated observed evidence, not a fresh transaction when a reviewer opens the repository."
+  ]
+}

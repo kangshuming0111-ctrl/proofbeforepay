@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import type { ProofQuote } from "../lib/contracts.ts";
 import { assessDelivery } from "../lib/delivery-assessment.ts";
@@ -163,6 +164,64 @@ test("clear literal opening-hours and other text-content requirements still perm
   }
 });
 
+test("separate policy follow-up fixtures preserve semantic model verdicts without rewriting requirements or claiming runtime success", async () => {
+  const followup = JSON.parse(readFileSync(new URL("../scripts/assessment-policy-evaluation-cases.json", import.meta.url), "utf8")) as {
+    evaluationGroup: string;
+    cases: { id: string; criterion: {id: string; title: string; source: string}; files: Record<string, string>; reference: {expectedStatus: string} }[];
+  };
+  assert.equal(followup.evaluationGroup, "appointment-policy-follow-up");
+  assert.equal(followup.cases.length, 6);
+  for (const example of followup.cases) for (const proposedStatus of example.reference.expectedStatus === "insufficient_evidence"
+    ? ["supported", "changes_suggested"] : [example.reference.expectedStatus]) {
+    const quote = agreement(example.files);
+    quote.proof.criteria = [structuredClone(example.criterion)];
+    quote.proof.delivery!.evidence = quote.proof.delivery!.evidence.filter(item => item.criterionId === "manual-1");
+    quote.proof.delivery!.evidence[0].explanation = "A person must compare the original requirement; source alone does not establish runtime behavior.";
+    const excerpt = example.files["services.html"].match(/<p>.*?<\/p>/u)![0];
+    const output = { items: [{ criterionId: "manual-1", status: proposedStatus,
+      explanation: "Controlled offline reply for request and policy-preservation checks; this is not a measured semantic result.",
+      citations: [{ file: "services.html", excerpt }] }], risks: [], limitations: ["Static copy only; booking behavior was not executed."] };
+    const before = structuredClone(quote), fake = mock(output);
+    const result = await assessDelivery(quote, env, fake.fetcher);
+    assert.equal(result.items[0].status, example.reference.expectedStatus);
+    assert.deepEqual(result.coverage.truncatedFiles, []); assert.deepEqual(result.coverage.omittedFiles, []);
+    assert.deepEqual(quote, before);
+    const request = JSON.parse(String(fake.calls[0].init.body));
+    const sent = JSON.parse(request.messages[1].content);
+    assert.deepEqual(sent.criteria, [example.criterion]);
+    assert.deepEqual(sent.files, example.files);
+    assert.ok(!String(request.messages[1].content).includes(example.reference.expectedStatus));
+    assert.equal(fake.calls.length, 1);
+  }
+});
+
+test("policy-copy guidance cannot force uncertain model advice into a supported result or erase an exact-wording requirement", async () => {
+  const policy = "Every consultation is arranged in advance. We cannot accommodate walk-ins; please agree a time with our florist before visiting.";
+  const files = { "index.html": source.replace("</body>", `<p>${policy}</p></body>`) };
+  for (const requirement of [
+    "The page copy must clearly say consultations are by appointment only; walk-ins are not accepted.",
+    'The page copy must include the exact wording "Consultations by appointment only. Walk-ins are not accepted."',
+  ]) {
+    const quote = agreement(files); quote.proof.criteria.find(item => item.id === "manual-1")!.source = requirement;
+    const before = structuredClone(quote), output = proposal(quote), item = output.items.find(entry => entry.criterionId === "manual-1")!;
+    item.status = "insufficient_evidence"; item.explanation = "The buyer should verify this copy against the original wording requirement.";
+    item.citations = [{ file: "index.html", excerpt: policy }];
+    const fake = mock(output), result = await assessDelivery(quote, env, fake.fetcher);
+    assert.equal(result.items.find(entry => entry.criterionId === "manual-1")!.status, "insufficient_evidence");
+    const sent = JSON.parse(JSON.parse(String(fake.calls[0].init.body)).messages[1].content);
+    assert.equal(sent.criteria.find((entry: {id: string}) => entry.id === "manual-1").source, requirement);
+    assert.deepEqual(quote, before);
+  }
+});
+
+test("appointment policy text mixed with working-form requirements still needs runtime evidence", async () => {
+  const quote = agreement();
+  quote.proof.criteria.find(item => item.id === "manual-1")!.source = "The page copy must say consultations require advance arrangement and the booking form must submit successfully.";
+  const output = proposal(quote); output.items.find(item => item.criterionId === "manual-1")!.status = "supported";
+  const result = await assessDelivery(quote, env, mock(output).fetcher);
+  assert.equal(result.items.find(item => item.criterionId === "manual-1")!.status, "insufficient_evidence");
+});
+
 test("a failed server rule still takes precedence for an otherwise unknown manual requirement", async () => {
   const quote = agreement(); quote.proof.criteria.find(item => item.id === "manual-1")!.source = "The unspecified special requirement";
   quote.proof.delivery!.evidence.find(item => item.criterionId === "manual-1")!.finding = "fail";
@@ -226,6 +285,52 @@ test("provider failure, redirect, network loss, truncation and invalid JSON have
   ]) {
     const quote = agreement(), before = structuredClone(quote), fake = mock(proposal(quote), options);
     await assert.rejects(assessDelivery(quote, env, fake.fetcher), error => error instanceof ProviderError && !/PRIVATE|synthetic-test-key/.test(error.message));
+    assert.equal(fake.calls.length, 1); assert.deepEqual(quote, before);
+  }
+});
+
+test("provider finish reasons distinguish output-limit and incomplete failures without exposing response content", async () => {
+  for (const [finish, expected] of [
+    ["length", /^AI output reached the configured response limit and is incomplete\./u],
+    ["content_filter", /^AI returned an incomplete response\./u],
+    ["tool_calls", /^AI returned an incomplete response\./u],
+    ["PRIVATE PROVIDER DIAGNOSTICS synthetic-test-key", /^AI returned an incomplete response\./u],
+  ] as const) {
+    const quote = agreement(), before = structuredClone(quote);
+    // Invalid JSON is deliberate: finish_reason must be classified before content parsing.
+    const fake = mock(null, { finish, content: "PRIVATE ORIGINAL CONTRACT synthetic-test-key {invalid JSON" });
+    await assert.rejects(assessDelivery(quote, env, fake.fetcher), error => error instanceof ProviderError
+      && error.status === 502 && expected.test(error.message) && !/PRIVATE|synthetic-test-key/.test(error.message));
+    assert.equal(fake.calls.length, 1); assert.deepEqual(quote, before);
+    assert.equal(JSON.parse(String(fake.calls[0].init.body)).max_tokens, 1800);
+  }
+});
+
+test("nonexistent citation files and excerpts report only a safe citation-validation failure", async () => {
+  for (const citation of [
+    { file: "PRIVATE-CONTRACT.html", excerpt: "<p>Beef noodles $16</p>" },
+    { file: "index.html", excerpt: "PRIVATE SOURCE DETAIL synthetic-test-key" },
+  ]) {
+    const quote = agreement(), before = structuredClone(quote), output = proposal(quote);
+    output.items[0].citations = [citation];
+    const fake = mock(output);
+    await assert.rejects(assessDelivery(quote, env, fake.fetcher), error => error instanceof ProviderError
+      && /^AI source citation validation failed;/u.test(error.message) && !/PRIVATE|synthetic-test-key/.test(error.message));
+    assert.equal(fake.calls.length, 1); assert.deepEqual(quote, before);
+  }
+});
+
+test("malformed JSON and invalid schemas expose a safe structure error rather than parser or model diagnostics", async () => {
+  const extraField = proposal(); Object.assign(extraField, { token: "PRIVATE PROVIDER DIAGNOSTICS synthetic-test-key" });
+  const unknownStatus = proposal(); unknownStatus.items[0].status = "PRIVATE SOURCE VALUE";
+  for (const options of [
+    { content: '{"private":"PRIVATE SOURCE DETAIL synthetic-test-key",' },
+    { content: JSON.stringify(extraField) },
+    { content: JSON.stringify(unknownStatus) },
+  ]) {
+    const quote = agreement(), before = structuredClone(quote), fake = mock(null, options);
+    await assert.rejects(assessDelivery(quote, env, fake.fetcher), error => error instanceof ProviderError
+      && /^AI returned an invalid response structure\./u.test(error.message) && !/PRIVATE|synthetic-test-key/.test(error.message));
     assert.equal(fake.calls.length, 1); assert.deepEqual(quote, before);
   }
 });

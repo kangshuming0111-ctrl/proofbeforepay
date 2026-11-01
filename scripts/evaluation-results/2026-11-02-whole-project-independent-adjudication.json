@@ -1,0 +1,1352 @@
+{
+  "kind": "independent-whole-project-source-adjudication",
+  "reviewedAt": "2026-11-01T13:58:07.109Z",
+  "reviewer": "Independent Codex agent; not an external human evaluation panel",
+  "providerCallsByReviewer": 0,
+  "databaseWritesByReviewer": 0,
+  "sourceEditsByReviewer": 0,
+  "sourceEvaluation": "scripts/evaluation-results/2026-11-02-whole-project-follow-up.json",
+  "sourceEvaluationSha256": "b37d484433fee299a9422d6d222f94d5cbcbddd3c5e33f54c8286d2eab6867c9",
+  "method": [
+    "Read every one of 14 raw and application criterion items, all six raw/application risks and all limitations against the actual buyer requirements and full supplied source.",
+    "Reconstructed the actual 6000 UTF-16 per-file/24000 total source prefix coverage and verified all 35 raw citation excerpts; checked application [start,end) offsets and first-occurrence behavior.",
+    "Compared all eight supplied files byte-for-byte and by SHA-256 to the saved showcase-final source.",
+    "Independently rebuilt rule evidence using parseStaticProject/createUploadedDelivery, with no model or database calls.",
+    "Checked the Services link containment directly in the source; no browser or backend execution was performed by this reviewer."
+  ],
+  "summary": {
+    "applicationCriterionStatusMatches": "14/14",
+    "applicationCriterionExplanationsAccepted": "14/14 within static-source boundaries",
+    "rawCriterionStatusMatches": "13/14; v1 link safely abstained, application server-fail guard supplied changes_suggested",
+    "allExactQuoteAndOffsetChecks": "35/35",
+    "sourceFilesMatchShowcase": "8/8",
+    "coverage": "Both versions fully include all four source files; no HTML/CSS truncation or omission",
+    "riskClaimsAcceptedOrQualified": "5/6",
+    "riskClaimsNeedingRevision": "1/6; v2 Services link placement title/inference",
+    "wholeAnswerUnconditionalPass": false,
+    "overallDecision": "Qualified result: both seven-criterion verdict sets are acceptable, but v2 contains an inaccurate or materially misleading extra risk title and unsupported defect inference. Preserve and disclose it; do not label the whole response fully correct.",
+    "noSourceAsRuntimeCriterionClaimFound": true,
+    "paidRunCallsReviewed": 2,
+    "paidRunConservativeAccountedCostUsd": 0.0053034
+  },
+  "publicationGuidance": {
+    "safeToReport": [
+      "On these two targeted whole-project versions, all 14 application criterion verdicts agreed with independent source-based expectations; raw verdicts agreed on 13, with a safe abstention corrected by the server-fail guard.",
+      "All 35 exact quotations and UTF-16 source offsets were valid.",
+      "The corrected appointment policy was accepted semantically while mobile usability remained unverified.",
+      "One of six additional risk entries contained misleading wording/inference despite an exact quote; this remains an explicit model limitation."
+    ],
+    "notSafeToReport": [
+      "All model output or all risks were correct.",
+      "The model alone found every source-link failure.",
+      "14/14 proves general accuracy, runtime functionality, security, human acceptance or payment readiness.",
+      "These direct assessDelivery runs replaced the saved hosted report or completed another hosted application flow."
+    ],
+    "publicDataSanitization": "Use synthetic fixture requirements, source hashes, bounded verdict/explanation summaries and aggregate costs. Do not publish private hosted IDs, authenticated URLs, credentials or raw internal transport metadata.",
+    "proposedRiskCorrectionNotApplied": "Optional visual check: confirm the Services Book a call button placement. The source places it after the consultation section and inside main; no layout defect has been established."
+  },
+  "experimentBoundaries": [
+    "These are two direct real assessDelivery calls against the saved seven-criterion synthetic showcase versions, not app database mutations; the existing hosted saved assessment is unchanged.",
+    "The original 19-case baseline, earlier two targeted coverage runs and separate six-case semantic-policy follow-up remain separate experiments and are not overwritten by this result.",
+    "This is targeted internal agent adjudication with known fixtures, not a held-out benchmark, an external human study or a general accuracy estimate.",
+    "Exact quote validation proves provenance, not semantic entailment. Prompt instructions cannot guarantee that every generated title, explanation or suggested risk follows from the quote.",
+    "No browser/runtime behavior, mobile usability, live form backend, exploitable vulnerability, final acceptance, authorization or payment was established by these source-only calls."
+  ],
+  "mostImportantRemainingRisk": "Source-grounded quotations can still support an ungrounded generated title or speculative risk inference. Keep AI suggestions separate from server evidence and buyer acceptance; retain independently reviewable source excerpts and report this failure honestly rather than silently rewriting the raw result.",
+  "results": [
+    {
+      "version": "v1",
+      "inputBuyerCriteriaExactMatch": true,
+      "inputFilesExactlyMatchSavedShowcase": true,
+      "sourceFiles": [
+        {
+          "file": "index.html",
+          "utf16Length": 2178,
+          "utf8Bytes": 2186,
+          "sha256": "45d04c9d7b61f240b010f028338bb978bdb11b8ad4f307b28a14722340a59bec",
+          "diskSha256": "45d04c9d7b61f240b010f028338bb978bdb11b8ad4f307b28a14722340a59bec",
+          "equalsShowcaseSource": true
+        },
+        {
+          "file": "services.html",
+          "utf16Length": 1873,
+          "utf8Bytes": 1877,
+          "sha256": "140711219cb1b4ffe2e42f208ee4f6379811a773becb75543794add62e3df7bf",
+          "diskSha256": "140711219cb1b4ffe2e42f208ee4f6379811a773becb75543794add62e3df7bf",
+          "equalsShowcaseSource": true
+        },
+        {
+          "file": "contact.html",
+          "utf16Length": 1821,
+          "utf8Bytes": 1827,
+          "sha256": "bd9ce57461976b0a843bf52be9dd4c7a12ef4684ca79e23c8c46b4450a9e329e",
+          "diskSha256": "bd9ce57461976b0a843bf52be9dd4c7a12ef4684ca79e23c8c46b4450a9e329e",
+          "equalsShowcaseSource": true
+        },
+        {
+          "file": "styles.css",
+          "utf16Length": 3749,
+          "utf8Bytes": 3749,
+          "sha256": "0a0cfe923ef644a124d60a2c8bd8c5bc986f9c6ed21a9106301e5a3c317d1491",
+          "diskSha256": "0a0cfe923ef644a124d60a2c8bd8c5bc986f9c6ed21a9106301e5a3c317d1491",
+          "equalsShowcaseSource": true
+        }
+      ],
+      "coverage": {
+        "includedFiles": [
+          "index.html",
+          "services.html",
+          "contact.html",
+          "styles.css"
+        ],
+        "truncatedFiles": [],
+        "omittedFiles": []
+      },
+      "coverageMatchesApplication": true,
+      "rawResponse": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop"
+      },
+      "items": [
+        {
+          "criterionId": "page-1",
+          "originalBuyerRequirement": {
+            "id": "page-1",
+            "title": "Separate page: index.html",
+            "source": "Deliver index.html as a separate nonempty HTML document with an HTML doctype, a nonempty title and a body."
+          },
+          "expectedStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawStatusMatchesExpected": true,
+          "applicationStatusMatchesExpected": true,
+          "rawExplanation": "index.html has an HTML doctype, a nonempty title and a body; server rule also passed.",
+          "applicationExplanation": "index.html has an HTML doctype, a nonempty title and a body; server rule also passed.",
+          "rawExplanationEntailedWithinStatedBoundary": true,
+          "applicationExplanationEntailedWithinStatedBoundary": true,
+          "applicationVerdictDecision": "accepted",
+          "rawVerdictDecision": "accepted",
+          "adjudication": "The index document has its own doctype, nonempty Home title and body. The original requirement is document presence, not completeness or a running website. Both quoted substrings and the independently rebuilt server pass support the bounded conclusion.",
+          "independentRule": {
+            "id": "evidence-page-1",
+            "criterionId": "page-1",
+            "finding": "pass",
+            "file": "index.html",
+            "explanation": "Found an independent document with a doctype, nonempty title and body. This proves source-document presence, not content completeness, visual quality or working functionality."
+          },
+          "citationCount": 2,
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "items",
+              "index": 0,
+              "criterionId": "page-1",
+              "riskTitle": null,
+              "quoteIndex": 0,
+              "file": "index.html",
+              "excerptSha256": "791d715af103d596aeb19ba246c035217d42ba532d6053d3ce61d0518ebd1938",
+              "utf16Length": 167,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 0,
+              "appEnd": 167,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            },
+            {
+              "section": "items",
+              "index": 0,
+              "criterionId": "page-1",
+              "riskTitle": null,
+              "quoteIndex": 1,
+              "file": "index.html",
+              "excerptSha256": "eefd4d1bb186c4f0ec80427123dc3a1ed2cdaeb2d1eaa4f29dfff0b21bbed323",
+              "utf16Length": 13,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 208,
+              "appEnd": 221,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        },
+        {
+          "criterionId": "page-2",
+          "originalBuyerRequirement": {
+            "id": "page-2",
+            "title": "Separate page: services.html",
+            "source": "Deliver services.html as a separate nonempty HTML document with an HTML doctype, a nonempty title and a body."
+          },
+          "expectedStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawStatusMatchesExpected": true,
+          "applicationStatusMatchesExpected": true,
+          "rawExplanation": "services.html has an HTML doctype, a nonempty title and a body; server rule also passed.",
+          "applicationExplanation": "services.html has an HTML doctype, a nonempty title and a body; server rule also passed.",
+          "rawExplanationEntailedWithinStatedBoundary": true,
+          "applicationExplanationEntailedWithinStatedBoundary": true,
+          "applicationVerdictDecision": "accepted",
+          "rawVerdictDecision": "accepted",
+          "adjudication": "The services document has its own doctype, nonempty Services title and body. Quoted source and independent server evidence support document presence only.",
+          "independentRule": {
+            "id": "evidence-page-2",
+            "criterionId": "page-2",
+            "finding": "pass",
+            "file": "services.html",
+            "explanation": "Found an independent document with a doctype, nonempty title and body. This proves source-document presence, not content completeness, visual quality or working functionality."
+          },
+          "citationCount": 2,
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "items",
+              "index": 1,
+              "criterionId": "page-2",
+              "riskTitle": null,
+              "quoteIndex": 0,
+              "file": "services.html",
+              "excerptSha256": "41647db11f73d1b37ca2434a0827b499e2cb56be6d7565bd0a2f65cb0d472e57",
+              "utf16Length": 171,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 0,
+              "appEnd": 171,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            },
+            {
+              "section": "items",
+              "index": 1,
+              "criterionId": "page-2",
+              "riskTitle": null,
+              "quoteIndex": 1,
+              "file": "services.html",
+              "excerptSha256": "eefd4d1bb186c4f0ec80427123dc3a1ed2cdaeb2d1eaa4f29dfff0b21bbed323",
+              "utf16Length": 13,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 212,
+              "appEnd": 225,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        },
+        {
+          "criterionId": "page-3",
+          "originalBuyerRequirement": {
+            "id": "page-3",
+            "title": "Separate page: contact.html",
+            "source": "Deliver contact.html as a separate nonempty HTML document with an HTML doctype, a nonempty title and a body."
+          },
+          "expectedStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawStatusMatchesExpected": true,
+          "applicationStatusMatchesExpected": true,
+          "rawExplanation": "contact.html has an HTML doctype, a nonempty title and a body; server rule also passed.",
+          "applicationExplanation": "contact.html has an HTML doctype, a nonempty title and a body; server rule also passed.",
+          "rawExplanationEntailedWithinStatedBoundary": true,
+          "applicationExplanationEntailedWithinStatedBoundary": true,
+          "applicationVerdictDecision": "accepted",
+          "rawVerdictDecision": "accepted",
+          "adjudication": "The contact document has its own doctype, nonempty Contact title and body. Quoted source and independent server evidence support document presence only.",
+          "independentRule": {
+            "id": "evidence-page-3",
+            "criterionId": "page-3",
+            "finding": "pass",
+            "file": "contact.html",
+            "explanation": "Found an independent document with a doctype, nonempty title and body. This proves source-document presence, not content completeness, visual quality or working functionality."
+          },
+          "citationCount": 2,
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "items",
+              "index": 2,
+              "criterionId": "page-3",
+              "riskTitle": null,
+              "quoteIndex": 0,
+              "file": "contact.html",
+              "excerptSha256": "297a333eb4b759656585671ed16def453853c3b4369c2ffc1b268e40d472c524",
+              "utf16Length": 170,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 0,
+              "appEnd": 170,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            },
+            {
+              "section": "items",
+              "index": 2,
+              "criterionId": "page-3",
+              "riskTitle": null,
+              "quoteIndex": 1,
+              "file": "contact.html",
+              "excerptSha256": "eefd4d1bb186c4f0ec80427123dc3a1ed2cdaeb2d1eaa4f29dfff0b21bbed323",
+              "utf16Length": 13,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 211,
+              "appEnd": 224,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        },
+        {
+          "criterionId": "link",
+          "originalBuyerRequirement": {
+            "id": "link",
+            "title": "Local link destination",
+            "source": "index.html contains a link labelled “Book a call” pointing to contact.html#consultation."
+          },
+          "expectedStatus": "changes_suggested",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "changes_suggested",
+          "rawStatusMatchesExpected": false,
+          "applicationStatusMatchesExpected": true,
+          "rawExplanation": "Server rule failed on anchor text/target; the quoted index link appears to match, but authoritative rule result stands.",
+          "applicationExplanation": "Server rules found a failed check for this requirement. Resolve the linked rule evidence first; AI source suggestions cannot override it.",
+          "rawExplanationEntailedWithinStatedBoundary": true,
+          "applicationExplanationEntailedWithinStatedBoundary": true,
+          "applicationVerdictDecision": "accepted",
+          "rawVerdictDecision": "safe_abstention_but_not_expected_changes_verdict",
+          "adjudication": "The index anchor text and href match, but contact.html has id=\"enquiry\" and no matching consultation target. Independent server evidence fails. The raw model conservatively abstains and defers to that failed rule; the application changes the status to changes_suggested. Credit the application guard for this verdict, not an autonomous raw-model changes verdict. Neither explanation claims a browser click was tested.",
+          "independentRule": {
+            "id": "evidence-link",
+            "criterionId": "link",
+            "finding": "fail",
+            "file": "index.html",
+            "explanation": "Could not unambiguously confirm the agreed anchor text and one valid local target. Missing pages, duplicate labels/ids, a different href or ambiguous HTML cannot pass."
+          },
+          "citationCount": 1,
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "items",
+              "index": 3,
+              "criterionId": "link",
+              "riskTitle": null,
+              "quoteIndex": 0,
+              "file": "index.html",
+              "excerptSha256": "5e74dac221d66d132c285b5c24bd9533cb890d8d69d861539651a331cebc92f3",
+              "utf16Length": 67,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 818,
+              "appEnd": 885,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        },
+        {
+          "criterionId": "mobile",
+          "originalBuyerRequirement": {
+            "id": "mobile",
+            "title": "Mobile usability",
+            "source": "All delivered pages must be usable on a mobile screen; a person must check them directly."
+          },
+          "expectedStatus": "insufficient_evidence",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawStatusMatchesExpected": true,
+          "applicationStatusMatchesExpected": true,
+          "rawExplanation": "Mobile usability requires direct human inspection; static source cannot prove rendering or usable controls.",
+          "applicationExplanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+          "rawExplanationEntailedWithinStatedBoundary": true,
+          "applicationExplanationEntailedWithinStatedBoundary": true,
+          "applicationVerdictDecision": "accepted",
+          "rawVerdictDecision": "accepted",
+          "adjudication": "A 760px card minimum width is a reason for a subsequent narrow-viewport check, not proof of rendered overflow. The raw model and application both abstain from mobile usability, respecting the explicit direct-person check requirement.",
+          "independentRule": {
+            "id": "evidence-mobile",
+            "criterionId": "mobile",
+            "finding": "needs_human",
+            "file": "styles.css",
+            "explanation": "Static source cannot prove mobile readability, lack of overflow or usable controls. A person must inspect every page. Preview disables scripts and external resources and is not a complete website execution test."
+          },
+          "citationCount": 1,
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "items",
+              "index": 4,
+              "criterionId": "mobile",
+              "riskTitle": null,
+              "quoteIndex": 0,
+              "file": "styles.css",
+              "excerptSha256": "9389b31d666c193a0df4ed3dcb2aea6ef785b6213b337e187df08432cd856ac6",
+              "utf16Length": 23,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 3725,
+              "appEnd": 3748,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        },
+        {
+          "criterionId": "manual-1",
+          "originalBuyerRequirement": {
+            "id": "manual-1",
+            "title": "Manual requirement 1",
+            "source": "Display opening hours: Monday to Friday, 11am–8pm."
+          },
+          "expectedStatus": "changes_suggested",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawStatusMatchesExpected": true,
+          "applicationStatusMatchesExpected": true,
+          "rawExplanation": "Delivered copy shows opening hours as 10am–6pm, not the required Monday to Friday, 11am–8pm.",
+          "applicationExplanation": "Delivered copy shows opening hours as 10am–6pm, not the required Monday to Friday, 11am–8pm.",
+          "rawExplanationEntailedWithinStatedBoundary": true,
+          "applicationExplanationEntailedWithinStatedBoundary": true,
+          "applicationVerdictDecision": "accepted",
+          "rawVerdictDecision": "accepted",
+          "adjudication": "The requirement fixes Monday to Friday, 11am–8pm. All three cited pages say Monday to Friday, 10am–6pm. The explanation identifies a real numeric copy contradiction without implying an operating business or runtime behavior.",
+          "independentRule": {
+            "id": "evidence-manual-1",
+            "criterionId": "manual-1",
+            "finding": "needs_human",
+            "file": "index.html",
+            "explanation": "A person must verify the original requirement: “Display opening hours: Monday to Friday, 11am–8pm.”. The excerpt identifies delivered source and does not automatically establish compliance."
+          },
+          "citationCount": 3,
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "items",
+              "index": 5,
+              "criterionId": "manual-1",
+              "riskTitle": null,
+              "quoteIndex": 0,
+              "file": "index.html",
+              "excerptSha256": "96cbb9e76b165910815a15efce835d93556caf28f48e8578730fdca5dde6fd55",
+              "utf16Length": 54,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 1103,
+              "appEnd": 1157,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            },
+            {
+              "section": "items",
+              "index": 5,
+              "criterionId": "manual-1",
+              "riskTitle": null,
+              "quoteIndex": 1,
+              "file": "services.html",
+              "excerptSha256": "167e9d0bb830c5fe0fb87079da50ec11b418375dec4721d88536c8bc00d37e64",
+              "utf16Length": 51,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 1751,
+              "appEnd": 1802,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            },
+            {
+              "section": "items",
+              "index": 5,
+              "criterionId": "manual-1",
+              "riskTitle": null,
+              "quoteIndex": 2,
+              "file": "contact.html",
+              "excerptSha256": "a7a6e45068ea512ea2b078cad7bf000b10b0247efd7c9f52c4564585aae645cd",
+              "utf16Length": 48,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 1404,
+              "appEnd": 1452,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        },
+        {
+          "criterionId": "manual-2",
+          "originalBuyerRequirement": {
+            "id": "manual-2",
+            "title": "Manual requirement 2",
+            "source": "The page copy must clearly say consultations are by appointment only; walk-ins are not accepted."
+          },
+          "expectedStatus": "changes_suggested",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawStatusMatchesExpected": true,
+          "applicationStatusMatchesExpected": true,
+          "rawExplanation": "Copy invites drop-ins without arranging a time, contradicting appointment-only with no walk-ins.",
+          "applicationExplanation": "Copy invites drop-ins without arranging a time, contradicting appointment-only with no walk-ins.",
+          "rawExplanationEntailedWithinStatedBoundary": true,
+          "applicationExplanationEntailedWithinStatedBoundary": true,
+          "applicationVerdictDecision": "accepted",
+          "rawVerdictDecision": "accepted",
+          "adjudication": "The source explicitly invites dropping in without arranging a time. That contradicts the buyer policy of appointment-only consultations and no walk-ins. This is a source-copy judgement, not a booking-system execution claim.",
+          "independentRule": {
+            "id": "evidence-manual-2",
+            "criterionId": "manual-2",
+            "finding": "needs_human",
+            "file": "index.html",
+            "explanation": "A person must verify the original requirement: “The page copy must clearly say consultations are by appointment only; walk-ins are not accepted.”. The excerpt identifies delivered source and does not automatically establish compliance."
+          },
+          "citationCount": 2,
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "items",
+              "index": 6,
+              "criterionId": "manual-2",
+              "riskTitle": null,
+              "quoteIndex": 0,
+              "file": "services.html",
+              "excerptSha256": "8c92511516117ab9d46b848400d495d9a53395640316b703b6ddb375ad412b5b",
+              "utf16Length": 126,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 1404,
+              "appEnd": 1530,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            },
+            {
+              "section": "items",
+              "index": 6,
+              "criterionId": "manual-2",
+              "riskTitle": null,
+              "quoteIndex": 1,
+              "file": "contact.html",
+              "excerptSha256": "8c92511516117ab9d46b848400d495d9a53395640316b703b6ddb375ad412b5b",
+              "utf16Length": 126,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 1278,
+              "appEnd": 1404,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        }
+      ],
+      "risks": [
+        {
+          "index": 0,
+          "raw": {
+            "title": "Opening hours copy differs from required hours",
+            "explanation": "The delivered pages state Monday to Friday, 10am–6pm instead of 11am–8pm.",
+            "suggestion": "Check every page and footer instance of opening hours and reconcile against the agreed 11am–8pm hours.",
+            "citations": [
+              {
+                "file": "index.html",
+                "excerpt": "<span>Opening hours: Monday to Friday, 10am–6pm<br>All prices are illustrative AUD amounts.</span>"
+              },
+              {
+                "file": "services.html",
+                "excerpt": "<span>Opening hours: Monday to Friday, 10am–6pm<br>All prices are illustrative AUD amounts.</span>"
+              }
+            ]
+          },
+          "applicationTextUnchanged": true,
+          "decision": "accepted",
+          "explanationEntailed": true,
+          "titleEntailed": true,
+          "rationale": "Cited homepage and services footers state 10am–6pm, contradicting the agreed 11am–8pm. The suggestion to reconcile every occurrence follows from that actual copy discrepancy.",
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "risks",
+              "index": 0,
+              "criterionId": null,
+              "riskTitle": "Opening hours copy differs from required hours",
+              "quoteIndex": 0,
+              "file": "index.html",
+              "excerptSha256": "5073a049203f281912f3a3ba7f077de84fe6c0b15859eef90542db8fcf815529",
+              "utf16Length": 98,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 2056,
+              "appEnd": 2154,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            },
+            {
+              "section": "risks",
+              "index": 0,
+              "criterionId": null,
+              "riskTitle": "Opening hours copy differs from required hours",
+              "quoteIndex": 1,
+              "file": "services.html",
+              "excerptSha256": "5073a049203f281912f3a3ba7f077de84fe6c0b15859eef90542db8fcf815529",
+              "utf16Length": 98,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 1751,
+              "appEnd": 1849,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        },
+        {
+          "index": 1,
+          "raw": {
+            "title": "Consultation policy contradicts appointment-only requirement",
+            "explanation": "Pages explicitly welcome dropping in without arranging a time.",
+            "suggestion": "Confirm with the buyer whether consultations are appointment-only and align copy accordingly.",
+            "citations": [
+              {
+                "file": "services.html",
+                "excerpt": "<p>Visit whenever inspiration strikes. Drop in without arranging a time and our florist will happily start a consultation.</p>"
+              }
+            ]
+          },
+          "applicationTextUnchanged": true,
+          "decision": "accepted_with_minor_advisory",
+          "explanationEntailed": true,
+          "titleEntailed": true,
+          "rationale": "The quoted services policy directly welcomes drop-ins without arranging a time and contradicts the locked no-walk-ins policy. The suggestion to confirm with the buyer is redundant because the buyer requirement is already explicit; align with the agreed policy rather than treating the model as permission to renegotiate it.",
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "risks",
+              "index": 1,
+              "criterionId": null,
+              "riskTitle": "Consultation policy contradicts appointment-only requirement",
+              "quoteIndex": 0,
+              "file": "services.html",
+              "excerptSha256": "8c92511516117ab9d46b848400d495d9a53395640316b703b6ddb375ad412b5b",
+              "utf16Length": 126,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 1404,
+              "appEnd": 1530,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "raw": {
+            "title": "Service cards set to a wide minimum width",
+            "explanation": "A min-width of 760px is applied to the cards grid, which may cause overflow on narrow screens.",
+            "suggestion": "Have a person inspect the services layout on a narrow mobile viewport.",
+            "citations": [
+              {
+                "file": "styles.css",
+                "excerpt": ".cards{min-width:760px}"
+              }
+            ]
+          },
+          "applicationTextUnchanged": true,
+          "decision": "accepted",
+          "explanationEntailed": true,
+          "titleEntailed": true,
+          "rationale": "The cited CSS does set 760px min-width. The explanation says may cause overflow, and the suggestion calls for a person to inspect; this is a bounded potential issue, not a measured overflow claim.",
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "risks",
+              "index": 2,
+              "criterionId": null,
+              "riskTitle": "Service cards set to a wide minimum width",
+              "quoteIndex": 0,
+              "file": "styles.css",
+              "excerptSha256": "9389b31d666c193a0df4ed3dcb2aea6ef785b6213b337e187df08432cd856ac6",
+              "utf16Length": 23,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 3725,
+              "appEnd": 3748,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "raw": {
+            "title": "Contact anchor id differs from requested link fragment",
+            "explanation": "The contact page uses id=\"enquiry\" rather than the #consultation fragment targeted by the index link.",
+            "suggestion": "Verify whether the Book a call link resolves to a visible consultation section.",
+            "citations": [
+              {
+                "file": "index.html",
+                "excerpt": "href=\"contact.html#consultation\">Book a call</a>"
+              },
+              {
+                "file": "contact.html",
+                "excerpt": "<section id=\"enquiry\"><h2>Consultation request</h2>"
+              }
+            ]
+          },
+          "applicationTextUnchanged": true,
+          "decision": "accepted",
+          "explanationEntailed": true,
+          "titleEntailed": true,
+          "rationale": "The index href targets contact.html#consultation, but the supplied contact section has id=\"enquiry\" and no consultation target. The independent local-link rule also fails. The suggestion requests verification and does not claim a browser navigation test occurred.",
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "risks",
+              "index": 3,
+              "criterionId": null,
+              "riskTitle": "Contact anchor id differs from requested link fragment",
+              "quoteIndex": 0,
+              "file": "index.html",
+              "excerptSha256": "1e94c749eb68caa9d30e682e491f7e0be12a6e98981dac603911a2d00eafb9da",
+              "utf16Length": 48,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 837,
+              "appEnd": 885,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            },
+            {
+              "section": "risks",
+              "index": 3,
+              "criterionId": null,
+              "riskTitle": "Contact anchor id differs from requested link fragment",
+              "quoteIndex": 1,
+              "file": "contact.html",
+              "excerptSha256": "84fee19b73b5a03aa6f148fb822ab5597d5b62b1b3cba91e183b5427b3fa1edc",
+              "utf16Length": 51,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 700,
+              "appEnd": 751,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        }
+      ],
+      "limitationsReview": {
+        "raw": [
+          "Static source review cannot verify rendered mobile appearance, overflow or interaction.",
+          "The Book a call link behavior and anchor resolution were not tested in a browser.",
+          "No conclusion is made about pages or assets outside the supplied files.",
+          "Form submission and email delivery were not tested and are explicitly not connected.",
+          "Only supplied text excerpts are considered; complete-page content beyond prefixes is not assessed."
+        ],
+        "application": [
+          "Static source review cannot verify rendered mobile appearance, overflow or interaction.",
+          "The Book a call link behavior and anchor resolution were not tested in a browser.",
+          "No conclusion is made about pages or assets outside the supplied files.",
+          "Form submission and email delivery were not tested and are explicitly not connected.",
+          "Only supplied text excerpts are considered; complete-page content beyond prefixes is not assessed.",
+          "Only the supplied static source excerpts were assessed. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "decision": "accepted_with_scope_notes",
+        "rationale": "Both reports explicitly deny browser/runtime proof. The application adds the separation from rule checks, human acceptance and payments. Prefix/omitted-file wording is generic: the actual packet fully included all four files, with no truncation or omission. The v2 note that manual criteria have needs_human rule evidence is accurate and does not negate bounded AI copy suggestions. These limitations do not cure an inaccurate risk title."
+      },
+      "allQuotesExistAndOffsetsCorrect": true,
+      "applicationCriterionDecisionsAccepted": 7,
+      "rawExpectedStatusMatches": 6,
+      "riskDecisionsAcceptedOrQualified": 4,
+      "riskDecisionsNeedingRevision": 0,
+      "entireAnswerAcceptedWithoutQualification": true,
+      "entireAnswerDecision": "accepted_with_minor_suggestion_advisory"
+    },
+    {
+      "version": "v2",
+      "inputBuyerCriteriaExactMatch": true,
+      "inputFilesExactlyMatchSavedShowcase": true,
+      "sourceFiles": [
+        {
+          "file": "index.html",
+          "utf16Length": 2178,
+          "utf8Bytes": 2186,
+          "sha256": "04a8285240cfe4113e7008ab7ac96ea08137495595f5970c4c46a1795c3f48c5",
+          "diskSha256": "04a8285240cfe4113e7008ab7ac96ea08137495595f5970c4c46a1795c3f48c5",
+          "equalsShowcaseSource": true
+        },
+        {
+          "file": "services.html",
+          "utf16Length": 1882,
+          "utf8Bytes": 1886,
+          "sha256": "8391e8105c5a7c983babe53d67b66d01983741be4f29f55193211b663186ca5d",
+          "diskSha256": "8391e8105c5a7c983babe53d67b66d01983741be4f29f55193211b663186ca5d",
+          "equalsShowcaseSource": true
+        },
+        {
+          "file": "contact.html",
+          "utf16Length": 1835,
+          "utf8Bytes": 1841,
+          "sha256": "aadbbaf66ccb40b8113f03393fb82076b81fca886ffb8a561d33b1e7a3016e98",
+          "diskSha256": "aadbbaf66ccb40b8113f03393fb82076b81fca886ffb8a561d33b1e7a3016e98",
+          "equalsShowcaseSource": true
+        },
+        {
+          "file": "styles.css",
+          "utf16Length": 3735,
+          "utf8Bytes": 3735,
+          "sha256": "c23e4cd302aada5b01fda3597e906909ed07cb5b05c26f156b28545d5cf0b0b0",
+          "diskSha256": "c23e4cd302aada5b01fda3597e906909ed07cb5b05c26f156b28545d5cf0b0b0",
+          "equalsShowcaseSource": true
+        }
+      ],
+      "coverage": {
+        "includedFiles": [
+          "index.html",
+          "services.html",
+          "contact.html",
+          "styles.css"
+        ],
+        "truncatedFiles": [],
+        "omittedFiles": []
+      },
+      "coverageMatchesApplication": true,
+      "rawResponse": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop"
+      },
+      "items": [
+        {
+          "criterionId": "page-1",
+          "originalBuyerRequirement": {
+            "id": "page-1",
+            "title": "Separate page: index.html",
+            "source": "Deliver index.html as a separate nonempty HTML document with an HTML doctype, a nonempty title and a body."
+          },
+          "expectedStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawStatusMatchesExpected": true,
+          "applicationStatusMatchesExpected": true,
+          "rawExplanation": "Rule evidence passes; source shows doctype, nonempty title and body in index.html.",
+          "applicationExplanation": "Rule evidence passes; source shows doctype, nonempty title and body in index.html.",
+          "rawExplanationEntailedWithinStatedBoundary": true,
+          "applicationExplanationEntailedWithinStatedBoundary": true,
+          "applicationVerdictDecision": "accepted",
+          "rawVerdictDecision": "accepted",
+          "adjudication": "Source quotes jointly show an HTML doctype, the nonempty Home title and body. Independent server evidence passes. The statement concerns the separately delivered document only.",
+          "independentRule": {
+            "id": "evidence-page-1",
+            "criterionId": "page-1",
+            "finding": "pass",
+            "file": "index.html",
+            "explanation": "Found an independent document with a doctype, nonempty title and body. This proves source-document presence, not content completeness, visual quality or working functionality."
+          },
+          "citationCount": 3,
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "items",
+              "index": 0,
+              "criterionId": "page-1",
+              "riskTitle": null,
+              "quoteIndex": 0,
+              "file": "index.html",
+              "excerptSha256": "b7fc76a7b53714da7e0df8bdb9e83fa90dcced068ab7b351e1767003942e7ab8",
+              "utf16Length": 60,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 0,
+              "appEnd": 60,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            },
+            {
+              "section": "items",
+              "index": 0,
+              "criterionId": "page-1",
+              "riskTitle": null,
+              "quoteIndex": 1,
+              "file": "index.html",
+              "excerptSha256": "d924a4264b7e5f685758fc1ef44729c43fe1ef9149da2c8448b349042b19d778",
+              "utf16Length": 40,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 127,
+              "appEnd": 167,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            },
+            {
+              "section": "items",
+              "index": 0,
+              "criterionId": "page-1",
+              "riskTitle": null,
+              "quoteIndex": 2,
+              "file": "index.html",
+              "excerptSha256": "eefd4d1bb186c4f0ec80427123dc3a1ed2cdaeb2d1eaa4f29dfff0b21bbed323",
+              "utf16Length": 13,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 208,
+              "appEnd": 221,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        },
+        {
+          "criterionId": "page-2",
+          "originalBuyerRequirement": {
+            "id": "page-2",
+            "title": "Separate page: services.html",
+            "source": "Deliver services.html as a separate nonempty HTML document with an HTML doctype, a nonempty title and a body."
+          },
+          "expectedStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawStatusMatchesExpected": true,
+          "applicationStatusMatchesExpected": true,
+          "rawExplanation": "Rule evidence passes; source shows doctype, nonempty title and body in services.html.",
+          "applicationExplanation": "Rule evidence passes; source shows doctype, nonempty title and body in services.html.",
+          "rawExplanationEntailedWithinStatedBoundary": true,
+          "applicationExplanationEntailedWithinStatedBoundary": true,
+          "applicationVerdictDecision": "accepted",
+          "rawVerdictDecision": "accepted",
+          "adjudication": "Source quotes jointly show an HTML doctype, the nonempty Services title and body. Independent server evidence passes. No completeness or runtime claim is added.",
+          "independentRule": {
+            "id": "evidence-page-2",
+            "criterionId": "page-2",
+            "finding": "pass",
+            "file": "services.html",
+            "explanation": "Found an independent document with a doctype, nonempty title and body. This proves source-document presence, not content completeness, visual quality or working functionality."
+          },
+          "citationCount": 3,
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "items",
+              "index": 1,
+              "criterionId": "page-2",
+              "riskTitle": null,
+              "quoteIndex": 0,
+              "file": "services.html",
+              "excerptSha256": "b7fc76a7b53714da7e0df8bdb9e83fa90dcced068ab7b351e1767003942e7ab8",
+              "utf16Length": 60,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 0,
+              "appEnd": 60,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            },
+            {
+              "section": "items",
+              "index": 1,
+              "criterionId": "page-2",
+              "riskTitle": null,
+              "quoteIndex": 1,
+              "file": "services.html",
+              "excerptSha256": "461909cf1d27d234051245d7982b9907fda3f853445f9e5a69f72604d92964a3",
+              "utf16Length": 44,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 127,
+              "appEnd": 171,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            },
+            {
+              "section": "items",
+              "index": 1,
+              "criterionId": "page-2",
+              "riskTitle": null,
+              "quoteIndex": 2,
+              "file": "services.html",
+              "excerptSha256": "eefd4d1bb186c4f0ec80427123dc3a1ed2cdaeb2d1eaa4f29dfff0b21bbed323",
+              "utf16Length": 13,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 212,
+              "appEnd": 225,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        },
+        {
+          "criterionId": "page-3",
+          "originalBuyerRequirement": {
+            "id": "page-3",
+            "title": "Separate page: contact.html",
+            "source": "Deliver contact.html as a separate nonempty HTML document with an HTML doctype, a nonempty title and a body."
+          },
+          "expectedStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawStatusMatchesExpected": true,
+          "applicationStatusMatchesExpected": true,
+          "rawExplanation": "Rule evidence passes; source shows doctype, nonempty title and body in contact.html.",
+          "applicationExplanation": "Rule evidence passes; source shows doctype, nonempty title and body in contact.html.",
+          "rawExplanationEntailedWithinStatedBoundary": true,
+          "applicationExplanationEntailedWithinStatedBoundary": true,
+          "applicationVerdictDecision": "accepted",
+          "rawVerdictDecision": "accepted",
+          "adjudication": "Source quotes jointly show an HTML doctype, the nonempty Contact title and body. Independent server evidence passes. No form-functionality claim is added.",
+          "independentRule": {
+            "id": "evidence-page-3",
+            "criterionId": "page-3",
+            "finding": "pass",
+            "file": "contact.html",
+            "explanation": "Found an independent document with a doctype, nonempty title and body. This proves source-document presence, not content completeness, visual quality or working functionality."
+          },
+          "citationCount": 3,
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "items",
+              "index": 2,
+              "criterionId": "page-3",
+              "riskTitle": null,
+              "quoteIndex": 0,
+              "file": "contact.html",
+              "excerptSha256": "b7fc76a7b53714da7e0df8bdb9e83fa90dcced068ab7b351e1767003942e7ab8",
+              "utf16Length": 60,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 0,
+              "appEnd": 60,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            },
+            {
+              "section": "items",
+              "index": 2,
+              "criterionId": "page-3",
+              "riskTitle": null,
+              "quoteIndex": 1,
+              "file": "contact.html",
+              "excerptSha256": "f86c7e5a662eaa3711dd935349eb97c8a99c4605bb5fdcd38f57b047acbea338",
+              "utf16Length": 43,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 127,
+              "appEnd": 170,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            },
+            {
+              "section": "items",
+              "index": 2,
+              "criterionId": "page-3",
+              "riskTitle": null,
+              "quoteIndex": 2,
+              "file": "contact.html",
+              "excerptSha256": "eefd4d1bb186c4f0ec80427123dc3a1ed2cdaeb2d1eaa4f29dfff0b21bbed323",
+              "utf16Length": 13,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 211,
+              "appEnd": 224,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        },
+        {
+          "criterionId": "link",
+          "originalBuyerRequirement": {
+            "id": "link",
+            "title": "Local link destination",
+            "source": "index.html contains a link labelled “Book a call” pointing to contact.html#consultation."
+          },
+          "expectedStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawStatusMatchesExpected": true,
+          "applicationStatusMatchesExpected": true,
+          "rawExplanation": "Rule evidence passes; index.html has a \"Book a call\" anchor pointing to contact.html#consultation.",
+          "applicationExplanation": "Rule evidence passes; index.html has a \"Book a call\" anchor pointing to contact.html#consultation.",
+          "rawExplanationEntailedWithinStatedBoundary": true,
+          "applicationExplanationEntailedWithinStatedBoundary": true,
+          "applicationVerdictDecision": "accepted",
+          "rawVerdictDecision": "accepted",
+          "adjudication": "The index anchor has the agreed label and href, and contact.html supplies one consultation id. Independent server evidence passes the local-source target check. The explanation does not assert that navigation, scripts or a booking flow was executed.",
+          "independentRule": {
+            "id": "evidence-link",
+            "criterionId": "link",
+            "finding": "pass",
+            "file": "index.html",
+            "explanation": "An actual anchor has the agreed text and contact.html#consultation destination, with one matching target id. This proves a local source target exists, not rendered clicks, scripts, external services or complete functionality."
+          },
+          "citationCount": 2,
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "items",
+              "index": 3,
+              "criterionId": "link",
+              "riskTitle": null,
+              "quoteIndex": 0,
+              "file": "index.html",
+              "excerptSha256": "5e74dac221d66d132c285b5c24bd9533cb890d8d69d861539651a331cebc92f3",
+              "utf16Length": 67,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 818,
+              "appEnd": 885,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            },
+            {
+              "section": "items",
+              "index": 3,
+              "criterionId": "link",
+              "riskTitle": null,
+              "quoteIndex": 1,
+              "file": "contact.html",
+              "excerptSha256": "9aa31d7c3bd31921d89d2b7ee3c86e064b49eee72c78b991e5de7938b4ef0b22",
+              "utf16Length": 27,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 700,
+              "appEnd": 727,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        },
+        {
+          "criterionId": "mobile",
+          "originalBuyerRequirement": {
+            "id": "mobile",
+            "title": "Mobile usability",
+            "source": "All delivered pages must be usable on a mobile screen; a person must check them directly."
+          },
+          "expectedStatus": "insufficient_evidence",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawStatusMatchesExpected": true,
+          "applicationStatusMatchesExpected": true,
+          "rawExplanation": "Rule evidence needs human review; static source cannot prove mobile usability.",
+          "applicationExplanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+          "rawExplanationEntailedWithinStatedBoundary": true,
+          "applicationExplanationEntailedWithinStatedBoundary": true,
+          "applicationVerdictDecision": "accepted",
+          "rawVerdictDecision": "accepted",
+          "adjudication": "A responsive media query does not prove usable mobile rendering. The raw model and application both retain insufficient_evidence and preserve the required person-performed check.",
+          "independentRule": {
+            "id": "evidence-mobile",
+            "criterionId": "mobile",
+            "finding": "needs_human",
+            "file": "styles.css",
+            "explanation": "Static source cannot prove mobile readability, lack of overflow or usable controls. A person must inspect every page. Preview disables scripts and external resources and is not a complete website execution test."
+          },
+          "citationCount": 1,
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "items",
+              "index": 4,
+              "criterionId": "mobile",
+              "riskTitle": null,
+              "quoteIndex": 0,
+              "file": "styles.css",
+              "excerptSha256": "f69f7b0f2e15fa036637f14a1055bd74da98243d8c2ae4331af08b733764d475",
+              "utf16Length": 90,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 3279,
+              "appEnd": 3369,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        },
+        {
+          "criterionId": "manual-1",
+          "originalBuyerRequirement": {
+            "id": "manual-1",
+            "title": "Manual requirement 1",
+            "source": "Display opening hours: Monday to Friday, 11am–8pm."
+          },
+          "expectedStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawStatusMatchesExpected": true,
+          "applicationStatusMatchesExpected": true,
+          "rawExplanation": "Literal opening hours text appears in page copy on the homepage.",
+          "applicationExplanation": "Literal opening hours text appears in page copy on the homepage.",
+          "rawExplanationEntailedWithinStatedBoundary": true,
+          "applicationExplanationEntailedWithinStatedBoundary": true,
+          "applicationVerdictDecision": "accepted",
+          "rawVerdictDecision": "accepted",
+          "adjudication": "The homepage source literally contains Monday to Friday, 11am–8pm. The requirement asks to display those opening hours; it does not require a separate runtime business-hours service. The explanation correctly limits its claim to copy on the homepage.",
+          "independentRule": {
+            "id": "evidence-manual-1",
+            "criterionId": "manual-1",
+            "finding": "needs_human",
+            "file": "index.html",
+            "explanation": "A person must verify the original requirement: “Display opening hours: Monday to Friday, 11am–8pm.”. The excerpt identifies delivered source and does not automatically establish compliance."
+          },
+          "citationCount": 1,
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "items",
+              "index": 5,
+              "criterionId": "manual-1",
+              "riskTitle": null,
+              "quoteIndex": 0,
+              "file": "index.html",
+              "excerptSha256": "517d463419db360571f2ad3b61937520dcf6fa453ac093307eb77290adbf4868",
+              "utf16Length": 41,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 1109,
+              "appEnd": 1150,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        },
+        {
+          "criterionId": "manual-2",
+          "originalBuyerRequirement": {
+            "id": "manual-2",
+            "title": "Manual requirement 2",
+            "source": "The page copy must clearly say consultations are by appointment only; walk-ins are not accepted."
+          },
+          "expectedStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawStatusMatchesExpected": true,
+          "applicationStatusMatchesExpected": true,
+          "rawExplanation": "Copy says consultations are arranged in advance and walk-ins cannot be accommodated.",
+          "applicationExplanation": "Copy says consultations are arranged in advance and walk-ins cannot be accommodated.",
+          "rawExplanationEntailedWithinStatedBoundary": true,
+          "applicationExplanationEntailedWithinStatedBoundary": true,
+          "applicationVerdictDecision": "accepted",
+          "rawVerdictDecision": "accepted",
+          "adjudication": "Every consultation is arranged in advance plus we cannot accommodate walk-ins entails appointment-only consultations and no walk-ins. The buyer did not demand the exact phrase, verbatim wording or homepage placement. The supplied services-page copy satisfies this semantic text policy; no successful appointment or submission is inferred.",
+          "independentRule": {
+            "id": "evidence-manual-2",
+            "criterionId": "manual-2",
+            "finding": "needs_human",
+            "file": "index.html",
+            "explanation": "A person must verify the original requirement: “The page copy must clearly say consultations are by appointment only; walk-ins are not accepted.”. The excerpt identifies delivered source and does not automatically establish compliance."
+          },
+          "citationCount": 1,
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "items",
+              "index": 6,
+              "criterionId": "manual-2",
+              "riskTitle": null,
+              "quoteIndex": 0,
+              "file": "services.html",
+              "excerptSha256": "2e05880fc5a6cc55e2cd7643756026c039698abe4d7836f9f403688edc49b15f",
+              "utf16Length": 128,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 1407,
+              "appEnd": 1535,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        }
+      ],
+      "risks": [
+        {
+          "index": 0,
+          "raw": {
+            "title": "Services page \"Book a call\" link sits outside the main content closure",
+            "explanation": "In services.html the anchor appears after </section> and before </main>, which is valid HTML but layout may be unintended.",
+            "suggestion": "Check rendered placement of the Book a call button on the Services page across viewport sizes.",
+            "citations": [
+              {
+                "file": "services.html",
+                "excerpt": "</section><a class=\"primary\" href=\"contact.html#consultation\">Book a call</a></main>"
+              }
+            ]
+          },
+          "applicationTextUnchanged": true,
+          "decision": "needs_revision",
+          "explanationEntailed": "partially",
+          "titleEntailed": false,
+          "rationale": "The quote places the anchor after </section> but before </main>: it is inside main, not outside the main content closure. The title is inaccurate or materially misleading. The explanation correctly describes the tag order and valid HTML, but the potential unintended layout has no supplied buyer layout constraint or browser observation to support it as a detected issue. A voluntary human visual check is reasonable; presenting this as a found defect is not. Exact quotations alone did not guarantee that the title or inference followed from the source.",
+          "safeAlternative": "Optional visual check: confirm the Services Book a call button placement. The source places it after the consultation section and inside main; no layout defect has been established.",
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "risks",
+              "index": 0,
+              "criterionId": null,
+              "riskTitle": "Services page \"Book a call\" link sits outside the main content closure",
+              "quoteIndex": 0,
+              "file": "services.html",
+              "excerptSha256": "c80dd81a8c01c1e8e657916f5363942d8f0b201f8ecbeff5f40499d88f70d858",
+              "utf16Length": 84,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 1539,
+              "appEnd": 1623,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        },
+        {
+          "index": 1,
+          "raw": {
+            "title": "Contact form explicitly has no backend",
+            "explanation": "Page copy states the form has no connected backend and does not send email.",
+            "suggestion": "Confirm the buyer understands this demonstration limitation and does not expect working submissions.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "excerpt": "This demonstration form has no connected backend and does not send email. Source review cannot verify successful submission."
+              }
+            ]
+          },
+          "applicationTextUnchanged": true,
+          "decision": "accepted_as_source_disclosed_limitation",
+          "explanationEntailed": true,
+          "titleEntailed": "qualified_by_explanation",
+          "rationale": "The cited page copy explicitly states that this demonstration form has no connected backend and does not send email. The explanation accurately attributes that fact to page copy. This is a disclosed demo limitation; this source review did not independently execute the form or inspect backend deployment. The seven requirements do not require a working submission backend.",
+          "exactQuoteAndOffsetChecks": [
+            {
+              "section": "risks",
+              "index": 1,
+              "criterionId": null,
+              "riskTitle": "Contact form explicitly has no backend",
+              "quoteIndex": 0,
+              "file": "contact.html",
+              "excerptSha256": "e29adbbc8892881ccc6538e2a17aa6aa621c7578f2edfa93a1fd40908cf56af2",
+              "utf16Length": 124,
+              "rawExcerptOccursInSentPrefix": true,
+              "rawAppCitationIdentical": true,
+              "appStart": 1111,
+              "appEnd": 1235,
+              "offsetIsFirstOccurrence": true,
+              "offsetSlicesToExactQuote": true
+            }
+          ]
+        }
+      ],
+      "limitationsReview": {
+        "raw": [
+          "Rendered mobile usability and layout were not inspected in a browser.",
+          "Static source cannot confirm link clicks or navigation behavior.",
+          "Only supplied file prefixes were reviewed; omitted files were not assessed.",
+          "Rule evidence for manual-1 and manual-2 was flagged needs_human despite the literal copy present.",
+          "Visual design quality and branding are outside static source verification."
+        ],
+        "application": [
+          "Rendered mobile usability and layout were not inspected in a browser.",
+          "Static source cannot confirm link clicks or navigation behavior.",
+          "Only supplied file prefixes were reviewed; omitted files were not assessed.",
+          "Rule evidence for manual-1 and manual-2 was flagged needs_human despite the literal copy present.",
+          "Visual design quality and branding are outside static source verification.",
+          "Only the supplied static source excerpts were assessed. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "decision": "accepted_with_scope_notes",
+        "rationale": "Both reports explicitly deny browser/runtime proof. The application adds the separation from rule checks, human acceptance and payments. Prefix/omitted-file wording is generic: the actual packet fully included all four files, with no truncation or omission. The v2 note that manual criteria have needs_human rule evidence is accurate and does not negate bounded AI copy suggestions. These limitations do not cure an inaccurate risk title."
+      },
+      "allQuotesExistAndOffsetsCorrect": true,
+      "applicationCriterionDecisionsAccepted": 7,
+      "rawExpectedStatusMatches": 7,
+      "riskDecisionsAcceptedOrQualified": 1,
+      "riskDecisionsNeedingRevision": 1,
+      "entireAnswerAcceptedWithoutQualification": false,
+      "entireAnswerDecision": "not_accepted_without_risk_wording_correction"
+    }
+  ],
+  "publicationSanitization": {
+    "originSha256": "4762c6f890d8c1fe9c85e53142983fa8805cd40a4e0d173a6a2578c41783ac3b",
+    "removedFields": [
+      "evidencePaths"
+    ],
+    "publicSourceFiles": "Complete fictional v1/v2 files are embedded in the paired public follow-up report."
+  }
+}

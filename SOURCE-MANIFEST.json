@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-01T13:40:15.834Z",
+  "generatedAt": "2026-11-01T14:06:56.715Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -108,8 +108,8 @@
     },
     {
       "file": "app/chain-flow.css",
-      "bytes": 3865,
-      "sha256": "60be559902536280376f6a1beba458e6072ce7e9f90efac9baff014b81113c08"
+      "bytes": 4432,
+      "sha256": "d27b325abc878850d72c6ed1787c429f389c956b6a0fe4c04532a56faf0c22ad"
     },
     {
       "file": "app/chatgpt-auth.ts",
@@ -568,13 +568,13 @@
     },
     {
       "file": "docs/EVALUATION-2026-11-02.md",
-      "bytes": 6001,
-      "sha256": "cb8f3d64b387276e8c226fce1674c91192f6c96e92985dfe261cd136b494193b"
+      "bytes": 16048,
+      "sha256": "0169bcec87cef7602972b0acf2c83db66bb3601392229a97aac1b35497f50c5a"
     },
     {
       "file": "docs/PROJECT-STORY.md",
-      "bytes": 4507,
-      "sha256": "dc95903ab154e8283b4cafa17eae590c17c4a788b85249bb9b46fb77f01491d0"
+      "bytes": 4272,
+      "sha256": "897d854217b0a376d725edb2c84691f48aa9efb6529214ad16b5606c9cb4b929"
     },
     {
       "file": "drizzle.config.ts",
@@ -658,8 +658,8 @@
     },
     {
       "file": "lib/delivery-assessment.ts",
-      "bytes": 18584,
-      "sha256": "058be5048cd16320bd8037b55b3d9ffcdec7db5f0c0a1d4e3212d4f48cc6dc6d"
+      "bytes": 20470,
+      "sha256": "fe70f67041abb3d08e8f136e10eb6878fe8d9819d49ae18910289ac6dec2e0b8"
     },
     {
       "file": "lib/delivery-layout-summary.ts",
@@ -782,9 +782,14 @@
       "sha256": "9e2b2df5014dba7e9cd010c35a98722e2d65b2243db60d388f9e7cecb4a59975"
     },
     {
+      "file": "scripts/assessment-policy-evaluation-cases.json",
+      "bytes": 8673,
+      "sha256": "459fda8af1335880cb2931443c3c28b923b03cfc95e04a1100d86ddfe5996ac0"
+    },
+    {
       "file": "scripts/build-judge-pack.mjs",
-      "bytes": 11689,
-      "sha256": "c89fcf4f0fa01415c290bbf0908526e5612fa4ebdbd2b36fbd916fa0af3be6a4"
+      "bytes": 11814,
+      "sha256": "507330a9f5debdb35c5cb5fcc327cd79d8e0be2bba3d50ab6f022da82be9f2a0"
     },
     {
       "file": "scripts/build-showcase.mjs",
@@ -837,9 +842,34 @@
       "sha256": "0c9b250ce2220ada282cab16e0368ab2494d174200cacdd03d273ad402e35c6a"
     },
     {
+      "file": "scripts/evaluation-results/2026-11-02-hosted-chain-summary.json",
+      "bytes": 2795,
+      "sha256": "11e051f0e558929fcbf55d9c8d455c53eb9787a1598e8f445e721de9951c1458"
+    },
+    {
       "file": "scripts/evaluation-results/2026-11-02-independent-adjudication.json",
       "bytes": 31524,
       "sha256": "b3242e437debb04cf6534104a6cfaf0e425b8aee3e3929c1870f6659cb2579b4"
+    },
+    {
+      "file": "scripts/evaluation-results/2026-11-02-policy-follow-up.json",
+      "bytes": 19870,
+      "sha256": "8ba04e5d19c30137bc5cf6d4b5b4d9339000a3f9cc561fb253ef4cf3c2d5139e"
+    },
+    {
+      "file": "scripts/evaluation-results/2026-11-02-policy-independent-adjudication.json",
+      "bytes": 15710,
+      "sha256": "ba568632f63c56be45fafa3f77410abceb5096231ec94ab8be7050185f5bd83e"
+    },
+    {
+      "file": "scripts/evaluation-results/2026-11-02-whole-project-follow-up.json",
+      "bytes": 56295,
+      "sha256": "b37d484433fee299a9422d6d222f94d5cbcbddd3c5e33f54c8286d2eab6867c9"
+    },
+    {
+      "file": "scripts/evaluation-results/2026-11-02-whole-project-independent-adjudication.json",
+      "bytes": 68151,
+      "sha256": "fe8b690415001a41445bf13a2d6093af89802aa973e36aef82e56e0d32ebacc9"
     },
     {
       "file": "scripts/execution-profile.mjs",
@@ -943,8 +973,8 @@
     },
     {
       "file": "tests/delivery-assessment.test.ts",
-      "bytes": 24977,
-      "sha256": "5c4dd3cbbc69f5087686d1257ed295d9c27ace7578e532377def626a9b6190d5"
+      "bytes": 32416,
+      "sha256": "45b55c51624b57fd1cdf7f9c37ce7884d20f7a3922ffb966826ab942b2c9285b"
     },
     {
       "file": "tests/delivery-layout-summary.test.ts",
@@ -1093,8 +1123,8 @@
     },
     {
       "file": "JUDGE-README.md",
-      "bytes": 3877,
-      "sha256": "b7fda30f097545d2fb63d8732ec160293ea2e4d959c9248df9cb9c00b78e7086"
+      "bytes": 4002,
+      "sha256": "2ef7c9f1f306284daa429985e9a6574585f93d90be6006c29d3a8e65d6035eb4"
     },
     {
       "file": "DEMO-SCRIPT.md",

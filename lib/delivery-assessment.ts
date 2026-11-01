@@ -7,7 +7,19 @@ const CONTROL = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u;
 const IDENTIFIER = /^[A-Za-z0-9_-]{1,80}$/u;
 const FILE_SOURCE_LIMIT = 6_000;
 const TOTAL_SOURCE_LIMIT = 24_000;
-const failure = () => new ProviderError("AI returned an invalid or ungrounded source assessment. The saved rules and buyer decisions remain unchanged.");
+type AssessmentFailureKind = "structure" | "output_limit" | "incomplete" | "citation";
+const FAILURE_MESSAGES: Record<AssessmentFailureKind, string> = {
+  structure: "AI returned an invalid response structure.",
+  output_limit: "AI output reached the configured response limit and is incomplete.",
+  incomplete: "AI returned an incomplete response.",
+  citation: "AI source citation validation failed; a quotation or file was not found in the supplied source.",
+};
+// Only fixed local descriptions escape response validation; never raw content,
+// parser diagnostics, filenames, finish-reason text or upstream error messages.
+class AssessmentResponseError extends ProviderError {
+  constructor(kind: AssessmentFailureKind) { super(`${FAILURE_MESSAGES[kind]} The saved rules and buyer decisions remain unchanged.`); }
+}
+const failure = (kind: AssessmentFailureKind = "structure") => new AssessmentResponseError(kind);
 const words = (quote: ProofQuote, zh: string, en: string) => quote.language === "zh" ? zh : en;
 
 function record(value: unknown): Record<string, unknown> {
@@ -53,9 +65,9 @@ function citations(value: unknown, sent: Record<string, string>): ProofAssessmen
   return value.map(entry => {
     const citation = record(entry); keys(citation, ["file", "excerpt"]);
     const file = text(citation.file, 120), excerpt = text(citation.excerpt, 500);
-    if (!Object.hasOwn(sent, file)) throw failure();
+    if (!Object.hasOwn(sent, file)) throw failure("citation");
     const start = sent[file].indexOf(excerpt);
-    if (start < 0) throw failure();
+    if (start < 0) throw failure("citation");
     return { file, start, end: start + excerpt.length, excerpt };
   });
 }
@@ -117,6 +129,8 @@ export async function assessDelivery(quote: ProofQuote, env: ProviderEnv, fetche
         "Every factual statement in an explanation must be supported by its quoted excerpts. Do not claim a value appears in a title, heading, footer or other location unless the cited excerpt actually shows that location and value. A valid quote alone does not justify extra assertions.",
         "The supplied ruleEvidence findings were produced by server rules and remain authoritative. Never override a fail as supported. A pass proves only the narrowly described rule, not every aspect of its criterion.",
         "Evaluate literal content such as an agreed business name, menu or opening hours when the source provides evidence. For missing or wrong content, cite the relevant actual page context and state the limited scope of that observation.",
+        "For source-checkable policy copy, compare meaning rather than demand identical wording. A requirement to clearly say a policy does not require the exact phrase unless the buyer explicitly asks for exact/verbatim wording. For example, consultations arranged in advance with walk-ins refused can express appointment-only consultations without using the words 'by appointment only'. A statement welcoming visits without prior arrangement contradicts that policy.",
+        "Keep explicitly required exact strings and factual names, numbers and currencies precise. Do not invent extra wording or page-location constraints: generic 'page copy' does not by itself require the homepage or a particular filename. A policy described in delivered text is evidence about that copy only, not proof that appointment booking, form submission or email delivery works. Apply these distinctions to risk suggestions as well as criterion statuses.",
         "For manual-* criteria, only explicit literal text-content requirements (opening hours, menu, prices, address, phone, business name, copy) can be supported by source. Unknown manual requirements default to insufficient_evidence. Runtime, interaction or subjective claims take precedence even in mixed requirements that also mention literal content.",
         "Use insufficient_evidence for mobile usability, rendered appearance, subjective design quality, script execution, form submission, clicks/navigation interactivity, end-to-end behavior, backend persistence, email receipt, branding/colour/layout or other behavior needing a running browser/backend or human judgement. Source code that describes a feature is not evidence that it works.",
         "Risks are only potential issues visible in cited source; never claim a vulnerability is exploitable, a website is safe, or testing/comprehensive security review occurred. Do not claim screenshots, browser actions, backend access or runtime checks.",
@@ -131,7 +145,8 @@ export async function assessDelivery(quote: ProofQuote, env: ProviderEnv, fetche
   try {
     if (!Array.isArray(response.data.choices) || response.data.choices.length !== 1) throw failure();
     const choice = record(response.data.choices[0]);
-    if (choice.finish_reason !== "stop") throw failure();
+    if (choice.finish_reason === "length") throw failure("output_limit");
+    if (choice.finish_reason !== "stop") throw failure("incomplete");
     const content = text(record(choice.message).content, 30_000);
     const output = record(JSON.parse(content)); keys(output, ["items", "risks", "limitations"]);
     if (!Array.isArray(output.items) || output.items.length !== criteria.length || !Array.isArray(output.risks) || output.risks.length > 5
@@ -175,5 +190,8 @@ export async function assessDelivery(quote: ProofQuote, env: ProviderEnv, fetche
     if (coverage.truncatedFiles.length || coverage.omittedFiles.length) limitations.push(words(quote, "部分文件被截断或省略；不能将未在片段中找到的内容视为整个交付均缺失。", "Some files were truncated or omitted. Content absent from supplied excerpts may still exist elsewhere in the delivery."));
     const tokenUsage = usage(response.data.usage);
     return { id: crypto.randomUUID(), deliveryId: delivery.id, method: "source-ai-v1", mode: "live", model, assessedAt: new Date().toISOString(), items, risks, limitations, coverage, ...(tokenUsage ? { usage: tokenUsage } : {}) };
-  } catch { throw failure(); }
+  } catch (error) {
+    if (error instanceof AssessmentResponseError) throw error;
+    throw failure();
+  }
 }
