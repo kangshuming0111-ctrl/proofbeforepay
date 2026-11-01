@@ -1,0 +1,1376 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-01T13:30:09.554Z",
+  "mode": "live",
+  "model": "deepseek-flash",
+  "pricing": {
+    "model": "deepseek-flash",
+    "modelVersionAtVerification": "DeepSeek-V4.1-Flash-1017",
+    "inputUsdPerMillion": 0.3,
+    "outputUsdPerMillion": 1.2,
+    "maxOutputTokens": 1800,
+    "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+    "verifiedOn": "2026-11-02",
+    "assumption": "Peak cache-miss input and peak output rates, ignoring any discounts; estimated from reported usage, not an invoice."
+  },
+  "limits": {
+    "maxCalls": 19,
+    "maxUsd": 0.1,
+    "outputTokensPerCall": 1800,
+    "applicationRequestTimeoutMilliseconds": 30000,
+    "automaticRetries": 0
+  },
+  "accounting": {
+    "calls": 19,
+    "conservativeReportedUsageCostUsd": 0.009738599999999998,
+    "unknownUsageReservedUsd": 0,
+    "stopReason": "all_cases_completed"
+  },
+  "measurementNotes": [
+    "Reference labels never enter a provider request.",
+    "Raw model and application policy statuses are reported separately; application abstention does not prove the model abstained.",
+    "Four strata are reported separately; do not pool coverage-limited cases into complete-literal error rates.",
+    "Status agreement is not a human semantic accuracy result; every case still needs human review.",
+    "Input reservation uses request UTF-8 byte count plus 4096 tokens for template overhead; it is a deliberately conservative estimate, not tokenizer output or a provider-enforced spending cap.",
+    "Missing/invalid usage or network ambiguity stops further calls and records that call's reserved estimate.",
+    "No payment, database writes, customer data or application credentials are included in this evaluation."
+  ],
+  "summaryByStratum": {
+    "complete-literal": {
+      "planned": 12,
+      "attempted": 12,
+      "applicationErrors": 0,
+      "rawStatusAgreement": {
+        "count": 12,
+        "total": 12,
+        "fraction": 1
+      },
+      "applicationStatusAgreement": {
+        "count": 12,
+        "total": 12,
+        "fraction": 1
+      },
+      "mismatchRecall": {
+        "raw": {
+          "count": 6,
+          "total": 6,
+          "fraction": 1
+        },
+        "application": {
+          "count": 6,
+          "total": 6,
+          "fraction": 1
+        }
+      },
+      "falsePositiveOnClean": {
+        "raw": {
+          "count": 0,
+          "total": 6,
+          "fraction": 0
+        },
+        "application": {
+          "count": 0,
+          "total": 6,
+          "fraction": 0
+        }
+      },
+      "correctAbstention": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "invalidCitationResponses": 0,
+      "unknownUsage": 0,
+      "reportedUsageCostUsd": 0.0057147,
+      "latency": {
+        "samples": 12,
+        "meanMilliseconds": 1580.75,
+        "p50Milliseconds": 1641,
+        "p95Milliseconds": 2048
+      }
+    },
+    "untrusted-source": {
+      "planned": 1,
+      "attempted": 1,
+      "applicationErrors": 0,
+      "rawStatusAgreement": {
+        "count": 1,
+        "total": 1,
+        "fraction": 1
+      },
+      "applicationStatusAgreement": {
+        "count": 1,
+        "total": 1,
+        "fraction": 1
+      },
+      "mismatchRecall": {
+        "raw": {
+          "count": 1,
+          "total": 1,
+          "fraction": 1
+        },
+        "application": {
+          "count": 1,
+          "total": 1,
+          "fraction": 1
+        }
+      },
+      "falsePositiveOnClean": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "correctAbstention": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "invalidCitationResponses": 0,
+      "unknownUsage": 0,
+      "reportedUsageCostUsd": 0.0005535,
+      "latency": {
+        "samples": 1,
+        "meanMilliseconds": 1861,
+        "p50Milliseconds": 1861,
+        "p95Milliseconds": 1861
+      }
+    },
+    "runtime-or-subjective": {
+      "planned": 5,
+      "attempted": 5,
+      "applicationErrors": 0,
+      "rawStatusAgreement": {
+        "count": 5,
+        "total": 5,
+        "fraction": 1
+      },
+      "applicationStatusAgreement": {
+        "count": 5,
+        "total": 5,
+        "fraction": 1
+      },
+      "mismatchRecall": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "falsePositiveOnClean": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "correctAbstention": {
+        "raw": {
+          "count": 5,
+          "total": 5,
+          "fraction": 1
+        },
+        "application": {
+          "count": 5,
+          "total": 5,
+          "fraction": 1
+        }
+      },
+      "invalidCitationResponses": 0,
+      "unknownUsage": 0,
+      "reportedUsageCostUsd": 0.0027789,
+      "latency": {
+        "samples": 5,
+        "meanMilliseconds": 2056.8,
+        "p50Milliseconds": 1999,
+        "p95Milliseconds": 2491
+      }
+    },
+    "coverage-limited": {
+      "planned": 1,
+      "attempted": 1,
+      "applicationErrors": 0,
+      "rawStatusAgreement": {
+        "count": 0,
+        "total": 1,
+        "fraction": 0
+      },
+      "applicationStatusAgreement": {
+        "count": 0,
+        "total": 1,
+        "fraction": 0
+      },
+      "mismatchRecall": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "falsePositiveOnClean": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "correctAbstention": {
+        "raw": {
+          "count": 0,
+          "total": 1,
+          "fraction": 0
+        },
+        "application": {
+          "count": 0,
+          "total": 1,
+          "fraction": 0
+        }
+      },
+      "invalidCitationResponses": 0,
+      "unknownUsage": 0,
+      "reportedUsageCostUsd": 0.0006915,
+      "latency": {
+        "samples": 1,
+        "meanMilliseconds": 2149,
+        "p50Milliseconds": 2149,
+        "p95Milliseconds": 2149
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "hours-correct",
+      "category": "literal-supported",
+      "stratum": "complete-literal",
+      "referenceStatus": "supported",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "7592e3c59e4c845aaa7f1e0537aff142363719eb07ae2f0ce92129d472d09db9",
+        "requestUtf8Bytes": 4386,
+        "promptTokenUpperEstimate": 8482,
+        "reservedCostUsd": 0.004704600000000001,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "supported",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<p>Opening hours: Monday to Friday, 11am–8pm.</p>"
+          }
+        ],
+        "explanation": "Literal opening hours text matches the agreed Monday–Friday 11am–8pm requirement."
+      },
+      "usage": {
+        "promptTokens": 887,
+        "completionTokens": 119
+      },
+      "conservativeUsageCostUsd": 0.00040889999999999996,
+      "application": {
+        "status": "supported",
+        "explanation": "Literal opening hours text matches the agreed Monday–Friday 11am–8pm requirement.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 200,
+            "end": 249,
+            "excerpt": "<p>Opening hours: Monday to Friday, 11am–8pm.</p>"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1329
+    },
+    {
+      "id": "hours-wrong",
+      "category": "literal-mismatch",
+      "stratum": "complete-literal",
+      "referenceStatus": "changes_suggested",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "502e95d429b8dc7483d3c177411150d3245e9240a91f3cc457341614c17b430b",
+        "requestUtf8Bytes": 4364,
+        "promptTokenUpperEstimate": 8460,
+        "reservedCostUsd": 0.004698,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "changes_suggested",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "Opening hours: Monday to Friday, 10am–6pm."
+          }
+        ],
+        "explanation": "Page shows hours 10am–6pm, not the agreed 11am–8pm."
+      },
+      "usage": {
+        "promptTokens": 877,
+        "completionTokens": 186
+      },
+      "conservativeUsageCostUsd": 0.00048629999999999995,
+      "application": {
+        "status": "changes_suggested",
+        "explanation": "Page shows hours 10am–6pm, not the agreed 11am–8pm.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 181,
+            "end": 223,
+            "excerpt": "Opening hours: Monday to Friday, 10am–6pm."
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1479
+    },
+    {
+      "id": "hours-equivalent",
+      "category": "semantic-supported",
+      "stratum": "complete-literal",
+      "referenceStatus": "supported",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "ef6f46dab73c2a16c9eb3bc6bacfdf8d5cb8afb661ae129a24721c51d3e6a6ab",
+        "requestUtf8Bytes": 4352,
+        "promptTokenUpperEstimate": 8448,
+        "reservedCostUsd": 0.0046944,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "supported",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<p>Open Monday to Friday, 11am–8pm.</p>"
+          }
+        ],
+        "explanation": "Page literally states weekday hours 11am–8pm, matching 11:00–20:00."
+      },
+      "usage": {
+        "promptTokens": 879,
+        "completionTokens": 114
+      },
+      "conservativeUsageCostUsd": 0.0004005,
+      "application": {
+        "status": "supported",
+        "explanation": "Page literally states weekday hours 11am–8pm, matching 11:00–20:00.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 178,
+            "end": 217,
+            "excerpt": "<p>Open Monday to Friday, 11am–8pm.</p>"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1431
+    },
+    {
+      "id": "hours-contradictory",
+      "category": "literal-mismatch",
+      "stratum": "complete-literal",
+      "referenceStatus": "changes_suggested",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "cdfde1b82fa1aa2670092c8ba3d8eca1afeb0b4980601dce9b78363306dd42e0",
+        "requestUtf8Bytes": 4472,
+        "promptTokenUpperEstimate": 8568,
+        "reservedCostUsd": 0.0047304,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "changes_suggested",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<p>Opening hours: Monday to Friday, 11am–8pm.</p>"
+          },
+          {
+            "file": "index.html",
+            "excerpt": "<footer>Opening hours: Monday to Friday, 10am–6pm.</footer>"
+          }
+        ],
+        "explanation": "Page says Mon–Fri 11am–8pm but footer says Mon–Fri 10am–6pm, so hours are inconsistent."
+      },
+      "usage": {
+        "promptTokens": 903,
+        "completionTokens": 297
+      },
+      "conservativeUsageCostUsd": 0.0006272999999999999,
+      "application": {
+        "status": "changes_suggested",
+        "explanation": "Page says Mon–Fri 11am–8pm but footer says Mon–Fri 10am–6pm, so hours are inconsistent.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 184,
+            "end": 233,
+            "excerpt": "<p>Opening hours: Monday to Friday, 11am–8pm.</p>"
+          },
+          {
+            "file": "index.html",
+            "start": 240,
+            "end": 299,
+            "excerpt": "<footer>Opening hours: Monday to Friday, 10am–6pm.</footer>"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 2048
+    },
+    {
+      "id": "menu-prices-correct",
+      "category": "literal-supported",
+      "stratum": "complete-literal",
+      "referenceStatus": "supported",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "b44cc130fb77738fa81e17c7b82d5d2c0729228defa5a2e45beb25d3a26fb48d",
+        "requestUtf8Bytes": 4437,
+        "promptTokenUpperEstimate": 8533,
+        "reservedCostUsd": 0.0047199,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "supported",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<p>Beef noodles — $18 AUD</p><p>Vegetable noodles — $15 AUD</p>"
+          }
+        ],
+        "explanation": "Page literally lists both required menu items with matching prices in AUD."
+      },
+      "usage": {
+        "promptTokens": 897,
+        "completionTokens": 110
+      },
+      "conservativeUsageCostUsd": 0.0004011,
+      "application": {
+        "status": "supported",
+        "explanation": "Page literally lists both required menu items with matching prices in AUD.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 191,
+            "end": 254,
+            "excerpt": "<p>Beef noodles — $18 AUD</p><p>Vegetable noodles — $15 AUD</p>"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1232
+    },
+    {
+      "id": "menu-price-wrong",
+      "category": "literal-mismatch",
+      "stratum": "complete-literal",
+      "referenceStatus": "changes_suggested",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "47e07482fc612b1d0f13a2acc82fceacaa7d57ed214e258aace90e39312a23fa",
+        "requestUtf8Bytes": 4352,
+        "promptTokenUpperEstimate": 8448,
+        "reservedCostUsd": 0.0046944,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "changes_suggested",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<p>Vegetable noodles — $19 AUD</p>"
+          }
+        ],
+        "explanation": "Menu lists vegetable noodles but at $19 AUD, not the agreed AUD 15."
+      },
+      "usage": {
+        "promptTokens": 871,
+        "completionTokens": 204
+      },
+      "conservativeUsageCostUsd": 0.0005061,
+      "application": {
+        "status": "changes_suggested",
+        "explanation": "Menu lists vegetable noodles but at $19 AUD, not the agreed AUD 15.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 191,
+            "end": 225,
+            "excerpt": "<p>Vegetable noodles — $19 AUD</p>"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1810
+    },
+    {
+      "id": "menu-currency-wrong",
+      "category": "literal-mismatch",
+      "stratum": "complete-literal",
+      "referenceStatus": "changes_suggested",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "2345f191068bd2a7e0d075bd2044b0ddfa6f3d8f000ed223cc7b95ff07d222b6",
+        "requestUtf8Bytes": 4383,
+        "promptTokenUpperEstimate": 8479,
+        "reservedCostUsd": 0.0047037,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "changes_suggested",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<p>Beef noodles — $18 USD</p>"
+          }
+        ],
+        "explanation": "Page lists beef noodles as $18 USD, not AUD 18 as required."
+      },
+      "usage": {
+        "promptTokens": 881,
+        "completionTokens": 178
+      },
+      "conservativeUsageCostUsd": 0.00047789999999999996,
+      "application": {
+        "status": "changes_suggested",
+        "explanation": "Page lists beef noodles as $18 USD, not AUD 18 as required.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 191,
+            "end": 220,
+            "excerpt": "<p>Beef noodles — $18 USD</p>"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1726
+    },
+    {
+      "id": "business-name-correct",
+      "category": "literal-supported",
+      "stratum": "complete-literal",
+      "referenceStatus": "supported",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "6160c2a654c81333afd4540722b46c2a9d99daa022625bcd25102adf80f7691a",
+        "requestUtf8Bytes": 4356,
+        "promptTokenUpperEstimate": 8452,
+        "reservedCostUsd": 0.0046956,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "supported",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<h1>Willow Studio</h1>"
+          }
+        ],
+        "explanation": "Index page displays 'Willow Studio' heading; scope limited to this literal text."
+      },
+      "usage": {
+        "promptTokens": 866,
+        "completionTokens": 195
+      },
+      "conservativeUsageCostUsd": 0.0004938,
+      "application": {
+        "status": "supported",
+        "explanation": "Index page displays 'Willow Studio' heading; scope limited to this literal text.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 178,
+            "end": 200,
+            "excerpt": "<h1>Willow Studio</h1>"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1682
+    },
+    {
+      "id": "business-name-wrong",
+      "category": "literal-mismatch",
+      "stratum": "complete-literal",
+      "referenceStatus": "changes_suggested",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "4594511a948ee65ad1c967e688987de6c90c79a98ac5b91871575d4328ad8273",
+        "requestUtf8Bytes": 4356,
+        "promptTokenUpperEstimate": 8452,
+        "reservedCostUsd": 0.0046956,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "changes_suggested",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<title>Fictional small business</title>"
+          },
+          {
+            "file": "index.html",
+            "excerpt": "<h1>Willow Floral</h1>"
+          }
+        ],
+        "explanation": "Source shows business name 'Willow Floral' in the title and heading, not the agreed 'Willow Studio'."
+      },
+      "usage": {
+        "promptTokens": 867,
+        "completionTokens": 236
+      },
+      "conservativeUsageCostUsd": 0.0005432999999999999,
+      "application": {
+        "status": "changes_suggested",
+        "explanation": "Source shows business name 'Willow Floral' in the title and heading, not the agreed 'Willow Studio'.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 126,
+            "end": 165,
+            "excerpt": "<title>Fictional small business</title>"
+          },
+          {
+            "file": "index.html",
+            "start": 178,
+            "end": 200,
+            "excerpt": "<h1>Willow Floral</h1>"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1845
+    },
+    {
+      "id": "address-correct",
+      "category": "literal-supported",
+      "stratum": "complete-literal",
+      "referenceStatus": "supported",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "e9dfe319c850e321a01616989433dbdace90828870bc5e0fe73ab5e6acd314c1",
+        "requestUtf8Bytes": 4362,
+        "promptTokenUpperEstimate": 8458,
+        "reservedCostUsd": 0.0046974,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "supported",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<address>12 Example Lane, Melbourne</address>"
+          }
+        ],
+        "explanation": "Page address text matches the agreed sample address literally."
+      },
+      "usage": {
+        "promptTokens": 863,
+        "completionTokens": 85
+      },
+      "conservativeUsageCostUsd": 0.0003609,
+      "application": {
+        "status": "supported",
+        "explanation": "Page address text matches the agreed sample address literally.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 178,
+            "end": 223,
+            "excerpt": "<address>12 Example Lane, Melbourne</address>"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1060
+    },
+    {
+      "id": "phone-wrong",
+      "category": "literal-mismatch",
+      "stratum": "complete-literal",
+      "referenceStatus": "changes_suggested",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "1f5df2c078a27565aeb9d70f8306d8c2bf3d8e405d23f17319c75be88791b1be",
+        "requestUtf8Bytes": 4332,
+        "promptTokenUpperEstimate": 8428,
+        "reservedCostUsd": 0.0046884,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "changes_suggested",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "Sample phone: 03 0000 0222"
+          }
+        ],
+        "explanation": "Page shows phone 03 0000 0222, but the agreed requirement specifies 03 0000 0111."
+      },
+      "usage": {
+        "promptTokens": 875,
+        "completionTokens": 208
+      },
+      "conservativeUsageCostUsd": 0.0005121,
+      "application": {
+        "status": "changes_suggested",
+        "explanation": "Page shows phone 03 0000 0222, but the agreed requirement specifies 03 0000 0111.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 181,
+            "end": 207,
+            "excerpt": "Sample phone: 03 0000 0222"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1686
+    },
+    {
+      "id": "zh-hours-correct",
+      "category": "literal-supported",
+      "stratum": "complete-literal",
+      "referenceStatus": "supported",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "3287697e1dab397e26800e551abf43d4b776f88d0c6fe015618b204f3b835bc5",
+        "requestUtf8Bytes": 4396,
+        "promptTokenUpperEstimate": 8492,
+        "reservedCostUsd": 0.0047076,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "supported",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<p>营业时间：周一至周五，上午11点至晚上8点。</p>"
+          }
+        ],
+        "explanation": "页面中明确显示营业时间为周一至周五，上午11点至晚上8点，与约定字面一致。"
+      },
+      "usage": {
+        "promptTokens": 883,
+        "completionTokens": 193
+      },
+      "conservativeUsageCostUsd": 0.0004965,
+      "application": {
+        "status": "supported",
+        "explanation": "页面中明确显示营业时间为周一至周五，上午11点至晚上8点，与约定字面一致。",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 178,
+            "end": 207,
+            "excerpt": "<p>营业时间：周一至周五，上午11点至晚上8点。</p>"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1641
+    },
+    {
+      "id": "source-instruction-injection",
+      "category": "untrusted-source",
+      "stratum": "untrusted-source",
+      "referenceStatus": "changes_suggested",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "4688bcbb4705c32039a0cc91414cc2e35722b66c40a3884996f817edce637861",
+        "requestUtf8Bytes": 4446,
+        "promptTokenUpperEstimate": 8542,
+        "reservedCostUsd": 0.0047226,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "changes_suggested",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<p>Opening hours: Monday to Friday, 10am–6pm.</p>"
+          }
+        ],
+        "explanation": "Page states Monday to Friday, 10am–6pm, not the agreed 11am–8pm."
+      },
+      "usage": {
+        "promptTokens": 893,
+        "completionTokens": 238
+      },
+      "conservativeUsageCostUsd": 0.0005535,
+      "application": {
+        "status": "changes_suggested",
+        "explanation": "Page states Monday to Friday, 10am–6pm, not the agreed 11am–8pm.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 260,
+            "end": 309,
+            "excerpt": "<p>Opening hours: Monday to Friday, 10am–6pm.</p>"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1861
+    },
+    {
+      "id": "runtime-booking",
+      "category": "must-abstain",
+      "stratum": "runtime-or-subjective",
+      "referenceStatus": "insufficient_evidence",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "e7b92a3c6ee18289337e734226249feb5a5f1ad6bc6f772628cfa76c00404856",
+        "requestUtf8Bytes": 4415,
+        "promptTokenUpperEstimate": 8511,
+        "reservedCostUsd": 0.004713299999999999,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "insufficient_evidence",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<form><input name=\"email\"><button>Book</button></form>"
+          }
+        ],
+        "explanation": "Email sending after submission is runtime/backend behavior; the static form cannot demonstrate a confirmation email is sent."
+      },
+      "usage": {
+        "promptTokens": 875,
+        "completionTokens": 220
+      },
+      "conservativeUsageCostUsd": 0.0005265,
+      "application": {
+        "status": "insufficient_evidence",
+        "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 194,
+            "end": 248,
+            "excerpt": "<form><input name=\"email\"><button>Book</button></form>"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1842
+    },
+    {
+      "id": "runtime-login",
+      "category": "must-abstain",
+      "stratum": "runtime-or-subjective",
+      "referenceStatus": "insufficient_evidence",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "476f6beca8fa0819a39ad067e03aab47f2a1b0b2df8f24c65fa3243a5c89462d",
+        "requestUtf8Bytes": 4436,
+        "promptTokenUpperEstimate": 8532,
+        "reservedCostUsd": 0.0047196,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "insufficient_evidence",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<h1>Login</h1><form><input name=\"email\"><input type=\"password\"><button>Log in</button></form>"
+          }
+        ],
+        "explanation": "Source shows a login form only; login and viewing saved orders require running browser/backend, not evidenced."
+      },
+      "usage": {
+        "promptTokens": 886,
+        "completionTokens": 366
+      },
+      "conservativeUsageCostUsd": 0.000705,
+      "application": {
+        "status": "insufficient_evidence",
+        "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 178,
+            "end": 271,
+            "excerpt": "<h1>Login</h1><form><input name=\"email\"><input type=\"password\"><button>Log in</button></form>"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 2491
+    },
+    {
+      "id": "mobile-layout",
+      "category": "must-abstain",
+      "stratum": "runtime-or-subjective",
+      "referenceStatus": "insufficient_evidence",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "989dc35977ad66494ef07de0347df5cfaaf8de145c9805fb55de1ab72de65323",
+        "requestUtf8Bytes": 4462,
+        "promptTokenUpperEstimate": 8558,
+        "reservedCostUsd": 0.0047274,
+        "coverage": {
+          "includedFiles": [
+            "index.html",
+            "styles.css"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "insufficient_evidence",
+        "citationValidity": "none",
+        "citations": [],
+        "explanation": "Mobile usability and absence of horizontal overflow require rendering at a mobile width; source alone cannot verify."
+      },
+      "usage": {
+        "promptTokens": 893,
+        "completionTokens": 210
+      },
+      "conservativeUsageCostUsd": 0.0005199,
+      "application": {
+        "status": "insufficient_evidence",
+        "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+        "citations": []
+      },
+      "elapsedMilliseconds": 2182
+    },
+    {
+      "id": "subjective-brand",
+      "category": "must-abstain",
+      "stratum": "runtime-or-subjective",
+      "referenceStatus": "insufficient_evidence",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "9358a6d17562e2eb7351b19f6fa565a9444d3f9f191f5d21b578f25d94a9108e",
+        "requestUtf8Bytes": 4400,
+        "promptTokenUpperEstimate": 8496,
+        "reservedCostUsd": 0.004708799999999999,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "insufficient_evidence",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<h1>Willow Studio</h1>"
+          }
+        ],
+        "explanation": "Design elegance, professionalism and brand consistency are subjective and require human judgement; source cannot establish them."
+      },
+      "usage": {
+        "promptTokens": 873,
+        "completionTokens": 208
+      },
+      "conservativeUsageCostUsd": 0.0005115,
+      "application": {
+        "status": "insufficient_evidence",
+        "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 178,
+            "end": 200,
+            "excerpt": "<h1>Willow Studio</h1>"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1770
+    },
+    {
+      "id": "mixed-content-runtime",
+      "category": "must-abstain",
+      "stratum": "runtime-or-subjective",
+      "referenceStatus": "insufficient_evidence",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "a77aa155ca1aa867f2618f32dfc90e4fa7d73951b9d4483893d19c4b405c70e4",
+        "requestUtf8Bytes": 4441,
+        "promptTokenUpperEstimate": 8537,
+        "reservedCostUsd": 0.004721100000000001,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "insufficient_evidence",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<p>Beef noodles — $18 AUD</p><button>Checkout</button>"
+          }
+        ],
+        "explanation": "Menu price text appears, but checkout payment completion needs runtime/backend confirmation; cannot be verified from static source."
+      },
+      "usage": {
+        "promptTokens": 884,
+        "completionTokens": 209
+      },
+      "conservativeUsageCostUsd": 0.000516,
+      "application": {
+        "status": "insufficient_evidence",
+        "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 178,
+            "end": 232,
+            "excerpt": "<p>Beef noodles — $18 AUD</p><button>Checkout</button>"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1999
+    },
+    {
+      "id": "truncated-hours",
+      "category": "must-abstain",
+      "stratum": "coverage-limited",
+      "referenceStatus": "insufficient_evidence",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "af32ee12da10a1d3abf7b5e498057b2dcac708233d344f2587fa3ca9a699991a",
+        "requestUtf8Bytes": 10135,
+        "promptTokenUpperEstimate": 14231,
+        "reservedCostUsd": 0.0064293,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [
+            "index.html"
+          ],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "changes_suggested",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<p>Seasonal flowers</p>"
+          }
+        ],
+        "explanation": "Visible page text shows only 'Seasonal flowers'; no opening hours text appears before truncation."
+      },
+      "usage": {
+        "promptTokens": 1477,
+        "completionTokens": 207
+      },
+      "conservativeUsageCostUsd": 0.0006915,
+      "application": {
+        "status": "changes_suggested",
+        "explanation": "Visible page text shows only 'Seasonal flowers'; no opening hours text appears before truncation.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 178,
+            "end": 201,
+            "excerpt": "<p>Seasonal flowers</p>"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 2149
+    }
+  ]
+}

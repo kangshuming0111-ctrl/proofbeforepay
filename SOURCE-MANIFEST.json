@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-01T13:26:18.024Z",
+  "generatedAt": "2026-11-01T13:40:15.834Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -38,8 +38,8 @@
     },
     {
       "file": "README.md",
-      "bytes": 45869,
-      "sha256": "51b84179049625ef3a034cda32dc60ccf183dd8bc90102b7ed508b515aac9e74"
+      "bytes": 46271,
+      "sha256": "b05ef7fed7534fce1a8a9abf1e26f88445c03ea243ed862acdf446204af1b70d"
     },
     {
       "file": "app/api/config/route.ts",
@@ -133,8 +133,8 @@
     },
     {
       "file": "app/components/DeliveryAssessment.tsx",
-      "bytes": 12365,
-      "sha256": "c16b5d5271cd7d08dde71c15c78cee006735858e7ae99c8d6db001a424ae6253"
+      "bytes": 12456,
+      "sha256": "91a7be38c98e17e82aa39187d09138394d6f6090e88e9a60ad728bd5c6131a0c"
     },
     {
       "file": "app/components/DeliveryOverview.tsx",
@@ -567,6 +567,11 @@
       "sha256": "7e0f6962ac20c92bb147d9c04b0b085bbd434b8f8967d02cfbf4f26259cc1949"
     },
     {
+      "file": "docs/EVALUATION-2026-11-02.md",
+      "bytes": 6001,
+      "sha256": "cb8f3d64b387276e8c226fce1674c91192f6c96e92985dfe261cd136b494193b"
+    },
+    {
       "file": "docs/PROJECT-STORY.md",
       "bytes": 4507,
       "sha256": "dc95903ab154e8283b4cafa17eae590c17c4a788b85249bb9b46fb77f01491d0"
@@ -653,8 +658,8 @@
     },
     {
       "file": "lib/delivery-assessment.ts",
-      "bytes": 17443,
-      "sha256": "7f90cbe4d6d092fff96a1e905d323d6ca2310493a1a27b7a249d8a099e90221e"
+      "bytes": 18584,
+      "sha256": "058be5048cd16320bd8037b55b3d9ffcdec7db5f0c0a1d4e3212d4f48cc6dc6d"
     },
     {
       "file": "lib/delivery-layout-summary.ts",
@@ -817,6 +822,26 @@
       "sha256": "c7c865cd1b20e8925bdb9c00394bfaf1dcab6fc8430ebd7a82388283758fa630"
     },
     {
+      "file": "scripts/evaluation-results/2026-11-02-baseline.json",
+      "bytes": 41586,
+      "sha256": "b328a69d98d3526450baea348210500d1b04148aad522e585cce62ca97adda4a"
+    },
+    {
+      "file": "scripts/evaluation-results/2026-11-02-coverage-retest.json",
+      "bytes": 8875,
+      "sha256": "a669207b2299d696898d459cc512f616ccffa1c252ecaa8a2f1dafba23bbedce"
+    },
+    {
+      "file": "scripts/evaluation-results/2026-11-02-explanation-retest.json",
+      "bytes": 8724,
+      "sha256": "0c9b250ce2220ada282cab16e0368ab2494d174200cacdd03d273ad402e35c6a"
+    },
+    {
+      "file": "scripts/evaluation-results/2026-11-02-independent-adjudication.json",
+      "bytes": 31524,
+      "sha256": "b3242e437debb04cf6534104a6cfaf0e425b8aee3e3929c1870f6659cb2579b4"
+    },
+    {
       "file": "scripts/execution-profile.mjs",
       "bytes": 624,
       "sha256": "2e71116f4d2b70cff8bb70436f8dd5c709ec7ff62893424530f404e0193d3630"
@@ -918,8 +943,8 @@
     },
     {
       "file": "tests/delivery-assessment.test.ts",
-      "bytes": 20240,
-      "sha256": "13b8dec76500df1f904f584d1774e8751f8b971d1757926239f1d22f284c2431"
+      "bytes": 24977,
+      "sha256": "5c4dd3cbbc69f5087686d1257ed295d9c27ace7578e532377def626a9b6190d5"
     },
     {
       "file": "tests/delivery-layout-summary.test.ts",

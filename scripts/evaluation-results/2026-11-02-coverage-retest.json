@@ -1,0 +1,341 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-01T13:33:24.884Z",
+  "mode": "live",
+  "model": "deepseek-flash",
+  "pricing": {
+    "model": "deepseek-flash",
+    "modelVersionAtVerification": "DeepSeek-V4.1-Flash-1017",
+    "inputUsdPerMillion": 0.3,
+    "outputUsdPerMillion": 1.2,
+    "maxOutputTokens": 1800,
+    "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+    "verifiedOn": "2026-11-02",
+    "assumption": "Peak cache-miss input and peak output rates, ignoring any discounts; estimated from reported usage, not an invoice."
+  },
+  "limits": {
+    "maxCalls": 1,
+    "maxUsd": 0.01,
+    "outputTokensPerCall": 1800,
+    "applicationRequestTimeoutMilliseconds": 30000,
+    "automaticRetries": 0
+  },
+  "accounting": {
+    "calls": 1,
+    "conservativeReportedUsageCostUsd": 0.0007046999999999999,
+    "unknownUsageReservedUsd": 0,
+    "stopReason": "all_cases_completed"
+  },
+  "measurementNotes": [
+    "Reference labels never enter a provider request.",
+    "Raw model and application policy statuses are reported separately; application abstention does not prove the model abstained.",
+    "Four strata are reported separately; do not pool coverage-limited cases into complete-literal error rates.",
+    "Status agreement is not a human semantic accuracy result; every case still needs human review.",
+    "Input reservation uses request UTF-8 byte count plus 4096 tokens for template overhead; it is a deliberately conservative estimate, not tokenizer output or a provider-enforced spending cap.",
+    "Missing/invalid usage or network ambiguity stops further calls and records that call's reserved estimate.",
+    "No payment, database writes, customer data or application credentials are included in this evaluation."
+  ],
+  "summaryByStratum": {
+    "complete-literal": {
+      "planned": 0,
+      "attempted": 0,
+      "applicationErrors": 0,
+      "rawStatusAgreement": {
+        "count": 0,
+        "total": 0,
+        "fraction": null
+      },
+      "applicationStatusAgreement": {
+        "count": 0,
+        "total": 0,
+        "fraction": null
+      },
+      "mismatchRecall": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "falsePositiveOnClean": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "correctAbstention": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "invalidCitationResponses": 0,
+      "unknownUsage": 0,
+      "reportedUsageCostUsd": 0,
+      "latency": {
+        "samples": 0,
+        "meanMilliseconds": null,
+        "p50Milliseconds": null,
+        "p95Milliseconds": null
+      }
+    },
+    "untrusted-source": {
+      "planned": 0,
+      "attempted": 0,
+      "applicationErrors": 0,
+      "rawStatusAgreement": {
+        "count": 0,
+        "total": 0,
+        "fraction": null
+      },
+      "applicationStatusAgreement": {
+        "count": 0,
+        "total": 0,
+        "fraction": null
+      },
+      "mismatchRecall": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "falsePositiveOnClean": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "correctAbstention": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "invalidCitationResponses": 0,
+      "unknownUsage": 0,
+      "reportedUsageCostUsd": 0,
+      "latency": {
+        "samples": 0,
+        "meanMilliseconds": null,
+        "p50Milliseconds": null,
+        "p95Milliseconds": null
+      }
+    },
+    "runtime-or-subjective": {
+      "planned": 0,
+      "attempted": 0,
+      "applicationErrors": 0,
+      "rawStatusAgreement": {
+        "count": 0,
+        "total": 0,
+        "fraction": null
+      },
+      "applicationStatusAgreement": {
+        "count": 0,
+        "total": 0,
+        "fraction": null
+      },
+      "mismatchRecall": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "falsePositiveOnClean": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "correctAbstention": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "invalidCitationResponses": 0,
+      "unknownUsage": 0,
+      "reportedUsageCostUsd": 0,
+      "latency": {
+        "samples": 0,
+        "meanMilliseconds": null,
+        "p50Milliseconds": null,
+        "p95Milliseconds": null
+      }
+    },
+    "coverage-limited": {
+      "planned": 1,
+      "attempted": 1,
+      "applicationErrors": 0,
+      "rawStatusAgreement": {
+        "count": 1,
+        "total": 1,
+        "fraction": 1
+      },
+      "applicationStatusAgreement": {
+        "count": 1,
+        "total": 1,
+        "fraction": 1
+      },
+      "mismatchRecall": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "falsePositiveOnClean": {
+        "raw": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        },
+        "application": {
+          "count": 0,
+          "total": 0,
+          "fraction": null
+        }
+      },
+      "correctAbstention": {
+        "raw": {
+          "count": 1,
+          "total": 1,
+          "fraction": 1
+        },
+        "application": {
+          "count": 1,
+          "total": 1,
+          "fraction": 1
+        }
+      },
+      "invalidCitationResponses": 0,
+      "unknownUsage": 0,
+      "reportedUsageCostUsd": 0.0007046999999999999,
+      "latency": {
+        "samples": 1,
+        "meanMilliseconds": 1958,
+        "p50Milliseconds": 1958,
+        "p95Milliseconds": 1958
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "truncated-hours",
+      "category": "must-abstain",
+      "stratum": "coverage-limited",
+      "referenceStatus": "insufficient_evidence",
+      "semanticReview": "pending",
+      "plan": {
+        "requestSha256": "af32ee12da10a1d3abf7b5e498057b2dcac708233d344f2587fa3ca9a699991a",
+        "requestUtf8Bytes": 10135,
+        "promptTokenUpperEstimate": 14231,
+        "reservedCostUsd": 0.0064293,
+        "coverage": {
+          "includedFiles": [
+            "index.html"
+          ],
+          "truncatedFiles": [
+            "index.html"
+          ],
+          "omittedFiles": []
+        }
+      },
+      "attempted": true,
+      "networkAttempted": true,
+      "httpError": false,
+      "usageExceededReservation": false,
+      "raw": {
+        "httpStatus": 200,
+        "model": "deepseek-flash",
+        "finishReason": "stop",
+        "jsonValid": true,
+        "status": "insufficient_evidence",
+        "citationValidity": "valid",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<title>Fictional small business</title>"
+          }
+        ],
+        "explanation": "Supplied index.html shows only a title and 'Seasonal flowers'; no opening hours text is visible in the provided prefix."
+      },
+      "usage": {
+        "promptTokens": 1477,
+        "completionTokens": 218
+      },
+      "conservativeUsageCostUsd": 0.0007046999999999999,
+      "application": {
+        "status": "insufficient_evidence",
+        "explanation": "Supplied index.html shows only a title and 'Seasonal flowers'; no opening hours text is visible in the provided prefix.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 126,
+            "end": 165,
+            "excerpt": "<title>Fictional small business</title>"
+          }
+        ]
+      },
+      "elapsedMilliseconds": 1958
+    }
+  ]
+}

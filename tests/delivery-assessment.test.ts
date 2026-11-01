@@ -255,6 +255,75 @@ test("coverage enforces per-file and total source caps and excludes omitted-file
   await assert.rejects(assessDelivery(quote, env, mock(output).fetcher), ProviderError);
 });
 
+test("truncated HTML cannot turn an unseen requirement into absence or a partial match into full support", async () => {
+  const correctHours = "<p>Monday to Friday 11am–8pm</p>";
+  for (const status of ["changes_suggested", "supported"]) {
+    const contents = status === "changes_suggested"
+      ? source.replace("</body>", `<!--${"context ".repeat(850)}-->${correctHours}</body>`)
+      : source.replace("</body>", `${correctHours}<!--${"context ".repeat(850)}--><p>Monday to Friday 10am–6pm</p></body>`);
+    const quote = agreement({ "index.html": contents }), before = structuredClone(quote);
+    const output = proposal(quote), item = output.items.find(entry => entry.criterionId === "manual-1")!;
+    item.status = status;
+    item.explanation = status === "changes_suggested" ? "Opening hours are absent from this delivery." : "The opening hours requirement is fully satisfied.";
+    item.citations = [{ file: "index.html", excerpt: status === "supported" ? correctHours : "<p>Beef noodles $16</p>" }];
+    const fake = mock(output), result = await assessDelivery(quote, env, fake.fetcher);
+    const actual = result.items.find(entry => entry.criterionId === "manual-1")!;
+    assert.equal(actual.status, "insufficient_evidence");
+    assert.match(actual.explanation, /did not receive all HTML source/);
+    assert.deepEqual(actual.citations.map(citation => citation.excerpt), item.citations.map(citation => citation.excerpt));
+    assert.deepEqual(result.coverage.truncatedFiles, ["index.html"]);
+    const sent = JSON.parse(JSON.parse(String(fake.calls[0].init.body)).messages[1].content).files["index.html"] as string;
+    assert.equal(sent.includes(correctHours), status === "supported");
+    assert.ok(!sent.includes("<p>Monday to Friday 10am–6pm</p>"));
+    assert.deepEqual(quote, before);
+  }
+});
+
+test("an omitted HTML file prevents literal compliance and absence claims even with valid in-packet citations", async () => {
+  const cssContext = "/* opening-hours source context */";
+  const css = cssContext + " ".repeat(6000 - cssContext.length);
+  // The upload order is preserved: four complete CSS files exhaust the packet
+  // before index.html, without truncating any individual file.
+  const quote = agreement({ "a.css": css, "b.css": css, "c.css": css, "d.css": css, "index.html": source });
+  for (const status of ["supported", "changes_suggested"]) {
+    const output = proposal(quote); output.risks = [];
+    for (const item of output.items) item.citations = [{ file: "a.css", excerpt: cssContext }];
+    output.items.find(item => item.criterionId === "manual-1")!.status = status;
+    const result = await assessDelivery(quote, env, mock(output).fetcher);
+    const actual = result.items.find(item => item.criterionId === "manual-1")!;
+    assert.equal(actual.status, "insufficient_evidence");
+    assert.match(actual.explanation, /did not receive all HTML source/);
+    assert.deepEqual(result.coverage.truncatedFiles, []);
+    assert.deepEqual(result.coverage.omittedFiles, ["index.html"]);
+  }
+});
+
+test("CSS-only truncation does not downgrade literal advice from fully covered HTML", async () => {
+  const hours = "<p>Monday to Friday 11am–8pm</p>";
+  const quote = agreement({ "index.html": source.replace("</body>", `${hours}</body>`), "styles.css": `body{color:green}${" ".repeat(6500)}` });
+  for (const status of ["supported", "changes_suggested"]) {
+    const output = proposal(quote), item = output.items.find(entry => entry.criterionId === "manual-1")!;
+    item.status = status; item.citations = [{ file: "index.html", excerpt: hours }];
+    const result = await assessDelivery(quote, env, mock(output).fetcher);
+    assert.equal(result.items.find(entry => entry.criterionId === "manual-1")!.status, status);
+    assert.deepEqual(result.coverage.truncatedFiles, ["styles.css"]);
+    assert.deepEqual(result.coverage.omittedFiles, []);
+  }
+});
+
+test("an authoritative server failure keeps precedence over incomplete HTML coverage", async () => {
+  const quote = agreement({ "index.html": source.replace("</body>", `<!--${"context ".repeat(850)}--></body>`) });
+  quote.proof.delivery!.evidence.find(item => item.criterionId === "manual-1")!.finding = "fail";
+  const before = structuredClone(quote), output = proposal(quote);
+  output.items.find(item => item.criterionId === "manual-1")!.status = "supported";
+  const result = await assessDelivery(quote, env, mock(output).fetcher);
+  const item = result.items.find(entry => entry.criterionId === "manual-1")!;
+  assert.equal(item.status, "changes_suggested");
+  assert.match(item.explanation, /Server rules found a failed check/);
+  assert.deepEqual(item.ruleEvidenceIds, ["evidence-manual-1"]);
+  assert.deepEqual(quote, before);
+});
+
 test("truncation does not split a surrogate pair or pretend the incomplete file is complete", async () => {
   const contents = source + " ".repeat(5999 - source.length) + "🍜later";
   const quote = agreement({ "index.html": contents }), fake = mock(proposal(quote));
