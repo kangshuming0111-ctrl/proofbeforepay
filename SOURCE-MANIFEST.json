@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-01T14:06:56.715Z",
+  "generatedAt": "2026-11-01T14:39:01.783Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -38,8 +38,8 @@
     },
     {
       "file": "README.md",
-      "bytes": 46271,
-      "sha256": "b05ef7fed7534fce1a8a9abf1e26f88445c03ea243ed862acdf446204af1b70d"
+      "bytes": 47475,
+      "sha256": "0766da859b66ed93dbc4b6d235ff645732195f22eeb088f20281782d218c40c5"
     },
     {
       "file": "app/api/config/route.ts",
@@ -577,6 +577,11 @@
       "sha256": "897d854217b0a376d725edb2c84691f48aa9efb6529214ad16b5606c9cb4b929"
     },
     {
+      "file": "docs/WINNER-GAP-REVIEW-2026-11-02.md",
+      "bytes": 9110,
+      "sha256": "b1f3159deb7315ff17ee6e3b6d2bb0de00921c3cf4bf3342fed211ad502c9296"
+    },
+    {
       "file": "drizzle.config.ts",
       "bytes": 148,
       "sha256": "af081f7384aaeb0082cf422e29f139d137ca2f6a57c69b2c37b9fb1f8479867b"
@@ -658,8 +663,8 @@
     },
     {
       "file": "lib/delivery-assessment.ts",
-      "bytes": 20470,
-      "sha256": "fe70f67041abb3d08e8f136e10eb6878fe8d9819d49ae18910289ac6dec2e0b8"
+      "bytes": 23644,
+      "sha256": "7a51792fb4a54bf5ba5109f703c7c93e3ca157c0b8235b874f4b550f0884f491"
     },
     {
       "file": "lib/delivery-layout-summary.ts",
@@ -973,8 +978,8 @@
     },
     {
       "file": "tests/delivery-assessment.test.ts",
-      "bytes": 32416,
-      "sha256": "45b55c51624b57fd1cdf7f9c37ce7884d20f7a3922ffb966826ab942b2c9285b"
+      "bytes": 42255,
+      "sha256": "28b0aa26fe9c2514b7744c6b272db85585f2599202797d8df3a8394de0c6668a"
     },
     {
       "file": "tests/delivery-layout-summary.test.ts",

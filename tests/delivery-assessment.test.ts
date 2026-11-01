@@ -164,6 +164,125 @@ test("clear literal opening-hours and other text-content requirements still perm
   }
 });
 
+test("explicit Chinese and English booking-policy copy preserves the cited model verdict without claiming booking works", async () => {
+  const policy = "<p>所有咨询须提前预约，不接受临时到店。</p><p>Consultations require advance booking. Reservations must be arranged in advance; walk-ins are not accepted.</p>";
+  for (const [title, requirement, language] of [
+    ["咨询政策文案", "网页文案须明确说明：所有咨询须提前预约，不接受临时到店。", "zh"],
+    ["预订政策文字", "页面文字必须写明：所有咨询须提前预订，不接受临时到店。", "zh"],
+    ["Additional requirement 1", "文案需注明：咨询需要事先预订。", "zh"],
+    ["Consultation policy copy", "The page copy must clearly say consultations require advance arrangement and walk-ins are not accepted.", "en"],
+    ["Booking policy copy", "The page copy must clearly state consultations require advance booking and walk-ins are not accepted.", "en"],
+    ["Booking policy copy", "The booking policy copy must state bookings are required in advance; walk-ins are not accepted.", "en"],
+    ["Reservation policy text", "The website text must explain reservations must be arranged in advance; walk-ins are not accepted.", "en"],
+    ["Additional requirement 1", 'The page copy must clearly state: "Advance booking is required."', "en"],
+    ["Reservation policy text", "The website text must state reservations are required in advance.", "en"],
+  ] as const) for (const modelStatus of ["supported", "changes_suggested", "insufficient_evidence"]) {
+    const quote = agreement({ "index.html": source.replace("</body>", `${policy}</body>`) });
+    quote.language = language;
+    Object.assign(quote.proof.criteria.find(item => item.id === "manual-1")!, { title, source: requirement });
+    const before = structuredClone(quote), output = proposal(quote), item = output.items.find(entry => entry.criterionId === "manual-1")!;
+    item.status = modelStatus; item.citations = [{ file: "index.html", excerpt: policy }];
+    const fake = mock(output), result = await assessDelivery(quote, env, fake.fetcher);
+    const assessed = result.items.find(entry => entry.criterionId === "manual-1")!;
+    assert.equal(assessed.status, modelStatus, `${title}: ${modelStatus}`);
+    assert.equal(assessed.citations[0].excerpt, policy);
+    assert.deepEqual(quote, before); assert.equal(fake.calls.length, 1);
+  }
+});
+
+test("booking copy cannot mask mixed behavior, an operational title or an unclear text requirement in either language", async () => {
+  const chineseCopy = "网页文案须明确说明：所有咨询须提前预约，不接受临时到店。";
+  const englishCopy = "The page copy must clearly state reservations are required in advance.";
+  for (const [title, requirement] of [
+    ["咨询政策文案", `${chineseCopy}预约表单须能提交并收到确认邮件。`],
+    ["咨询政策文案", `${chineseCopy}预约按钮须正常点击。`],
+    ["咨询政策文案", `${chineseCopy}后台必须保存预订。`],
+    ["咨询政策文案", `${chineseCopy}并支持在线预约。`],
+    ["咨询政策文案", `${chineseCopy}并支持所有选择符合上述政策并同意服务规则的新客户预约。`],
+    ["咨询政策文案", `${chineseCopy}此外预订必须可用。`],
+    ["预约功能", chineseCopy],
+    ["在线预约", chineseCopy],
+    ["预约文案", "文案需修改，并实现预约。"],
+    ["预约文案", "网页文案须明确说明提前预约，同时预订。"],
+    ["预约要求", "须提前预约。"],
+    ["Booking policy copy", `${englishCopy} The booking form must submit successfully.`],
+    ["Reservation policy text", `${englishCopy} Send a reservation confirmation email.`],
+    ["Booking policy copy", `${englishCopy} Also enable online booking.`],
+    ["Booking policy copy", `${englishCopy} Customers must be able to book online.`],
+    ["Booking policy copy", `${englishCopy} Customers can reserve a table online.`],
+    ["Booking policy copy", `${englishCopy} Also enable all clients who have already agreed to every condition above to make a booking.`],
+    ["Reservation policy text", `${englishCopy} Reservations must be available online.`],
+    ["Working reservation form", englishCopy],
+    ["Online booking", englishCopy],
+    ["Booking copy", "Improve the copy and provide booking."],
+    ["Reservation requirement", "Reservations must be arranged in advance."],
+  ]) for (const modelStatus of ["supported", "changes_suggested"]) {
+    const quote = agreement(); Object.assign(quote.proof.criteria.find(item => item.id === "manual-1")!, { title, source: requirement });
+    const output = proposal(quote); output.items.find(item => item.criterionId === "manual-1")!.status = modelStatus;
+    const result = await assessDelivery(quote, env, mock(output).fetcher);
+    assert.equal(result.items.find(item => item.criterionId === "manual-1")!.status, "insufficient_evidence", `${title}: ${requirement}`);
+  }
+});
+
+test("booking-policy copy keeps server failure, incomplete HTML and exact-citation safeguards", async () => {
+  const policy = "<p>所有咨询须提前预约，不接受临时到店。</p>";
+  for (const condition of ["rule-fail", "incomplete-html", "invalid-citation"] as const) {
+    const html = source.replace("</body>", `${policy}</body>`);
+    const quote = agreement({ "index.html": html + (condition === "incomplete-html" ? " ".repeat(6200) : "") });
+    Object.assign(quote.proof.criteria.find(item => item.id === "manual-1")!, { title: "预约政策文案", source: "网页文案须明确说明：所有咨询须提前预约，不接受临时到店。" });
+    if (condition === "rule-fail") quote.proof.delivery!.evidence.find(item => item.criterionId === "manual-1")!.finding = "fail";
+    const output = proposal(quote), item = output.items.find(entry => entry.criterionId === "manual-1")!;
+    item.status = "supported"; item.citations = [{ file: "index.html", excerpt: condition === "invalid-citation" ? "This policy does not occur in the file." : policy }];
+    const before = structuredClone(quote), fake = mock(output);
+    if (condition === "invalid-citation") await assert.rejects(assessDelivery(quote, env, fake.fetcher), ProviderError);
+    else {
+      const result = await assessDelivery(quote, env, fake.fetcher);
+      assert.equal(result.items.find(entry => entry.criterionId === "manual-1")!.status, condition === "rule-fail" ? "changes_suggested" : "insufficient_evidence");
+    }
+    assert.deepEqual(quote, before); assert.equal(fake.calls.length, 1);
+  }
+});
+
+test("a policy-copy directive cannot extend to independent booking capabilities or actions", async () => {
+  const englishCopy = "The page copy must clearly state advance booking is required.";
+  const chineseCopy = "网页文案须明确说明：所有咨询须提前预约，不接受临时到店。";
+  for (const [title, requirement] of [
+    ["Booking policy copy", "The page copy must clearly state the booking policy. Reserve a table now."],
+    ["Booking policy copy", `${englishCopy} The website must accept reservations.`],
+    ["Booking policy copy", `${englishCopy} Customers should be capable of booking a table.`],
+    ["Booking policy copy", `${englishCopy} Customers should be capable of reserving a table.`],
+    ["Booking policy copy", `${englishCopy} Visitors must have the ability to make reservations.`],
+    ["Booking policy copy", `${englishCopy} The site must facilitate bookings.`],
+    ["Booking policy copy", "The page copy must clearly state advance booking is required and the website must accept reservations."],
+    ["Booking policy copy", "The page copy must clearly state advance booking is required; the website accepts reservations."],
+    ["Booking policy copy", "The page copy must clearly state advance booking is required, while customers are capable of reserving a table."],
+    ["Booking policy copy", "The page copy must clearly state the policy and the website accepts reservations."],
+    ["咨询政策文案", `${chineseCopy}网站须具备在线预约能力。`],
+    ["咨询政策文案", `${chineseCopy}网站接受顾客在线预订。`],
+    ["咨询政策文案", "网页文案须明确说明所有咨询须提前预约，网站须具备在线预约能力。"],
+    ["Booking capability copy", englishCopy],
+    ["预约能力文案", chineseCopy],
+  ]) for (const modelStatus of ["supported", "changes_suggested"]) {
+    const quote = agreement(); Object.assign(quote.proof.criteria.find(item => item.id === "manual-1")!, { title, source: requirement });
+    const output = proposal(quote); output.items.find(item => item.criterionId === "manual-1")!.status = modelStatus;
+    const result = await assessDelivery(quote, env, mock(output).fetcher);
+    assert.equal(result.items.find(item => item.criterionId === "manual-1")!.status, "insufficient_evidence", `${title}: ${requirement}`);
+  }
+});
+
+test("unfamiliar or underspecified booking-policy wording stays unverified rather than widening the bounded allowance", async () => {
+  for (const requirement of [
+    "The page copy must state our reservation policy.",
+    "The page copy must clearly state bookings are by prior arrangement.",
+    "网页文案须明确说明：请先约定到访时间，预约后再来。",
+  ]) {
+    const quote = agreement(); Object.assign(quote.proof.criteria.find(item => item.id === "manual-1")!, { title: "Booking policy copy", source: requirement });
+    const output = proposal(quote); output.items.find(item => item.criterionId === "manual-1")!.status = "supported";
+    const result = await assessDelivery(quote, env, mock(output).fetcher);
+    assert.equal(result.items.find(item => item.criterionId === "manual-1")!.status, "insufficient_evidence", requirement);
+  }
+});
+
 test("separate policy follow-up fixtures preserve semantic model verdicts without rewriting requirements or claiming runtime success", async () => {
   const followup = JSON.parse(readFileSync(new URL("../scripts/assessment-policy-evaluation-cases.json", import.meta.url), "utf8")) as {
     evaluationGroup: string;

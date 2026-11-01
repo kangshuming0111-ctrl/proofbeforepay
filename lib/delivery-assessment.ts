@@ -75,12 +75,37 @@ function citations(value: unknown, sent: Record<string, string>): ProofAssessmen
 // A literal-content allowance is deliberately narrower than the set of things
 // a model might infer from source. Unknown manual requirements stay unverified.
 const SOURCE_CONTENT = /营业(?:时间|时段)|营业日|开放时间|菜单|菜品|价格|价目|标价|地址|电话|联系方式|店名|商店名称|餐厅名称|公司名称|企业名称|文案|文字内容|文本内容|\b(?:(?:opening|business)[ -](?:hours|times)|hours\s+of\s+operation|menu|dishes|prices?|pricing|price\s+list|address|phone(?:\s+number)?|telephone|contact\s+(?:number|details)|(?:business|shop|store|restaurant|company|brand)\s+name|copy|copywriting|(?:page|website|text)\s+content)\b/iu;
-const OBSERVATION_REQUIRED = /手机|移动端|响应式|视觉|美观|好看|易用|用户体验|交互|表单|提交|按钮|点击|导航|功能|后台|数据库|预约|预订|登录|注册|搜索|支付|购物车|发送|收件|保存|储存|加载|性能|实时|动态|权限|身份验证|运行|配色|排版|布局|样式|风格|审美|品牌(?:形象|调性|设计)|符合[^。；\n]*品牌|\b(?:responsive|mobile|visual|aesthetic|beautiful|attractive|subjective|user[- ]experience|usability|interactive|interactivity|interaction|forms?|submi(?:t|ts|tted|tting|ssion|ssions)|end[- ]to[- ]end|click(?:able|s|ing)?|navigation|nav\s+interactivity|function(?:al|ality)?|works?|working|backend|database|booking|reservations?|log[- ]?in|sign[- ]?up|search(?:able|ing|es)?|payment|checkout|cart|send(?:s|ing)?|receiv(?:e[ds]?|ing)|persist(?:s|ed|ing|ence)?|sav(?:e[ds]?|ing)|load(?:s|ed|ing)?|hover|toggle|animate|animation|accordion|filter|sort|upload|download|performance|real[- ]time|dynamic|authentication|authori[sz]ation|colou?rs?|layout|styling|styles?|design|looks?|feel|modern|elegant|professional|accessibility|accessible|branding|brand(?!\s+name))\b/iu;
+const OBSERVATION_REQUIRED = /手机|移动端|响应式|视觉|美观|好看|易用|用户体验|交互|表单|提交|按钮|点击|导航|功能|后台|数据库|预约|预订|登录|注册|搜索|支付|购物车|发送|收件|保存|储存|加载|性能|实时|动态|权限|身份验证|运行|配色|排版|布局|样式|风格|审美|品牌(?:形象|调性|设计)|符合[^。；\n]*品牌|\b(?:responsive|mobile|visual|aesthetic|beautiful|attractive|subjective|user[- ]experience|usability|interactive|interactivity|interaction|forms?|submi(?:t|ts|tted|tting|ssion|ssions)|end[- ]to[- ]end|click(?:able|s|ing)?|navigation|nav\s+interactivity|function(?:al|ality)?|works?|working|backend|database|bookings?|reservations?|log[- ]?in|sign[- ]?up|search(?:able|ing|es)?|payment|checkout|cart|send(?:s|ing)?|receiv(?:e[ds]?|ing)|persist(?:s|ed|ing|ence)?|sav(?:e[ds]?|ing)|load(?:s|ed|ing)?|hover|toggle|animate|animation|accordion|filter|sort|upload|download|performance|real[- ]time|dynamic|authentication|authori[sz]ation|colou?rs?|layout|styling|styles?|design|looks?|feel|modern|elegant|professional|accessibility|accessible|branding|brand(?!\s+name))\b/iu;
+const BOOKING_TERMS = /预约|预订|\b(?:bookings?|reservations?)\b/giu;
+// Only an explicit wording instruction can scope these otherwise operational
+// nouns to copy. Mentioning "copy" elsewhere in a compound requirement cannot.
+const POLICY_COPY_DIRECTIVE = /^(?:(?:网页|页面|网站)(?:上(?:的)?)?)?(?:(?:咨询|预约|预订)(?:政策)?)?(?:文案|文字(?:内容)?|文本(?:内容)?)(?:中)?(?:必须|须|需要|需|应当|应|要)(?:清楚|清晰|明确)?(?:说明|写明|注明|标明|包含|写上|显示|标注)|^(?:(?:the|our)\s+)?(?:(?:page|website|site)\s+)?(?:(?:booking|reservation|consultation|appointment)(?:\s+policy)?\s+)?(?:copy|copywriting|text(?:\s+content)?|content)\s+(?:must|should|needs?\s+to)\s+(?:clearly\s+)?(?:state|say|explain|include|show|display|specify|mention|read)\b/iu;
+const POLICY_COPY_TITLE = /^(?:(?:咨询|到店|预约|预订)(?:的)?)?(?:(?:政策|规则|说明)(?:的)?)?(?:文案|文字|文本|政策|规则|说明)(?:内容)?$|^(?:(?:consultation|appointment|booking|reservation)s?\s+)?(?:(?:policy|policies)\s+)?(?:copy|text|wording|notice|instructions?|policy|policies)$/iu;
+const BOOKING_ACTION_OR_CAPABILITY = /能力|\b(?:book(?:s|ed)?|reserv(?:e|es|ed|ing)|capable|capabilit(?:y|ies)|abilit(?:y|ies))\b/iu;
+// This is a bounded allowance for one advance-arrangement policy statement,
+// optionally followed by a no-walk-ins clause. It is not a general language
+// parser: additional assertions and unfamiliar wording remain unverified.
+const ADVANCE_POLICY_COPY = /^(?:(?:所有|全部)?(?:咨询|到店咨询|咨询服务|服务)(?:均|都)?(?:须|需|需要|必须|应)(?:提前|事先)(?:预约|预订)(?:[，,；;]\s*(?:不接受临时到店|不接受未经预约的到访))?|(?:(?:all\s+)?consultations?\s+(?:requires?|needs?)\s+(?:advance|prior)\s+(?:bookings?|reservations?|arrangement)|(?:advance\s+)?bookings?\s+(?:is|are)\s+required(?:\s+in\s+advance)?|reservations?\s+(?:must\s+be\s+arranged|are\s+required)\s+in\s+advance)(?:\s*(?:[;,]|\band\b)\s*walk[- ]ins?\s+(?:are\s+)?not\s+accepted)?)$/iu;
 
-/** Observation exclusions win even when a requirement also mentions menu/text. */
+function isExplicitBookingPolicyCopy(criterion: ProofCriterion): boolean {
+  const source = criterion.source.trim(), title = criterion.title.trim();
+  const directive = POLICY_COPY_DIRECTIVE.exec(source);
+  if (!directive || BOOKING_ACTION_OR_CAPABILITY.test(`${title}\n${source}`)) return false;
+  const body = source.slice(directive[0].length).trim().replace(/^[：:\s"'“‘]+/u, "").replace(/[。.!?！？"'”’\s]+$/u, "");
+  if (!ADVANCE_POLICY_COPY.test(body)) return false;
+  const sourceWithoutBooking = source.replace(BOOKING_TERMS, ""), titleWithoutBooking = title.replace(BOOKING_TERMS, "");
+  // A runtime title still vetoes a text-only source. An ambiguous booking title
+  // must itself identify a policy/copy requirement rather than a capability.
+  if (titleWithoutBooking !== title && !POLICY_COPY_TITLE.test(title)) return false;
+  return (sourceWithoutBooking !== source || titleWithoutBooking !== title)
+    && !OBSERVATION_REQUIRED.test(`${titleWithoutBooking}\n${sourceWithoutBooking}`);
+}
+
+/** Hard observation exclusions still win inside a policy-copy requirement. */
 function needsObservation(criterion: ProofCriterion): boolean {
-  return criterion.id === "mobile" || OBSERVATION_REQUIRED.test(`${criterion.title}\n${criterion.source}`)
-    || (criterion.id.startsWith("manual-") && !SOURCE_CONTENT.test(criterion.source));
+  const policyCopy = isExplicitBookingPolicyCopy(criterion);
+  return criterion.id === "mobile" || (!policyCopy && OBSERVATION_REQUIRED.test(`${criterion.title}\n${criterion.source}`))
+    || (criterion.id.startsWith("manual-") && !policyCopy && !SOURCE_CONTENT.test(criterion.source));
 }
 
 function usage(value: unknown): ProofAssessment["usage"] {

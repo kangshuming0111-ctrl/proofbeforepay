@@ -28,6 +28,8 @@ After seller files are saved and the current version has a complete rule review,
 
 Each criterion gets `supported`, `changes_suggested` or `insufficient_evidence`, a bounded explanation and exact source citations. The server derives UTF-16 citation offsets only from text actually included in the model request. It checks complete unique criterion coverage and rejects invented citations or extra fields. Server rule failures take priority; browser/backend behavior, mobile usability, subjective appearance and unclassified manual criteria stay insufficient. Literal content checks such as opening hours and menu text may receive source-based suggestions, subject to these exclusions. This report never changes rule evidence, human checks, acceptance or financial state.
 
+A narrowly recognized, explicit consultation/booking-policy **copy** instruction can retain its cited model verdict, including an insufficient or suggested-change verdict. This is a bounded wording allowance, not a general natural-language intent classifier: unfamiliar policy phrasing may still need manual confirmation. Extra operational clauses, an operational title, or mixed booking/form/backend behavior do not receive this allowance. Invented citations are rejected and incomplete HTML coverage still forces source abstention. No text verdict proves that a reservation service works.
+
 The assessment may also list up to five cited **potential** source problems. It does not run scripts, a browser or a backend, and does not establish that a site is secure or bug-free. Input is bounded to 6,000 UTF-16 characters per file and 24,000 total; included, truncated and omitted files remain visible. Only an explicit request calls the model, at most once per saved report; opening the saved report is free of new calls. Concurrent first requests may each reach the provider before the database CAS allows only one saved result. There is no automatic retry. The request uses a 1,800-token completion limit with thinking disabled.
 
 Reports are stored in `delivery.assessment`, private to project participants, and omitted from project-list summaries. Replacements discard any report on the new delivery; immutable history preserves the old report with its original delivery. UI and endpoint checks bind assessment to the current delivery ID and explicit send confirmation. Existing buyer acceptance remains independent and can be completed without running optional AI assessment.
@@ -229,16 +231,13 @@ Generate a sanitized source export with `node scripts/build-judge-pack.mjs --out
 
 For the local Vite demo, open `/signin-with-chatgpt` once to activate the loopback-only fixed development account before creating collaborative demos. This is local test authentication, not a second real user or production sign-in.
 
-## Competition handoff still required
+## Competition handoff status — 2 November 2026
 
-- Produce a fresh, documented same-project AI/revision/acceptance/Sandbox walkthrough before claiming that complete integration was verified. Earlier saved AI and legacy Sandbox capture/void checks are separate dated evidence, not proof of every new path. Keep controlled samples and simulated results clearly labelled.
-- Publish the source repository with this MIT license and complete setup instructions. The current Sites source repository is not automatically a public competition submission.
-- Prepare an English project description explaining the AI and PayPal roles.
-- Record a public YouTube demonstration shorter than three minutes.
-- Supply free judge access and keep the build available throughout judging.
-- Submit the project on Devpost before the official deadline; deploying a website is not a Devpost submission.
-
-The competition deadline currently shown is 12 November 2026, 12:00 PST (13 November, 07:00 Melbourne AEDT). Recheck the official rules before submission.
+- Public MIT source and setup/run instructions: [proofbeforepay on GitHub](https://github.com/kangshuming0111-ctrl/proofbeforepay). The sanitized source export includes `JUDGE-README.md` for a free, provider-free local walkthrough. A clean independent checkout has been run; a hosted owner-private URL is not assumed to grant another account access.
+- A fresh, saved same-project AI/revision/acceptance/PayPal Sandbox rehearsal completed with a persisted test receipt. It used one owner switching perspectives and virtual test funds, not two independent production users or seller settlement. The saved AI report retains its known mistake; see the [dated evaluation and limits](docs/EVALUATION-2026-11-02.md).
+- The [English project description](docs/PROJECT-STORY.md) and [135-second public English walkthrough](https://youtu.be/gDWtwK72LS0) are available. The video is an edited sequence of real application screenshots with English on-screen text and no audio; it is not continuous screen capture. A stronger interaction recording remains a presentation improvement.
+- The Devpost entry is an editable **draft, 4/5 steps**. Official rules remain unchecked and the project has **not** been formally submitted, as requested by the owner. Deploying the website or publishing source is not Devpost submission.
+- Before formal submission, refresh the public source and attachment to the intended final version, verify the free setup path and public video, and keep the build available throughout judging. Recheck the official deadline and rules rather than relying on this dated status.
 
 ## 给初学者的解释
 
