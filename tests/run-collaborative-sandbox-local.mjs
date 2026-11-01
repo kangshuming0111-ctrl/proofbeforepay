@@ -10,6 +10,11 @@ import { fileURLToPath } from "node:url";
 import { buildJudgePack } from "../scripts/build-judge-pack.mjs";
 
 const repo = fileURLToPath(new URL("../", import.meta.url));
+const args = process.argv.slice(2);
+if (args.length && (args.length !== 2 || args[0] !== "--suite" || !["collaborative-sandbox", "browser-checks"].includes(args[1]))) {
+  throw new Error("Use no arguments or --suite collaborative-sandbox|browser-checks.");
+}
+const suite = args[1] ?? "collaborative-sandbox";
 const temp = await mkdtemp("/private/tmp/pbp-two-account-test-");
 const pack = await buildJudgePack(repo, path.join(temp, "export"));
 const source = pack.sourceDirectory;
@@ -119,7 +124,8 @@ try {
     if (stableReads < 5) await new Promise(resolve => setTimeout(resolve, 100));
   }
   if (stableReads < 5) throw new Error("Isolated application/D1 did not pass stable read-only readiness.");
-  const result = spawnSync("/usr/bin/python3", ["tests/collaborative-sandbox-api-smoke.py", "--url", origin], {cwd: source, env: cleanEnv, encoding: "utf8", maxBuffer: 2 * 1024 * 1024});
+  const suiteScript = suite === "browser-checks" ? "tests/browser-checks-api-smoke.py" : "tests/collaborative-sandbox-api-smoke.py";
+  const result = spawnSync("/usr/bin/python3", [suiteScript, "--url", origin], {cwd: source, env: cleanEnv, encoding: "utf8", maxBuffer: 2 * 1024 * 1024});
   await writeFile(path.join(temp, "api-result.log"), `${result.stdout ?? ""}\n${result.stderr ?? ""}`);
   if (result.status !== 0) throw new Error(`Local API test failed; inspect ${path.join(temp, "api-result.log")}`);
   const resultData = JSON.parse(result.stdout);

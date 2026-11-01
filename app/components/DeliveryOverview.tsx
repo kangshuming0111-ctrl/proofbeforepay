@@ -2,7 +2,7 @@
 
 import { ArrowRight, ChevronDown, FileCheck2, History, MessageSquarePlus, ScanLine } from "lucide-react";
 import type { Language, ProofCollaboration, ProofCriterion, ProofDelivery, ProofDeliveryVersion, ProofLayoutWidth, ProofReview, ProofRole } from "@/lib/contracts";
-import { criterionDisplayTitle, deliveryOverview, overviewFeedbackDraft, type DeliveryOverviewRow } from "@/lib/delivery-overview";
+import { criterionDisplayTitle, deliveryOverview, overviewFeedbackDraft, overviewRowLabel } from "@/lib/delivery-overview";
 import { deliveryLayoutSummary } from "@/lib/delivery-layout-summary";
 import "../delivery-overview.css";
 
@@ -31,7 +31,7 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
   const layoutIssue = layout.state === "current" ? layout.firstIssue : undefined;
   const firstRows = overview.rows.slice(0, 3);
   const primaryNeedsAttention = firstRows[0] && (firstRows[0].rule === "fail" || firstRows[0].rule === "unreviewed"
-    || firstRows[0].humanPending || firstRows[0].ai?.status === "changes_suggested" || firstRows[0].ai?.status === "insufficient_evidence");
+    || firstRows[0].humanPending || firstRows[0].ai?.status === "changes_suggested" || firstRows[0].ai?.status === "insufficient_evidence" && !firstRows[0].humanConfirmed);
   const showDraft = role === "buyer" && stage === "submitted" && !!onPrepareFeedback;
   const title = stage === "accepted" ? tr("买家已接受当前交付", "The buyer accepted this delivery")
     : !overview.reviewCurrent ? tr("先核查当前交付版本", "Check this delivery version first")
@@ -42,15 +42,7 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
     : !overview.assessmentCurrent ? tr("规则已核查，AI 尚未运行", "Rules checked; AI has not run")
     : tr("本版检查已保存，验收由买家决定", "Checks saved; the buyer decides acceptance");
 
-  function rowLabel(row: DeliveryOverviewRow) {
-    if (row.rule === "fail") return tr("规则不符", "Rule mismatch");
-    if (row.ai?.status === "changes_suggested") return tr("AI 建议修改", "AI suggests changes");
-    if (row.humanPending) return tr("人工待确认", "Human check needed");
-    if (row.rule === "unreviewed") return tr("尚未核查", "Not checked");
-    if (row.ai?.status === "insufficient_evidence") return tr("AI 证据不足", "AI: insufficient evidence");
-    if (row.rule === "needs_human") return tr("已人工确认", "Human-confirmed");
-    return tr("规则证据支持", "Rule evidence supports");
-  }
+  const rowLabel = (row: (typeof overview.rows)[number]) => overviewRowLabel(row, language);
 
   const ruleComparison = overview.previous?.ruleFailures !== undefined && overview.ruleFailures !== undefined;
   const aiComparison = overview.previous?.aiChanges !== undefined && overview.aiChanges !== undefined;
@@ -60,10 +52,15 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
     <div className="delivery-overview-metrics" aria-label={tr("分别记录的检查结果", "Separately recorded check results")}>
       <span className={overview.ruleFailures ? "overview-attention" : ""}>{tr("规则不符", "Rule mismatches")} <strong>{overview.ruleFailures ?? "—"}</strong></span>
       <span className={overview.aiChanges ? "overview-attention" : ""}>{tr("AI 建议修改", "AI change suggestions")} <strong>{overview.aiChanges ?? tr("未运行", "Not run")}</strong></span>
-      <span>{tr("人工待确认", "Human checks left")} <strong>{overview.humanRemaining ?? "—"}</strong></span>
+      {overview.risks && overview.risks.total > 0 && <span>{tr("模型潜在线索", "Potential AI issues")} <strong>{overview.risks.total}</strong></span>}
+      {overview.humanRequired && overview.humanRemaining === 0
+        ? <span>{tr("人工已确认", "Human-confirmed")} <strong>{overview.humanConfirmed}/{overview.humanRequired}</strong></span>
+        : <span>{tr("人工待确认", "Human checks left")} <strong>{overview.humanRemaining ?? "—"}</strong></span>}
     </div>
     {!overview.reviewCurrent && <p className="delivery-overview-note">{tr("此版本尚未核查，不作通过判断。", "This version has not been checked; no pass is claimed.")}</p>}
     {overview.reviewCurrent && !!overview.unreviewed && <p className="delivery-overview-note">{tr(`另有 ${overview.unreviewed} 项尚无完整规则证据。`, `${overview.unreviewed} requirements still lack rule evidence.`)}</p>}
+    {!!overview.aiInsufficient && !!overview.humanConfirmed && <p className="delivery-overview-note">{tr(`AI 有 ${overview.aiInsufficient} 项无法独立判断；人工确认另有记录，原始 AI 建议保留。`, `AI could not independently determine ${overview.aiInsufficient} requirement${overview.aiInsufficient === 1 ? "" : "s"}. Human confirmations and the original AI advice are recorded separately.`)}</p>}
+    {overview.risks && overview.risks.total > 0 && <p className="delivery-overview-note">{tr(`潜在线索中 ${overview.risks.unreviewed} 条尚无人工复核记录；双方最新意见可在 AI 评估中查看。复核不代表问题已解决。`, `Potential issues without a human review record: ${overview.risks.unreviewed}. Inspect each participant’s latest position in the AI assessment; a review does not establish resolution.`)}</p>}
     {firstRows[0] && <div className="delivery-overview-primary"><span>{rowLabel(firstRows[0])}</span><strong>{criterionDisplayTitle(firstRows[0].criterion, language)}</strong><button type="button" disabled={busy} onClick={() => onInspect(firstRows[0].criterion.id)}>{tr("查看证据", "Inspect")}<ArrowRight size={12} aria-hidden="true"/></button></div>}
     {primaryNeedsAttention && firstRows[0]?.explanation && <p className="delivery-overview-primary-explanation" title={firstRows[0].explanation}>{firstRows[0].explanation}</p>}
     <div className="delivery-overview-layout" aria-label={tr("当前版本浏览器观测", "Browser observations for this version")}>

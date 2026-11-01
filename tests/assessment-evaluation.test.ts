@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFileSync } from "node:fs";
 import { runEvaluation, VERIFIED_PRICE, type EvaluationCase } from "../scripts/run-assessment-evaluation.ts";
 import type { Fetcher } from "../lib/providers.ts";
 
@@ -44,6 +45,17 @@ test("budget reservation blocks a request before network even when maxCalls perm
   const report = await runEvaluation([fixture()], { live: true, env, maxCalls: 1, maxUsd: 0.000001, fetcher: p.fetcher });
   assert.equal(p.bodies.length, 0);
   assert.equal(report.accounting.stopReason, "budget_reservation_rejected");
+});
+
+test("an application-admission failure rejects corpus preparation before any real evaluation call", async () => {
+  const head = "<!doctype html><html><head><title>Admission</title></head><body>", tail = "</body></html>";
+  const escaped = head + "\\".repeat(65536 - Buffer.byteLength(head + tail)) + tail;
+  const oversized = fixture("escaped-admission");
+  oversized.files = { "index.html": escaped, "second.html": escaped, "third.html": escaped, "fourth.html": escaped };
+  const p = provider();
+  await assert.rejects(runEvaluation([oversized, fixture("later-eligible")], { live: true, env, maxCalls: 2, maxUsd: 1, fetcher: p.fetcher }),
+    /evaluation fixture was rejected before request construction/u);
+  assert.equal(p.bodies.length, 0);
 });
 
 test("the corpus reference labels never enter the real application request", async () => {
@@ -156,12 +168,33 @@ test("invalid citations are recorded separately when the actual application reje
   assert.equal(report.summaryByStratum["complete-literal"].invalidCitationResponses, 1);
 });
 
-test("coverage-limited abstention results do not change complete-literal denominators", async () => {
+test("legacy prefix-only references are preserved but skipped and excluded when the actual HTML input is now complete", async () => {
   const p = provider("changes_suggested");
   const report = await runEvaluation([fixture(), fixture("limited-case", "coverage-limited", "insufficient_evidence")], { live: true, env, maxCalls: 2, maxUsd: .1, fetcher: p.fetcher });
   assert.equal(report.summaryByStratum["complete-literal"].falsePositiveOnClean.raw.total, 1);
   assert.equal(report.summaryByStratum["complete-literal"].falsePositiveOnClean.raw.count, 1);
-  assert.equal(report.summaryByStratum["coverage-limited"].correctAbstention.raw.total, 1);
+  assert.equal(report.summaryByStratum["coverage-limited"].correctAbstention.raw.total, 0);
   assert.equal(report.summaryByStratum["coverage-limited"].falsePositiveOnClean.raw.total, 0);
+  assert.equal(report.summaryByStratum["coverage-limited"].excludedReferenceScopeMismatch, 1);
+  assert.equal(report.summaryByStratum["coverage-limited"].referenceEligible, 0);
+  assert.equal(report.results[1].referenceStatus, "insufficient_evidence");
+  assert.equal(report.results[1].referenceCompatibility, "reference_scope_mismatch");
+  assert.equal(report.results[1].error, "reference_scope_mismatch");
+  assert.equal(report.results[1].attempted, false); assert.equal(report.results[1].networkAttempted, false);
+  assert.equal(p.bodies.length, 1); assert.equal(report.accounting.calls, 1);
   assert.equal(report.pricing.source, VERIFIED_PRICE.source);
+});
+
+test("the separate complete-source corpus covers late correct copy, wrong copy, cross-page conflict and source schema injection", async () => {
+  const group = JSON.parse(readFileSync(new URL("../scripts/assessment-complete-source-evaluation-cases.json", import.meta.url), "utf8"));
+  assert.equal(group.evaluationGroup, "complete-source-follow-up"); assert.equal(group.synthetic, true);
+  assert.equal(group.cases.length, 4);
+  const report = await runEvaluation(group.cases);
+  assert.equal(report.accounting.calls, 0);
+  assert.ok(report.results.every(item => item.referenceCompatibility === "compatible"));
+  assert.ok(report.results.every(item => !item.plan.coverage.truncatedFiles.length && !item.plan.coverage.omittedFiles.length));
+  assert.deepEqual(group.cases.map((item: EvaluationCase) => item.reference.expectedStatus), ["supported", "changes_suggested", "changes_suggested", "changes_suggested"]);
+  assert.ok(group.cases.every((item: EvaluationCase) => item.files["index.html"].length > 6000));
+  assert.ok(report.results.every(item => item.plan.outputTokenLimit === 1800));
+  assert.ok(group.protocolCounterexamples.invalidStatuses.some(Array.isArray));
 });

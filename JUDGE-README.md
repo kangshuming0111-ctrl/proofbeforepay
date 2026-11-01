@@ -12,23 +12,19 @@ Compare each requirement displays the unchanged agreed clause, version-matched o
 
 ## Clean local setup
 
-Use Node.js 24 and pnpm 11.25.0. Install the pinned dependencies with `pnpm install --frozen-lockfile`, then run `pnpm run build`.
+On macOS or a POSIX environment, with Node.js 22.13+ and npm installed (Node.js 24 recommended), run one command from this checkout:
 
-For a fresh local database, run these commands in order. Do not replay them against a database that has already applied them:
+`node scripts/judge-demo.mjs`
 
-`node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_flashy_master_chief.sql`
+The command reuses installed dependencies or installs the pinned lockfile with pnpm 11.25.0, builds in a new sanitized copy, migrates a fresh isolated D1 database, and prints a verified loopback entry URL. The first dependency installation needs public npm registry access. No API keys, PayPal account or real ChatGPT login are needed. Open the printed /signin-with-chatgpt?return_to=/ URL: it activates the existing fixed local test account and enters the demo. This is not production authentication or two real logins.
 
-`node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0001_low_chimera.sql`
-
-`node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0002_flawless_lake.sql`
-
-Run `pnpm run dev` and open the Local URL printed by the server, normally http://localhost:5173. Open /signin-with-chatgpt once to activate the fixed local test account before creating a collaborative demo. The development sign-in emulates one local account on loopback only; it is not production authentication and cannot test two real logins. Data is local and separate from the hosted Site.
+Each invocation starts a fresh session; existing checkout data and previous session files remain untouched. Caller provider settings and local environment files are not copied. Press Ctrl+C to stop only this demo's owned process groups. The helper was exercised on macOS; Linux uses the same path but is not independently validated here. Native Windows users should use WSL2 or the README's manual setup. See docs/JUDGE-DEMO-2026-11-02.md for startup checks, isolation, logs, recovery and the optional noninteractive --smoke check. If pnpm is already installed, `pnpm judge:demo` runs the same workflow.
 
 Start with the built-in two-sided demonstration and keep payment in simulated mode. Lock the scope as buyer, switch to seller, prepare the first delivery and inspect the missing Contact page and broken booking target. Submit a note, return it with buyer feedback, prepare the revised delivery, then inspect and explicitly accept the current version. A revision label alone does not mean every requirement passed.
 
 ## Optional providers
 
-No secrets are included. Copy the generated placeholder `.env.example` to the Git-ignored `.dev.vars` only if you choose to configure your own DeepSeek API and PayPal Sandbox REST app. Restart after configuring. AI assessment is an explicit action that sends requirements and bounded saved source to the configured model and may cost money. A rule review is not a model call. Never use production PayPal credentials or real money for this prototype.
+No secrets are included. The isolated judge command always disables external providers. Keep its temporary copy provider-free. To configure your own DeepSeek API and PayPal Sandbox REST app separately, stop that demo, return to the original public checkout, follow the README's manual local-development setup and copy this checkout's generated placeholder `.env.example` to the Git-ignored `.dev.vars`. Restart after configuring. AI assessment is an explicit action that sends requirements and bounded saved source to the configured model and may cost money. A rule review is not a model call. Never use production PayPal credentials or real money for this prototype.
 
 The ordinary two-sided experience uses one owner and simulated payment. The explicit same-owner Sandbox rehearsal uses a virtual seller and the configured test merchant. Inviting a real seller uses a different authenticated app account, with separate website access, and defaults to simulated payment. A new custom project can explicitly choose Invite a real seller + Sandbox test payment; the server records the creation-only sandboxCollaboration marker. Existing cases are not silently upgraded. Only the buyer can authorize or capture test payment after exact-version acceptance; the configured Sandbox test merchant receives it, not the actual seller. This is not escrow or marketplace settlement. On 2 November 2026, a hosted run with two distinct authenticated logins completed revision, exact-version acceptance and genuine AUD 1 virtual Sandbox authorization/capture; both workspaces retained Test captured after refresh. One developer operated both logins through an automation agent. This is a bounded two-account workflow check, not independent user research or seller settlement, and is separate from the earlier one-owner receipt. Follow the current README and keep simulated and genuine provider evidence separate.
 

@@ -50,6 +50,18 @@ export type ProofLayoutReport = {
   readings: ProofLayoutReading[];
   summary: { measured: number; unavailable: number; overflow: number };
 };
+export type ProofBrowserCheckReason = "missing_file" | "load_failed" | "snapshot_mismatch" | "access_denied" | "timeout" | "navigation_changed" | "ambiguous_link" | "unsupported_target" | "resource_limit";
+export type ProofBrowserCheckReading =
+  | { stepId: string; status: "unavailable"; reason: ProofBrowserCheckReason }
+  | { stepId: string; status: "observed"; kind: "page"; stylesExpected: number; stylesLoaded: number; imagesExpected: number; imagesLoaded: number }
+  | { stepId: string; status: "observed"; kind: "link"; sourceVisible: boolean; sourceHitTarget: boolean; activated: boolean; destinationMatched: boolean; targetVisible: boolean };
+export type ProofBrowserCheckStep = { stepId: string; kind: "page" | "link"; file: string; viewportWidth: ProofLayoutWidth; label?: string; target?: string };
+export type ProofBrowserCheckReport = {
+  id: string; deliveryId: string; method: "client-browser-checks-v1"; receivedAt: string; viewportHeight: 800;
+  reportedByRole?: ProofRole;
+  readings: (ProofBrowserCheckReading & ProofBrowserCheckStep & { outcome: "expected_observation" | "mismatch" | "unavailable" })[];
+  summary: { steps: number; observed: number; issues: number; unavailable: number };
+};
 /** Exact original-file substring; start/end are UTF-16 code-unit offsets, [start,end). */
 export type ProofAssessmentCitation = { file: string; start: number; end: number; excerpt: string };
 export type ProofAssessmentItem = { criterionId: string; status: "supported" | "changes_suggested" | "insufficient_evidence"; explanation: string; citations: ProofAssessmentCitation[]; ruleEvidenceIds: string[] };
@@ -63,7 +75,7 @@ export type ProofAssessment = {
   coverage: { includedFiles: string[]; truncatedFiles: string[]; omittedFiles: string[] };
   usage?: { promptTokens: number; completionTokens: number };
 };
-export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"; sequence?: number; label: string; submittedAt: string; evidence: ProofEvidence[]; files?: Record<string, string>; layoutReport?: ProofLayoutReport; assessment?: ProofAssessment; riskReviews?: ProofRiskReview[]; resources?: ProofResourceReport };
+export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"; sequence?: number; label: string; submittedAt: string; evidence: ProofEvidence[]; files?: Record<string, string>; layoutReport?: ProofLayoutReport; browserChecks?: ProofBrowserCheckReport; assessment?: ProofAssessment; riskReviews?: ProofRiskReview[]; resources?: ProofResourceReport };
 export type ProofReview = { deliveryId: string; reviewedAt: string; mode: "demo" | "live"; summary: string };
 export type ProofRole = "buyer" | "seller";
 export type ProofSubmission = { deliveryId: string; note: string; at: string };
@@ -113,7 +125,7 @@ export type ProofPaymentReconciliation =
   | { kind: "voided"; verifiedAt: string }
   | { kind: "closed_unpaid"; reason: "authorization_denied"; verifiedAt: string }
   | { kind: "unresolved"; reason: "pending" | "authorization_still_active" | "provider_unavailable" | "inconsistent_resources" };
-export type ProofEvent = { at: string; kind: "created" | "scope_approved" | "seller_joined" | "authorized" | "delivery_submitted" | "delivery_sent" | "changes_requested" | "delivery_accepted" | "reviewed" | "assessed" | "risk_reviewed" | "layout_checked" | "accepted" | "captured" | "voided" | "payment_closed" | "payment_reconciled"; deliveryId?: string };
+export type ProofEvent = { at: string; kind: "created" | "scope_approved" | "seller_joined" | "authorized" | "delivery_submitted" | "delivery_sent" | "changes_requested" | "delivery_accepted" | "reviewed" | "assessed" | "risk_reviewed" | "layout_checked" | "browser_checked" | "accepted" | "captured" | "voided" | "payment_closed" | "payment_reconciled"; deliveryId?: string };
 export type ProofState = {
   requirements?: RequirementAgreement;
   demoRoleplay?: true;

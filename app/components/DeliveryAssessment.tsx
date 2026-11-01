@@ -7,6 +7,7 @@ import { criterionDisplayTitle } from "@/lib/delivery-overview";
 import "../assessment.css";
 import { RiskReviewPanel } from "./RiskReviewPanel";
 import type { RiskReviewInput } from "@/lib/risk-reviews";
+import { assessmentCoverageGroups, assessmentReviewSummary } from "@/lib/assessment-display";
 
 export type DeliveryAssessmentProps = {
   report?: ProofAssessment;
@@ -49,6 +50,8 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
   const [initiallyExpanded] = useState(!readOnly);
   const selectedItem = selectedCriterionId ? report?.items.find(item => item.criterionId === selectedCriterionId) : report?.items[0];
   const otherItems = report?.items.filter(item => item !== selectedItem) ?? [];
+  const reviewSummary = report ? assessmentReviewSummary(report, riskReviews) : undefined;
+  const coverage = report ? assessmentCoverageGroups(report) : undefined;
   const titleFor = (criterionId: string) => {
     const criterion = criteria.find(item => item.id === criterionId);
     return criterion ? criterionDisplayTitle(criterion, language) : criterionId;
@@ -110,13 +113,21 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
           {otherItems.length > 0 && <details className="assessment-other-items"><summary>{tr(`查看其余 ${otherItems.length} 条要求`, `Inspect the other ${otherItems.length} criteria`)}<ChevronDown size={13} aria-hidden="true" /></summary><div>{otherItems.map(item => renderItem(item))}</div></details>}
         </div>
         <details className="assessment-risks"><summary><TriangleAlert size={13} aria-hidden="true" />{tr(`源码中的潜在问题（${report.risks.length}）`, `Potential source issues (${report.risks.length})`)}<ChevronDown size={13} aria-hidden="true" /></summary>
-          <div className="assessment-risk-body">{report.risks.length ? <><p className="assessment-risk-notice">{tr("源码线索尚未运行验证，需要复现后确认。", "Source-level indications have not been verified by execution. Reproduce them before drawing a conclusion.")}</p>{report.risks.slice(0, 5).map((risk, index) => <article className="assessment-risk" key={`${risk.title}-${index}`}><h4>{risk.title}</h4><p>{risk.explanation}</p><p className="assessment-risk-suggestion">{tr("建议核对：", "Suggested check: ")}{risk.suggestion}</p><Citations citations={risk.citations} language={language} /><RiskReviewPanel key={`${report.deliveryId}-${report.id}-${index}-${actorRole ?? ""}`} deliveryId={report.deliveryId} assessmentId={report.id} riskIndex={index} reviews={riskReviews} role={actorRole} language={language} busy={busy} readOnly={readOnly} onSave={onSaveRiskReview}/></article>)}{report.risks.length > 5 && <p className="assessment-risk-notice">{tr("此处展示前 5 项；完整报告保留在交付记录中。", "Showing the first 5 issues; the full report remains in the delivery record.")}</p>}</> : <p className="assessment-empty">{tr("此报告没有列出潜在问题，不代表网站没有缺陷。", "This report lists no potential issues. This does not establish that the website is free of defects.")}</p>}</div>
+          <div className="assessment-risk-body">{report.risks.length ? <><p className="assessment-risk-notice">{tr("源码线索尚未运行验证，需要复现后确认。", "Source-level indications have not been verified by execution. Reproduce them before drawing a conclusion.")}</p>
+            {reviewSummary && <section className="assessment-review-summary" aria-label={tr("潜在线索的人工复核概览", "Human review summary for potential issues")}>
+              <strong>{tr(`共 ${reviewSummary.total} 条线索，${reviewSummary.unreviewed} 条尚无人工记录`, `Potential issues: ${reviewSummary.total}; without any human record: ${reviewSummary.unreviewed}`)}</strong>
+              <dl>{(["buyer", "seller"] as const).map(role => { const positions = reviewSummary.participants[role]; return <div key={role}><dt>{role === "buyer" ? tr("买家最新意见", "Buyer’s latest positions") : tr("卖家最新意见", "Seller’s latest positions")}</dt><dd>{tr(`核实 ${positions.confirmed} · 驳回 ${positions.rejected} · 仍需证据 ${positions.needsEvidence} · 未记录 ${positions.unreviewed}`, `Confirmed ${positions.confirmed} · Rejected ${positions.rejected} · Needs evidence ${positions.needsEvidence} · No record ${positions.unreviewed}`)}</dd></div>; })}</dl>
+              {!!reviewSummary.differingPositions && <p className="assessment-review-difference" role="status">{tr(`双方在 ${reviewSummary.differingPositions} 条线索上的最新意见不同，请核对各自理由。`, `Issues with differing participant positions: ${reviewSummary.differingPositions}. Inspect both reasons.`)}</p>}
+              <small>{tr("汇总记录双方意见，不认定问题已解决，也不改变原始 AI 报告或验收。", "This summarizes participant positions. It does not establish resolution, change the original AI report or decide acceptance.")}</small>
+            </section>}
+            {report.risks.slice(0, 5).map((risk, index) => <article className="assessment-risk" key={`${risk.title}-${index}`}><h4>{risk.title}</h4><p>{risk.explanation}</p><p className="assessment-risk-suggestion">{tr("建议核对：", "Suggested check: ")}{risk.suggestion}</p><Citations citations={risk.citations} language={language} /><RiskReviewPanel key={`${report.deliveryId}-${report.id}-${index}-${actorRole ?? ""}`} deliveryId={report.deliveryId} assessmentId={report.id} riskIndex={index} reviews={riskReviews} role={actorRole} language={language} busy={busy} readOnly={readOnly} onSave={onSaveRiskReview}/></article>)}{report.risks.length > 5 && <p className="assessment-risk-notice">{tr("此处展示前 5 项；完整报告保留在交付记录中。", "Showing the first 5 issues; the full report remains in the delivery record.")}</p>}</> : <p className="assessment-empty">{tr("此报告没有列出潜在问题，不代表网站没有缺陷。", "This report lists no potential issues. This does not establish that the website is free of defects.")}</p>}</div>
         </details>
         <details className="assessment-coverage"><summary>{tr("分析范围与局限", "Coverage and limitations")}<ChevronDown size={13} aria-hidden="true" /></summary><div className="assessment-coverage-body">
           <dl>{([
-            [tr("已纳入文件", "Included files"), report.coverage.includedFiles],
-            [tr("仅分析部分内容", "Partially included files"), report.coverage.truncatedFiles],
-            [tr("未纳入文件", "Omitted files"), report.coverage.omittedFiles],
+            [tr("已纳入文本文件", "Included text files"), coverage!.includedFiles],
+            [tr("仅分析部分文本", "Partially included text files"), coverage!.truncatedFiles],
+            [tr("未纳入的文本文件", "Omitted text files"), coverage!.omittedTextFiles],
+            [tr("已交付图片，像素未送交分析", "Delivered images; pixels excluded from analysis"), coverage!.rasterFiles],
           ] as const).map(([label, files]) => <div key={label}><dt>{label}</dt><dd>{files.length ? files.map(file => <code key={file}>{file}</code>) : tr("无", "None")}</dd></div>)}</dl>
           {report.limitations.length > 0 && <ul>{report.limitations.map((limit, index) => <li key={`${index}-${limit}`}>{limit}</li>)}</ul>}
           <p className="assessment-delivery-id">{tr("绑定交付：", "Delivery: ")}<code>{report.deliveryId}</code></p>

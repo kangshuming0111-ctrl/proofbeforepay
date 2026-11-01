@@ -1,0 +1,38 @@
+.proof-app .getting-started.welcome { display: grid; grid-template-columns: minmax(0,1.05fr) minmax(0,1fr); align-items: center; gap: clamp(24px,5vw,72px); width: 100%; max-width: 1200px; margin: auto; padding: clamp(22px,4vw,52px); border: 1px solid var(--border); border-radius: 7px; background: var(--card); color: var(--foreground); }
+.welcome-copy h2 { max-width: 17em; margin: 0 0 18px; font: 400 clamp(29px,3.1vw,43px)/1.25 var(--serif); letter-spacing: -.02em; }
+.welcome-copy > p { max-width: 40em; margin: 0 0 22px; color: #52654b; font-size: 14px; line-height: 1.8; }
+.welcome-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.welcome-actions .button { min-height: 42px; padding: 10px 15px; font-size: 13px; }
+.welcome-actions .subtle-button { min-height: 42px; padding: 9px 12px; font-size: 13px; }
+.welcome-action-note { display: block; max-width: 40em; margin: 11px 0 0; color: #67765b; font-size: 11px; line-height: 1.7; }
+.welcome-scope { margin-top: 20px; font-size: 12px; color: #526b48; }
+.welcome-scope > summary { cursor: pointer; width: fit-content; line-height: 1.6; }
+.welcome-scope p { margin: 8px 0; max-width: 40em; font-size: 12px; line-height: 1.7; }
+.welcome-scope .text-button { display: inline-flex; align-items: center; gap: 5px; }
+.welcome-evidence { min-width: 0; padding-left: clamp(18px,3vw,36px); border-left: 1px solid var(--border); }
+.welcome-illustration-note { margin: 0 0 13px; color: #68785c; font-size: 11px; }
+.welcome-records { list-style: none; margin: 0; padding: 0; }
+.welcome-records > li { padding: 14px 0; border-top: 1px solid #dce3d2; }
+.welcome-records > li:first-child { border-top: 2px solid var(--primary); }
+.welcome-records span { display: block; margin-bottom: 5px; font-size: 12px; color: #627657; }
+.welcome-records strong { display: block; font-size: clamp(15px,1.4vw,18px); font-weight: 600; overflow-wrap: anywhere; line-height: 1.5; }
+.welcome-records .welcome-mismatch strong { color: #8a4b31; }
+.welcome-records p { margin: 6px 0 0; color: #7c6045; font-size: 12px; line-height: 1.6; }
+.welcome-decision { display: flex; align-items: start; gap: 9px; margin: 14px 0 0; color: #526b49; font-size: 12px; line-height: 1.75; }
+.welcome-decision svg { flex-shrink: 0; margin-top: 2px; }
+.welcome button:focus-visible, .welcome summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+.intake-return { align-self: start; padding: 2px 0; }
+@media (min-width: 1000px) {
+  .proof-app .cockpit-grid.is-intake.panel-agreement { grid-template-columns: minmax(0,1fr); width: 100%; max-width: 960px; margin-inline: auto; }
+  .proof-app .cockpit-grid.is-intake.panel-agreement > .evidence-panel { display: none; }
+}
+@media (max-width: 760px) {
+  .proof-app .getting-started.welcome { grid-template-columns: minmax(0,1fr); gap: 21px; padding: 20px; }
+  .welcome-copy h2 { margin-bottom: 12px; font-size: 29px; }
+  .welcome-copy > p { margin-bottom: 14px; font-size: 13px; line-height: 1.7; }
+  .welcome-evidence { padding-left: 0; border-left: 0; }
+  .welcome-scope { margin-top: 12px; }
+  .welcome-records > li { padding: 10px 0; }
+  .welcome-action-note { font-size: 10px; }
+}
+@media print { .welcome { display: none !important; } }

@@ -300,11 +300,11 @@ test("booking copy cannot mask mixed behavior, an operational title or an unclea
   }
 });
 
-test("booking-policy copy keeps server failure, incomplete HTML and exact-citation safeguards", async () => {
+test("booking-policy copy keeps server failure and exact citations while covering a large complete HTML file", async () => {
   const policy = "<p>所有咨询须提前预约，不接受临时到店。</p>";
-  for (const condition of ["rule-fail", "incomplete-html", "invalid-citation"] as const) {
+  for (const condition of ["rule-fail", "large-html", "invalid-citation"] as const) {
     const html = source.replace("</body>", `${policy}</body>`);
-    const quote = agreement({ "index.html": html + (condition === "incomplete-html" ? " ".repeat(6200) : "") });
+    const quote = agreement({ "index.html": html + (condition === "large-html" ? " ".repeat(6200) : "") });
     Object.assign(quote.proof.criteria.find(item => item.id === "manual-1")!, { title: "预约政策文案", source: "网页文案须明确说明：所有咨询须提前预约，不接受临时到店。" });
     if (condition === "rule-fail") quote.proof.delivery!.evidence.find(item => item.criterionId === "manual-1")!.finding = "fail";
     const output = proposal(quote), item = output.items.find(entry => entry.criterionId === "manual-1")!;
@@ -313,7 +313,8 @@ test("booking-policy copy keeps server failure, incomplete HTML and exact-citati
     if (condition === "invalid-citation") await assert.rejects(assessDelivery(quote, env, fake.fetcher), ProviderError);
     else {
       const result = await assessDelivery(quote, env, fake.fetcher);
-      assert.equal(result.items.find(entry => entry.criterionId === "manual-1")!.status, condition === "rule-fail" ? "changes_suggested" : "insufficient_evidence");
+      assert.equal(result.items.find(entry => entry.criterionId === "manual-1")!.status, condition === "rule-fail" ? "changes_suggested" : "supported");
+      assert.deepEqual(result.coverage.truncatedFiles, []);
     }
     assert.deepEqual(quote, before); assert.equal(fake.calls.length, 1);
   }
@@ -435,7 +436,7 @@ test("supported or suggested changes without a citation are downgraded to insuff
   }
 });
 
-test("forged quote, filename, outside-prefix citation and model-generated offsets are rejected", async () => {
+test("forged quote, filename, nonexistent source and model-generated offsets are rejected", async () => {
   const edits = [
     (output: ReturnType<typeof proposal>) => { output.items[0].citations[0].excerpt = "Invented opening hours"; },
     (output: ReturnType<typeof proposal>) => { output.items[0].citations[0].file = "contract.pdf"; },
@@ -447,7 +448,7 @@ test("forged quote, filename, outside-prefix citation and model-generated offset
     await assert.rejects(assessDelivery(agreement(), env, fake.fetcher), ProviderError); assert.equal(fake.calls.length, 1);
   }
   const quote = agreement({ "index.html": source + " ".repeat(6000) + "OUTSIDE_PREFIX" });
-  const output = proposal(quote); output.items[0].citations[0].excerpt = "OUTSIDE_PREFIX";
+  const output = proposal(quote); output.items[0].citations[0].excerpt = "SOURCE THAT DOES NOT EXIST";
   await assert.rejects(assessDelivery(quote, env, mock(output).fetcher), ProviderError);
 });
 
@@ -469,6 +470,18 @@ test("all criteria must appear exactly once with a known status and no extra fie
   for (const edit of edits) {
     const output = proposal(); edit(output);
     await assert.rejects(assessDelivery(agreement(), env, mock(output).fetcher), ProviderError);
+  }
+});
+
+test("provider statuses must be actual strings rather than arrays or coercible JSON values", async () => {
+  for (const status of [["supported"], ["changes_suggested"], ["insufficient_evidence"], [], {}, null, 1, true]) {
+    const quote = agreement(), before = structuredClone(quote), output = proposal(quote);
+    (output.items[0] as { status: unknown }).status = status;
+    const fake = mock(output);
+    await assert.rejects(assessDelivery(quote, env, fake.fetcher), error => error instanceof ProviderError
+      && /^AI returned an invalid response structure\./u.test(error.message));
+    assert.equal(fake.calls.length, 1);
+    assert.deepEqual(quote, before);
   }
 });
 
@@ -541,99 +554,128 @@ test("source injection stays quoted data and model authority fields are rejected
   await assert.rejects(assessDelivery(quote, env, mock(output).fetcher), ProviderError);
 });
 
-test("coverage enforces per-file and total source caps and excludes omitted-file citations", async () => {
-  const files: Record<string, string> = { "index.html": source + " ".repeat(6200), "a.css": "a".repeat(6200), "b.css": "b".repeat(6200), "c.css": "c".repeat(6200), "d.css": "d".repeat(10) };
-  const quote = agreement(files), fake = mock(proposal(quote));
-  const result = await assessDelivery(quote, env, fake.fetcher);
-  const sent = JSON.parse(JSON.parse(String(fake.calls[0].init.body)).messages[1].content).files as Record<string, string>;
-  assert.equal(Object.values(sent).reduce((sum, value) => sum + value.length, 0), 24000);
-  assert.ok(Object.values(sent).every(value => value.length <= 6000));
-  assert.deepEqual(result.coverage.includedFiles, ["index.html", "a.css", "b.css", "c.css"]);
-  assert.deepEqual(result.coverage.truncatedFiles, ["index.html", "a.css", "b.css", "c.css"]);
-  assert.deepEqual(result.coverage.omittedFiles, ["d.css"]); assert.match(result.limitations.join(" "), /truncated or omitted/);
-  const output = proposal(quote); output.items[0].citations[0] = { file: "d.css", excerpt: "d" };
-  await assert.rejects(assessDelivery(quote, env, mock(output).fetcher), ProviderError);
-});
-
-test("truncated HTML cannot turn an unseen requirement into absence or a partial match into full support", async () => {
-  const correctHours = "<p>Monday to Friday 11am–8pm</p>";
-  for (const status of ["changes_suggested", "supported"]) {
-    const contents = status === "changes_suggested"
-      ? source.replace("</body>", `<!--${"context ".repeat(850)}-->${correctHours}</body>`)
-      : source.replace("</body>", `${correctHours}<!--${"context ".repeat(850)}--><p>Monday to Friday 10am–6pm</p></body>`);
-    const quote = agreement({ "index.html": contents }), before = structuredClone(quote);
-    const output = proposal(quote), item = output.items.find(entry => entry.criterionId === "manual-1")!;
-    item.status = status;
-    item.explanation = status === "changes_suggested" ? "Opening hours are absent from this delivery." : "The opening hours requirement is fully satisfied.";
-    item.citations = [{ file: "index.html", excerpt: status === "supported" ? correctHours : "<p>Beef noodles $16</p>" }];
-    const fake = mock(output), result = await assessDelivery(quote, env, fake.fetcher);
-    const actual = result.items.find(entry => entry.criterionId === "manual-1")!;
-    assert.equal(actual.status, "insufficient_evidence");
-    assert.match(actual.explanation, /did not receive all HTML source/);
-    assert.deepEqual(actual.citations.map(citation => citation.excerpt), item.citations.map(citation => citation.excerpt));
-    assert.deepEqual(result.coverage.truncatedFiles, ["index.html"]);
-    const sent = JSON.parse(JSON.parse(String(fake.calls[0].init.body)).messages[1].content).files["index.html"] as string;
-    assert.equal(sent.includes(correctHours), status === "supported");
-    assert.ok(!sent.includes("<p>Monday to Friday 10am–6pm</p>"));
-    assert.deepEqual(quote, before);
-  }
-});
-
-test("an omitted HTML file prevents literal compliance and absence claims even with valid in-packet citations", async () => {
-  const cssContext = "/* opening-hours source context */";
-  const css = cssContext + " ".repeat(6000 - cssContext.length);
-  // The upload order is preserved: four complete CSS files exhaust the packet
-  // before index.html, without truncating any individual file.
-  const quote = agreement({ "a.css": css, "b.css": css, "c.css": css, "d.css": css, "index.html": source });
-  for (const status of ["supported", "changes_suggested"]) {
-    const output = proposal(quote); output.risks = [];
-    for (const item of output.items) item.citations = [{ file: "a.css", excerpt: cssContext }];
-    output.items.find(item => item.criterionId === "manual-1")!.status = status;
-    const result = await assessDelivery(quote, env, mock(output).fetcher);
-    const actual = result.items.find(item => item.criterionId === "manual-1")!;
-    assert.equal(actual.status, "insufficient_evidence");
-    assert.match(actual.explanation, /did not receive all HTML source/);
-    assert.deepEqual(result.coverage.truncatedFiles, []);
-    assert.deepEqual(result.coverage.omittedFiles, ["index.html"]);
-  }
-});
-
-test("CSS-only truncation does not downgrade literal advice from fully covered HTML", async () => {
+test("complete HTML and CSS are sent once without per-file prefixes or CSS starving a later page", async () => {
   const hours = "<p>Monday to Friday 11am–8pm</p>";
-  const quote = agreement({ "index.html": source.replace("</body>", `${hours}</body>`), "styles.css": `body{color:green}${" ".repeat(6500)}` });
-  for (const status of ["supported", "changes_suggested"]) {
-    const output = proposal(quote), item = output.items.find(entry => entry.criterionId === "manual-1")!;
-    item.status = status; item.citations = [{ file: "index.html", excerpt: hours }];
-    const result = await assessDelivery(quote, env, mock(output).fetcher);
-    assert.equal(result.items.find(entry => entry.criterionId === "manual-1")!.status, status);
-    assert.deepEqual(result.coverage.truncatedFiles, ["styles.css"]);
-    assert.deepEqual(result.coverage.omittedFiles, []);
+  const files: Record<string, string> = { "a.css": "a".repeat(6200), "b.css": "b".repeat(6200), "c.css": "c".repeat(6200), "d.css": "d".repeat(6200),
+    "index.html": source.replace("</body>", `<!--${"context ".repeat(1000)}-->${hours}</body>`) };
+  const quote = agreement(files), before = structuredClone(quote), output = proposal(quote);
+  const item = output.items.find(entry => entry.criterionId === "manual-1")!;
+  item.status = "supported"; item.citations = [{ file: "index.html", excerpt: hours }];
+  const fake = mock(output), result = await assessDelivery(quote, env, fake.fetcher);
+  const sent = JSON.parse(JSON.parse(String(fake.calls[0].init.body)).messages[1].content).files as Record<string, string>;
+  assert.deepEqual(sent, files);
+  assert.equal(Object.keys(sent)[0], "index.html");
+  assert.ok(Object.values(sent).reduce((sum, value) => sum + value.length, 0) > 24000);
+  assert.deepEqual(result.coverage.includedFiles, ["index.html", "a.css", "b.css", "c.css", "d.css"]);
+  assert.deepEqual(result.coverage.truncatedFiles, []); assert.deepEqual(result.coverage.omittedFiles, []);
+  assert.equal(result.items.find(entry => entry.criterionId === "manual-1")!.status, "supported");
+  assert.equal(fake.calls.length, 1); assert.deepEqual(quote, before);
+  assert.match(result.limitations.join(" "), /complete input does not establish correct model understanding/);
+});
+
+test("deep source citations retain exact UTF-16 offsets and both matching and contradictory text reaches the model", async () => {
+  const matching = "<p>Monday to Friday 11am–8pm</p>", contradiction = "<p>Monday to Friday 10am–6pm</p>";
+  const contents = source.replace("</body>", `${matching}<!--${"context 🍜 ".repeat(1000)}-->${contradiction}</body>`);
+  const quote = agreement({ "index.html": contents }), before = structuredClone(quote), output = proposal(quote);
+  const item = output.items.find(entry => entry.criterionId === "manual-1")!;
+  item.status = "changes_suggested"; item.explanation = "The complete page contains contradictory hours.";
+  item.citations = [{ file: "index.html", excerpt: contradiction }];
+  const fake = mock(output), result = await assessDelivery(quote, env, fake.fetcher);
+  const sent = JSON.parse(JSON.parse(String(fake.calls[0].init.body)).messages[1].content).files["index.html"] as string;
+  assert.equal(sent, contents); assert.ok(sent.includes(matching)); assert.ok(sent.includes(contradiction));
+  const actual = result.items.find(entry => entry.criterionId === "manual-1")!;
+  assert.equal(actual.status, "changes_suggested");
+  assert.equal(actual.citations[0].start, contents.indexOf(contradiction));
+  assert.ok(actual.citations[0].start > 6000);
+  assert.equal(contents.slice(actual.citations[0].start, actual.citations[0].end), contradiction);
+  assert.deepEqual(result.coverage.truncatedFiles, []); assert.deepEqual(quote, before);
+});
+
+test("all complete HTML pages remain available after large stylesheets and file ordering cannot hide a requirement", async () => {
+  const hours = "<p>Monday to Friday 11am–8pm</p>";
+  const css = "/* whole stylesheet */" + " ".repeat(6000);
+  const html = source.replace("</body>", `${hours}</body>`);
+  for (const files of [{ "a.css": css, "b.css": css, "c.css": css, "d.css": css, "index.html": html },
+    { "index.html": html, "d.css": css, "c.css": css, "b.css": css, "a.css": css }]) {
+    const quote = agreement(files), output = proposal(quote);
+    output.items.find(item => item.criterionId === "manual-1")!.status = "supported";
+    output.items.find(item => item.criterionId === "manual-1")!.citations = [{ file: "index.html", excerpt: hours }];
+    const fake = mock(output), result = await assessDelivery(quote, env, fake.fetcher);
+    const sent = JSON.parse(JSON.parse(String(fake.calls[0].init.body)).messages[1].content).files;
+    assert.equal(sent["index.html"], html); assert.deepEqual(result.coverage.omittedFiles, []);
+    assert.deepEqual(result.coverage.truncatedFiles, []);
+    assert.equal(result.items.find(item => item.criterionId === "manual-1")!.status, "supported");
   }
 });
 
-test("an authoritative server failure keeps precedence over incomplete HTML coverage", async () => {
+test("maximum allowed ordinary text packages retain every source byte and late content in one request", async () => {
+  const head = source.replace("</body></html>", ""), tail = "<p>Last source marker.</p></body></html>";
+  const html = head + "a".repeat(65536 - Buffer.byteLength(head + tail)) + tail;
+  const files = { "index.html": html, "second.html": html, "third.html": html, "fourth.html": html };
+  const quote = agreement(files), before = structuredClone(quote), fake = mock(proposal(quote));
+  const result = await assessDelivery(quote, env, fake.fetcher);
+  const request = JSON.parse(String(fake.calls[0].init.body)), sent = JSON.parse(request.messages[1].content).files;
+  assert.equal(Object.values(files).reduce((sum, value) => sum + Buffer.byteLength(value), 0), 262144);
+  assert.deepEqual(sent, files); assert.deepEqual(result.coverage.truncatedFiles, []); assert.deepEqual(result.coverage.omittedFiles, []);
+  assert.ok(Buffer.byteLength(String(fake.calls[0].init.body)) < 850000);
+  assert.equal(fake.calls.length, 1); assert.deepEqual(quote, before);
+});
+
+test("extreme JSON escaping is refused before network rather than truncating a valid upload", async () => {
+  const head = source.replace("</body></html>", ""), tail = "</body></html>";
+  const html = head + "\\".repeat(65536 - Buffer.byteLength(head + tail)) + tail;
+  const files = { "index.html": html, "second.html": html, "third.html": html, "fourth.html": html };
+  const quote = agreement(files), before = structuredClone(quote), fake = mock(proposal(quote));
+  await assert.rejects(assessDelivery(quote, env, fake.fetcher), error => error instanceof DomainError
+    && error.status === 413 && error.code === "ASSESSMENT_CONTEXT_LIMIT" && /no source was truncated or sent/u.test(error.message));
+  assert.equal(fake.calls.length, 0); assert.deepEqual(quote, before);
+});
+
+test("an authoritative server failure keeps precedence with full large HTML coverage", async () => {
   const quote = agreement({ "index.html": source.replace("</body>", `<!--${"context ".repeat(850)}--></body>`) });
   quote.proof.delivery!.evidence.find(item => item.criterionId === "manual-1")!.finding = "fail";
   const before = structuredClone(quote), output = proposal(quote);
   output.items.find(item => item.criterionId === "manual-1")!.status = "supported";
   const result = await assessDelivery(quote, env, mock(output).fetcher);
   const item = result.items.find(entry => entry.criterionId === "manual-1")!;
-  assert.equal(item.status, "changes_suggested");
-  assert.match(item.explanation, /Server rules found a failed check/);
-  assert.deepEqual(item.ruleEvidenceIds, ["evidence-manual-1"]);
+  assert.equal(item.status, "changes_suggested"); assert.match(item.explanation, /Server rules found a failed check/);
+  assert.deepEqual(item.ruleEvidenceIds, ["evidence-manual-1"]); assert.deepEqual(result.coverage.truncatedFiles, []);
   assert.deepEqual(quote, before);
 });
 
-test("truncation does not split a surrogate pair or pretend the incomplete file is complete", async () => {
-  const contents = source + " ".repeat(5999 - source.length) + "🍜later";
-  const quote = agreement({ "index.html": contents }), fake = mock(proposal(quote));
-  const result = await assessDelivery(quote, env, fake.fetcher);
+test("non-BMP characters and late citations are never split or offset by source preparation", async () => {
+  const contents = source + " ".repeat(5999 - source.length) + "🍜late source";
+  const quote = agreement({ "index.html": contents }), output = proposal(quote);
+  output.items[0].citations = [{ file: "index.html", excerpt: "🍜late source" }];
+  const fake = mock(output), result = await assessDelivery(quote, env, fake.fetcher);
   const sent = JSON.parse(JSON.parse(String(fake.calls[0].init.body)).messages[1].content).files["index.html"] as string;
-  assert.equal(sent.length, 5999); assert.ok(!/[\ud800-\udbff]$/u.test(sent)); assert.deepEqual(result.coverage.truncatedFiles, ["index.html"]);
+  assert.equal(sent, contents); assert.deepEqual(result.coverage.truncatedFiles, []);
+  assert.equal(result.items[0].citations[0].start, 5999);
+  assert.equal(contents.slice(result.items[0].citations[0].start, result.items[0].citations[0].end), "🍜late source");
 });
 
-test("invalid numeric usage is omitted while result ordering follows the agreed checklist", async () => {
-  for (const tokenUsage of [{ prompt_tokens: -1, completion_tokens: 10 }, { prompt_tokens: 20, completion_tokens: 1801 }, { prompt_tokens: 1.2, completion_tokens: 10 }, { prompt_tokens: "20", completion_tokens: 10 }]) {
+test("larger valid checklists get a bounded response budget and usage is validated against that actual request", async () => {
+  for (const count of [3, 7, 8, 17]) {
+    const quote = agreement();
+    while (quote.proof.criteria.length < count) {
+      const id = `extra-${quote.proof.criteria.length}`;
+      quote.proof.criteria.push({ id, title: "Opening hours", source: "Display opening hours 11am–8pm." });
+      quote.proof.delivery!.evidence.push({ ...quote.proof.delivery!.evidence[2], id: `evidence-${id}`, criterionId: id });
+    }
+    const expectedLimit = 1800 + Math.max(0, count - 7) * 180;
+    const fake = mock(proposal(quote), { usage: { prompt_tokens: 1000, completion_tokens: expectedLimit } });
+    const result = await assessDelivery(quote, env, fake.fetcher);
+    assert.equal(JSON.parse(String(fake.calls[0].init.body)).max_tokens, expectedLimit);
+    assert.equal(result.items.length, count); assert.equal(result.usage?.completionTokens, expectedLimit);
+    assert.ok(expectedLimit <= 3600);
+    const excessive = mock(proposal(quote), { usage: { prompt_tokens: 1000, completion_tokens: expectedLimit + 1 } });
+    assert.equal((await assessDelivery(quote, env, excessive.fetcher)).usage, undefined);
+  }
+});
+
+test("invalid, inconsistent or above-reservation usage is omitted while result ordering follows the agreed checklist", async () => {
+  for (const tokenUsage of [{ prompt_tokens: -1, completion_tokens: 10 }, { prompt_tokens: 20, completion_tokens: 1801 }, { prompt_tokens: 1.2, completion_tokens: 10 }, { prompt_tokens: "20", completion_tokens: 10 },
+    { prompt_tokens: 20, completion_tokens: 10, total_tokens: 29 }, { prompt_tokens: 1_000_000, completion_tokens: 10 }]) {
     const quote = agreement(), output = proposal(quote); output.items.reverse();
     const result = await assessDelivery(quote, env, mock(output, { usage: tokenUsage }).fetcher);
     assert.equal(result.usage, undefined); assert.deepEqual(result.items.map(item => item.criterionId), quote.proof.criteria.map(item => item.id));

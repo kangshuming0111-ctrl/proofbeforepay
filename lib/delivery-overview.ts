@@ -1,4 +1,5 @@
 import type { Language, ProofAssessmentItem, ProofCriterion, ProofDelivery, ProofDeliveryVersion, ProofEvidence, ProofReview } from "./contracts.ts";
+import { assessmentReviewSummary } from "./assessment-display.ts";
 
 export type OverviewRuleFinding = ProofEvidence["finding"] | "unreviewed";
 export type DeliveryOverviewRow = {
@@ -6,6 +7,7 @@ export type DeliveryOverviewRow = {
   rule: OverviewRuleFinding;
   ai?: ProofAssessmentItem;
   humanPending: boolean;
+  humanConfirmed: boolean;
   explanation: string;
 };
 export type DeliveryOverviewInput = {
@@ -39,7 +41,7 @@ function rowsFor(input: DeliveryOverviewInput): DeliveryOverviewRow[] {
       : ai?.status === "changes_suggested" ? ai.explanation
       : ai?.status === "insufficient_evidence" ? ai.explanation
       : evidence[0]?.explanation ?? "";
-    return { criterion, rule, ai, humanPending: rule === "needs_human" && !confirmed.has(criterion.id), explanation };
+    return { criterion, rule, ai, humanPending: rule === "needs_human" && !confirmed.has(criterion.id), humanConfirmed: rule === "needs_human" && confirmed.has(criterion.id), explanation };
   });
 }
 
@@ -52,8 +54,11 @@ function metrics(input: DeliveryOverviewInput, rows: DeliveryOverviewRow[]) {
     ruleFailures: reviewCurrent ? rows.filter(row => row.rule === "fail").length : undefined,
     aiChanges: assessmentCurrent ? rows.filter(row => row.ai?.status === "changes_suggested").length : undefined,
     humanRemaining: reviewCurrent ? rows.filter(row => row.humanPending).length : undefined,
+    humanConfirmed: reviewCurrent ? rows.filter(row => row.humanConfirmed).length : undefined,
+    humanRequired: reviewCurrent ? rows.filter(row => row.rule === "needs_human").length : undefined,
     unreviewed: rows.filter(row => row.rule === "unreviewed").length,
     aiInsufficient: assessmentCurrent ? rows.filter(row => row.ai?.status === "insufficient_evidence").length : undefined,
+    risks: assessmentCurrent ? assessmentReviewSummary(input.delivery.assessment!, input.delivery.riskReviews) : undefined,
   };
 }
 
@@ -63,7 +68,7 @@ export function deliveryOverview(input: DeliveryOverviewInput) {
   const current = metrics(input, rows);
   const priority = (row: DeliveryOverviewRow) => row.rule === "fail" ? 0
     : row.ai?.status === "changes_suggested" ? 1 : row.humanPending ? 2
-    : row.rule === "unreviewed" ? 3 : row.ai?.status === "insufficient_evidence" ? 4 : 5;
+    : row.rule === "unreviewed" ? 3 : row.ai?.status === "insufficient_evidence" && !row.humanConfirmed ? 4 : 5;
   const ordered = rows.map((row, index) => ({ row, index })).sort((a, b) => priority(a.row) - priority(b.row) || a.index - b.index).map(item => item.row);
   const previous = input.previousVersion;
   const previousSequence = previous?.delivery.sequence;
@@ -84,6 +89,20 @@ export function deliveryOverview(input: DeliveryOverviewInput) {
       aiChanges: previousMetrics.assessmentCurrent && current.assessmentCurrent ? previousMetrics.aiChanges : undefined,
     } : undefined,
   };
+}
+
+/** Human confirmation and an AI abstention answer different questions; preserve both. */
+export function overviewRowLabel(row: DeliveryOverviewRow, language: Language) {
+  const tr = (zh: string, en: string) => language === "zh" ? zh : en;
+  if (row.rule === "fail") return tr("规则不符", "Rule mismatch");
+  if (row.ai?.status === "changes_suggested") return tr("AI 建议修改", "AI suggests changes");
+  if (row.humanPending) return tr("人工待确认", "Human check needed");
+  if (row.rule === "unreviewed") return tr("尚未核查", "Not checked");
+  if (row.humanConfirmed) return row.ai?.status === "insufficient_evidence"
+    ? tr("人工已确认 · AI 无法独立判断", "Human-confirmed · AI could not determine")
+    : tr("人工已确认", "Human-confirmed");
+  if (row.ai?.status === "insufficient_evidence") return tr("AI 证据不足", "AI: insufficient evidence");
+  return tr("规则证据支持", "Rule evidence supports");
 }
 
 /** A draft is advice for the buyer to edit; calling this never sends a change request. */

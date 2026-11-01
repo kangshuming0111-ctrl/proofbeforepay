@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import {
   ArrowDownToLine, ArrowRight, ArrowUpRight, Check, CheckCheck,
   ChevronRight, CircleAlert, Clock3, Code2, FileCheck2,
@@ -14,6 +14,8 @@ import type {
 } from "@/lib/contracts";
 import { runLayoutProbe } from "@/lib/layout-probe";
 import { LayoutCheckPanel } from "./components/LayoutCheckPanel";
+import { runBrowserChecks } from "@/lib/browser-check-probe";
+import { BrowserCheckPanel } from "./components/BrowserCheckPanel";
 import { CollaborationPanel, type CollaborationHistoryHandle, type FeedbackSuggestion } from "./components/CollaborationPanel";
 import { VersionViewer } from "./components/VersionViewer";
 import { RequirementsIntake } from "./components/RequirementsIntake";
@@ -30,6 +32,7 @@ import { GettingStarted } from "./components/GettingStarted";
 import { AuthorizationStart } from "./components/AuthorizationStart";
 import { RequirementsSource, RequirementsDraftSource } from "./components/RequirementsSource";
 import "./layout-check.css";
+import "./browser-check.css";
 import "./collaboration.css";
 import "./requirements.css";
 import "./smooth-flow.css";
@@ -96,6 +99,7 @@ export default function Home() {
   const [currency, setCurrency] = useState<Currency>("AUD");
   const [projectMode, setProjectMode] = useState<ProjectMode>("custom");
   const [projectStep, setProjectStep] = useState<0 | 1>(0);
+  const [intakeStarted, setIntakeStarted] = useState(false);
   const [projectTitle, setProjectTitle] = useState("");
   const [projectSummary, setProjectSummary] = useState("");
   const [projectAmount, setProjectAmount] = useState("");
@@ -128,6 +132,7 @@ export default function Home() {
   const [workspacePanel, setWorkspacePanel] = useState<"agreement" | "delivery" | "payment">("agreement");
   const [deliveryTab, setDeliveryTab] = useState<"preview" | "evidence" | "layout">("preview");
   const [layoutProgress, setLayoutProgress] = useState<{done: number; total: number}>();
+  const [browserCheckProgress, setBrowserCheckProgress] = useState<{done: number; total: number}>();
   const [criterionIndex, setCriterionIndex] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
   const workspaceRef = useRef<HTMLDivElement>(null);
@@ -135,6 +140,9 @@ export default function Home() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
   const layoutController = useRef<AbortController | null>(null);
+  const browserCheckController = useRef<AbortController | null>(null);
+  const browserCheckSavePending = useRef(false);
+  const currentBrowserContext = useRef("");
   const currentDelivery = useRef("");
   const acceptanceRef = useRef<HTMLDivElement>(null);
   const completedCollaborationRef = useRef<HTMLDetailsElement>(null);
@@ -148,6 +156,7 @@ export default function Home() {
   const displayRole = collaboration && !roleplay ? role : workspaceRole;
   const buyer = displayRole === "buyer";
   const sellerEntry = !quote && workspaceRole === "seller";
+  const welcomeActive = !quote && !sellerEntry && !intakeStarted;
   const roleRecords = records.filter(item => item.proof.demoRoleplay || (recordRoles[item.id] ?? "buyer") === workspaceRole);
   const delivery = proof?.delivery;
   currentDelivery.current = `${quote?.id ?? ""}:${delivery?.id ?? ""}`;
@@ -184,6 +193,7 @@ export default function Home() {
     && ((authorized && !expired) || (custom && proof?.paymentState === "unfunded"));
   const canManageDelivery = !buyer && deliveryUnlocked && (!collaboration || ["in_progress", "changes_requested"].includes(collaboration.stage));
   const canCheckDelivery = deliveryUnlocked && (!collaboration || ["in_progress", "changes_requested", "submitted"].includes(collaboration.stage));
+  const canObserveBrowser = !!quote && !!deliveryFiles && ["approved", "paid"].includes(quote.status) && !paymentPending;
   const canAcceptDelivery = buyer && collaboration?.stage === "submitted" && deliveryUnlocked && reviewCurrent && evidenceComplete && !failed && allHumanChecked && deliveryConsent;
   const canCapture = buyer && (!collaboration || collaboration.stage === "accepted") && authorized && !pendingVoid && (pendingCapture || (!expired && reviewCurrent && evidenceComplete && !failed && allHumanChecked && consent));
   const aiMode = quote?.aiMode ?? (projectMode === "demo" || customRoleDemo ? "demo" : config?.aiMode);
@@ -284,6 +294,13 @@ export default function Home() {
 
   useEffect(() => () => { layoutController.current?.abort(); }, []);
 
+  useLayoutEffect(() => {
+    currentBrowserContext.current = `${quote?.id ?? ""}:${delivery?.id ?? ""}:${displayRole}`;
+    // Context changes and unmount invalidate an in-flight observation, never a received save.
+    browserCheckController.current?.abort();
+    return () => { browserCheckController.current?.abort(); };
+  }, [quote?.id, delivery?.id, displayRole]);
+
   useEffect(() => {
     if (!quote?.id || !delivery?.id) return;
     let cancelled = false;
@@ -346,6 +363,7 @@ export default function Home() {
   }
 
   function startCase() {
+    setIntakeStarted(true);
     setWorkspaceView("workbench");
     setWorkspacePanel("agreement");
     clearReturnContext();
@@ -375,11 +393,11 @@ export default function Home() {
   }
 
   function switchWorkspaceRole(next: ProofRole) {
-    if (operationLock.current || busy || layoutController.current || next === workspaceRole) return;
+    if (operationLock.current || busy || layoutController.current || browserCheckController.current || next === workspaceRole) return;
     const commitSwitch = () => {
       setWorkspaceRole(next);
       setWorkspaceView("workbench");
-      setWorkspacePanel(next === "buyer" && collaboration?.stage !== "submitted" ? "payment" : "delivery");
+      setWorkspacePanel(!quote ? "agreement" : next === "buyer" && collaboration?.stage !== "submitted" ? "payment" : "delivery");
       setManualChecks([]); setConsent(false); setDeliveryConsent(false);
       setFeedbackSuggestion(undefined);
       setShowDeliveryAcceptance(false); setModal(null);
@@ -406,6 +424,7 @@ export default function Home() {
   }
 
   function fillExampleRequirements() {
+    setIntakeStarted(true);
     setProjectMode("custom"); setProjectStep(0); setWorkspacePanel("agreement");
     setProjectTitle(tr("Willow 花艺工作室网站", "Willow floral studio website"));
     setProjectSummary(tr("制作首页、服务价格页和联系页。显示营业时间 Monday to Friday, 11am–8pm，列明花束服务价格，首页预约链接应指向联系页的预约区域。", "Create Home, Services and Contact pages. Display opening hours Monday to Friday, 11am–8pm and floral service prices. The home-page booking link must point to the booking section on Contact."));
@@ -414,6 +433,17 @@ export default function Home() {
     setIncludeLink(true); setLinkFrom("index.html"); setLinkText("Book a call"); setLinkTo("contact.html#booking");
     setRequirementsDraft(undefined); setRequirementsConfirmed(false); setRequirementsFromBrief(false);
     setNotice(tr("示例需求已填入，请按实际项目编辑。未创建项目，也未调用 AI。", "Example requirements filled. Edit them for your project. No project was created and no AI was called."));
+  }
+
+  function beginIntake() {
+    setIntakeStarted(true); setWorkspaceView("workbench"); setWorkspacePanel("agreement");
+    setProjectMode("custom"); setProjectStep(0);
+    window.requestAnimationFrame(() => workspaceRef.current?.querySelector<HTMLInputElement>("#projectTitle")?.focus());
+  }
+
+  function returnToIntroduction() {
+    setIntakeStarted(false); setError(""); setNotice("");
+    window.requestAnimationFrame(() => document.getElementById("welcome-introduction")?.focus());
   }
 
   function chooseWorkflow(value: WorkflowChoiceValue) {
@@ -434,7 +464,7 @@ export default function Home() {
   }
 
   async function run(name: string, action: () => Promise<void>, refreshAfterFailure = true) {
-    if (operationLock.current || busy || layoutController.current) return;
+    if (operationLock.current || busy || layoutController.current || browserCheckController.current) return;
     operationLock.current = true;
     setBusy(name); setError(""); setNotice("");
     setReconciliation(null);
@@ -591,7 +621,7 @@ export default function Home() {
   }
 
   async function checkLayout() {
-    if (!quote || !delivery || !canCheckDelivery || operationLock.current || busy || layoutController.current) return;
+    if (!quote || !delivery || !canCheckDelivery || operationLock.current || busy || layoutController.current || browserCheckController.current) return;
     const snapshot = quote;
     const key = `${quote.id}:${delivery.id}`;
     const controller = new AbortController();
@@ -628,6 +658,43 @@ export default function Home() {
     }
   }
 
+  async function checkBrowserBehavior() {
+    if (!quote || !delivery || !canObserveBrowser || operationLock.current || busy || layoutController.current || browserCheckController.current) return;
+    const snapshot = quote, key = `${quote.id}:${delivery.id}:${displayRole}`;
+    const controller = new AbortController();
+    browserCheckController.current = controller; browserCheckSavePending.current = false;
+    setBusy("browser-check"); setError(""); setNotice(""); setBrowserCheckProgress(undefined);
+    try {
+      const input = await runBrowserChecks(snapshot, controller.signal, value => {
+        if (!controller.signal.aborted && currentBrowserContext.current === key) setBrowserCheckProgress(value);
+      });
+      if (controller.signal.aborted || currentBrowserContext.current !== key) return;
+      // After the POST starts, a cancellation must not be described as an unsaved run.
+      browserCheckSavePending.current = true; setBusy("browser-check-save");
+      const result = await request<CaseResult>(`/api/proofs/${snapshot.id}/browser-checks`, "POST", input);
+      if (currentBrowserContext.current !== key) return;
+      apply(result.quote, result.role);
+      setNotice(tr("链接行为与资源观察已保存。请核对不符和未验证的步骤；这些观察不替代人工验收。", "Link behavior and resource observations saved. Inspect steps needing review or verification; these observations do not replace human acceptance."));
+    } catch (cause) {
+      if (currentBrowserContext.current !== key) return;
+      if (controller.signal.aborted && !browserCheckSavePending.current) setNotice(tr("浏览器检查已取消，本次结果未保存。", "Browser check cancelled; this run was not saved."));
+      else {
+        setError(cause instanceof RequestError && cause.status === 409
+          ? tr("当前交付或浏览器报告已更新，本次观察未覆盖已有记录。请刷新后重新检查。", "The delivery or browser report changed. This run did not overwrite the saved record. Refresh and check again.")
+          : cause instanceof Error ? cause.message : tr("浏览器行为检查未完成，请重试。", "Browser behavior checks could not complete. Please retry."));
+        try {
+          const refreshed = await request<CaseResult>(`/api/quotes/${snapshot.id}`);
+          if (currentBrowserContext.current === key) apply(refreshed.quote, refreshed.role);
+        } catch { /* Keep the original error; do not replay a save with uncertain outcome. */ }
+      }
+    } finally {
+      if (browserCheckController.current === controller) {
+        browserCheckController.current = null; browserCheckSavePending.current = false;
+        setBusy(""); setBrowserCheckProgress(undefined);
+      }
+    }
+  }
+
   function projectBasicsError() {
     if (!projectTitle.trim()) return tr("请填写项目名称。", "Enter a project title.");
     if (!projectSummary.trim()) return tr("请简要说明交付内容。", "Describe what will be delivered.");
@@ -639,7 +706,7 @@ export default function Home() {
   }
 
   async function analyzeRequirements(input: {sourceText: string; sourceName?: string}) {
-    if (operationLock.current || busy || loading || layoutController.current) throw new Error(tr("请等待当前操作完成。", "Wait for the current action to finish."));
+    if (operationLock.current || busy || loading || layoutController.current || browserCheckController.current) throw new Error(tr("请等待当前操作完成。", "Wait for the current action to finish."));
     operationLock.current = true;
     setBusy("requirements"); setError(""); setNotice("");
     try {
@@ -850,6 +917,7 @@ export default function Home() {
     assessed: tr("保存逐条 AI 源码评估", "AI source assessment saved"),
     risk_reviewed: tr("保存人工风险复核", "Human risk review saved"),
     layout_checked: tr("保存浏览器布局测量", "Browser layout observations saved"),
+    browser_checked: tr("保存浏览器交付行为观察", "Browser delivery behavior observations saved"),
     seller_joined: tr("卖家确认约定并加入", "Seller confirmed the scope and joined"),
     delivery_sent: tr("卖家提交验收", "Seller submitted for acceptance"),
     changes_requested: tr("买家退回具体修改意见", "Buyer requested changes"),
@@ -871,6 +939,8 @@ export default function Home() {
   const nextStep = quote ? nextWorkspaceAction() : undefined;
   const busyLabel = busy === "upload" || busy === "delivery" ? tr("正在保存并核查文件…", "Saving files and running checks…")
     : busy === "assess" ? tr("正在等待 DeepSeek 评估…", "Waiting for DeepSeek assessment…")
+    : busy === "browser-check" ? tr("正在观察链接行为和页面资源…", "Observing link behavior and page resources…")
+    : busy === "browser-check-save" ? tr("正在保存浏览器观察…", "Saving browser observations…")
     : busy === "switch-role" ? tr("正在切换工作台…", "Switching workspace…")
     : busy === "review" ? tr("正在核查保存的文件…", "Checking saved files…")
     : busy ? tr("正在保存或读取项目，请稍候…", "Saving or loading the project…") : "";
@@ -905,7 +975,7 @@ export default function Home() {
 
   return (
     <div className={`proof-app cockpit-shell${quote ? " has-project" : ""}`}>
-      <a href="#workspace" className="skip-link" onClick={() => setWorkspaceView("workbench")}>{tr("跳到验收工作台", "Skip to workspace")}</a>
+      <a href="#workspace" className="skip-link" onClick={() => {setWorkspaceView("workbench"); if (!quote && !sellerEntry) beginIntake();}}>{tr("跳到验收工作台", "Skip to workspace")}</a>
       <header className="site-header no-print">
         <a className="brand" href="/" aria-label="ProofBeforePay"><span className="brand-mark"><FileCheck2 size={22} /></span><span>proof<span className="brand-light">before</span>pay<span className="brand-dot">.</span></span></a>
         <nav aria-label={tr("主导航", "Main navigation")}>
@@ -916,21 +986,23 @@ export default function Home() {
 
       <main className="main-wrap cockpit-main">
         <h1 className="sr-only">{tr("交付验收工作台", "Delivery acceptance workspace")}</h1>
-        <div className="workflow no-print" aria-label={tr("验收流程", "Acceptance workflow")}>
+        <div className="workflow no-print" hidden={welcomeActive} aria-label={tr("验收流程", "Acceptance workflow")}>
           {steps.map((step, index) => <div className={`workflow-step ${index === currentStep ? "current" : ""} ${index < currentStep && completedSteps[index] ? "done" : ""}`} key={step}><span>{index < currentStep && completedSteps[index] ? <Check size={13} /> : `0${index + 1}`}</span><strong>{step}</strong>{index < steps.length - 1 && <ChevronRight className="step-arrow" size={15} />}</div>)}
         </div>
 
-        <div className="mode-banner no-print" role="status"><FlaskConical size={18} /><div><strong>{!config && !quote ? configError ? tr("连接尚未就绪", "Connection unavailable") : tr("正在检查连接…", "Checking connections…") : tr("受控测试环境", "CONTROLLED TEST ENVIRONMENT")}</strong><details className="mode-details"><summary>{aiMode === "live" ? tr("AI 解释", "AI explanation") : tr("规则核查", "Rule checks")} · {paymentMode === "sandbox" ? "PayPal Sandbox" : tr("本地模拟", "Local simulation")} · {tr("仅测试资金", "Test funds only")}</summary><p>{aiMode === "demo" ? sampleRoleplay ? tr("规则核查保存的样例或卖家文件；逐条 AI 评估通过单独按钮运行并保存。", "Rules check saved samples or seller files. Item-by-item AI assessment runs and saves separately.") : customView ? tr("规则核查已上传文件；逐条 AI 评估通过单独按钮运行并保存。", "Uploaded files are checked by rules. Item-by-item AI assessment runs and saves separately.") : tr("规则核查内置文件样例，未调用 AI。", "Built-in files are checked by rules, with no AI request.") : aiMode === "live" ? tr("AI 辅助解释证据，验收与付款仍需人工确认。", "AI helps explain evidence; acceptance and payment require your confirmation.") : ""} {paymentMode === "demo" ? tr("预授权与付款均为本地模拟，未连接 PayPal。", "Authorization and payment are local simulations, not PayPal.") : paymentMode === "sandbox" ? tr("已配置 PayPal Sandbox，仅使用测试资金。", "PayPal Sandbox is configured for test funds only.") : ""} {customView ? tr("仅核查已保存的交付文件，不抓取任意网站。", "Only saved delivery files are inspected; arbitrary websites are not fetched.") : tr("仅含内置交付样例。", "Built-in delivery examples only.")}</p></details></div><span className="mode-badge">{paymentMode === "sandbox" ? "SANDBOX" : "DEMO"}</span>{configError && <button className="text-button" disabled={!!busy} onClick={() => run("config", async () => { setConfig(await request<AppConfig>("/api/config")); setConfigError(false); })}>{tr("重试", "Retry")}</button>}</div>
+        <div className="mode-banner no-print" role="status" hidden={welcomeActive && !configError}><FlaskConical size={18} /><div><strong>{!config && !quote ? configError ? tr("连接尚未就绪", "Connection unavailable") : tr("正在检查连接…", "Checking connections…") : tr("受控测试环境", "CONTROLLED TEST ENVIRONMENT")}</strong><details className="mode-details"><summary>{aiMode === "live" ? tr("AI 解释", "AI explanation") : tr("规则核查", "Rule checks")} · {paymentMode === "sandbox" ? "PayPal Sandbox" : tr("本地模拟", "Local simulation")} · {tr("仅测试资金", "Test funds only")}</summary><p>{aiMode === "demo" ? sampleRoleplay ? tr("规则核查保存的样例或卖家文件；逐条 AI 评估通过单独按钮运行并保存。", "Rules check saved samples or seller files. Item-by-item AI assessment runs and saves separately.") : customView ? tr("规则核查已上传文件；逐条 AI 评估通过单独按钮运行并保存。", "Uploaded files are checked by rules. Item-by-item AI assessment runs and saves separately.") : tr("规则核查内置文件样例，未调用 AI。", "Built-in files are checked by rules, with no AI request.") : aiMode === "live" ? tr("AI 辅助解释证据，验收与付款仍需人工确认。", "AI helps explain evidence; acceptance and payment require your confirmation.") : ""} {paymentMode === "demo" ? tr("预授权与付款均为本地模拟，未连接 PayPal。", "Authorization and payment are local simulations, not PayPal.") : paymentMode === "sandbox" ? tr("已配置 PayPal Sandbox，仅使用测试资金。", "PayPal Sandbox is configured for test funds only.") : ""} {customView ? tr("仅核查已保存的交付文件，不抓取任意网站。", "Only saved delivery files are inspected; arbitrary websites are not fetched.") : tr("仅含内置交付样例。", "Built-in delivery examples only.")}</p></details></div><span className="mode-badge">{paymentMode === "sandbox" ? "SANDBOX" : "DEMO"}</span>{configError && <button className="text-button" disabled={!!busy} onClick={() => run("config", async () => { setConfig(await request<AppConfig>("/api/config")); setConfigError(false); })}>{tr("重试", "Retry")}</button>}</div>
 
         {(error || notice) && <div role={error ? "alert" : "status"} className={`feedback no-print ${error ? "error" : "success"}`}><Info size={18} /><div>{error && <strong>{tr("操作未完成", "Action not completed")}</strong>}<span>{error || notice}</span></div><button className="icon-button" aria-label={tr("关闭提示", "Dismiss message")} onClick={() => { setError(""); setNotice(""); }}><X size={16} /></button></div>}
 
-        <nav className="compact-panel-nav no-print" hidden={workspaceView !== "workbench" || sellerEntry} aria-label={tr("工作区分栏", "Workspace panels")}>
+        {workspaceView === "workbench" && welcomeActive && (loading ? <p className="history-loading" role="status">{tr("正在恢复工作台…", "Restoring the workspace…")}</p> : <GettingStarted language={language} busy={!!busy} onStart={beginIntake} onExample={fillExampleRequirements} onDemo={() => {void startRoleDemo();}}/>)}
+        {workspaceView === "workbench" && !quote && !sellerEntry && intakeStarted && <button type="button" className="text-button intake-return" disabled={!!busy || loading} onClick={returnToIntroduction}>{tr("返回流程介绍（保留草稿）", "Back to the introduction (keep draft)")}</button>}
+        <nav className="compact-panel-nav no-print" hidden={workspaceView !== "workbench" || sellerEntry || !quote} aria-label={tr("工作区分栏", "Workspace panels")}>
           {([["agreement", tr("约定", "Agreement")], ["delivery", tr("交付与证据", "Delivery & evidence")], ["payment", collaboration && !buyer ? tr("交付进度", "Delivery progress") : tr("验收与付款", "Accept & pay")]] as const).map(([panel, label]) => <button key={panel} aria-pressed={workspacePanel === panel} className={workspacePanel === panel ? "active" : ""} onClick={() => setWorkspacePanel(panel)}>{label}</button>)}
         </nav>
         {quote && nextStep && <div className={`collaboration-workspace-bar guided-workspace-bar no-print${busy ? " is-busy" : ""}`}><strong>{buyer ? tr("买家工作台", "Buyer workspace") : tr("卖家工作台", "Seller workspace")}<small>{sandboxRoleplay ? tr("Sandbox 双端演练", "Sandbox role rehearsal") : roleplay ? tr("双端演示", "Two-sided demo") : collaboration ? tr("成员身份已确认", "Participant workspace") : tr("单人测试", "Single-user test")}</small></strong><span role="status" aria-live="polite">{busy ? <><LoaderCircle size={13} className="spin"/>{busyLabel}</> : nextStep.help}</span><button className="subtle-button workspace-next-action" type="button" disabled={!!busy} onClick={nextStep.action}>{nextStep.label}<ArrowRight size={14}/></button><button className="text-button workspace-refresh" disabled={!!busy} onClick={refreshCase} aria-label={tr("刷新项目", "Refresh project")} title={tr("刷新项目", "Refresh project")}><RefreshCw size={13}/></button></div>}
-        {!quote && !sellerEntry && workspaceView === "workbench" && <div className="role-context-banner no-print"><strong>{tr("买家：约定要求、查看交付、验收与付款", "Buyer: set requirements, inspect delivery, accept and pay")}</strong><span>{tr("交付文件由卖家提供。想先体验完整流程，可以用同一账号切换样板的两端。", "Sellers provide the delivery files. Try both sides of a demo with one account.")}</span><button className="subtle-button" disabled={!!busy || loading} onClick={startRoleDemo}>{tr("体验双端样板", "Try the two-sided demo")}<ArrowRight size={14}/></button></div>}
+        {!quote && !sellerEntry && !welcomeActive && workspaceView === "workbench" && <div className="role-context-banner no-print"><strong>{tr("买家：约定要求、查看交付、验收与付款", "Buyer: set requirements, inspect delivery, accept and pay")}</strong><span>{tr("交付文件由卖家提供。想先体验完整流程，可以用同一账号切换样板的两端。", "Sellers provide the delivery files. Try both sides of a demo with one account.")}</span><button className="subtle-button" disabled={!!busy || loading} onClick={startRoleDemo}>{tr("体验双端样板", "Try the two-sided demo")}<ArrowRight size={14}/></button></div>}
         {sellerEntry && workspaceView === "workbench" && <section className="seller-entry" aria-label={tr("卖家工作台", "Seller workspace")}><span className="section-kicker">SELLER WORKSPACE</span><h2>{tr("卖家负责交付，买家负责验收", "Sellers deliver. Buyers accept.")}</h2><p>{tr("真实项目：通过买家发来的邀请链接加入，使用受邀邮箱登录。加入后，在这里上传文件、填写说明、提交验收并处理修改意见。", "For a real project, open the buyer's invitation and sign in with the invited email. Then upload files, describe your work, submit for acceptance and respond to feedback here.")}</p><div className="seller-entry-actions"><button className="button primary" disabled={!!busy || loading} onClick={startRoleDemo}>{tr("先体验双端样板", "Try a two-sided demo first")}<ArrowRight size={15}/></button><button className="subtle-button" disabled={!!busy} onClick={() => setWorkspaceView("history")}>{tr("查看卖家项目", "View seller projects")}</button></div><div className="seller-entry-cards">{roleRecords.map(item => <button className="seller-entry-card" key={item.id} disabled={!!busy} onClick={() => openCase(item)}><strong>{item.title}</strong><span>{item.proof.demoRoleplay ? tr("双端演示", "Two-sided demo") : item.reference} · {stateLabel(item, true)}</span><ArrowUpRight size={16}/></button>)}</div>{!loading && !roleRecords.length && <p>{tr("还没有以卖家身份参与的项目。切换工作台不会自动加入买家的项目。", "You have no seller projects yet. Switching workspaces does not join you to a buyer's project.")}</p>}</section>}
-        <div className={`workspace-grid cockpit-grid panel-${workspacePanel} ${!quote ? "is-intake" : ""}`} id="workspace" ref={workspaceRef} tabIndex={-1} hidden={workspaceView !== "workbench" || sellerEntry}>
+        <div className={`workspace-grid cockpit-grid panel-${workspacePanel} ${!quote ? "is-intake" : ""}`} id="workspace" ref={workspaceRef} tabIndex={-1} hidden={workspaceView !== "workbench" || sellerEntry || welcomeActive}>
           <aside className="scope-panel" aria-label={tr("服务约定", "Service agreement")}>
             <div className="section-heading"><span className="section-kicker">01 / THE AGREEMENT</span><h2>{tr("先把标准说清楚", "Start with a clear agreement")}</h2></div>
             <div className="scope-document">
@@ -1019,17 +1091,16 @@ export default function Home() {
               {delivery && <div className="current-delivery"><span className={`delivery-version variant-${delivery.variant}`}>{`v${deliverySequence}`}</span><div><strong>{delivery.label}</strong><code>{delivery.id}</code></div><span className={`small-state ${reviewCurrent ? "positive" : ""}`}>{reviewCurrent ? tr("当前版本已核查", "This version reviewed") : tr("新版本 · 待核查", "New version · review needed")}</span></div>}
               {delivery && proof && <DeliveryOverview key={delivery.id} delivery={delivery} criteria={proof.criteria} review={proof.review} manualChecks={confirmedManualChecks} language={language} role={displayRole} stage={collaboration?.stage} busy={!!busy}
                 previousVersion={versions.find(version => isOlderDelivery(version, delivery))}
-                onOpenLayout={canCheckDelivery || delivery.layoutReport ? () => {setWorkspacePanel("delivery"); setDeliveryTab("layout");} : undefined}
+                onOpenLayout={canCheckDelivery || canObserveBrowser || delivery.layoutReport || delivery.browserChecks ? () => {setWorkspacePanel("delivery"); setDeliveryTab("layout");} : undefined}
                 onInspectLayout={(file, width) => {setPreviewFile(file); setPreviewWidth(width === 375 ? "mobile" : "desktop"); setPreviewEntry(value => value + 1); setDeliveryTab("preview"); setWorkspacePanel("delivery");}}
                 onInspect={openCriterion} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked ? prepareFeedback : undefined}
                 onViewHistory={openVersionHistory}/>}
               {delivery && <ResourceChecks delivery={delivery} language={language}/>}
               {delivery && proof && <DeliveryComparison delivery={delivery} review={proof.review} criteria={proof.criteria} previousVersion={versions.find(version => isOlderDelivery(version,delivery))} feedback={collaboration?.feedback} language={language} onInspectCurrent={openCriterion}/>}
-              {!quote && <GettingStarted language={language} busy={!!busy || loading} onExample={fillExampleRequirements} onDemo={() => {void startRoleDemo();}}/>}
               <nav className="delivery-view-switch no-print" hidden={!quote} aria-label={tr("交付查看方式", "Delivery view")}>
                 <button aria-pressed={deliveryTab === "preview"} className={deliveryTab === "preview" ? "active" : ""} onClick={() => setDeliveryTab("preview")}><Monitor size={15} />{tr("交付预览", "Preview")}</button>
                 <button aria-pressed={deliveryTab === "evidence"} className={deliveryTab === "evidence" ? "active" : ""} onClick={() => setDeliveryTab("evidence")}><FileCheck2 size={15} />{tr("逐项核查", "Evidence checks")}</button>
-                <button aria-pressed={deliveryTab === "layout"} className={deliveryTab === "layout" ? "active" : ""} onClick={() => setDeliveryTab("layout")}><ScanLine size={15} />{tr("布局测量", "Layout")}</button>
+                <button aria-pressed={deliveryTab === "layout"} className={deliveryTab === "layout" ? "active" : ""} onClick={() => setDeliveryTab("layout")}><ScanLine size={15} />{tr("浏览器检查", "Browser checks")}</button>
               </nav>
               <div className="delivery-preview-view" hidden={!quote || deliveryTab !== "preview"}>
                 {!delivery && <div className="empty-delivery"><span><FileCode2 size={30} strokeWidth={1.3} /></span><h4>{buyer ? tr("等待卖家提交交付", "Awaiting the seller’s delivery") : tr("准备你的交付", "Prepare your delivery")}</h4><p>{buyer ? roleplay || !collaboration ? tr("买家不需要上传交付证据。锁定约定后，切换右上角卖家端，体验上传和提交；再切回买家端验收。", "Buyers do not upload delivery evidence. Lock the scope, switch to Seller to prepare and submit, then switch back to Buyer to accept.") : tr("确认约定后，在右侧邀请卖家。卖家上传并提交验收后，你可以在这里查看文件和逐项证据。", "Lock the scope and invite your seller on the right. Once they submit, inspect the files and evidence here.") : sampleRoleplay ? tr("先选择一个样例，或上传自己的 HTML/CSS。核查后填写说明，并提交给买家验收。", "Choose a sample or upload your HTML/CSS. Run the checks, add a delivery note and submit for buyer acceptance.") : tr("上传自己的 HTML/CSS，核查当前版本并填写交付说明后，提交给买家。", "Upload your HTML/CSS, check this version, add a delivery note and submit it to the buyer.")}</p>{buyer && (!collaboration || roleplay) && <button className="subtle-button no-print" disabled={!!busy} onClick={() => switchWorkspaceRole("seller")}>{tr("切换卖家端体验交付", "Switch to Seller to try delivery")}<ArrowRight size={14}/></button>}<div className="empty-evidence-lines" aria-hidden="true"><i /><i /><i /></div></div>}
@@ -1060,6 +1131,10 @@ export default function Home() {
                   onRun={checkLayout} onCancel={() => layoutController.current?.abort()}
                   onInspect={(file, width) => {setPreviewFile(file); setPreviewWidth(width === 375 ? "mobile" : "desktop"); setPreviewEntry(value => value + 1); setDeliveryTab("preview"); setWorkspacePanel("delivery");}} />
                 {busy === "layout-save" && <p className="layout-check-source" role="status">{tr("正在保存测量报告…", "Saving layout observations…")}</p>}
+                <BrowserCheckPanel key={`browser-${delivery?.id ?? "empty"}`} language={language} report={delivery?.browserChecks?.deliveryId === delivery?.id ? delivery?.browserChecks : undefined}
+                  enabled={canObserveBrowser && !busy} busy={busy === "browser-check"} progress={browserCheckProgress}
+                  onRun={checkBrowserBehavior} onCancel={() => {if (!browserCheckSavePending.current) browserCheckController.current?.abort();}}/>
+                {busy === "browser-check-save" && <p className="layout-check-source" role="status">{tr("正在保存链接行为与资源观察…", "Saving link behavior and resource observations…")}</p>}
               </div>
               <div className="delivery-evidence-view" hidden={deliveryTab !== "evidence"}>
                 {!delivery && <p className="empty-evidence-message">{buyer ? tr("等待卖家提交后，在这里查看逐项核查证据。买家不需要提供交付文件。", "Inspect evidence here after the seller submits. Buyers do not provide delivery files.") : tr("准备并保存交付文件后，在这里核查当前版本，再提交验收。", "Prepare and save delivery files, check this version here, then submit for acceptance.")}</p>}

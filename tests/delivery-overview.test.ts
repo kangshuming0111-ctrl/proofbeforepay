@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { ProofAssessment, ProofCriterion, ProofDelivery, ProofDeliveryVersion, ProofEvidence } from "../lib/contracts.ts";
-import { criterionDisplayTitle, deliveryOverview, overviewFeedbackDraft } from "../lib/delivery-overview.ts";
+import { criterionDisplayTitle, deliveryOverview, overviewFeedbackDraft, overviewRowLabel } from "../lib/delivery-overview.ts";
 
 const criteria: ProofCriterion[] = [
   { id: "page-1", title: "Separate page: index.html", source: "Deliver index.html." },
@@ -50,6 +50,27 @@ test("human progress counts only required IDs, never unknown checks or AI suppor
   const item = delivery(); item.assessment = report(item.id, "supported");
   const result = deliveryOverview({ delivery: item, criteria, review: review(), manualChecks: ["manual-1", "unknown-id", "manual-1"] });
   assert.equal(result.humanRemaining, 1); assert.equal(result.rows[0].criterion.id, "mobile");
+});
+
+test("a human-confirmed criterion keeps AI abstention visible without remaining a pending human check", () => {
+  const item = delivery(); item.assessment = report(item.id, "supported");
+  const result = deliveryOverview({ delivery: item, criteria, review: review(), manualChecks: ["mobile", "manual-1"] });
+  const row = result.rows.find(entry => entry.criterion.id === "mobile")!;
+  assert.equal(row.humanConfirmed, true); assert.equal(row.humanPending, false);
+  assert.equal(row.ai?.status, "insufficient_evidence");
+  assert.equal(result.humanConfirmed, 2); assert.equal(result.humanRequired, 2); assert.equal(result.humanRemaining, 0);
+  assert.equal(overviewRowLabel(row, "en"), "Human-confirmed · AI could not determine");
+  assert.equal(overviewRowLabel(row, "zh"), "人工已确认 · AI 无法独立判断");
+  assert.notEqual(result.rows[0].criterion.id, "mobile");
+});
+
+test("a human checkbox does not hide a failed rule or AI suggestion to change", () => {
+  const item = delivery();
+  const result = deliveryOverview({ delivery: item, criteria, review: review(), manualChecks: ["manual-1"] });
+  assert.equal(overviewRowLabel(result.rows[0], "en"), "AI suggests changes");
+  item.evidence.push(evidence("manual-1", "fail"));
+  const failed = deliveryOverview({ delivery: item, criteria, review: review(), manualChecks: ["manual-1"] });
+  assert.equal(overviewRowLabel(failed.rows[0], "en"), "Rule mismatch");
 });
 
 test("history compares only independently bound rule and AI reports", () => {
