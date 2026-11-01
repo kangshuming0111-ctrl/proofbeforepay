@@ -1,0 +1,10 @@
+﻿tester_id,actual_role,actual_language,task_id,site_version,browser,viewport,start_time,end_time,outcome,help_count,first_wrong_action,participant_quote,observed_problem,severity,evidence_path,facilitator_notes
+P01,,,T01,,,,,,,,,,,,,
+P01,,,T03,,,,,,,,,,,,,
+P01,,,T05,,,,,,,,,,,,,
+P02,,,T02,,,,,,,,,,,,,
+P02,,,T03,,,,,,,,,,,,,
+P02,,,T04,,,,,,,,,,,,,
+P03,,,T01,,,,,,,,,,,,,
+P03,,,T04,,,,,,,,,,,,,
+P03,,,T05,,,,,,,,,,,,,

@@ -82,7 +82,7 @@ test("actual controlled demo snapshots accept their JSON metadata but measure on
 });
 
 test("unsafe required or saved filenames and oversized coverage are rejected", () => {
-  for (const name of ["../index.html", "dir/index.html", "dir\\index.html", "/index.html", "page.html?x=1", "page.html\n", "../metadata.json", "script.js"]) {
+  for (const name of ["../index.html", "dir/../index.html", "dir\\index.html", "/index.html", "page.html?x=1", "page.html\n", "dir/%2e%2e/index.html", "../metadata.json", "script.js"]) {
     const required = agreement();
     required.proof.project!.requiredPages = [name];
     invalid(() => getLayoutFiles(required));
@@ -99,6 +99,40 @@ test("unsafe required or saved filenames and oversized coverage are rejected", (
   const accessor = agreement();
   Object.defineProperty(accessor.proof.delivery!.files, "bad.html", { enumerable: true, get() { throw new Error("must not run"); } });
   invalid(() => getLayoutFiles(accessor));
+});
+
+test("layout coverage accepts canonical directory packages while excluding raster and stylesheet assets from readings", () => {
+  const quote = agreement();
+  quote.proof.project!.requiredPages = ["index.html", "pages/contact.html", "pages/missing.html"];
+  quote.proof.delivery!.files = {
+    "index.html": html, "pages/contact.html": html, "assets/css/main.css": "body{color:#123}",
+    "assets/images/shop.png": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAAEklEQVQImWNIm1meNrOcAUIBACiyBdnemS6wAAAAAElFTkSuQmCC",
+  };
+  const before = structuredClone(quote);
+  assert.deepEqual(getLayoutFiles(quote), [
+    { file: "index.html", exists: true }, { file: "pages/contact.html", exists: true }, { file: "pages/missing.html", exists: false },
+  ]);
+  const report = createLayoutReport(quote, input(quote), now);
+  assert.deepEqual(report.summary, { measured: 4, unavailable: 2, overflow: 0 });
+  assert.equal(report.deliveryId, quote.proof.delivery!.id);
+  assert.ok(report.readings.every(reading => reading.file.endsWith(".html")));
+  for (const file of ["assets/css/main.css", "assets/images/shop.png"]) {
+    const forged = input(quote); rows(forged)[0].file = file;
+    invalid(() => createLayoutReport(quote, forged, now));
+  }
+  assert.deepEqual(quote, before);
+});
+
+test("directory layout snapshots retain collision and unsupported-type checks", () => {
+  for (const extra of [
+    { "assets/main.css": "body{}", "ASSETS/MAIN.CSS": "body{}" },
+    { "assets.css": "body{}", "assets.css/nested.html": html },
+    { "images/photo.svg": "<svg></svg>" },
+    { "assets/private.json": "{}" },
+  ]) {
+    const quote = agreement(); Object.assign(quote.proof.delivery!.files!, extra);
+    invalid(() => getLayoutFiles(quote));
+  }
 });
 
 test("the largest allowed page union produces exactly sixty readings", () => {

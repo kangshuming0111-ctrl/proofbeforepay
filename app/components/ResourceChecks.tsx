@@ -1,0 +1,6 @@
+import type {Language,ProofDelivery} from '@/lib/contracts';
+export function ResourceChecks({delivery,language}:{delivery:ProofDelivery;language:Language}) {
+ const tr=(zh:string,en:string)=>language==='zh'?zh:en,report=delivery.resources;
+ if(!report)return null;
+ return <details className="resource-checks"><summary>{tr('静态资源引用','Static resource references')} · {tr(`检查 ${report.checked} 项，发现 ${report.findings.length} 项需核对`,`Checked ${report.checked}; ${report.findings.length} need review`)}</summary><p>{tr('只核对这一版保存的源码与文件。外部资源、脚本、表单和后台未运行；没有发现缺失不代表网站功能可用。','Checks this version’s saved source and files only. External resources, scripts, forms and backend were not run. No missing reference does not prove functionality.')}</p>{report.findings.length?<ul>{report.findings.map((item,index)=><li key={index}><strong>{item.kind==='missing'?tr('缺少本地资源','Missing local resource'):item.kind==='blocked'?tr('外部或不支持的引用','External or unsupported reference'):tr('无法静态核对','Not statically inspectable')}</strong><div><code>{item.from}</code> → <code>{item.reference}</code></div>{item.target&&<small>{tr('解析目标：','Resolved target: ')}<code>{item.target}</code></small>}</li>)}</ul>:<p>{tr('在已检查的引用中未发现问题；其余范围仍需实际确认。','No issue found in the inspected references; other behavior still needs direct verification.')}</p>}</details>;
+}

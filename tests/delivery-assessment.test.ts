@@ -71,6 +71,20 @@ test("one bounded request disables thinking, redirects and retries and sends no 
   assert.doesNotMatch(String(init.body), /PRIVATE ORIGINAL CONTRACT|PRIVATE CLIENT NAME|PRIVATE OLD REVIEW|totalCents|clientName/);
 });
 
+test("raster assets remain saved locally but their base64 never enters model source packets or valid citations", async () => {
+  const raster = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAAEklEQVQImWNIm1meNrOcAUIBACiyBdnemS6wAAAAAElFTkSuQmCC";
+  const quote = agreement({ "assets/shop.png": raster, "index.html": source });
+  const before = structuredClone(quote), fake = mock(proposal(quote));
+  const result = await assessDelivery(quote, env, fake.fetcher);
+  const sent = JSON.parse(JSON.parse(String(fake.calls[0].init.body)).messages[1].content);
+  assert.deepEqual(sent.files, { "index.html": source });
+  assert.deepEqual(result.coverage.omittedFiles, ["assets/shop.png"]);
+  assert.ok(!String(fake.calls[0].init.body).includes(raster));
+  assert.deepEqual(quote, before);
+  const output = proposal(quote); output.items[0].citations = [{ file: "assets/shop.png", excerpt: raster }];
+  await assert.rejects(assessDelivery(quote, env, mock(output).fetcher), ProviderError);
+});
+
 test("contract attachment is not required for assessment", async () => {
   const quote = agreement(); assert.equal(quote.proof.requirements, undefined);
   assert.equal((await assessDelivery(quote, env, mock(proposal(quote)).fetcher)).items.length, 3);

@@ -2,6 +2,7 @@ import type { ProofAssessment, ProofAssessmentCitation, ProofAssessmentItem, Pro
 import { DomainError } from "./domain.ts";
 import { DEFAULT_DEEPSEEK_MODEL, ProviderError, requestJson, type Fetcher, type ProviderEnv } from "./providers.ts";
 import { validateStaticFiles } from "./static-project.ts";
+import { staticFileKind } from "./static-resources.ts";
 
 const CONTROL = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u;
 const IDENTIFIER = /^[A-Za-z0-9_-]{1,80}$/u;
@@ -50,6 +51,7 @@ function sourcePacket(files: Record<string, string>) {
   let remaining = TOTAL_SOURCE_LIMIT;
   // Insertion order is the saved upload order, so the same version has stable coverage.
   for (const [file, source] of Object.entries(files)) {
+    if (!["html", "css"].includes(staticFileKind(file) ?? "")) { coverage.omittedFiles.push(file); continue; }
     const included = prefix(source, Math.min(FILE_SOURCE_LIMIT, remaining));
     if (!included.length) { coverage.omittedFiles.push(file); continue; }
     sent[file] = included;

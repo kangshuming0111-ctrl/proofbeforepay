@@ -1,12 +1,11 @@
 import type { ProofLayoutReading, ProofLayoutReport, ProofLayoutUnavailableReason, ProofLayoutWidth, ProofQuote } from "./contracts.ts";
 import { DomainError } from "./domain.ts";
+import { assertStaticPath, STATIC_RESOURCE_LIMITS, staticFileKind } from "./static-resources.ts";
 
 export const LAYOUT_WIDTHS = [375, 900] as const;
 export const LAYOUT_HEIGHT = 800;
 
 // Controlled demo snapshots also contain a JSON manifest; it is never a measured page.
-const FILE_NAME = /^[A-Za-z0-9][A-Za-z0-9._-]*\.(?:html|css|json)$/iu;
-const HTML_NAME = /^[A-Za-z0-9][A-Za-z0-9._-]*\.html$/iu;
 const DEMO_PAGES = ["index.html", "services.html", "contact.html"] as const;
 const UNAVAILABLE_REASONS = new Set<ProofLayoutUnavailableReason>([
   "missing_file", "load_failed", "navigation_changed", "access_denied", "timeout", "unstable_layout", "snapshot_mismatch",
@@ -21,10 +20,11 @@ function record(value: unknown, label: string): Record<string, unknown> {
 }
 
 function safeName(value: unknown, htmlOnly: boolean): string {
-  if (typeof value !== "string" || value.length > 120 || !(htmlOnly ? HTML_NAME : FILE_NAME).test(value)) {
-    throw new DomainError("Layout snapshots must use root-level HTML/CSS/JSON filenames; required pages must be HTML.");
+  const name = assertStaticPath(value), kind = staticFileKind(name);
+  if (htmlOnly ? kind !== "html" : !kind && name !== "delivery-manifest.json") {
+    throw new DomainError("Layout snapshots must use supported canonical relative file paths; required pages must be HTML.");
   }
-  return value;
+  return name;
 }
 
 /** Enumerate only the current saved snapshot; never replace absent legacy files with fixtures. */
@@ -35,17 +35,17 @@ export function getLayoutFiles(quote: ProofQuote): { file: string; exists: boole
   const names = new Set<string>();
   const actualNames = new Set<string>();
   const keys = Reflect.ownKeys(files);
-  if (!keys.length) throw new DomainError("This delivery has no saved file snapshot to check.", 409);
+  if (!keys.length || keys.length > STATIC_RESOURCE_LIMITS.maxFiles) throw new DomainError("Layout snapshots must contain 1–40 saved files.", 409);
   for (const key of keys) {
     const name = safeName(key, false);
     const descriptor = Object.getOwnPropertyDescriptor(files, name);
     if (!descriptor || !("value" in descriptor) || typeof descriptor.value !== "string") {
-      throw new DomainError("Layout files must contain saved text without property accessors.");
+      throw new DomainError("Layout files must contain saved text or raster data URLs without property accessors.");
     }
     const canonical = name.toLowerCase();
-    if (actualNames.has(canonical)) throw new DomainError("Saved file names must not collide when letter case is ignored.");
+    if (actualNames.has(canonical) || [...actualNames].some(prior => prior.startsWith(`${canonical}/`) || canonical.startsWith(`${prior}/`))) throw new DomainError("Saved paths must not collide as files/directories or when letter case is ignored.");
     actualNames.add(canonical);
-    if (HTML_NAME.test(name)) names.add(name);
+    if (staticFileKind(name) === "html") names.add(name);
   }
   if (quote.proof.project) {
     if (!Array.isArray(quote.proof.project.requiredPages)) throw new DomainError("Required layout pages must be a list.");

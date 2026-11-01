@@ -54,13 +54,16 @@ export type ProofLayoutReport = {
 export type ProofAssessmentCitation = { file: string; start: number; end: number; excerpt: string };
 export type ProofAssessmentItem = { criterionId: string; status: "supported" | "changes_suggested" | "insufficient_evidence"; explanation: string; citations: ProofAssessmentCitation[]; ruleEvidenceIds: string[] };
 export type ProofAssessmentRisk = { title: string; explanation: string; suggestion: string; citations: ProofAssessmentCitation[] };
+/** Append-only human annotations; never edits the source model report or accepts work. */
+export type ProofRiskReview = { id: string; deliveryId: string; assessmentId: string; riskIndex: number; decision: "confirmed" | "rejected" | "needs_evidence"; reason: string; actorRole: ProofRole; reviewedAt: string };
+export type ProofResourceReport = { method: "static-resources-v1"; checked: number; findings: { from: string; reference: string; target?: string; kind: "missing" | "blocked" | "uninspectable" }[] };
 export type ProofAssessment = {
   id: string; deliveryId: string; method: "source-ai-v1"; mode: "live"; model: string; assessedAt: string;
   items: ProofAssessmentItem[]; risks: ProofAssessmentRisk[]; limitations: string[];
   coverage: { includedFiles: string[]; truncatedFiles: string[]; omittedFiles: string[] };
   usage?: { promptTokens: number; completionTokens: number };
 };
-export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"; sequence?: number; label: string; submittedAt: string; evidence: ProofEvidence[]; files?: Record<string, string>; layoutReport?: ProofLayoutReport; assessment?: ProofAssessment };
+export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"; sequence?: number; label: string; submittedAt: string; evidence: ProofEvidence[]; files?: Record<string, string>; layoutReport?: ProofLayoutReport; assessment?: ProofAssessment; riskReviews?: ProofRiskReview[]; resources?: ProofResourceReport };
 export type ProofReview = { deliveryId: string; reviewedAt: string; mode: "demo" | "live"; summary: string };
 export type ProofRole = "buyer" | "seller";
 export type ProofSubmission = { deliveryId: string; note: string; at: string };
@@ -110,12 +113,14 @@ export type ProofPaymentReconciliation =
   | { kind: "voided"; verifiedAt: string }
   | { kind: "closed_unpaid"; reason: "authorization_denied"; verifiedAt: string }
   | { kind: "unresolved"; reason: "pending" | "authorization_still_active" | "provider_unavailable" | "inconsistent_resources" };
-export type ProofEvent = { at: string; kind: "created" | "scope_approved" | "seller_joined" | "authorized" | "delivery_submitted" | "delivery_sent" | "changes_requested" | "delivery_accepted" | "reviewed" | "assessed" | "layout_checked" | "accepted" | "captured" | "voided" | "payment_closed" | "payment_reconciled"; deliveryId?: string };
+export type ProofEvent = { at: string; kind: "created" | "scope_approved" | "seller_joined" | "authorized" | "delivery_submitted" | "delivery_sent" | "changes_requested" | "delivery_accepted" | "reviewed" | "assessed" | "risk_reviewed" | "layout_checked" | "accepted" | "captured" | "voided" | "payment_closed" | "payment_reconciled"; deliveryId?: string };
 export type ProofState = {
   requirements?: RequirementAgreement;
   demoRoleplay?: true;
   /** Explicitly created one-owner PayPal Sandbox rehearsal, never seller settlement. */
   sandboxRehearsal?: true;
+  /** Explicit two-account Sandbox origin; configured test merchant, never seller settlement. */
+  sandboxCollaboration?: true;
   /** Server-recorded origin; role play alone never permits fixed sample files. */
   demoSampleProject?: boolean;
   project?: StaticProjectSpec;

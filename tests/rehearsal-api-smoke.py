@@ -46,15 +46,18 @@ def main():
     code, rejected, _ = api.request(owner, "/api/proofs", {**base, "paymentTesting": "sandbox"})
     assert code == 409 and "not configured" in rejected.get("error", ""), (code, api.diagnostic(rejected))
     api.reject(owner, "/api/proofs", {"mode": "demo", "demoRoleplay": True, "collaborative": False, "paymentTesting": "sandbox"}, codes=(409,))
+    api.reject(owner, "/api/proofs", {**base, "demoRoleplay": False, "collaborative": True,
+                                     "paymentTesting": "collaborative-sandbox"}, codes=(409,))
     assert api.ok(owner, "/api/proofs")["quotes"] == listed_before, "Rejected configuration must not create a fallback demo"
-    api.checked("Custom and built-in Sandbox without test credentials reject409 without saving silently downgraded projects")
+    api.checked("Custom, built-in and explicit two-account Sandbox without test credentials reject409 without saving silently downgraded projects")
 
     # Neither a client-composed proof marker nor a later action can turn an
     # old provider-free demonstration into the newly authorized creation mode.
-    created = api.ok(owner, "/api/proofs", {**base, "sandboxRehearsal": True,
-                   "paymentMode": "sandbox", "proof": {"sandboxRehearsal": True}})
+    created = api.ok(owner, "/api/proofs", {**base, "sandboxRehearsal": True, "sandboxCollaboration": True,
+                   "paymentMode": "sandbox", "proof": {"sandboxRehearsal": True, "sandboxCollaboration": True}})
     quote = roles.quote_response(created, "buyer")
     assert quote["proof"].get("sandboxRehearsal") is None
+    assert quote["proof"].get("sandboxCollaboration") is None
     path = "/api/proofs/" + quote["id"]
     approved = roles.quote_response(api.ok(owner, path + "/approve", {"paymentTesting": "sandbox"}, role="buyer"), "buyer")
     assert approved["proof"].get("sandboxRehearsal") is None

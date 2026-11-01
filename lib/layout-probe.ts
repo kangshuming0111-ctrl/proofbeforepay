@@ -1,11 +1,21 @@
+import { deliveryFileUrl } from "./delivery-upload.ts";
 import type { ProofLayoutReading, ProofLayoutUnavailableReason, ProofLayoutWidth, ProofQuote } from "./contracts.ts";
 import { getLayoutFiles, LAYOUT_HEIGHT, LAYOUT_WIDTHS } from "./layout-report.ts";
 
 type Observation = Omit<Extract<ProofLayoutReading, {status: "measured"}>, "overflowPx" | "outcome"> | Extract<ProofLayoutReading, {status: "unavailable"}>;
 export type LayoutProbeInput = { deliveryId: string; previousReportId: string | null; readings: Observation[] };
 
+/** Match a resolved browser stylesheet URL against the exact version package,
+ * never against the current HTML directory or an encoded whole relative path. */
+export function findSavedLayoutStylesheet(files: Record<string, string>, quoteId: string, deliveryId: string, stylesheetUrl: URL, origin: string): string | undefined {
+  if (stylesheetUrl.origin !== origin) return undefined;
+  return Object.keys(files).find(name => name.toLowerCase().endsWith(".css")
+    && new URL(deliveryFileUrl(quoteId, deliveryId, name), origin).pathname === stylesheetUrl.pathname);
+}
+
 class Unavailable extends Error {
-  constructor(readonly reason: ProofLayoutUnavailableReason) { super(reason); }
+  readonly reason: ProofLayoutUnavailableReason;
+  constructor(reason: ProofLayoutUnavailableReason) { super(reason); this.reason = reason; }
 }
 
 async function exactSource(response: Response, source: string) {
@@ -32,7 +42,7 @@ function bounded<T>(operation: PromiseLike<T>, signal: AbortSignal, milliseconds
 async function measure(quote: ProofQuote, file: string, viewportWidth: ProofLayoutWidth, signal: AbortSignal): Promise<Observation> {
   const delivery = quote.proof.delivery!;
   const source = delivery.files![file];
-  const url = new URL(`/deliveries/${encodeURIComponent(quote.id)}/${encodeURIComponent(delivery.id)}/${encodeURIComponent(file)}`, window.location.origin);
+  const url = new URL(deliveryFileUrl(quote.id,delivery.id,file), window.location.origin);
   const frame = document.createElement("iframe");
   frame.setAttribute("sandbox", "allow-same-origin");
   frame.setAttribute("aria-hidden", "true");
@@ -79,8 +89,7 @@ async function measure(quote: ProofQuote, file: string, viewportWidth: ProofLayo
         const styleUrl = new URL(sheet.href, url);
         if (!verifiedStyles.has(styleUrl.href)) {
           verifiedStyles.add(styleUrl.href);
-          const filename = Object.keys(delivery.files!).find(name => name.toLowerCase().endsWith(".css")
-            && new URL(encodeURIComponent(name), url).pathname === styleUrl.pathname && styleUrl.origin === url.origin);
+          const filename = findSavedLayoutStylesheet(delivery.files!, quote.id, delivery.id, styleUrl, url.origin);
           if (!filename) throw new Unavailable("load_failed");
           const css = await fetch(styleUrl, {credentials: "same-origin", redirect: "error", cache: "no-store", signal: local.signal});
           if (!css.ok || !css.headers.get("Content-Type")?.startsWith("text/css")) throw new Unavailable("load_failed");

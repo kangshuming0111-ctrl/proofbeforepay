@@ -18,6 +18,11 @@ import { CollaborationPanel, type FeedbackSuggestion } from "./components/Collab
 import { VersionViewer } from "./components/VersionViewer";
 import { RequirementsIntake } from "./components/RequirementsIntake";
 import { DeliveryAssessment } from "./components/DeliveryAssessment";
+import type { RiskReviewInput } from "@/lib/risk-reviews";
+import { readDeliveryUpload, deliveryFileUrl, isHtmlDeliveryPath } from "@/lib/delivery-upload";
+import { ResourceChecks } from "./components/ResourceChecks";
+import { DeliveryComparison } from "./components/DeliveryComparison";
+import { isOlderDelivery } from "@/lib/delivery-comparison";
 import { DeliveryOverview } from "./components/DeliveryOverview";
 import { criterionDisplayTitle } from "@/lib/delivery-overview";
 import { WorkflowChoice, type WorkflowChoiceValue } from "./components/WorkflowChoice";
@@ -60,10 +65,6 @@ type CaseResult = {quote: ProofQuote; role?: ProofRole};
 type CaseList = {quotes: unknown[]; roles?: Record<string, ProofRole>};
 
 const DEFAULT_PAGES = "index.html";
-const FILE_LIMIT = 64 * 1024;
-const DELIVERY_LIMIT = 256 * 1024;
-const FLAT_HTML_NAME = /^[a-zA-Z0-9][a-zA-Z0-9._-]*\.html$/iu;
-const FLAT_DELIVERY_NAME = /^[a-zA-Z0-9][a-zA-Z0-9._-]*\.(?:html|css)$/iu;
 
 function inputLines(value: string) {
   return value.split(/\r?\n/u).map(line => line.trim()).filter(Boolean);
@@ -82,6 +83,7 @@ export default function Home() {
   const [collaborative, setCollaborative] = useState(true);
   const [customRoleDemo, setCustomRoleDemo] = useState(true);
   const [sandboxRehearsal, setSandboxRehearsal] = useState(false);
+  const [sandboxCollaboration, setSandboxCollaboration] = useState(false);
   const [invitation, setInvitation] = useState<{url: string; email: string; expiresAt: string}>();
   const [versions, setVersions] = useState<ProofDeliveryVersion[]>([]);
   const [viewedVersion, setViewedVersion] = useState<ProofDeliveryVersion>();
@@ -131,6 +133,7 @@ export default function Home() {
   const workspaceRef = useRef<HTMLDivElement>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const folderInputRef = useRef<HTMLInputElement>(null);
   const layoutController = useRef<AbortController | null>(null);
   const currentDelivery = useRef("");
   const acceptanceRef = useRef<HTMLDivElement>(null);
@@ -182,7 +185,7 @@ export default function Home() {
   const canAcceptDelivery = buyer && collaboration?.stage === "submitted" && deliveryUnlocked && reviewCurrent && evidenceComplete && !failed && allHumanChecked && deliveryConsent;
   const canCapture = buyer && (!collaboration || collaboration.stage === "accepted") && authorized && !pendingVoid && (pendingCapture || (!expired && reviewCurrent && evidenceComplete && !failed && allHumanChecked && consent));
   const aiMode = quote?.aiMode ?? (projectMode === "demo" || customRoleDemo ? "demo" : config?.aiMode);
-  const paymentMode = quote?.paymentMode ?? (sandboxRehearsal ? "sandbox" : projectMode === "demo" || collaborative || customRoleDemo ? "demo" : config?.paymentMode);
+  const paymentMode = quote?.paymentMode ?? (sandboxRehearsal || sandboxCollaboration ? "sandbox" : projectMode === "demo" || collaborative || customRoleDemo ? "demo" : config?.paymentMode);
   const canReconcile = authorized && paymentPending && quote?.paymentMode === "sandbox";
   const currentReconciliation = reconciliation?.quoteId === quote?.id ? reconciliation?.result : null;
   const money = (cents: number, unit = quote?.currency ?? currency) => new Intl.NumberFormat(language === "zh" ? "zh-CN" : "en-AU", {
@@ -280,9 +283,19 @@ export default function Home() {
   useEffect(() => () => { layoutController.current?.abort(); }, []);
 
   useEffect(() => {
+    if (!quote?.id || !delivery?.id) return;
+    let cancelled = false;
+    apiRequest<{versions: ProofDeliveryVersion[]}>(`/api/proofs/${quote.id}/versions`, "GET", undefined, workspaceRole)
+      .then(result => {if (!cancelled) setVersions(result.versions);})
+      .catch(() => {if (!cancelled) setVersions([]);});
+    return () => {cancelled = true;};
+  }, [quote?.id, delivery?.id, workspaceRole]);
+
+  useEffect(() => {
     setPendingFiles([]);
     setUploadError("");
     if (fileInputRef.current) fileInputRef.current.value = "";
+        if (folderInputRef.current) folderInputRef.current.value = "";
     setInvitation(undefined); setVersions([]); setViewedVersion(undefined);
   }, [quote?.id]);
 
@@ -335,7 +348,7 @@ export default function Home() {
     setWorkspacePanel("agreement");
     clearReturnContext();
     setQuote(null);
-    setRole("buyer"); setWorkspaceRole("buyer"); setCollaborative(true); setCustomRoleDemo(true); setSandboxRehearsal(false);
+    setRole("buyer"); setWorkspaceRole("buyer"); setCollaborative(true); setCustomRoleDemo(true); setSandboxRehearsal(false); setSandboxCollaboration(false);
     setError("");
     setNotice("");
     setReconciliation(null);
@@ -368,7 +381,8 @@ export default function Home() {
       setManualChecks([]); setConsent(false); setDeliveryConsent(false);
       setFeedbackSuggestion(undefined);
       setShowDeliveryAcceptance(false); setModal(null);
-      if (!roleplay) {setPendingFiles([]); setUploadError(""); if (fileInputRef.current) fileInputRef.current.value = "";}
+      if (!roleplay) {setPendingFiles([]); setUploadError(""); if (fileInputRef.current) fileInputRef.current.value = "";
+        if (folderInputRef.current) folderInputRef.current.value = "";}
       setViewedVersion(undefined);
       setInvitation(undefined); setError(""); setNotice("");
       if (quote && collaboration && !roleplay && next !== role) {
@@ -402,6 +416,7 @@ export default function Home() {
 
   function chooseWorkflow(value: WorkflowChoiceValue) {
     setSandboxRehearsal(value === "sandbox");
+    setSandboxCollaboration(value === "collaborative-sandbox");
     setCustomRoleDemo(value === "demo" || value === "sandbox");
     setCollaborative(value !== "single");
   }
@@ -416,7 +431,7 @@ export default function Home() {
     });
   }
 
-  async function run(name: string, action: () => Promise<void>) {
+  async function run(name: string, action: () => Promise<void>, refreshAfterFailure = true) {
     if (operationLock.current || busy || layoutController.current) return;
     operationLock.current = true;
     setBusy(name); setError(""); setNotice("");
@@ -425,7 +440,7 @@ export default function Home() {
     catch (cause) {
       setError(cause instanceof Error ? cause.message : tr("操作未完成，请重试。", "The action failed. Please try again."));
       // A provider error can follow a persisted pending operation. Refresh before offering retries.
-      if (quote) {
+      if (quote && refreshAfterFailure) {
         try {
           const refreshed = await request<CaseResult>(`/api/quotes/${quote.id}`);
           if (isProof(refreshed.quote)) apply(refreshed.quote, refreshed.role);
@@ -445,6 +460,17 @@ export default function Home() {
       if (action === "accept_delivery") setWorkspacePanel("payment");
       if (message) setNotice(message);
     });
+  }
+
+  async function saveRiskReview(input: RiskReviewInput): Promise<boolean> {
+    if (!quote) return false;
+    let saved = false;
+    await run("risk-review", async () => {
+      const result = await request<CaseResult>(`/api/proofs/${quote.id}/risk-reviews`, "POST", input);
+      apply(result.quote, result.role); saved = true;
+      setNotice(tr("人工复核已保存，原始 AI 报告、验收与付款未改变。", "Human review saved. The original AI report, acceptance and payment are unchanged."));
+    }, false);
+    return saved;
   }
 
   async function refreshCase() {
@@ -638,22 +664,22 @@ export default function Home() {
       return;
     }
     await run("create", async () => {
-      if (sandboxRehearsal && config?.paymentMode !== "sandbox") throw new Error(tr("PayPal Sandbox 尚未配置，请选择模拟演示。", "PayPal Sandbox is not configured. Choose the simulated demo."));
-      let input: Record<string, unknown> = { mode: projectMode, clientName: clientName.trim(), currency, language, ...(projectMode === "custom" ? {collaborative: !customRoleDemo && collaborative, demoRoleplay: customRoleDemo} : {demoRoleplay: true}), ...(sandboxRehearsal ? {paymentTesting: "sandbox"} : {}) };
+      if ((sandboxRehearsal || sandboxCollaboration) && config?.paymentMode !== "sandbox") throw new Error(tr("PayPal Sandbox 尚未配置，请选择模拟演示。", "PayPal Sandbox is not configured. Choose the simulated demo."));
+      let input: Record<string, unknown> = { mode: projectMode, clientName: clientName.trim(), currency, language, ...(projectMode === "custom" ? {collaborative: !customRoleDemo && collaborative, demoRoleplay: customRoleDemo} : {demoRoleplay: true}), ...(sandboxRehearsal ? {paymentTesting: "sandbox"} : sandboxCollaboration ? {paymentTesting: "collaborative-sandbox"} : {}) };
       if (projectMode === "custom") {
         const message = projectBasicsError();
         if (message) throw new Error(message);
         const pages = inputLines(requiredPagesInput);
         const manualRequirements = inputLines(manualRequirementsInput);
         if (requirementsDraft && !requirementsConfirmed) throw new Error(tr("请先核对原文与最终验收清单，并勾选确认。", "Review the original requirements and final checklist, then confirm them."));
-        if (!pages.length || pages.length > 10 || pages.some(file => !FLAT_HTML_NAME.test(file))) {
-          throw new Error(tr("填写 1–10 个平铺 HTML 文件名，每行一个，例如 index.html。", "Enter 1–10 flat HTML filenames, one per line, such as index.html."));
+        if (!pages.length || pages.length > 10 || pages.some(file => !isHtmlDeliveryPath(file))) {
+          throw new Error(tr("填写 1–10 个相对 HTML 路径，每行一个，例如 index.html。", "Enter 1–10 relative HTML paths, one per line, such as index.html."));
         }
         if (new Set(pages.map(file => file.toLowerCase())).size !== pages.length) throw new Error(tr("要求的页面文件名不能重复或仅大小写不同。", "Required page names cannot repeat or differ only by letter case."));
         if (manualRequirements.length > 5 || manualRequirements.some(requirement => requirement.length > 300)) {
           throw new Error(tr("人工标准最多 5 条，每条不超过 300 字。", "Use at most five human checks, with no more than 300 characters per check."));
         }
-        if (includeLink && (!FLAT_HTML_NAME.test(linkFrom.trim()) || !linkText.trim() || !/^([A-Za-z0-9][A-Za-z0-9._-]*\.html)#([A-Za-z0-9_][A-Za-z0-9_.:-]{0,127})$/iu.test(linkTo.trim()))) {
+        if (includeLink && (!isHtmlDeliveryPath(linkFrom.trim()) || !linkText.trim() || !isHtmlDeliveryPath(linkTo.trim().split("#")[0]) || !/^[A-Za-z0-9_][A-Za-z0-9_.:-]{0,127}$/u.test(linkTo.trim().split("#")[1] ?? ""))) {
           throw new Error(tr("预约链接需填写来源 HTML、可见文字和 file.html#id 格式的本地目标。", "Specify the source HTML, visible link text and a local target in file.html#id format."));
         }
         input = { ...input, title: projectTitle.trim(), summary: projectSummary.trim(), amount: projectAmount.trim(), requiredPages: pages, manualRequirements,
@@ -673,35 +699,12 @@ export default function Home() {
     setUploadError("");
     await run("upload", async () => {
       try {
-        if (!pendingFiles.length || pendingFiles.length > 20) throw new Error(tr("每次选择 1–20 个 HTML/CSS 文件。", "Choose between 1 and 20 HTML/CSS files."));
-        const names = new Set<string>();
-        let total = 0;
-        for (const file of pendingFiles) {
-          if (file.webkitRelativePath || !FLAT_DELIVERY_NAME.test(file.name)) throw new Error(tr(`文件 ${file.name} 不是平铺的 .html/.css 文件。请直接选择文件，不要选择目录。`, `${file.name} is not a flat .html/.css file. Select individual files, not a directory.`));
-          const normalized = file.name.toLowerCase();
-          if (names.has(normalized)) throw new Error(tr(`文件名重复或存在大小写冲突：${file.name}`, `Duplicate or case-conflicting filename: ${file.name}`));
-          names.add(normalized);
-          if (file.size > FILE_LIMIT) throw new Error(tr(`${file.name} 超过单文件 64 KiB 上限。`, `${file.name} exceeds the 64 KiB per-file limit.`));
-          total += file.size;
-        }
-        if (total > DELIVERY_LIMIT) throw new Error(tr("交付文件总大小不能超过 256 KiB。", "The total delivery cannot exceed 256 KiB."));
-        if (!pendingFiles.some(file => file.name === "index.html")) throw new Error(tr("交付必须包含 index.html。其他缺少的要求页面会如实显示未通过。", "Include index.html. Other missing required pages will be reported as unmet."));
-        const files: Record<string, string> = Object.create(null);
-        let textBytes = 0;
-        for (const file of pendingFiles) {
-          let content: string;
-          try { content = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(await file.arrayBuffer()); }
-          catch { throw new Error(tr(`无法按 UTF-8 读取 ${file.name}。请将文件保存为有效 UTF-8 后重新选择；当前选择已保留。`, `${file.name} could not be read as UTF-8. Save it as valid UTF-8 and select it again. Your current selection is retained.`)); }
-          const bytes = new TextEncoder().encode(content).byteLength;
-          if (bytes > FILE_LIMIT) throw new Error(tr(`${file.name} 读取后超过 64 KiB。`, `${file.name} exceeds 64 KiB after reading.`));
-          textBytes += bytes;
-          files[file.name] = content;
-        }
-        if (textBytes > DELIVERY_LIMIT) throw new Error(tr("交付文件总大小不能超过 256 KiB。", "The total delivery cannot exceed 256 KiB."));
+        const files = await readDeliveryUpload(pendingFiles);
         const result = await request<CaseResult>(`/api/proofs/${quote.id}/delivery`, "POST", { files, expectedDeliveryId: delivery?.id ?? null, reviewRules: true });
         apply(result.quote, result.role);
         setPendingFiles([]);
         if (fileInputRef.current) fileInputRef.current.value = "";
+        if (folderInputRef.current) folderInputRef.current.value = "";
         // The delivery-id effect opens its preview; focus evidence after that render settles.
         window.requestAnimationFrame(() => { setWorkspacePanel("delivery"); setDeliveryTab("evidence"); });
         setNotice(tr("文件已保存，规则核查已完成。可按需运行 AI 评估，或填写说明提交验收。旧版 AI 评估与验收同意未沿用。", "Files saved and rule checks complete. Optionally run AI assessment, or add a note and submit for review. Previous AI assessment and acceptance were not carried over."));
@@ -831,6 +834,7 @@ export default function Home() {
     payment_closed: tr("授权被拒 · 关闭且未收款", "Authorization denied · closed unpaid"),
     payment_reconciled: tr("向 PayPal 核对付款状态", "Payment state reconciled with PayPal"),
     assessed: tr("保存逐条 AI 源码评估", "AI source assessment saved"),
+    risk_reviewed: tr("保存人工风险复核", "Human risk review saved"),
     layout_checked: tr("保存浏览器布局测量", "Browser layout observations saved"),
     seller_joined: tr("卖家确认约定并加入", "Seller confirmed the scope and joined"),
     delivery_sent: tr("卖家提交验收", "Seller submitted for acceptance"),
@@ -930,7 +934,7 @@ export default function Home() {
               </> : <>
                 <div className="project-mode-switch no-print" aria-label={tr("项目类型", "Project type")}>
                   <button type="button" disabled={!!busy} className={projectMode === "custom" ? "active" : ""} aria-pressed={projectMode === "custom"} onClick={() => { setProjectMode("custom"); setError(""); }}>{tr("我的项目", "My project")}</button>
-                  <button type="button" disabled={!!busy} className={projectMode === "demo" ? "active" : ""} aria-pressed={projectMode === "demo"} onClick={() => { setProjectMode("demo"); setError(""); }}>{tr("内置演示", "Built-in demo")}</button>
+                  <button type="button" disabled={!!busy} className={projectMode === "demo" ? "active" : ""} aria-pressed={projectMode === "demo"} onClick={() => { setProjectMode("demo"); chooseWorkflow("demo"); setError(""); }}>{tr("内置演示", "Built-in demo")}</button>
                 </div>
                 <form onSubmit={create} className="project-form no-print">
                   <fieldset disabled={!!busy}>
@@ -945,13 +949,13 @@ export default function Home() {
                         <RequirementsIntake language={language} busy={!!busy || loading} aiMode={config?.aiMode} initialDraft={requirementsFromBrief ? undefined : requirementsDraft} onAnalyze={analyzeRequirements} onApply={draft => applyRequirements(draft)} onClear={() => {setRequirementsDraft(undefined); setRequirementsConfirmed(false); setRequirementsFromBrief(false);}} />
                         <div className="project-price-fields"><div><label htmlFor="projectAmount">{tr("项目金额", "Amount")}</label><input id="projectAmount" value={projectAmount} inputMode="decimal" required placeholder="480.00" aria-describedby="amount-help" onChange={event => setProjectAmount(event.target.value)} /></div><div><label htmlFor="currency">{tr("测试币种", "Currency")}</label><select id="currency" value={currency} onChange={event => setCurrency(event.target.value as Currency)}><option value="AUD">AUD</option><option value="USD">USD</option></select></div></div>
                         <p className="form-help" id="amount-help">{tr("0.01–10000.00，最多两位小数。后续付款使用测试资金。", "0.01–10000.00, up to two decimal places. Payments use test funds.")}</p>
-                        <WorkflowChoice value={sandboxRehearsal ? "sandbox" : customRoleDemo ? "demo" : collaborative ? "collaborative" : "single"} language={language} sandboxAvailable={config?.paymentMode === "sandbox"} onChange={chooseWorkflow}/>
+                        <WorkflowChoice value={sandboxCollaboration ? "collaborative-sandbox" : sandboxRehearsal ? "sandbox" : customRoleDemo ? "demo" : collaborative ? "collaborative" : "single"} language={language} sandboxAvailable={config?.paymentMode === "sandbox"} onChange={chooseWorkflow}/>
                         <details className="project-optional"><summary>{tr("客户名称（选填）", "Client name (optional)")}</summary><label className="sr-only" htmlFor="clientName">{tr("客户名称", "Client name")}</label><input id="clientName" value={clientName} maxLength={100} onChange={event => setClientName(event.target.value)} /></details>
                       </> : <>
                         {requirementsDraft && <div className="requirements-confirm-summary"><strong>{tr("从原始需求整理的验收清单", "Checklist prepared from your requirements")}</strong><p>{requirementsDraft.mode === "live" ? tr("AI 建议，已保存原文依据；请逐项编辑确认。", "AI suggestions with saved source excerpts. Edit and confirm every item.") : tr("规则整理 · 未调用 AI。请逐项编辑确认，补足未明确要求。", "Rule-based extraction · no AI request. Edit and confirm every item and resolve unclear requirements.")}</p>{requirementsDraft.unresolved.length > 0 && <p>{tr(`还有 ${requirementsDraft.unresolved.length} 条原文需要自行确认，已保留在原始需求中。`, `${requirementsDraft.unresolved.length} source clauses still need your review and remain in the original requirements.`)}</p>}</div>}
                         {requirementsDraft && <RequirementsDraftSource draft={requirementsDraft} language={language} />}
                         <label htmlFor="requiredPages">{tr("必须交付的 HTML 页面", "Required HTML pages")}</label><textarea id="requiredPages" value={requiredPagesInput} required rows={3} maxLength={1000} aria-describedby="pages-help" onChange={event => setRequiredPagesInput(event.target.value)} />
-                        <p className="form-help" id="pages-help">{tr("每行一个平铺文件名，最多 10 页。上传时必须含 index.html；其他缺页将显示未通过。", "One flat filename per line, up to 10 pages. Uploads must include index.html; other missing pages are reported as unmet.")}</p>
+                        <p className="form-help" id="pages-help">{tr("每行一个相对路径，最多 10 页。上传时必须含 index.html；其他缺页将显示未通过。", "One relative path per line, up to 10 pages. Uploads must include index.html; other missing pages are reported as unmet.")}</p>
                         <label htmlFor="manualRequirements">{tr("人工验收标准（选填）", "Human acceptance checks (optional)")}</label><textarea id="manualRequirements" value={manualRequirementsInput} rows={2} maxLength={1505} placeholder={tr("例如：手机宽度下文字可读、按钮易点。", "e.g. Text is readable and controls usable at a mobile width.")} aria-describedby="manual-help" onChange={event => setManualRequirementsInput(event.target.value)} />
                         <p className="form-help" id="manual-help">{tr("每行一条，最多 5 条、每条 300 字。这些项目必须由人亲自检查确认。", "One per line, up to five checks of 300 characters each. A person must inspect and confirm these requirements.")}</p>
                         <label className="project-link-toggle"><input type="checkbox" checked={includeLink} onChange={event => setIncludeLink(event.target.checked)} /><span>{tr("检查一个本地链接目标", "Check a local link destination")}</span></label>
@@ -980,10 +984,12 @@ export default function Home() {
               <div className="delivery-topline"><div><span className="section-kicker">{sampleRoleplay ? "DEMO DELIVERY" : customView ? "YOUR DELIVERY FILES" : "CONTROLLED EXAMPLES"}</span><h3>{tr("交付版本", "Delivery versions")}</h3></div><span className="fixture-label"><Code2 size={12} />{sampleRoleplay ? tr("演示交付", "DEMO DELIVERY") : customView ? tr("你的交付文件", "YOUR FILES") : tr("内置样例", "EXAMPLE FILES")}</span></div>
 
               {customView && !buyer && <details className="upload-delivery no-print" open={(!sampleRoleplay && !delivery) || pendingFiles.length > 0 || !!uploadError}>
-                <summary><Upload size={15} /><span className="upload-summary-label">{delivery ? tr("提交替换版本", "Submit a replacement") : tr("上传 HTML / CSS 文件", "Upload HTML / CSS files")}</span>{delivery && <small>{tr(`${Object.keys(deliveryFiles ?? {}).length} 个已保存文件`, `${Object.keys(deliveryFiles ?? {}).length} saved files`)}</small>}</summary>
-                <p className="upload-help">{tr("平铺文件，含 index.html。最多 20 个，每个 64 KiB，总计 256 KiB；仅静态 HTML/CSS。脚本、表单和外部子资源不可运行。", "Flat files including index.html. Up to 20 files, 64 KiB each and 256 KiB total. Static HTML/CSS only; scripts, forms and external subresources cannot run.")}</p>
-                <label className="sr-only" htmlFor="deliveryFiles">{tr("选择交付文件", "Choose delivery files")}</label><input id="deliveryFiles" ref={fileInputRef} type="file" accept=".html,.css" multiple disabled={!canManageDelivery || !!busy} onChange={event => { setPendingFiles(Array.from(event.target.files ?? [])); setUploadError(""); }} />
-                {pendingFiles.length > 0 && <div className="pending-file-selection"><div><strong>{tr(`${pendingFiles.length} 个待提交文件`, `${pendingFiles.length} selected files`)}</strong><button type="button" className="text-button" disabled={!!busy} onClick={() => { setPendingFiles([]); setUploadError(""); if (fileInputRef.current) fileInputRef.current.value = ""; }}>{tr("清空选择", "Clear selection")}</button></div><ul>{pendingFiles.map((file, index) => <li key={`${file.name}-${index}`}><code>{file.name}</code><span>{Math.ceil(file.size / 1024)} KiB</span></li>)}</ul></div>}
+                <summary><Upload size={15} /><span className="upload-summary-label">{delivery ? tr("提交替换版本", "Submit a replacement") : tr("上传网站文件或文件夹", "Upload website files or folder")}</span>{delivery && <small>{tr(`${Object.keys(deliveryFiles ?? {}).length} 个已保存文件`, `${Object.keys(deliveryFiles ?? {}).length} saved files`)}</small>}</summary>
+                <p className="upload-help">{tr("保留目录结构，根目录包含 index.html。最多 40 个 HTML/CSS/PNG/JPEG/WebP 文件；文本每个 64 KiB、合计 256 KiB，图片每个 256 KiB、合计 1 MiB。脚本、表单和外部资源不运行。", "Keep the folder structure with index.html at its root. Up to 40 HTML/CSS/PNG/JPEG/WebP files: text 64 KiB each, 256 KiB total; images 256 KiB each, 1 MiB total. Scripts, forms and external resources do not run.")}</p>
+                <label className="sr-only" htmlFor="deliveryFiles">{tr("选择交付文件", "Choose delivery files")}</label><input id="deliveryFiles" ref={fileInputRef} type="file" accept=".html,.css,.png,.jpg,.jpeg,.webp" multiple disabled={!canManageDelivery || !!busy} onChange={event => { setPendingFiles(Array.from(event.target.files ?? [])); setUploadError(""); }} />
+                <input id="deliveryFolder" className="sr-only" ref={folderInputRef} type="file" multiple disabled={!canManageDelivery || !!busy} {...({webkitdirectory:""} as Record<string,string>)} onChange={event => {setPendingFiles(Array.from(event.target.files ?? [])); setUploadError("");}}/><button type="button" className="subtle-button" disabled={!canManageDelivery || !!busy} onClick={() => folderInputRef.current?.click()}>{tr("选择项目文件夹", "Choose project folder")}</button>
+                {pendingFiles.length > 0 && <div className="pending-file-selection"><div><strong>{tr(`${pendingFiles.length} 个待提交文件`, `${pendingFiles.length} selected files`)}</strong><button type="button" className="text-button" disabled={!!busy} onClick={() => { setPendingFiles([]); setUploadError(""); if (fileInputRef.current) fileInputRef.current.value = "";
+        if (folderInputRef.current) folderInputRef.current.value = ""; }}>{tr("清空选择", "Clear selection")}</button></div><ul>{pendingFiles.map((file, index) => <li key={`${file.name}-${index}`}><code>{file.webkitRelativePath || file.name}</code><span>{Math.ceil(file.size / 1024)} KiB</span></li>)}</ul></div>}
                 {uploadError && <p className="upload-error" role="alert">{uploadError}</p>}
                 {delivery && <p className="upload-replacement-note">{tr("新文件将替换整份当前交付；旧核查与验收同意会失效。", "These files replace the entire delivery. The previous review and acceptance will no longer apply.")}</p>}
                 <button type="button" className="button primary upload-submit" disabled={!canManageDelivery || !pendingFiles.length || !!busy} onClick={uploadDelivery}>{busy === "upload" ? <LoaderCircle size={15} className="spin" /> : <Upload size={15} />}{delivery ? tr("替换文件并重新核查", "Replace files & run fresh checks") : tr("保存并核查交付", "Save & check delivery")}</button>
@@ -998,11 +1004,13 @@ export default function Home() {
               {buyer && !collaboration && <p className="locked-hint no-print">{tr("交付证据由卖家提交；买家在这里查看、核查和验收。", "Sellers submit delivery evidence. Buyers inspect, review and accept it here.")}</p>}
               {delivery && <div className="current-delivery"><span className={`delivery-version variant-${delivery.variant}`}>{`v${deliverySequence}`}</span><div><strong>{delivery.label}</strong><code>{delivery.id}</code></div><span className={`small-state ${reviewCurrent ? "positive" : ""}`}>{reviewCurrent ? tr("当前版本已核查", "This version reviewed") : tr("新版本 · 待核查", "New version · review needed")}</span></div>}
               {delivery && proof && <DeliveryOverview key={delivery.id} delivery={delivery} criteria={proof.criteria} review={proof.review} manualChecks={confirmedManualChecks} language={language} role={displayRole} stage={collaboration?.stage} busy={!!busy}
-                previousVersion={versions.find(version => version.isCurrent !== true && version.delivery.id !== delivery.id)}
+                previousVersion={versions.find(version => isOlderDelivery(version, delivery))}
                 onOpenLayout={canCheckDelivery || delivery.layoutReport ? () => {setWorkspacePanel("delivery"); setDeliveryTab("layout");} : undefined}
                 onInspectLayout={(file, width) => {setPreviewFile(file); setPreviewWidth(width === 375 ? "mobile" : "desktop"); setPreviewEntry(value => value + 1); setDeliveryTab("preview"); setWorkspacePanel("delivery");}}
                 onInspect={openCriterion} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked ? prepareFeedback : undefined}
                 onViewHistory={() => {void loadVersions();}}/>}
+              {delivery && <ResourceChecks delivery={delivery} language={language}/>}
+              {delivery && proof && <DeliveryComparison delivery={delivery} review={proof.review} criteria={proof.criteria} previousVersion={versions.find(version => isOlderDelivery(version,delivery))} feedback={collaboration?.feedback} language={language} onInspectCurrent={openCriterion}/>}
               {!quote && <GettingStarted language={language} busy={!!busy || loading} onExample={fillExampleRequirements} onDemo={() => {void startRoleDemo();}}/>}
               <nav className="delivery-view-switch no-print" hidden={!quote} aria-label={tr("交付查看方式", "Delivery view")}>
                 <button aria-pressed={deliveryTab === "preview"} className={deliveryTab === "preview" ? "active" : ""} onClick={() => setDeliveryTab("preview")}><Monitor size={15} />{tr("交付预览", "Preview")}</button>
@@ -1021,10 +1029,10 @@ export default function Home() {
                     <button className={previewWidth === "mobile" ? "active" : ""} disabled={!previewAvailable} aria-pressed={previewWidth === "mobile"} onClick={() => setPreviewWidth("mobile")}><Smartphone size={12} />375px</button>
                     <button className={previewWidth === "desktop" ? "active" : ""} disabled={!previewAvailable} aria-pressed={previewWidth === "desktop"} onClick={() => setPreviewWidth("desktop")}><Monitor size={12} />900px</button>
                   </div>
-                  {previewAvailable && <a href={`/deliveries/${quote.id}/${delivery.id}/${previewFile}`} target="_blank" rel="noopener noreferrer" title={tr("独立打开当前交付页面", "Open this delivery page separately")} aria-label={tr("在新标签页打开所选预览入口", "Open the selected preview entry in a new tab")}><ArrowUpRight size={14} /></a>}
+                  {previewAvailable && <a href={deliveryFileUrl(quote.id,delivery.id,previewFile)} target="_blank" rel="noopener noreferrer" title={tr("独立打开当前交付页面", "Open this delivery page separately")} aria-label={tr("在新标签页打开所选预览入口", "Open the selected preview entry in a new tab")}><ArrowUpRight size={14} /></a>}
                 </div>
                 {previewAvailable
-                  ? <div className="preview-scroll"><div className={`preview-frame ${previewWidth}`}><iframe key={`${delivery.id}-${previewFile}-${previewEntry}`} src={`/deliveries/${quote.id}/${delivery.id}/${previewFile}`} title={tr(`交付预览入口：${delivery.label}，${previewFile}`, `Delivery preview entry: ${delivery.label}, ${previewFile}`)} sandbox="allow-same-origin" /></div></div>
+                  ? <div className="preview-scroll"><div className={`preview-frame ${previewWidth}`}><iframe key={`${delivery.id}-${previewFile}-${previewEntry}`} src={deliveryFileUrl(quote.id,delivery.id,previewFile)} title={tr(`交付预览入口：${delivery.label}，${previewFile}`, `Delivery preview entry: ${delivery.label}, ${previewFile}`)} sandbox="allow-same-origin" /></div></div>
                   : <div className="preview-missing" role="status"><FileCode2 size={25} strokeWidth={1.5} /><div><h4>{delivery.files ? tr("此交付缺少所选文件", "This delivery is missing the selected file") : tr("旧记录未保存交付文件", "This older record has no saved delivery files")}</h4><code>{previewFile}</code><p>{delivery.files
                     ? tr("这个版本没有保存该文件，不能预览。缺失状态不会被替换为其他版本的内容。", "This version does not contain the file, so no preview is available. It is not replaced with content from another delivery.")
                     : tr("此记录没有文件快照。请提交新的交付并重新核查；若案例已结束，请新建项目。", "There is no file snapshot for this record. Submit a new delivery and review it again; if the case has ended, create a new project.")}</p></div></div>}
@@ -1053,7 +1061,7 @@ export default function Home() {
               {delivery && !custom && <nav className="criterion-switch no-print" aria-label={tr("选择验收项目", "Choose an acceptance criterion")}>
                 {proof?.criteria.map((criterion, index) => <button key={criterion.id} aria-pressed={criterionIndex === index} className={criterionIndex === index ? "active" : ""} onClick={() => setCriterionIndex(index)}><span>0{index + 1}</span><strong>{criterionDisplayTitle(criterion, language)}</strong><small>{findingLabel(findingFor(criterion))}</small></button>)}
               </nav>}
-              {delivery && proof && <DeliveryAssessment report={delivery.assessment?.deliveryId === delivery.id ? delivery.assessment : undefined} criteria={proof.criteria} language={language} selectedCriterionId={proof.criteria[criterionIndex]?.id} configured={config?.aiMode === "live"} enabled={!!canCheckDelivery && reviewCurrent && !!delivery.files && !busy} busy={busy === "assess"} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked && !busy ? prepareFeedback : undefined} onRun={() => mutate("assess", {deliveryId: delivery.id, confirm: true}, tr("已保存当前版本的 AI 评估。建议与规则证据独立，最终仍由买家验收。", "AI assessment saved for this version. Advice remains separate from rule evidence; the buyer decides acceptance."))} />}
+              {delivery && proof && <DeliveryAssessment report={delivery.assessment?.deliveryId === delivery.id ? delivery.assessment : undefined} riskReviews={delivery.riskReviews} actorRole={displayRole} onSaveRiskReview={saveRiskReview} criteria={proof.criteria} language={language} selectedCriterionId={proof.criteria[criterionIndex]?.id} configured={config?.aiMode === "live"} enabled={!!canCheckDelivery && reviewCurrent && !!delivery.files && !busy} busy={busy === "assess"} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked && !busy ? prepareFeedback : undefined} onRun={() => mutate("assess", {deliveryId: delivery.id, confirm: true}, tr("已保存当前版本的 AI 评估。建议与规则证据独立，最终仍由买家验收。", "AI assessment saved for this version. Advice remains separate from rule evidence; the buyer decides acceptance."))} />}
               {delivery && <div className="criteria-evidence-list">
                 {proof?.criteria.map((criterion, index) => {
                   const finding = findingFor(criterion);

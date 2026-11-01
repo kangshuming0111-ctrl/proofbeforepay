@@ -5,7 +5,7 @@ import { proofVersions, quotes } from "@/db/schema";
 import type { ProofDeliveryVersion, ProofQuote, ProofRole } from "./contracts";
 import { requireProof } from "./proof-domain";
 import { joinSeller, snapshotVersion } from "./proof-workflow";
-import { resolveProofRole } from "./proof-demo";
+import { isSandboxCollaboration, resolveProofRole } from "./proof-demo";
 import { HttpError, owner } from "./server";
 
 export type ProofActor = {id: string; email: string; authenticated: boolean; requestedDemoRole?: ProofRole};
@@ -147,7 +147,7 @@ export async function readInvitation(token: unknown, actor: ProofActor): Promise
   const quote = JSON.parse(row.payload); requireProof(quote);
   if (quote.proof.demoRoleplay) throw new HttpError(409, "Demo role play does not accept seller invitations.");
   if (quote.status !== "approved" || quote.proof.collaboration?.stage !== "awaiting_seller" || quote.proof.paymentOperation
-    || quote.proof.paymentState !== "unfunded" || quote.paymentMode !== "demo" || quote.paypalOrderId) throw new HttpError(409, "This project no longer accepts this invitation.");
+    || quote.proof.paymentState !== "unfunded" || (quote.paymentMode !== "demo" && !isSandboxCollaboration(quote)) || quote.paypalOrderId) throw new HttpError(409, "This project no longer accepts this invitation.");
   return {quote, role: "seller", buyerId: row.ownerId, sellerId: null, version: row.version,
     invitationHash: row.invitationHash, invitationEmail: row.invitationEmail, invitationExpiresAt: row.invitationExpiresAt};
 }

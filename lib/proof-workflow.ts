@@ -1,7 +1,7 @@
 import type { ProofDelivery, ProofDeliveryVersion, ProofEvent, ProofQuote, ProofRole } from "./contracts.ts";
 import { DomainError } from "./domain.ts";
 import { requireProof } from "./proof-domain.ts";
-import { isSandboxRehearsal } from "./proof-demo.ts";
+import { isSandboxCollaboration, isSandboxRehearsal } from "./proof-demo.ts";
 
 export type ProofWorkflowAction = "approve" | "checkout" | "authorize" | "delivery" | "review" | "assess" | "layout" | "capture" | "void" | "reconcile" | "return" | "accept_delivery" | "invite" | "submit_delivery";
 
@@ -77,6 +77,7 @@ function log(quote: ProofQuote, kind: ProofEvent["kind"], at: string, deliveryId
 /** Role comes from authenticated membership, never from a client-supplied payload. */
 export function requireWorkflowAction(quote: ProofQuote, role: ProofRole, action: ProofWorkflowAction): void {
   requireProof(quote);
+  if (quote.proof.sandboxCollaboration === true && !isSandboxCollaboration(quote)) conflict("The saved two-account Sandbox workflow is invalid.");
   if (role !== "buyer" && role !== "seller") throw new DomainError("This role cannot change the agreement.", 403);
   if (!quote.proof.collaboration) {
     if (role !== "buyer") throw new DomainError("Legacy agreements can only be changed by their buyer.", 403);
@@ -87,10 +88,10 @@ export function requireWorkflowAction(quote: ProofQuote, role: ProofRole, action
   if (!(role === "buyer" ? BUYER_ACTIONS : SELLER_ACTIONS).has(action)) throw new DomainError("This role is not allowed to perform this agreement action.", 403);
   if (state.stage === "awaiting_seller" && action !== "invite" && action !== "approve") conflict("Wait for the seller to join before continuing.");
   if (action === "invite" && state.stage !== "awaiting_seller") conflict("A seller has already joined this agreement.");
-  if (PAYMENT_ACTIONS.has(action) && quote.paymentMode !== "demo" && !isSandboxRehearsal(quote)) conflict("Real collaborative agreements support simulated payment only; seller settlement is not integrated.");
-  if (isSandboxRehearsal(quote) && (action === "checkout" || action === "authorize")
+  if (PAYMENT_ACTIONS.has(action) && quote.paymentMode !== "demo" && !isSandboxRehearsal(quote) && !isSandboxCollaboration(quote)) conflict("Select a new two-account Sandbox project or use simulated payment; seller settlement is not integrated.");
+  if ((isSandboxRehearsal(quote) || isSandboxCollaboration(quote)) && (action === "checkout" || action === "authorize")
     && (state.stage !== "accepted" || !quote.proof.delivery || state.acceptance?.deliveryId !== quote.proof.delivery.id)) {
-    conflict("Accept the exact delivery before starting its PayPal Sandbox rehearsal.");
+    conflict("Accept the exact delivery before starting its PayPal Sandbox test payment.");
   }
   if (DELIVERY_ACTIONS.has(action)) requireUnlockedDelivery(quote);
   if (action === "delivery" || action === "submit_delivery") {
@@ -110,11 +111,12 @@ export function requireWorkflowAction(quote: ProofQuote, role: ProofRole, action
 
 /** Invitation validation and private account membership are handled outside the quote payload. */
 export function joinSeller(quote: ProofQuote, name: unknown, now?: string): ProofQuote {
+  if (quote.proof.sandboxCollaboration === true && !isSandboxCollaboration(quote)) conflict("The saved two-account Sandbox workflow is invalid.");
   const state = collaboration(quote);
   if (state.stage !== "awaiting_seller") conflict("A seller has already joined this agreement.");
   requireUnlockedDelivery(quote);
-  if ((quote.paymentMode !== "demo" && !isSandboxRehearsal(quote)) || quote.proof.paymentState !== "unfunded" || quote.paypalOrderId) {
-    conflict("A seller can join only an unfunded demonstration or explicitly selected owner Sandbox rehearsal without an existing order.");
+  if ((quote.paymentMode !== "demo" && !isSandboxRehearsal(quote) && !isSandboxCollaboration(quote)) || quote.proof.paymentState !== "unfunded" || quote.paypalOrderId) {
+    conflict("A seller can join only an unfunded demonstration or explicitly selected Sandbox workflow without an existing order.");
   }
   const sellerName = text(name, "Seller name", 100);
   const at = timestamp(now);

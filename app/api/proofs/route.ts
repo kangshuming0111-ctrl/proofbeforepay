@@ -1,7 +1,7 @@
 import type { ProofQuote } from "@/lib/contracts";
 import { proofCriteria } from "@/lib/proof-evidence";
 import { parseStaticProject } from "@/lib/static-project";
-import { createRoleplayProject, requestSandboxRehearsal } from "@/lib/proof-demo";
+import { createRoleplayProject, requestSandboxTesting } from "@/lib/proof-demo";
 import { body, handle, HttpError, insertQuote, json, owner, providerEnv } from "@/lib/server";
 import { listProofCases, proofActor } from "@/lib/proof-store";
 import { readRequirementDraft } from "@/lib/requirement-store";
@@ -19,8 +19,10 @@ export async function POST(request: Request) {
     if (input.collaborative !== undefined && typeof input.collaborative !== "boolean") throw new HttpError(400, "Choose a valid collaboration mode.");
     if (input.demoRoleplay !== undefined && typeof input.demoRoleplay !== "boolean") throw new HttpError(400, "Choose a valid demo role-play mode.");
     const config = providerEnv();
-    const sandboxRehearsal = requestSandboxRehearsal(input, proofActor(request).authenticated,
+    const sandboxTesting = requestSandboxTesting(input, proofActor(request).authenticated,
       !!config.PAYPAL_CLIENT_ID?.trim() && !!config.PAYPAL_CLIENT_SECRET?.trim());
+    const sandboxRehearsal = sandboxTesting === "rehearsal";
+    const sandboxCollaboration = sandboxTesting === "collaborative";
     const demoRoleplay = input.demoRoleplay === true;
     if (demoRoleplay && input.mode !== "demo" && input.mode !== "custom") throw new HttpError(400, "Choose a built-in demo or custom project for role play.");
     const collaborative = input.collaborative === true || demoRoleplay;
@@ -50,9 +52,9 @@ export async function POST(request: Request) {
       brief: criteria.map(c => c.source).join("\n"), clientName, language, currency,
       lineItems: [{id: "website", description: custom?.title ?? (language === "zh" ? "网站制作与一次修改" : "Website delivery and one revision"), quantity: 1, unitPriceCents: custom?.totalCents ?? 48000}],
       hourlyRateCents: custom?.totalCents ?? 48000, totalCents: custom?.totalCents ?? 48000, timelineDays: 1,
-      assumptions: [language === "zh" ? "静态 HTML/CSS 文件验收；预授权后24小时内确认，仅测试资金，本网站不托管资金。" : "Static HTML/CSS acceptance; confirm within 24 hours of authorization. Test funds only; this website does not hold funds."], questions: [],
-      status: "draft", aiMode: !demoRoleplay && config.DEEPSEEK_API_KEY ? "live" : "demo", paymentMode: sandboxRehearsal || !collaborative && config.PAYPAL_CLIENT_ID && config.PAYPAL_CLIENT_SECRET ? "sandbox" : "demo", createdAt: at,
-      proof: {criteria, ...(requirements ? {requirements} : {}), ...(demoRoleplay ? {demoRoleplay: true, demoSampleProject: input.mode === "demo"} : {}), ...(sandboxRehearsal ? {sandboxRehearsal: true} : {}), ...(custom ? {project: custom.project} : {}), ...(collaborative ? {collaboration: {stage: "awaiting_seller", feedback: []}} : {}), paymentState: "unfunded", audit: [{at, kind: "created"}]},
+      assumptions: [language === "zh" ? "静态网页与本地图片资源验收；预授权后24小时内确认，仅测试资金，本网站不托管资金。" : "Static website files and local raster assets; confirm within 24 hours of authorization. Test funds only; this website does not hold funds.", ...(sandboxCollaboration ? [language === "zh" ? "买卖双方使用不同网站账号；验收后由买家单独确认 Sandbox 付款，收款方为服务端配置的测试商户，不向实际卖家结算。" : "Buyer and seller use separate app accounts. After acceptance, only the buyer confirms Sandbox payment to the configured test merchant; the actual seller receives no settlement."] : [])], questions: [],
+      status: "draft", aiMode: !demoRoleplay && config.DEEPSEEK_API_KEY ? "live" : "demo", paymentMode: sandboxTesting || !collaborative && config.PAYPAL_CLIENT_ID && config.PAYPAL_CLIENT_SECRET ? "sandbox" : "demo", createdAt: at,
+      proof: {criteria, ...(requirements ? {requirements} : {}), ...(demoRoleplay ? {demoRoleplay: true, demoSampleProject: input.mode === "demo"} : {}), ...(sandboxRehearsal ? {sandboxRehearsal: true} : {}), ...(sandboxCollaboration ? {sandboxCollaboration: true} : {}), ...(custom ? {project: custom.project} : {}), ...(collaborative ? {collaboration: {stage: "awaiting_seller", feedback: []}} : {}), paymentState: "unfunded", audit: [{at, kind: "created"}]},
     };
     await insertQuote(quote, ownerId);
     return json({quote, role: "buyer"}, 201);

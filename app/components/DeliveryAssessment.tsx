@@ -2,9 +2,11 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { ChevronDown, FileSearch, LoaderCircle, Quote, TriangleAlert } from "lucide-react";
-import type { Language, ProofAssessment, ProofAssessmentCitation, ProofCriterion } from "@/lib/contracts";
+import type { Language, ProofAssessment, ProofAssessmentCitation, ProofCriterion, ProofRiskReview, ProofRole } from "@/lib/contracts";
 import { criterionDisplayTitle } from "@/lib/delivery-overview";
 import "../assessment.css";
+import { RiskReviewPanel } from "./RiskReviewPanel";
+import type { RiskReviewInput } from "@/lib/risk-reviews";
 
 export type DeliveryAssessmentProps = {
   report?: ProofAssessment;
@@ -17,6 +19,9 @@ export type DeliveryAssessmentProps = {
   onRun?: () => void;
   onPrepareFeedback?: (input: { deliveryId: string; criterionId: string; comment: string }) => void;
   readOnly?: boolean;
+  riskReviews?: ProofRiskReview[];
+  actorRole?: ProofRole;
+  onSaveRiskReview?: (value: RiskReviewInput) => Promise<boolean>;
 };
 
 function displayTime(value: string) {
@@ -36,7 +41,7 @@ function Citations({ citations, language }: { citations: ProofAssessmentCitation
   </details>;
 }
 
-export function DeliveryAssessment({ report, criteria, language, selectedCriterionId, enabled = false, busy = false, configured = false, onRun, onPrepareFeedback, readOnly = false }: DeliveryAssessmentProps) {
+export function DeliveryAssessment({ report, criteria, language, selectedCriterionId, enabled = false, busy = false, configured = false, onRun, onPrepareFeedback, readOnly = false, riskReviews, actorRole, onSaveRiskReview }: DeliveryAssessmentProps) {
   const zh = language === "zh";
   const tr = (chinese: string, english: string) => zh ? chinese : english;
   const id = useId();
@@ -105,7 +110,7 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
           {otherItems.length > 0 && <details className="assessment-other-items"><summary>{tr(`查看其余 ${otherItems.length} 条要求`, `Inspect the other ${otherItems.length} criteria`)}<ChevronDown size={13} aria-hidden="true" /></summary><div>{otherItems.map(item => renderItem(item))}</div></details>}
         </div>
         <details className="assessment-risks"><summary><TriangleAlert size={13} aria-hidden="true" />{tr(`源码中的潜在问题（${report.risks.length}）`, `Potential source issues (${report.risks.length})`)}<ChevronDown size={13} aria-hidden="true" /></summary>
-          <div className="assessment-risk-body">{report.risks.length ? <><p className="assessment-risk-notice">{tr("源码线索尚未运行验证，需要复现后确认。", "Source-level indications have not been verified by execution. Reproduce them before drawing a conclusion.")}</p>{report.risks.slice(0, 5).map((risk, index) => <article className="assessment-risk" key={`${risk.title}-${index}`}><h4>{risk.title}</h4><p>{risk.explanation}</p><p className="assessment-risk-suggestion">{tr("建议核对：", "Suggested check: ")}{risk.suggestion}</p><Citations citations={risk.citations} language={language} /></article>)}{report.risks.length > 5 && <p className="assessment-risk-notice">{tr("此处展示前 5 项；完整报告保留在交付记录中。", "Showing the first 5 issues; the full report remains in the delivery record.")}</p>}</> : <p className="assessment-empty">{tr("此报告没有列出潜在问题，不代表网站没有缺陷。", "This report lists no potential issues. This does not establish that the website is free of defects.")}</p>}</div>
+          <div className="assessment-risk-body">{report.risks.length ? <><p className="assessment-risk-notice">{tr("源码线索尚未运行验证，需要复现后确认。", "Source-level indications have not been verified by execution. Reproduce them before drawing a conclusion.")}</p>{report.risks.slice(0, 5).map((risk, index) => <article className="assessment-risk" key={`${risk.title}-${index}`}><h4>{risk.title}</h4><p>{risk.explanation}</p><p className="assessment-risk-suggestion">{tr("建议核对：", "Suggested check: ")}{risk.suggestion}</p><Citations citations={risk.citations} language={language} /><RiskReviewPanel key={`${report.deliveryId}-${report.id}-${index}-${actorRole ?? ""}`} deliveryId={report.deliveryId} assessmentId={report.id} riskIndex={index} reviews={riskReviews} role={actorRole} language={language} busy={busy} readOnly={readOnly} onSave={onSaveRiskReview}/></article>)}{report.risks.length > 5 && <p className="assessment-risk-notice">{tr("此处展示前 5 项；完整报告保留在交付记录中。", "Showing the first 5 issues; the full report remains in the delivery record.")}</p>}</> : <p className="assessment-empty">{tr("此报告没有列出潜在问题，不代表网站没有缺陷。", "This report lists no potential issues. This does not establish that the website is free of defects.")}</p>}</div>
         </details>
         <details className="assessment-coverage"><summary>{tr("分析范围与局限", "Coverage and limitations")}<ChevronDown size={13} aria-hidden="true" /></summary><div className="assessment-coverage-body">
           <dl>{([

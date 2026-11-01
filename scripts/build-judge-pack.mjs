@@ -8,7 +8,7 @@ import { spawnSync } from "node:child_process";
 // a repository, changes Site access, starts a provider call or installs packages.
 const ROOT_FILES = ["README.md", "LICENSE", "AGENTS.md", "package.json", "pnpm-lock.yaml", "pnpm-workspace.yaml", "tsconfig.json", "next.config.ts", "vite.config.ts", "postcss.config.mjs", "eslint.config.mjs", "drizzle.config.ts", "cloudflare-env.d.ts", "components.json", ".gitignore", ".agents/skills/proofbeforepay-delivery/SKILL.md", ".agents/skills/proofbeforepay-delivery/references/code-map.md"];
 const SOURCE_DIRS = ["app", "lib", "db", "drizzle", "components", "hooks", "worker", "vendor", "public", "scripts", "tests", "docs"];
-const EXTENSIONS = new Set([".ts", ".tsx", ".mts", ".cts", ".js", ".mjs", ".cjs", ".css", ".json", ".sql", ".md", ".yaml", ".yml", ".svg", ".py", ".sh", ".LICENSE"]);
+const EXTENSIONS = new Set([".ts", ".tsx", ".mts", ".cts", ".js", ".mjs", ".cjs", ".css", ".json", ".sql", ".md", ".yaml", ".yml", ".svg", ".py", ".sh", ".csv", ".LICENSE"]);
 const DENIED_PART = /^(?:\.git|node_modules|dist|\.next|\.wrangler|\.sites-runtime|outputs|work|\.codex|__pycache__|\.env(?:\..*)?|\.dev\.vars(?:\..*)?|credentials?|cookies?|secrets?|private[-_]?keys?|auth[-_]?state|storage[-_]?state)$/iu;
 const SECRET_LIKE = /\bBearer\s+[A-Za-z0-9._~+/=-]{24,}|\bsk-[A-Za-z0-9_-]{24,}|-----BEGIN [A-Z ]*PRIVATE KEY-----/u;
 
@@ -59,7 +59,11 @@ Generating this source export does not by itself publish a repository or submit 
 
 ## What to try
 
-ProofBeforePay helps a buyer and a website developer agree on static website requirements, review saved delivery evidence, request revisions, accept an exact version and separately confirm test payment. A contract is optional. Current uploads are flat HTML/CSS; scripts, external images, forms and backend behavior are not executed in the isolated preview.
+ProofBeforePay helps a buyer and a website developer agree on static website requirements, review saved delivery evidence, request revisions, accept an exact version and separately confirm test payment. A contract is optional. Uploads preserve bounded relative directories with root-level index.html and up to 40 HTML/CSS/PNG/JPEG/WebP files. Text is limited to 64 KiB per file and 256 KiB total; raster images to 256 KiB each and 1 MiB total. Scripts, form submissions, external subresources and backend behavior are not executed in the isolated preview. ZIPs must be unpacked before choosing their website folder.
+
+Source resource checks show missing local targets, out-of-scope references and uninspectable syntax for the exact saved delivery. A source finding labelled blocked does not establish that the browser attempted and blocked a navigation; links may leave the saved preview, so return to a saved entry before judging it.
+
+Compare each requirement displays the unchanged agreed clause, version-matched old buyer feedback, and separate old/current rule excerpts, AI source citations and browser observations. Missing or stale records are unavailable rather than borrowed from another version. A newer version or smaller issue count does not prove a fix. Source AI reads bounded HTML/CSS text, not image pixels. Either participant may append a reasoned human review of an AI risk; the original model report remains unchanged. These annotations do not accept work or initiate payment.
 
 ## Clean local setup
 
@@ -81,30 +85,34 @@ Start with the built-in two-sided demonstration and keep payment in simulated mo
 
 No secrets are included. Copy the generated placeholder \`.env.example\` to the Git-ignored \`.dev.vars\` only if you choose to configure your own DeepSeek API and PayPal Sandbox REST app. Restart after configuring. AI assessment is an explicit action that sends requirements and bounded saved source to the configured model and may cost money. A rule review is not a model call. Never use production PayPal credentials or real money for this prototype.
 
-If the application offers the explicit same-owner Sandbox rehearsal, it uses a simulated seller perspective and the configured Sandbox test merchant. It is not seller onboarding, escrow or marketplace settlement. A genuine Sandbox run requires separate buyer approval, authorization and explicit capture; do not splice its status into an unrelated simulated case. Follow the current UI and README for the mode available in this exported version.
+The ordinary two-sided experience uses one owner and simulated payment. The explicit same-owner Sandbox rehearsal uses a virtual seller and the configured test merchant. Inviting a real seller uses a different authenticated app account, with separate website access, and defaults to simulated payment. A new custom project can explicitly choose Invite a real seller + Sandbox test payment; the server records the creation-only sandboxCollaboration marker. Existing cases are not silently upgraded. Only the buyer can authorize or capture test payment after exact-version acceptance; the configured Sandbox test merchant receives it, not the actual seller. This is not escrow or marketplace settlement. The new two-account production login plus genuine Sandbox authorization/capture path has not yet been verified; an earlier one-owner receipt does not verify it. Follow the current README and keep simulated and genuine provider evidence separate.
 
 ## Verification
 
 Run \`pnpm test\` and \`pnpm run typecheck\`. Provider tests use controlled responses and do not prove a real payment occurred. \`scripts/assessment-evaluation-cases.json\` is a labelled synthetic reference corpus, not measured model results. Record real output, source coverage, errors, abstention, latency and cost before making an accuracy claim.
 
+The dated first-use plan and blank three-person CSV in docs are prepared only: independent participants have not been tested. Do not fill those result slots with developer walkthroughs or AI review. The new English recording plan is also prepared, not recorded. The existing 135-second edited still-image walkthrough remains unchanged and is not continuous screen capture. Historical evaluations retain their original results; this source export does not establish a new deployment, refreshed public release, video upload or competition submission.
+
 The generated manifest lists every exported source file and its SHA-256. Runtime data, Site identity, credentials, local state, Git metadata and existing output files are excluded. Review the package before any external publication.
 `;
 
-const DEMO = `# Three-minute demonstration plan
+const DEMO = `# Under-three-minute interaction recording plan
 
-0:00–0:20 — A small business outsources its website across borders. The disagreement is concrete: the seller says it is done; the buyer points to the agreed opening hours and missing contact destination.
+Prepared, not recorded. The existing 135-second edited still-image video is unchanged and is not continuous screen capture. Use docs/DEMO-RECORDING-2026-11-02.md for the spoken English script and preparation checklist; an actual new capture is still pending.
 
-0:20–0:45 — Show buyer-confirmed requirements and price. A contract is optional. Explain which exact version will be reviewed.
+0:00–0:20 — Show one prepared buyer project and its exact agreed opening-hours requirement. Explain the cross-border website handoff and that a contract is optional.
 
-0:45–1:20 — Show actual saved first-delivery files, a missing page/link finding and the wrong opening hours. If a real AI assessment is requested, show its actual cited result and label the model. Never substitute the reference evaluation labels for a live response.
+0:20–0:45 — Inspect the saved local CSS/photo directories and preview. Distinguish missing local resources from an out-of-scope external-reference finding; do not claim a navigation or backend test occurred.
 
-1:20–1:50 — The buyer prepares specific feedback and explicitly requests changes. The seller uploads or prepares v2. Show the preserved prior version and submitted feedback.
+0:45–1:10 — Open an actually saved source AI result and its exact quote. On a real listed risk, save a reasoned human review; show that the raw AI text remains present. If no genuine AI/risk record exists, disclose that limitation and omit the action rather than fabricate one.
 
-1:50–2:25 — Compare current findings with available prior evidence. Open the corrected source citation. A person checks mobile usability and explicitly accepts this exact delivery; AI does not decide payment.
+1:10–1:35 — Prepare editable criterion-specific feedback, explicitly request changes, switch to seller and upload the complete revised folder. The selected demonstration uses one owner with virtual roles; do not describe that switch as two independent accounts.
 
-2:25–2:50 — If this same project has actually completed the explicit Sandbox rehearsal, show buyer approval, authorization and capture or cancellation evidence. Otherwise label payment simulated and explain the real Sandbox path separately. Do not imply funds are settled to a real seller.
+1:35–2:05 — Open Compare each requirement. Show the unchanged clause, old feedback and both versions' separate rule/AI/browser records. Missing new AI or browser records stay unavailable. Show source changes, not an invented automatic fixed verdict.
 
-2:50–3:00 — Show the runnable source/setup route, scope limitations and genuine verification evidence. Do not invent savings, accuracy, security certification or an award probability.
+2:05–2:35 — Inspect the delivered mobile pages, complete required human checks and explicitly accept the current version without payment. Use the next-step control to find the remaining check.
+
+2:35–2:55 — Show payment mode and limits. A simulated case remains simulated. Only show a genuine Sandbox result if this exact project actually produced it; do not reuse another case's receipt. Mention that the new two-account Sandbox choice is implemented but its production dual-login/live-provider run remains unverified. Close on the runnable source and pending first-use testing; do not invent users, accuracy or security certification.
 `;
 
 export async function buildJudgePack(root, output) {

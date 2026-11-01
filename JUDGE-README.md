@@ -4,7 +4,11 @@ Generating this source export does not by itself publish a repository or submit 
 
 ## What to try
 
-ProofBeforePay helps a buyer and a website developer agree on static website requirements, review saved delivery evidence, request revisions, accept an exact version and separately confirm test payment. A contract is optional. Current uploads are flat HTML/CSS; scripts, external images, forms and backend behavior are not executed in the isolated preview.
+ProofBeforePay helps a buyer and a website developer agree on static website requirements, review saved delivery evidence, request revisions, accept an exact version and separately confirm test payment. A contract is optional. Uploads preserve bounded relative directories with root-level index.html and up to 40 HTML/CSS/PNG/JPEG/WebP files. Text is limited to 64 KiB per file and 256 KiB total; raster images to 256 KiB each and 1 MiB total. Scripts, form submissions, external subresources and backend behavior are not executed in the isolated preview. ZIPs must be unpacked before choosing their website folder.
+
+Source resource checks show missing local targets, out-of-scope references and uninspectable syntax for the exact saved delivery. A source finding labelled blocked does not establish that the browser attempted and blocked a navigation; links may leave the saved preview, so return to a saved entry before judging it.
+
+Compare each requirement displays the unchanged agreed clause, version-matched old buyer feedback, and separate old/current rule excerpts, AI source citations and browser observations. Missing or stale records are unavailable rather than borrowed from another version. A newer version or smaller issue count does not prove a fix. Source AI reads bounded HTML/CSS text, not image pixels. Either participant may append a reasoned human review of an AI risk; the original model report remains unchanged. These annotations do not accept work or initiate payment.
 
 ## Clean local setup
 
@@ -26,10 +30,12 @@ Start with the built-in two-sided demonstration and keep payment in simulated mo
 
 No secrets are included. Copy the generated placeholder `.env.example` to the Git-ignored `.dev.vars` only if you choose to configure your own DeepSeek API and PayPal Sandbox REST app. Restart after configuring. AI assessment is an explicit action that sends requirements and bounded saved source to the configured model and may cost money. A rule review is not a model call. Never use production PayPal credentials or real money for this prototype.
 
-If the application offers the explicit same-owner Sandbox rehearsal, it uses a simulated seller perspective and the configured Sandbox test merchant. It is not seller onboarding, escrow or marketplace settlement. A genuine Sandbox run requires separate buyer approval, authorization and explicit capture; do not splice its status into an unrelated simulated case. Follow the current UI and README for the mode available in this exported version.
+The ordinary two-sided experience uses one owner and simulated payment. The explicit same-owner Sandbox rehearsal uses a virtual seller and the configured test merchant. Inviting a real seller uses a different authenticated app account, with separate website access, and defaults to simulated payment. A new custom project can explicitly choose Invite a real seller + Sandbox test payment; the server records the creation-only sandboxCollaboration marker. Existing cases are not silently upgraded. Only the buyer can authorize or capture test payment after exact-version acceptance; the configured Sandbox test merchant receives it, not the actual seller. This is not escrow or marketplace settlement. The new two-account production login plus genuine Sandbox authorization/capture path has not yet been verified; an earlier one-owner receipt does not verify it. Follow the current README and keep simulated and genuine provider evidence separate.
 
 ## Verification
 
 Run `pnpm test` and `pnpm run typecheck`. Provider tests use controlled responses and do not prove a real payment occurred. `scripts/assessment-evaluation-cases.json` is a labelled synthetic reference corpus, not measured model results. Record real output, source coverage, errors, abstention, latency and cost before making an accuracy claim.
+
+The dated first-use plan and blank three-person CSV in docs are prepared only: independent participants have not been tested. Do not fill those result slots with developer walkthroughs or AI review. The new English recording plan is also prepared, not recorded. The existing 135-second edited still-image walkthrough remains unchanged and is not continuous screen capture. Historical evaluations retain their original results; this source export does not establish a new deployment, refreshed public release, video upload or competition submission.
 
 The generated manifest lists every exported source file and its SHA-256. Runtime data, Site identity, credentials, local state, Git metadata and existing output files are excluded. Review the package before any external publication.

@@ -1,9 +1,9 @@
-import type { Language, ProofCriterion, ProofDelivery, ProofEvidence, StaticProjectSpec } from "./contracts.ts";
+import type { Language, ProofCriterion, ProofDelivery, ProofEvidence, ProofResourceReport, StaticProjectSpec } from "./contracts.ts";
 import { DomainError } from "./domain.ts";
+import { assertStaticPath, decodeRasterDataUrl, resolveStaticReference, STATIC_RESOURCE_LIMITS, staticFileKind } from "./static-resources.ts";
 
-const FILE_NAME = /^[A-Za-z0-9][A-Za-z0-9._-]*\.(?:html|css)$/iu;
-const HTML_NAME = /^[A-Za-z0-9][A-Za-z0-9._-]*\.html$/iu;
-const LOCAL_TARGET = /^([A-Za-z0-9][A-Za-z0-9._-]*\.html)#([A-Za-z0-9_][A-Za-z0-9_.:-]{0,127})$/iu;
+const HTML_NAME = /\.html$/iu;
+const LOCAL_TARGET = /^([^#]+\.html)#([A-Za-z0-9_][A-Za-z0-9_.:-]{0,127})$/iu;
 const CONTROL = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u;
 const EXCERPT_LENGTH = 700;
 const encoder = new TextEncoder();
@@ -25,8 +25,8 @@ function text(value: unknown, label: string, max: number): string {
 }
 
 function htmlName(value: unknown, label: string): string {
-  const name = text(value, label, 120);
-  if (!HTML_NAME.test(name)) throw new DomainError(`${label} must be a root-level .html filename.`);
+  const name = assertStaticPath(text(value, label, STATIC_RESOURCE_LIMITS.maxPathLength));
+  if (!HTML_NAME.test(name)) throw new DomainError(`${label} must be a relative .html file path.`);
   return name;
 }
 
@@ -46,7 +46,9 @@ function projectSpec(value: unknown): StaticProjectSpec {
   if (input.link !== undefined) {
     const raw = object(input.link, "Link requirement");
     const to = text(raw.to, "Link destination", 250);
-    if (!LOCAL_TARGET.test(to)) throw new DomainError("Link destination must use a root-level HTML filename#id, without external URLs or paths.");
+    const destination = LOCAL_TARGET.exec(to);
+    if (!destination) throw new DomainError("Link destination must use a relative HTML filepath#id without an external URL.");
+    htmlName(destination[1], "Link destination page");
     link = { from: htmlName(raw.from, "Link source page"), text: text(raw.text, "Link text", 120), to };
   }
   return { requiredPages, ...(link ? { link } : {}), manualRequirements };
@@ -87,31 +89,37 @@ export function parseStaticProject(input: Record<string, unknown>, language: Lan
 export function validateStaticFiles(value: unknown): Record<string, string> {
   const input = object(value, "Delivery files");
   const keys = Reflect.ownKeys(input);
-  if (keys.length < 1 || keys.length > 20) throw new DomainError("Upload between 1 and 20 HTML/CSS files.");
+  if (keys.length < 1 || keys.length > STATIC_RESOURCE_LIMITS.maxFiles) throw new DomainError("Upload between 1 and 40 HTML/CSS or supported raster files.");
   const seen = new Set<string>();
   const files: Record<string, string> = {};
-  let totalBytes = 0;
+  let totalBytes = 0, rasterBytes = 0;
   for (const key of keys) {
-    if (typeof key !== "string" || key.length > 120 || !FILE_NAME.test(key)) {
-      throw new DomainError("File names must be root-level HTML/CSS names using letters, numbers, dots, underscores or hyphens.");
-    }
-    const canonical = key.toLowerCase();
-    if (seen.has(canonical)) throw new DomainError("File names must not collide when letter case is ignored.");
+    assertStaticPath(key);
+    const path = key as string, kind = staticFileKind(path);
+    if (!kind) throw new DomainError("Only HTML, CSS, PNG, JPEG and WebP delivery files are supported.");
+    const canonical = path.toLowerCase();
+    if (seen.has(canonical) || [...seen].some(prior => prior.startsWith(`${canonical}/`) || canonical.startsWith(`${prior}/`))) throw new DomainError("File paths must not collide as files/directories or when letter case is ignored.");
     seen.add(canonical);
     const descriptor = Object.getOwnPropertyDescriptor(input, key);
     if (!descriptor || !("value" in descriptor) || typeof descriptor.value !== "string") {
-      throw new DomainError(`File ${key} must contain text, not binary data or a property accessor.`);
+      throw new DomainError(`File ${path} must contain text or a supported raster data URL, not a property accessor.`);
     }
     const contents = descriptor.value;
+    if (kind === "png" || kind === "jpeg" || kind === "webp") {
+      rasterBytes += decodeRasterDataUrl(path, contents).bytes.byteLength;
+      if (rasterBytes > STATIC_RESOURCE_LIMITS.rasterTotalBytes) throw new DomainError("Raster files exceed 1 MiB in total.");
+      files[path] = contents;
+      continue;
+    }
     if (!contents.trim() || CONTROL.test(contents) || [...contents].some(character => {
       const point = character.codePointAt(0)!;
       return point >= 0xd800 && point <= 0xdfff;
-    })) throw new DomainError(`File ${key} is empty or contains binary/invalid Unicode data.`);
+    })) throw new DomainError(`File ${path} is empty or contains binary/invalid Unicode data.`);
     const bytes = encoder.encode(contents).byteLength;
-    if (bytes > 64 * 1024) throw new DomainError(`File ${key} exceeds 64 KiB of UTF-8 text.`);
+    if (bytes > STATIC_RESOURCE_LIMITS.textFileBytes) throw new DomainError(`File ${path} exceeds 64 KiB of UTF-8 text.`);
     totalBytes += bytes;
-    if (totalBytes > 256 * 1024) throw new DomainError("Delivery files exceed 256 KiB of UTF-8 text in total.");
-    files[key] = contents;
+    if (totalBytes > STATIC_RESOURCE_LIMITS.textTotalBytes) throw new DomainError("Delivery files exceed 256 KiB of UTF-8 text in total.");
+    files[path] = contents;
   }
   if (!Object.hasOwn(files, "index.html")) throw new DomainError("Include a root-level index.html file.");
   return files;
@@ -120,7 +128,7 @@ export function validateStaticFiles(value: unknown): Record<string, string> {
 type Tag = { name: string; closing: boolean; selfClosing: boolean; attributes: Map<string, string>; start: number; end: number; valid: boolean };
 type Element = { tag: Tag; inBody: boolean };
 type Anchor = { tag: Tag; end: number; text: string; valid: boolean };
-type HtmlInspection = { valid: boolean; title?: string; anchors: Anchor[]; elements: Element[]; ambiguous: boolean };
+type HtmlInspection = { valid: boolean; title?: string; anchors: Anchor[]; elements: Element[]; styles: string[]; ambiguous: boolean };
 const VOID = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"]);
 const RAW = new Set(["script", "style", "textarea", "xmp", "iframe", "noembed", "noframes", "plaintext"]);
 const BLOCKED = new Set(["template", "svg", "math", "noscript"]);
@@ -178,6 +186,7 @@ function tagAt(html: string, start: number): Tag | undefined {
 function inspectHtml(html: string): HtmlInspection {
   const anchors: Anchor[] = [];
   const elements: Element[] = [];
+  const styles: string[] = [];
   const stack: string[] = [];
   const blocked: string[] = [];
   let activeAnchor: Anchor | undefined;
@@ -231,6 +240,7 @@ function inspectHtml(html: string): HtmlInspection {
         title = html.slice(tag.start, close.lastIndex);
         if (bodyCount || !content.valid || !content.text.trim() || /</u.test(content.text)) ambiguous = true;
       }
+      if (!blocked.length && tag.name === "style") styles.push(html.slice(index, found.index));
       if (!tag.valid) ambiguous = true;
       index = close.lastIndex;
       continue;
@@ -264,7 +274,63 @@ function inspectHtml(html: string): HtmlInspection {
     }
   }
   if (stack.length || blocked.length || activeAnchor) ambiguous = true;
-  return { valid: !ambiguous && doctype === 1 && titleCount === 1 && bodyCount === 1 && bodyClosed && !!bodyContent.trim(), title, anchors, elements, ambiguous };
+  return { valid: !ambiguous && doctype === 1 && titleCount === 1 && bodyCount === 1 && bodyClosed && !!bodyContent.trim(), title, anchors, elements, styles, ambiguous };
+}
+
+/** Deterministic source references only. This never fetches or executes a resource. */
+export function inspectStaticResources(files: Record<string, string>): ProofResourceReport {
+  const findings: ProofResourceReport["findings"] = [], seen = new Set<string>();
+  let checked = 0, limited = false, findingLimit = false;
+  const finding = (entry: ProofResourceReport["findings"][number]) => {
+    if (findings.length >= 400) {
+      if (!findingLimit) findings.push({ from: entry.from, reference: "[resource finding limit exceeded]", kind: "uninspectable" });
+      findingLimit = true;
+      return;
+    }
+    const key = JSON.stringify(entry);
+    if (!seen.has(key)) { seen.add(key); findings.push(entry); }
+  };
+  const reference = (from: string, raw: string, expected: "html" | "css" | "raster") => {
+    if (checked >= 400) { if (!limited) finding({ from, reference: "[resource reference limit exceeded]", kind: "uninspectable" }); limited = true; return; }
+    checked++;
+    const target = resolveStaticReference(from, raw);
+    const kind = target && staticFileKind(target);
+    if (!target || !kind || (expected === "raster" ? !["png", "jpeg", "webp"].includes(kind) : kind !== expected)) {
+      finding({ from, reference: raw.slice(0, 500), ...(target ? { target } : {}), kind: "blocked" });
+    } else if (!Object.hasOwn(files, target)) finding({ from, reference: raw.slice(0, 500), target, kind: "missing" });
+  };
+  const css = (from: string, source: string) => {
+    const clean = source.replace(/\/\*[\s\S]*?\*\//gu, "");
+    if (/\\|\/\*/u.test(clean)) finding({ from, reference: "[CSS escapes or incomplete comments require direct inspection]", kind: "uninspectable" });
+    for (const match of clean.matchAll(/url\(\s*(?:"([^"]*)"|'([^']*)'|([^\s)'";]*))\s*\)/giu)) {
+      reference(from, match[1] ?? match[2] ?? match[3], /@import\s*$/iu.test(clean.slice(0, match.index)) ? "css" : "raster");
+    }
+    for (const match of clean.matchAll(/@import\s+(?:"([^"]*)"|'([^']*)')/giu)) reference(from, match[1] ?? match[2], "css");
+    const urls = clean.match(/url\s*\(/giu)?.length ?? 0;
+    if (urls > [...clean.matchAll(/url\(\s*(?:"([^"]*)"|'([^']*)'|([^\s)'";]*))\s*\)/giu)].length) finding({ from, reference: "[Unsupported CSS URL syntax]", kind: "uninspectable" });
+  };
+  for (const from of Object.keys(files).sort()) {
+    const kind = staticFileKind(from);
+    if (kind === "css") { css(from, files[from]); continue; }
+    if (kind !== "html") continue;
+    const html = inspectHtml(files[from]);
+    for (const { tag } of html.elements) {
+      if (!tag.valid) continue;
+      if (tag.name === "link" && tag.attributes.get("rel")?.toLowerCase().split(/\s+/u).includes("stylesheet")) reference(from, tag.attributes.get("href") ?? "", "css");
+      if (tag.name === "a" && tag.attributes.has("href")) reference(from, tag.attributes.get("href")!, "html");
+      if (tag.name === "img" && tag.attributes.has("src")) reference(from, tag.attributes.get("src")!, "raster");
+      if (["img", "source"].includes(tag.name) && tag.attributes.has("srcset")) {
+        for (const candidate of tag.attributes.get("srcset")!.split(",")) {
+          const match = /^\s*(\S+?)(?:\s+\d+(?:\.\d+)?[wx])?\s*$/u.exec(candidate);
+          if (match) reference(from, match[1], "raster");
+          else finding({ from, reference: candidate.slice(0, 500), kind: "uninspectable" });
+        }
+      }
+      if (tag.attributes.has("style")) css(from, tag.attributes.get("style")!);
+    }
+    for (const style of html.styles) css(from, style);
+  }
+  return { method: "static-resources-v1", checked, findings };
 }
 
 function snippet(value: string): string { return value.slice(0, EXCERPT_LENGTH); }
@@ -296,7 +362,9 @@ export function createUploadedDelivery(value: unknown, rawProject: StaticProject
     const targetPage = inspected.get(target[1]);
     const destinations = targetPage?.elements.filter(element => element.inBody && element.tag.attributes.get("id") === target[2]) ?? [];
     const rawHref = anchor?.tag.attributes.get("href");
-    const href = rawHref?.startsWith("#") ? `${requirement.from}${rawHref}` : rawHref?.replace(/^\.\//u, "");
+    const fragment = rawHref?.match(/^[^?#]*(#[A-Za-z0-9_][A-Za-z0-9_.:-]{0,127})$/u)?.[1];
+    const resolved = rawHref && resolveStaticReference(requirement.from, rawHref);
+    const href = resolved && fragment ? `${resolved}${fragment}` : undefined;
     const hiddenAnchor = anchor?.tag.attributes.has("hidden") || anchor?.tag.attributes.has("inert");
     const passed = !!source?.valid && !!targetPage?.valid && !!anchor?.valid && !hiddenAnchor && href === requirement.to && destinations.length === 1;
     const sourceHtml = files[requirement.from] ?? "";
@@ -314,5 +382,5 @@ export function createUploadedDelivery(value: unknown, rawProject: StaticProject
   project.manualRequirements.forEach((requirement, index) => evidence.push({ id: `evidence-manual-${index + 1}`, criterionId: `manual-${index + 1}`, file: "index.html", excerpt: snippet(files["index.html"]), finding: "needs_human",
     explanation: message(language, `此项须人工核对原始约定：“${requirement}”。源码摘录只是交付来源，不能自动证明满足要求。`, `A person must verify the original requirement: “${requirement}”. The excerpt identifies delivered source and does not automatically establish compliance.`),
   }));
-  return { id: crypto.randomUUID(), variant: "upload", sequence, label: message(language, `用户上传版本 ${sequence}`, `Uploaded delivery ${sequence}`), submittedAt: new Date().toISOString(), files, evidence };
+  return { id: crypto.randomUUID(), variant: "upload", sequence, label: message(language, `用户上传版本 ${sequence}`, `Uploaded delivery ${sequence}`), submittedAt: new Date().toISOString(), files, evidence, resources: inspectStaticResources(files) };
 }

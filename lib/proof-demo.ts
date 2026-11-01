@@ -5,14 +5,22 @@ import { createUploadedDelivery, parseStaticProject } from "./static-project.ts"
 
 /** Only these explicitly created, provider-free records support one-owner role play. */
 export function isDemoRoleplay(quote: ProofQuote): boolean {
-  return quote.proof.demoRoleplay === true && quote.proof.sandboxRehearsal !== true && quote.aiMode === "demo" && quote.paymentMode === "demo"
+  return quote.proof.demoRoleplay === true && quote.proof.sandboxRehearsal !== true && quote.proof.sandboxCollaboration !== true && quote.aiMode === "demo" && quote.paymentMode === "demo"
     && !!quote.proof.project && !!quote.proof.collaboration;
 }
 
 /** A separately selected rehearsal uses virtual participants and a real test merchant. */
 export function isSandboxRehearsal(quote: ProofQuote): boolean {
   return quote.proof.demoRoleplay === true && quote.proof.sandboxRehearsal === true
+    && quote.proof.sandboxCollaboration !== true
     && quote.aiMode === "demo" && quote.paymentMode === "sandbox"
+    && !!quote.proof.project && !!quote.proof.collaboration;
+}
+
+/** Creation-only server marker: real app members, configured test merchant, no seller settlement. */
+export function isSandboxCollaboration(quote: ProofQuote): boolean {
+  return quote.proof.sandboxCollaboration === true && quote.proof.demoRoleplay !== true
+    && quote.proof.sandboxRehearsal !== true && quote.paymentMode === "sandbox"
     && !!quote.proof.project && !!quote.proof.collaboration;
 }
 
@@ -22,15 +30,25 @@ export function isOwnerRoleplay(quote: ProofQuote): boolean {
 }
 
 /** Validate a creation request without silently upgrading old/demo records. */
-export function requestSandboxRehearsal(input: Record<string, unknown>, authenticated: boolean, configured: boolean): boolean {
-  if (input.paymentTesting === undefined) return false;
-  if (input.paymentTesting !== "sandbox") throw new DomainError("Choose the supported Sandbox payment rehearsal.");
-  if (!authenticated) throw new DomainError("Sign in to create a Sandbox rehearsal.", 401);
-  if (input.demoRoleplay !== true || input.collaborative === true || (input.mode !== "custom" && input.mode !== "demo")) {
+export function requestSandboxTesting(input: Record<string, unknown>, authenticated: boolean, configured: boolean): "rehearsal" | "collaborative" | undefined {
+  if (input.paymentTesting === undefined) return undefined;
+  if (input.paymentTesting !== "sandbox" && input.paymentTesting !== "collaborative-sandbox") throw new DomainError("Choose a supported Sandbox payment testing workflow.");
+  if (!authenticated) throw new DomainError("Sign in to create a Sandbox project.", 401);
+  const collaborative = input.paymentTesting === "collaborative-sandbox";
+  if (collaborative) {
+    if (input.collaborative !== true || (input.demoRoleplay !== undefined && input.demoRoleplay !== false) || input.mode !== "custom") {
+      throw new DomainError("Two-account Sandbox testing requires a new custom shared project, without owner role play.");
+    }
+  } else if (input.demoRoleplay !== true || input.collaborative === true || (input.mode !== "custom" && input.mode !== "demo")) {
     throw new DomainError("Sandbox rehearsal requires a new one-owner custom project or built-in demonstration, without a real seller invitation.");
   }
   if (!configured) throw new DomainError("PayPal Sandbox is not configured. Choose the provider-free demonstration or configure the test application.", 409);
-  return true;
+  return collaborative ? "collaborative" : "rehearsal";
+}
+
+/** Kept for callers that explicitly ask about the existing owner rehearsal. */
+export function requestSandboxRehearsal(input: Record<string, unknown>, authenticated: boolean, configured: boolean): boolean {
+  return requestSandboxTesting(input, authenticated, configured) === "rehearsal";
 }
 
 /** Unknown legacy origins keep uploads and history, but do not gain sample access. */

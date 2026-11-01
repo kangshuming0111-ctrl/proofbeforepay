@@ -26,7 +26,7 @@ test("project money uses exact decimal-string cents and stable bilingual criteri
   for (const amount of [125.5, "0", "0.001", "10000.01", "10001", "1e2", "-1", ".5", " 1.00", "01.00", "1.", "NaN"]) invalid(() => parseStaticProject({...input(), amount}, "en"));
 });
 
-test("project limits and root filenames are validated before agreement creation", () => {
+test("project limits and canonical relative filenames are validated before agreement creation", () => {
   for (const overrides of [
     {title: ""}, {title: "x".repeat(121)}, {summary: "x".repeat(1001)},
     {requiredPages: []}, {requiredPages: Array.from({length: 11}, (_, n) => `p${n}.html`)},
@@ -71,14 +71,14 @@ test("required pages missing from a valid upload produce saved failures rather t
 
 test("file validation rejects paths, prototypes, case collisions, accessors and non-text files", () => {
   const base = {"index.html": html()};
-  for (const value of [null, [], "file", {}, {"styles.css": "body{}"}, {...base, "Index.HTML": html()}, {...base, "../page.html": html()}, {...base, "dir/page.html": html()}, {...base, "dir\\page.html": html()}, {...base, "page.html\n": html()}, {...base, "script.js": "alert(1)"}, {...base, "bad.html": "  "}, {...base, "bad.css": "a\0b"}, {...base, "bad.css": "\ud800"}, {...base, "bad.html": 123}, {...base, "bad.html": new Uint8Array([1])}, Object.create({"index.html": html()}), JSON.parse('{"__proto__":"bad","index.html":"hello"}')]) invalid(() => validateStaticFiles(value));
+  for (const value of [null, [], "file", {}, {"styles.css": "body{}"}, {...base, "Index.HTML": html()}, {...base, "../page.html": html()}, {...base, "dir\\page.html": html()}, {...base, "page.html\n": html()}, {...base, "script.js": "alert(1)"}, {...base, "bad.html": "  "}, {...base, "bad.css": "a\0b"}, {...base, "bad.css": "\ud800"}, {...base, "bad.html": 123}, {...base, "bad.html": new Uint8Array([1])}, Object.create({"index.html": html()}), JSON.parse('{"__proto__":"bad","index.html":"hello"}')]) invalid(() => validateStaticFiles(value));
   const accessor = {...base};
   Object.defineProperty(accessor, "bad.html", {get() { throw new Error("must not invoke accessor"); }, enumerable: true});
   invalid(() => validateStaticFiles(accessor));
   invalid(() => validateStaticFiles({...base, [Symbol("extra")]: "bad"}));
   const nullPrototype = Object.assign(Object.create(null), base);
   assert.deepEqual(validateStaticFiles(nullPrototype), base);
-  invalid(() => validateStaticFiles(Object.fromEntries([["index.html", html()], ...Array.from({length: 20}, (_, n) => [`p${n}.css`, "body{}"])])));
+  invalid(() => validateStaticFiles(Object.fromEntries([["index.html", html()], ...Array.from({length: 40}, (_, n) => [`p${n}.css`, "body{}"])])));
 });
 
 test("file limits count real UTF-8 bytes with exact per-file and total boundaries", () => {

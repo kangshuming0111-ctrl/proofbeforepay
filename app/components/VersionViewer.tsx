@@ -3,6 +3,8 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { ChevronDown, FileClock, Monitor, RotateCcw, Smartphone, X } from "lucide-react";
 import type { Language, ProofCriterion, ProofDeliveryVersion } from "@/lib/contracts";
+import { deliveryFileUrl } from "@/lib/delivery-upload";
+import { ResourceChecks } from "./ResourceChecks";
 import { DeliveryAssessment } from "./DeliveryAssessment";
 
 export type VersionViewerProps = {
@@ -34,7 +36,7 @@ export function VersionViewer({ quoteId, version, language, criteria = [], onClo
   const onCloseRef = useRef(onClose);
   const id = useId();
   const activeFile = files.includes(selectedFile) ? selectedFile : files[0] ?? "";
-  const previewUrl = activeFile ? `/proof-versions/${encodeURIComponent(quoteId)}/${encodeURIComponent(delivery.id)}/${encodeURIComponent(activeFile)}` : "";
+  const previewUrl = activeFile ? deliveryFileUrl(quoteId,delivery.id,activeFile,true) : "";
   const review = version.review?.deliveryId === delivery.id ? version.review : undefined;
   const assessment = delivery.assessment?.deliveryId === delivery.id ? delivery.assessment : undefined;
   const submission = version.submission?.deliveryId === delivery.id ? version.submission : undefined;
@@ -120,7 +122,8 @@ export function VersionViewer({ quoteId, version, language, criteria = [], onClo
       </section>
 
       <section className="version-viewer-records" aria-label={tr("此历史版本的记录", "Records for this historical version")}>
-        <DeliveryAssessment report={assessment} criteria={criteria} language={language} readOnly />
+        <ResourceChecks delivery={delivery} language={language}/>
+        <DeliveryAssessment report={assessment} criteria={criteria} language={language} riskReviews={delivery.riskReviews} readOnly />
         <details className="version-viewer-details"><summary>{tr("卖家交付说明", "Seller's delivery note")}<ChevronDown size={14} aria-hidden="true" /></summary><div className="version-viewer-details-body">{submission ? <><p className="version-viewer-text">{submission.note}</p><p className="version-viewer-help">{tr("卖家陈述，不是独立证明。", "A seller statement, not independent proof.")} <time dateTime={submission.at}>{displayTime(submission.at)}</time></p><code>{submission.deliveryId}</code></> : <p className="version-viewer-help">{tr("没有与此快照版本绑定的交付说明。", "No delivery note is tied to this snapshot version.")}</p>}</div></details>
 
         <details className="version-viewer-details"><summary>{tr(`买家反馈（${feedback.length}）`, `Buyer feedback (${feedback.length})`)}<ChevronDown size={14} aria-hidden="true" /></summary><div className="version-viewer-details-body">{feedback.length ? <ul className="version-viewer-feedback">{feedback.map(item => <li key={item.id}><strong>{tr("验收标准：", "Criterion: ")}{item.criterionId}</strong><p className="version-viewer-text">{item.comment}</p><p className="version-viewer-help"><time dateTime={item.at}>{displayTime(item.at)}</time></p><code>{item.deliveryId}</code></li>)}</ul> : <p className="version-viewer-help">{tr("此快照没有已归档反馈。", "No feedback is archived with this snapshot.")}</p>}</div></details>
