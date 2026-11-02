@@ -3,6 +3,7 @@
 import { ArrowRight, FileCheck2 } from "lucide-react";
 import type { Language } from "@/lib/contracts";
 import "../welcome.css";
+import {RUNTIME_LAB_ORIGIN} from "@/lib/runtime-project";
 
 export function GettingStarted({language, busy, onStart, onExample, onDemo}: {language: Language; busy: boolean; onStart: () => void; onExample: () => void; onDemo: () => void}) {
   const tr = (zh: string, en: string) => language === "zh" ? zh : en;
@@ -15,6 +16,7 @@ export function GettingStarted({language, busy, onStart, onExample, onDemo}: {la
         <button type="button" className="subtle-button" disabled={busy} onClick={onStart}>{tr("填写自己的项目要求", "Enter my requirements")}</button>
       </div>
       <small className="welcome-action-note">{tr("体验会创建虚构样板项目，付款使用模拟模式；AI 只在你另行点击时运行。", "The sample creates a fictional project with simulated payment. AI runs only when you separately request it.")}</small>
+      <a className="text-button welcome-example" href={RUNTIME_LAB_ORIGIN} target="_blank" rel="noreferrer">{tr("免账号体验：检查价格与预约后端","No-account lab: prices and booking backend")}<ArrowRight size={13} aria-hidden="true"/></a>
       <button type="button" className="text-button welcome-example" disabled={busy} onClick={onExample}>{tr("用这份面馆需求开始填写", "Start with these noodle-shop requirements")}<ArrowRight size={13} aria-hidden="true"/></button>
       <details className="welcome-scope"><summary>{tr("当前可以检查哪些交付？", "What deliveries can I check?")}</summary><p>{tr("静态网站文件夹：HTML、CSS 和本地 PNG/JPEG/WebP。源码、实际浏览器观察和人工判断分别记录；脚本、表单后台及邮件送达不在静态检查范围内。", "Static website folders with HTML, CSS and local PNG/JPEG/WebP images. Source checks, browser observations and human decisions are separate records. Static checks do not run scripts, form backends or email delivery.")}</p></details>
     </div>

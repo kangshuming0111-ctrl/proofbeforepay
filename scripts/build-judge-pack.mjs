@@ -55,11 +55,15 @@ export async function collectPublicSource(root) {
 
 const GUIDE = `# ProofBeforePay — local judge handoff
 
-Generating this source export does not by itself publish a repository or submit a Devpost entry. It does not grant live judge access or establish measured AI results. The hosted Site may remain owner-private. Do not assume its URL works for another account. See the [dated evaluation](docs/EVALUATION-2026-11-02.md) for separately recorded results and limits.
+Generating this source export does not by itself publish a repository or submit a Devpost entry. It does not grant access to the authenticated main workspace or establish measured AI results. That workspace retains its configured access audience. The separate public verification lab below is an account-free synthetic deployment, not a grant of access to private projects. See the [dated evaluation](docs/EVALUATION-2026-11-02.md) for separately recorded results and limits.
 
 ## What to try
 
 ProofBeforePay helps a buyer and a website developer agree on static website requirements, review saved delivery evidence, request revisions, accept an exact version and separately confirm test payment. A contract is optional. Uploads preserve bounded relative directories with root-level index.html and up to 40 HTML/CSS/PNG/JPEG/WebP files. Text is limited to 64 KiB per file and 256 KiB total; raster images to 256 KiB each and 1 MiB total. Scripts, form submissions, external subresources and backend behavior are not executed in the isolated preview. ZIPs must be unpacked before choosing their website folder.
+
+A separately confirmed booking protocol can perform eight real server HTTP checks against an operator-registered disposable synthetic target. This adapter is separate from the script-free preview. It tests structured invalid-input rejection, creation, independent readback, idempotent replay, conflicting data and an unchanged record, with declared revision and exact upload digest. It does not inspect arbitrary third-party backends, attest that a declared target was built from the upload, certify security or guarantee permanent durability. See docs/BOOKING-HTTP-VERIFICATION.md.
+
+For an immediate account-free preview, open https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/ . The left-hand fictional handoff runs locally for one visitor with simulated buyer/seller roles. The separately labelled HTTP panel makes genuine network requests to the lab's own synthetic service after per-run consent. It has no main-workspace data, model credentials or real payments. The observed flawed run returned 201 for creation and404 for independent readback, with six mismatched steps; the corrected controlled run supported all eight. These two cases are not a general accuracy score. Its optional local task recorder exports unverified self-declared outcomes, not independent user research.
 
 Source resource checks show missing local targets, out-of-scope references and uninspectable syntax for the exact saved delivery. A source finding labelled blocked does not establish that the browser attempted and blocked a navigation; links may leave the saved preview, so return to a saved entry before judging it.
 
@@ -79,7 +83,9 @@ Start with the built-in two-sided demonstration and keep payment in simulated mo
 
 ## Business-content handoff
 
-For the latest workflow, read docs/PLAN-COHERENCE-2026-11-02.md and use tests/fixtures/noodle-business/. The explicit form example fills four pages and three original requirements. Confirm scope, inspect the editable business checks, then upload v1 as seller. Its English price is correct, Chinese price is28 with a hidden18 decoy, and telephone is wrong. Run business checks, draft feedback, return it and upload v2. Run fresh checks and open Compare each requirement to see agreed, earlier and current actual values together. Human acceptance and payment remain separate.
+For the business-content workflow, read docs/PLAN-COHERENCE-2026-11-02.md and use tests/fixtures/noodle-business/. The explicit business example fills four pages and source-backed menu/phone requirements. Confirm scope, inspect the editable business checks, then upload v1 as seller. Its English price is correct, Chinese price is28 with a hidden18 decoy, and telephone is wrong. Run business checks, draft feedback, return it and upload v2. Run fresh checks and open Compare each requirement to see agreed, earlier and current actual values together. Human acceptance and payment remain separate.
+
+The separate booking-backend example adds an original booking requirement and asks for a distinct confirmation of the fixed eight-step technical protocol. Choose the seller-declared flawed or corrected registered target when uploading. An explicit HTTP run saves all steps and exact delivery/digest/target references; any failed or uncertain step requires acknowledgement and a reason to accept as an exception. Replacements require fresh evidence; supplemental runs do not rewrite an acceptance-time report. This optional network check is not a live model or PayPal call and is not part of the provider-free helper's readiness proof. Full instructions and bounds are in docs/BOOKING-HTTP-VERIFICATION.md.
 
 The isolated no-key helper intentionally disables live providers. In a separate manual checkout with your own DeepSeek key, the explicit AI business-check suggestion action can propose two typed prices and phone copy directly from the original requirements. Each must be adopted/edited and confirmed. The public scripts/evaluation-results/2026-11-02-business-suggestion-baseline.json and followup.json preserve actual synthetic model outputs; reading those files is recorded evidence, not a new live request. An invited seller sees the same locked business plan before joining, and source assessment receives that validated plan without browser-report blocks.
 
@@ -91,7 +97,7 @@ The ordinary two-sided experience uses one owner and simulated payment. The expl
 
 ## Verification
 
-Run \`pnpm test\` and \`pnpm run typecheck\`. Provider tests use controlled responses and do not prove a real payment occurred. \`scripts/assessment-evaluation-cases.json\` is a labelled synthetic reference corpus, not measured model results. Record real output, source coverage, errors, abstention, latency and cost before making an accuracy claim.
+Run \`pnpm test\` and \`pnpm run typecheck\`. The actual SQLite fixture suite is separate: \`node --test tests/booking-lab.test.mjs\` (Node 24 recommended). The focused isolated API/D1 protocol check is \`node tests/run-collaborative-sandbox-local.mjs --suite runtime-checks\`; it deliberately blocks outbound HTTP, so its unavailable reports verify stored workflow behavior rather than real target success. Hosted HTTP observations are separate evidence. Provider tests use controlled responses and do not prove a real payment occurred. \`scripts/assessment-evaluation-cases.json\` is a labelled synthetic reference corpus, not measured model results. Record real output, source coverage, errors, abstention, latency and cost before making an accuracy claim.
 
 The dated first-use plan and blank three-person CSV in docs are prepared only: independent participants have not been tested. Do not fill those result slots with developer walkthroughs or AI review. The new English recording plan is also prepared, not recorded. The existing 135-second edited still-image walkthrough remains unchanged and is not continuous screen capture. Historical evaluations retain their original results; this source export does not establish a new deployment, refreshed public release, video upload or competition submission.
 
@@ -102,19 +108,21 @@ const DEMO = `# Under-three-minute interaction recording plan
 
 Prepared, not recorded. The existing 135-second edited still-image video is unchanged and is not continuous screen capture. Use docs/DEMO-RECORDING-2026-11-02.md for the spoken English script and preparation checklist; an actual new capture is still pending.
 
-0:00–0:20 — Show one prepared buyer project and its exact agreed opening-hours requirement. Explain the cross-border website handoff and that a contract is optional.
+Record one continuous public-lab take at https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/ . Frame only the fictional webpage body, excluding account information and other windows. Test capture/playback first. The local handoff and real HTTP test are separate evidence, not one authenticated buyer/seller transaction.
 
-0:20–0:45 — Inspect the saved local CSS/photo directories and preview. Distinguish missing local resources from an out-of-scope external-reference finding; do not claim a navigation or backend test occurred.
+0:00–0:20 — Confirm the provided menu/phone agreement, explain that a contract is optional, switch to the virtual Seller and submit fictional v1. Label this as one visitor's browser-local role-play.
 
-0:45–1:10 — Open an actually saved source AI result and its exact quote. On a real listed risk, save a reasoned human review; show that the raw AI text remains present. If no genuine AI/risk record exists, disclose that limitation and omit the action rather than fabricate one.
+0:20–0:45 — Check the wrong price and phone, prepare an editable feedback draft and separately send it. Local rules are not a fresh AI call or a real browser observation.
 
-1:10–1:35 — Prepare editable criterion-specific feedback, explicitly request changes, switch to seller and upload the complete revised folder. The selected demonstration uses one owner with virtual roles; do not describe that switch as two independent accounts.
+0:45–1:10 — Submit fictional v2 and compare the agreed values with both actually calculated versions. A revision label alone does not establish a fix.
 
-1:35–2:05 — Open Compare each requirement. Show the unchanged clause, old feedback and both versions' separate rule/AI/browser records. Missing new AI or browser records stay unavailable. Show source changes, not an invented automatic fixed verdict.
+1:10–1:45 — Consent to an actual HTTP run against the flawed synthetic service. Show creation 201, independent readback 404 and the individual protocol mismatches. Do not replace a failed network call with a prefilled success.
 
-2:05–2:35 — Inspect the delivered mobile pages, complete required human checks and explicitly accept the current version without payment. Use the next-step control to find the remaining check.
+1:45–2:20 — Give fresh consent, run the corrected service and compare both genuine returned reports. Show same-ID replay, conflicting data rejection and unchanged final readback. Download the two-report comparison if useful.
 
-2:35–2:55 — Show payment mode and limits. This prepared recording uses a simulated case and remains simulated. Only show a genuine Sandbox result if this exact project actually produced it; do not reuse another case's receipt. A separate hosted run used two real authenticated logins operated by the same developer through an automation agent and captured AUD 1 in virtual funds to the configured test merchant, not the seller. It is not independent user research or evidence that this planned recording exists. Close on the runnable source and pending first-use testing; do not invent users, accuracy or security certification.
+2:20–2:40 — Return to the fictional handoff and explicitly confirm the human check before accepting locally. Explain that the main workbench stores exact-version acceptance and exception evidence, while this lab's acceptance/payment remain local and simulated.
+
+2:40–2:55 — Show limits and runnable source. The lab makes no model or PayPal call and does not prove every site is secure or bug-free. Independent first-use testing remains pending. A separate earlier hosted run captured AUD 1 in virtual Sandbox funds with two real authenticated logins operated by one developer; it is not a new recording, independent user research, escrow or seller settlement. Never splice its receipt into this lab as though it belonged to the same flow.
 `;
 
 export async function buildJudgePack(root, output) {

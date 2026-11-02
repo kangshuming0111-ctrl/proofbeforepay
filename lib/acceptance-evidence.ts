@@ -2,6 +2,7 @@ import type { ProofAcceptanceEvidence, ProofBrowserCheckReport, ProofBusinessChe
 import { validateBusinessDecision, type BusinessDecision } from "./business-decision.ts";
 import { getBusinessCheckPlan } from "./business-checks.ts";
 import { DomainError } from "./domain.ts";
+import { savedRuntimePlan,validateRuntimeDecision,runtimeReportsFor } from "./runtime-project.ts";
 
 export const OBSERVATION_HISTORY_LIMIT = 100;
 export const ACCEPTANCE_HISTORY_LIMIT = 20;
@@ -42,7 +43,7 @@ export function withBusinessReport(delivery: ProofDelivery, report: ProofBusines
 }
 
 function boundedHistory(delivery: ProofDelivery): ProofDelivery {
-  const bytes = new TextEncoder().encode(JSON.stringify({business: delivery.businessCheckHistory, browser: delivery.browserCheckHistory, layout: delivery.layoutHistory, acceptance: delivery.acceptanceEvidence})).byteLength;
+  const bytes = new TextEncoder().encode(JSON.stringify({runtime:delivery.runtimeHistory,business: delivery.businessCheckHistory, browser: delivery.browserCheckHistory, layout: delivery.layoutHistory, acceptance: delivery.acceptanceEvidence})).byteLength;
   if (bytes > EVIDENCE_HISTORY_BYTE_LIMIT) throw new DomainError("This delivery's saved evidence history is full. Existing records were retained; this new report or acceptance was not saved.", 409);
   return delivery;
 }
@@ -65,16 +66,18 @@ export function withLayoutReport(delivery: ProofDelivery, report: ProofLayoutRep
 
 /** Freeze the evidence that actually exists at this explicit acceptance. The
  * references point to retained reports; absent older evidence stays absent. */
-export function createAcceptanceEvidence(quote: ProofQuote, manualChecks: string[], at: string, businessDecision?: BusinessDecision): ProofAcceptanceEvidence {
+export function createAcceptanceEvidence(quote: ProofQuote, manualChecks: string[], at: string, businessDecision?: BusinessDecision, runtimeInput?: unknown): ProofAcceptanceEvidence {
   const delivery = quote.proof.delivery;
   if (!delivery || !Number.isFinite(Date.parse(at))) throw new DomainError("Acceptance evidence needs the exact current delivery and a valid time.", 409);
   const decision = validateBusinessDecision(quote, businessDecision);
+  const runtimeDecision=validateRuntimeDecision(quote,runtimeInput),runtime=delivery.runtimeReport;
   const browser = delivery.browserChecks;
   const layout = delivery.layoutReport;
   const assessment = delivery.assessment;
   if (browser && browser.deliveryId !== delivery.id || layout && layout.deliveryId !== delivery.id || assessment && assessment.deliveryId !== delivery.id) throw new DomainError("Acceptance evidence contains a report from a different delivery.", 409);
   return structuredClone({id: crypto.randomUUID(), deliveryId: delivery.id, at,
     businessReportId: decision?.reportId ?? null, ...(decision?.exceptionReason ? {businessExceptionReason: decision.exceptionReason} : {}),
+    ...(runtimeDecision && runtime ? {runtimeReportId:runtimeDecision.reportId,runtimeDeliveryDigest:runtime.deliveryDigest,runtimeTargetId:runtime.target.id,...(runtimeDecision.exceptionReason?{runtimeExceptionReason:runtimeDecision.exceptionReason,runtimeAcknowledgedSteps:runtimeDecision.acknowledgedSteps}:{})} : {}),
     browserReportId: browser?.id ?? null, layoutReportId: layout?.id ?? null, assessmentId: assessment?.id ?? null,
     manualChecks, criteria: quote.proof.criteria, evidence: delivery.evidence,
     ...(quote.proof.review?.deliveryId === delivery.id ? {review: quote.proof.review} : {}),
@@ -88,6 +91,8 @@ export function withAcceptanceEvidence(delivery: ProofDelivery, snapshot: ProofA
   const humanChecks = [...new Set(delivery.evidence.filter(item => item.finding === "needs_human").map(item => item.criterionId))];
   const currentReviews = (delivery.riskReviews ?? []).filter(item => item.deliveryId === delivery.id && item.assessmentId === delivery.assessment?.id);
   const business = delivery.businessChecks;
+  const runtime=delivery.runtimeReport;
+  if((snapshot.runtimeReportId??null)!==(runtime?.id??null)||runtime && (snapshot.runtimeDeliveryDigest!==runtime.deliveryDigest || snapshot.runtimeTargetId!==runtime.target.id || runtime.steps.some(step=>step.outcome!=="observed") && ((snapshot.runtimeExceptionReason?.trim().length??0)<10 || runtime.steps.filter(step=>step.outcome!=="observed").some(step=>!snapshot.runtimeAcknowledgedSteps?.includes(step.id)))))throw new DomainError("Acceptance must retain the exact backend evidence and explicit exceptions.",409);
   if ((snapshot.businessReportId ?? null) !== (business?.id ?? null)
     || (business && (business.summary.issues || business.summary.unavailable) && (snapshot.businessExceptionReason?.trim().length ?? 0) < 10)
     || snapshot.businessExceptionReason !== undefined && (typeof snapshot.businessExceptionReason !== "string" || snapshot.businessExceptionReason.trim().length > 500)
@@ -110,6 +115,7 @@ export function withAcceptanceEvidence(delivery: ProofDelivery, snapshot: ProofA
   next.businessCheckHistory = businessReportsFor(delivery);
   next.browserCheckHistory = browserReportsFor(delivery);
   next.layoutHistory = layoutReportsFor(delivery);
+  if(runtime) next.runtimeHistory=runtimeReportsFor(delivery);
   if (snapshot.businessReportId && !next.businessCheckHistory.some(report => report.id === snapshot.businessReportId)
     || snapshot.browserReportId && !next.browserCheckHistory.some(report => report.id === snapshot.browserReportId)
     || snapshot.layoutReportId && !next.layoutHistory.some(report => report.id === snapshot.layoutReportId)) throw new DomainError("Acceptance observations must be retained before they can be referenced.", 409);
@@ -125,10 +131,14 @@ export function assertAcceptedEvidenceReference(quote: ProofQuote): void {
   const financialId = quote.proof.acceptedEvidenceSnapshotId;
   if (collaborationId && financialId && collaborationId !== financialId) throw new DomainError("The payment consent and delivery acceptance reference different evidence snapshots.", 409);
   const id = financialId ?? collaborationId;
-  if (!id && getBusinessCheckPlan(quote).length) throw new DomainError("The accepted business-content evidence snapshot is unavailable.", 409);
+  if (!id && (getBusinessCheckPlan(quote).length || savedRuntimePlan(quote))) throw new DomainError("The accepted evidence snapshot is unavailable.", 409);
   if (!id) return; // Pre-upgrade acceptance remains explicitly unknown.
   const snapshot = delivery?.acceptanceEvidence?.find(item => item.id === id && item.deliveryId === delivery.id);
   if (!delivery || !snapshot) throw new DomainError("The saved acceptance evidence snapshot could not be found. Refresh before confirming payment.", 409);
+  if(savedRuntimePlan(quote)) {
+    const runtime=runtimeReportsFor(delivery).find(row=>row.id===snapshot.runtimeReportId);
+    if(!runtime || runtime.deliveryDigest!==snapshot.runtimeDeliveryDigest || runtime.target.id!==snapshot.runtimeTargetId || runtime.deliveryDigest!==delivery.runtimeDeliveryDigest)throw new DomainError("The backend evidence accepted for payment is unavailable or has changed.",409);
+  }
   if (getBusinessCheckPlan(quote).length && !snapshot.businessReportId
     || snapshot.businessReportId && !businessReportsFor(delivery).some(item => item.id === snapshot.businessReportId)
     || snapshot.browserReportId && !browserReportsFor(delivery).some(item => item.id === snapshot.browserReportId)
@@ -139,7 +149,7 @@ export function assertAcceptedEvidenceReference(quote: ProofQuote): void {
 /** Called only after normal financial-domain validation and before the provider.
  * A collaborative acceptance keeps its earlier snapshot, even if a later
  * browser run exists. Legacy collaborative acceptances stay explicitly unknown. */
-export function recordCaptureConsent(quote: ProofQuote, manualChecks: string[], at: string, businessDecision?: BusinessDecision): ProofQuote {
+export function recordCaptureConsent(quote: ProofQuote, manualChecks: string[], at: string, businessDecision?: BusinessDecision,runtimeInput?:unknown): ProofQuote {
   const delivery = quote.proof.delivery;
   if (!delivery || !Number.isFinite(Date.parse(at))) throw new DomainError("Capture consent needs the current delivery and a valid time.", 409);
   if (quote.proof.paymentOperation) throw new DomainError("Capture consent was already saved; reuse the existing pending operation.", 409);
@@ -153,7 +163,7 @@ export function recordCaptureConsent(quote: ProofQuote, manualChecks: string[], 
     if (snapshotId && !(delivery.acceptanceEvidence ?? []).some(item => item.id === snapshotId && item.deliveryId === delivery.id)) throw new DomainError("The accepted evidence snapshot could not be found. Refresh before confirming payment.", 409);
   } else {
     if (quote.proof.acceptedEvidenceSnapshotId) throw new DomainError("A saved capture consent has no pending operation. Reconcile this payment before recording another consent.", 409);
-    const snapshot = createAcceptanceEvidence(quote, manualChecks, at, businessDecision);
+    const snapshot = createAcceptanceEvidence(quote, manualChecks, at, businessDecision,runtimeInput);
     next.proof.delivery = withAcceptanceEvidence(delivery, snapshot);
     snapshotId = snapshot.id;
   }

@@ -3,6 +3,7 @@ import { DomainError } from "./domain.ts";
 import { assertStaticPath, decodeRasterDataUrl, resolveStaticReference, STATIC_RESOURCE_LIMITS, staticFileKind } from "./static-resources.ts";
 import { confirmCoverage, coverageCriteria, validateSavedCoverage } from "./requirement-coverage.ts";
 import { parseBusinessChecks, validateSavedBusinessChecks } from "./business-checks.ts";
+import { parseRuntimePlan } from "./runtime-project.ts";
 
 const HTML_NAME = /\.html$/iu;
 const LOCAL_TARGET = /^([^#]+\.html)(?:#([A-Za-z0-9_][A-Za-z0-9_.:-]{0,127}))?$/iu;
@@ -63,6 +64,7 @@ function projectSpec(value: unknown, preserveCoverage = false): StaticProjectSpe
   const project: StaticProjectSpec = { requiredPages, ...(link ? { link } : {}), ...(links ? {links} : {}), manualRequirements,
     ...(preserveCoverage && input.coverage !== undefined ? {coverage: validateSavedCoverage(input.coverage)} : {}) };
   if (preserveCoverage && input.businessChecks !== undefined) project.businessChecks = validateSavedBusinessChecks(input.businessChecks, project);
+  if (preserveCoverage && input.runtimeCheck !== undefined) project.runtimeCheck = parseRuntimePlan(input.runtimeCheck, project);
   return project;
 }
 
@@ -97,6 +99,7 @@ export function parseStaticProject(input: Record<string, unknown>, language: Lan
   const project = projectSpec(input);
   if (options.requireCoverage || input.coverage !== undefined) project.coverage = confirmCoverage(summary, input.coverage);
   if (input.businessChecks !== undefined) project.businessChecks = parseBusinessChecks(input.businessChecks, project);
+  if (input.runtimeCheck !== undefined) project.runtimeCheck = parseRuntimePlan(input.runtimeCheck, project, true);
   return { title, summary, totalCents, project, criteria: criteriaFor(project, language) };
 }
 

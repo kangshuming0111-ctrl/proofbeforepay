@@ -11,6 +11,7 @@ import { createRoleplayDelivery, isDemoRoleplay, isOwnerRoleplay } from "@/lib/p
 import { issueInvitation, proofActor, proofResponse, readProofCase, saveProofCase } from "@/lib/proof-store";
 import { authorizeOrder, captureAuthorization, createAuthorizationOrder, reconcileProofPayment, reviewProof, voidAuthorization } from "@/lib/providers";
 import { body, handle, HttpError, json, providerEnv } from "@/lib/server";
+import { runtimeTarget, runtimeDeliveryDigest, savedRuntimePlan } from "@/lib/runtime-project";
 export const dynamic = "force-dynamic";
 
 function log(quote: ProofQuote, kind: ProofEvent["kind"], deliveryId?: string): ProofQuote {
@@ -28,6 +29,8 @@ export async function POST(request: Request, context: {params: Promise<{id: stri
     if (quote.proof.demoRoleplay && !isOwnerRoleplay(quote)) throw new HttpError(409, "This role-play record has an invalid provider or workflow configuration.");
     requireWorkflowAction(quote, stored.role, action as ProofWorkflowAction);
     const input = await body(request, action === "delivery" ? 2 * 1024 * 1024 : action === "return" ? 96_000 : 24_000);
+    if (["accept_delivery","capture","void","checkout","authorize","return","delivery","submit_delivery"].includes(action) && quote.proof.delivery?.runtimeRun) throw new HttpError(409,"Finish the pending backend run before changing acceptance, delivery or payment.");
+    if (["accept_delivery","capture"].includes(action) && savedRuntimePlan(quote) && quote.proof.delivery && await runtimeDeliveryDigest(quote.proof.delivery.files)!==quote.proof.delivery.runtimeDeliveryDigest) throw new HttpError(409,"The accepted backend file binding is inconsistent.");
     const config = isDemoRoleplay(quote) ? {} : providerEnv();
     const persist = async (next: ProofQuote, archive = false) => {await saveProofCase(stored, next, {archive}); quote = next;};
     const response = () => json(proofResponse(stored, quote));
@@ -105,6 +108,10 @@ export async function POST(request: Request, context: {params: Promise<{id: stri
           if (input.variant !== "flawed" && input.variant !== "fixed" || input.files !== undefined) throw new HttpError(400, "Choose one of the two sample deliveries, or create a custom agreement to upload your files.");
           delivery = {...createProofDelivery(input.variant, quote.language), sequence};
         }
+        if (savedRuntimePlan(quote)) {
+          delivery.backendTargetId = runtimeTarget(input.backendTargetId).id;
+          delivery.runtimeDeliveryDigest = await runtimeDeliveryDigest(delivery.files);
+        } else if (input.backendTargetId !== undefined) throw new HttpError(400,"A backend target requires a buyer-confirmed backend check plan.");
         const replaced = quote.proof.collaboration ? prepareReplacement(quote, delivery)
           : {...quote, proof: {...quote.proof, delivery, review: undefined, acceptedAt: undefined, acceptedDeliveryId: undefined, acceptedEvidenceSnapshotId: undefined, manualChecks: undefined}};
         let next = log(replaced, "delivery_submitted", delivery.id);
@@ -157,7 +164,7 @@ export async function POST(request: Request, context: {params: Promise<{id: stri
       const manualChecks = validateAcceptance(quote, input);
       if (!quote.proof.paymentOperation) {
         // Persist consent and freeze this delivery before contacting the payment provider.
-        await persist(recordCaptureConsent(quote, manualChecks, captureConfirmedAt, quote.proof.collaboration ? undefined : validateBusinessDecision(quote, input.businessDecision)));
+        await persist(recordCaptureConsent(quote, manualChecks, captureConfirmedAt, quote.proof.collaboration ? undefined : validateBusinessDecision(quote, input.businessDecision), input.runtimeDecision));
       }
       const captureId = quote.paymentMode === "demo" ? `SIM-CAP-${quote.id}` : (await captureAuthorization(quote, config)).captureId;
       await persist(log({...quote, status: "paid", paidAt: new Date().toISOString(), captureId, proof: {...quote.proof, paymentOperation: undefined, paymentState: "captured"}}, "captured", quote.proof.acceptedDeliveryId));

@@ -6,6 +6,7 @@ import { criterionDisplayTitle, deliveryOverview, overviewFeedbackDraft, overvie
 import { deliveryLayoutSummary } from "@/lib/delivery-layout-summary";
 import { buildBusinessSpotlight } from "@/lib/business-spotlight";
 import { BusinessSpotlight } from "./BusinessSpotlight";
+import {runtimeReportSummary} from "@/lib/runtime-checks";
 import "../delivery-overview.css";
 
 export type DeliveryOverviewProps = {
@@ -23,15 +24,19 @@ export type DeliveryOverviewProps = {
   onViewHistory?: () => void;
   onOpenLayout?: () => void;
   onOpenBusiness?: () => void;
+  onOpenRuntime?: () => void;
   onInspectLayout?: (file: string, width: ProofLayoutWidth) => void;
 };
 
-export function DeliveryOverview({ delivery, criteria, review, manualChecks, language, role, stage, previousVersion, busy = false, onInspect, onPrepareFeedback, onViewHistory, onOpenLayout, onOpenBusiness, onInspectLayout }: DeliveryOverviewProps) {
+export function DeliveryOverview({ delivery, criteria, review, manualChecks, language, role, stage, previousVersion, busy = false, onInspect, onPrepareFeedback, onViewHistory, onOpenLayout, onOpenBusiness, onOpenRuntime, onInspectLayout }: DeliveryOverviewProps) {
   const zh = language === "zh";
   const tr = (chinese: string, english: string) => zh ? chinese : english;
   const overview = deliveryOverview({ delivery, criteria, review, manualChecks, previousVersion });
   const layout = deliveryLayoutSummary(delivery);
   const business = buildBusinessSpotlight(delivery, previousVersion);
+  const runtime=delivery.runtimeReport?.deliveryId===delivery.id?delivery.runtimeReport:undefined;
+  const runtimeSummary=runtime?runtimeReportSummary(runtime.steps):undefined;
+  const createStep=runtime?.steps.find(step=>step.id==="create"),readbackStep=runtime?.steps.find(step=>step.id==="readback");
   const layoutIssue = layout.state === "current" ? layout.firstIssue : undefined;
   const firstRows = overview.rows.slice(0, 3);
   const primaryNeedsAttention = firstRows[0] && (firstRows[0].rule === "fail" || firstRows[0].rule === "unreviewed"
@@ -41,6 +46,7 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
   const title = stage === "accepted" ? tr("买家已接受当前交付", "The buyer accepted this delivery")
     : !overview.reviewCurrent ? tr("先核查当前交付版本", "Check this delivery version first")
     : overview.ruleFailures ? tr("有交付要求尚未符合", "Some delivery requirements are unmet")
+    : runtimeSummary && (runtimeSummary.issues || runtimeSummary.unavailable) ? tr("预约后端仍有不符或未确定步骤", "Booking backend steps differ or remain uncertain")
     : business && business.issues > 0 ? tr("约定的业务内容存在差异", "Agreed business content differs")
     : business && business.unavailable > 0 ? tr("部分业务内容仍需核对", "Some business content needs inspection")
     : overview.aiChanges ? tr("AI 提出了修改建议，请核对", "AI suggests changes for you to review")
@@ -58,6 +64,7 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
   return <section className="delivery-overview" aria-label={tr("当前交付结果", "Current delivery results")}>
     <header className="delivery-overview-heading"><FileCheck2 size={16} aria-hidden="true"/><h3>{title}</h3><span>{delivery.sequence ? `v${delivery.sequence}` : tr("当前版", "Current")}</span></header>
     {business && <BusinessSpotlight delivery={delivery} previousVersion={previousVersion} language={language} busy={busy} onInspect={onOpenBusiness ?? onOpenLayout ?? (() => {})} onPrepareFeedback={showDraft ? onPrepareFeedback : undefined}/>}
+    {runtime&&runtimeSummary&&<div className="delivery-overview-layout"><div className="delivery-overview-layout-heading"><strong>{tr("预约接口实测","Booking HTTP check")}: {runtimeSummary.observed}/{runtimeSummary.steps} {tr("步有预期观测支持","steps with expected observations")}</strong>{onOpenRuntime&&<button type="button" disabled={busy} onClick={onOpenRuntime}>{tr("查看八步证据","Inspect eight-step evidence")}<ArrowRight size={12}/></button>}</div><p className="delivery-overview-layout-note">{tr("创建请求","Create request")} {createStep?.status??"—"} · {tr("独立回读","Independent readback")} {readbackStep?.status??"—"} · {tr("不符","Mismatched")} {runtimeSummary.issues} · {tr("未确定","Unavailable")} {runtimeSummary.unavailable}</p></div>}
     <div className="delivery-overview-metrics" aria-label={tr("分别记录的检查结果", "Separately recorded check results")}>
       <span className={overview.ruleFailures ? "overview-attention" : ""}>{tr("规则不符", "Rule mismatches")} <strong>{overview.ruleFailures ?? "—"}</strong></span>
       <span className={overview.aiChanges ? "overview-attention" : ""}>{tr("AI 建议修改", "AI change suggestions")} <strong>{overview.aiChanges ?? tr("未运行", "Not run")}</strong></span>

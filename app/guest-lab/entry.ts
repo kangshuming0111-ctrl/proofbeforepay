@@ -1,0 +1,367 @@
+import "./style.css";
+import { evaluateBusinessBlocks } from "../../lib/business-checks.ts";
+import type { ProofBusinessExpected } from "../../lib/contracts.ts";
+import { createFirstUseTrial, startFirstUseTask, noteFirstUseHelp, finishFirstUseTask, recordFirstUseAction, exportFirstUseTrial, FIRST_USE_TASKS, type FirstUseTask, type FirstUseTrial, type TrialAction, type TrialOperator, type TrialOutcome } from "../../lib/first-use-trial.ts";
+type Lang = "zh" | "en";
+type Variant = "flawed" | "fixed";
+type Stage = "agreement" | "awaiting_delivery" | "submitted" | "changes_requested" | "accepted" | "simulated_paid";
+type LocalReport = {
+    variant: Variant;
+    rows: {
+        id: string;
+        file: string;
+        source: string;
+        expected: ProofBusinessExpected;
+        actual: string;
+        outcome: "expected_observation" | "mismatch" | "unavailable";
+    }[];
+};
+type HttpReport = {
+    method?: unknown;
+    scenario?: unknown;
+    steps?: unknown;
+    summary?: unknown;
+    target?: unknown;
+    [key: string]: unknown;
+};
+const BUILD = "guest-lab-v1";
+const CHECKS: {
+    id: string;
+    file: string;
+    source: string;
+    expected: ProofBusinessExpected;
+    flawed: string;
+    fixed: string;
+}[] = [
+    { id: "menu", file: "menu-zh.html", source: "中文菜单标明牛肉面 AUD 18", expected: { kind: "item_price", label: "牛肉面", currency: "AUD", amountMinor: 1800 }, flawed: "牛肉面 AUD 28", fixed: "牛肉面 AUD 18" },
+    { id: "phone", file: "visit.html", source: "到店说明展示电话 +61 3 9000 0000", expected: { kind: "visible_copy", text: "+61 3 9000 0000" }, flawed: "+61 3 9000 9999", fixed: "+61 3 9000 0000" },
+];
+const TASK_COPY: Record<FirstUseTask, [
+    string,
+    string
+]> = {
+    T01: ["确认菜单价格、电话和合同可选的约定。", "Confirm the menu/phone agreement and that a contract is optional."],
+    T02: ["切换卖家，提交第一版虚构交付。", "Switch to Seller and submit the first fictional delivery."],
+    T03: ["核对不符，起草意见，分清草稿与已发送。", "Inspect differences, draft feedback and distinguish a draft from sent feedback."],
+    T04: ["提交修订版，对照旧值和新值；运行两种预约接口测试。", "Submit a revision, compare old/current values, then test both booking services."],
+    T05: ["说明人工验收与模拟付款的区别；决定是否在本地继续。", "Explain human acceptance versus simulated payment; decide whether to continue locally."],
+};
+const app = document.querySelector<HTMLDivElement>("#app")!;
+let language: Lang = "zh", role: "buyer" | "seller" = "buyer", stage: Stage = "agreement", delivery: Variant | undefined, report: LocalReport | undefined, previousReport: LocalReport | undefined;
+let feedback = "", draftReady = false, feedbackSent = false, manualConfirmed = false, httpConsent = false, httpBusy = false, httpReport: HttpReport | undefined, httpError = "", httpScenario: Variant | undefined;
+let labView:"local"|"http"="local";
+let httpReports:Partial<Record<Variant,HttpReport>>={};
+let trial: FirstUseTrial | undefined, operator: TrialOperator = "unknown", selectedTask: FirstUseTask = "T01", selectedOutcome: TrialOutcome = "not_completed", trialOpen = false, message = "", messageError = false;
+const tr = (zh: string, en: string) => language === "zh" ? zh : en;
+const node = (tag: string, className = "", text?: string) => { const value = document.createElement(tag); if (className)
+    value.className = className; if (text !== undefined)
+    value.textContent = text; return value; };
+function append(parent: Node, ...children: Node[]) { for (const child of children)
+    parent.appendChild(child); }
+const asRecord = (value: unknown): Record<string, unknown> | undefined => value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : undefined;
+const jsonText = (value: unknown, limit = 12000) => { const text = typeof value === "string" ? value : JSON.stringify(value, null, 2) ?? ""; return text.length > limit ? text.slice(0, limit) + "\n…" : text; };
+const description = (zh: string, en: string, className = "note") => node("p", className, tr(zh, en));
+function setMessage(zh: string, en: string, error = false) { message = tr(zh, en); messageError = error; }
+function track(action: TrialAction) { if (trial) {
+    try {
+        trial = recordFirstUseAction(trial, action, performance.now());
+    }
+    catch (error) {
+        message = error instanceof Error ? error.message : "Trial record unavailable";
+        messageError = true;
+    }
+} }
+function button(label: string, action: () => void | Promise<void>, options: {
+    primary?: boolean;
+    attention?: boolean;
+    disabled?: boolean;
+    className?: string;
+} = {}) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = label;
+    b.disabled = !!options.disabled;
+    b.className = options.attention ? "attention" : options.primary ? "primary" : options.className ?? "";
+    b.addEventListener("click", () => { message = ""; messageError = false; try {
+        const pending = action();
+        render();
+        if (pending && typeof pending.then === "function")
+            void pending.catch(error => { message = error instanceof Error ? error.message : "Action unavailable"; messageError = true; }).finally(render);
+    }
+    catch (error) {
+        message = error instanceof Error ? error.message : "Action unavailable";
+        messageError = true;
+        render();
+    } });
+    return b;
+}
+function download(value: unknown, name: string) { const blob = new Blob([JSON.stringify(value, null, 2) + "\n"], { type: "application/json" }), url = URL.createObjectURL(blob), a = document.createElement("a"); a.href = url; a.download = name; append(document.body, a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
+function switchRole(next: "buyer" | "seller") { role = next; track(next === "buyer" ? "switch_buyer" : "switch_seller"); }
+function submit(variant: Variant) { delivery = variant; stage = "submitted"; report = undefined; manualConfirmed = false; draftReady = false; feedback = ""; track(variant === "flawed" ? "submit_v1" : "submit_v2"); }
+function checkStatic() { if (!delivery)
+    return; report = { variant: delivery, rows: CHECKS.map(check => ({ ...check, actual: check[delivery!], outcome: evaluateBusinessBlocks(check.expected, [check[delivery!]]).outcome })) }; track("check_static"); }
+function resetCase() { role = "buyer"; stage = "agreement"; delivery = undefined; report = undefined; previousReport = undefined; feedback = ""; draftReady = false; feedbackSent = false; manualConfirmed = false; httpReport=undefined;httpReports={};httpScenario=undefined;httpError="";httpConsent=false;track("reset_case");message=tr("交付与接口显示已重置；已开始的本地试用记录保留，便于你先下载。","Handoff and HTTP display reset. Started local trial records are retained for download."); }
+function expectedLabel(expected: ProofBusinessExpected) { return expected.kind === "visible_copy" ? expected.text : `${expected.label} — ${expected.currency} ${(expected.amountMinor / 100).toFixed(2)}`; }
+function panel(title: string, label: string) { const section = node("section", "panel"), heading = node("header", "panel-heading"), body = node("div", "panel-body"); append(heading, node("h2", "", title), node("span", "", label)); append(section, heading, body); return { section, body }; }
+function renderComparison(body: HTMLElement) {
+    if (!report)
+        return;
+    const list = node("ul", "comparison");
+    for (const row of report.rows) {
+        const item = node("li", row.outcome === "mismatch" ? "mismatch" : ""), sameOld = previousReport?.rows.find(old => old.id === row.id);
+        append(item, node("h3", "", `${row.file} · ${row.outcome === "mismatch" ? tr("给定文字不符", "Supplied text differs") : row.outcome === "expected_observation" ? tr("给定文字符合", "Supplied text matches") : tr("无法确定", "Uncertain")}`));
+        const dl = node("dl", sameOld ? "" : "without-earlier");
+        for (const [label, value] of [[tr("约定", "Agreed"), expectedLabel(row.expected)], ...(sameOld ? [[tr("旧版文字", "Earlier text"), sameOld.actual]] : []), [tr("本版文字", "Current text"), row.actual]]) {
+            const column = node("div");
+            append(column, node("dt", "", label), node("dd", label === tr("本版文字", "Current text") && row.outcome === "mismatch" ? "mismatch-value" : "", value));
+            append(dl, column);
+        }
+        append(item, dl);
+        append(list, item);
+    }
+    append(body, list, description("这些结果由实际规则函数对上面的固定示例文字计算；没有运行交付页面、读取像素或调用 AI。", "These results are computed by the actual rule function on the fixed sample text above. No delivered page, pixel observation or AI call ran."));
+}
+function renderLocal() {
+    const { section, body } = panel(tr("对照交付，再明确验收", "Compare delivery, then accept explicitly"), tr("仅本页模拟", "Local role play"));section.classList.add("local-panel");
+    const agreement = node("div", "agreement");
+    for (const [label, value] of [[tr("中文菜单要求", "Chinese menu requirement"), "牛肉面 AUD 18"], [tr("联系电话要求", "Contact requirement"), "+61 3 9000 0000"]]) {
+        const cell = node("div");
+        append(cell, node("span", "", label), node("strong", "", value));
+        append(agreement, cell);
+    }
+    append(body, agreement, description("这是虚构面馆的固定约定；合同可选。本演示不接收真实客户资料或文件。", "A fixed agreement for a fictional noodle shop; a contract is optional. This demonstration does not accept real client material or files."));
+    const roles = node("div", "role-switch");
+    append(roles, node("span", "", tr("当前视角", "Perspective")));
+    for (const side of ["buyer", "seller"] as const) {
+        const b = button(side === "buyer" ? tr("买家", "Buyer") : tr("卖家", "Seller"), () => switchRole(side));
+        b.setAttribute("aria-pressed", String(role === side));
+        append(roles, b);
+    }
+    append(body, roles);
+    if (stage === "agreement") {
+        append(body, description("先以买家身份确认这份约定。确认不会调用模型，也不产生付款。", "Start as buyer and confirm this agreement. Confirmation does not call a model or make a payment.", "workflow-message"), button(role === "buyer" ? tr("确认示例约定", "Confirm sample agreement") : tr("切换买家确认约定", "Switch to Buyer to confirm"), () => { if (role !== "buyer")
+            switchRole("buyer");
+        else {
+            stage = "awaiting_delivery";
+            track("agree_scope");
+        } }, { primary: true }));
+    }
+    else if (stage === "awaiting_delivery") {
+        append(body, description("约定已确认。卖家准备第一版，故意包含错误价格和电话。", "Agreement confirmed. The seller prepares a first version containing an intentionally wrong price and phone.", "workflow-message"), button(role === "seller" ? tr("提交第一版虚构交付", "Submit fictional v1") : tr("切换卖家准备交付", "Switch to Seller to deliver"), () => role === "seller" ? submit("flawed") : switchRole("seller"), { primary: true }));
+    }
+    else if (stage === "changes_requested") {
+        append(body, description("修改意见已保存在本页。卖家提交修订版后，买家仍需重新核对。", "The change request is saved in this page. After the seller revises, the buyer must check again.", "workflow-message"), button(role === "seller" ? tr("提交修订版 v2", "Submit revised v2") : tr("切换卖家修订", "Switch to Seller to revise"), () => role === "seller" ? submit("fixed") : switchRole("seller"), { primary: true }));
+    }
+    else if (stage === "submitted") {
+        append(body, description(delivery === "flawed" ? "第一版已提交，等待买家核对。" : "修订版已提交。旧版记录保留，尚未自动验收。", delivery === "flawed" ? "First version submitted for buyer inspection." : "Revision submitted. The earlier record remains; nothing is accepted automatically.", "workflow-message"));
+        if (role !== "buyer")
+            append(body, button(tr("切换买家核对", "Switch to Buyer to inspect"), () => switchRole("buyer"), { primary: true }));
+        else if (!report)
+            append(body, button(tr("核对这版给定文字", "Check this version’s supplied text"), checkStatic, { primary: true }));
+    }
+    else
+        append(body, node("p", "result-message", stage === "accepted" ? tr("已明确接受本地 v2；尚未模拟付款。", "Local v2 explicitly accepted; payment has not been simulated.") : tr("模拟付款已记录：v2 · AUD 1.00。没有 PayPal 请求，没有真实转账。", "Simulated payment recorded: v2 · AUD 1.00. No PayPal request or real transfer occurred.")));
+    renderComparison(body);
+    if (stage === "submitted" && role === "buyer" && report?.rows.some(row => row.outcome !== "expected_observation")) {
+        if (!draftReady)
+            append(body, button(tr("起草具体修改意见", "Draft precise change request"), () => { draftReady = true; feedback = report!.rows.filter(row => row.outcome !== "expected_observation").map(row => `${row.source}\n${row.file}: ${tr("约定", "Agreed")} ${expectedLabel(row.expected)}; ${tr("本版文字", "Current text")} ${row.actual}.`).join("\n\n"); track("draft_feedback"); }));
+        else {
+            const label = node("label", "feedback-label", tr("修改草稿 · 尚未发送", "Change draft · not sent")), textarea = document.createElement("textarea");
+            textarea.id = "local-feedback";
+            textarea.maxLength = 1000;
+            textarea.value = feedback;
+            label.setAttribute("for", textarea.id);
+            const send = button(tr("发送本地修改意见", "Send local change request"), () => { if (!feedback.trim())
+                return; feedbackSent = true; previousReport = structuredClone(report); stage = "changes_requested"; track("send_local_feedback"); }, { primary: true, disabled: !feedback.trim() });
+            textarea.addEventListener("input", () => { feedback = textarea.value; send.disabled = !feedback.trim(); });
+            append(body, label, textarea, description("点击起草不等于已经退回。发送只更新本页模拟状态，不联系任何人。", "Drafting is not sending. Sending updates only this page’s simulated state and contacts nobody."), send);
+        }
+    }
+    if (stage === "submitted" && role === "buyer" && delivery === "fixed" && report?.rows.every(row => row.outcome === "expected_observation")) {
+        const check = document.createElement("input");
+        check.type = "checkbox";
+        check.checked = manualConfirmed;
+        check.id = "local-accept-confirm";
+        const label = node("label", "checkbox-line");
+        append(label, check, node("span", "", tr("我已亲自核对示例差异，并理解文字规则符合不代表网站全部功能正常。", "I inspected the sample differences and understand a text match does not establish that every website function works.")));
+        const accept = button(tr("明确接受本地 v2（不付款）", "Accept local v2 — no payment"), () => { if (!manualConfirmed)
+            return; stage = "accepted"; track("accept_local"); }, { primary: true, disabled: !manualConfirmed });
+        check.addEventListener("change", () => { manualConfirmed = check.checked; accept.disabled = !manualConfirmed; });
+        append(body, label, accept);
+    }
+    if (stage === "accepted" && role === "buyer")
+        append(body, button(tr("单独确认模拟付款 AUD 1.00", "Separately confirm simulated AUD 1.00"), () => { stage = "simulated_paid"; track("simulate_payment"); }, { primary: true }));
+    if (feedbackSent)
+        append(body, description("本页已记录一次明确发送的修改意见；刷新页面会重置。", "This page records an explicitly sent local change request; reloading resets it."));
+    append(body, description("买卖家为同一访客的两个模拟视角；验收和付款只改变本页状态，不建立真实协作、法律裁决或资金托管。预约接口实测在右侧单独记录，未自动纳入这份静态示例约定。", "Buyer and seller are simulated perspectives of one visitor. Acceptance and payment change only this page, not real membership, a legal ruling or escrow. Booking HTTP tests are recorded separately and are not automatically part of this static sample agreement.", "boundary"));
+    return section;
+}
+async function runHttp(scenario: Variant) {
+    if (!httpConsent || httpBusy)
+        return;
+    httpBusy = true;
+    httpError = "";
+    httpReport = undefined;
+    httpScenario = scenario;
+    httpConsent = false;
+    track(scenario === "flawed" ? "http_flawed_started" : "http_fixed_started");
+    render();
+    const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 30000);
+    try {
+        const response = await fetch("/api/lab-check", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ scenario, consent: true }), credentials: "omit", redirect: "error", signal: controller.signal });
+        const reader = response.body?.getReader();
+        if (!reader)
+            throw new Error(tr("接口没有返回报告。", "The endpoint returned no report."));
+        const chunks: Uint8Array[] = [];
+        let size = 0;
+        while (true) {
+            const part = await reader.read();
+            if (part.done)
+                break;
+            size += part.value.length;
+            if (size > 192000) {
+                await reader.cancel();
+                throw new Error(tr("报告超出本页显示上限。", "The report exceeds this page’s limit."));
+            }
+            chunks.push(part.value);
+        }
+        const bytes = new Uint8Array(size);
+        let offset = 0;
+        for (const chunk of chunks) {
+            bytes.set(chunk, offset);
+            offset += chunk.length;
+        }
+        let result:unknown;try{result=JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes));}catch{throw new Error(tr(`接口返回 HTTP ${response.status}，未提供可读取的 JSON 报告。`,`The endpoint returned HTTP ${response.status} without a readable JSON report.`));} const value=asRecord(result);
+        if (!response.ok)
+            throw new Error(typeof value?.error === "string" ? value.error : tr(`接口返回 HTTP ${response.status}。`, `The endpoint returned HTTP ${response.status}.`));
+        if (!value || value.method !== "server-booking-http-v1" || !Array.isArray(value.steps) || value.steps.length > 16)
+            throw new Error(tr("返回内容不是受支持的预约 HTTP 报告。", "The response is not a supported booking HTTP report."));
+        httpReport = value; httpReports[scenario]=value;
+        track("http_completed");
+    }
+    catch (error) {
+        httpError = error instanceof Error ? (error.name === "AbortError" ? tr("30 秒内未得到报告；本次不能判断通过。", "No report within 30 seconds; this run does not establish a pass.") : error.message) : tr("接口检查未完成。", "The HTTP check did not complete.");
+        track("http_error");
+    }
+    finally {
+        clearTimeout(timer);
+        httpBusy = false;
+    }
+}
+const HTTP_NAMES:Record<string,[string,string]>={revision:["核对声明的接口版本","Declared target revision"],missing_slot:["缺少预约时间应被拒绝","Reject missing slot"],invalid_email:["错误邮箱应被拒绝","Reject malformed email"],create:["创建虚构预约","Create a synthetic booking"],readback:["用独立请求查回预约","Read the booking independently"],replay:["重复提交应返回同一预约","Replay the same idempotency key"],conflict:["冲突提交应被拒绝","Reject changed data with the same key"],unchanged:["原预约内容应保持不变","Read the original record again"]};
+function httpStep(value:HttpReport,id:string){return (Array.isArray(value.steps)?value.steps:[]).map(asRecord).find(step=>step?.id===id);}
+function renderHttp() {
+    const { section, body } = panel(tr("预约接口，真的写入了吗？", "Did the booking really persist?"), tr("真实 HTTP 实测", "Actual HTTP check"));section.classList.add("http-panel");
+    append(body, description("测试本实验室的两种受控虚构交付：缺陷版会出现“返回成功但未保存”等问题，修正版用于对照。每次运行都实际发出 HTTP 请求，再独立读回。", "Test two controlled fictional deliveries in this lab. The flawed service includes problems such as claiming success without saving; the corrected service provides a comparison. Every run sends actual HTTP requests and separately reads back the result.", "workflow-message"));
+    append(body, description("只针对这座实验室的固定接口，不扫描任意卖家网站；不是浏览器点击测试，也不验证邮件送达。请求只含生成的虚构测试资料，会写入独立测试数据库。", "Only this lab’s fixed endpoints are tested, not arbitrary sellers’ websites. This is not browser-click testing or email-delivery verification. Requests contain generated fictional test data and write to an isolated test database.", "boundary"));
+    const consent = document.createElement("input");
+    consent.type = "checkbox";
+    consent.id = "http-consent";
+    consent.checked = httpConsent;
+    consent.disabled = httpBusy;
+    const label = node("label", "checkbox-line");
+    append(label, consent, node("span", "", tr("我同意向这个虚构示例服务提交测试请求。不会发送我输入的修改草稿或任何私人资料。", "I agree to submit test requests to this fictional service. My feedback draft and private material will not be sent.")));
+    append(body, label);
+    const actions = node("div", "action-row"), flawed = button(tr("测试缺陷版接口", "Test flawed service"), () => runHttp("flawed"), { attention: true, disabled: !httpConsent || httpBusy }), fixed = button(tr("测试修正版接口", "Test corrected service"), () => runHttp("fixed"), { primary: true, disabled: !httpConsent || httpBusy });
+    consent.addEventListener("change", () => { httpConsent = consent.checked; flawed.disabled = !httpConsent || httpBusy; fixed.disabled = !httpConsent || httpBusy; });
+    append(actions, flawed, fixed);
+    append(body, actions);
+    if (httpBusy)
+        append(body, node("p", "note busy-state", tr("正在执行请求、校验与独立读回…", "Running requests, validation and independent readback…")));
+    if (httpError)
+        append(body, node("p", "result-message error", httpError));
+    if (httpReport) {
+        append(body,description("接口修订号由受控目标声明，不证明它由任何上传文件构建。","The controlled target declares its revision; this does not attest that it was built from uploaded files."));
+        const target = asRecord(httpReport.target), summary = asRecord(httpReport.summary), steps = Array.isArray(httpReport.steps) ? httpReport.steps : [], issues = typeof summary?.issues === "number" ? summary.issues : undefined, unavailable = typeof summary?.unavailable === "number" ? summary.unavailable : undefined;
+        append(body, node("p", `result-message${issues || unavailable ? " error" : ""}`, tr(`本次${httpScenario === "flawed" ? "缺陷版" : "修正版"}报告：${issues ?? "—"} 项不符，${unavailable ?? "—"} 项无法确定。`, `This ${httpScenario === "flawed" ? "flawed" : "corrected"} run: ${issues ?? "—"} mismatched, ${unavailable ?? "—"} unavailable checks.`)));
+        const create=httpStep(httpReport,"create"),readback=httpStep(httpReport,"readback");
+        append(body,node("p",`http-key-result${readback?.outcome==="observed"?"":" is-different"}`,create?.outcome==="observed"&&readback?.status===404?tr("接口返回创建成功，但独立查询找不到预约。","Creation claimed success, but an independent request could not find the booking."):readback?.outcome==="observed"?tr("创建与独立回读一致；重复提交与冲突处理的结果另列。","Creation and independent readback agree; replay and conflict results are listed separately."):tr("独立回读尚未得到预期支持，请查看具体步骤。","Independent readback is not yet supported; inspect the individual steps.")));
+        if(httpReports.flawed&&httpReports.fixed){const comparison=node("div","http-version-comparison");append(comparison,node("h3","",tr("两次实际运行，使用同一协议","Two actual runs, one protocol")));for(const variant of ["flawed","fixed"] as const){const saved=httpReports[variant]!,c=httpStep(saved,"create"),r=httpStep(saved,"readback"),steps=Array.isArray(saved.steps)?saved.steps.map(asRecord):[],bad=steps.filter(step=>step?.outcome==="mismatch").length,unknown=steps.filter(step=>step?.outcome==="unavailable").length;append(comparison,node("p","",`${tr(variant==="flawed"?"缺陷版":"修正版",variant==="flawed"?"Flawed":"Corrected")}: ${tr("创建","Create")} HTTP ${c?.status??"—"} → ${tr("独立回读","Readback")} HTTP ${r?.status??"—"} · ${bad} ${tr("项不符","mismatched")} / ${unknown} ${tr("项未确定","unavailable")}`));}append(comparison,button(tr("下载两版实测对照","Download both actual runs"),()=>download({method:"controlled-http-comparison-v1",scope:"Two separately declared synthetic targets, not real buyer acceptance",reports:httpReports},"ProofBeforePay-HTTP-comparison.json")));append(body,comparison);}
+        const results = node("div", "http-results");
+        append(results, node("h3", "", tr("逐步请求与读回证据", "Step-by-step request and readback evidence")), node("p", "report-meta", `${String(httpReport.method)} · ${typeof target?.label === "string" ? target.label : ""} · ${typeof target?.revision === "string" ? target.revision : ""}`));
+        const list = node("ol");
+        for (const raw of steps) {
+            const step = asRecord(raw);
+            if (!step)
+                continue;
+            const outcome = step.outcome === "observed" ? "observed" : step.outcome === "mismatch" ? "mismatch" : "unavailable", item = node("li"), heading = node("div", "step-heading");
+            append(heading, node("strong", "", typeof step.id==="string"&&HTTP_NAMES[step.id]?tr(...HTTP_NAMES[step.id]):typeof step.label === "string" ? step.label : tr("检查步骤", "Check step")), node("span", `step-badge ${outcome}`, outcome === "observed" ? tr("本次观测支持", "Observed support") : outcome === "mismatch" ? tr("不符", "Mismatch") : tr("无法确定", "Unavailable")));
+            append(item, heading);
+            const details = document.createElement("details");
+            append(details, node("summary", "", tr("查看方法、状态和预期／实际值", "Inspect method, status and expected/actual values")), node("pre", "", jsonText({ id: step.id, method: step.method, path: step.path, status: step.status, expected: step.expected, actual: step.actual, reason: step.reason })));
+            append(item, details);
+            append(list, item);
+        }
+        append(results, list);
+        const full = document.createElement("details");
+        append(full, node("summary", "", tr("完整原始报告", "Full raw report")), node("pre", "raw-report", jsonText(httpReport, 48000)));
+        append(results, full);
+        append(body, results, button(tr("下载本次 HTTP 报告 JSON", "Download this HTTP report JSON"), () => download(httpReport, `ProofBeforePay-HTTP-${httpScenario}.json`)));
+        append(body, description("这里只说明本次受控 HTTP 路径的结果。绿色观察不等于整个网站无 bug，也不会自动接受交付或触发付款。", "This establishes only this run’s controlled HTTP path. Observed support does not establish a bug-free website, accept a delivery or initiate payment."));
+    }
+    return section;
+}
+function renderTrial() {
+    const details = document.createElement("details");
+    details.className = "panel trial-panel";
+    details.open = trialOpen;
+    details.addEventListener("toggle", () => { trialOpen = details.open; });
+    append(details, node("summary", "", tr("可选：首次使用任务记录（仅本页、可下载）", "Optional: first-use task record (local and downloadable)")));
+    const body = node("div", "trial-body");
+    append(body, description("此工具准备观察记录，不会凭空产生测试者或成功率。操作者类型与结果由填写者声明，没有身份核实；开发者或自动化走查不能算陌生真人研究。没有遥测上传。", "This prepares observations; it does not create participants or success rates. Operator type and outcomes are self-declared without identity verification. Developer or automation checks are not unfamiliar-user research. No telemetry is uploaded."));
+    if (!trial) {
+        const controls = node("div", "trial-controls"), select = document.createElement("select");
+        select.setAttribute("aria-label", tr("操作者类型（自行声明）", "Operator type (self-declared)"));
+        for (const [value, label] of [["unknown", tr("未说明", "Unspecified")], ["developer", tr("开发者走查", "Developer check")], ["automation", tr("自动化／AI 操作", "Automation / AI operation")], ["self-declared-first-time", tr("自称首次使用者（未核实）", "Self-declared first-time user (unverified)")]]) {
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = label;
+            option.selected = value === operator;
+            append(select, option);
+        }
+        select.addEventListener("change", () => { operator = select.value as TrialOperator; });
+        append(controls, select, button(tr("开始本地记录", "Start local record"), () => { trial = createFirstUseTrial({ sessionId: crypto.randomUUID(), build: BUILD, operator, startedAt: new Date().toISOString() }, performance.now()); trialOpen = true; }));
+        append(body, controls);
+    }
+    else {
+        const attempt = trial.attempts.findLast(item => item.endedMs === undefined), controls = node("div", "trial-controls");
+        if (!attempt) {
+            const select = document.createElement("select");
+            select.setAttribute("aria-label", tr("选择任务", "Choose task"));
+            for (const task of FIRST_USE_TASKS) {
+                const option = document.createElement("option");
+                option.value = task;
+                option.textContent = `${task} · ${tr(...TASK_COPY[task])}`;
+                option.selected = selectedTask === task;
+                append(select, option);
+            }
+            select.addEventListener("change", () => { selectedTask = select.value as FirstUseTask; });
+            append(controls, select, button(tr("开始选定任务", "Start selected task"), () => { trial = startFirstUseTask(trial!, selectedTask, performance.now()); }));
+        }
+        else {
+            append(controls, button(tr("记录一次帮助", "Record one help event"), () => { trial = noteFirstUseHelp(trial!, performance.now()); }));
+            const select = document.createElement("select");
+            select.setAttribute("aria-label", tr("自报任务结果（未经独立核验）", "Declared task outcome (unverified)"));
+            for (const [value, label] of [["independent", tr("声明独立完成", "Declared independent")], ["with_help", tr("帮助后完成", "Completed with help")], ["not_completed", tr("未完成", "Not completed")], ["unavailable", tr("功能不可用", "Function unavailable")], ["stopped", tr("主动停止", "Stopped")]]) {
+                const option = document.createElement("option");
+                option.value = value;
+                option.textContent = label;
+                option.selected = value === selectedOutcome;
+                append(select, option);
+            }
+            select.addEventListener("change", () => { selectedOutcome = select.value as TrialOutcome; });
+            append(controls, select, button(tr("结束当前任务并记录结果", "End task and record outcome"), () => { trial = finishFirstUseTask(trial!, selectedOutcome, performance.now()); }));
+        }
+        append(controls, button(tr("下载本地任务记录 JSON", "Download local task record JSON"), () => download(exportFirstUseTrial(trial!), "ProofBeforePay-first-use-local.json")));
+        append(body, controls, node("p", "trial-status", `${tr("操作者声明", "Declared operator")}: ${trial.operator} · ${tr("已开始任务", "Tasks started")}: ${trial.attempts.length} · ${tr("当前任务", "Current task")}: ${attempt?.task ?? tr("无", "None")}${attempt ? ` · ${tr("已记录帮助", "Help events")}: ${attempt.helpCount}` : ""}`));
+    }
+    const tasks = node("ol", "task-list");
+    for (const task of FIRST_USE_TASKS)
+        append(tasks, node("li", "", `${task} — ${tr(...TASK_COPY[task])}`));
+    append(body, tasks, description("仅实际开始的任务才进入导出，不给未执行的任务填 0 或成功。刷新会清空本页记录；如需保存，请先下载。不要在修改草稿或记录中输入真实客户资料。", "Only actually started tasks enter the export. Unperformed tasks do not become zeroes or successes. Reloading clears this page; download first to retain a record. Do not enter real client material in drafts or records."));
+    append(details, body);
+    return details;
+}
+function render() { document.documentElement.lang = language === "zh" ? "zh-CN" : "en"; app.replaceChildren(); const header = node("header", "site-header"), brand = node("div", "brand"); append(brand, document.createTextNode("proof"), node("span", "", "before"), document.createTextNode("pay.")); const actions = node("div", "header-actions"); append(actions, node("small", "", tr("访客实验室 · 无需登录", "Guest lab · no sign-in")), button(language === "zh" ? "EN" : "中文", () => { language = language === "zh" ? "en" : "zh"; }), button(tr("重置本页交付", "Reset local handoff"), resetCase, { className: "reset-button", disabled:httpBusy })); append(header, brand, actions); append(app, header); const main = node("main"), intro = node("section", "intro"), copy = node("div"); append(copy, node("h1", "", tr("付款前，先验证交付的承诺。", "Test the delivered promise before you pay.")), description("先核对约定与交付文字，再用真实 HTTP 请求识别“看起来成功、实际没保存”的预约接口。两种证据分别展示，最终决定始终由人确认。", "Compare agreed and delivered copy, then use actual HTTP requests to expose a booking service that claims success without saving. The evidence stays separate; a person makes the final decision.")); append(intro, copy, node("span", "scope-label", tr("独立虚构实验室\n不访问主站项目或密钥", "Isolated fictional lab\nNo main-workspace data or keys"))); append(main, intro); if (message)
+    append(main, node("p", `message-bar${messageError ? " error" : ""}`, message)); const switcher=node("nav","mobile-lab-switch");switcher.setAttribute("aria-label",tr("实验室工作区","Lab workspace"));for(const view of ["local","http"] as const){const b=button(tr(view==="local"?"交付对照":"HTTP 深度检查",view==="local"?"Delivery comparison":"HTTP verification"),()=>{labView=view;});b.setAttribute("aria-pressed",String(labView===view));append(switcher,b);}append(main,switcher);const grid = node("div", `lab-grid mobile-${labView}`); append(grid, renderLocal(), renderHttp()); append(main, grid, renderTrial(), description("本页没有 AI 模型调用、PayPal 请求或真实商家订单。静态对照在浏览器内计算；预约 HTTP 测试只写入这座实验室独立的虚构服务。没有测试任意第三方网站或邮件系统。", "This page makes no AI model or PayPal calls and creates no real merchant orders. Static comparisons run locally; booking HTTP checks write only to this lab’s isolated fictional service. No arbitrary third-party website or email system is tested.", "lab-footer")); append(app, main); }
+render();

@@ -2,6 +2,7 @@ import type { ProofBusinessCheck, ProofQuote } from "./contracts.ts";
 import { getBusinessCheckPlan } from "./business-checks.ts";
 import { coverageCriteria, validateSavedCoverage } from "./requirement-coverage.ts";
 import { DomainError } from "./domain.ts";
+import { savedRuntimePlan } from "./runtime-project.ts";
 
 /** A member-scoped invitation preview includes the exact saved operational
  * expectations, not only their broader original requirement text. */
@@ -16,5 +17,5 @@ export function proofInvitationPreview(quote: ProofQuote) {
   }
   return structuredClone({id: quote.id, reference: quote.reference, title: quote.title, summary: quote.summary,
     currency: quote.currency, totalCents: quote.totalCents, language: quote.language, paymentMode: quote.paymentMode,
-    criteria: quote.proof.criteria, businessChecks, ...(coverage ? {coverage} : {})});
+    criteria: quote.proof.criteria, businessChecks, ...(coverage ? {coverage} : {}), ...(savedRuntimePlan(quote) ? {runtimeCheck:savedRuntimePlan(quote)} : {})});
 }

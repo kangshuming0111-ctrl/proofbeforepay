@@ -88,7 +88,13 @@ export type ProofAssessment = {
   coverage: { includedFiles: string[]; truncatedFiles: string[]; omittedFiles: string[] };
   usage?: { promptTokens: number; completionTokens: number };
 };
-export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"; sequence?: number; label: string; submittedAt: string; evidence: ProofEvidence[]; files?: Record<string, string>; layoutReport?: ProofLayoutReport; layoutHistory?: ProofLayoutReport[]; browserChecks?: ProofBrowserCheckReport; browserCheckHistory?: ProofBrowserCheckReport[]; businessChecks?: ProofBusinessCheckReport; businessCheckHistory?: ProofBusinessCheckReport[]; acceptanceEvidence?: ProofAcceptanceEvidence[]; assessment?: ProofAssessment; riskReviews?: ProofRiskReview[]; resources?: ProofResourceReport };
+export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"; sequence?: number; label: string; submittedAt: string; evidence: ProofEvidence[]; files?: Record<string, string>; layoutReport?: ProofLayoutReport; layoutHistory?: ProofLayoutReport[]; browserChecks?: ProofBrowserCheckReport; browserCheckHistory?: ProofBrowserCheckReport[]; businessChecks?: ProofBusinessCheckReport; businessCheckHistory?: ProofBusinessCheckReport[]; acceptanceEvidence?: ProofAcceptanceEvidence[]; assessment?: ProofAssessment; riskReviews?: ProofRiskReview[]; resources?: ProofResourceReport;
+  backendTargetId?: string;
+  runtimeDeliveryDigest?: string;
+  runtimeReport?: import("./runtime-checks").RuntimeCheckReport;
+  runtimeHistory?: import("./runtime-checks").RuntimeCheckReport[];
+  runtimeRun?: {id:string;deliveryId:string;deliveryDigest:string;targetId:string;startedAt:string;expiresAt:string};
+};
 export type ProofReview = { deliveryId: string; reviewedAt: string; mode: "demo" | "live"; summary: string };
 export type ProofRole = "buyer" | "seller";
 export type ProofSubmission = { deliveryId: string; note: string; at: string };
@@ -97,6 +103,7 @@ export type ProofAcceptanceEvidence = {
   id: string; deliveryId: string; at: string;
   browserReportId: string | null; layoutReportId: string | null; assessmentId: string | null;
   businessReportId?: string | null; businessExceptionReason?: string;
+  runtimeReportId?: string | null; runtimeExceptionReason?: string; runtimeAcknowledgedSteps?: string[]; runtimeDeliveryDigest?: string; runtimeTargetId?: string;
   criteria: ProofCriterion[]; evidence: ProofEvidence[]; manualChecks: string[];
   review?: ProofReview; assessment?: ProofAssessment;
   riskReviews: ProofRiskReview[];
@@ -120,6 +127,7 @@ export type StaticProjectSpec = {
   manualRequirements: string[];
   coverage?: RequirementCoverage;
   businessChecks?: ProofBusinessCheck[];
+  runtimeCheck?: import("./runtime-checks").RuntimeCheckPlan;
 };
 export type RequirementSource = { start: number; end: number; excerpt: string };
 export type RequirementExtraction = {

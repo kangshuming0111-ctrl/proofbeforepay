@@ -1,5 +1,7 @@
 # One-command local judge experience
 
+For an immediate account-free preview, open the separate [public verification lab](https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/). Its fictional handoff runs locally; its explicitly consented booking panel sends actual HTTP requests to its own synthetic service. It has no main-workspace data, provider keys or real payment. This is a narrower experience than the authenticated main application. The [eight-step protocol guide](BOOKING-HTTP-VERIFICATION.md) explains real observations, exact-version evidence and limits. The optional local task recorder exports unverified self-declared outcomes, not independent user-study results.
+
 From the public source checkout on macOS or a POSIX environment, with Node.js 22.13+ and npm installed (Node.js 24 recommended), run:
 
 ```sh

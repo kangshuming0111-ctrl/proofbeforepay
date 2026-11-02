@@ -46,6 +46,7 @@ function collaboration(quote: ProofQuote) {
 
 /** Freeze deliverables while a payment is pending, terminal, or past its acceptance window. */
 function requireUnlockedDelivery(quote: ProofQuote, approved = true) {
+  if (quote.proof.delivery?.runtimeRun) conflict("Finish the pending backend run before changing delivery, acceptance or payment.");
   if (approved && quote.status !== "approved") conflict("Approve the exact scope before changing the delivery workflow.");
   if (quote.status === "paid" || ["captured", "voided", "closed_unpaid"].includes(quote.proof.paymentState)) conflict("This payment outcome has closed the delivery workflow.");
   if (quote.proof.paymentOperation) conflict("Finish the pending payment operation before changing the delivery workflow.");
@@ -185,7 +186,7 @@ export function acceptDelivery(quote: ProofQuote, value: Record<string, unknown>
   }
   const at = timestamp(now);
   const next = structuredClone(quote);
-  const snapshot = createAcceptanceEvidence(quote, required, at, validateBusinessDecision(quote, input.businessDecision));
+  const snapshot = createAcceptanceEvidence(quote, required, at, validateBusinessDecision(quote, input.businessDecision), input.runtimeDecision);
   next.proof.delivery = withAcceptanceEvidence(delivery, snapshot);
   next.proof.collaboration = { ...next.proof.collaboration!, stage: "accepted", acceptance: { deliveryId: delivery.id, at, manualChecks: required, evidenceSnapshotId: snapshot.id } };
   next.proof.audit.push({kind: "delivery_accepted", at, deliveryId: delivery.id, evidenceSnapshotId: snapshot.id});
@@ -210,6 +211,9 @@ export function prepareReplacement(quote: ProofQuote, newDelivery: ProofDelivery
   delete next.proof.delivery.browserCheckHistory;
   delete next.proof.delivery.acceptanceEvidence;
   delete next.proof.delivery.riskReviews;
+  delete next.proof.delivery.runtimeReport;
+  delete next.proof.delivery.runtimeHistory;
+  delete next.proof.delivery.runtimeRun;
   next.proof.review = undefined;
   next.proof.acceptedDeliveryId = undefined;
   next.proof.acceptedAt = undefined;
