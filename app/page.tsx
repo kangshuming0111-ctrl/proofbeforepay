@@ -21,6 +21,7 @@ import { BusinessCheckEditor, BusinessChecksSource, BusinessChecksPanel, Busines
 import { BusinessCheckSuggestions, suggestionAlreadyDrafted, type BusinessSuggestionCandidate, type BusinessSuggestionInput } from "./components/BusinessCheckSuggestions";
 import type { BusinessCheckSuggestions as BusinessSuggestionResult } from "@/lib/business-check-suggestions";
 import { EvidenceHistoryPanel } from "./components/EvidenceHistoryPanel";
+import { EvidenceDownloads } from "./components/EvidenceDownloads";
 import { RequirementCoveragePanel, RequirementCoverageSource, type CoverageDraftDecision } from "./components/RequirementCoveragePanel";
 import { summaryCoverageUnits } from "@/lib/requirement-coverage";
 import { CollaborationPanel, type CollaborationHistoryHandle, type FeedbackSuggestion } from "./components/CollaborationPanel";
@@ -32,6 +33,7 @@ import { readDeliveryUpload, deliveryFileUrl, isHtmlDeliveryPath } from "@/lib/d
 import { ResourceChecks } from "./components/ResourceChecks";
 import { DeliveryComparison } from "./components/DeliveryComparison";
 import { isOlderDelivery } from "@/lib/delivery-comparison";
+import {comparisonVersionKey,comparisonVersionSummaries,loadPreviousComparisonVersion} from "@/lib/previous-comparison-version";
 import { DeliveryOverview } from "./components/DeliveryOverview";
 import { criterionDisplayTitle } from "@/lib/delivery-overview";
 import { buildBusinessSpotlight } from "@/lib/business-spotlight";
@@ -58,10 +60,11 @@ class RequestError extends Error {
   constructor(message: string, readonly status: number) { super(message); }
 }
 
-async function apiRequest<T>(path: string, method = "GET", body?: unknown, demoRole: ProofRole = "buyer"): Promise<T> {
+async function apiRequest<T>(path: string, method = "GET", body?: unknown, demoRole: ProofRole = "buyer", signal?: AbortSignal): Promise<T> {
   const response = await fetch(path, {
     method,
     headers: { "Content-Type": "application/json", "x-proof-demo-role": demoRole },
+    ...(signal ? {signal} : {}),
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
   const data: unknown = await response.json();
@@ -82,6 +85,8 @@ type ProjectMode = "custom" | "demo";
 type CaseResult = {quote: ProofQuote; role?: ProofRole};
 type CaseList = {quotes: unknown[]; roles?: Record<string, ProofRole>};
 type BrowserStepDraft = { from: string; text: string; to: string };
+type VersionListLoad = {key:string;status:"loading"|"ready"|"error"};
+type PreviousComparisonLoad = {key:string;status:"loading"|"ready"|"error";version?:ProofDeliveryVersion};
 type RuntimeTargetList = { context: string; targets: RuntimeTargetDescriptor[]; status: "loading" | "ready" | "error"; error?: string };
 const runtimeTargetFingerprint = (target: RuntimeTargetDescriptor) => JSON.stringify([target.id, target.label, target.protocol, target.revision, target.kind,
   ...(target.kind === "registered" ? [target.registrationRevision, target.frontendBundleDigest, target.expiresAt] : [])]);
@@ -108,6 +113,11 @@ export default function Home() {
   const [sandboxCollaboration, setSandboxCollaboration] = useState(false);
   const [invitation, setInvitation] = useState<{url: string; email: string; expiresAt: string}>();
   const [versions, setVersions] = useState<ProofDeliveryVersion[]>([]);
+  const [versionListLoad,setVersionListLoad]=useState<VersionListLoad>();
+  const [versionListRetry,setVersionListRetry]=useState(0);
+  const [previousComparisonLoad,setPreviousComparisonLoad]=useState<PreviousComparisonLoad>();
+  const [previousComparisonRetry,setPreviousComparisonRetry]=useState(0);
+  const versionRequestContext=useRef("");
   const [viewedVersion, setViewedVersion] = useState<ProofDeliveryVersion>();
   const [deliveryConsent, setDeliveryConsent] = useState(false);
   const [showDeliveryAcceptance, setShowDeliveryAcceptance] = useState(false);
@@ -209,6 +219,14 @@ export default function Home() {
   const welcomeActive = !quote && !sellerEntry && !intakeStarted;
   const roleRecords = records.filter(item => item.proof.demoRoleplay || (recordRoles[item.id] ?? "buyer") === workspaceRole);
   const delivery = proof?.delivery;
+  const versionListKey=JSON.stringify([quote?.id??"",delivery?.id??"",workspaceRole]);
+  const scopedVersionList=versionListLoad?.key===versionListKey?versionListLoad:undefined;
+  const previousComparisonSummary=delivery&&scopedVersionList?.status==="ready"?versions.find(version=>isOlderDelivery(version,delivery)):undefined;
+  const previousComparisonContext=quote&&delivery&&previousComparisonSummary?{projectId:quote.id,currentDelivery:delivery,previousSummary:previousComparisonSummary,role:workspaceRole}:undefined;
+  const previousComparisonKey=previousComparisonContext?comparisonVersionKey(previousComparisonContext):"";
+  const comparisonVersion=previousComparisonLoad?.key===previousComparisonKey&&previousComparisonLoad.status==="ready"?previousComparisonLoad.version:undefined;
+  const comparisonHistoryLoading=!!delivery&&(!scopedVersionList||scopedVersionList.status==="loading"||!!previousComparisonSummary&&(previousComparisonLoad?.key!==previousComparisonKey||previousComparisonLoad.status==="loading"));
+  const comparisonHistoryError=scopedVersionList?.status==="error"||!!previousComparisonSummary&&previousComparisonLoad?.key===previousComparisonKey&&previousComparisonLoad.status==="error";
   currentDelivery.current = `${quote?.id ?? ""}:${delivery?.id ?? ""}`;
   const customProject = proof?.project;
   const custom = !!customProject;
@@ -244,6 +262,7 @@ export default function Home() {
   const canManageDelivery = !buyer && deliveryUnlocked && (!collaboration || ["in_progress", "changes_requested"].includes(collaboration.stage));
   const canCheckDelivery = deliveryUnlocked && (!collaboration || ["in_progress", "changes_requested", "submitted"].includes(collaboration.stage));
   const canObserveBrowser = !!quote && !!deliveryFiles && ["approved", "paid"].includes(quote.status) && !paymentPending;
+  const canRunRuntime = canObserveBrowser && quote?.status === "approved" && !["captured", "voided", "closed_unpaid"].includes(proof?.paymentState ?? "");
   const businessChecksConfigured = !!customProject?.businessChecks?.length;
   const businessReport = delivery?.businessChecks?.deliveryId === delivery?.id ? delivery?.businessChecks : undefined;
   const businessHasExceptions = !!businessReport && (businessReport.summary.issues > 0 || businessReport.summary.unavailable > 0);
@@ -399,14 +418,31 @@ export default function Home() {
     return () => { browserCheckController.current?.abort(); businessCheckController.current?.abort(); };
   }, [quote?.id, delivery?.id, displayRole]);
 
+  useLayoutEffect(()=>{versionRequestContext.current=versionListKey;},[versionListKey]);
+
   useEffect(() => {
     if (!quote?.id || !delivery?.id) return;
     let cancelled = false;
-    apiRequest<{versions: ProofDeliveryVersion[]}>(`/api/proofs/${quote.id}/versions`, "GET", undefined, workspaceRole)
-      .then(result => {if (!cancelled) setVersions(result.versions);})
-      .catch(() => {if (!cancelled) setVersions([]);});
-    return () => {cancelled = true;};
-  }, [quote?.id, delivery?.id, workspaceRole]);
+    const key=versionListKey,controller=new AbortController(),timeout=window.setTimeout(()=>controller.abort(),15000);
+    setVersionListLoad({key,status:"loading"});
+    apiRequest<{versions: ProofDeliveryVersion[]}>(`/api/proofs/${quote.id}/versions`, "GET", undefined, workspaceRole,controller.signal)
+      .then(result => {const summaries=comparisonVersionSummaries(result);if (!cancelled){setVersions(summaries);setVersionListLoad({key,status:"ready"});}})
+      .catch(() => {if (!cancelled){setVersions([]);setVersionListLoad({key,status:"error"});}})
+      .finally(()=>window.clearTimeout(timeout));
+    return () => {cancelled = true;controller.abort();window.clearTimeout(timeout);};
+  }, [quote?.id, delivery?.id, workspaceRole,versionListKey,versionListRetry]);
+
+  useEffect(()=>{
+    if(!previousComparisonContext)return;
+    const context=previousComparisonContext,key=previousComparisonKey,listKey=versionListKey,controller=new AbortController();let active=true;
+    setPreviousComparisonLoad({key,status:"loading"});
+    const timeout=window.setTimeout(()=>controller.abort(),15000);
+    loadPreviousComparisonVersion(context,(path,signal)=>apiRequest(path,"GET",undefined,context.role,signal),controller.signal,()=>active&&versionRequestContext.current===listKey)
+      .then(version=>{if(active)setPreviousComparisonLoad({key,status:"ready",version});})
+      .catch(()=>{if(active)setPreviousComparisonLoad({key,status:"error"});})
+      .finally(()=>window.clearTimeout(timeout));
+    return()=>{active=false;controller.abort();window.clearTimeout(timeout);};
+  },[previousComparisonKey,previousComparisonRetry]);
 
   useEffect(() => {
     setPendingFiles([]);
@@ -639,7 +675,13 @@ export default function Home() {
 
   async function loadVersions() {
     if (!quote) return;
-    await run("versions", async () => setVersions((await request<{versions: ProofDeliveryVersion[]}>(`/api/proofs/${quote.id}/versions`)).versions));
+    const key=versionListKey;setVersionListLoad({key,status:"loading"});
+    await run("versions",async()=>{
+      const controller=new AbortController(),timeout=window.setTimeout(()=>controller.abort(),15000);
+      try{const result=comparisonVersionSummaries(await apiRequest<unknown>(`/api/proofs/${quote.id}/versions`,"GET",undefined,workspaceRole,controller.signal));if(versionRequestContext.current===key){setVersions(result);setVersionListLoad({key,status:"ready"});}}
+      catch(cause){if(versionRequestContext.current===key)setVersionListLoad({key,status:"error"});throw cause;}
+      finally{window.clearTimeout(timeout);}
+    },false);
   }
 
   function openVersionHistory() {
@@ -696,7 +738,7 @@ export default function Home() {
   }
 
   async function checkRuntimeBackend() {
-    if(!quote || !delivery || !runtimePlan)return;
+    if(!quote || !delivery || !runtimePlan || !canRunRuntime)return;
     await run("runtime-check",async()=>{
       const result=await request<CaseResult>(`/api/proofs/${quote.id}/runtime-checks`,"POST",{deliveryId:delivery.id,previousReportId:runtimeReport?.id??null,confirm:true});
       apply(result.quote,result.role);setNotice(tr("后端协议报告已保存。它不等于前端表单或邮件送达验证。","Backend protocol report saved. This does not verify the frontend form or email delivery."));
@@ -1308,7 +1350,7 @@ export default function Home() {
             <div className="scope-note"><ShieldCheck size={18} /><p>{tr("付款由买家确认，模型不会自动放款。", "The buyer confirms payment; the model never releases funds.")}</p></div>
           </aside>
           <section className="evidence-panel" aria-label={tr("交付验收工作台", "Delivery acceptance workspace")}>
-            <div className="evidence-heading"><div><span className="section-kicker">02 / PROOF BEFORE PAYMENT</span><h2>{tr("让交付拿出证据", "Let the work show its proof")}</h2></div><div className="document-actions no-print"><button className="icon-button" disabled={!quote || !!busy} onClick={exportRecord} aria-label={tr("导出证据 JSON", "Export evidence JSON")} title={tr("导出证据 JSON", "Export evidence JSON")}><ArrowDownToLine size={16} /></button><button className="subtle-button" disabled={!quote || !!busy} onClick={() => window.print()}><FileText size={14} />{tr("打印 / PDF", "Print / PDF")}</button></div></div>
+            <div className="evidence-heading"><div><span className="section-kicker">02 / PROOF BEFORE PAYMENT</span><h2>{tr("让交付拿出证据", "Let the work show its proof")}</h2></div><div className="document-actions no-print"><EvidenceDownloads quote={quote} language={language} busy={!!busy} onRaw={exportRecord} onExport={task=>run("evidence-export",async()=>{await task();setNotice(tr("证据包已下载，可离线核对当前文件、引用与报告关联；不等于真实性、网站全部合格或付款证明。","Evidence downloaded for offline file, citation and report-reference checks. This does not prove authenticity, full website correctness or payment."));})}/><button className="subtle-button" disabled={!quote || !!busy} onClick={() => window.print()}><FileText size={14} />{tr("打印 / PDF", "Print / PDF")}</button></div></div>
 
             <div className={`delivery-workspace ${delivery ? "has-delivery" : ""} ${customView ? "is-custom" : ""}`}>
               <div className="delivery-topline"><div><span className="section-kicker">{sampleRoleplay ? "DEMO DELIVERY" : customView ? "YOUR DELIVERY FILES" : "CONTROLLED EXAMPLES"}</span><h3>{tr("交付版本", "Delivery versions")}</h3></div><span className="fixture-label"><Code2 size={12} />{sampleRoleplay ? tr("演示交付", "DEMO DELIVERY") : customView ? tr("你的交付文件", "YOUR FILES") : tr("内置样例", "EXAMPLE FILES")}</span></div>
@@ -1362,7 +1404,7 @@ export default function Home() {
                 onInspect={openCriterion} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked ? prepareFeedback : undefined}
                 onViewHistory={openVersionHistory}/>}
               {delivery && <ResourceChecks delivery={delivery} language={language}/>}
-              {delivery && proof && <DeliveryComparison delivery={delivery} review={proof.review} criteria={proof.criteria} previousVersion={versions.find(version => isOlderDelivery(version,delivery))} feedback={collaboration?.feedback} language={language} onInspectCurrent={openCriterion}/>}
+              {delivery && proof && (comparisonHistoryLoading?<p className="form-help no-print" role="status"><LoaderCircle size={13} className="spin"/>{tr("正在读取版本对照所需的旧版完整文件与报告…","Loading the earlier version’s saved files and reports for comparison…")}</p>:comparisonHistoryError?<div className="form-help no-print"><p role="alert">{tr("旧版完整记录未能加载，暂不显示版本对照。当前交付未改变，也没有用轻量摘要替代原始文件。","The full earlier record could not be loaded, so comparison is unavailable. The current delivery is unchanged; summary metadata is not substituted for saved files.")}</p><button type="button" className="subtle-button" disabled={!!busy} onClick={()=>{if(scopedVersionList?.status==="error")setVersionListRetry(value=>value+1);else setPreviousComparisonRetry(value=>value+1);}}><RefreshCw size={12}/>{tr("重试加载版本对照","Retry comparison loading")}</button></div>:<DeliveryComparison projectId={quote?.id} delivery={delivery} review={proof.review} criteria={proof.criteria} previousVersion={comparisonVersion} feedback={collaboration?.feedback} runtimePlan={runtimePlan} language={language} onInspectCurrent={openCriterion}/>)}
               <nav className="delivery-view-switch no-print" hidden={!quote} aria-label={tr("交付查看方式", "Delivery view")}>
                 <button aria-pressed={deliveryTab === "preview"} className={deliveryTab === "preview" ? "active" : ""} onClick={() => setDeliveryTab("preview")}><Monitor size={15} />{tr("交付预览", "Preview")}</button>
                 <button aria-pressed={deliveryTab === "evidence"} className={deliveryTab === "evidence" ? "active" : ""} onClick={() => setDeliveryTab("evidence")}><FileCheck2 size={15} />{tr("逐项核查", "Evidence checks")}</button>
@@ -1402,7 +1444,7 @@ export default function Home() {
                   onRun={checkBrowserBehavior} onCancel={() => {if (!browserCheckSavePending.current) browserCheckController.current?.abort();}}/>
                 <BusinessChecksPanel key={`business-${delivery?.id ?? "empty"}`} language={language} count={customProject?.businessChecks?.length ?? 0} report={businessReport} enabled={canObserveBrowser && !busy} busy={busy === "business-check"} progress={businessCheckProgress} onRun={checkBusinessContent} onCancel={() => {if (!businessCheckSavePending.current) businessCheckController.current?.abort();}} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked && !busy ? (criterionId, comment) => prepareFeedback({deliveryId: delivery!.id, criterionId, comment}) : undefined}/>
                 {busy === "business-check-save" && <p className="layout-check-source" role="status">{tr("正在保存业务内容核对…", "Saving business content observations…")}</p>}
-                {delivery&&runtimePlan&&<RuntimeCheckPanel language={language} deliveryId={delivery.id} plan={runtimePlan} targetId={delivery.backendTargetId} target={runtimeTargets.find(target=>target.id===delivery.backendTargetId)} registration={delivery.runtimeRegistration} deliveryDigest={delivery.runtimeDeliveryDigest} report={runtimeReport} pending={!!delivery.runtimeRun&&Date.parse(delivery.runtimeRun.expiresAt)>Date.now()} busy={busy==="runtime-check"} enabled={!!canObserveBrowser&&!busy} onRun={checkRuntimeBackend} onPrepareFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?(criterionId,comment)=>prepareFeedback({deliveryId:delivery.id,criterionId,comment}):undefined}/>}
+                {delivery&&runtimePlan&&<RuntimeCheckPanel language={language} deliveryId={delivery.id} plan={runtimePlan} targetId={delivery.backendTargetId} target={runtimeTargets.find(target=>target.id===delivery.backendTargetId)} registration={delivery.runtimeRegistration} deliveryDigest={delivery.runtimeDeliveryDigest} report={runtimeReport} pending={!!delivery.runtimeRun&&Date.parse(delivery.runtimeRun.expiresAt)>Date.now()} busy={busy==="runtime-check"} enabled={!!canRunRuntime&&!busy} onRun={checkRuntimeBackend} onPrepareFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?(criterionId,comment)=>prepareFeedback({deliveryId:delivery.id,criterionId,comment}):undefined}/>}
                 {delivery && <EvidenceHistoryPanel key={`history-${delivery.id}`} delivery={delivery} language={language} acceptedSnapshotId={collaboration?.acceptance?.evidenceSnapshotId}/>}
                 {busy === "browser-check-save" && <p className="layout-check-source" role="status">{tr("正在保存链接行为与资源观察…", "Saving link behavior and resource observations…")}</p>}
               </div>

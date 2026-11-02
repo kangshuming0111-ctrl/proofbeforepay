@@ -1,0 +1,312 @@
+import type {Language, ProofAssessment, ProofCriterion, ProofDelivery, ProofEvidence, ProofQuote, StaticProjectSpec} from "./contracts.ts";
+import {DomainError} from "./domain.ts";
+import {createUploadedDelivery, parseStaticProject, validateStaticFiles} from "./static-project.ts";
+import {getProofFixture, inspectProofFiles, proofCriteria} from "./proof-evidence.ts";
+import {runtimeDeliveryDigest, runtimeReportsFor, deliveryRuntimeTarget, savedRuntimePlan} from "./runtime-project.ts";
+import {runtimeIdentifier,validateRuntimeReport} from "./runtime-checks.ts";
+import {sameRuntimeRegistration} from "./runtime-registration.ts";
+import {browserReportsFor, businessReportsFor, layoutReportsFor} from "./acceptance-evidence.ts";
+import {validateSavedCoverage} from "./requirement-coverage.ts";
+import {createBrowserCheckReport} from "./browser-check-report.ts";
+import {createBusinessCheckReport} from "./business-checks.ts";
+import {createLayoutReport} from "./layout-report.ts";
+
+export const EVIDENCE_EXPORT_SCHEMA = "proofbeforepay-evidence-export-v1";
+export const EVIDENCE_EXPORT_RULES = "pbp-static-source-v2";
+export const EVIDENCE_EXPORT_BYTE_LIMIT = 4 * 1024 * 1024;
+const DELIVERY_KEYS = ["id","variant","sequence","label","submittedAt","files","evidence","resources","layoutReport","layoutHistory","browserChecks","browserCheckHistory","businessChecks","businessCheckHistory","assessment","riskReviews","acceptanceEvidence","backendTargetId","runtimeDeliveryDigest","runtimeRegistration","runtimeReport","runtimeHistory","runtimeRun"] as const;
+const SNAPSHOT_KEYS = ["id","deliveryId","at","browserReportId","layoutReportId","assessmentId","businessReportId","businessExceptionReason","runtimeReportId","runtimeExceptionReason","runtimeAcknowledgedSteps","runtimeDeliveryDigest","runtimeTargetId","runtimeRegistration","criteria","evidence","manualChecks","review","assessment","riskReviews"];
+type AcceptanceReference = {kind:"delivery-acceptance"|"capture-consent";deliveryId:string;evidenceSnapshotId:string|null};
+export type EvidenceExport = {
+  schema:typeof EVIDENCE_EXPORT_SCHEMA; verificationRules:typeof EVIDENCE_EXPORT_RULES; scope:"current-delivery-only";
+  project:{id:string;reference:string;title:string;summary:string;language:Language;criteria:ProofCriterion[];spec?:StaticProjectSpec;requirements?:{sourceText:string;sourceRefs:{criterionId:string;source:{start:number;end:number;excerpt:string}}[]}};
+  delivery:ProofDelivery; fileDigest:string; acceptanceReferences:AcceptanceReference[];
+};
+export type EvidenceVerification = {
+  schema:"proofbeforepay-evidence-verification-v1";consistency:"consistent"|"inconsistent"|"unsupported";
+  checks:{id:string;status:"consistent"|"inconsistent";message:string}[];
+  limits:{scope:"current-delivery-only";authenticity:"not-proven";backendExecution:"not-proven";modelJudgment:"not-proven";payment:"not-proven";previousVersions:"not-included";networkRequests:0};
+};
+const limits = {scope:"current-delivery-only",authenticity:"not-proven",backendExecution:"not-proven",modelJudgment:"not-proven",payment:"not-proven",previousVersions:"not-included",networkRequests:0} as const;
+
+function fail(message:string):never {throw new DomainError(message);}
+function requireValue(condition:unknown,message:string):asserts condition {if(!condition)fail(message);}
+function object(value:unknown,allowed:readonly string[],label:string):Record<string,unknown>{
+  requireValue(!!value&&typeof value==="object"&&!Array.isArray(value),`${label} must be an object.`);
+  const record=value as Record<string,unknown>;
+  requireValue(Object.keys(record).every(key=>allowed.includes(key)),`${label} contains unsupported fields.`);
+  return record;
+}
+function text(value:unknown,max=3000):string {requireValue(typeof value==="string"&&value.trim().length>0&&value.length<=max,"A bounded nonempty text value is required.");return value;}
+function array(value:unknown,max:number,label:string):unknown[]{requireValue(Array.isArray(value)&&value.length<=max,`${label} must be a bounded array.`);return value;}
+function canonical(value:unknown):unknown {
+  if(Array.isArray(value))return value.map(canonical);
+  if(!value||typeof value!=="object")return value;
+  const keys=Object.keys(value),record=value as Record<string,unknown>;
+  // Source spans keep the existing domain helpers' field order; all other
+  // metadata keys sort consistently. Arrays and source-file strings stay exact.
+  const ordered=keys.length===3&&["start","end","excerpt"].every(key=>keys.includes(key))?["start","end","excerpt"]:keys.sort((a,b)=>a.localeCompare(b,"en"));
+  return Object.fromEntries(ordered.map(key=>[key,canonical(record[key])]));
+}
+function same(left:unknown,right:unknown):boolean {return JSON.stringify(canonical(left))===JSON.stringify(canonical(right));}
+function immutableIds(records:unknown[]):void{
+  const byId=new Map<string,unknown>();
+  for(const entry of records){const id=text((entry as Record<string,unknown>).id,100);requireValue(!byId.has(id)||same(byId.get(id),entry),"An immutable identifier has conflicting contents.");byId.set(id,entry);}
+}
+function pick<T extends object>(value:T,keys:readonly string[]):Record<string,unknown>{return Object.fromEntries(keys.filter(key=>Object.hasOwn(value,key)&&(value as Record<string,unknown>)[key]!==undefined).map(key=>[key,(value as Record<string,unknown>)[key]]));}
+function exportFiles(delivery:ProofDelivery,custom:boolean):Record<string,string>{
+  if(custom||delivery.variant==="upload")return validateStaticFiles(delivery.files);
+  requireValue(delivery.variant==="flawed"||delivery.variant==="fixed","Unknown built-in delivery.");
+  const expected=getProofFixture(delivery.variant).files,names=Object.keys(expected);
+  const files=object(delivery.files,names,"Built-in files");requireValue(Object.keys(files).length===names.length,"Built-in file inventory is incomplete.");
+  const name="delivery-manifest.json",source=text(files[name],2048);requireValue(new TextEncoder().encode(source).byteLength<=2048,"Built-in manifest exceeds its byte limit.");
+  const manifest=object(JSON.parse(source),["sample","label","htmlPages"],"Built-in manifest"),expectedManifest=JSON.parse(expected[name]);
+  requireValue(manifest.sample===true&&manifest.label===expectedManifest.label&&same(manifest.htmlPages,expectedManifest.htmlPages),"Built-in manifest differs from its controlled inventory.");
+  const content=validateStaticFiles(Object.fromEntries(Object.entries(files).filter(([file])=>file!==name)));
+  return {...content,[name]:source}; // Include original manifest bytes in the full-map digest.
+}
+
+/** Reject getters, prototypes, cycles and oversized/deep structures before any
+ * serialization or domain helper can inspect an untrusted import. */
+function boundedJson(value:unknown):void {
+  const ancestors=new Set<object>();let nodes=0,characters=0;
+  const visit=(entry:unknown,depth:number)=>{
+    requireValue(++nodes<=60000&&depth<=32,"Evidence exceeds the structural budget.");
+    if(typeof entry==="string"){characters+=entry.length;requireValue(characters<=EVIDENCE_EXPORT_BYTE_LIMIT,"Evidence exceeds the character budget.");return;}
+    if(entry===null||typeof entry==="boolean")return;
+    if(typeof entry==="number"){requireValue(Number.isFinite(entry),"Evidence numbers must be finite.");return;}
+    requireValue(!!entry&&typeof entry==="object"&&(Array.isArray(entry)||[Object.prototype,null].includes(Object.getPrototypeOf(entry))),"Evidence must contain plain JSON data.");
+    if(Array.isArray(entry))requireValue(entry.length<=60000&&Object.keys(entry).length===entry.length,"Evidence arrays must be bounded and dense.");
+    requireValue(!ancestors.has(entry),"Evidence cannot contain cycles.");ancestors.add(entry);
+    for(const key of Reflect.ownKeys(entry)){
+      if(Array.isArray(entry)&&key==="length")continue;
+      const descriptor=Object.getOwnPropertyDescriptor(entry,key)!;
+      requireValue(typeof key==="string"&&!['__proto__','prototype','constructor'].includes(key)&&"value" in descriptor&&descriptor.enumerable,"Evidence must contain ordinary JSON fields.");
+      characters+=key.length;requireValue(characters<=EVIDENCE_EXPORT_BYTE_LIMIT,"Evidence exceeds the character budget.");
+      visit(descriptor.value,depth+1);
+    }
+    ancestors.delete(entry);
+  };
+  visit(value,0);
+  requireValue(new TextEncoder().encode(JSON.stringify(value)).byteLength<=EVIDENCE_EXPORT_BYTE_LIMIT,"Evidence exceeds the byte budget.");
+}
+
+/** Reject unknown nested metadata instead of exporting accidental private fields. */
+function dataShapes(bundle:EvidenceExport):void{
+  const {spec,requirements}=bundle.project,delivery=bundle.delivery;
+  if(spec){object(spec,["requiredPages","link","links","manualRequirements","coverage","businessChecks","runtimeCheck"],"Locked project");for(const link of [...(spec.link?[spec.link]:[]),...array(spec.links??[],5,"Local links")])object(link,["from","text","to"],"Local link");}
+  if(requirements){object(requirements,["sourceText","sourceRefs"],"Original requirements");for(const entry of array(requirements.sourceRefs,66,"Original references")){const row=object(entry,["criterionId","source"],"Original reference");sourceReference(row.source,requirements.sourceText);}}
+  const riskReviews=(value:unknown)=>{for(const entry of array(value??[],100,"Risk reviews"))object(entry,["id","deliveryId","assessmentId","riskIndex","decision","reason","actorRole","reviewedAt"],"Risk review");};
+  const review=(value:unknown)=>{if(value!==undefined)object(value,["deliveryId","reviewedAt","mode","summary"],"Rule review");};
+  for(const key of ["browserChecks","browserCheckHistory","businessChecks","businessCheckHistory","layoutReport","layoutHistory"] as const){
+    const value=delivery[key];if(value===undefined)continue;
+    for(const entry of Array.isArray(value)?array(value,100,"Observation history"):[value]){
+      const report=object(entry,["id","deliveryId","method","receivedAt","reportedByRole","viewportHeight","readings","summary"],"Observation report");
+      for(const reading of array(report.readings,100,"Observation readings")){
+        const row=object(reading,["stepId","status","kind","file","viewportWidth","label","target","stylesExpected","stylesLoaded","imagesExpected","imagesLoaded","sourceVisible","sourceHitTarget","activated","destinationMatched","targetVisible","checkId","criterionId","source","expected","blocks","explanation","clientWidth","scrollWidth","overflowPx","outcome","reason"],"Observation reading");
+        if(row.source)sourceReference(row.source,bundle.project.summary.trim());
+        if(row.expected)object(row.expected,["kind","text","label","amountMinor","currency"],"Business expectation");
+      }
+      object(report.summary,["steps","observed","issues","unavailable","measured","overflow"],"Observation summary");
+    }
+  }
+  if(delivery.resources){object(delivery.resources,["method","checked","findings"],"Resource report");for(const value of array(delivery.resources.findings,401,"Resource findings"))object(value,["from","reference","target","kind"],"Resource finding");}
+  if(delivery.runtimeRun)object(delivery.runtimeRun,["id","deliveryId","deliveryDigest","targetId","startedAt","expiresAt"],"Pending runtime run");
+  riskReviews(delivery.riskReviews);
+  for(const value of array(delivery.acceptanceEvidence??[],20,"Acceptance history")){const snapshot=object(value,SNAPSHOT_KEYS,"Acceptance snapshot");review(snapshot.review);riskReviews(snapshot.riskReviews);}
+}
+
+/** A local, allowlisted copy; no membership, client identity, payment identifiers,
+ * provider settings or unrelated audit fields enter this envelope. Source files
+ * and original requirements are deliberately included and can contain user text. */
+export async function createEvidenceExport(quote:ProofQuote):Promise<EvidenceExport>{
+  boundedJson(quote);
+  requireValue(quote.workflow==="proof-v1"&&quote.proof?.delivery,"A current proof delivery is required.");
+  const delivery=structuredClone(pick(quote.proof.delivery,DELIVERY_KEYS)) as ProofDelivery;
+  const requirements=quote.proof.requirements;
+  const acceptanceReferences:AcceptanceReference[]=[];
+  const acceptance=quote.proof.collaboration?.acceptance;
+  if(acceptance)acceptanceReferences.push({kind:"delivery-acceptance",deliveryId:acceptance.deliveryId,evidenceSnapshotId:acceptance.evidenceSnapshotId??null});
+  if(quote.proof.acceptedDeliveryId)acceptanceReferences.push({kind:"capture-consent",deliveryId:quote.proof.acceptedDeliveryId,evidenceSnapshotId:quote.proof.acceptedEvidenceSnapshotId??null});
+  const result:EvidenceExport={schema:EVIDENCE_EXPORT_SCHEMA,verificationRules:EVIDENCE_EXPORT_RULES,scope:"current-delivery-only",
+    project:{id:quote.id,reference:quote.reference,title:quote.title,summary:quote.summary,language:quote.language,criteria:structuredClone(quote.proof.criteria),
+      ...(quote.proof.project?{spec:structuredClone(quote.proof.project)}:{}),...(requirements?{requirements:structuredClone({sourceText:requirements.sourceText,sourceRefs:requirements.sourceRefs})}:{})},
+    delivery,fileDigest:await runtimeDeliveryDigest(exportFiles(delivery,!!quote.proof.project)),acceptanceReferences};
+  boundedJson(result);dataShapes(result);
+  const verification=await verifyEvidenceExport(result);
+  requireValue(verification.consistency==="consistent",`This record cannot produce a consistent versioned evidence export (${verification.checks.filter(row=>row.status==="inconsistent").map(row=>row.id).join(", ")}). Retain the original record for inspection; missing historical evidence is not reconstructed.`);
+  return result;
+}
+
+function criteria(value:unknown):ProofCriterion[]{
+  const result=array(value,33,"Criteria").map(entry=>{const row=object(entry,["id","title","source"],"Criterion");text(row.id,80);text(row.title,500);text(row.source,3000);return row as ProofCriterion;});
+  requireValue(result.length>0&&new Set(result.map(row=>row.id)).size===result.length,"Criteria identifiers must be unique.");return result;
+}
+function evidence(value:unknown,files:Record<string,string>,agreed:ProofCriterion[]):ProofEvidence[]{
+  const rows=array(value,66,"Rule evidence").map(entry=>{
+    const row=object(entry,["id","criterionId","file","excerpt","finding","explanation"],"Rule evidence");
+    text(row.id,100);text(row.criterionId,80);text(row.file,200);text(row.explanation,5000);
+    requireValue(agreed.some(item=>item.id===row.criterionId)&&["pass","fail","needs_human"].includes(row.finding as string)&&typeof row.excerpt==="string"&&row.excerpt.length<=2000,"Rule evidence is invalid.");
+    requireValue(Object.hasOwn(files,row.file as string)?files[row.file as string].includes(row.excerpt):row.excerpt===""&&row.finding==="fail","A rule excerpt is not in the exported source.");
+    return row as ProofEvidence;
+  });
+  requireValue(new Set(rows.map(row=>row.id)).size===rows.length&&agreed.every(criterion=>rows.some(row=>row.criterionId===criterion.id)),"Rule evidence is incomplete or duplicated.");return rows;
+}
+function sourceReference(value:unknown,source:string):void{
+  const row=object(value,["start","end","excerpt"],"Source reference");
+  requireValue(Number.isSafeInteger(row.start)&&Number.isSafeInteger(row.end)&&(row.start as number)>=0&&(row.end as number)>(row.start as number)&&(row.end as number)<=source.length&&typeof row.excerpt==="string"&&row.excerpt===source.slice(row.start as number,row.end as number),"A source reference does not match its exact UTF-16 span.");
+}
+function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]):void{
+  const row=object(value,["id","deliveryId","method","mode","model","assessedAt","items","risks","limitations","coverage","usage"],"AI assessment");
+  text(row.id,100);text(row.model,200);requireValue(row.deliveryId===delivery.id&&row.method==="source-ai-v1"&&row.mode==="live"&&typeof row.assessedAt==="string"&&Number.isFinite(Date.parse(row.assessedAt)),"AI assessment binding is invalid.");
+  const cite=(value:unknown)=>array(value,3,"AI citations").forEach(entry=>{
+    const citation=object(entry,["file","start","end","excerpt"],"AI citation"),file=text(citation.file,200);
+    requireValue(Object.hasOwn(delivery.files!,file),"AI citation file is missing.");sourceReference(pick(citation,["start","end","excerpt"]),delivery.files![file]);
+  });
+  const items=array(row.items,33,"AI items");
+  for(const item of items){
+    const result=object(item,["criterionId","status","explanation","citations","ruleEvidenceIds"],"AI item");
+    requireValue(agreed.some(criterion=>criterion.id===result.criterionId)&&["supported","changes_suggested","insufficient_evidence"].includes(result.status as string),"AI criterion reference is invalid.");
+    text(result.explanation,3000);cite(result.citations);
+    for(const id of array(result.ruleEvidenceIds,66,"AI rule references"))requireValue(delivery.evidence.some(entry=>entry.id===id&&entry.criterionId===result.criterionId),"AI rule reference is missing or belongs to a different criterion.");
+  }
+  requireValue(new Set(items.map(item=>(item as Record<string,unknown>).criterionId)).size===items.length,"AI criterion references are duplicated.");
+  for(const item of array(row.risks,20,"AI risks")){const risk=object(item,["title","explanation","suggestion","citations"],"AI risk");text(risk.title,500);text(risk.explanation,3000);text(risk.suggestion,3000);cite(risk.citations);}
+  array(row.limitations,30,"AI limitations").forEach(item=>text(item,3000));
+  const coverage=object(row.coverage,["includedFiles","truncatedFiles","omittedFiles"],"AI source coverage");
+  for(const values of Object.values(coverage))for(const file of array(values,40,"AI source inventory"))requireValue(typeof file==="string"&&Object.hasOwn(delivery.files!,file),"AI source inventory references a missing file.");
+  if(row.usage){const usage=object(row.usage,["promptTokens","completionTokens"],"AI token usage");requireValue(Object.values(usage).every(value=>Number.isSafeInteger(value)&&(value as number)>=0),"AI token usage is invalid.");}
+}
+function riskBindings(value:unknown,deliveryId:string,reports:ProofAssessment[]):void{
+  const ids=new Set<string>();
+  for(const entry of array(value??[],100,"Risk annotations")){
+    const row=entry as Record<string,unknown>,id=text(row.id,100),report=reports.find(report=>report.id===row.assessmentId);
+    requireValue(!ids.has(id)&&row.deliveryId===deliveryId&&report&&Number.isInteger(row.riskIndex)&&(row.riskIndex as number)>=0&&(row.riskIndex as number)<report.risks.length,"Risk annotation references another delivery, report or risk.");ids.add(id);
+    requireValue(["confirmed","rejected","needs_evidence"].includes(row.decision as string)&&["buyer","seller"].includes(row.actorRole as string)&&typeof row.reviewedAt==="string"&&Number.isFinite(Date.parse(row.reviewedAt)),"Risk annotation fields are invalid.");text(row.reason,1000);
+  }
+}
+
+function quoteFor(bundle:EvidenceExport):ProofQuote{
+  return {id:bundle.project.id,reference:bundle.project.reference,title:bundle.project.title,summary:bundle.project.summary,brief:bundle.project.summary,language:bundle.project.language,workflow:"proof-v1",status:"approved",clientName:"Not exported",currency:"AUD",hourlyRateCents:0,totalCents:0,lineItems:[],assumptions:[],questions:[],timelineDays:1,aiMode:"demo",paymentMode:"demo",createdAt:bundle.delivery.submittedAt,
+    proof:{criteria:bundle.project.criteria,project:bundle.project.spec,delivery:bundle.delivery,paymentState:"unfunded",audit:[]}};
+}
+
+/** Offline consistency only. No code, URL, browser, provider or payment is run.
+ * An internally consistent forged envelope can still pass: there is no signature
+ * or trusted external anchor. A mismatch is not a finding of fraud. */
+export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerification>{
+  const result:EvidenceVerification={schema:"proofbeforepay-evidence-verification-v1",consistency:"consistent",checks:[],limits:{...limits}};
+  const check=async(id:string,action:()=>void|Promise<void>,message:string)=>{try{await action();result.checks.push({id,status:"consistent",message});}catch{result.consistency="inconsistent";result.checks.push({id,status:"inconsistent",message:`${id} could not be established from the supplied record.`});}};
+  try{boundedJson(input);}catch{result.consistency="inconsistent";result.checks.push({id:"bounded-json",status:"inconsistent",message:"The input is not bounded plain JSON data."});return result;}
+  if(!input||typeof input!=="object"||(input as Record<string,unknown>).schema!==EVIDENCE_EXPORT_SCHEMA||(input as Record<string,unknown>).verificationRules!==EVIDENCE_EXPORT_RULES){
+    result.consistency="unsupported";result.checks.push({id:"schema",status:"inconsistent",message:"Unsupported export format or verification rules. Raw legacy quote JSON is not silently verified."});return result;
+  }
+  // Normalize only after plain-data validation. Reused domain helpers may use
+  // JSON serialization internally; equivalent metadata key order must not fail.
+  const bundle=canonical(input) as EvidenceExport;let structure=false;
+  await check("structure",()=>{
+    object(bundle,["schema","verificationRules","scope","project","delivery","fileDigest","acceptanceReferences"],"Export");requireValue(bundle.scope==="current-delivery-only","Unsupported export scope.");
+    object(bundle.project,["id","reference","title","summary","language","criteria","spec","requirements"],"Project");
+    text(bundle.project.id,100);text(bundle.project.reference,100);text(bundle.project.title,500);text(bundle.project.summary,3000);requireValue(["zh","en"].includes(bundle.project.language),"Unsupported language.");criteria(bundle.project.criteria);
+    object(bundle.delivery,DELIVERY_KEYS,"Delivery");text(bundle.delivery.id,100);text(bundle.delivery.label,500);requireValue(["upload","flawed","fixed"].includes(bundle.delivery.variant)&&Number.isFinite(Date.parse(bundle.delivery.submittedAt)),"Delivery identity is invalid.");
+    requireValue(/^[a-f0-9]{64}$/u.test(bundle.fileDigest),"A file digest is required.");exportFiles(bundle.delivery,!!bundle.project.spec);
+    for(const reference of array(bundle.acceptanceReferences,2,"Acceptance references")){
+      const row=object(reference,["kind","deliveryId","evidenceSnapshotId"],"Acceptance reference");requireValue(["delivery-acceptance","capture-consent"].includes(row.kind as string),"Unknown acceptance reference.");text(row.deliveryId,100);if(row.evidenceSnapshotId!==null)text(row.evidenceSnapshotId,100);
+    }
+    dataShapes(bundle);
+    structure=true;
+  },"The supported current-delivery envelope has a bounded structure.");
+  if(!structure)return result;
+  await check("file-digest",async()=>{requireValue(await runtimeDeliveryDigest(bundle.delivery.files)===bundle.fileDigest,"File digest mismatch.");if(bundle.delivery.runtimeDeliveryDigest!==undefined)requireValue(bundle.delivery.runtimeDeliveryDigest===bundle.fileDigest,"Runtime digest mismatch.");},"The file-map SHA-256 matches the exported files; this is not a trusted signature.");
+  await check("requirements",()=>{
+    const {spec,requirements}=bundle.project;
+    if(spec?.coverage){const coverage=validateSavedCoverage(spec.coverage);requireValue(coverage.sourceText===bundle.project.summary.trim(),"The original requirements differ.");}
+    if(requirements){object(requirements,["sourceText","sourceRefs"],"Original requirements");const source=text(requirements.sourceText,12000);for(const value of array(requirements.sourceRefs,66,"Original source references")){
+      const row=object(value,["criterionId","source"],"Original requirement reference");requireValue(bundle.project.criteria.some(criterion=>criterion.id===row.criterionId),"Unknown original criterion reference.");sourceReference(row.source,source);
+    }}
+  },"The supplied original requirement spans resolve within the exported source.");
+  await check("source-rule-replay",()=>{
+    const {spec,language}=bundle.project,delivery=bundle.delivery;
+    const actual=evidence(delivery.evidence,delivery.files!,bundle.project.criteria);
+    let replay:ProofEvidence[];
+    if(spec){
+      const coverage=spec.coverage;
+      const reconstructed=parseStaticProject({title:bundle.project.title,summary:bundle.project.summary,amount:"1.00",requiredPages:spec.requiredPages,manualRequirements:spec.manualRequirements,
+        ...(spec.link?{link:spec.link}:{}),...(spec.links?{links:spec.links}:{}),
+        ...(coverage?{coverage:{version:coverage.version,sourceText:coverage.sourceText,confirmed:true,decisions:coverage.decisions.map(row=>pick(row,["id","disposition","reason"]))}}:{}),
+        ...(spec.businessChecks?{businessChecks:{confirmed:true,items:spec.businessChecks}}:{}),...(spec.runtimeCheck?{runtimeCheck:{...spec.runtimeCheck,confirmed:true}}:{})},language);
+      requireValue(same(reconstructed.criteria,bundle.project.criteria),"The locked criteria differ from the saved project.");
+      const checked=createUploadedDelivery(delivery.files,spec,language,delivery.sequence??1);replay=checked.evidence;
+      if(delivery.resources!==undefined)requireValue(same(delivery.resources,checked.resources),"Saved resource findings differ from source replay.");
+    }else{requireValue(delivery.variant!=="upload"&&same(bundle.project.criteria,proofCriteria(language)),"A custom upload requires its locked project.");replay=inspectProofFiles(delivery.files!,language);}
+    const values=(rows:ProofEvidence[])=>rows.map(row=>pick(row,["id","criterionId","file","excerpt","finding","explanation"]));
+    requireValue(same(values(actual),values(replay)),"Saved source evidence differs from the current versioned rules.");
+  },"Saved findings/excerpts match deterministic source replay with the named verifier rules. Rendering and human checks are not replayed.");
+  await check("ai-source-citations",()=>{
+    const reports=[bundle.delivery.assessment,...(bundle.delivery.acceptanceEvidence??[]).map(snapshot=>snapshot.assessment)].filter((report):report is ProofAssessment=>!!report);
+    immutableIds(reports);
+    immutableIds([...(bundle.delivery.riskReviews??[]),...(bundle.delivery.acceptanceEvidence??[]).flatMap(snapshot=>snapshot.riskReviews??[])]);
+    for(const report of reports)assessment(report,bundle.delivery,bundle.project.criteria);
+    riskBindings(bundle.delivery.riskReviews,bundle.delivery.id,reports);
+  },"Included AI citations resolve to source and risk annotations reference their recorded delivery/report/risk; model judgment, human identity and provider execution are not proven.");
+  const quote=quoteFor(bundle);let runtimeRows:ReturnType<typeof runtimeReportsFor>=[];
+  await check("reported-observation-consistency",()=>{
+    const delivery=bundle.delivery;
+    const compare=(saved:object,replayed:object)=>requireValue(same(pick(saved,Object.keys(saved).filter(key=>!["id","reportedByRole"].includes(key))),pick(replayed,Object.keys(replayed).filter(key=>key!=="id"))),"Reported observation fields or derived counts differ.");
+    const base=structuredClone(quote);delete base.proof.delivery!.browserChecks;delete base.proof.delivery!.businessChecks;delete base.proof.delivery!.layoutReport;
+    for(const report of browserReportsFor(delivery))compare(report,createBrowserCheckReport(base,{deliveryId:delivery.id,previousReportId:null,readings:report.readings.map(row=>pick(row,row.status==="unavailable"?["stepId","status","reason"]:["stepId","status","kind","stylesExpected","stylesLoaded","imagesExpected","imagesLoaded","sourceVisible","sourceHitTarget","activated","destinationMatched","targetVisible"]))},report.receivedAt));
+    for(const report of businessReportsFor(delivery))compare(report,createBusinessCheckReport(base,{deliveryId:delivery.id,previousReportId:null,readings:report.readings.map(row=>pick(row,["stepId","status","reason","blocks"]))},report.receivedAt));
+    for(const report of layoutReportsFor(delivery))compare(report,createLayoutReport(base,{deliveryId:delivery.id,previousReportId:null,readings:report.readings.map(row=>pick(row,["file","viewportWidth","status","reason","clientWidth","scrollWidth"]))},report.receivedAt));
+  },"Included client-report fields and derived outcomes are consistent with the locked plan; browser observations themselves are not independently proven.");
+  await check("runtime-bindings",()=>{
+    runtimeRows=runtimeReportsFor(bundle.delivery);const plan=savedRuntimePlan(quote);
+    if(bundle.delivery.runtimeRegistration)requireValue(bundle.delivery.runtimeRegistration.projectId===bundle.project.id,"Registration belongs to another project.");
+    if(bundle.delivery.backendTargetId||bundle.delivery.runtimeRegistration){requireValue(!!plan,"A runtime target requires a locked plan.");deliveryRuntimeTarget(bundle.delivery);}
+    const pending=bundle.delivery.runtimeRun;
+    if(pending){
+      runtimeIdentifier(pending.id,"Pending runtime ID");
+      requireValue(!runtimeRows.some(report=>report.id===pending.id||report.runId===pending.id),"A completed runtime report cannot also be pending.");
+      requireValue(!!plan&&pending.deliveryId===bundle.delivery.id&&pending.deliveryDigest===bundle.fileDigest&&pending.targetId===bundle.delivery.backendTargetId,"Pending runtime binding differs from this delivery.");
+      requireValue(typeof pending.startedAt==="string"&&typeof pending.expiresAt==="string"&&Number.isFinite(Date.parse(pending.startedAt))&&Number.isFinite(Date.parse(pending.expiresAt))&&Date.parse(pending.expiresAt)>Date.parse(pending.startedAt),"Pending runtime timestamps are invalid.");
+    }
+    requireValue(!runtimeRows.length||!!plan,"A runtime report requires its locked plan.");
+    for(const report of runtimeRows){const target=deliveryRuntimeTarget(bundle.delivery);validateRuntimeReport(report,{deliveryId:bundle.delivery.id,deliveryDigest:bundle.fileDigest,plan:plan!,target,registration:bundle.delivery.runtimeRegistration});}
+  },"Included HTTP reports bind to the supplied delivery, file digest, plan and frozen target. No HTTP execution or present approval is proven.");
+  await check("acceptance-references",()=>{
+    const delivery=bundle.delivery,criteriaIds=bundle.project.criteria.map(row=>row.id);
+    const runtimeRequired=!!savedRuntimePlan(quote),businessRequired=!!bundle.project.spec?.businessChecks?.length;
+    const browser=browserReportsFor(delivery),business=businessReportsFor(delivery),layout=layoutReportsFor(delivery);
+    const snapshots=array(delivery.acceptanceEvidence??[],20,"Acceptance snapshots");const ids=new Set<string>();
+    for(const entry of snapshots){
+      const snapshot=object(entry,SNAPSHOT_KEYS,"Acceptance snapshot");const id=text(snapshot.id,100);requireValue(!ids.has(id)&&snapshot.deliveryId===delivery.id&&Number.isFinite(Date.parse(snapshot.at as string)),"Acceptance identity is invalid.");ids.add(id);
+      // Optional metadata is still untrusted even when the retained report has
+      // no exception. Never let an unused field carry arbitrary nested data.
+      for(const key of ["businessExceptionReason","runtimeExceptionReason"] as const)if(snapshot[key]!==undefined)text(snapshot[key],500);
+      if(snapshot.runtimeReportId!==undefined&&snapshot.runtimeReportId!==null)text(snapshot.runtimeReportId,100);
+      requireValue(snapshot.businessExceptionReason===undefined||typeof snapshot.businessReportId==="string"&&!!snapshot.businessReportId,"A business exception reason requires its retained report.");
+      requireValue(!!snapshot.runtimeReportId||["runtimeExceptionReason","runtimeAcknowledgedSteps","runtimeDeliveryDigest","runtimeTargetId","runtimeRegistration"].every(key=>snapshot[key]===undefined),"Runtime acceptance metadata requires its retained report.");
+      requireValue(same(criteria(snapshot.criteria),bundle.project.criteria)&&same(snapshot.evidence,delivery.evidence),"Acceptance source evidence differs.");
+      const checks=array(snapshot.manualChecks,33,"Manual checks");requireValue(new Set(checks).size===checks.length&&checks.every(id=>criteriaIds.includes(id as string))&&delivery.evidence.filter(row=>row.finding==="needs_human").every(row=>checks.includes(row.criterionId))&&!delivery.evidence.some(row=>row.finding==="fail"),"Acceptance human/source checks are invalid.");
+      for(const [key,reports] of [["browserReportId",browser],["businessReportId",business],["layoutReportId",layout]] as const){const ref=snapshot[key];requireValue(ref===null||ref===undefined||reports.some(row=>row.id===ref),"A historical report reference is missing.");}
+      requireValue(snapshot.assessmentId===(snapshot.assessment as ProofAssessment|undefined)?.id||snapshot.assessmentId===null&&snapshot.assessment===undefined,"Historical AI reference is invalid.");
+      if(snapshot.assessment)assessment(snapshot.assessment,delivery,bundle.project.criteria);
+      riskBindings(snapshot.riskReviews,delivery.id,snapshot.assessment?[snapshot.assessment as ProofAssessment]:[]);
+      if(snapshot.review){const review=snapshot.review as Record<string,unknown>;requireValue(review.deliveryId===snapshot.deliveryId&&["demo","live"].includes(review.mode as string)&&typeof review.reviewedAt==="string"&&Number.isFinite(Date.parse(review.reviewedAt)),"Historical rule review references another delivery.");text(review.summary,5000);}
+      requireValue(!runtimeRequired||typeof snapshot.runtimeReportId==="string"&&!!snapshot.runtimeReportId,"A runtime-enabled acceptance must retain its original runtime report.");
+      requireValue(!businessRequired||typeof snapshot.businessReportId==="string"&&!!snapshot.businessReportId,"A business-enabled acceptance must retain its original business report.");
+      if(snapshot.runtimeReportId){
+        const report=runtimeRows.find(row=>row.id===snapshot.runtimeReportId);requireValue(report&&snapshot.runtimeDeliveryDigest===bundle.fileDigest&&snapshot.runtimeTargetId===delivery.backendTargetId,"Historical runtime reference is missing or stale.");
+        requireValue(snapshot.runtimeRegistration===undefined&&report.target.registration===undefined||sameRuntimeRegistration(snapshot.runtimeRegistration,report.target.registration),"Historical runtime registration differs.");
+        if(snapshot.runtimeAcknowledgedSteps!==undefined){const acknowledged=array(snapshot.runtimeAcknowledgedSteps,report.steps.length,"Acknowledged runtime steps");requireValue(new Set(acknowledged).size===acknowledged.length&&acknowledged.every(id=>typeof id==="string"&&report.steps.some(step=>step.id===id)),"Acknowledged runtime steps must be unique supported step IDs.");}
+        const exceptions=report.steps.filter(row=>row.outcome!=="observed");if(exceptions.length)requireValue(text(snapshot.runtimeExceptionReason,500).trim().length>=10&&exceptions.every(row=>array(snapshot.runtimeAcknowledgedSteps,18,"Acknowledged runtime steps").includes(row.id)),"Runtime exceptions were not explicitly retained.");
+      }
+      if(snapshot.businessReportId){const report=business.find(row=>row.id===snapshot.businessReportId)!;if(report.summary.issues||report.summary.unavailable)requireValue(text(snapshot.businessExceptionReason,500).trim().length>=10,"Business exceptions need their original reason.");}
+    }
+    const kinds=new Set<string>();for(const reference of bundle.acceptanceReferences){
+      requireValue(!kinds.has(reference.kind)&&reference.deliveryId===delivery.id,"Acceptance reference is duplicated or belongs to another version.");kinds.add(reference.kind);
+      requireValue(reference.evidenceSnapshotId!==null&&ids.has(reference.evidenceSnapshotId),"A legacy or missing acceptance snapshot cannot be reconstructed.");
+    }
+    requireValue(new Set(bundle.acceptanceReferences.map(row=>row.evidenceSnapshotId)).size<=1,"Acceptance and capture consent reference different snapshots.");
+  },"Acceptance references resolve to their original retained snapshots, including historical reports; this does not prove identity, consent authenticity or payment.");
+  return result;
+}

@@ -1,4 +1,10 @@
-"""Local-only package/version checks. No model, authorization or payment requests."""
+"""Package/version checks in a fresh isolated synthetic Worker.
+
+Use --url with the direct loopback app listener from the isolated-build recipe.
+Require the synthetic-wrapper marker before mutations. Gateway identity headers
+are local fixtures, not real logins. No model or payment request is made.
+"""
+import argparse
 import base64
 import json
 import os
@@ -6,16 +12,34 @@ import struct
 import zlib
 from urllib.error import HTTPError
 from urllib.parse import urlparse
-from urllib.request import Request, urlopen
+from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener
+from uuid import uuid4
 
-BASE = os.environ.get("BRIEFPAY_TEST_URL", "http://127.0.0.1:5173").rstrip("/")
-assert urlparse(BASE).hostname in {"localhost", "127.0.0.1", "::1"}, "Local preview only"
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("--url", default=os.environ.get("BRIEFPAY_TEST_URL"))
+args = parser.parse_args()
+if not args.url:
+    parser.error("Pass --url for an owned, freshly migrated isolated synthetic app Worker")
+BASE = args.url.rstrip("/")
+parsed = urlparse(BASE)
+assert parsed.scheme in {"http", "https"} and parsed.hostname in {"localhost", "127.0.0.1", "::1"}, "Loopback only"
+assert not parsed.username and not parsed.password and parsed.path in {"", "/"} and not parsed.query and not parsed.fragment, "Use a plain loopback origin"
+OWNER = "static-resource-synthetic-owner-" + uuid4().hex
+
+class NoRedirect(HTTPRedirectHandler):
+    def redirect_request(self, request, response, code, message, headers, new_url):
+        return None
+
+opener = build_opener(ProxyHandler({}), NoRedirect())
 
 def request(path, data=None):
+    assert path.startswith(("/api/", "/deliveries/", "/proof-versions/")), "Unexpected API path"
+    assert not any(path.endswith("/" + action) for action in ("checkout", "authorize", "review", "assess", "capture", "void", "reconcile")), "Provider actions are outside this test"
     req = Request(BASE + path, data=None if data is None else json.dumps(data).encode(),
-                  headers={"Content-Type": "application/json", "Origin": BASE})
+                  headers={"Content-Type": "application/json", "Origin": BASE,
+                           "oai-authenticated-user-id": OWNER, "oai-authenticated-user-email": "owner@static-resource-synthetic.example"})
     try:
-        with urlopen(req, timeout=15) as response:
+        with opener.open(req, timeout=40) as response:
             return response.status, response.read(), response.headers
     except HTTPError as error:
         return error.code, error.read(), error.headers
@@ -24,6 +48,12 @@ def ok(path, data=None):
     status, raw, _ = request(path, data)
     assert status in {200, 201}, (path, status)
     return json.loads(raw)
+
+marker = ok("/api/__synthetic_sandbox_test_mode")
+assert marker.get("syntheticConfiguration") is True and marker.get("outboundFetch") == "blocked", "Requires the isolated synthetic network-blocking wrapper"
+assert marker.get("syntheticCalls") == 0, "Use a fresh isolated test context"
+config = ok("/api/config")
+assert config["aiMode"] == "demo" and config["paymentMode"] == "sandbox", "Requires the runner's fixed synthetic configuration"
 
 def png(colour):
     def chunk(kind, data):
@@ -36,7 +66,8 @@ def data_url(raw):
 def page(body, stylesheet):
     return '<!doctype html><html><head><title>Local package QA</title><link rel="stylesheet" href="' + stylesheet + '"></head><body>' + body + '</body></html>'
 
-quote = ok("/api/proofs", {"mode": "custom", "title": "Local static resource package QA", "summary": "Synthetic nested assets and immutable replacement checks", "amount": "15.00", "currency": "AUD", "language": "en", "requiredPages": ["index.html", "pages/contact.html"], "link": {"from": "pages/contact.html", "text": "Home", "to": "index.html#top"}, "manualRequirements": []})["quote"]
+SUMMARY = "Synthetic nested assets and immutable replacement checks"
+quote = ok("/api/proofs", {"mode": "custom", "collaborative": False, "demoRoleplay": False, "title": "Local static resource package QA", "summary": SUMMARY, "amount": "15.00", "currency": "AUD", "language": "en", "requiredPages": ["index.html", "pages/contact.html"], "link": {"from": "pages/contact.html", "text": "Home", "to": "index.html#top"}, "manualRequirements": [], "coverage": {"version": 1, "sourceText": SUMMARY, "confirmed": True, "decisions": [{"id": "coverage-1", "disposition": "include"}]}})["quote"]
 path = "/api/proofs/" + quote["id"]
 ok(path + "/approve", {})
 first_image, second_image = png((220, 50, 60)), png((40, 80, 210))
@@ -59,7 +90,7 @@ def preview(prefix, delivery_id, file, expected, mime):
     assert "img-src " + version_base in csp and "style-src " + version_base in csp
     assert "default-src 'none'" in csp and "form-action 'none'" in csp
     assert "allow-scripts" not in csp and "data:" not in csp
-    assert headers["X-Content-Type-Options"] == "nosniff" and headers["Cache-Control"] == "no-store"
+    assert headers["X-Content-Type-Options"] == "nosniff" and headers["Cache-Control"] == "no-store, no-transform"
 
 preview("/deliveries/", first["id"], "pages/contact.html", files["pages/contact.html"].encode(), "text/html")
 preview("/deliveries/", first["id"], "assets/css/main.css", files["assets/css/main.css"].encode(), "text/css")
@@ -76,4 +107,5 @@ version = ok(path + "/versions/" + first["id"])["version"]
 assert version["delivery"]["resources"]["findings"] == []
 assert version["delivery"]["files"] == files
 assert ok(path.replace("/api/proofs/", "/api/quotes/"))["quote"]["proof"]["paymentState"] == "unfunded"
-print("Static resources API passed: nested HTML/CSS/raster preview, MIME/CSP, deterministic missing files and immutable asset/version snapshots; no provider calls.")
+assert ok("/api/__synthetic_sandbox_test_mode")["syntheticCalls"] == 0
+print(json.dumps({"result": "passed", "suite": "static-resources", "checks": ["Nested HTML/CSS/raster exact preview bytes, MIME, delivery identity and no-store/no-transform CSP", "Deterministic missing resource findings", "Immutable archived version and raster snapshots after replacement", "Current-schema original requirement coverage remains explicit"], "applicationModelCalls": 0, "syntheticProviderFetches": 0, "mutationRetries": 0, "scope": "Fresh isolated loopback Worker and D1 with synthetic gateway identity; not real sign-ins, browser layout, provider connectivity or production."}, indent=2))

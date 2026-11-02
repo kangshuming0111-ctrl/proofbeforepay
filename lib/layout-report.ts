@@ -10,6 +10,7 @@ export const LAYOUT_HEIGHT = 800;
 const DEMO_PAGES = ["index.html", "services.html", "contact.html"] as const;
 const UNAVAILABLE_REASONS = new Set<ProofLayoutUnavailableReason>([
   "missing_file", "load_failed", "navigation_changed", "access_denied", "timeout", "unstable_layout", "snapshot_mismatch",
+  "response_type_mismatch", "response_identity_mismatch", "source_mismatch", "rendered_snapshot_mismatch",
 ]);
 
 function record(value: unknown, label: string): Record<string, unknown> {

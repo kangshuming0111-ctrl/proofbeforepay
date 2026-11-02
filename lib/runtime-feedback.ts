@@ -70,7 +70,9 @@ export function draftRuntimeFeedback(report:RuntimeCheckReport,language:Language
   const lines=exceptions.map(step=>stepFeedback(step,zh));
   const create=report.steps.find(step=>step.id==="create"),readback=report.steps.find(step=>step.id==="readback");
   const falseSuccess=create?.outcome==="observed"&&create.status===201&&readback?.status===404;
-  const title=zh?"预约接口修改草稿（待买家核对，尚未发送）":"Booking HTTP change draft (buyer review required; not sent)";
+  // The outer editor owns draft/sent state. This text is retained verbatim
+  // after submission and must not keep claiming an already-sent request is unsent.
+  const title=zh?"预约接口修改建议（请依据本版证据核对）":"Booking HTTP change request (check against this delivery's evidence)";
   const footer=zh?"请修订并重新提交。完整原始约定、请求及证据见本版“预约接口实测”报告；本草稿不更改报告或验收状态。":"Revise and resubmit. The current Booking HTTP report retains the original clause, requests and evidence. This draft changes no report or acceptance.";
   const highlights=[...(falseSuccess?[zh?"创建返回 201，但独立查询返回 404；尚无成功保存的观测支持。":"Creation returned 201, but independent readback returned 404; saving is unverified."]:[])];
   const above=report.steps.find(step=>step.id==="party_above");

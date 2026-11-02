@@ -133,6 +133,30 @@ test("preview returns decoded raster bytes, exact text and same-version-only ass
   assert.ok(csp.includes("default-src 'none'")); assert.ok(csp.includes("form-action 'none'")); assert.ok(csp.includes("base-uri 'none'"));
   assert.ok(csp.includes("sandbox allow-same-origin")); assert.ok(!csp.includes("allow-scripts")); assert.ok(!csp.includes("data:"));
   assert.equal(preview.headers.get("x-proofbeforepay-delivery"), "version-one");
-  assert.equal(preview.headers.get("cache-control"), "no-store"); assert.equal(preview.headers.get("x-content-type-options"), "nosniff");
+  assert.equal(preview.headers.get("cache-control"), "no-store, no-transform"); assert.equal(preview.headers.get("x-content-type-options"), "nosniff");
   invalid(() => staticPreviewResponse("app.js", "alert(1)", base, "version-one"));
+});
+
+test("current and archived snapshot responses prevent payload transforms without changing exact saved bytes or sandbox policy", async () => {
+  const textFiles = {
+    "index.html": "\uFEFF" + html("", "<main>Café &amp; saved text.</main>") + "\r\n",
+    "assets/styles.css": "/* saved café */\r\nmain { max-width: 100%; }\r\n",
+    "delivery-manifest.json": '{"sample":true,"htmlPages":["index.html"]}',
+  };
+  for (const prefix of ["deliveries", "proof-versions"]) {
+    const base = `https://example.test/${prefix}/case/version-one/`;
+    for (const [file, source] of Object.entries(textFiles)) {
+      const preview = staticPreviewResponse(file, source, base, "version-one");
+      assert.equal(preview.headers.get("cache-control"), "no-store, no-transform");
+      assert.equal(preview.headers.get("x-proofbeforepay-delivery"), "version-one");
+      assert.deepEqual(new Uint8Array(await preview.arrayBuffer()), new TextEncoder().encode(source));
+      const csp = preview.headers.get("content-security-policy")!;
+      assert.ok(csp.includes("sandbox allow-same-origin; default-src 'none'"));
+      assert.ok(csp.includes("frame-ancestors 'self'; form-action 'none'; base-uri 'none'"));
+      assert.equal(csp.includes("allow-scripts"), false);
+    }
+    const raster = staticPreviewResponse("images/shop.png", image(), base, "version-one");
+    assert.equal(raster.headers.get("cache-control"), "no-store, no-transform");
+    assert.deepEqual(new Uint8Array(await raster.arrayBuffer()), bytes(PNG));
+  }
 });

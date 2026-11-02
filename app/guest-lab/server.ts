@@ -3,6 +3,7 @@ import {handleBookingRequest} from "../../tests/fixtures/booking-backend/worker/
 import {handlePolicyBookingRequest} from "../../tests/fixtures/booking-backend/worker/policy-booking-api.js";
 import {executeRuntimeCheck} from "../../lib/runtime-runner.ts";
 import {suggestBookingPolicy} from "../../lib/booking-policy.ts";
+import {handleSellerBookingRequest} from "../../examples/seller-staging/worker/booking-service.mjs";
 const headers={"Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer"};
 function json(value:unknown,status=200){return Response.json(value,{status,headers});}
 async function body(request:Request){
@@ -13,11 +14,22 @@ async function body(request:Request){
   const bytes=new Uint8Array(size);let at=0;for(const c of chunks){bytes.set(c,at);at+=c.length;}
   return JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(bytes));
 }
-export default {async fetch(request:Request,env:{DB?:D1Database;LAB_ALLOW_LOOPBACK?:string}):Promise<Response>{
+export default {async fetch(request:Request,env:{DB?:D1Database;LAB_ALLOW_LOOPBACK?:string} & Record<string,unknown>):Promise<Response>{
   const url=new URL(request.url);
+  if(url.pathname.startsWith("/seller-staging/")){
+    const forwarded=new URL(request.url);forwarded.pathname=url.pathname.slice("/seller-staging".length);
+    // Controlled reference hosting reuses this synthetic lab's physical D1,
+    // with separate seller_* tables and native business policy. It is a
+    // separately implemented handler, not an independent third-party seller.
+    return handleSellerBookingRequest(new Request(forwarded,request),{SELLER_DB:env.DB,
+      SELLER_PROJECT_ID:env.SELLER_PROJECT_ID,SELLER_REGISTRATION_REVISION:env.SELLER_REGISTRATION_REVISION,
+      SELLER_DEPLOYMENT_REVISION:env.SELLER_DEPLOYMENT_REVISION,SELLER_FRONTEND_BUNDLE_DIGEST:env.SELLER_FRONTEND_BUNDLE_DIGEST,
+      ...(env.SELLER_BACKEND_ARTIFACT_DIGEST===undefined?{}:{SELLER_BACKEND_ARTIFACT_DIGEST:env.SELLER_BACKEND_ARTIFACT_DIGEST}),
+      ...(env.SELLER_BACKEND_SOURCE_COMMIT===undefined?{}:{SELLER_BACKEND_SOURCE_COMMIT:env.SELLER_BACKEND_SOURCE_COMMIT})});
+  }
   const fixture=await handleBookingRequest(request,env);if(fixture)return fixture;
   const policyFixture=await handlePolicyBookingRequest(request,env);if(policyFixture)return policyFixture;
-  if(url.pathname==="/health")return json({service:"proofbeforepay-isolated-lab",protocols:["booking-http-v1","booking-http-v2"],privateProjects:false,modelCredentials:false,realPayments:false});
+  if(url.pathname==="/health")return json({service:"proofbeforepay-isolated-lab",protocols:["booking-http-v1","booking-http-v2"],privateProjects:false,modelCredentials:false,realPayments:false,referenceStaging:{handler:"separate-native-business-handler",syntheticOnly:true,sharesPhysicalLabDatabase:true}});
   if(url.pathname==="/api/lab-check"){
     if(request.method!=="POST")return json({error:"POST required"},405);
     if(request.headers.get("origin")!==url.origin)return json({error:"Same-origin request required"},403);

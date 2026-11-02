@@ -6,6 +6,8 @@ import type { Language, ProofCriterion, ProofDelivery, ProofDeliveryVersion, Pro
 import { buildDeliveryComparison, type ComparisonUnavailableReason, type CriterionVersionEvidence } from "@/lib/delivery-comparison";
 import "../delivery-comparison.css";
 import { BusinessRevisionComparison } from "./BusinessRevisionComparison";
+import { RuntimeComparison } from "./RuntimeComparison";
+import type { RuntimeCheckPlan } from "@/lib/runtime-checks";
 
 export type DeliveryComparisonProps = {
   delivery: ProofDelivery;
@@ -14,6 +16,8 @@ export type DeliveryComparisonProps = {
   previousVersion?: ProofDeliveryVersion;
   feedback?: ProofFeedback[];
   language: Language;
+  runtimePlan?: RuntimeCheckPlan;
+  projectId?: string;
   onInspectCurrent?: (criterionId: string) => void;
 };
 
@@ -29,13 +33,15 @@ const reasonLabels: Record<ComparisonUnavailableReason, [string, string]> = {
 const browserReasons: Record<ProofLayoutUnavailableReason, [string, string]> = {
   missing_file: ["缺少文件", "Missing file"], load_failed: ["未能加载", "Load failed"], navigation_changed: ["页面已离开交付", "Navigation changed"],
   access_denied: ["不可读取", "Access denied"], timeout: ["超时", "Timed out"], unstable_layout: ["布局不稳定", "Unstable layout"], snapshot_mismatch: ["快照不匹配", "Snapshot mismatch"],
+  response_type_mismatch: ["响应类型不匹配", "Response type mismatch"], response_identity_mismatch: ["交付响应标识不匹配", "Delivery response identity mismatch"],
+  source_mismatch: ["返回源码不匹配", "Returned source mismatch"], rendered_snapshot_mismatch: ["呈现快照不匹配", "Rendered snapshot mismatch"],
 };
 function displayTime(value: string) {
   const time = new Date(value);
   return Number.isFinite(time.getTime()) ? `${time.toISOString().slice(0, 16).replace("T", " ")} UTC` : value;
 }
 
-export function DeliveryComparison({ delivery, review, criteria, previousVersion, feedback, language, onInspectCurrent }: DeliveryComparisonProps) {
+export function DeliveryComparison({ delivery, review, criteria, previousVersion, feedback, language, runtimePlan, projectId, onInspectCurrent }: DeliveryComparisonProps) {
   const tr = (zh: string, en: string) => language === "zh" ? zh : en;
   const id = useId();
   const [selected, setSelected] = useState("");
@@ -69,6 +75,7 @@ export function DeliveryComparison({ delivery, review, criteria, previousVersion
       <p className="comparison-notice">{tr("保留同一份已确认要求，分别查看两版的记录。版本号更新或问题数量减少，不等于修复已被确认。", "Both versions use the same agreed requirement. A newer version or a smaller issue count does not establish that a fix is verified.")}</p>
       {comparison.previous.state === "unavailable" && reason(comparison.previous.reason)}
       <BusinessRevisionComparison delivery={delivery} previousVersion={previousVersion} language={language}/>
+      {runtimePlan&&<RuntimeComparison projectId={projectId} plan={runtimePlan} delivery={delivery} previousVersion={previousVersion} language={language}/>}
       {row ? <>
         <label className="comparison-select-label" htmlFor={`${id}-criterion`}>{tr("选择验收要求", "Choose a requirement")}</label><select id={`${id}-criterion`} value={row.criterion.id} onChange={event => setSelected(event.target.value)}>{comparison.rows.map((item, index) => <option key={item.criterion.id} value={item.criterion.id}>{index + 1}/{comparison.rows.length} · {item.criterion.title}</option>)}</select>
         <div className="comparison-agreement"><strong>{tr("已确认的原始要求", "Original agreed requirement")}</strong><blockquote>{row.criterion.source}</blockquote></div>

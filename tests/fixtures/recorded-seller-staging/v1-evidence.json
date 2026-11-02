@@ -1,0 +1,593 @@
+{
+  "schema": "proofbeforepay-evidence-export-v1",
+  "verificationRules": "pbp-static-source-v2",
+  "scope": "current-delivery-only",
+  "project": {
+    "id": "fa659006-50dc-4645-94d9-f6e17fce5c91",
+    "reference": "PBP-FA659006",
+    "title": "Independent seller staging verification — synthetic",
+    "summary": "Each booking accepts at most 6 people.",
+    "language": "zh",
+    "criteria": [
+      {
+        "id": "page-1",
+        "title": "独立页面：index.html",
+        "source": "交付独立非空 HTML 文档 index.html，包含 HTML doctype、非空 title 与 body。"
+      },
+      {
+        "id": "mobile",
+        "title": "移动端可用",
+        "source": "所有交付页面都必须能在手机屏幕上正常使用；必须由人实际检查。"
+      },
+      {
+        "id": "coverage-1",
+        "title": "原始需求 1",
+        "source": "Each booking accepts at most 6 people."
+      }
+    ],
+    "spec": {
+      "requiredPages": [
+        "index.html"
+      ],
+      "manualRequirements": [],
+      "coverage": {
+        "version": 1,
+        "sourceText": "Each booking accepts at most 6 people.",
+        "confirmedAt": "2026-11-02T11:47:47.115Z",
+        "decisions": [
+          {
+            "id": "coverage-1",
+            "start": 0,
+            "end": 38,
+            "text": "Each booking accepts at most 6 people.",
+            "disposition": "include",
+            "criterionId": "coverage-1"
+          }
+        ]
+      },
+      "runtimeCheck": {
+        "protocol": "booking-http-v2",
+        "criterionId": "coverage-1",
+        "source": {
+          "start": 0,
+          "end": 38,
+          "excerpt": "Each booking accepts at most 6 people."
+        },
+        "policy": {
+          "maxPartySize": 6,
+          "source": {
+            "start": 0,
+            "end": 37,
+            "excerpt": "Each booking accepts at most 6 people"
+          }
+        }
+      }
+    }
+  },
+  "delivery": {
+    "id": "13987f43-d44e-43ba-83fc-cbbc49f92c7f",
+    "variant": "upload",
+    "sequence": 1,
+    "label": "用户上传版本 1",
+    "submittedAt": "2026-11-02T14:42:06.352Z",
+    "files": {
+      "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Seller staging delivery 1</title></head><body><main><h1>Fictional booking delivery 1</h1><p>Each booking accepts at most 6 people.</p><p>This synthetic source records the agreed copy. Booking handling is a separately declared staging deployment; this static page contains no live form, email or payment.</p></main></body></html>\n"
+    },
+    "evidence": [
+      {
+        "id": "evidence-page-1",
+        "criterionId": "page-1",
+        "file": "index.html",
+        "excerpt": "<title>Seller staging delivery 1</title>",
+        "finding": "pass",
+        "explanation": "已找到此独立文档的 doctype、非空 title 与 body。仅证明源码文档存在，不证明内容完整、视觉质量或功能可用。"
+      },
+      {
+        "id": "evidence-mobile",
+        "criterionId": "mobile",
+        "file": "index.html",
+        "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Seller staging delivery 1</title></head><body><main><h1>Fictional booking delivery 1</h1><p>Each booking accepts at most 6 people.</p><p>This synthetic source records the agreed copy. Booking handling is a separately declared staging deployment; this static page contains no live form, email or payment.</p></main></body></html>\n",
+        "finding": "needs_human",
+        "explanation": "静态源码不能证明手机上的可读性、无溢出或可点击性。必须实际检查所有页面；预览禁用脚本及外部资源，不等于完整网站运行验证。"
+      },
+      {
+        "id": "evidence-coverage-1",
+        "criterionId": "coverage-1",
+        "file": "index.html",
+        "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Seller staging delivery 1</title></head><body><main><h1>Fictional booking delivery 1</h1><p>Each booking accepts at most 6 people.</p><p>This synthetic source records the agreed copy. Booking handling is a separately declared staging deployment; this static page contains no live form, email or payment.</p></main></body></html>\n",
+        "finding": "needs_human",
+        "explanation": "逐项核对原始需求：“Each booking accepts at most 6 people.”。如果这一段包含多个要求，必须全部满足；页面存在或 AI 建议不能代替你的确认。"
+      }
+    ],
+    "resources": {
+      "method": "static-resources-v1",
+      "checked": 0,
+      "findings": []
+    },
+    "backendTargetId": "seller-native-v1",
+    "runtimeDeliveryDigest": "75bf3bf847126f242c0c6d354b3938b2801441f02a4ee13e26a1cc0804ddd9d7",
+    "runtimeRegistration": {
+      "id": "seller-native-v1",
+      "label": "Controlled seller staging v1",
+      "registrationRevision": "seller-review-v1",
+      "projectId": "fa659006-50dc-4645-94d9-f6e17fce5c91",
+      "protocol": "booking-http-v2",
+      "baseUrl": "https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/seller-staging/pbp/",
+      "deploymentRevision": "seller-native-v1",
+      "frontendBundleDigest": "75bf3bf847126f242c0c6d354b3938b2801441f02a4ee13e26a1cc0804ddd9d7",
+      "expiresAt": "2026-11-09T12:00:00.000Z",
+      "testOnly": true,
+      "provenance": "operator-approved-declaration"
+    },
+    "runtimeReport": {
+      "id": "77357920-8145-4c4a-bfc4-a63f61d13c9c",
+      "deliveryId": "13987f43-d44e-43ba-83fc-cbbc49f92c7f",
+      "deliveryDigest": "75bf3bf847126f242c0c6d354b3938b2801441f02a4ee13e26a1cc0804ddd9d7",
+      "runId": "77357920-8145-4c4a-bfc4-a63f61d13c9c",
+      "method": "server-booking-http-v2",
+      "startedAt": "2026-11-02T14:51:51.653Z",
+      "finishedAt": "2026-11-02T14:51:56.506Z",
+      "target": {
+        "id": "seller-native-v1",
+        "label": "Controlled seller staging v1",
+        "origin": "https://proofbeforepay-verification-lab.blueheron8.chatgpt.site",
+        "revision": "seller-native-v1",
+        "registration": {
+          "id": "seller-native-v1",
+          "label": "Controlled seller staging v1",
+          "registrationRevision": "seller-review-v1",
+          "projectId": "fa659006-50dc-4645-94d9-f6e17fce5c91",
+          "protocol": "booking-http-v2",
+          "baseUrl": "https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/seller-staging/pbp/",
+          "deploymentRevision": "seller-native-v1",
+          "frontendBundleDigest": "75bf3bf847126f242c0c6d354b3938b2801441f02a4ee13e26a1cc0804ddd9d7",
+          "expiresAt": "2026-11-09T12:00:00.000Z",
+          "testOnly": true,
+          "provenance": "operator-approved-declaration"
+        }
+      },
+      "plan": {
+        "protocol": "booking-http-v2",
+        "criterionId": "coverage-1",
+        "source": {
+          "start": 0,
+          "end": 38,
+          "excerpt": "Each booking accepts at most 6 people."
+        },
+        "policy": {
+          "maxPartySize": 6,
+          "source": {
+            "start": 0,
+            "end": 37,
+            "excerpt": "Each booking accepts at most 6 people"
+          }
+        }
+      },
+      "steps": [
+        {
+          "id": "revision",
+          "label": "Declared target revision",
+          "method": "GET",
+          "path": "meta",
+          "expected": "HTTP 200 and declared revision seller-native-v1",
+          "outcome": "observed",
+          "status": 200,
+          "actual": "Declared revision matched: seller-native-v1; declared registration association matched (not deployment attestation)"
+        },
+        {
+          "id": "missing_slot",
+          "label": "Reject missing slot",
+          "method": "POST",
+          "path": "bookings",
+          "expected": "HTTP 400 or 422 and JSON code synthetic_validation_failed for a missing slot",
+          "outcome": "observed",
+          "status": 400,
+          "actual": "HTTP 400; structured validation code matched."
+        },
+        {
+          "id": "invalid_email",
+          "label": "Reject malformed email",
+          "method": "POST",
+          "path": "bookings",
+          "expected": "HTTP 400 or 422 and JSON code synthetic_validation_failed for a malformed email",
+          "outcome": "observed",
+          "status": 400,
+          "actual": "HTTP 400; structured validation code matched."
+        },
+        {
+          "id": "create",
+          "label": "Create a minimum-size booking (1 guest)",
+          "method": "POST",
+          "path": "bookings",
+          "expected": "HTTP 201, a receipt ID and exact fields for one guest",
+          "outcome": "observed",
+          "status": 201,
+          "actual": "HTTP 201; {\"id\":\"25660449-86e5-4ba3-8cff-a842f08bd782\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[]}"
+        },
+        {
+          "id": "readback",
+          "label": "Read the booking independently",
+          "method": "GET",
+          "path": "bookings/25660449-86e5-4ba3-8cff-a842f08bd782",
+          "expected": "HTTP 200 with the same ID and original fields; request carries no expected marker",
+          "outcome": "observed",
+          "status": 200,
+          "actual": "HTTP 200; {\"id\":\"25660449-86e5-4ba3-8cff-a842f08bd782\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[],\"sameReceiptId\":true}"
+        },
+        {
+          "id": "replay",
+          "label": "Replay the same idempotency key",
+          "method": "POST",
+          "path": "bookings",
+          "expected": "HTTP 200 or 201 with the same ID and original fields",
+          "outcome": "observed",
+          "status": 200,
+          "actual": "HTTP 200; {\"id\":\"25660449-86e5-4ba3-8cff-a842f08bd782\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[],\"sameReceiptId\":true}"
+        },
+        {
+          "id": "conflict",
+          "label": "Reject changed data with the same key",
+          "method": "POST",
+          "path": "bookings",
+          "expected": "HTTP 409 and JSON code idempotency_conflict when the same key carries a different valid party size",
+          "outcome": "observed",
+          "status": 409,
+          "actual": "HTTP 409; structured idempotency-conflict code matched."
+        },
+        {
+          "id": "unchanged",
+          "label": "Read the original record again",
+          "method": "GET",
+          "path": "bookings/25660449-86e5-4ba3-8cff-a842f08bd782",
+          "expected": "HTTP 200 with the original fields unchanged",
+          "outcome": "observed",
+          "status": 200,
+          "actual": "HTTP 200; {\"id\":\"25660449-86e5-4ba3-8cff-a842f08bd782\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[],\"sameReceiptId\":true}"
+        },
+        {
+          "id": "party_zero",
+          "label": "Reject zero guests",
+          "method": "POST",
+          "path": "bookings",
+          "expected": "HTTP 400/422 and JSON code party_size_invalid for zero guests",
+          "outcome": "observed",
+          "status": 422,
+          "actual": "HTTP 422; expected structured code party_size_invalid matched."
+        },
+        {
+          "id": "party_fraction",
+          "label": "Reject a fractional guest count",
+          "method": "POST",
+          "path": "bookings",
+          "expected": "HTTP 400/422 and JSON code party_size_invalid for 1.5 guests",
+          "outcome": "observed",
+          "status": 422,
+          "actual": "HTTP 422; expected structured code party_size_invalid matched."
+        },
+        {
+          "id": "party_below",
+          "label": "Accept one below the agreed maximum",
+          "method": "POST",
+          "path": "bookings",
+          "expected": "HTTP 200/201 and exact fields for 5 guests",
+          "outcome": "observed",
+          "status": 201,
+          "actual": "HTTP 201; requested partySize 5; {\"id\":\"1f0f34b1-1746-4408-b7b6-7a50ec530f15\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[]}"
+        },
+        {
+          "id": "party_below_readback",
+          "label": "Read back the below-limit booking",
+          "method": "GET",
+          "path": "bookings/1f0f34b1-1746-4408-b7b6-7a50ec530f15",
+          "expected": "HTTP 200 with the original 5-guest record",
+          "outcome": "observed",
+          "status": 200,
+          "actual": "HTTP 200; {\"id\":\"1f0f34b1-1746-4408-b7b6-7a50ec530f15\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[],\"sameReceiptId\":true}"
+        },
+        {
+          "id": "party_exact",
+          "label": "Accept the agreed maximum",
+          "method": "POST",
+          "path": "bookings",
+          "expected": "HTTP 200/201 and exact fields for 6 guests",
+          "outcome": "observed",
+          "status": 201,
+          "actual": "HTTP 201; requested partySize 6; {\"id\":\"84fde614-25c2-4a0b-8ee6-f1cf9b38c382\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[]}"
+        },
+        {
+          "id": "party_exact_readback",
+          "label": "Read back the maximum-size booking",
+          "method": "GET",
+          "path": "bookings/84fde614-25c2-4a0b-8ee6-f1cf9b38c382",
+          "expected": "HTTP 200 with the original 6-guest record",
+          "outcome": "observed",
+          "status": 200,
+          "actual": "HTTP 200; {\"id\":\"84fde614-25c2-4a0b-8ee6-f1cf9b38c382\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[],\"sameReceiptId\":true}"
+        },
+        {
+          "id": "party_above",
+          "label": "Reject one above the agreed maximum",
+          "method": "POST",
+          "path": "bookings",
+          "expected": "HTTP 400/422 and JSON code party_size_exceeded for 7 guests",
+          "outcome": "mismatch",
+          "status": 201,
+          "actual": "HTTP 201; expected structured code party_size_exceeded did not match."
+        },
+        {
+          "id": "concurrent_first",
+          "label": "First simultaneous same-key request",
+          "method": "POST",
+          "path": "bookings",
+          "expected": "Pair has exactly one201 and one200, same ID and original fields",
+          "outcome": "observed",
+          "status": 201,
+          "actual": "HTTP 201; pairSameReceipt: true; exactlyOneCreatedResponse: true; {\"id\":\"50ae9498-31b0-4a6a-9f3e-d9a36e34cbbc\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[],\"sameReceiptId\":true}"
+        },
+        {
+          "id": "concurrent_second",
+          "label": "Second simultaneous same-key request",
+          "method": "POST",
+          "path": "bookings",
+          "expected": "Pair has exactly one201 and one200, same ID and original fields",
+          "outcome": "observed",
+          "status": 200,
+          "actual": "HTTP 200; pairSameReceipt: true; exactlyOneCreatedResponse: true; {\"id\":\"50ae9498-31b0-4a6a-9f3e-d9a36e34cbbc\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[],\"sameReceiptId\":true}"
+        },
+        {
+          "id": "concurrent_readback",
+          "label": "Read back the concurrent receipt",
+          "method": "GET",
+          "path": "bookings/50ae9498-31b0-4a6a-9f3e-d9a36e34cbbc",
+          "expected": "HTTP 200 with the agreed original fields and the same receipt ID",
+          "outcome": "observed",
+          "status": 200,
+          "actual": "HTTP 200; {\"id\":\"50ae9498-31b0-4a6a-9f3e-d9a36e34cbbc\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[],\"sameReceiptId\":true}"
+        }
+      ],
+      "summary": {
+        "steps": 18,
+        "observed": 17,
+        "issues": 1,
+        "unavailable": 0
+      }
+    },
+    "runtimeHistory": [
+      {
+        "id": "77357920-8145-4c4a-bfc4-a63f61d13c9c",
+        "deliveryId": "13987f43-d44e-43ba-83fc-cbbc49f92c7f",
+        "deliveryDigest": "75bf3bf847126f242c0c6d354b3938b2801441f02a4ee13e26a1cc0804ddd9d7",
+        "runId": "77357920-8145-4c4a-bfc4-a63f61d13c9c",
+        "method": "server-booking-http-v2",
+        "startedAt": "2026-11-02T14:51:51.653Z",
+        "finishedAt": "2026-11-02T14:51:56.506Z",
+        "target": {
+          "id": "seller-native-v1",
+          "label": "Controlled seller staging v1",
+          "origin": "https://proofbeforepay-verification-lab.blueheron8.chatgpt.site",
+          "revision": "seller-native-v1",
+          "registration": {
+            "id": "seller-native-v1",
+            "label": "Controlled seller staging v1",
+            "registrationRevision": "seller-review-v1",
+            "projectId": "fa659006-50dc-4645-94d9-f6e17fce5c91",
+            "protocol": "booking-http-v2",
+            "baseUrl": "https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/seller-staging/pbp/",
+            "deploymentRevision": "seller-native-v1",
+            "frontendBundleDigest": "75bf3bf847126f242c0c6d354b3938b2801441f02a4ee13e26a1cc0804ddd9d7",
+            "expiresAt": "2026-11-09T12:00:00.000Z",
+            "testOnly": true,
+            "provenance": "operator-approved-declaration"
+          }
+        },
+        "plan": {
+          "protocol": "booking-http-v2",
+          "criterionId": "coverage-1",
+          "source": {
+            "start": 0,
+            "end": 38,
+            "excerpt": "Each booking accepts at most 6 people."
+          },
+          "policy": {
+            "maxPartySize": 6,
+            "source": {
+              "start": 0,
+              "end": 37,
+              "excerpt": "Each booking accepts at most 6 people"
+            }
+          }
+        },
+        "steps": [
+          {
+            "id": "revision",
+            "label": "Declared target revision",
+            "method": "GET",
+            "path": "meta",
+            "expected": "HTTP 200 and declared revision seller-native-v1",
+            "outcome": "observed",
+            "status": 200,
+            "actual": "Declared revision matched: seller-native-v1; declared registration association matched (not deployment attestation)"
+          },
+          {
+            "id": "missing_slot",
+            "label": "Reject missing slot",
+            "method": "POST",
+            "path": "bookings",
+            "expected": "HTTP 400 or 422 and JSON code synthetic_validation_failed for a missing slot",
+            "outcome": "observed",
+            "status": 400,
+            "actual": "HTTP 400; structured validation code matched."
+          },
+          {
+            "id": "invalid_email",
+            "label": "Reject malformed email",
+            "method": "POST",
+            "path": "bookings",
+            "expected": "HTTP 400 or 422 and JSON code synthetic_validation_failed for a malformed email",
+            "outcome": "observed",
+            "status": 400,
+            "actual": "HTTP 400; structured validation code matched."
+          },
+          {
+            "id": "create",
+            "label": "Create a minimum-size booking (1 guest)",
+            "method": "POST",
+            "path": "bookings",
+            "expected": "HTTP 201, a receipt ID and exact fields for one guest",
+            "outcome": "observed",
+            "status": 201,
+            "actual": "HTTP 201; {\"id\":\"25660449-86e5-4ba3-8cff-a842f08bd782\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[]}"
+          },
+          {
+            "id": "readback",
+            "label": "Read the booking independently",
+            "method": "GET",
+            "path": "bookings/25660449-86e5-4ba3-8cff-a842f08bd782",
+            "expected": "HTTP 200 with the same ID and original fields; request carries no expected marker",
+            "outcome": "observed",
+            "status": 200,
+            "actual": "HTTP 200; {\"id\":\"25660449-86e5-4ba3-8cff-a842f08bd782\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[],\"sameReceiptId\":true}"
+          },
+          {
+            "id": "replay",
+            "label": "Replay the same idempotency key",
+            "method": "POST",
+            "path": "bookings",
+            "expected": "HTTP 200 or 201 with the same ID and original fields",
+            "outcome": "observed",
+            "status": 200,
+            "actual": "HTTP 200; {\"id\":\"25660449-86e5-4ba3-8cff-a842f08bd782\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[],\"sameReceiptId\":true}"
+          },
+          {
+            "id": "conflict",
+            "label": "Reject changed data with the same key",
+            "method": "POST",
+            "path": "bookings",
+            "expected": "HTTP 409 and JSON code idempotency_conflict when the same key carries a different valid party size",
+            "outcome": "observed",
+            "status": 409,
+            "actual": "HTTP 409; structured idempotency-conflict code matched."
+          },
+          {
+            "id": "unchanged",
+            "label": "Read the original record again",
+            "method": "GET",
+            "path": "bookings/25660449-86e5-4ba3-8cff-a842f08bd782",
+            "expected": "HTTP 200 with the original fields unchanged",
+            "outcome": "observed",
+            "status": 200,
+            "actual": "HTTP 200; {\"id\":\"25660449-86e5-4ba3-8cff-a842f08bd782\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[],\"sameReceiptId\":true}"
+          },
+          {
+            "id": "party_zero",
+            "label": "Reject zero guests",
+            "method": "POST",
+            "path": "bookings",
+            "expected": "HTTP 400/422 and JSON code party_size_invalid for zero guests",
+            "outcome": "observed",
+            "status": 422,
+            "actual": "HTTP 422; expected structured code party_size_invalid matched."
+          },
+          {
+            "id": "party_fraction",
+            "label": "Reject a fractional guest count",
+            "method": "POST",
+            "path": "bookings",
+            "expected": "HTTP 400/422 and JSON code party_size_invalid for 1.5 guests",
+            "outcome": "observed",
+            "status": 422,
+            "actual": "HTTP 422; expected structured code party_size_invalid matched."
+          },
+          {
+            "id": "party_below",
+            "label": "Accept one below the agreed maximum",
+            "method": "POST",
+            "path": "bookings",
+            "expected": "HTTP 200/201 and exact fields for 5 guests",
+            "outcome": "observed",
+            "status": 201,
+            "actual": "HTTP 201; requested partySize 5; {\"id\":\"1f0f34b1-1746-4408-b7b6-7a50ec530f15\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[]}"
+          },
+          {
+            "id": "party_below_readback",
+            "label": "Read back the below-limit booking",
+            "method": "GET",
+            "path": "bookings/1f0f34b1-1746-4408-b7b6-7a50ec530f15",
+            "expected": "HTTP 200 with the original 5-guest record",
+            "outcome": "observed",
+            "status": 200,
+            "actual": "HTTP 200; {\"id\":\"1f0f34b1-1746-4408-b7b6-7a50ec530f15\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[],\"sameReceiptId\":true}"
+          },
+          {
+            "id": "party_exact",
+            "label": "Accept the agreed maximum",
+            "method": "POST",
+            "path": "bookings",
+            "expected": "HTTP 200/201 and exact fields for 6 guests",
+            "outcome": "observed",
+            "status": 201,
+            "actual": "HTTP 201; requested partySize 6; {\"id\":\"84fde614-25c2-4a0b-8ee6-f1cf9b38c382\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[]}"
+          },
+          {
+            "id": "party_exact_readback",
+            "label": "Read back the maximum-size booking",
+            "method": "GET",
+            "path": "bookings/84fde614-25c2-4a0b-8ee6-f1cf9b38c382",
+            "expected": "HTTP 200 with the original 6-guest record",
+            "outcome": "observed",
+            "status": 200,
+            "actual": "HTTP 200; {\"id\":\"84fde614-25c2-4a0b-8ee6-f1cf9b38c382\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[],\"sameReceiptId\":true}"
+          },
+          {
+            "id": "party_above",
+            "label": "Reject one above the agreed maximum",
+            "method": "POST",
+            "path": "bookings",
+            "expected": "HTTP 400/422 and JSON code party_size_exceeded for 7 guests",
+            "outcome": "mismatch",
+            "status": 201,
+            "actual": "HTTP 201; expected structured code party_size_exceeded did not match."
+          },
+          {
+            "id": "concurrent_first",
+            "label": "First simultaneous same-key request",
+            "method": "POST",
+            "path": "bookings",
+            "expected": "Pair has exactly one201 and one200, same ID and original fields",
+            "outcome": "observed",
+            "status": 201,
+            "actual": "HTTP 201; pairSameReceipt: true; exactlyOneCreatedResponse: true; {\"id\":\"50ae9498-31b0-4a6a-9f3e-d9a36e34cbbc\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[],\"sameReceiptId\":true}"
+          },
+          {
+            "id": "concurrent_second",
+            "label": "Second simultaneous same-key request",
+            "method": "POST",
+            "path": "bookings",
+            "expected": "Pair has exactly one201 and one200, same ID and original fields",
+            "outcome": "observed",
+            "status": 200,
+            "actual": "HTTP 200; pairSameReceipt: true; exactlyOneCreatedResponse: true; {\"id\":\"50ae9498-31b0-4a6a-9f3e-d9a36e34cbbc\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[],\"sameReceiptId\":true}"
+          },
+          {
+            "id": "concurrent_readback",
+            "label": "Read back the concurrent receipt",
+            "method": "GET",
+            "path": "bookings/50ae9498-31b0-4a6a-9f3e-d9a36e34cbbc",
+            "expected": "HTTP 200 with the agreed original fields and the same receipt ID",
+            "outcome": "observed",
+            "status": 200,
+            "actual": "HTTP 200; {\"id\":\"50ae9498-31b0-4a6a-9f3e-d9a36e34cbbc\",\"matchedFields\":[\"testRunId\",\"marker\",\"customer\",\"email\",\"slot\",\"partySize\",\"revision\"],\"mismatchedFields\":[],\"sameReceiptId\":true}"
+          }
+        ],
+        "summary": {
+          "steps": 18,
+          "observed": 17,
+          "issues": 1,
+          "unavailable": 0
+        }
+      }
+    ]
+  },
+  "fileDigest": "75bf3bf847126f242c0c6d354b3938b2801441f02a4ee13e26a1cc0804ddd9d7",
+  "acceptanceReferences": []
+}

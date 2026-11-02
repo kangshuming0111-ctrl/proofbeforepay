@@ -217,7 +217,8 @@ test("missing files require unavailable missing_file and cannot be claimed as me
 
 test("valid failure reasons are retained without client-supplied dimensions or outcomes", () => {
   const quote = agreement();
-  for (const reason of ["load_failed", "navigation_changed", "access_denied", "timeout", "unstable_layout", "snapshot_mismatch"]) {
+  for (const reason of ["load_failed", "navigation_changed", "access_denied", "timeout", "unstable_layout", "snapshot_mismatch",
+    "response_type_mismatch", "response_identity_mismatch", "source_mismatch", "rendered_snapshot_mismatch"]) {
     const value = input(quote);
     rows(value)[0] = { ...rows(value)[0], status: "unavailable", reason, outcome: "no_overflow" };
     const report = createLayoutReport(quote, value, now);

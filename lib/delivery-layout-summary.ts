@@ -22,6 +22,7 @@ export type DeliveryLayoutSummary =
 const HTML_FILE = /^[A-Za-z0-9][A-Za-z0-9._-]*\.html$/iu;
 const REASONS = new Set<ProofLayoutUnavailableReason>([
   "missing_file", "load_failed", "navigation_changed", "access_denied", "timeout", "unstable_layout", "snapshot_mismatch",
+  "response_type_mismatch", "response_identity_mismatch", "source_mismatch", "rendered_snapshot_mismatch",
 ]);
 
 /** Display browser-reported observations only; never infer a criterion pass or buyer acceptance. */

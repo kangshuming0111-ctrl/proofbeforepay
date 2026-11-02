@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1793620626642,
+      "tag": "0002_seller_reference_staging",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1793631309197,
+      "tag": "0003_seller_reference_policy_fix",
+      "breakpoints": true
+    }
+  ]
+}

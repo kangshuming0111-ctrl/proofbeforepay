@@ -108,6 +108,151 @@
         "preserve old v1/v2 fixture history"
       ],
       "status": "implemented;430tests and isolated API passed; real third-party staging not yet demonstrated"
+    },
+    {
+      "id": 3,
+      "priority": "Offline-checkable current-delivery evidence and native-policy reference integration",
+      "implemented": [
+        "Versioned allowlisted offline envelope and bounded regular-file CLI",
+        "Exact full-file-map digest, source-rule replay and UTF-16 source references",
+        "Reported client-observation outcome replay; not independent browser verification",
+        "Frozen HTTP and acceptance bindings, immutable assessment/annotation IDs, mandatory report references and pending/completed run identity",
+        "Narrow controlled built-in manifest compatibility; custom JSON uploads remain rejected",
+        "Separate reference business handler with native policy, durable reads and atomic idempotency"
+      ],
+      "recordedEvidence": {
+        "artifactDirectory": "outputs/winner-iterations-2026-11-02",
+        "fullSuite": {
+          "passed": 466,
+          "log": "round-3-tests-final.log"
+        },
+        "isolatedRuntimeApi": {
+          "groups": 8,
+          "result": "passed",
+          "outboundRequests": 0,
+          "log": "round-3-api-final.log"
+        },
+        "nativeV1": {
+          "artifact": "reference-v1-raw-record.json",
+          "target": "seller-native-v1",
+          "nativeMaximum": 7,
+          "agreedMaximum": 6,
+          "observed": 17,
+          "steps": 18,
+          "mismatches": 1,
+          "aboveLimitStatus": 201,
+          "concurrentStatuses": [
+            201,
+            200
+          ],
+          "concurrentReadbackStatus": 200,
+          "databaseRowsObserved": 5,
+          "storedSevenPersonReceipt": true,
+          "databaseArtifact": "reference-v1-database.json"
+        },
+        "nativeV2": {
+          "artifact": "reference-v2-raw-record-before-acceptance.json",
+          "target": "seller-native-v2",
+          "nativeMaximum": 6,
+          "agreedMaximum": 6,
+          "observed": 18,
+          "steps": 18,
+          "mismatches": 0,
+          "aboveLimitStatus": 422,
+          "concurrentStatuses": [
+            200,
+            201
+          ],
+          "concurrentReadbackStatus": 200,
+          "stageAtCheckpoint": "in_progress",
+          "acceptedAtCheckpoint": false,
+          "paymentStateAtCheckpoint": "unfunded"
+        },
+        "offline": {
+          "recordedExample": "tests/fixtures/recorded-seller-staging/v1-evidence.json",
+          "browserDownloadChecks": 8,
+          "consistency": "consistent",
+          "sourceTamper": "inconsistent even after self-declared digest recalculation",
+          "networkRequests": 0
+        }
+      },
+      "limits": [
+        "Controlled developer-operated same-account role play, not a real third-party seller",
+        "Reference handler uses separate seller tables in the public lab shared physical D1 database",
+        "File/backend digest declarations do not attest deployed build provenance",
+        "Offline self-consistency is not authentic issuance, identity, actual HTTP execution, model truth or payment",
+        "Previous delivery versions remain outside the current-delivery export",
+        "No new application-model or PayPal call in these reference runs",
+        "Checkpoint does not establish deployed v38 or accepted v2"
+      ],
+      "status": "implemented and exercised with separately retained controlled hosted/reference and offline evidence; independently operated third-party integration remains unproven"
+    },
+    {
+      "id": 4,
+      "priority": "Make the exact backend boundary/concurrency change visible in revision comparison",
+      "implemented": [
+        "Runtime comparison placed before the selected requirement, beside business comparison",
+        "Own actual-file digest, exact report/plan/target/frozen registration and project checks for both versions",
+        "Original six-person maximum, 17/18 versus18/18, seven-person201versus422, report/delivery/revision identifiers and all18 steps",
+        "Concurrent status counts are response observations, not global database duplicate counts",
+        "Missing, stale, unfinished or non-older evidence is unavailable without borrowing another report",
+        "Input snapshot before async hashing and stale result discard",
+        "Specific bounded layout diagnostic reasons with legacy history compatibility"
+      ],
+      "verification": {
+        "runtimeComparisonFocusedCases": 9,
+        "latestFullSuitePassed": 480,
+        "latestFullSuiteFailures": 0,
+        "fullSuiteLog": "outputs/winner-iterations-2026-11-02/round-4-full-tests.log",
+        "affectedTypecheck": "passed",
+        "newHostedViewportCheck": "pending publication verification",
+        "browserObservationApi": {
+          "log": "outputs/winner-iterations-2026-11-02/round-4-browser-api.log",
+          "groups": 8,
+          "malformedPayloadsRejected": 22,
+          "externalProviderRequests": 0,
+          "mockProviderInteractions": 10,
+          "actualBrowserOrAccountsTested": false
+        },
+        "pendingChangesNotInRecorded480Counter": [
+          "Independent peer finding: stricter optional acceptance-shape validation",
+          "Observed CDN script append: exact saved-artifact response no-transform hardening and hosted retest"
+        ]
+      },
+      "deepSeekReview": {
+        "artifact": "outputs/winner-iterations-2026-11-02/round-4-runtime-comparison-review.json",
+        "scope": "selected source only; reviewer did not execute code or inspect a viewport",
+        "adjudication": [
+          "Reject claimed max normalization divergence: valid integer6 remains6; string6 and mismatching7 are rejected",
+          "Reject retaining previous result during a new digest check: loading deliberately suppresses stale evidence",
+          "Reject claimed absent error path/hidden limits: catch/error and unconditional limits exist",
+          "Treat omitted isOlderDelivery definition as packet limitation; source and existing timestamp tie-rule test verified",
+          "Hypothetical hung native hash is not a reproduced functional defect"
+        ]
+      },
+      "status": "runtime comparison implemented and regression-tested; final acceptance-shape and exact-artifact hardening in progress before next publication; v38 deployment and v2 acceptance not established"
+    },
+    {
+      "id": 5,
+      "priority": "Resolve actual lightweight-history/full-file comparison integration and repeat completed flow",
+      "status": "implemented;491tests, fresh typecheck, two permanent isolated API suites and DeepSeek review passed;v39 live pending",
+      "observedV38": {
+        "deployment": "appgdep_6ae8b2fd75908191bcf325b003d64883",
+        "localArtifactFiles": 106,
+        "strictLayoutMeasured": 2,
+        "strictLayoutUnavailable": 0,
+        "applicationDeepSeekCalls": 1,
+        "explicitV2Acceptance": true,
+        "separateDemoCapture": true,
+        "realPayPalCalls": 0,
+        "offlineChecks": 8
+      },
+      "limits": [
+        "One developer operated same-account roleplay",
+        "Recorded comparison test does not replay HTTP",
+        "Custom audience preserved; no new publication of private projects",
+        "No unfamiliar-user study or presentation evidence"
+      ]
     }
   ],
   "decisionRules": [
@@ -137,9 +282,23 @@
   "currentJudgment": {
     "overallStrongerProven": false,
     "remaining": [
-      "Independently deployed authorised staging integration evidence",
+      "Independently operated authorised third-party staging integration and datastore evidence",
       "Unfamiliar-user outcomes",
+      "New public-build/viewport verification and refresh of intended source/attachment are separate publication steps",
+      "Report authenticity/trusted issuer remains unproven",
       "Presentation paused by user; not assessed"
-    ]
-  }
+    ],
+    "narrowedGaps": [
+      "Controlled native-policy7 mismatch then native-policy6 corrected observations are retained",
+      "A reviewer can inspect current-delivery source/reference/report consistency without account/API access",
+      "Backend boundary and concurrency changes now have a dedicated exact-version comparison"
+    ],
+    "publicationCheckpoint": {
+      "newV38DeploymentEstablished": false,
+      "nativeV2AcceptanceEstablished": false,
+      "formalSubmissionEstablished": false,
+      "note": "At the retained before-publication checkpoint: source/tests and before-acceptance records are not publication, acceptance or submission; two final hardening patches were still being verified."
+    }
+  },
+  "updatedOn": "2026-11-03"
 }

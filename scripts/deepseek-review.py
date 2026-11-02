@@ -27,7 +27,7 @@ TOTAL_LIMIT = 240 * 1024
 FRAME_LIMIT = 2 * 1024 * 1024
 FINAL_LIMIT = 96 * 1024
 SKILL_NAME = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
-ALLOWED_ROOTS = {"app", "lib", "db", "tests", "scripts"}
+ALLOWED_ROOTS = {"app", "lib", "db", "tests", "scripts", "examples"}
 DENIED_PART = re.compile(r"(?:^|[-_.])(env|auth|credentials?|cookies?|tokens?|secrets?|outputs?)(?:$|[-_.])", re.I)
 SENSITIVE_VALUE = re.compile(r"\bBearer\s+[A-Za-z0-9._~+/=-]{12,}|\bsk-[A-Za-z0-9_-]{16,}|-----BEGIN [A-Z ]*PRIVATE KEY-----", re.I)
 

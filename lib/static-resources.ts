@@ -184,6 +184,8 @@ export function staticPreviewResponse(file: string, contents: string, baseUrl: s
     "Content-Type": mime,
     "Content-Security-Policy": `sandbox allow-same-origin; default-src 'none'; style-src ${baseUrl} 'unsafe-inline'; img-src ${baseUrl}; frame-ancestors 'self'; form-action 'none'; base-uri 'none'`,
     "Referrer-Policy": "no-referrer", "Cross-Origin-Opener-Policy": "same-origin", "X-Robots-Tag": "noindex, nofollow",
-    "X-ProofBeforePay-Delivery": deliveryId, "X-Content-Type-Options": "nosniff", "Cache-Control": "no-store",
+    // Exact saved artifacts must not be rewritten by an intermediary. This
+    // response-only directive leaves authentication and all sandbox guards intact.
+    "X-ProofBeforePay-Delivery": deliveryId, "X-Content-Type-Options": "nosniff", "Cache-Control": "no-store, no-transform",
   } });
 }

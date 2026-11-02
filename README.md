@@ -18,6 +18,10 @@ Code and functional verification are the current priority. The owner explicitly 
 
 The separate [public guest verification lab](https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/) needs no account, model key or payment account. Its static handoff is a clearly labelled local role-play. Its HTTP panel makes real requests to an isolated synthetic booking service: in the observed flawed run, creation returned 201 but independent readback returned 404, yielding two supported steps and six mismatches; the corrected run supported all eight steps. These are two controlled cases, not a general accuracy score or a guarantee against hidden bugs. The lab has no main-workspace project data, model credentials or real payments. An optional local task recorder exports self-declared, unverified outcomes; no unfamiliar-user study has been completed.
 
+## Independently check a downloaded record
+
+The Export menu now separates a versioned, allowlisted current-delivery evidence package from the original raw record. A read-only CLI recomputes file digests, source/citation evidence, derived observation outcomes and exact report/acceptance bindings without contacting this website. Immutable report/annotation IDs cannot carry conflicting contents, and one runtime ID cannot be both pending and completed. This is consistency verification, not signed authenticity or proof of HTTP/model/payment execution. See [offline evidence and the recorded synthetic example](docs/OFFLINE-EVIDENCE.md).
+
 ## One project from delivery to test payment
 
 New projects can explicitly select **Both roles + PayPal Sandbox test payment**. This creates a server-marked, authenticated-owner rehearsal with a virtual seller and the configured Sandbox test merchant. It supports either your own requirements/files or the built-in fictional floral studio. It does not onboard a real seller, provide escrow or settle money to a seller. The original simulated demonstration remains provider-free and is never upgraded by a later request. The separate **Invite a real seller · simulated payment** choice keeps two-account collaboration in simulated payment mode.
@@ -146,6 +150,15 @@ pnpm run dev
 Open the Local URL printed by the server (normally http://localhost:5173). The database persists under ignored `.wrangler/state/`. Local and hosted records are separate. For a **fresh database**, run `0000_flashy_master_chief.sql`, `0001_low_chimera.sql`, then `0002_flawless_lake.sql`, in that order. For an **existing database**, apply only migrations that have not already been applied: a database with `0000` and `0001` installed needs only the pending `0002`. Migration `0001` adds seller/invitation columns and the immutable version table; `0002` creates owner-scoped `requirement_drafts`. Do not replay migrations on an already migrated database or reset an existing database to upgrade it.
 
 The standard Sites Vite preview supplies one fixed development identity. Separate browser profiles do not turn it into two authenticated accounts. Production platform identity, application project membership and the Site's access policy are separate boundaries; the isolated API test below simulates the first boundary to exercise the application's permissions.
+
+Run the static-resource and layout API regressions in their own freshly built, migrated loopback Worker contexts:
+
+```sh
+node tests/run-collaborative-sandbox-local.mjs --suite static-resources
+node tests/run-collaborative-sandbox-local.mjs --suite layout
+```
+
+The runner verifies its owned direct Worker listener, blocks external fetches and uses synthetic identity fixtures without reading provider credentials. Layout readings in this API suite are synthetic inputs; these checks do not establish real browser measurements, account logins or provider connectivity.
 
 For real integrations, copy `.env.example` to the ignored `.dev.vars` file and configure `DEEPSEEK_API_KEY`, optional `DEEPSEEK_MODEL`, `PAYPAL_CLIENT_ID` and `PAYPAL_CLIENT_SECRET`. The PayPal values must come from a **Sandbox REST app**. Use a separate Sandbox personal buyer account to approve payments. Restart the server after changing local credentials. Hosted secrets are configured through Sites runtime environment variables; they never belong in source or the browser.
 

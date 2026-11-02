@@ -20,7 +20,25 @@ class Unavailable extends Error {
 
 async function exactSource(response: Response, source: string) {
   // Response.text() discards a UTF-8 BOM, while uploaded snapshots preserve it.
-  return new TextDecoder("utf-8", {fatal: true, ignoreBOM: true}).decode(await response.arrayBuffer()) === source;
+  const bytes = await response.arrayBuffer();
+  try { return new TextDecoder("utf-8", {fatal: true, ignoreBOM: true}).decode(bytes) === source; }
+  catch { return false; }
+}
+
+/** Identify the failed guard without retaining response content, headers or
+ * identifiers. A successful header check still requires one exact byte read. */
+export async function assertLayoutSnapshotResponse(response: Response, source: string, deliveryId: string, kind: "html" | "css"): Promise<void> {
+  if (!response.headers.get("Content-Type")?.startsWith(kind === "html" ? "text/html" : "text/css")) throw new Unavailable("response_type_mismatch");
+  if (response.headers.get("X-ProofBeforePay-Delivery") !== deliveryId) throw new Unavailable("response_identity_mismatch");
+  if (!await exactSource(response, source)) throw new Unavailable("source_mismatch");
+}
+
+type RenderedSnapshot = {contentType: string; title: string; body: {textContent: string | null} | null};
+/** Browser rendering must still match the saved title and body text. This does
+ * not infer whether a difference came from the site, browser or an extension. */
+export function assertRenderedLayoutSnapshot(actual: RenderedSnapshot, expected: RenderedSnapshot): void {
+  if (actual.contentType !== "text/html" || !actual.body || !expected.body || actual.title !== expected.title
+    || actual.body.textContent !== expected.body.textContent) throw new Unavailable("rendered_snapshot_mismatch");
 }
 
 function aborted(signal: AbortSignal) {
@@ -59,9 +77,7 @@ async function measure(quote: ProofQuote, file: string, viewportWidth: ProofLayo
     // Do not mistake an authentication/error response or stale snapshot for the delivery.
     const response = await fetch(url, {credentials: "same-origin", redirect: "error", cache: "no-store", signal: local.signal});
     if (!response.ok) throw new Unavailable(response.status === 401 || response.status === 403 ? "access_denied" : "load_failed");
-    if (!response.headers.get("Content-Type")?.startsWith("text/html")
-      || response.headers.get("X-ProofBeforePay-Delivery") !== delivery.id
-      || !await exactSource(response, source)) throw new Unavailable("snapshot_mismatch");
+    await assertLayoutSnapshotResponse(response, source, delivery.id, "html");
     const loaded = new Promise<void>((resolve, reject) => {
       frame.onload = () => resolve();
       frame.onerror = () => reject(new Unavailable("load_failed"));
@@ -75,8 +91,7 @@ async function measure(quote: ProofQuote, file: string, viewportWidth: ProofLayo
     const assertCurrent = () => {
       aborted(local.signal);
       if (frame.contentDocument !== doc || frame.contentWindow?.location.href !== url.href) throw new Unavailable("navigation_changed");
-      if (doc.contentType !== "text/html" || !doc.body || doc.title !== expected.title
-        || doc.body.textContent !== expected.body.textContent) throw new Unavailable("snapshot_mismatch");
+      assertRenderedLayoutSnapshot(doc, expected);
     };
     assertCurrent();
     await bounded(doc.fonts.ready, local.signal, 2000);
@@ -92,9 +107,8 @@ async function measure(quote: ProofQuote, file: string, viewportWidth: ProofLayo
           const filename = findSavedLayoutStylesheet(delivery.files!, quote.id, delivery.id, styleUrl, url.origin);
           if (!filename) throw new Unavailable("load_failed");
           const css = await fetch(styleUrl, {credentials: "same-origin", redirect: "error", cache: "no-store", signal: local.signal});
-          if (!css.ok || !css.headers.get("Content-Type")?.startsWith("text/css")) throw new Unavailable("load_failed");
-          if (css.headers.get("X-ProofBeforePay-Delivery") !== delivery.id
-            || !await exactSource(css, delivery.files![filename])) throw new Unavailable("snapshot_mismatch");
+          if (!css.ok) throw new Unavailable("load_failed");
+          await assertLayoutSnapshotResponse(css, delivery.files![filename], delivery.id, "css");
           assertCurrent();
         } else return;
       }

@@ -222,7 +222,7 @@ def assert_preview(api, actor, path, source):
     assert code == 200 and actual == source, "Preview must serve the exact saved file"
     policy = headers.get("content-security-policy", "")
     assert "sandbox allow-same-origin" in policy and "allow-scripts" not in policy
-    assert headers.get("cache-control") == "no-store"
+    assert headers.get("cache-control") == "no-store, no-transform"
 
 
 def main():

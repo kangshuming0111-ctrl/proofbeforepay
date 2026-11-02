@@ -1,0 +1,17 @@
+{
+  "name": "proofbeforepay-synthetic-seller-staging",
+  "main": "worker/index.mjs",
+  "compatibility_date": "2026-10-01",
+  "d1_databases": [{
+    "binding": "SELLER_DB",
+    "database_name": "YOUR_SEPARATE_SYNTHETIC_SELLER_DATABASE",
+    "database_id": "REPLACE_WITH_OWN_SEPARATE_D1_DATABASE_ID",
+    "migrations_dir": "migrations"
+  }],
+  "vars": {
+    "SELLER_PROJECT_ID": "REPLACE_WITH_PROJECT_ID",
+    "SELLER_REGISTRATION_REVISION": "operator-review-1",
+    "SELLER_FRONTEND_BUNDLE_DIGEST": "REPLACE_WITH_EXACT_64_HEX_FRONTEND_DIGEST",
+    "SELLER_DEPLOYMENT_REVISION": "seller-staging-build-1"
+  }
+}

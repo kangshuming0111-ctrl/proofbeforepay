@@ -37,7 +37,7 @@ export type CheckoutResult = { mode: "demo" | "sandbox"; orderId: string; approv
 export type ProofCriterion = { id: string; title: string; source: string };
 export type ProofEvidence = { id: string; criterionId: string; file: string; excerpt: string; finding: "pass" | "fail" | "needs_human"; explanation: string };
 export type ProofLayoutWidth = 375 | 900;
-export type ProofLayoutUnavailableReason = "missing_file" | "load_failed" | "navigation_changed" | "access_denied" | "timeout" | "unstable_layout" | "snapshot_mismatch";
+export type ProofLayoutUnavailableReason = "missing_file" | "load_failed" | "navigation_changed" | "access_denied" | "timeout" | "unstable_layout" | "snapshot_mismatch" | "response_type_mismatch" | "response_identity_mismatch" | "source_mismatch" | "rendered_snapshot_mismatch";
 export type ProofLayoutReading =
   | { file: string; viewportWidth: ProofLayoutWidth; status: "measured"; clientWidth: number; scrollWidth: number; overflowPx: number; outcome: "overflow" | "no_overflow" }
   | { file: string; viewportWidth: ProofLayoutWidth; status: "unavailable"; reason: ProofLayoutUnavailableReason };

@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef } from "react";
 import { ArrowUpRight, ChevronDown, LoaderCircle, RotateCcw, ScanLine, Square } from "lucide-react";
-import type { Language, ProofLayoutReport } from "@/lib/contracts";
+import type { Language, ProofLayoutReport, ProofLayoutUnavailableReason } from "@/lib/contracts";
 
 export type LayoutCheckPanelProps = {
   language: Language;
@@ -15,7 +15,7 @@ export type LayoutCheckPanelProps = {
   onInspect?: (file: string, width: 375 | 900) => void;
 };
 
-const unavailableReasons: Record<string, { zh: string; en: string }> = {
+const unavailableReasons: Record<ProofLayoutUnavailableReason, { zh: string; en: string }> = {
   missing_file: { zh: "交付中缺少此文件", en: "This file is missing from the delivery." },
   load_failed: { zh: "预览页面或所需样式未能加载", en: "The preview or a required stylesheet could not load." },
   navigation_changed: { zh: "页面已离开所选交付，未记录测量", en: "The page navigated away from this delivery; no measurement was recorded." },
@@ -23,6 +23,10 @@ const unavailableReasons: Record<string, { zh: string; en: string }> = {
   timeout: { zh: "页面测量超时", en: "The page measurement timed out." },
   unstable_layout: { zh: "布局持续变化，无法取得稳定读数", en: "The layout kept changing; a stable reading was unavailable." },
   snapshot_mismatch: { zh: "页面与保存的交付版本不一致", en: "The page did not match the saved delivery snapshot." },
+  response_type_mismatch: { zh: "响应不是预期网页或样式，请重新打开预览后重试", en: "The response was not the expected page or stylesheet. Reopen the preview and retry." },
+  response_identity_mismatch: { zh: "响应未匹配当前交付标识，请刷新项目后重试", en: "The response did not identify this delivery. Refresh the project and retry." },
+  source_mismatch: { zh: "返回源码与保存文件不同，未测量；请重新打开当前预览", en: "The returned source differed from the saved file. Reopen the current preview." },
+  rendered_snapshot_mismatch: { zh: "浏览器呈现的页面与保存快照不同，未测量；请刷新预览后重试", en: "The rendered page differed from the saved snapshot. Refresh the preview and retry." },
 };
 
 function receivedTime(value: string) {

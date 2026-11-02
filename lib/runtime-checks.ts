@@ -1,6 +1,6 @@
 import { DomainError } from "./domain.ts";
 import {validateBookingPolicy,type BookingPartyPolicy} from "./booking-policy.ts";
-import type {RuntimeRegistrationSnapshot} from "./runtime-registration.ts";
+import {sameRuntimeRegistration,type RuntimeRegistrationSnapshot} from "./runtime-registration.ts";
 
 type RuntimePlanSource = {
   criterionId: string;
@@ -106,7 +106,7 @@ export function validateRuntimeReport(value: unknown, expected: {deliveryId: str
   let origin:URL;try{origin=new URL(text(target.origin,"Runtime target origin",500));}catch{throw new DomainError("Runtime target origin is invalid.",409);}
   if(origin.origin!==target.origin||origin.username||origin.password)throw new DomainError("Runtime target origin must be an origin without authentication.",409);
   if(expected.target&&(target.id!==expected.target.id||target.label!==expected.target.label||target.origin!==new URL(expected.target.baseUrl).origin||target.revision!==expected.target.revision))throw new DomainError("Runtime report target changed.",409);
-  if(JSON.stringify(target.registration)!==JSON.stringify(expected.registration))throw new DomainError("Runtime report registration differs from the frozen deployment declaration.",409);
+  if(!(target.registration===undefined&&expected.registration===undefined)&&!sameRuntimeRegistration(target.registration,expected.registration))throw new DomainError("Runtime report registration differs from the frozen deployment declaration.",409);
   const ids=runtimeProtocolStepIds(plan);
   if(!Array.isArray(report.steps)||report.steps.length!==ids.length)throw new DomainError("Runtime report must retain every protocol step.",409);
   const steps=report.steps.map((value,index)=>{
@@ -126,6 +126,10 @@ export function validateRuntimeReport(value: unknown, expected: {deliveryId: str
     return step as RuntimeCheckStep;
   });
   const summary=runtimeReportSummary(steps);
+  if(plan.protocol==="booking-http-v2"){
+    const pair=steps.filter(step=>step.id==="concurrent_first"||step.id==="concurrent_second");
+    if(pair.some(step=>step.outcome==="observed")&&(!pair.every(step=>step.outcome==="observed")||pair.map(step=>step.status).sort().join(",")!=="200,201"))throw new DomainError("Observed concurrent receipts must retain exactly one creation and one replay response.",409);
+  }
   const saved=record(report.summary,"Runtime summary");
   if(Object.keys(saved).length!==4||Object.entries(summary).some(([key,count])=>saved[key]!==count))throw new DomainError("Runtime summary differs from its saved steps.",409);
   return structuredClone({...report,plan,steps,summary} as RuntimeCheckReport);
