@@ -39,7 +39,7 @@ const STRATA: Stratum[] = ["complete-literal", "untrusted-source", "runtime-or-s
 const STATUSES: Status[] = ["supported", "changes_suggested", "insufficient_evidence"];
 export const VERIFIED_PRICE = Object.freeze({
   model: "deepseek-flash", modelVersionAtVerification: "DeepSeek-V4.1-Flash-1017",
-  inputUsdPerMillion: 0.3, outputUsdPerMillion: 1.2, maxOutputTokens: 3600,
+  inputUsdPerMillion: 0.3, outputUsdPerMillion: 1.2, maxOutputTokens: 6400,
   source: "https://api-docs.deepseek.com/quick_start/pricing/", verifiedOn: "2026-11-02",
   assumption: "Peak cache-miss input and peak output rates, ignoring any discounts; estimated from reported usage, not an invoice.",
 });

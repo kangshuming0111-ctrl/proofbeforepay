@@ -2,6 +2,7 @@ import type { Language, ProofCriterion, RequirementAgreement, RequirementDraft, 
 import { DomainError } from "./domain.ts";
 import { DEFAULT_DEEPSEEK_MODEL, ProviderError, requestJson, type Fetcher, type ProviderEnv } from "./providers.ts";
 import { parseStaticProject } from "./static-project.ts";
+import { coverageCriteria, validateSavedCoverage } from "./requirement-coverage.ts";
 
 const CONTROL = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u;
 const HTML = /^[A-Za-z0-9][A-Za-z0-9._-]*\.html$/iu;
@@ -230,14 +231,22 @@ export function confirmRequirementDraft(draft: RequirementDraft, project: Static
   proposal.manualRequirements.forEach((item, index) => { item.source = validateSource(source.sourceText, draft.manualRequirements[index].source); });
   proposal.unresolved.forEach((item, index) => { item.source = validateSource(source.sourceText, draft.unresolved[index].source); });
   if (proposal.link && draft.link) proposal.link.source = validateSource(source.sourceText, draft.link.source);
-  const validated = parseStaticProject({ title: "Confirmed requirement", summary: "Buyer-confirmed scope", amount: "1.00", ...project }, "en");
-  if (!Array.isArray(criteria) || criteria.length !== validated.criteria.length || new Set(criteria.map(item => item.id)).size !== criteria.length || validated.criteria.some(item => !criteria.some(candidate => candidate.id === item.id))) throw new DomainError("The confirmed criteria do not match the project.");
+  // Coverage is a saved buyer-summary record, not an extraction request. Validate
+  // it separately and never attach the contract draft's citations to its rows.
+  const {coverage: rawCoverage, ...operationalProject} = project;
+  const coverage = rawCoverage === undefined ? undefined : validateSavedCoverage(rawCoverage);
+  const validated = parseStaticProject({ title: "Confirmed requirement", summary: "Buyer-confirmed scope", amount: "1.00", ...operationalProject }, "en");
+  const expected = [...validated.criteria, ...coverageCriteria(coverage, "en")];
+  if (!Array.isArray(criteria) || criteria.length !== expected.length || new Set(criteria.map(item => item.id)).size !== criteria.length || expected.some(item => !criteria.some(candidate => candidate.id === item.id))
+    || coverageCriteria(coverage, "en").some(item => !criteria.some(candidate => candidate.id === item.id && candidate.source === item.source))) throw new DomainError("The confirmed criteria do not match the project.");
   const refs: RequirementAgreement["sourceRefs"] = [];
   project.requiredPages.forEach((file, index) => {
     const suggested = proposal.pages.find(item => item.file === file);
     if (suggested) refs.push({ criterionId: `page-${index + 1}`, source: structuredClone(suggested.source) });
   });
-  if (project.link && proposal.link && project.link.from === proposal.link.from && project.link.text === proposal.link.text && project.link.to === proposal.link.to) refs.push({ criterionId: "link", source: structuredClone(proposal.link.source) });
+  (project.links ?? (project.link ? [project.link] : [])).forEach((link, index) => {
+    if (proposal.link && link.from === proposal.link.from && link.text === proposal.link.text && link.to === proposal.link.to) refs.push({criterionId: index === 0 ? "link" : `link-${index + 1}`, source: structuredClone(proposal.link.source)});
+  });
   project.manualRequirements.forEach((text, index) => {
     const suggested = proposal.manualRequirements.find(item => item.text === text);
     if (suggested) refs.push({ criterionId: `manual-${index + 1}`, source: structuredClone(suggested.source) });

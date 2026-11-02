@@ -7,6 +7,7 @@ import { deliveryFileUrl } from "@/lib/delivery-upload";
 import { ResourceChecks } from "./ResourceChecks";
 import { DeliveryAssessment } from "./DeliveryAssessment";
 import { BrowserCheckPanel } from "./BrowserCheckPanel";
+import { EvidenceHistoryPanel } from "./EvidenceHistoryPanel";
 
 export type VersionViewerProps = {
   quoteId: string;
@@ -125,6 +126,7 @@ export function VersionViewer({ quoteId, version, language, criteria = [], onClo
       <section className="version-viewer-records" aria-label={tr("此历史版本的记录", "Records for this historical version")}>
         <ResourceChecks delivery={delivery} language={language}/>
         {delivery.browserChecks?.deliveryId === delivery.id && <BrowserCheckPanel language={language} report={delivery.browserChecks} readOnly enabled={false} busy={false} onRun={() => {}} onCancel={() => {}}/>}
+        <EvidenceHistoryPanel delivery={delivery} language={language}/>
         <DeliveryAssessment report={assessment} criteria={criteria} language={language} riskReviews={delivery.riskReviews} readOnly />
         <details className="version-viewer-details"><summary>{tr("卖家交付说明", "Seller's delivery note")}<ChevronDown size={14} aria-hidden="true" /></summary><div className="version-viewer-details-body">{submission ? <><p className="version-viewer-text">{submission.note}</p><p className="version-viewer-help">{tr("卖家陈述，不是独立证明。", "A seller statement, not independent proof.")} <time dateTime={submission.at}>{displayTime(submission.at)}</time></p><code>{submission.deliveryId}</code></> : <p className="version-viewer-help">{tr("没有与此快照版本绑定的交付说明。", "No delivery note is tied to this snapshot version.")}</p>}</div></details>
 

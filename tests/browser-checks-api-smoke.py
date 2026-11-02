@@ -56,7 +56,11 @@ def report_of(quote):
 def only_supplemental_changed(before, after):
     left, right = copy.deepcopy(before), copy.deepcopy(after)
     left["proof"]["delivery"].pop("browserChecks", None)
+    old_history = left["proof"]["delivery"].pop("browserCheckHistory", [])
     right["proof"]["delivery"].pop("browserChecks", None)
+    new_history = right["proof"]["delivery"].pop("browserCheckHistory", [])
+    assert new_history[:-1] == old_history and len(new_history) == len(old_history) + 1
+    assert new_history[-1]["id"] == after["proof"]["delivery"]["browserChecks"]["id"]
     old_audit = left["proof"].pop("audit")
     new_audit = right["proof"].pop("audit")
     assert left == right, "Browser observations changed source, rules, AI, collaboration, acceptance, manual consent or payment"
@@ -84,6 +88,7 @@ def main():
                          requiredPages=["index.html", "contact.html"], manualRequirements=[],
                          link=dict(from_="index.html", text="Book a call", to="contact.html#booking"))
     specification["link"]["from"] = specification["link"].pop("from_")
+    specification["coverage"] = {"version": 1, "sourceText": specification["summary"], "confirmed": True, "decisions": [{"id": "coverage-1", "disposition": "include"}, {"id": "coverage-2", "disposition": "include"}]}
     quote = quote_of(api.ok(buyer, "/api/proofs", specification, role="seller"), "buyer")
     quote_id = quote["id"]
     path, quote_path = "/api/proofs/" + quote_id, "/api/quotes/" + quote_id
@@ -208,10 +213,10 @@ def main():
 
     assert api.ok(None, "/api/__synthetic_sandbox_test_mode")["syntheticCalls"] == marker["syntheticCalls"]
     api.ok(seller, path + "/submit_delivery", {"deliveryId": second_delivery, "note": "Revised synthetic delivery"})
-    api.ok(buyer, path + "/accept_delivery", {"deliveryId": second_delivery, "confirm": True, "manualChecks": ["mobile"]})
+    api.ok(buyer, path + "/accept_delivery", {"deliveryId": second_delivery, "confirm": True, "manualChecks": ["mobile", "coverage-1", "coverage-2"]})
     checkout = api.ok(buyer, path + "/checkout", {})
     api.ok(buyer, path + "/authorize", {"orderId": checkout["orderId"]})
-    api.ok(buyer, path + "/capture", {"deliveryId": second_delivery, "confirm": True, "manualChecks": ["mobile"]})
+    api.ok(buyer, path + "/capture", {"deliveryId": second_delivery, "confirm": True, "manualChecks": ["mobile", "coverage-1", "coverage-2"]})
     current = quote_of(api.ok(buyer, quote_path), "buyer")
     assert current["status"] == "paid" and current["proof"]["paymentState"] == "captured"
     payment_marker = api.ok(None, "/api/__synthetic_sandbox_test_mode")
@@ -221,7 +226,7 @@ def main():
         quote_of(response, role)
         current = quote_of(api.ok(buyer, quote_path), "buyer")
         only_supplemental_changed(before, current)
-        assert current["proof"]["acceptedDeliveryId"] == second_delivery and current["proof"]["manualChecks"] == ["mobile"]
+        assert current["proof"]["acceptedDeliveryId"] == second_delivery and current["proof"]["manualChecks"] == ["mobile", "coverage-1", "coverage-2"]
         assert current["proof"]["paymentState"] == "captured" and current["status"] == "paid"
         assert report_of(current).get("reportedByRole") == role
     assert api.ok(None, "/api/__synthetic_sandbox_test_mode")["syntheticCalls"] == payment_marker["syntheticCalls"]
@@ -230,6 +235,10 @@ def main():
     versions = api.ok(buyer, path + "/versions")["versions"]
     assert next(v for v in versions if v["delivery"]["id"] == first_delivery)["delivery"]["browserChecks"] == archived_report
     assert next(v for v in versions if v["delivery"]["id"] == second_delivery)["delivery"]["browserChecks"] == report_of(current)
+    assert all(not any(key in version["delivery"] for key in ("files", "browserCheckHistory", "layoutHistory", "acceptanceEvidence")) for version in versions)
+    full_current = api.ok(buyer, path + "/versions/" + second_delivery)["version"]
+    assert full_current["delivery"]["browserCheckHistory"] == current["proof"]["delivery"]["browserCheckHistory"]
+    assert full_current["delivery"]["acceptanceEvidence"] == current["proof"]["delivery"]["acceptanceEvidence"]
     api.reject(outsider, path + "/versions/" + first_delivery, codes=(404,))
     api.checked("Persisted old/current version listings retain their own reports and unrelated identities cannot retrieve archives")
     print(json.dumps(dict(result="passed", suite="browser-checks", checks=api.checks,

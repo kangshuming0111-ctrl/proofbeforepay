@@ -2,7 +2,8 @@ import type { ProofEvent, ProofQuote } from "@/lib/contracts";
 import { requireProof, requireActiveAuthorization, validateAcceptance, applyPaymentReconciliation } from "@/lib/proof-domain";
 import { createProofDelivery } from "@/lib/proof-evidence";
 import { createUploadedDelivery } from "@/lib/static-project";
-import { createLayoutReport } from "@/lib/layout-report";
+import { recordLayoutReport } from "@/lib/layout-report";
+import { recordCaptureConsent } from "@/lib/acceptance-evidence";
 import { assessDelivery } from "@/lib/delivery-assessment";
 import { acceptDelivery, joinSeller, prepareReplacement, requestChanges, requireExpectedDelivery, requireWorkflowAction, submitDelivery, type ProofWorkflowAction } from "@/lib/proof-workflow";
 import { createRoleplayDelivery, isDemoRoleplay, isOwnerRoleplay } from "@/lib/proof-demo";
@@ -104,7 +105,7 @@ export async function POST(request: Request, context: {params: Promise<{id: stri
           delivery = {...createProofDelivery(input.variant, quote.language), sequence};
         }
         const replaced = quote.proof.collaboration ? prepareReplacement(quote, delivery)
-          : {...quote, proof: {...quote.proof, delivery, review: undefined, acceptedAt: undefined, acceptedDeliveryId: undefined, manualChecks: undefined}};
+          : {...quote, proof: {...quote.proof, delivery, review: undefined, acceptedAt: undefined, acceptedDeliveryId: undefined, acceptedEvidenceSnapshotId: undefined, manualChecks: undefined}};
         let next = log(replaced, "delivery_submitted", delivery.id);
         if (input.reviewRules === true) {
           // Save the files and their immediate, provider-free rule summary in one CAS.
@@ -125,10 +126,9 @@ export async function POST(request: Request, context: {params: Promise<{id: stri
         if (!Object.hasOwn(input, "previousReportId") || input.previousReportId !== (delivery.layoutReport?.id ?? null)) {
           throw new HttpError(409, "The layout report has changed. Reload before saving new observations.");
         }
-        const layoutReport = createLayoutReport(quote, input);
-        // Store observations alongside the exact snapshot, without changing acceptance evidence.
-        // The existing quote-version CAS also rejects a simultaneous delivery/payment change.
-        await persist(log({...quote, proof: {...quote.proof, delivery: {...delivery, layoutReport}}}, "layout_checked", delivery.id));
+        // Preserve all genuinely saved runs and their server-derived initiator.
+        // The existing quote-version CAS rejects simultaneous changes.
+        await persist(recordLayoutReport(quote, stored.role, input));
       }
       return response();
     }
@@ -156,7 +156,7 @@ export async function POST(request: Request, context: {params: Promise<{id: stri
       const manualChecks = validateAcceptance(quote, input);
       if (!quote.proof.paymentOperation) {
         // Persist consent and freeze this delivery before contacting the payment provider.
-        await persist(log({...quote, proof: {...quote.proof, paymentOperation: "capture", acceptedAt: captureConfirmedAt, acceptedDeliveryId: quote.proof.delivery!.id, manualChecks}}, "accepted", quote.proof.delivery!.id));
+        await persist(recordCaptureConsent(quote, manualChecks, captureConfirmedAt));
       }
       const captureId = quote.paymentMode === "demo" ? `SIM-CAP-${quote.id}` : (await captureAuthorization(quote, config)).captureId;
       await persist(log({...quote, status: "paid", paidAt: new Date().toISOString(), captureId, proof: {...quote.proof, paymentOperation: undefined, paymentState: "captured"}}, "captured", quote.proof.acceptedDeliveryId));

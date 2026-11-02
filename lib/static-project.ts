@@ -1,9 +1,10 @@
 import type { Language, ProofCriterion, ProofDelivery, ProofEvidence, ProofResourceReport, StaticProjectSpec } from "./contracts.ts";
 import { DomainError } from "./domain.ts";
 import { assertStaticPath, decodeRasterDataUrl, resolveStaticReference, STATIC_RESOURCE_LIMITS, staticFileKind } from "./static-resources.ts";
+import { confirmCoverage, coverageCriteria, validateSavedCoverage } from "./requirement-coverage.ts";
 
 const HTML_NAME = /\.html$/iu;
-const LOCAL_TARGET = /^([^#]+\.html)#([A-Za-z0-9_][A-Za-z0-9_.:-]{0,127})$/iu;
+const LOCAL_TARGET = /^([^#]+\.html)(?:#([A-Za-z0-9_][A-Za-z0-9_.:-]{0,127}))?$/iu;
 const CONTROL = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u;
 const EXCERPT_LENGTH = 700;
 const encoder = new TextEncoder();
@@ -30,7 +31,7 @@ function htmlName(value: unknown, label: string): string {
   return name;
 }
 
-function projectSpec(value: unknown): StaticProjectSpec {
+function projectSpec(value: unknown, preserveCoverage = false): StaticProjectSpec {
   const input = object(value, "Static project");
   if (!Array.isArray(input.requiredPages) || input.requiredPages.length < 1 || input.requiredPages.length > 10) {
     throw new DomainError("Required pages must contain 1–10 HTML filenames.");
@@ -42,16 +43,24 @@ function projectSpec(value: unknown): StaticProjectSpec {
   const manual = input.manualRequirements ?? [];
   if (!Array.isArray(manual) || manual.length > 5) throw new DomainError("Use no more than 5 manual requirements.");
   const manualRequirements = manual.map((entry, index) => text(entry, `Manual requirement ${index + 1}`, 300));
-  let link: StaticProjectSpec["link"];
-  if (input.link !== undefined) {
-    const raw = object(input.link, "Link requirement");
+  if (input.link !== undefined && input.links !== undefined) throw new DomainError("Choose either the legacy link or the list of local links, not both.");
+  const parseLink = (value: unknown): NonNullable<StaticProjectSpec["link"]> => {
+    const raw = object(value, "Link requirement");
     const to = text(raw.to, "Link destination", 250);
     const destination = LOCAL_TARGET.exec(to);
-    if (!destination) throw new DomainError("Link destination must use a relative HTML filepath#id without an external URL.");
+    if (!destination) throw new DomainError("Link destination must use a relative HTML filepath, optionally followed by #id, without an external URL.");
     htmlName(destination[1], "Link destination page");
-    link = { from: htmlName(raw.from, "Link source page"), text: text(raw.text, "Link text", 120), to };
+    return { from: htmlName(raw.from, "Link source page"), text: text(raw.text, "Link text", 120), to };
+  };
+  const link = input.link === undefined ? undefined : parseLink(input.link);
+  let links: StaticProjectSpec["links"];
+  if (input.links !== undefined) {
+    if (!Array.isArray(input.links) || input.links.length > 5) throw new DomainError("Use no more than five local navigation steps.");
+    links = input.links.map(parseLink);
+    if (new Set(links.map(row => `${row.from}\n${normalizedText(row.text)}`)).size !== links.length) throw new DomainError("Local steps must not repeat the same source page and link label.");
   }
-  return { requiredPages, ...(link ? { link } : {}), manualRequirements };
+  return { requiredPages, ...(link ? { link } : {}), ...(links ? {links} : {}), manualRequirements,
+    ...(preserveCoverage && input.coverage !== undefined ? {coverage: validateSavedCoverage(input.coverage)} : {}) };
 }
 
 function criteriaFor(project: StaticProjectSpec, language: Language): ProofCriterion[] {
@@ -60,17 +69,18 @@ function criteriaFor(project: StaticProjectSpec, language: Language): ProofCrite
     title: message(language, `独立页面：${file}`, `Separate page: ${file}`),
     source: message(language, `交付独立非空 HTML 文档 ${file}，包含 HTML doctype、非空 title 与 body。`, `Deliver ${file} as a separate nonempty HTML document with an HTML doctype, a nonempty title and a body.`),
   }));
-  if (project.link) criteria.push({
-    id: "link", title: message(language, "本地链接目标", "Local link destination"),
-    source: message(language, `${project.link.from} 包含文字为“${project.link.text}”的链接，指向 ${project.link.to}。`, `${project.link.from} contains a link labelled “${project.link.text}” pointing to ${project.link.to}.`),
-  });
+  (project.links ?? (project.link ? [project.link] : [])).forEach((link, index) => criteria.push({
+    id: index === 0 ? "link" : `link-${index + 1}`, title: message(language, `本地链接目标${index ? ` ${index + 1}` : ""}`, `Local link destination${index ? ` ${index + 1}` : ""}`),
+    source: message(language, `${link.from} 包含文字为“${link.text}”的链接，指向 ${link.to}。`, `${link.from} contains a link labelled “${link.text}” pointing to ${link.to}.`),
+  }));
   criteria.push({ id: "mobile", title: message(language, "移动端可用", "Mobile usability"), source: message(language, "所有交付页面都必须能在手机屏幕上正常使用；必须由人实际检查。", "All delivered pages must be usable on a mobile screen; a person must check them directly.") });
   project.manualRequirements.forEach((source, index) => criteria.push({ id: `manual-${index + 1}`, title: message(language, `人工要求 ${index + 1}`, `Manual requirement ${index + 1}`), source }));
+  criteria.push(...coverageCriteria(project.coverage, language));
   return criteria;
 }
 
 /** Validate an agreement without using floating-point arithmetic for money. */
-export function parseStaticProject(input: Record<string, unknown>, language: Language) {
+export function parseStaticProject(input: Record<string, unknown>, language: Language, options: {requireCoverage?: boolean} = {}) {
   object(input, "Project input");
   if (language !== "zh" && language !== "en") throw new DomainError("Language must be zh or en.");
   const title = text(input.title, "Project title", 120);
@@ -82,6 +92,7 @@ export function parseStaticProject(input: Record<string, unknown>, language: Lan
   const totalCents = Number(whole) * 100 + Number(fraction.padEnd(2, "0"));
   if (totalCents < 1 || totalCents > 1_000_000) throw new DomainError("Amount must be between 0.01 and 10000.00.");
   const project = projectSpec(input);
+  if (options.requireCoverage || input.coverage !== undefined) project.coverage = confirmCoverage(summary, input.coverage);
   return { title, summary, totalCents, project, criteria: criteriaFor(project, language) };
 }
 
@@ -340,7 +351,7 @@ function normalizedText(value: string): string { return value.replace(/\s+/gu, "
 export function createUploadedDelivery(value: unknown, rawProject: StaticProjectSpec, language: Language, sequence: number): ProofDelivery {
   if (language !== "zh" && language !== "en") throw new DomainError("Language must be zh or en.");
   if (!Number.isSafeInteger(sequence) || sequence < 1) throw new DomainError("Delivery sequence must be a positive whole number.");
-  const project = projectSpec(rawProject);
+  const project = projectSpec(rawProject, true);
   const files = validateStaticFiles(value);
   const inspected = new Map(Object.entries(files).filter(([name]) => HTML_NAME.test(name)).map(([name, html]) => [name, inspectHtml(html)]));
   const evidence: ProofEvidence[] = project.requiredPages.map((file, index) => {
@@ -353,28 +364,28 @@ export function createUploadedDelivery(value: unknown, rawProject: StaticProject
         : message(language, `${file} 未交付或未通过保守 HTML 结构检查；请检查 doctype、title、body 及含糊标记。`, `${file} is absent or did not pass conservative HTML structure checks. Check its doctype, title, body and ambiguous markup.`),
     };
   });
-  if (project.link) {
-    const requirement = project.link;
+  (project.links ?? (project.link ? [project.link] : [])).forEach((requirement, index) => {
     const source = inspected.get(requirement.from);
     const matches = source?.anchors.filter(anchor => normalizedText(anchor.text) === normalizedText(requirement.text)) ?? [];
     const anchor = matches.length === 1 ? matches[0] : undefined;
     const target = LOCAL_TARGET.exec(requirement.to)!;
     const targetPage = inspected.get(target[1]);
-    const destinations = targetPage?.elements.filter(element => element.inBody && element.tag.attributes.get("id") === target[2]) ?? [];
+    const destinations = target[2] ? targetPage?.elements.filter(element => element.inBody && element.tag.attributes.get("id") === target[2]) ?? [] : [];
     const rawHref = anchor?.tag.attributes.get("href");
     const fragment = rawHref?.match(/^[^?#]*(#[A-Za-z0-9_][A-Za-z0-9_.:-]{0,127})$/u)?.[1];
     const resolved = rawHref && resolveStaticReference(requirement.from, rawHref);
-    const href = resolved && fragment ? `${resolved}${fragment}` : undefined;
+    const href = resolved ? `${resolved}${fragment ?? ""}` : undefined;
     const hiddenAnchor = anchor?.tag.attributes.has("hidden") || anchor?.tag.attributes.has("inert");
-    const passed = !!source?.valid && !!targetPage?.valid && !!anchor?.valid && !hiddenAnchor && href === requirement.to && destinations.length === 1;
+    const passed = !!source?.valid && !!targetPage?.valid && !!anchor?.valid && !hiddenAnchor && href === requirement.to && (!target[2] || destinations.length === 1);
     const sourceHtml = files[requirement.from] ?? "";
-    evidence.push({ id: "evidence-link", criterionId: "link", file: requirement.from,
+    const criterionId = index === 0 ? "link" : `link-${index + 1}`;
+    evidence.push({ id: `evidence-${criterionId}`, criterionId, file: requirement.from,
       excerpt: snippet(anchor ? sourceHtml.slice(anchor.tag.start, anchor.end) : sourceHtml), finding: passed ? "pass" : "fail",
       explanation: passed
-        ? message(language, `实际 a 链接的文字与 ${requirement.to} 匹配，目标文件中有唯一对应 id。只证明源码本地目标存在；未测试点击、脚本、外部服务或完整功能。`, `An actual anchor has the agreed text and ${requirement.to} destination, with one matching target id. This proves a local source target exists, not rendered clicks, scripts, external services or complete functionality.`)
+        ? message(language, `实际 a 链接的文字与 ${requirement.to} 匹配${target[2] ? "，目标文件中有唯一对应 id" : "，目标页面已交付"}。只证明源码本地目标存在；未测试点击、脚本、外部服务或完整功能。`, `An actual anchor has the agreed text and ${requirement.to} destination${target[2] ? ", with one matching target id" : ", with a delivered target page"}. This proves a local source target exists, not rendered clicks, scripts, external services or complete functionality.`)
         : message(language, "未能无歧义地确认约定文字的实际 a 链接及唯一有效本地目标。缺页、重复文字/id、不匹配 href 或含糊 HTML 都不能算通过。", "Could not unambiguously confirm the agreed anchor text and one valid local target. Missing pages, duplicate labels/ids, a different href or ambiguous HTML cannot pass."),
     });
-  }
+  });
   const supportFile = Object.keys(files).find(name => name.endsWith(".css")) ?? "index.html";
   evidence.push({ id: "evidence-mobile", criterionId: "mobile", file: supportFile, excerpt: snippet(files[supportFile]), finding: "needs_human",
     explanation: message(language, "静态源码不能证明手机上的可读性、无溢出或可点击性。必须实际检查所有页面；预览禁用脚本及外部资源，不等于完整网站运行验证。", "Static source cannot prove mobile readability, lack of overflow or usable controls. A person must inspect every page. Preview disables scripts and external resources and is not a complete website execution test."),
@@ -382,5 +393,7 @@ export function createUploadedDelivery(value: unknown, rawProject: StaticProject
   project.manualRequirements.forEach((requirement, index) => evidence.push({ id: `evidence-manual-${index + 1}`, criterionId: `manual-${index + 1}`, file: "index.html", excerpt: snippet(files["index.html"]), finding: "needs_human",
     explanation: message(language, `此项须人工核对原始约定：“${requirement}”。源码摘录只是交付来源，不能自动证明满足要求。`, `A person must verify the original requirement: “${requirement}”. The excerpt identifies delivered source and does not automatically establish compliance.`),
   }));
+  coverageCriteria(project.coverage, language).forEach(criterion => evidence.push({id: `evidence-${criterion.id}`, criterionId: criterion.id, file: "index.html", excerpt: snippet(files["index.html"]), finding: "needs_human",
+    explanation: message(language, `逐项核对原始需求：“${criterion.source}”。如果这一段包含多个要求，必须全部满足；页面存在或 AI 建议不能代替你的确认。`, `Check the complete original requirement: “${criterion.source}”. If this span contains several requirements, verify all of them. Page presence or AI advice does not replace your confirmation.`)}));
   return { id: crypto.randomUUID(), variant: "upload", sequence, label: message(language, `用户上传版本 ${sequence}`, `Uploaded delivery ${sequence}`), submittedAt: new Date().toISOString(), files, evidence, resources: inspectStaticResources(files) };
 }

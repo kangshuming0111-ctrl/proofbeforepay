@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     const clientName = typeof input.clientName === "string" && input.clientName.trim() ? input.clientName.trim() : (language === "zh" ? "示例客户" : "Demo client");
     if (input.mode !== undefined && input.mode !== "demo" && input.mode !== "custom") throw new HttpError(400, "Choose a custom project or a demo agreement.");
     if (input.requirementsDraftId !== undefined && input.mode !== "custom") throw new HttpError(400, "Requirement drafts can only be attached to custom website projects.");
-    const custom = input.mode === "custom" ? parseStaticProject(input, language) : demoRoleplay ? createRoleplayProject(language, sandboxRehearsal) : undefined;
+    const custom = input.mode === "custom" ? parseStaticProject(input, language, {requireCoverage: true}) : demoRoleplay ? createRoleplayProject(language, sandboxRehearsal) : undefined;
     const criteria = custom?.criteria ?? proofCriteria(language);
     let requirements;
     if (input.requirementsDraftId !== undefined && custom) {

@@ -44,6 +44,7 @@ export type ProofLayoutReading =
 export type ProofLayoutReport = {
   id: string;
   deliveryId: string;
+  reportedByRole?: ProofRole;
   method: "browser-observation-v1";
   receivedAt: string;
   viewportHeight: 800;
@@ -75,24 +76,36 @@ export type ProofAssessment = {
   coverage: { includedFiles: string[]; truncatedFiles: string[]; omittedFiles: string[] };
   usage?: { promptTokens: number; completionTokens: number };
 };
-export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"; sequence?: number; label: string; submittedAt: string; evidence: ProofEvidence[]; files?: Record<string, string>; layoutReport?: ProofLayoutReport; browserChecks?: ProofBrowserCheckReport; assessment?: ProofAssessment; riskReviews?: ProofRiskReview[]; resources?: ProofResourceReport };
+export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"; sequence?: number; label: string; submittedAt: string; evidence: ProofEvidence[]; files?: Record<string, string>; layoutReport?: ProofLayoutReport; layoutHistory?: ProofLayoutReport[]; browserChecks?: ProofBrowserCheckReport; browserCheckHistory?: ProofBrowserCheckReport[]; acceptanceEvidence?: ProofAcceptanceEvidence[]; assessment?: ProofAssessment; riskReviews?: ProofRiskReview[]; resources?: ProofResourceReport };
 export type ProofReview = { deliveryId: string; reviewedAt: string; mode: "demo" | "live"; summary: string };
 export type ProofRole = "buyer" | "seller";
 export type ProofSubmission = { deliveryId: string; note: string; at: string };
 export type ProofFeedback = { id: string; deliveryId: string; criterionId: string; comment: string; at: string };
+export type ProofAcceptanceEvidence = {
+  id: string; deliveryId: string; at: string;
+  browserReportId: string | null; layoutReportId: string | null; assessmentId: string | null;
+  criteria: ProofCriterion[]; evidence: ProofEvidence[]; manualChecks: string[];
+  review?: ProofReview; assessment?: ProofAssessment;
+  riskReviews: ProofRiskReview[];
+};
 export type ProofCollaboration = {
   stage: "awaiting_seller" | "in_progress" | "submitted" | "changes_requested" | "accepted";
   sellerName?: string;
   sellerJoinedAt?: string;
   submission?: ProofSubmission;
-  acceptance?: { deliveryId: string; at: string; manualChecks: string[] };
+  acceptance?: { deliveryId: string; at: string; manualChecks: string[]; evidenceSnapshotId?: string };
   feedback: ProofFeedback[];
 };
 export type ProofDeliveryVersion = { isCurrent?: boolean; delivery: ProofDelivery; review?: ProofReview; submission?: ProofSubmission; feedback: ProofFeedback[]; archivedAt: string };
+export type RequirementCoverageUnit = { id: string; start: number; end: number; text: string };
+export type RequirementCoverageDecision = RequirementCoverageUnit & { disposition: "include" | "exclude"; reason?: string; criterionId?: string };
+export type RequirementCoverage = { version: 1; sourceText: string; confirmedAt: string; decisions: RequirementCoverageDecision[] };
 export type StaticProjectSpec = {
   requiredPages: string[];
   link?: { from: string; text: string; to: string };
+  links?: { from: string; text: string; to: string }[];
   manualRequirements: string[];
+  coverage?: RequirementCoverage;
 };
 export type RequirementSource = { start: number; end: number; excerpt: string };
 export type RequirementExtraction = {
@@ -125,7 +138,7 @@ export type ProofPaymentReconciliation =
   | { kind: "voided"; verifiedAt: string }
   | { kind: "closed_unpaid"; reason: "authorization_denied"; verifiedAt: string }
   | { kind: "unresolved"; reason: "pending" | "authorization_still_active" | "provider_unavailable" | "inconsistent_resources" };
-export type ProofEvent = { at: string; kind: "created" | "scope_approved" | "seller_joined" | "authorized" | "delivery_submitted" | "delivery_sent" | "changes_requested" | "delivery_accepted" | "reviewed" | "assessed" | "risk_reviewed" | "layout_checked" | "browser_checked" | "accepted" | "captured" | "voided" | "payment_closed" | "payment_reconciled"; deliveryId?: string };
+export type ProofEvent = { at: string; kind: "created" | "scope_approved" | "seller_joined" | "authorized" | "delivery_submitted" | "delivery_sent" | "changes_requested" | "delivery_accepted" | "reviewed" | "assessed" | "risk_reviewed" | "layout_checked" | "browser_checked" | "accepted" | "captured" | "voided" | "payment_closed" | "payment_reconciled"; deliveryId?: string; reportId?: string; evidenceSnapshotId?: string };
 export type ProofState = {
   requirements?: RequirementAgreement;
   demoRoleplay?: true;
@@ -146,6 +159,7 @@ export type ProofState = {
   delivery?: ProofDelivery;
   review?: ProofReview;
   acceptedDeliveryId?: string;
+  acceptedEvidenceSnapshotId?: string;
   acceptedAt?: string;
   manualChecks?: string[];
   paymentOperation?: "capture" | "void";

@@ -2,6 +2,7 @@ import type { ProofBrowserCheckReading, ProofBrowserCheckReason, ProofBrowserChe
 import { DomainError } from "./domain.ts";
 import { getLayoutFiles, LAYOUT_HEIGHT, LAYOUT_WIDTHS } from "./layout-report.ts";
 import { assertStaticPath, staticFileKind } from "./static-resources.ts";
+import { withBrowserReport } from "./acceptance-evidence.ts";
 
 const REASONS = new Set<ProofBrowserCheckReason>(["missing_file", "load_failed", "snapshot_mismatch", "access_denied", "timeout", "navigation_changed", "ambiguous_link", "unsupported_target", "resource_limit"]);
 export const BROWSER_RESOURCE_LIMIT = 100;
@@ -24,16 +25,24 @@ function flag(value: unknown): boolean {
 export function getBrowserCheckPlan(quote: ProofQuote): ProofBrowserCheckStep[] {
   const pages = getLayoutFiles(quote);
   const steps: ProofBrowserCheckStep[] = pages.flatMap(({file}) => LAYOUT_WIDTHS.map(viewportWidth => ({stepId: `page:${viewportWidth}:${file}`, kind: "page" as const, file, viewportWidth})));
-  const link = quote.proof.project?.link ?? (!quote.proof.project && quote.proof.criteria.some(item => item.id === "booking")
-    ? {from: "index.html", text: "Book a call", to: "contact.html#booking"} : undefined);
-  if (link) {
+  const project = quote.proof.project;
+  if (project?.link && project.links !== undefined) throw new DomainError("The saved agreement has conflicting link requirements.", 409);
+  const links = project?.links ?? (project?.link ? [project.link] : !project && quote.proof.criteria.some(item => item.id === "booking")
+    ? [{from: "index.html", text: "Book a call", to: "contact.html#booking"}] : []);
+  if (!Array.isArray(links) || links.length > 5) throw new DomainError("The saved agreement may check up to five local links.", 409);
+  const seenLinks = new Set<string>();
+  for (const [index, link] of links.entries()) {
+    if (!link || typeof link !== "object" || Array.isArray(link) || typeof link.to !== "string" || typeof link.from !== "string") throw new DomainError("The saved local-link requirement is invalid.", 409);
     const from = assertStaticPath(link.from);
     const [targetFile, fragment, extra] = link.to.split("#");
     const target = targetFile ? assertStaticPath(targetFile) : from;
     if (staticFileKind(from) !== "html" || staticFileKind(target) !== "html" || extra !== undefined
       || fragment !== undefined && !/^[A-Za-z0-9_][A-Za-z0-9_.:-]{0,127}$/u.test(fragment)
       || typeof link.text !== "string" || !link.text.trim() || link.text.length > 120) throw new DomainError("The saved local-link requirement cannot be checked safely.", 409);
-    for (const viewportWidth of LAYOUT_WIDTHS) steps.push({stepId: `link:${viewportWidth}`, kind: "link", file: from, viewportWidth, label: link.text, target: `${target}${fragment ? `#${fragment}` : ""}`});
+    const identity = `${from}\n${link.text.replace(/\s+/gu, " ").trim()}`;
+    if (seenLinks.has(identity)) throw new DomainError("Each local-link step must identify a distinct source and link label.", 409);
+    seenLinks.add(identity);
+    for (const viewportWidth of LAYOUT_WIDTHS) steps.push({stepId: `link:${viewportWidth}${index ? `:${index + 1}` : ""}`, kind: "link", file: from, viewportWidth, label: link.text, target: `${target}${fragment ? `#${fragment}` : ""}`});
   }
   return steps;
 }
@@ -87,7 +96,7 @@ export function recordBrowserChecks(quote: ProofQuote, role: ProofRole, value: u
   if (quote.status === "draft" || quote.proof.paymentOperation) throw new DomainError("Lock the scope and finish any pending payment action before saving browser observations.", 409);
   const browserChecks = createBrowserCheckReport(quote, value, receivedAt);
   const next = structuredClone(quote);
-  next.proof.delivery!.browserChecks = {...browserChecks, reportedByRole: role};
-  next.proof.audit.push({kind: "browser_checked", at: browserChecks.receivedAt, deliveryId: browserChecks.deliveryId});
+  next.proof.delivery = withBrowserReport(next.proof.delivery!, {...browserChecks, reportedByRole: role});
+  next.proof.audit.push({kind: "browser_checked", at: browserChecks.receivedAt, deliveryId: browserChecks.deliveryId, reportId: browserChecks.id});
   return next;
 }

@@ -31,6 +31,26 @@ test("browser plan covers actual/required pages at both widths and only the save
   quote.proof.project!.link = undefined;
   assert.equal(getBrowserCheckPlan(quote).filter(step => step.kind === "link").length, 0);
 });
+test("multiple agreed navigation steps cover whole-page language changes and section targets independently", () => {
+  const quote = agreement(); delete quote.proof.project!.link;
+  quote.proof.project!.links = [
+    {from:"index.html",text:"Menu",to:"contact.html"},
+    {from:"contact.html",text:"中文",to:"index.html#booking"},
+    {from:"index.html",text:"Visit",to:"contact.html#booking"},
+  ];
+  const plan = getBrowserCheckPlan(quote);
+  assert.equal(plan.length,10);
+  assert.deepEqual(plan.filter(row=>row.kind==="link").map(row=>[row.stepId,row.file,row.target]),[
+    ["link:375","index.html","contact.html"],["link:900","index.html","contact.html"],
+    ["link:375:2","contact.html","index.html#booking"],["link:900:2","contact.html","index.html#booking"],
+    ["link:375:3","index.html","contact.html#booking"],["link:900:3","index.html","contact.html#booking"],
+  ]);
+  assert.equal(createBrowserCheckReport(quote,input(quote),now).summary.steps,10);
+  const incomplete=input(quote);incomplete.readings=incomplete.readings.slice(0,-1);
+  invalid(()=>createBrowserCheckReport(quote,incomplete,now));
+  quote.proof.project!.links.push({from:"index.html",text:"Menu",to:"index.html"});
+  invalid(()=>getBrowserCheckPlan(quote));
+});
 test("valid digit/underscore/punctuation fragment identifiers remain checkable and unsafe links are rejected", () => {
   for (const fragment of ["1booking", "_booking", "book.now:please-test"]) {
     const quote = agreement(); quote.proof.project!.link!.to = `contact.html#${fragment}`;

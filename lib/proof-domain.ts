@@ -1,5 +1,7 @@
 import type { ProofPaymentReconciliation, ProofQuote, Quote } from "./contracts.ts";
 import { DomainError, quoteTotal } from "./domain.ts";
+import { assertCoverageForAcceptance } from "./requirement-coverage.ts";
+import { assertAcceptedEvidenceReference } from "./acceptance-evidence.ts";
 
 export function requireProof(quote: Quote): asserts quote is ProofQuote {
   if (quote.workflow !== "proof-v1" || !quote.proof) throw new DomainError("This record is not a ProofBeforePay agreement.");
@@ -17,6 +19,8 @@ export function requireActiveAuthorization(quote: ProofQuote, now = Date.now()) 
 
 export function validateAcceptance(quote: ProofQuote, input: Record<string, unknown>) {
   requireActiveAuthorization(quote);
+  assertCoverageForAcceptance(quote);
+  assertAcceptedEvidenceReference(quote);
   const { delivery, review, criteria } = quote.proof;
   if (input.confirm !== true) throw new DomainError("Explicit confirmation is required to accept delivery and capture payment.");
   if (!delivery || !review || review.deliveryId !== delivery.id || input.deliveryId !== delivery.id) throw new DomainError("Review the current delivery version before accepting it.");

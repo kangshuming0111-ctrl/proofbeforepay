@@ -1,6 +1,7 @@
-import type { ProofLayoutReading, ProofLayoutReport, ProofLayoutUnavailableReason, ProofLayoutWidth, ProofQuote } from "./contracts.ts";
+import type { ProofLayoutReading, ProofLayoutReport, ProofLayoutUnavailableReason, ProofLayoutWidth, ProofQuote, ProofRole } from "./contracts.ts";
 import { DomainError } from "./domain.ts";
 import { assertStaticPath, STATIC_RESOURCE_LIMITS, staticFileKind } from "./static-resources.ts";
+import { withLayoutReport } from "./acceptance-evidence.ts";
 
 export const LAYOUT_WIDTHS = [375, 900] as const;
 export const LAYOUT_HEIGHT = 800;
@@ -117,4 +118,16 @@ export function createLayoutReport(quote: ProofQuote, value: Record<string, unkn
     viewportHeight: LAYOUT_HEIGHT, readings: ordered,
     summary: { measured: measured.length, unavailable: ordered.length - measured.length, overflow: measured.filter(reading => reading.outcome === "overflow").length },
   };
+}
+
+/** Save the complete observation with append-only provenance. Callers still
+ * enforce workflow permissions and the storage version CAS. */
+export function recordLayoutReport(quote: ProofQuote, role: ProofRole, value: Record<string, unknown>, receivedAt?: string): ProofQuote {
+  if (role !== "buyer" && role !== "seller") throw new DomainError("Only project members may save layout observations.", 403);
+  if (quote.status === "draft" || quote.proof.paymentOperation) throw new DomainError("Lock the scope and finish any pending payment action before saving layout observations.", 409);
+  const report = {...createLayoutReport(quote, value, receivedAt), reportedByRole: role};
+  const next = structuredClone(quote);
+  next.proof.delivery = withLayoutReport(next.proof.delivery!, report);
+  next.proof.audit.push({kind: "layout_checked", at: report.receivedAt, deliveryId: report.deliveryId, reportId: report.id});
+  return next;
 }

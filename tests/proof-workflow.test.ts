@@ -255,7 +255,9 @@ test("delivery acceptance is independent of payment but still requires current c
   const next = acceptDelivery(quote, input, now);
   assert.deepEqual(quote, before);
   assert.equal(next.proof.collaboration!.stage, "accepted");
-  assert.deepEqual(next.proof.collaboration!.acceptance, { deliveryId: quote.proof.delivery!.id, at: now, manualChecks: ["mobile", "manual-1"] });
+  const snapshotId = next.proof.delivery!.acceptanceEvidence?.[0].id;
+  assert.ok(snapshotId);
+  assert.deepEqual(next.proof.collaboration!.acceptance, { deliveryId: quote.proof.delivery!.id, at: now, manualChecks: ["mobile", "manual-1"], evidenceSnapshotId: snapshotId });
   assert.equal(next.proof.acceptedDeliveryId, quote.proof.acceptedDeliveryId);
   assert.equal(next.proof.acceptedAt, quote.proof.acceptedAt);
   assert.deepEqual(next.proof.manualChecks, quote.proof.manualChecks);

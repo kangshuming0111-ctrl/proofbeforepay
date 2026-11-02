@@ -4,6 +4,7 @@ import type { RequirementDraft, RequirementExtraction } from "../lib/contracts.t
 import { DomainError } from "../lib/domain.ts";
 import { ProviderError, type Fetcher } from "../lib/providers.ts";
 import { confirmRequirementDraft, extractRequirements, validateRequirementText } from "../lib/requirement-extraction.ts";
+import { summaryCoverageUnits } from "../lib/requirement-coverage.ts";
 import { parseStaticProject } from "../lib/static-project.ts";
 
 const sourceText = 'Deliver index.html and about.html;\nindex.html contains a link labelled "Contact me" pointing to about.html#contact;\nThe buyer checks the final text directly.';
@@ -206,6 +207,22 @@ test("buyer edits and newly-added checks do not inherit false extracted provenan
   const agreement = confirmRequirementDraft(draft(result), parsed.project, parsed.criteria, true);
   assert.deepEqual(agreement.sourceRefs.map(item => item.criterionId), ["page-1", "page-3", "manual-2"]);
   assert.equal(agreement.sourceText, sourceText);
+});
+
+test("optional AI draft and saved buyer coverage coexist without borrowing citations for new coverage or links", async () => {
+  const result = await extractRequirements(input, env, provider(proposal()).fetcher);
+  const summary = "A small website, with complete contact copy and a human inspection.";
+  const parsed = parseStaticProject({title: "Covered AI proposal", summary, amount: "1.00", requiredPages: ["index.html", "about.html"],
+    links: [{from: "index.html", text: "Contact me", to: "about.html#contact"}, {from: "about.html", text: "Home", to: "index.html"}],
+    manualRequirements: ["The buyer checks the final text directly."],
+    coverage: {version: 1, sourceText: summary, confirmed: true, decisions: summaryCoverageUnits(summary).map(({id}) => ({id, disposition: "include"}))}}, "en", {requireCoverage: true});
+  const agreement = confirmRequirementDraft(draft(result), parsed.project, parsed.criteria, true);
+  assert.deepEqual(agreement.sourceRefs.map(item => item.criterionId), ["page-1", "page-2", "link", "manual-1"]);
+  assert.ok(parsed.criteria.some(item => item.id === "link-2"));
+  assert.ok(parsed.criteria.some(item => item.id.startsWith("coverage-")));
+  assert.ok(!agreement.sourceRefs.some(item => item.criterionId === "link-2" || item.criterionId.startsWith("coverage-")));
+  const changed = structuredClone(parsed.criteria); changed.find(item => item.id === "coverage-1")!.source = "different source";
+  assert.throws(() => confirmRequirementDraft(draft(result), parsed.project, changed, true), DomainError);
 });
 
 test("confirmation rejects invalid saved provenance, foreign criterion IDs and duplicate criteria", async () => {

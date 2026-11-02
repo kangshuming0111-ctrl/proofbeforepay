@@ -1,0 +1,37 @@
+.requirement-coverage{margin:12px 0;padding:11px;border:1px solid #c8d5bb;border-top:3px solid #355440;border-radius:4px;background:#f5f7ee;min-width:0}
+.requirement-coverage-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:5px 10px}
+.requirement-coverage-heading h3{display:flex;align-items:center;gap:6px;margin:0;font-size:12px;color:#355440}
+.requirement-coverage-heading>span{font-size:10px;color:#617357}
+.requirement-coverage-help{margin:7px 0;color:#66775e;font-size:10px;line-height:1.8;overflow-wrap:anywhere}
+.requirement-coverage-list{margin:9px 0;padding:0;list-style:none;min-width:0}
+.requirement-coverage>.requirement-coverage-list{max-height:min(350px,43dvh);overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;padding-right:3px}
+.requirement-coverage-list>li{margin:0 0 8px;padding:9px;border:1px solid #d9e2d0;background:#fffef8;border-radius:3px;min-width:0}
+.requirement-coverage-list>li.coverage-exclude,.requirement-coverage-list>li.coverage-pending{border-color:#dbc9a7;background:#faf5e9}
+.requirement-coverage-row{display:flex;align-items:flex-start;gap:7px}
+.requirement-coverage-number{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;flex-shrink:0;background:#e7eddd;color:#4a6540;font-size:10px}
+.requirement-coverage-list blockquote{min-width:0;margin:0 0 7px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;line-height:1.8;color:#415b3e}
+.project-form .requirement-coverage-list label{margin:6px 0 3px;font-size:10px;color:#6c7e5e}
+.project-form .requirement-coverage-list :is(select,textarea){width:100%;margin:0;font-size:11px;min-height:32px;padding:6px 7px}
+.project-form .requirement-coverage-list textarea{resize:vertical;min-height:57px}
+.project-form label.requirement-coverage-confirm{display:flex;align-items:flex-start;gap:7px;margin:9px 0 0;font-weight:400;font-size:11px;line-height:1.8;color:#3f5d36}
+.requirement-coverage-confirm>input{flex-shrink:0;width:15px;height:15px;margin:3px 0 0}
+.requirement-coverage-confirm>span{min-width:0;overflow-wrap:anywhere}
+.requirement-coverage-warning{margin:6px 0;color:#94643d;font-size:10px;line-height:1.8;overflow-wrap:anywhere}
+.requirement-coverage-saved{margin:10px 0;border-top:1px solid #d5dfc9;min-width:0}
+.requirement-coverage-saved>summary{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:9px 0;color:#5c754f;font-size:10px;cursor:pointer;list-style:none}
+.requirement-coverage-saved>summary>span:first-child{display:flex;gap:5px;align-items:center;flex:1}
+.requirement-coverage-saved>summary>span:nth-child(2){font-size:9px;color:#7b896d}
+.requirement-coverage-saved-body{max-height:min(420px,52dvh);overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;padding-right:3px}
+.requirement-coverage-saved-body pre{font:inherit;font-size:10px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere;padding:8px;background:#f2f5e9}
+.requirement-coverage-saved-body details>summary{font-size:10px;color:#68805b;cursor:pointer}
+.requirement-coverage-saved-body li p{font-size:10px;line-height:1.8;margin:4px 0;color:#6b7b5f;overflow-wrap:anywhere}
+.requirement-coverage-saved-body li strong{font-weight:600}
+.project-advanced-checks{margin:10px 0;padding:9px;border:1px solid #dce3d2;border-radius:4px;background:#fffef8;min-width:0}
+.project-advanced-checks>summary{font-size:11px;color:#60774f;cursor:pointer}
+.project-browser-steps{min-width:0;margin-top:11px}
+.project-browser-step{margin:8px 0;padding:8px;border:1px solid #d9e1cf;border-radius:4px;background:#fafbf6}
+.project-browser-step-heading{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:11px;color:#4d6942}
+.project-browser-step .project-link-fields{display:block;margin-top:6px}
+.project-browser-step .project-link-fields input{width:100%;min-width:0}
+.requirement-coverage :is(select,textarea,input):focus-visible,.requirement-coverage-saved summary:focus-visible{outline:2px solid #839f5f;outline-offset:2px}
+@media(max-width:480px){.requirement-coverage{padding:9px}.project-form .requirement-coverage-list :is(select,textarea){font-size:12px}.requirement-coverage>.requirement-coverage-list{max-height:48dvh}.requirement-coverage-list blockquote{font-size:12px}.project-form label.requirement-coverage-confirm{font-size:12px}}

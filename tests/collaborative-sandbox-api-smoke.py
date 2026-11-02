@@ -57,6 +57,7 @@ def main():
             "paymentTesting": "collaborative-sandbox", "language": "en", "currency": "AUD",
             "title": "Synthetic two-account website", "summary": "Local API/D1 test; no external provider",
             "amount": "1.00", "requiredPages": ["index.html", "contact.html"], "manualRequirements": []}
+    base["coverage"] = {"version": 1, "sourceText": base["summary"], "confirmed": True, "decisions": [{"id": "coverage-1", "disposition": "include"}, {"id": "coverage-2", "disposition": "include"}]}
     api.reject(None, "/api/proofs", base, codes=(401,))
     for patch in ({"mode": "demo"}, {"collaborative": False}, {"demoRoleplay": True}, {"paymentTesting": "live"}):
         api.reject(buyer, "/api/proofs", {**base, **patch}, codes=(400,))
@@ -91,7 +92,7 @@ def main():
     quote = quote_response(api.ok(seller, path + "/delivery", {"files": {"index.html": html}, "expectedDeliveryId": None, "reviewRules": True}), "seller")
     first_id = quote["proof"]["delivery"]["id"]
     api.ok(seller, path + "/submit_delivery", {"deliveryId": first_id, "note": "Initial source files"})
-    api.reject(buyer, path + "/accept_delivery", {"deliveryId": first_id, "confirm": True, "manualChecks": ["mobile"]}, codes=(409,))
+    api.reject(buyer, path + "/accept_delivery", {"deliveryId": first_id, "confirm": True, "manualChecks": ["mobile", "coverage-1", "coverage-2"]}, codes=(409,))
     api.ok(buyer, path + "/return", {"deliveryId": first_id, "feedback": [{"criterionId": "page-2", "comment": "Supply the agreed contact page."}]})
     quote = quote_response(api.ok(seller, path + "/delivery", {"files": {"index.html": html, "contact.html": html}, "expectedDeliveryId": first_id, "reviewRules": True}), "seller")
     current_id = quote["proof"]["delivery"]["id"]
@@ -99,16 +100,16 @@ def main():
     api.reject(seller, path + "/delivery", {"files": {"index.html": html}, "expectedDeliveryId": first_id}, codes=(409,))
     api.reject(seller, path + "/submit_delivery", {"deliveryId": first_id, "note": "Stale"}, codes=(409,))
     api.ok(seller, path + "/submit_delivery", {"deliveryId": current_id, "note": "Revised contact page included"})
-    api.reject(buyer, path + "/accept_delivery", {"deliveryId": first_id, "confirm": True, "manualChecks": ["mobile"]}, codes=(409,))
-    api.ok(buyer, path + "/accept_delivery", {"deliveryId": current_id, "confirm": True, "manualChecks": ["mobile"]})
+    api.reject(buyer, path + "/accept_delivery", {"deliveryId": first_id, "confirm": True, "manualChecks": ["mobile", "coverage-1", "coverage-2"]}, codes=(409,))
+    api.ok(buyer, path + "/accept_delivery", {"deliveryId": current_id, "confirm": True, "manualChecks": ["mobile", "coverage-1", "coverage-2"]})
     api.checked("Seller revision and buyer acceptance use the exact current snapshot; stale upload, submission and acceptance are rejected")
 
     checkout = api.ok(buyer, path + "/checkout", {})
     assert checkout["mode"] == "sandbox" and checkout["orderId"].startswith("LOCAL-ORDER-")
     api.ok(buyer, path + "/authorize", {"orderId": checkout["orderId"]})
-    api.reject(buyer, path + "/capture", {"deliveryId": first_id, "confirm": True, "manualChecks": ["mobile"]}, codes=(400, 409))
-    api.reject(seller, path + "/capture", {"deliveryId": current_id, "confirm": True, "manualChecks": ["mobile"]}, role="buyer", codes=(403,))
-    consent = {"deliveryId": current_id, "confirm": True, "manualChecks": ["mobile"]}
+    api.reject(buyer, path + "/capture", {"deliveryId": first_id, "confirm": True, "manualChecks": ["mobile", "coverage-1", "coverage-2"]}, codes=(400, 409))
+    api.reject(seller, path + "/capture", {"deliveryId": current_id, "confirm": True, "manualChecks": ["mobile", "coverage-1", "coverage-2"]}, role="buyer", codes=(403,))
+    consent = {"deliveryId": current_id, "confirm": True, "manualChecks": ["mobile", "coverage-1", "coverage-2"]}
     receipt = quote_response(api.ok(buyer, path + "/capture", consent), "buyer")
     assert receipt["status"] == "paid" and receipt["proof"]["paymentState"] == "captured"
     assert receipt["proof"]["acceptedDeliveryId"] == current_id and receipt["captureId"].startswith("LOCAL-CAPTURE-")

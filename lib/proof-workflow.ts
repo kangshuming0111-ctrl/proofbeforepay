@@ -2,6 +2,8 @@ import type { ProofDelivery, ProofDeliveryVersion, ProofEvent, ProofQuote, Proof
 import { DomainError } from "./domain.ts";
 import { requireProof } from "./proof-domain.ts";
 import { isSandboxCollaboration, isSandboxRehearsal } from "./proof-demo.ts";
+import { createAcceptanceEvidence, withAcceptanceEvidence } from "./acceptance-evidence.ts";
+import { assertCoverageForAcceptance } from "./requirement-coverage.ts";
 
 export type ProofWorkflowAction = "approve" | "checkout" | "authorize" | "delivery" | "review" | "assess" | "layout" | "capture" | "void" | "reconcile" | "return" | "accept_delivery" | "invite" | "submit_delivery";
 
@@ -159,6 +161,7 @@ export function requestChanges(quote: ProofQuote, value: Record<string, unknown>
   next.proof.collaboration = { ...next.proof.collaboration!, stage: "changes_requested", acceptance: undefined, feedback: [...next.proof.collaboration!.feedback, ...feedback] };
   next.proof.acceptedDeliveryId = undefined;
   next.proof.acceptedAt = undefined;
+  next.proof.acceptedEvidenceSnapshotId = undefined;
   next.proof.manualChecks = undefined;
   return log(next, "changes_requested", at, delivery.id);
 }
@@ -169,6 +172,7 @@ export function acceptDelivery(quote: ProofQuote, value: Record<string, unknown>
   const input = record(value, "Delivery acceptance");
   const delivery = currentDelivery(quote, input);
   if (input.confirm !== true) throw new DomainError("Explicit confirmation is required to accept this delivery.");
+  assertCoverageForAcceptance(quote);
   if (quote.proof.review?.deliveryId !== delivery.id) conflict("Review the current delivery version before accepting it.");
   if (!quote.proof.criteria.length || quote.proof.criteria.some(criterion => !delivery.evidence.some(entry => entry.criterionId === criterion.id))) {
     conflict("The review must cover every agreed requirement.");
@@ -180,8 +184,11 @@ export function acceptDelivery(quote: ProofQuote, value: Record<string, unknown>
   }
   const at = timestamp(now);
   const next = structuredClone(quote);
-  next.proof.collaboration = { ...next.proof.collaboration!, stage: "accepted", acceptance: { deliveryId: delivery.id, at, manualChecks: required } };
-  return log(next, "delivery_accepted", at, delivery.id);
+  const snapshot = createAcceptanceEvidence(quote, required, at);
+  next.proof.delivery = withAcceptanceEvidence(delivery, snapshot);
+  next.proof.collaboration = { ...next.proof.collaboration!, stage: "accepted", acceptance: { deliveryId: delivery.id, at, manualChecks: required, evidenceSnapshotId: snapshot.id } };
+  next.proof.audit.push({kind: "delivery_accepted", at, deliveryId: delivery.id, evidenceSnapshotId: snapshot.id});
+  return next;
 }
 
 /** The caller archives the previous snapshot and writes the replacement with its existing CAS. */
@@ -194,9 +201,16 @@ export function prepareReplacement(quote: ProofQuote, newDelivery: ProofDelivery
   next.proof.delivery = structuredClone(newDelivery);
   // A new upload never inherits an assessment, even from a future internal builder.
   delete next.proof.delivery.assessment;
+  delete next.proof.delivery.layoutReport;
+  delete next.proof.delivery.layoutHistory;
+  delete next.proof.delivery.browserChecks;
+  delete next.proof.delivery.browserCheckHistory;
+  delete next.proof.delivery.acceptanceEvidence;
+  delete next.proof.delivery.riskReviews;
   next.proof.review = undefined;
   next.proof.acceptedDeliveryId = undefined;
   next.proof.acceptedAt = undefined;
+  next.proof.acceptedEvidenceSnapshotId = undefined;
   next.proof.manualChecks = undefined;
   next.proof.collaboration = { ...next.proof.collaboration!, stage: "in_progress", submission: undefined, acceptance: undefined };
   return next;

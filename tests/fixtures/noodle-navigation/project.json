@@ -1,0 +1,29 @@
+{
+  "title": "双语面馆：菜单与到店说明导航",
+  "summary": "展示英文菜单和价格。提供中文菜单页面。可以从中文菜单打开到店说明。所有页面在手机可读。真实预约处理和邮件发送不属于本次交付。",
+  "amount": "1.00",
+  "requiredPages": [
+    "index.html",
+    "menu-en.html",
+    "menu-zh.html",
+    "visit.html"
+  ],
+  "links": [
+    {
+      "from": "index.html",
+      "text": "View menu",
+      "to": "menu-en.html"
+    },
+    {
+      "from": "menu-en.html",
+      "text": "中文菜单",
+      "to": "menu-zh.html"
+    },
+    {
+      "from": "menu-zh.html",
+      "text": "查看到店说明",
+      "to": "visit.html#consultation"
+    }
+  ],
+  "manualRequirements": []
+}

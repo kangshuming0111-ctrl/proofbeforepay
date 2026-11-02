@@ -10,12 +10,15 @@ import {
 } from "lucide-react";
 import type {
   AppConfig, CheckoutResult, Currency, Language, ProofCriterion,
-  ProofDeliveryVersion, ProofEvent, ProofEvidence, ProofPaymentReconciliation, ProofQuote, ProofRole, RequirementDraft,
+  ProofDeliveryVersion, ProofEvent, ProofEvidence, ProofPaymentReconciliation, ProofQuote, ProofRole, RequirementDraft, RequirementCoverageUnit,
 } from "@/lib/contracts";
 import { runLayoutProbe } from "@/lib/layout-probe";
 import { LayoutCheckPanel } from "./components/LayoutCheckPanel";
 import { runBrowserChecks } from "@/lib/browser-check-probe";
 import { BrowserCheckPanel } from "./components/BrowserCheckPanel";
+import { EvidenceHistoryPanel } from "./components/EvidenceHistoryPanel";
+import { RequirementCoveragePanel, RequirementCoverageSource, type CoverageDraftDecision } from "./components/RequirementCoveragePanel";
+import { summaryCoverageUnits } from "@/lib/requirement-coverage";
 import { CollaborationPanel, type CollaborationHistoryHandle, type FeedbackSuggestion } from "./components/CollaborationPanel";
 import { VersionViewer } from "./components/VersionViewer";
 import { RequirementsIntake } from "./components/RequirementsIntake";
@@ -35,6 +38,7 @@ import "./layout-check.css";
 import "./browser-check.css";
 import "./collaboration.css";
 import "./requirements.css";
+import "./requirement-coverage.css";
 import "./smooth-flow.css";
 import "./chain-flow.css";
 import "./sandbox-login-help.css";
@@ -66,6 +70,7 @@ type ModalState = { kind: "authorize"; orderId: string } | { kind: "void" } | nu
 type ProjectMode = "custom" | "demo";
 type CaseResult = {quote: ProofQuote; role?: ProofRole};
 type CaseList = {quotes: unknown[]; roles?: Record<string, ProofRole>};
+type BrowserStepDraft = { from: string; text: string; to: string };
 
 const DEFAULT_PAGES = "index.html";
 
@@ -108,10 +113,9 @@ export default function Home() {
   const [requirementsFromBrief, setRequirementsFromBrief] = useState(false);
   const [requiredPagesInput, setRequiredPagesInput] = useState(DEFAULT_PAGES);
   const [manualRequirementsInput, setManualRequirementsInput] = useState("");
-  const [includeLink, setIncludeLink] = useState(false);
-  const [linkFrom, setLinkFrom] = useState("index.html");
-  const [linkText, setLinkText] = useState("Book a call");
-  const [linkTo, setLinkTo] = useState("contact.html#booking");
+  const [browserSteps, setBrowserSteps] = useState<BrowserStepDraft[]>([]);
+  const [coverageDecisions, setCoverageDecisions] = useState<Record<string, CoverageDraftDecision>>({});
+  const [coverageConfirmed, setCoverageConfirmed] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [uploadError, setUploadError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -147,6 +151,13 @@ export default function Home() {
   const acceptanceRef = useRef<HTMLDivElement>(null);
   const completedCollaborationRef = useRef<HTMLDetailsElement>(null);
   const collaborationHistoryRef = useRef<CollaborationHistoryHandle>(null);
+
+  let coverageUnits: RequirementCoverageUnit[] = [];
+  let coverageError = "";
+  try { if (projectSummary.trim()) coverageUnits = summaryCoverageUnits(projectSummary.trim()); }
+  catch (cause) { coverageError = cause instanceof Error ? cause.message : tr("需求原文暂时无法整理，请检查长度和内容。", "Could not prepare the source requirements. Check their length and content."); }
+  const coverageRows = coverageUnits.map(unit => coverageDecisions[unit.id] ?? {id: unit.id, disposition: "include" as const});
+  const coverageReady = !!coverageUnits.length && !coverageError && coverageRows.every(row => row.disposition !== "pending" && (row.disposition !== "exclude" || !!row.reason?.trim()));
 
   const proof = quote?.proof;
   const collaboration = proof?.collaboration;
@@ -211,7 +222,7 @@ export default function Home() {
     document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
   }, [language]);
 
-  useEffect(() => { setRequirementsConfirmed(false); }, [requirementsDraft?.id, requiredPagesInput, manualRequirementsInput, includeLink, linkFrom, linkText, linkTo, projectTitle, projectSummary, projectAmount, currency]);
+  useEffect(() => { setRequirementsConfirmed(false); setCoverageConfirmed(false); }, [requirementsDraft?.id, requiredPagesInput, manualRequirementsInput, browserSteps, projectTitle, projectSummary, projectAmount, currency]);
 
   useEffect(() => {
     let savedDetails: { element: HTMLDetailsElement; open: boolean }[] = [];
@@ -375,13 +386,13 @@ export default function Home() {
     setProjectMode("custom");
     setProjectStep(0);
     setProjectTitle("");
-    setProjectSummary("");
+    updateProjectSummary("");
     setProjectAmount("");
     setRequirementsDraft(undefined); setRequirementsConfirmed(false);
     setRequirementsFromBrief(false);
     setRequiredPagesInput(DEFAULT_PAGES);
     setManualRequirementsInput("");
-    setIncludeLink(false);
+    setBrowserSteps([]); setCoverageDecisions({}); setCoverageConfirmed(false);
     window.requestAnimationFrame(() => workspaceRef.current?.focus({ preventScroll: true }));
   }
 
@@ -427,10 +438,10 @@ export default function Home() {
     setIntakeStarted(true);
     setProjectMode("custom"); setProjectStep(0); setWorkspacePanel("agreement");
     setProjectTitle(tr("Willow 花艺工作室网站", "Willow floral studio website"));
-    setProjectSummary(tr("制作首页、服务价格页和联系页。显示营业时间 Monday to Friday, 11am–8pm，列明花束服务价格，首页预约链接应指向联系页的预约区域。", "Create Home, Services and Contact pages. Display opening hours Monday to Friday, 11am–8pm and floral service prices. The home-page booking link must point to the booking section on Contact."));
+    updateProjectSummary(tr("制作首页、服务价格页和联系页。显示营业时间 Monday to Friday, 11am–8pm，列明花束服务价格，首页预约链接应指向联系页的预约区域。", "Create Home, Services and Contact pages. Display opening hours Monday to Friday, 11am–8pm and floral service prices. The home-page booking link must point to the booking section on Contact."));
     setProjectAmount("1.00"); setRequiredPagesInput("index.html\nservices.html\ncontact.html");
     setManualRequirementsInput(tr("显示营业时间 Monday to Friday, 11am–8pm。\n显示花束服务的价格。", "Display opening hours Monday to Friday, 11am–8pm.\nDisplay floral service prices."));
-    setIncludeLink(true); setLinkFrom("index.html"); setLinkText("Book a call"); setLinkTo("contact.html#booking");
+    setBrowserSteps([{from: "index.html", text: "Book a call", to: "contact.html#booking"}]);
     setRequirementsDraft(undefined); setRequirementsConfirmed(false); setRequirementsFromBrief(false);
     setNotice(tr("示例需求已填入，请按实际项目编辑。未创建项目，也未调用 AI。", "Example requirements filled. Edit them for your project. No project was created and no AI was called."));
   }
@@ -695,6 +706,10 @@ export default function Home() {
     }
   }
 
+  function updateProjectSummary(value: string) {
+    setProjectSummary(value); setCoverageDecisions({}); setCoverageConfirmed(false);
+  }
+
   function projectBasicsError() {
     if (!projectTitle.trim()) return tr("请填写项目名称。", "Enter a project title.");
     if (!projectSummary.trim()) return tr("请简要说明交付内容。", "Describe what will be delivered.");
@@ -717,12 +732,11 @@ export default function Home() {
   function applyRequirements(draft: RequirementDraft, fromBrief = false) {
     setRequirementsFromBrief(fromBrief);
     setRequirementsDraft(draft); setRequirementsConfirmed(false);
-    setRequiredPagesInput(draft.pages.map(item => item.file).join("\n"));
+    setRequiredPagesInput(draft.pages.length ? draft.pages.map(item => item.file).join("\n") : DEFAULT_PAGES);
     setManualRequirementsInput(draft.manualRequirements.map(item => item.text).join("\n"));
-    setIncludeLink(!!draft.link);
-    if (draft.link) {setLinkFrom(draft.link.from); setLinkText(draft.link.text); setLinkTo(draft.link.to);}
+    setBrowserSteps(draft.link ? [{from: draft.link.from, text: draft.link.text, to: draft.link.to}] : []);
     if (!projectTitle.trim()) setProjectTitle(tr("网站交付验收", "Website delivery acceptance"));
-    if (!projectSummary.trim()) setProjectSummary(draft.sourceText.slice(0, 1000));
+    if (!projectSummary.trim()) updateProjectSummary(draft.sourceText.slice(0, 1000));
     setNotice(tr("需求清单已载入。请填写项目金额，下一步核对和编辑清单；金额不会由解析结果决定。", "Requirements loaded. Enter the amount, then review and edit the checklist. Extraction does not decide the price."));
   }
 
@@ -752,6 +766,7 @@ export default function Home() {
         if (message) throw new Error(message);
         const pages = inputLines(requiredPagesInput);
         const manualRequirements = inputLines(manualRequirementsInput);
+        if (!coverageConfirmed || !coverageReady) throw new Error(tr("请逐条处理原始需求，填写排除理由，并确认范围后再创建。", "Handle every source requirement, give reasons for exclusions, and confirm the scope before creating."));
         if (requirementsDraft && !requirementsConfirmed) throw new Error(tr("请先核对原文与最终验收清单，并勾选确认。", "Review the original requirements and final checklist, then confirm them."));
         if (!pages.length || pages.length > 10 || pages.some(file => !isHtmlDeliveryPath(file))) {
           throw new Error(tr("填写 1–10 个相对 HTML 路径，每行一个，例如 index.html。", "Enter 1–10 relative HTML paths, one per line, such as index.html."));
@@ -760,12 +775,15 @@ export default function Home() {
         if (manualRequirements.length > 5 || manualRequirements.some(requirement => requirement.length > 300)) {
           throw new Error(tr("人工标准最多 5 条，每条不超过 300 字。", "Use at most five human checks, with no more than 300 characters per check."));
         }
-        if (includeLink && (!isHtmlDeliveryPath(linkFrom.trim()) || !linkText.trim() || !isHtmlDeliveryPath(linkTo.trim().split("#")[0]) || !/^[A-Za-z0-9_][A-Za-z0-9_.:-]{0,127}$/u.test(linkTo.trim().split("#")[1] ?? ""))) {
-          throw new Error(tr("预约链接需填写来源 HTML、可见文字和 file.html#id 格式的本地目标。", "Specify the source HTML, visible link text and a local target in file.html#id format."));
-        }
+        const links = browserSteps.map(step => ({from: step.from.trim(), text: step.text.trim(), to: step.to.trim()}));
+        if (links.length > 5 || links.some(step => {
+          const [file, fragment, extra] = step.to.split("#");
+          return !isHtmlDeliveryPath(step.from) || !step.text || step.text.length > 120 || !isHtmlDeliveryPath(file) || extra !== undefined || fragment !== undefined && !/^[A-Za-z0-9_][A-Za-z0-9_.:-]{0,127}$/u.test(fragment);
+        })) throw new Error(tr("浏览步骤最多 5 个，每个需填写来源 HTML、可见链接文字和本地 HTML 目标（可选 #区域）。", "Use up to five browser steps, each with source HTML, visible link text and a local HTML target (optionally #section)."));
         input = { ...input, title: projectTitle.trim(), summary: projectSummary.trim(), amount: projectAmount.trim(), requiredPages: pages, manualRequirements,
           ...(requirementsDraft ? {requirementsDraftId: requirementsDraft.id, confirmRequirements: requirementsConfirmed} : {}),
-          ...(includeLink ? { link: { from: linkFrom.trim(), text: linkText.trim(), to: linkTo.trim() } } : {}) };
+          coverage: {version: 1, sourceText: projectSummary.trim(), confirmed: coverageConfirmed, decisions: coverageRows.map(row => ({id: row.id, disposition: row.disposition, ...(row.disposition === "exclude" ? {reason: row.reason?.trim()} : {})}))},
+          ...(links.length ? {links} : {}) };
       }
       const result = await request<CaseResult>("/api/proofs", "POST", input);
       apply(result.quote, result.role);
@@ -1017,6 +1035,8 @@ export default function Home() {
                   {proof?.criteria.map((criterion, index) => <div className="scope-criterion" key={criterion.id}><span>{String(index + 1).padStart(2, "0")}</span><div><strong>{criterionDisplayTitle(criterion, language)}</strong><p>“{criterion.source}”</p></div></div>)}
                 </details>
                 {proof?.requirements && <RequirementsSource agreement={proof.requirements} language={language} criteria={proof.criteria}/>}
+                {customProject?.coverage && <RequirementCoverageSource coverage={customProject.coverage} language={language}/>}
+                {customProject && !customProject.coverage && <p className="requirement-coverage-help">{tr("此旧项目没有逐条需求处理记录；现有约定和验收结果保持原样。", "This earlier project has no per-clause scope record; its existing agreement and acceptance are preserved.")}</p>}
               </> : <>
                 <div className="project-mode-switch no-print" aria-label={tr("项目类型", "Project type")}>
                   <button type="button" disabled={!!busy} className={projectMode === "custom" ? "active" : ""} aria-pressed={projectMode === "custom"} onClick={() => { setProjectMode("custom"); setError(""); }}>{tr("我的项目", "My project")}</button>
@@ -1029,9 +1049,9 @@ export default function Home() {
                       {projectStep === 0 ? <>
                         <p className="form-help">{tr("没有合同也可以开始。直接描述需求，下一步确认具体的验收标准。", "Start without a contract. Describe your requirements, then confirm specific acceptance criteria.")}</p>
                         <label htmlFor="projectTitle">{tr("项目名称", "Project title")}</label><input id="projectTitle" name="projectTitle" value={projectTitle} maxLength={120} required placeholder={tr("例如：咖啡店网站交付", "e.g. Café website delivery")} onChange={event => setProjectTitle(event.target.value)} />
-                        <label htmlFor="projectSummary">{tr("网站需求", "Website requirements")}</label><textarea id="projectSummary" value={projectSummary} maxLength={1000} required rows={3} placeholder={tr("例如：面馆官网，index.html 展示菜单、价格和营业时间；contact.html 展示地址和电话。", "For example: a noodle shop website; index.html shows the menu, prices and hours; contact.html shows the address and phone.")} onChange={event => {setProjectSummary(event.target.value); if (requirementsFromBrief) {setRequirementsDraft(undefined); setRequirementsConfirmed(false); setRequirementsFromBrief(false);}}} />
+                        <label htmlFor="projectSummary">{tr("网站需求", "Website requirements")}</label><textarea id="projectSummary" value={projectSummary} maxLength={1000} required rows={3} placeholder={tr("例如：面馆网站展示菜单、价格、营业时间和地址。支持中文与英文。预约入口说明如何联系店家。每行一项会更清楚。", "For example: show the menu, prices, opening hours and address. Support Chinese and English. Explain how to contact the shop to arrange a booking. One requirement per line helps.")} onChange={event => {updateProjectSummary(event.target.value); if (requirementsFromBrief) {setRequirementsDraft(undefined); setRequirementsConfirmed(false); setRequirementsFromBrief(false);}}} />
                         <button type="button" className="requirements-button" disabled={!!busy || loading || !projectSummary.trim()} onClick={analyzeProjectBrief}>{busy === "requirements" ? <LoaderCircle size={13} className="spin"/> : <Sparkles size={13}/>} {config?.aiMode === "live" ? tr("用 AI 整理这些需求", "Organize these requirements with AI") : tr("用规则整理这些需求", "Organize these requirements with rules")}</button>
-                        <p className="form-help">{tr("整理是可选的，仍可直接进入下一步手动填写。AI 整理会把上方需求发送给 DeepSeek；金额单独填写。", "Organizing is optional; you can continue and enter criteria manually. AI organizing sends the requirements above to DeepSeek. Enter the price separately.")}</p>
+                        <p className="form-help">{tr("整理是可选的；下一步会保留原文并逐条确认验收范围。AI 整理会把上方需求发送给 DeepSeek；金额单独填写。", "Organizing is optional; the next step retains the source and confirms each row’s acceptance scope. AI organizing sends the requirements above to DeepSeek. Enter the price separately.")}</p>
                         <RequirementsIntake language={language} busy={!!busy || loading} aiMode={config?.aiMode} initialDraft={requirementsFromBrief ? undefined : requirementsDraft} onAnalyze={analyzeRequirements} onApply={draft => applyRequirements(draft)} onClear={() => {setRequirementsDraft(undefined); setRequirementsConfirmed(false); setRequirementsFromBrief(false);}} />
                         <div className="project-price-fields"><div><label htmlFor="projectAmount">{tr("项目金额", "Amount")}</label><input id="projectAmount" value={projectAmount} inputMode="decimal" required placeholder="480.00" aria-describedby="amount-help" onChange={event => setProjectAmount(event.target.value)} /></div><div><label htmlFor="currency">{tr("测试币种", "Currency")}</label><select id="currency" value={currency} onChange={event => setCurrency(event.target.value as Currency)}><option value="AUD">AUD</option><option value="USD">USD</option></select></div></div>
                         <p className="form-help" id="amount-help">{tr("0.01–10000.00，最多两位小数。后续付款使用测试资金。", "0.01–10000.00, up to two decimal places. Payments use test funds.")}</p>
@@ -1040,12 +1060,27 @@ export default function Home() {
                       </> : <>
                         {requirementsDraft && <div className="requirements-confirm-summary"><strong>{tr("从原始需求整理的验收清单", "Checklist prepared from your requirements")}</strong><p>{requirementsDraft.mode === "live" ? tr("AI 建议，已保存原文依据；请逐项编辑确认。", "AI suggestions with saved source excerpts. Edit and confirm every item.") : tr("规则整理 · 未调用 AI。请逐项编辑确认，补足未明确要求。", "Rule-based extraction · no AI request. Edit and confirm every item and resolve unclear requirements.")}</p>{requirementsDraft.unresolved.length > 0 && <p>{tr(`还有 ${requirementsDraft.unresolved.length} 条原文需要自行确认，已保留在原始需求中。`, `${requirementsDraft.unresolved.length} source clauses still need your review and remain in the original requirements.`)}</p>}</div>}
                         {requirementsDraft && <RequirementsDraftSource draft={requirementsDraft} language={language} />}
-                        <label htmlFor="requiredPages">{tr("必须交付的 HTML 页面", "Required HTML pages")}</label><textarea id="requiredPages" value={requiredPagesInput} required rows={3} maxLength={1000} aria-describedby="pages-help" onChange={event => setRequiredPagesInput(event.target.value)} />
-                        <p className="form-help" id="pages-help">{tr("每行一个相对路径，最多 10 页。上传时必须含 index.html；其他缺页将显示未通过。", "One relative path per line, up to 10 pages. Uploads must include index.html; other missing pages are reported as unmet.")}</p>
-                        <label htmlFor="manualRequirements">{tr("人工验收标准（选填）", "Human acceptance checks (optional)")}</label><textarea id="manualRequirements" value={manualRequirementsInput} rows={2} maxLength={1505} placeholder={tr("例如：手机宽度下文字可读、按钮易点。", "e.g. Text is readable and controls usable at a mobile width.")} aria-describedby="manual-help" onChange={event => setManualRequirementsInput(event.target.value)} />
-                        <p className="form-help" id="manual-help">{tr("每行一条，最多 5 条、每条 300 字。这些项目必须由人亲自检查确认。", "One per line, up to five checks of 300 characters each. A person must inspect and confirm these requirements.")}</p>
-                        <label className="project-link-toggle"><input type="checkbox" checked={includeLink} onChange={event => setIncludeLink(event.target.checked)} /><span>{tr("检查一个本地链接目标", "Check a local link destination")}</span></label>
-                        {includeLink && <div className="project-link-fields"><label htmlFor="linkFrom">{tr("来源页面", "Source page")}</label><input id="linkFrom" value={linkFrom} required onChange={event => setLinkFrom(event.target.value)} /><label htmlFor="linkText">{tr("链接可见文字", "Visible link text")}</label><input id="linkText" value={linkText} required maxLength={120} onChange={event => setLinkText(event.target.value)} /><label htmlFor="linkTo">{tr("本地目标（页面#区域）", "Local target (page#section)")}</label><input id="linkTo" value={linkTo} required onChange={event => setLinkTo(event.target.value)} /></div>}
+                        <RequirementCoveragePanel language={language} units={coverageUnits} decisions={coverageRows} confirmed={coverageConfirmed} disabled={!!busy || loading}
+                          onDecisionChange={decision => {setCoverageDecisions(current => ({...current, [decision.id]: decision})); setCoverageConfirmed(false);}}
+                          onConfirmChange={setCoverageConfirmed}/>
+                        {coverageError && <p className="requirement-coverage-warning" role="alert">{coverageError}</p>}
+                        <details className="project-advanced-checks"><summary>{tr("补充页面与检查方式（可与开发者一起填写）", "Add pages and checks (with your developer)")}</summary>
+                          <label htmlFor="requiredPages">{tr("必须交付的 HTML 页面", "Required HTML pages")}</label><textarea id="requiredPages" value={requiredPagesInput} required rows={3} maxLength={1000} aria-describedby="pages-help" onChange={event => setRequiredPagesInput(event.target.value)} />
+                          <p className="form-help" id="pages-help">{tr("默认检查 index.html。可与开发者约定更多页面，每行一个，最多 10 页。", "index.html is checked by default. Agree additional pages with your developer, one per line, up to ten.")}</p>
+                          <label htmlFor="manualRequirements">{tr("补充人工验收标准（选填）", "Additional human checks (optional)")}</label><textarea id="manualRequirements" value={manualRequirementsInput} rows={2} maxLength={1505} placeholder={tr("例如：与另附设计稿逐屏对照。", "e.g. Compare each screen with the supplied design.")} aria-describedby="manual-help" onChange={event => setManualRequirementsInput(event.target.value)} />
+                          <p className="form-help" id="manual-help">{tr("原文中纳入的要求会自动成为人工检查；这里可另加最多 5 条，每条 300 字。", "Included source rows become human checks automatically. Add up to five further checks here, 300 characters each.")}</p>
+                          <section className="project-browser-steps" aria-label={tr("要检查的浏览步骤", "Browser steps to check")}>
+                            <strong>{tr("要检查的浏览步骤", "Browser steps to check")}</strong>
+                            <p className="form-help">{tr("例如：首页到菜单、中文页到英文页、预约说明入口。最多 5 步；检查保存的本地页面，不验证预约提交、邮件或后台。", "For example: home to menu, Chinese to English, or booking instructions. Up to five steps on saved local pages; this does not verify booking submissions, email or backends.")}</p>
+                            {browserSteps.map((step, index) => <div className="project-browser-step" key={index}>
+                              <div className="project-browser-step-heading"><strong>{tr(`步骤 ${index + 1}`, `Step ${index + 1}`)}</strong><button type="button" className="text-button" onClick={() => setBrowserSteps(current => current.filter((_, item) => item !== index))}>{tr("移除此步骤", "Remove this step")}</button></div>
+                              <div className="project-link-fields"><label htmlFor={`linkFrom-${index}`}>{tr("来源页面", "Source page")}</label><input id={`linkFrom-${index}`} value={step.from} required onChange={event => setBrowserSteps(current => current.map((value, item) => item === index ? {...value, from: event.target.value} : value))}/>
+                                <label htmlFor={`linkText-${index}`}>{tr("链接可见文字", "Visible link text")}</label><input id={`linkText-${index}`} value={step.text} required maxLength={120} onChange={event => setBrowserSteps(current => current.map((value, item) => item === index ? {...value, text: event.target.value} : value))}/>
+                                <label htmlFor={`linkTo-${index}`}>{tr("目标页面（可选 #区域）", "Target page (optional #section)")}</label><input id={`linkTo-${index}`} value={step.to} required onChange={event => setBrowserSteps(current => current.map((value, item) => item === index ? {...value, to: event.target.value} : value))}/></div>
+                            </div>)}
+                            <button type="button" className="subtle-button" disabled={browserSteps.length >= 5} onClick={() => setBrowserSteps(current => [...current, {from: "index.html", text: "", to: ""}])}><Plus size={12}/>{tr("添加浏览步骤", "Add a browser step")}</button>
+                          </section>
+                        </details>
                         {requirementsDraft && <label className="requirements-confirm"><input type="checkbox" checked={requirementsConfirmed} onChange={event => setRequirementsConfirmed(event.target.checked)}/><span>{tr("我已核对原文、未明确项和最终清单。新增或改写的标准由我确认；解析不决定金额、验收或付款。", "I reviewed the source, unclear clauses and final checklist. I confirm any added or edited checks. Extraction does not decide the price, acceptance or payment.")}</span></label>}
                       </>}
                     </> : <>
@@ -1055,7 +1090,7 @@ export default function Home() {
                       <label htmlFor="demoCurrency">{tr("测试币种", "Test currency")}</label><select id="demoCurrency" value={currency} onChange={event => setCurrency(event.target.value as Currency)}><option value="AUD">AUD</option><option value="USD">USD</option></select>
                       <label htmlFor="demoClientName">{tr("客户名称（选填）", "Client name (optional)")}</label><input id="demoClientName" value={clientName} maxLength={100} onChange={event => setClientName(event.target.value)} />
                     </>}
-                    <div className="project-form-actions">{projectMode === "custom" && projectStep === 1 && <button type="button" className="subtle-button" onClick={() => { setProjectStep(0); setError(""); }}>{tr("上一步", "Back")}</button>}<button className="button primary" type="submit" disabled={!!busy || loading || projectMode === "custom" && projectStep === 1 && !!requirementsDraft && !requirementsConfirmed}>{busy === "create" ? <LoaderCircle className="spin" size={16} /> : <Plus size={16} />}{projectMode === "custom" && projectStep === 0 ? tr("下一步：验收标准", "Next: acceptance criteria") : projectMode === "custom" ? tr("创建项目", "Create project") : tr("创建内置演示", "Create built-in demo")}<ArrowRight size={15} /></button></div>
+                    <div className="project-form-actions">{projectMode === "custom" && projectStep === 1 && <button type="button" className="subtle-button" onClick={() => { setProjectStep(0); setError(""); }}>{tr("上一步", "Back")}</button>}<button className="button primary" type="submit" disabled={!!busy || loading || projectMode === "custom" && projectStep === 1 && (!coverageConfirmed || !coverageReady || !!requirementsDraft && !requirementsConfirmed)}>{busy === "create" ? <LoaderCircle className="spin" size={16} /> : <Plus size={16} />}{projectMode === "custom" && projectStep === 0 ? tr("下一步：验收标准", "Next: acceptance criteria") : projectMode === "custom" ? tr("创建项目", "Create project") : tr("创建内置演示", "Create built-in demo")}<ArrowRight size={15} /></button></div>
                   </fieldset>
                 </form>
               </>}
@@ -1134,6 +1169,7 @@ export default function Home() {
                 <BrowserCheckPanel key={`browser-${delivery?.id ?? "empty"}`} language={language} report={delivery?.browserChecks?.deliveryId === delivery?.id ? delivery?.browserChecks : undefined}
                   enabled={canObserveBrowser && !busy} busy={busy === "browser-check"} progress={browserCheckProgress}
                   onRun={checkBrowserBehavior} onCancel={() => {if (!browserCheckSavePending.current) browserCheckController.current?.abort();}}/>
+                {delivery && <EvidenceHistoryPanel key={`history-${delivery.id}`} delivery={delivery} language={language} acceptedSnapshotId={collaboration?.acceptance?.evidenceSnapshotId}/>}
                 {busy === "browser-check-save" && <p className="layout-check-source" role="status">{tr("正在保存链接行为与资源观察…", "Saving link behavior and resource observations…")}</p>}
               </div>
               <div className="delivery-evidence-view" hidden={deliveryTab !== "evidence"}>

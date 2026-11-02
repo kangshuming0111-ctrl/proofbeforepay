@@ -4,6 +4,7 @@ import test from "node:test";
 import type { ProofQuote } from "../lib/contracts.ts";
 import { assessDelivery } from "../lib/delivery-assessment.ts";
 import { DomainError } from "../lib/domain.ts";
+import { summaryCoverageUnits } from "../lib/requirement-coverage.ts";
 import { ProviderError, type Fetcher } from "../lib/providers.ts";
 import { createUploadedDelivery, parseStaticProject } from "../lib/static-project.ts";
 
@@ -54,6 +55,25 @@ test("source assessment finds missing opening-hours content with exact UTF-16 ci
   assert.deepEqual(result.usage, { promptTokens: 860, completionTokens: 203 });
   assert.deepEqual(quote, original);
   assert.match(result.limitations.join(" "), /No browser/); assert.match(result.limitations.join(" "), /buyer/);
+});
+
+test("buyer-confirmed exclusions reach the model and unknown original requirements stay unverified", async () => {
+  const summary="网页显示菜单和价格。保持品牌的独特气质。发送预约邮件。";
+  const units=summaryCoverageUnits(summary);
+  const parsed=parseStaticProject({title:"Covered shop",summary,amount:"1.00",requiredPages:["index.html"],manualRequirements:[],coverage:{version:1,sourceText:summary,confirmed:true,decisions:units.map((row,index)=>({id:row.id,disposition:index===2?"exclude":"include",...(index===2?{reason:"Email delivery is a later milestone."}:{})}))}},"zh",{requireCoverage:true});
+  const quote=agreement();quote.summary=parsed.summary;quote.proof.project=parsed.project;quote.proof.criteria=parsed.criteria;
+  quote.proof.delivery=createUploadedDelivery({"index.html":source},parsed.project,"zh",1);
+  quote.proof.review={deliveryId:quote.proof.delivery.id,mode:"demo",summary:"Rules",reviewedAt:"2026-11-02T00:00:00.000Z"};
+  const before=structuredClone(quote),fake=mock(proposal(quote));
+  const result=await assessDelivery(quote,env,fake.fetcher);
+  const request=JSON.parse(String(fake.calls[0].init.body));const sent=JSON.parse(request.messages[1].content);
+  assert.deepEqual(sent.scopeContext.requirementCoverage.excluded,[{text:"发送预约邮件。",reason:"Email delivery is a later milestone."}]);
+  assert.deepEqual(sent.scopeContext.requirementCoverage.included.map((row:{criterionId:string})=>row.criterionId),["coverage-1","coverage-2"]);
+  assert.match(request.messages[0].content,/Do not report their absence as a delivery defect/u);
+  assert.equal(result.items.find(row=>row.criterionId==="coverage-2")!.status,"insufficient_evidence");
+  assert.deepEqual(quote,before);
+  quote.summary="changed";const stale=mock(proposal(quote));
+  await assert.rejects(()=>assessDelivery(quote,env,stale.fetcher),DomainError);assert.equal(stale.calls.length,0);
 });
 
 test("one bounded request disables thinking, redirects and retries and sends no commercial or old contract fields", async () => {
@@ -655,19 +675,19 @@ test("non-BMP characters and late citations are never split or offset by source 
 });
 
 test("larger valid checklists get a bounded response budget and usage is validated against that actual request", async () => {
-  for (const count of [3, 7, 8, 17]) {
+  for (const count of [3, 7, 8, 17, 33]) {
     const quote = agreement();
     while (quote.proof.criteria.length < count) {
       const id = `extra-${quote.proof.criteria.length}`;
       quote.proof.criteria.push({ id, title: "Opening hours", source: "Display opening hours 11am–8pm." });
       quote.proof.delivery!.evidence.push({ ...quote.proof.delivery!.evidence[2], id: `evidence-${id}`, criterionId: id });
     }
-    const expectedLimit = 1800 + Math.max(0, count - 7) * 180;
+    const expectedLimit = Math.min(6400, 1800 + Math.max(0, count - 7) * 180);
     const fake = mock(proposal(quote), { usage: { prompt_tokens: 1000, completion_tokens: expectedLimit } });
     const result = await assessDelivery(quote, env, fake.fetcher);
     assert.equal(JSON.parse(String(fake.calls[0].init.body)).max_tokens, expectedLimit);
     assert.equal(result.items.length, count); assert.equal(result.usage?.completionTokens, expectedLimit);
-    assert.ok(expectedLimit <= 3600);
+    assert.ok(expectedLimit <= 6400);
     const excessive = mock(proposal(quote), { usage: { prompt_tokens: 1000, completion_tokens: expectedLimit + 1 } });
     assert.equal((await assessDelivery(quote, env, excessive.fetcher)).usage, undefined);
   }
@@ -679,5 +699,35 @@ test("invalid, inconsistent or above-reservation usage is omitted while result o
     const quote = agreement(), output = proposal(quote); output.items.reverse();
     const result = await assessDelivery(quote, env, mock(output, { usage: tokenUsage }).fetcher);
     assert.equal(result.usage, undefined); assert.deepEqual(result.items.map(item => item.criterionId), quote.proof.criteria.map(item => item.id));
+  }
+});
+
+test("tampered saved coverage is rejected before any model request rather than becoming model-visible scope", async () => {
+  function coveredQuote() {
+    const summary = "网页显示菜单和价格。保持品牌的独特气质。发送预约邮件。";
+    const units = summaryCoverageUnits(summary);
+    const parsed = parseStaticProject({title: "Coverage tamper fixture", summary, amount: "1.00", requiredPages: ["index.html"], manualRequirements: [],
+      coverage: {version: 1, sourceText: summary, confirmed: true, decisions: units.map((row, index) => ({id: row.id, disposition: index === 2 ? "exclude" : "include", ...(index === 2 ? {reason: "Email delivery is a later milestone."} : {})}))}}, "zh", {requireCoverage: true});
+    const quote = agreement();
+    quote.summary = parsed.summary; quote.proof.project = parsed.project; quote.proof.criteria = parsed.criteria;
+    quote.proof.delivery = createUploadedDelivery({"index.html": source}, parsed.project, "zh", 1);
+    quote.proof.review = {deliveryId: quote.proof.delivery.id, mode: "demo", summary: "Rules", reviewedAt: "2026-11-02T00:00:00.000Z"};
+    return quote;
+  }
+  const mutations: ((quote: ProofQuote) => void)[] = [
+    quote => { quote.proof.project!.coverage!.decisions[0].start += 1; },
+    quote => { quote.proof.project!.coverage!.decisions[0].text = "Changed original text"; },
+    quote => { quote.proof.project!.coverage!.decisions[0].criterionId = "manual-1"; },
+    quote => { quote.proof.project!.coverage!.decisions[2].reason = ""; },
+    quote => { quote.proof.project!.coverage!.decisions.push(structuredClone(quote.proof.project!.coverage!.decisions[0])); },
+    quote => { Object.assign(quote.proof.project!.coverage!, {unexpected: true}); },
+    quote => { Object.assign(quote.proof.project!.coverage!.decisions[0], {unexpected: true}); },
+  ];
+  for (const mutate of mutations) {
+    const quote = coveredQuote(); mutate(quote);
+    const before = structuredClone(quote), fake = mock(proposal(quote));
+    await assert.rejects(() => assessDelivery(quote, env, fake.fetcher), DomainError);
+    assert.equal(fake.calls.length, 0);
+    assert.deepEqual(quote, before);
   }
 });

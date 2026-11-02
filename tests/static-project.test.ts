@@ -34,11 +34,34 @@ test("project limits and canonical relative filenames are validated before agree
     {requiredPages: ["index.css"]}, {manualRequirements: Array(6).fill("A check")},
     {manualRequirements: ["x".repeat(301)]}, {manualRequirements: [""]},
     {link: {from: "index.html", text: "Book", to: "https://example.test/#booking"}},
-    {link: {from: "index.html", text: "Book", to: "contact.html"}},
+    {link: {from: "index.html", text: "Book", to: "contact.html#"}},
     {link: {from: "./index.html", text: "Book", to: "contact.html#booking"}},
   ]) invalid(() => parseStaticProject({...input(), ...overrides}, "en"));
   const largest = parseStaticProject({...input(), requiredPages: Array.from({length: 10}, (_, n) => `p${n}.html`), manualRequirements: Array(5).fill("Manual check")}, "en");
   assert.equal(largest.criteria.length, 17);
+});
+
+test("up to five saved local steps support whole-page and fragment destinations with stable IDs", () => {
+  const {link: _legacy, ...base} = input();
+  const parsed = parseStaticProject({...base, links: [
+    {from: "index.html", text: "English menu", to: "en/menu.html"},
+    {from: "en/menu.html", text: "Book", to: "contact.html#booking"},
+  ]}, "en");
+  assert.deepEqual(parsed.criteria.map(row => row.id), ["page-1", "page-2", "link", "link-2", "mobile", "manual-1"]);
+  const uploaded = createUploadedDelivery({
+    "index.html": html('<a href="en/menu.html">English menu</a>'),
+    "en/menu.html": html('<a href="../contact.html#booking">Book</a>'),
+    "contact.html": html('<section id="booking">Appointment details</section>'),
+  }, parsed.project, "en", 1);
+  assert.equal(finding(uploaded.evidence, "link"), "pass");
+  assert.equal(finding(uploaded.evidence, "link-2"), "pass");
+  const broken = createUploadedDelivery({...uploaded.files, "en/menu.html": html('<a href="../contact.html#wrong">Book</a>')}, parsed.project, "en", 2);
+  assert.equal(finding(broken.evidence, "link"), "pass");
+  assert.equal(finding(broken.evidence, "link-2"), "fail");
+  invalid(() => parseStaticProject({...input(), links: []}, "en"));
+  invalid(() => parseStaticProject({...base, links: Array(6).fill({from: "index.html", text: "Book", to: "contact.html"})}, "en"));
+  invalid(() => parseStaticProject({...base, links: [{from: "index.html", text: "Book", to: "contact.html"}, {from: "index.html", text: "Book", to: "en/menu.html"}]}, "en"));
+  invalid(() => parseStaticProject({...base, links: [{from: "index.html", text: "Book", to: "https://example.test/contact.html"}]}, "en"));
 });
 
 test("uploaded delivery saves independent exact files and real truncated source excerpts", () => {
