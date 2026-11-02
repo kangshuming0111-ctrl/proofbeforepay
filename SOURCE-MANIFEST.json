@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-02T06:06:14.435Z",
+  "generatedAt": "2026-11-02T06:09:42.787Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -178,8 +178,8 @@
     },
     {
       "file": "app/components/DeliveryOverview.tsx",
-      "bytes": 13246,
-      "sha256": "0db77d57635395cedd21891c9ba8df2d5964531a9c7e6fd67d81d00da07340c8"
+      "bytes": 13331,
+      "sha256": "1de82ea257631d87cc08e8ff88417e81438d97bc3636b774d9c5c01148ec3680"
     },
     {
       "file": "app/components/EvidenceHistoryPanel.tsx",
@@ -283,8 +283,8 @@
     },
     {
       "file": "app/page.tsx",
-      "bytes": 150879,
-      "sha256": "87518ff66adeb44d821e51bc6456a53384b525f932466f74bd807d0af167894b"
+      "bytes": 150988,
+      "sha256": "dc48f028cc7cc5f4388a35f1250ed9d8e5d4da83da44e9534444ab230bf17539"
     },
     {
       "file": "app/proof-versions/[id]/[deliveryId]/[...file]/route.ts",

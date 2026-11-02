@@ -20,10 +20,11 @@ export type DeliveryOverviewProps = {
   onPrepareFeedback?: (input: { deliveryId: string; criterionId: string; comment: string }) => void;
   onViewHistory?: () => void;
   onOpenLayout?: () => void;
+  onOpenBusiness?: () => void;
   onInspectLayout?: (file: string, width: ProofLayoutWidth) => void;
 };
 
-export function DeliveryOverview({ delivery, criteria, review, manualChecks, language, role, stage, previousVersion, busy = false, onInspect, onPrepareFeedback, onViewHistory, onOpenLayout, onInspectLayout }: DeliveryOverviewProps) {
+export function DeliveryOverview({ delivery, criteria, review, manualChecks, language, role, stage, previousVersion, busy = false, onInspect, onPrepareFeedback, onViewHistory, onOpenLayout, onOpenBusiness, onInspectLayout }: DeliveryOverviewProps) {
   const zh = language === "zh";
   const tr = (chinese: string, english: string) => zh ? chinese : english;
   const overview = deliveryOverview({ delivery, criteria, review, manualChecks, previousVersion });
@@ -62,7 +63,7 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
         ? <span>{tr("人工已确认", "Human-confirmed")} <strong>{overview.humanConfirmed}/{overview.humanRequired}</strong></span>
         : <span>{tr("人工待确认", "Human checks left")} <strong>{overview.humanRemaining ?? "—"}</strong></span>}
     </div>
-    {business && <div className="delivery-overview-layout-heading delivery-overview-layout-counts"><span className={business.summary.issues || business.summary.unavailable ? "overview-attention" : ""}>{tr("业务内容", "Business content")}: {tr(`${business.summary.issues} 次观察不符 / ${business.summary.unavailable} 次未确定`, `${business.summary.issues} mismatched / ${business.summary.unavailable} uncertain observations`)}{stage === "accepted" && <small>{tr("（当前观察不改写已验收记录）", " (current observations do not revise acceptance)")}</small>}</span>{onOpenLayout && <button type="button" disabled={busy} onClick={onOpenLayout}>{tr("查看业务报告", "View business report")}<ArrowRight size={12}/></button>}</div>}
+    {business && <div className="delivery-overview-layout-heading delivery-overview-layout-counts"><span className={business.summary.issues || business.summary.unavailable ? "overview-attention" : ""}>{tr("业务内容", "Business content")}: {tr(`${business.summary.issues} 次观察不符 / ${business.summary.unavailable} 次未确定`, `${business.summary.issues} mismatched / ${business.summary.unavailable} uncertain observations`)}{stage === "accepted" && <small>{tr("（当前观察不改写已验收记录）", " (current observations do not revise acceptance)")}</small>}</span>{(onOpenBusiness || onOpenLayout) && <button type="button" disabled={busy} onClick={onOpenBusiness ?? onOpenLayout}>{tr("查看业务报告", "View business report")}<ArrowRight size={12}/></button>}</div>}
     {!overview.reviewCurrent && <p className="delivery-overview-note">{tr("此版本尚未核查，不作通过判断。", "This version has not been checked; no pass is claimed.")}</p>}
     {overview.reviewCurrent && !!overview.unreviewed && <p className="delivery-overview-note">{tr(`另有 ${overview.unreviewed} 项尚无完整规则证据。`, `${overview.unreviewed} requirements still lack rule evidence.`)}</p>}
     {!!overview.aiInsufficient && !!overview.humanConfirmed && <p className="delivery-overview-note">{tr(`AI 有 ${overview.aiInsufficient} 项无法独立判断；人工确认另有记录，原始 AI 建议保留。`, `AI could not independently determine ${overview.aiInsufficient} requirement${overview.aiInsufficient === 1 ? "" : "s"}. Human confirmations and the original AI advice are recorded separately.`)}</p>}
