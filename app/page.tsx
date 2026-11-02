@@ -34,6 +34,7 @@ import { DeliveryComparison } from "./components/DeliveryComparison";
 import { isOlderDelivery } from "@/lib/delivery-comparison";
 import { DeliveryOverview } from "./components/DeliveryOverview";
 import { criterionDisplayTitle } from "@/lib/delivery-overview";
+import { buildBusinessSpotlight } from "@/lib/business-spotlight";
 import { WorkflowChoice, type WorkflowChoiceValue } from "./components/WorkflowChoice";
 import { GettingStarted } from "./components/GettingStarted";
 import { AuthorizationStart } from "./components/AuthorizationStart";
@@ -457,18 +458,6 @@ export default function Home() {
     } else commitSwitch();
   }
 
-  function fillExampleRequirements() {
-    setIntakeStarted(true);
-    setProjectMode("custom"); setProjectStep(0); setWorkspacePanel("agreement");
-    setProjectTitle(tr("Willow 花艺工作室网站", "Willow floral studio website"));
-    updateProjectSummary(tr("制作首页、服务价格页和联系页。显示营业时间 Monday to Friday, 11am–8pm，列明花束服务价格，首页预约链接应指向联系页的预约区域。", "Create Home, Services and Contact pages. Display opening hours Monday to Friday, 11am–8pm and floral service prices. The home-page booking link must point to the booking section on Contact."));
-    setProjectAmount("1.00"); setRequiredPagesInput("index.html\nservices.html\ncontact.html");
-    setManualRequirementsInput(tr("显示营业时间 Monday to Friday, 11am–8pm。\n显示花束服务的价格。", "Display opening hours Monday to Friday, 11am–8pm.\nDisplay floral service prices."));
-    setBrowserSteps([{from: "index.html", text: "Book a call", to: "contact.html#booking"}]);
-    setRequirementsDraft(undefined); setRequirementsConfirmed(false); setRequirementsFromBrief(false);
-    setNotice(tr("示例需求已填入，请按实际项目编辑。未创建项目，也未调用 AI。", "Example requirements filled. Edit them for your project. No project was created and no AI was called."));
-  }
-
   function fillNoodleBusinessExample() {
     setIntakeStarted(true); setProjectMode("custom"); setProjectStep(0); setWorkspacePanel("agreement");
     setProjectTitle(tr("双语面馆：业务内容验收", "Bilingual noodle shop: business content checks"));
@@ -666,6 +655,11 @@ export default function Home() {
     if (!buyer && collaboration) return {label: tr("填写说明并提交验收", "Add a note & submit"), help: tr("AI 评估可按需使用，无需等待即可提交。", "AI assessment is optional; you can submit without it."), action: () => focusPanel("payment", ".collaboration-submission-form textarea")};
     if (failed) return {label: tr("查看未通过项", "Inspect unmet requirements"), help: tr("核对证据，再准备具体修改意见。", "Inspect the evidence and prepare specific feedback."), action: () => openCriterion(evidence.find(item => item.finding === "fail")?.criterionId)};
     if (businessChecksConfigured && !businessReport) return {label: tr("核对约定的业务内容", "Check agreed business content"), help: tr("先对照菜单价格、电话等约定，再进行人工验收。", "Compare agreed prices, contact details and copy before accepting."), action: openBusinessChecks};
+    const businessAttention = buildBusinessSpotlight(delivery);
+    if (businessChecksConfigured && businessReport && (!businessAttention || (businessAttention.issues > 0 || businessAttention.unavailable > 0) && businessExceptionReason.trim().length < 10)) return {
+      label: tr("先核对业务内容差异", "Inspect business-content differences"),
+      help: tr("查看具体约定和观察，起草修改意见；若仍选择接受，需另行说明例外原因。", "Inspect agreed and observed values, then draft changes. Accepting exceptions requires a separate reason."), action: openBusinessChecks,
+    };
     if (!allHumanChecked) return {label: tr(`检查下一项 · 剩余 ${pendingHumanCriteria.length} 项`, `Check next · ${pendingHumanCriteria.length} remaining`), help: tr(`人工检查已确认 ${humanCriteria.length - pendingHumanCriteria.length}/${humanCriteria.length} 项。`, `Human checks confirmed: ${humanCriteria.length - pendingHumanCriteria.length}/${humanCriteria.length}.`), action: openPendingHumanCheck};
     return {label: collaboration ? tr("继续验收确认（不付款）", "Continue acceptance — no payment") : tr("继续验收与付款确认", "Continue to acceptance & payment"), help: tr("下一步仍需你的明确确认。", "Your explicit confirmation is still required."), action: () => collaboration ? beginDeliveryAcceptance() : focusPanel("payment")};
   }
@@ -1118,7 +1112,7 @@ export default function Home() {
 
         {(error || notice) && <div role={error ? "alert" : "status"} className={`feedback no-print ${error ? "error" : "success"}`}><Info size={18} /><div>{error && <strong>{tr("操作未完成", "Action not completed")}</strong>}<span>{error || notice}</span></div><button className="icon-button" aria-label={tr("关闭提示", "Dismiss message")} onClick={() => { setError(""); setNotice(""); }}><X size={16} /></button></div>}
 
-        {workspaceView === "workbench" && welcomeActive && (loading ? <p className="history-loading" role="status">{tr("正在恢复工作台…", "Restoring the workspace…")}</p> : <GettingStarted language={language} busy={!!busy} onStart={beginIntake} onExample={fillExampleRequirements} onDemo={() => {void startRoleDemo();}}/>)}
+        {workspaceView === "workbench" && welcomeActive && (loading ? <p className="history-loading" role="status">{tr("正在恢复工作台…", "Restoring the workspace…")}</p> : <GettingStarted language={language} busy={!!busy} onStart={beginIntake} onExample={fillNoodleBusinessExample} onDemo={() => {void startRoleDemo();}}/>)}
         {workspaceView === "workbench" && !quote && !sellerEntry && intakeStarted && <button type="button" className="text-button intake-return" disabled={!!busy || loading} onClick={returnToIntroduction}>{tr("返回流程介绍（保留草稿）", "Back to the introduction (keep draft)")}</button>}
         <nav className="compact-panel-nav no-print" hidden={workspaceView !== "workbench" || sellerEntry || !quote} aria-label={tr("工作区分栏", "Workspace panels")}>
           {([["agreement", tr("约定", "Agreement")], ["delivery", tr("交付与证据", "Delivery & evidence")], ["payment", collaboration && !buyer ? tr("交付进度", "Delivery progress") : tr("验收与付款", "Accept & pay")]] as const).map(([panel, label]) => <button key={panel} aria-pressed={workspacePanel === panel} className={workspacePanel === panel ? "active" : ""} onClick={() => setWorkspacePanel(panel)}>{label}</button>)}

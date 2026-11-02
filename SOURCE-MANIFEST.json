@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-02T08:01:38.861Z",
+  "generatedAt": "2026-11-02T08:41:23.137Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -142,6 +142,11 @@
       "sha256": "f9aded6c5389608137be0af6940e4a684c8a2a87570cdb1351994f7b430d2279"
     },
     {
+      "file": "app/business-spotlight.css",
+      "bytes": 3320,
+      "sha256": "e6c335369fed28d58920cc1fc6ec0b6c9838e89548207b0d56bc41c4ae809d46"
+    },
+    {
       "file": "app/business-suggestions.css",
       "bytes": 2009,
       "sha256": "d1c64d5c1df69a1328c4b39dab0f63b909fa8afaaeabcb9577d048f480af9513"
@@ -187,6 +192,11 @@
       "sha256": "348a540b59d70e78eb8e82b6e0b8329829784e462227cfcd772d12f543a9ba7a"
     },
     {
+      "file": "app/components/BusinessSpotlight.tsx",
+      "bytes": 5197,
+      "sha256": "410655c8b691995c696c8500e5f46e82736640597fa79b0a9716f2d83ffc14e1"
+    },
+    {
       "file": "app/components/CollaborationPanel.tsx",
       "bytes": 25654,
       "sha256": "64d8d04b2c7490735f5d40805b94820620a6f0c00a26269032c1e51a10220e6d"
@@ -203,8 +213,8 @@
     },
     {
       "file": "app/components/DeliveryOverview.tsx",
-      "bytes": 13331,
-      "sha256": "1de82ea257631d87cc08e8ff88417e81438d97bc3636b774d9c5c01148ec3680"
+      "bytes": 13352,
+      "sha256": "c2fc002327c0593910b7d9b1625b236cda11f6e627d910ba24d97eebfa78fad6"
     },
     {
       "file": "app/components/EvidenceHistoryPanel.tsx",
@@ -213,8 +223,8 @@
     },
     {
       "file": "app/components/GettingStarted.tsx",
-      "bytes": 3834,
-      "sha256": "9f580407ebd5df050bf07ec7709f985f054470deaa59c452e21a827a6dda0cdb"
+      "bytes": 4160,
+      "sha256": "0e7dc5fa6222c95b8f73d3f7d3e746b8f369a54630876ac413226e18efc391e9"
     },
     {
       "file": "app/components/LayoutCheckPanel.tsx",
@@ -308,8 +318,8 @@
     },
     {
       "file": "app/page.tsx",
-      "bytes": 154581,
-      "sha256": "80691cf6b945eb7b49a035cf06f333e2538f05decaf20d789a6b5c6d970aded0"
+      "bytes": 153905,
+      "sha256": "a4cd10af13dc2a4d07fe6fdc3ba55b3ceec054a38f80b62a40ee3d3a36132052"
     },
     {
       "file": "app/proof-versions/[id]/[deliveryId]/[...file]/route.ts",
@@ -343,8 +353,8 @@
     },
     {
       "file": "app/welcome.css",
-      "bytes": 3242,
-      "sha256": "5f66872d2b2873d7b1eea46eb02d9f6e01f2f245f38b67c58839f04020854b03"
+      "bytes": 3351,
+      "sha256": "f8973af00db57235ae0e62b86e4b1ceb5cf7fd5e4c4cab7039726747cb0852c0"
     },
     {
       "file": "cloudflare-env.d.ts",
@@ -842,6 +852,11 @@
       "sha256": "0c68a06f48b9b6420333331fd4111ace7d28b890bea11fdacede58bd83458e0b"
     },
     {
+      "file": "lib/business-spotlight.ts",
+      "bytes": 4782,
+      "sha256": "5495e46e5dea53cd549b78662be0ae5279dd52d183c1243ae8cb192a20d85fbb"
+    },
+    {
       "file": "lib/connector-context.ts",
       "bytes": 612,
       "sha256": "bbddff68689cb0f6926fecd4b8b96f12f2054277c296e97b0df07d4ad5ece24e"
@@ -1285,6 +1300,11 @@
       "file": "tests/business-revision.test.ts",
       "bytes": 5481,
       "sha256": "bc47c19452ecc23a8fef3614e6a6ef7f672e149f83d2bcb441c301dbe8b32082"
+    },
+    {
+      "file": "tests/business-spotlight.test.ts",
+      "bytes": 7679,
+      "sha256": "e1c81ac7a0218d1092e8321679e2df73f6861201342bd3244f3b9716727aeda5"
     },
     {
       "file": "tests/chain-coverage-api-smoke.py",

@@ -5,6 +5,7 @@
 .welcome-actions .button { min-height: 42px; padding: 10px 15px; font-size: 13px; }
 .welcome-actions .subtle-button { min-height: 42px; padding: 9px 12px; font-size: 13px; }
 .welcome-action-note { display: block; max-width: 40em; margin: 11px 0 0; color: #67765b; font-size: 11px; line-height: 1.7; }
+.welcome-example { display: inline-flex; align-items: center; gap: 5px; margin-top: 12px; font-size: 12px; }
 .welcome-scope { margin-top: 20px; font-size: 12px; color: #526b48; }
 .welcome-scope > summary { cursor: pointer; width: fit-content; line-height: 1.6; }
 .welcome-scope p { margin: 8px 0; max-width: 40em; font-size: 12px; line-height: 1.7; }
