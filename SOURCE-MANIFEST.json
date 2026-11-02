@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-02T06:09:42.787Z",
+  "generatedAt": "2026-11-02T08:01:38.861Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -38,8 +38,13 @@
     },
     {
       "file": "README.md",
-      "bytes": 69907,
-      "sha256": "44df41d3a488b4e3a2a4d70aab4c314e29993b0e1a32608656104511e376a19d"
+      "bytes": 70534,
+      "sha256": "44e66610e3917dcf02e43a6ba48df6c7aa04b04726e4619891437909b6e63b28"
+    },
+    {
+      "file": "app/api/business-check-suggestions/route.ts",
+      "bytes": 580,
+      "sha256": "52f065f16d9923022d3042205fef735ac753564ab8d5c21433f52dbaef1b8f47"
     },
     {
       "file": "app/api/config/route.ts",
@@ -48,8 +53,8 @@
     },
     {
       "file": "app/api/proof-invitations/[action]/route.ts",
-      "bytes": 1100,
-      "sha256": "1e23c3cd7d697e410f14b3e560070213bf5ffea87f0f1b470f0626c4b6495eb1"
+      "bytes": 968,
+      "sha256": "9da77e1ff637d7d5585e722a0be38ef4f5d74c1e6cd7307fdd3a92a5af65be51"
     },
     {
       "file": "app/api/proofs/[id]/[action]/route.ts",
@@ -132,6 +137,16 @@
       "sha256": "2196543981d00239c032dcd413e197a86e17406286a64cd17663186b7f6b67a2"
     },
     {
+      "file": "app/business-revision.css",
+      "bytes": 1491,
+      "sha256": "f9aded6c5389608137be0af6940e4a684c8a2a87570cdb1351994f7b430d2279"
+    },
+    {
+      "file": "app/business-suggestions.css",
+      "bytes": 2009,
+      "sha256": "d1c64d5c1df69a1328c4b39dab0f63b909fa8afaaeabcb9577d048f480af9513"
+    },
+    {
       "file": "app/chain-flow.css",
       "bytes": 4432,
       "sha256": "d27b325abc878850d72c6ed1787c429f389c956b6a0fe4c04532a56faf0c22ad"
@@ -143,8 +158,8 @@
     },
     {
       "file": "app/collaboration.css",
-      "bytes": 30556,
-      "sha256": "5b98e7685fcf65b5bc434c9aa016caa66e3e326ec2f079b52f5aa641b262be15"
+      "bytes": 31058,
+      "sha256": "2ca4eca29e550a80ad09c52981c2b0ddc364870810e38728061c23fe860ba6f8"
     },
     {
       "file": "app/components/AuthorizationStart.tsx",
@@ -157,9 +172,19 @@
       "sha256": "e2d2b1373dc63683f956e8cc17f76a7ea403a7b94d572a4cb16a2c13d49e55fd"
     },
     {
+      "file": "app/components/BusinessCheckSuggestions.tsx",
+      "bytes": 11293,
+      "sha256": "706d5632283b42819b665be83f147492d1d88ca0169e376369141551878a23b4"
+    },
+    {
       "file": "app/components/BusinessChecksPanel.tsx",
       "bytes": 21464,
       "sha256": "c8131bd78047eddf2fd38440a0de7b9aa9be19b49a2801720cecd1eeb275e61a"
+    },
+    {
+      "file": "app/components/BusinessRevisionComparison.tsx",
+      "bytes": 4099,
+      "sha256": "348a540b59d70e78eb8e82b6e0b8329829784e462227cfcd772d12f543a9ba7a"
     },
     {
       "file": "app/components/CollaborationPanel.tsx",
@@ -173,8 +198,8 @@
     },
     {
       "file": "app/components/DeliveryComparison.tsx",
-      "bytes": 11826,
-      "sha256": "94003fe2e62a00fee7c7b83804a12aa0bf2b9e898d7a18e47f8ff07a965d7a4a"
+      "bytes": 12011,
+      "sha256": "7a9ea117201a84b7e4be578b7aa82cdb6e91422b59e63f3367e4ef3d1b033894"
     },
     {
       "file": "app/components/DeliveryOverview.tsx",
@@ -228,8 +253,8 @@
     },
     {
       "file": "app/components/VersionViewer.tsx",
-      "bytes": 13249,
-      "sha256": "5156a0789cca811400d73628d93cf3d2ee6737fdad13e233249dc0cd050fcd50"
+      "bytes": 13492,
+      "sha256": "2f3d547212c271d2de28fbaace415a9b7dec411531154a9fd419e5a7f8450e4d"
     },
     {
       "file": "app/components/WorkflowChoice.tsx",
@@ -268,8 +293,8 @@
     },
     {
       "file": "app/join/page.tsx",
-      "bytes": 5954,
-      "sha256": "d7efc9fd07241a985ff7a52cfcec0de36c46c1784ba0fa0ef2e24238c10c7dbf"
+      "bytes": 7441,
+      "sha256": "eeaa7fa413abcd8bb73b1478db444d83f838d980a4954fdf48a9ef1dc5dbe965"
     },
     {
       "file": "app/layout-check.css",
@@ -283,8 +308,8 @@
     },
     {
       "file": "app/page.tsx",
-      "bytes": 150988,
-      "sha256": "dc48f028cc7cc5f4388a35f1250ed9d8e5d4da83da44e9534444ab230bf17539"
+      "bytes": 154581,
+      "sha256": "80691cf6b945eb7b49a035cf06f333e2538f05decaf20d789a6b5c6d970aded0"
     },
     {
       "file": "app/proof-versions/[id]/[deliveryId]/[...file]/route.ts",
@@ -702,9 +727,14 @@
       "sha256": "9380b4432d3f6fceae81b71ca8509ec6fa26d79d57eda0cac19493f7e25ac461"
     },
     {
+      "file": "docs/PLAN-COHERENCE-2026-11-02.md",
+      "bytes": 6458,
+      "sha256": "acc6d46c5bcc7580d92bb11eaeed21ebc46ee708ecfe585984b252688e436a3c"
+    },
+    {
       "file": "docs/PROJECT-STORY.md",
-      "bytes": 10821,
-      "sha256": "a4d7f2ff646bf685c389f87697ffc312ee373e3cb4aaae038e2c1837ace41d1c"
+      "bytes": 6032,
+      "sha256": "e0206380ee495bf8f4e5232daa7d5c96dc2552d187fc67df0a1cf42681657edd"
     },
     {
       "file": "docs/WINNER-GAP-REVIEW-2026-11-02.md",
@@ -792,14 +822,24 @@
       "sha256": "e2e07d4c14d986b34897b81f8fc6988339d4db95523e97a4fc1b81d64dc5ea56"
     },
     {
+      "file": "lib/business-check-suggestions.ts",
+      "bytes": 21810,
+      "sha256": "b0432685167c4285dfb4f9c380c0586943e151ba2b290d8a71b3040eeb26f0e8"
+    },
+    {
       "file": "lib/business-checks.ts",
-      "bytes": 14799,
-      "sha256": "375a9b96bda41be68d1c72bcc8af9e0a3a80aad660c9a91b2abde6dbef87dbed"
+      "bytes": 15585,
+      "sha256": "5b6d6b2cfbe487aac9bf647f3cdf97f303fcec835e2479b7c7154f4708433ffd"
     },
     {
       "file": "lib/business-decision.ts",
       "bytes": 1846,
       "sha256": "cd4707dbecdc88289c0cb41b6cf8b32af6efac479c4573addcd5ef849e7b6880"
+    },
+    {
+      "file": "lib/business-revision.ts",
+      "bytes": 3860,
+      "sha256": "0c68a06f48b9b6420333331fd4111ace7d28b890bea11fdacede58bd83458e0b"
     },
     {
       "file": "lib/connector-context.ts",
@@ -833,8 +873,8 @@
     },
     {
       "file": "lib/delivery-assessment.ts",
-      "bytes": 29656,
-      "sha256": "f06d94ad376fb6cc60d6654a3eee5ce90b73c4d96c2f38332cdaae4faeecb638"
+      "bytes": 32374,
+      "sha256": "67b40c89c93654064ccc28f8b8749ba3556634338066348dc59220b36b78505f"
     },
     {
       "file": "lib/delivery-comparison.ts",
@@ -885,6 +925,11 @@
       "file": "lib/proof-evidence.ts",
       "bytes": 17773,
       "sha256": "0ba22c43505887399ef895e095d889434a5074bf60a7734c95a25fd9dd369f6b"
+    },
+    {
+      "file": "lib/proof-invitation-preview.ts",
+      "bytes": 1485,
+      "sha256": "0c6c92571b671d4b7ee9a6da04b2388dc4e061bec92197e71adf3538998ced72"
     },
     {
       "file": "lib/proof-store.ts",
@@ -998,8 +1043,8 @@
     },
     {
       "file": "scripts/build-judge-pack.mjs",
-      "bytes": 15335,
-      "sha256": "8b002e40079ce914de93ac1447fcad4252360e5810c28b3b75467b4922410ca7"
+      "bytes": 16600,
+      "sha256": "263642c2ff5b31699612cd9b9983d0971ae37e5c8fb72d07ba111300c8c7960b"
     },
     {
       "file": "scripts/build-showcase.mjs",
@@ -1042,6 +1087,16 @@
       "sha256": "b328a69d98d3526450baea348210500d1b04148aad522e585cce62ca97adda4a"
     },
     {
+      "file": "scripts/evaluation-results/2026-11-02-business-suggestion-baseline.json",
+      "bytes": 20063,
+      "sha256": "bdc7de36697c43826470f9942070ca644de5b1c320169d857cc3872c3fddc4d8"
+    },
+    {
+      "file": "scripts/evaluation-results/2026-11-02-business-suggestion-followup.json",
+      "bytes": 22952,
+      "sha256": "c743658189a4e5e5c72e2bd40c8ad75b238e7effa85c4067f64d248035ffd54b"
+    },
+    {
       "file": "scripts/evaluation-results/2026-11-02-coverage-retest.json",
       "bytes": 8875,
       "sha256": "a669207b2299d696898d459cc512f616ccffa1c252ecaa8a2f1dafba23bbedce"
@@ -1060,6 +1115,11 @@
       "file": "scripts/evaluation-results/2026-11-02-independent-adjudication.json",
       "bytes": 31524,
       "sha256": "b3242e437debb04cf6534104a6cfaf0e425b8aee3e3929c1870f6659cb2579b4"
+    },
+    {
+      "file": "scripts/evaluation-results/2026-11-02-plan-source-assessment.json",
+      "bytes": 37208,
+      "sha256": "365f1f1fc46d04b4f507fb92d4c6f2b7880598163b7387e9f99474f9d6d6ca28"
     },
     {
       "file": "scripts/evaluation-results/2026-11-02-policy-follow-up.json",
@@ -1122,6 +1182,11 @@
       "sha256": "13b13c03ef3d54ecf964cc16004f8a048c343eefcbb408fa1b2d4cdb28bf8f51"
     },
     {
+      "file": "scripts/run-business-suggestion-evaluation.ts",
+      "bytes": 4206,
+      "sha256": "806b2e5bb06c57a744889250730db188c1031a38534c24a713ed1455b0f5a951"
+    },
+    {
       "file": "scripts/run-framework.mjs",
       "bytes": 993,
       "sha256": "9bf9f41a29314cabe0238b8e9c540ec3f7b5a6adafc7c8fb6c3940722d061dca"
@@ -1172,6 +1237,11 @@
       "sha256": "87933674d280883ffaeb41d27181203b1300fdf5bbb3d38538174b0b0893c44e"
     },
     {
+      "file": "tests/assessment-business-context.test.ts",
+      "bytes": 8710,
+      "sha256": "73fe0081e5866c0a8ed6f9dd2392e64242e9fa96c0dec3e1fdf2ba9c2bb9e2fa"
+    },
+    {
       "file": "tests/assessment-display.test.ts",
       "bytes": 3398,
       "sha256": "eb9801a24a9bbc878f7e40c27e0da101b981f19a0966a80766f5833170c0b416"
@@ -1197,14 +1267,24 @@
       "sha256": "0f17610c970b69ec88b22bce75cd69d2f980f168631fc8a44e64d56ad5b7156a"
     },
     {
+      "file": "tests/business-check-suggestions.test.ts",
+      "bytes": 17902,
+      "sha256": "517b937b27395eaa153ac736eafdec31a2643ef50bed756ccfa762cd66c3577b"
+    },
+    {
       "file": "tests/business-checks-api-smoke.py",
-      "bytes": 15756,
-      "sha256": "2b2c6a5f769f241cf19376f2427d64dce20dd76d28f270d691d99123797f3fb8"
+      "bytes": 21481,
+      "sha256": "5527917ce306c9de696a64d702c3df0c4c7fcf3227f8f8b46ea16a8bcfb20f55"
     },
     {
       "file": "tests/business-checks.test.ts",
-      "bytes": 15385,
-      "sha256": "32e8b018baf70e9691c09c1b56f4ba286c5bbe04a41a78dd677776666353cb85"
+      "bytes": 15993,
+      "sha256": "ecbe45457f24cbd5031f3498292296cd6e41b5c3f074b06ee1315abb2e7fe81e"
+    },
+    {
+      "file": "tests/business-revision.test.ts",
+      "bytes": 5481,
+      "sha256": "bc47c19452ecc23a8fef3614e6a6ef7f672e149f83d2bcb441c301dbe8b32082"
     },
     {
       "file": "tests/chain-coverage-api-smoke.py",
@@ -1558,8 +1638,8 @@
     },
     {
       "file": "JUDGE-README.md",
-      "bytes": 6709,
-      "sha256": "5b36975234d4925cce58791e6631521c655b33e1b91ce034a8a9a7d18ee125e3"
+      "bytes": 7974,
+      "sha256": "ffeeb2338b7aac6924bac94192835f0158e457417737052469e4582920970a78"
     },
     {
       "file": "DEMO-SCRIPT.md",

@@ -8,6 +8,8 @@ import { ResourceChecks } from "./ResourceChecks";
 import { DeliveryAssessment } from "./DeliveryAssessment";
 import { BrowserCheckPanel } from "./BrowserCheckPanel";
 import { EvidenceHistoryPanel } from "./EvidenceHistoryPanel";
+import { BusinessChecksPanel } from "./BusinessChecksPanel";
+import "../business-check.css";
 
 export type VersionViewerProps = {
   quoteId: string;
@@ -125,6 +127,7 @@ export function VersionViewer({ quoteId, version, language, criteria = [], onClo
 
       <section className="version-viewer-records" aria-label={tr("此历史版本的记录", "Records for this historical version")}>
         <ResourceChecks delivery={delivery} language={language}/>
+        {delivery.businessChecks?.deliveryId === delivery.id && <BusinessChecksPanel language={language} report={delivery.businessChecks} readOnly/>}
         {delivery.browserChecks?.deliveryId === delivery.id && <BrowserCheckPanel language={language} report={delivery.browserChecks} readOnly enabled={false} busy={false} onRun={() => {}} onCancel={() => {}}/>}
         <EvidenceHistoryPanel delivery={delivery} language={language}/>
         <DeliveryAssessment report={assessment} criteria={criteria} language={language} riskReviews={delivery.riskReviews} readOnly />

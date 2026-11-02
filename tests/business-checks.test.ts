@@ -91,6 +91,7 @@ test("price observation requires the label and correct exact cents/ISO currency 
   assert.equal(evaluateBusinessBlocks(price, ["Dessert AUD 18.00"]).outcome, "mismatch");
   assert.equal(evaluateBusinessBlocks(price, ["Beef noodles AUD16.00", "Dessert AUD18.00"]).outcome, "mismatch");
   assert.equal(evaluateBusinessBlocks({...price, kind: "item_price", label: "牛肉面"}, ["牛肉面AUD18.00"]).outcome, "expected_observation");
+  assert.equal(evaluateBusinessBlocks({...price, kind: "item_price", label: "元气牛肉面"}, ["元气牛肉面 AUD 18"]).outcome, "expected_observation");
 });
 test("missing currency, unsupported number forms and conflicting label blocks abstain", () => {
   for (const block of ["Beef noodles $18.00", "Beef noodles 18.00", "Beef noodles AUD 18.000", "Beef noodles AUD -18", "Beef noodles AUD 018", "Beef noodles AUD 1,800", "Beef noodles CAD 18.00"]) assert.equal(evaluateBusinessBlocks(price, [block]).outcome, "unavailable", block);
@@ -98,6 +99,7 @@ test("missing currency, unsupported number forms and conflicting label blocks ab
   assert.equal(evaluateBusinessBlocks(price, ["Beef noodles AUD 18.00", "Beef noodles AUD 28.00"]).outcome, "unavailable");
   assert.equal(evaluateBusinessBlocks(price, ["Beef noodles AUD 18.00 USD 18.00"]).outcome, "unavailable");
   for (const block of ["Beef noodles AUD18 ($28)", "Beef noodles AUD18 / EUR28", "Beef noodles AUD18 / 28GBP", "Beef noodles AUD18 and AUD ?", "Beef noodles AUD18 / AUD 1,800", "Beef noodles AUD18 / AUD 18.000"]) assert.equal(evaluateBusinessBlocks(price, [block]).outcome, "unavailable", block);
+  for (const block of ["牛肉面 28元 AUD 18", "牛肉面 人民币28 AUD18", "牛肉面 USD18 日元28", "牛肉面 AUD18 28港元", "牛肉面 28欧元 AUD18", "牛肉面 28澳元 AUD18", "牛肉面 AUD18 28美元", "牛肉面 28圆 AUD18", "牛肉面 28圓 AUD18", "牛肉面 RMB18 AUD18", "牛肉面 CNY18 AUD18"]) assert.equal(evaluateBusinessBlocks({...price, kind: "item_price", label: "牛肉面"}, [block]).outcome, "unavailable", block);
   assert.equal(evaluateBusinessBlocks(price, ["Beef noodles AUD 18.00", "Beef noodles AUD 18.00"]).outcome, "expected_observation");
 });
 test("business plan derives both viewports and immutable source/expected rows from the saved scope", () => {

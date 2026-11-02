@@ -182,6 +182,11 @@
 .join-project-card ol > li { padding: 8px 0 9px 5px; color: #7a8c67; font-size: 12px; line-height: 1.75; }
 .join-project-card ol strong { color: #48663c; font-size: 13px; font-weight: 600; overflow-wrap: anywhere; }
 .join-project-card ol p { margin: 5px 0 0; font-size: 12px; white-space: pre-wrap; }
+.join-project-business-scope { margin: 18px 0; font-size: 12px; line-height: 1.75; overflow-wrap: anywhere; }
+.join-project-business-scope > ul { padding: 0; margin: 12px 0; list-style: none; }
+.join-project-business-scope > ul > li { margin: 8px 0; padding: 10px 12px; border-left: 3px solid #6e8b53; background: #f5f8ed; }
+.join-project-business-scope > ul p { margin: 4px 0; white-space: pre-wrap; }
+.join-project-business-scope > ul blockquote { margin: 6px 0 0; color: #77856a; font-size: 11px; }
 .join-project-card > label:not(.join-project-confirm) { display: block; margin: 18px 0 6px; color: #49683c; font-size: 13px; font-weight: 550; }
 .join-project-card input:not([type="checkbox"]) { display: block; width: 100%; min-width: 0; min-height: 42px; padding: 9px 11px; border: 1px solid #cbdabb; border-radius: 4px; background: #fffef9; color: #34522e; font: inherit; font-size: 14px; line-height: 1.6; }
 .join-project-confirm { display: flex; align-items: flex-start; gap: 10px; margin: 17px 0; padding: 12px; border: 1px solid #dde6d2; border-radius: 4px; background: #f5f8ed; color: #526e43; font-size: 13px; line-height: 1.85; }

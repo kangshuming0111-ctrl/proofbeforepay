@@ -77,6 +77,12 @@ Each invocation starts a fresh session; existing checkout data and previous sess
 
 Start with the built-in two-sided demonstration and keep payment in simulated mode. Lock the scope as buyer, switch to seller, prepare the first delivery and inspect the missing Contact page and broken booking target. Submit a note, return it with buyer feedback, prepare the revised delivery, then inspect and explicitly accept the current version. A revision label alone does not mean every requirement passed.
 
+## Business-content handoff
+
+For the latest workflow, read docs/PLAN-COHERENCE-2026-11-02.md and use tests/fixtures/noodle-business/. The explicit form example fills four pages and three original requirements. Confirm scope, inspect the editable business checks, then upload v1 as seller. Its English price is correct, Chinese price is28 with a hidden18 decoy, and telephone is wrong. Run business checks, draft feedback, return it and upload v2. Run fresh checks and open Compare each requirement to see agreed, earlier and current actual values together. Human acceptance and payment remain separate.
+
+The isolated no-key helper intentionally disables live providers. In a separate manual checkout with your own DeepSeek key, the explicit AI business-check suggestion action can propose two typed prices and phone copy directly from the original requirements. Each must be adopted/edited and confirmed. The public scripts/evaluation-results/2026-11-02-business-suggestion-baseline.json and followup.json preserve actual synthetic model outputs; reading those files is recorded evidence, not a new live request. An invited seller sees the same locked business plan before joining, and source assessment receives that validated plan without browser-report blocks.
+
 ## Optional providers
 
 No secrets are included. The isolated judge command always disables external providers. Keep its temporary copy provider-free. To configure your own DeepSeek API and PayPal Sandbox REST app separately, stop that demo, return to the original public checkout, follow the README's manual local-development setup and copy this checkout's generated placeholder \`.env.example\` to the Git-ignored \`.dev.vars\`. Restart after configuring. AI assessment is an explicit action that sends requirements and bounded saved source to the configured model and may cost money. A rule review is not a model call. Never use production PayPal credentials or real money for this prototype.

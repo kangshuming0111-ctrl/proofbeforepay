@@ -1,0 +1,900 @@
+{
+  "scope": "Two genuine model calls through the local application on one fictional project. Full validated application reports and source, not raw provider completions; client browser reports are separate and were not sent to the source model. One developer/agent operated both perspectives; no payment or independent user trial.",
+  "reports": [
+    {
+      "version": "v1",
+      "sourceText": "英文菜单标明 Beef noodles AUD 18\n中文菜单标明牛肉面 AUD 18\n到店说明展示电话 +61 3 9000 0000",
+      "lockedBusinessChecks": [
+        {
+          "id": "business-1",
+          "criterionId": "coverage-1",
+          "file": "menu-en.html",
+          "source": {
+            "start": 0,
+            "end": 26,
+            "excerpt": "英文菜单标明 Beef noodles AUD 18"
+          },
+          "expected": {
+            "kind": "item_price",
+            "label": "Beef noodles",
+            "amountMinor": 1800,
+            "currency": "AUD"
+          }
+        },
+        {
+          "id": "business-2",
+          "criterionId": "coverage-3",
+          "file": "visit.html",
+          "source": {
+            "start": 44,
+            "end": 68,
+            "excerpt": "到店说明展示电话 +61 3 9000 0000"
+          },
+          "expected": {
+            "kind": "visible_copy",
+            "text": "+61 3 9000 0000"
+          }
+        },
+        {
+          "id": "business-3",
+          "criterionId": "coverage-2",
+          "file": "menu-zh.html",
+          "source": {
+            "start": 27,
+            "end": 43,
+            "excerpt": "中文菜单标明牛肉面 AUD 18"
+          },
+          "expected": {
+            "kind": "item_price",
+            "label": "牛肉面",
+            "amountMinor": 1800,
+            "currency": "AUD"
+          }
+        }
+      ],
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Laneway Noodles | Home</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><p class=\"notice\">Fictional test restaurant. Static navigation only; no booking form, email service, real orders or payment.</p><main><h1>Laneway Noodles</h1><p>Fictional Melbourne noodle shop. Monday–Friday 11am–8pm.</p><nav><a href=\"menu-en.html\">View menu</a><a href=\"visit.html#consultation\">Visit information</a></nav></main></body></html>",
+        "menu-en.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Noodle Shop | Menu</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Menu</h1><p class=\"menu-row\"><span>Beef noodles</span> <span>AUD</span> <strong>18.00</strong></p><p class=\"menu-row\">Vegetarian noodles AUD 16</p><nav><a href=\"menu-zh.html\">中文菜单</a><a href=\"index.html\">Home</a></nav></main></body></html>",
+        "menu-zh.html": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>巷口面馆 | 中文菜单</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>中文菜单</h1><p class=\"menu-row\"><span>牛肉面</span> <span>AUD</span> <strong>28</strong></p><p style=\"display:none\">牛肉面 AUD 18</p><p class=\"menu-row\">素食面 AUD 16</p><nav><a href=\"visit.html#consultation\">查看到店说明</a><a href=\"menu-en.html\">English menu</a></nav></main></body></html>",
+        "visit.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Noodle Shop | Visit</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Visit us</h1><section id=\"consultation\"><h2>Bookings</h2><p>Contact the shop to arrange a booking. This static demo does not send emails or process bookings.</p><p>+61 3 9000 9999</p><p>Monday–Friday 11:00–20:00</p></section><nav><a href=\"index.html\">Home</a></nav></main></body></html>",
+        "site.css": ":root{font-family:system-ui;color:#213d30;background:#fffdf5}*{box-sizing:border-box}body{margin:0}main{max-width:800px;margin:auto;padding:24px}nav{display:flex;flex-wrap:wrap;gap:12px}a{display:inline-block;padding:12px;background:#e5ecdf;color:inherit}h1{font-family:Georgia,serif}section{padding:18px 0}p{line-height:1.7}.notice{font-size:12px;border-bottom:1px solid #ccc;padding:12px}a:focus-visible{outline:3px solid #9d6035}@media(max-width:600px){main{padding:16px}}"
+      },
+      "applicationReport": {
+        "id": "d29a2330-1521-40eb-acee-9d429840454b",
+        "deliveryId": "692cdb41-1cbe-4cc5-b199-ebf2f88ee7fc",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-02T07:53:01.290Z",
+        "items": [
+          {
+            "criterionId": "page-1",
+            "status": "supported",
+            "explanation": "index.html 含 doctype、非空 title 与 body，独立非空文档成立。",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 0,
+                "end": 163,
+                "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Laneway Noodles | Home</title>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-page-1"
+            ]
+          },
+          {
+            "criterionId": "page-2",
+            "status": "supported",
+            "explanation": "menu-en.html 含 doctype、非空 title 与 body，独立非空文档成立。",
+            "citations": [
+              {
+                "file": "menu-en.html",
+                "start": 0,
+                "end": 159,
+                "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Noodle Shop | Menu</title>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-page-2"
+            ]
+          },
+          {
+            "criterionId": "page-3",
+            "status": "supported",
+            "explanation": "menu-zh.html 含 doctype、非空 title 与 body，独立非空文档成立。",
+            "citations": [
+              {
+                "file": "menu-zh.html",
+                "start": 0,
+                "end": 152,
+                "excerpt": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>巷口面馆 | 中文菜单</title>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-page-3"
+            ]
+          },
+          {
+            "criterionId": "page-4",
+            "status": "supported",
+            "explanation": "visit.html 含 doctype、非空 title 与 body，独立非空文档成立。",
+            "citations": [
+              {
+                "file": "visit.html",
+                "start": 0,
+                "end": 160,
+                "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Noodle Shop | Visit</title>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-page-4"
+            ]
+          },
+          {
+            "criterionId": "link",
+            "status": "supported",
+            "explanation": "index.html 中有文字“View menu”的链接，指向 menu-en.html。",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 441,
+                "end": 477,
+                "excerpt": "<a href=\"menu-en.html\">View menu</a>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-link"
+            ]
+          },
+          {
+            "criterionId": "link-2",
+            "status": "supported",
+            "explanation": "menu-en.html 中有文字“中文菜单”的链接，指向 menu-zh.html。",
+            "citations": [
+              {
+                "file": "menu-en.html",
+                "start": 373,
+                "end": 404,
+                "excerpt": "<a href=\"menu-zh.html\">中文菜单</a>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-link-2"
+            ]
+          },
+          {
+            "criterionId": "link-3",
+            "status": "supported",
+            "explanation": "menu-zh.html 中有文字“查看到店说明”的链接，指向 visit.html#consultation。",
+            "citations": [
+              {
+                "file": "menu-zh.html",
+                "start": 377,
+                "end": 421,
+                "excerpt": "<a href=\"visit.html#consultation\">查看到店说明</a>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-link-3"
+            ]
+          },
+          {
+            "criterionId": "mobile",
+            "status": "insufficient_evidence",
+            "explanation": "本项不属于明确可用源码核对的文本内容要求，或含运行、交互、手机体验及主观判断；需要其他证据或买家实际确认。",
+            "citations": [
+              {
+                "file": "site.css",
+                "start": 432,
+                "end": 475,
+                "excerpt": "@media(max-width:600px){main{padding:16px}}"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-mobile"
+            ]
+          },
+          {
+            "criterionId": "coverage-1",
+            "status": "supported",
+            "explanation": "英文菜单显示 Beef noodles、AUD 与 18.00，符合标签与 1800 分。",
+            "citations": [
+              {
+                "file": "menu-en.html",
+                "start": 250,
+                "end": 315,
+                "excerpt": "<span>Beef noodles</span> <span>AUD</span> <strong>18.00</strong>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-coverage-1"
+            ]
+          },
+          {
+            "criterionId": "coverage-2",
+            "status": "changes_suggested",
+            "explanation": "可见牛肉面行价格为 28，仅隐藏段落写着 AUD 18，与约定 1800 分不符。",
+            "citations": [
+              {
+                "file": "menu-zh.html",
+                "start": 243,
+                "end": 296,
+                "excerpt": "<span>牛肉面</span> <span>AUD</span> <strong>28</strong>"
+              },
+              {
+                "file": "menu-zh.html",
+                "start": 300,
+                "end": 338,
+                "excerpt": "<p style=\"display:none\">牛肉面 AUD 18</p>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-coverage-2"
+            ]
+          },
+          {
+            "criterionId": "coverage-3",
+            "status": "changes_suggested",
+            "explanation": "到店说明的电话是 +61 3 9000 9999，与约定的 +61 3 9000 0000 不一致。",
+            "citations": [
+              {
+                "file": "visit.html",
+                "start": 383,
+                "end": 405,
+                "excerpt": "<p>+61 3 9000 9999</p>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-coverage-3"
+            ]
+          }
+        ],
+        "risks": [
+          {
+            "title": "中文菜单可见价格错误且以隐藏文本承载约定价格",
+            "explanation": "可见牛肉面价格为 28，隐藏段落才有 AUD 18，易误导并影响验收。",
+            "suggestion": "将可见牛肉面行改为 AUD 18.00，并删除隐藏的重复价格段落。",
+            "citations": [
+              {
+                "file": "menu-zh.html",
+                "start": 277,
+                "end": 296,
+                "excerpt": "<strong>28</strong>"
+              },
+              {
+                "file": "menu-zh.html",
+                "start": 300,
+                "end": 338,
+                "excerpt": "<p style=\"display:none\">牛肉面 AUD 18</p>"
+              }
+            ]
+          },
+          {
+            "title": "到店说明电话号码与约定不符",
+            "explanation": "页面显示 +61 3 9000 9999，而约定为 +61 3 9000 0000。",
+            "suggestion": "核对联系电话后将页面号码更正为 +61 3 9000 0000。",
+            "citations": [
+              {
+                "file": "visit.html",
+                "start": 383,
+                "end": 405,
+                "excerpt": "<p>+61 3 9000 9999</p>"
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "未进行浏览器或真机测试，无法确认手机端渲染、点击与导航行为。",
+          "未验证表单、邮件、预订或支付等运行时功能。",
+          "中文菜单隐藏价格是否会被辅助技术读取未做运行或可访问性测试。",
+          "英文菜单使用 18.00，中文菜单约定为整数金额，显示格式一致性需人工确认。",
+          "已发送全部受支持 HTML/CSS 原文，但完整输入不代表 AI 已正确理解；未运行浏览器、脚本或后台，不能证明功能、安全性或完整交付。",
+          "AI 建议与服务端规则分开记录。人工检查和最终验收由买家完成，不会自动验收、授权或付款。"
+        ],
+        "coverage": {
+          "includedFiles": [
+            "index.html",
+            "menu-en.html",
+            "menu-zh.html",
+            "visit.html",
+            "site.css"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "usage": {
+          "promptTokens": 4232,
+          "completionTokens": 1240
+        }
+      },
+      "clientBrowserReport": {
+        "id": "4df09240-42af-489d-a768-d1578f58ed72",
+        "deliveryId": "692cdb41-1cbe-4cc5-b199-ebf2f88ee7fc",
+        "method": "client-business-content-v1",
+        "receivedAt": "2026-11-02T07:52:38.472Z",
+        "readings": [
+          {
+            "criterionId": "coverage-1",
+            "file": "menu-en.html",
+            "source": {
+              "start": 0,
+              "end": 26,
+              "excerpt": "英文菜单标明 Beef noodles AUD 18"
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Beef noodles",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            },
+            "checkId": "business-1",
+            "stepId": "business:375:business-1",
+            "viewportWidth": 375,
+            "status": "observed",
+            "blocks": [
+              "Beef noodles AUD 18.00"
+            ],
+            "outcome": "expected_observation",
+            "explanation": "The item label and expected ISO currency/amount were observed together in an unambiguous visible block."
+          },
+          {
+            "criterionId": "coverage-1",
+            "file": "menu-en.html",
+            "source": {
+              "start": 0,
+              "end": 26,
+              "excerpt": "英文菜单标明 Beef noodles AUD 18"
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Beef noodles",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            },
+            "checkId": "business-1",
+            "stepId": "business:900:business-1",
+            "viewportWidth": 900,
+            "status": "observed",
+            "blocks": [
+              "Beef noodles AUD 18.00"
+            ],
+            "outcome": "expected_observation",
+            "explanation": "The item label and expected ISO currency/amount were observed together in an unambiguous visible block."
+          },
+          {
+            "criterionId": "coverage-3",
+            "file": "visit.html",
+            "source": {
+              "start": 44,
+              "end": 68,
+              "excerpt": "到店说明展示电话 +61 3 9000 0000"
+            },
+            "expected": {
+              "kind": "visible_copy",
+              "text": "+61 3 9000 0000"
+            },
+            "checkId": "business-2",
+            "stepId": "business:375:business-2",
+            "viewportWidth": 375,
+            "status": "observed",
+            "blocks": [
+              "+61 3 9000 9999"
+            ],
+            "outcome": "mismatch",
+            "explanation": "The expected literal copy was not observed in the supplied visible text blocks."
+          },
+          {
+            "criterionId": "coverage-3",
+            "file": "visit.html",
+            "source": {
+              "start": 44,
+              "end": 68,
+              "excerpt": "到店说明展示电话 +61 3 9000 0000"
+            },
+            "expected": {
+              "kind": "visible_copy",
+              "text": "+61 3 9000 0000"
+            },
+            "checkId": "business-2",
+            "stepId": "business:900:business-2",
+            "viewportWidth": 900,
+            "status": "observed",
+            "blocks": [
+              "+61 3 9000 9999"
+            ],
+            "outcome": "mismatch",
+            "explanation": "The expected literal copy was not observed in the supplied visible text blocks."
+          },
+          {
+            "criterionId": "coverage-2",
+            "file": "menu-zh.html",
+            "source": {
+              "start": 27,
+              "end": 43,
+              "excerpt": "中文菜单标明牛肉面 AUD 18"
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "牛肉面",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            },
+            "checkId": "business-3",
+            "stepId": "business:375:business-3",
+            "viewportWidth": 375,
+            "status": "observed",
+            "blocks": [
+              "牛肉面 AUD 28"
+            ],
+            "outcome": "mismatch",
+            "explanation": "The item block reports AUD 28.00, which differs from the buyer-confirmed currency or amount."
+          },
+          {
+            "criterionId": "coverage-2",
+            "file": "menu-zh.html",
+            "source": {
+              "start": 27,
+              "end": 43,
+              "excerpt": "中文菜单标明牛肉面 AUD 18"
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "牛肉面",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            },
+            "checkId": "business-3",
+            "stepId": "business:900:business-3",
+            "viewportWidth": 900,
+            "status": "observed",
+            "blocks": [
+              "牛肉面 AUD 28"
+            ],
+            "outcome": "mismatch",
+            "explanation": "The item block reports AUD 28.00, which differs from the buyer-confirmed currency or amount."
+          }
+        ],
+        "summary": {
+          "steps": 6,
+          "observed": 6,
+          "issues": 4,
+          "unavailable": 0
+        },
+        "reportedByRole": "seller"
+      }
+    },
+    {
+      "version": "v2",
+      "sourceText": "英文菜单标明 Beef noodles AUD 18\n中文菜单标明牛肉面 AUD 18\n到店说明展示电话 +61 3 9000 0000",
+      "lockedBusinessChecks": [
+        {
+          "id": "business-1",
+          "criterionId": "coverage-1",
+          "file": "menu-en.html",
+          "source": {
+            "start": 0,
+            "end": 26,
+            "excerpt": "英文菜单标明 Beef noodles AUD 18"
+          },
+          "expected": {
+            "kind": "item_price",
+            "label": "Beef noodles",
+            "amountMinor": 1800,
+            "currency": "AUD"
+          }
+        },
+        {
+          "id": "business-2",
+          "criterionId": "coverage-3",
+          "file": "visit.html",
+          "source": {
+            "start": 44,
+            "end": 68,
+            "excerpt": "到店说明展示电话 +61 3 9000 0000"
+          },
+          "expected": {
+            "kind": "visible_copy",
+            "text": "+61 3 9000 0000"
+          }
+        },
+        {
+          "id": "business-3",
+          "criterionId": "coverage-2",
+          "file": "menu-zh.html",
+          "source": {
+            "start": 27,
+            "end": 43,
+            "excerpt": "中文菜单标明牛肉面 AUD 18"
+          },
+          "expected": {
+            "kind": "item_price",
+            "label": "牛肉面",
+            "amountMinor": 1800,
+            "currency": "AUD"
+          }
+        }
+      ],
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Laneway Noodles | Home</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><p class=\"notice\">Fictional test restaurant. Static navigation only; no booking form, email service, real orders or payment.</p><main><h1>Laneway Noodles</h1><p>Fictional Melbourne noodle shop. Monday–Friday 11am–8pm.</p><nav><a href=\"menu-en.html\">View menu</a><a href=\"visit.html#consultation\">Visit information</a></nav></main></body></html>",
+        "menu-en.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Noodle Shop | Menu</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Menu</h1><p class=\"menu-row\"><span>Beef noodles</span> <span>AUD</span> <strong>18.00</strong></p><p class=\"menu-row\">Vegetarian noodles AUD 16</p><nav><a href=\"menu-zh.html\">中文菜单</a><a href=\"index.html\">Home</a></nav></main></body></html>",
+        "menu-zh.html": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>巷口面馆 | 中文菜单</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>中文菜单</h1><p class=\"menu-row\"><span>牛肉面</span> <span>AUD</span> <strong>18</strong></p><p class=\"menu-row\">素食面 AUD 16</p><nav><a href=\"visit.html#consultation\">查看到店说明</a><a href=\"menu-en.html\">English menu</a></nav></main></body></html>",
+        "visit.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Noodle Shop | Visit</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Visit us</h1><section id=\"consultation\"><h2>Bookings</h2><p>Contact the shop to arrange a booking. This static demo does not send emails or process bookings.</p><p>+61 3 9000 0000</p><p>Monday–Friday 11:00–20:00</p></section><nav><a href=\"index.html\">Home</a></nav></main></body></html>",
+        "site.css": ":root{font-family:system-ui;color:#213d30;background:#fffdf5}*{box-sizing:border-box}body{margin:0}main{max-width:800px;margin:auto;padding:24px}nav{display:flex;flex-wrap:wrap;gap:12px}a{display:inline-block;padding:12px;background:#e5ecdf;color:inherit}h1{font-family:Georgia,serif}section{padding:18px 0}p{line-height:1.7}.notice{font-size:12px;border-bottom:1px solid #ccc;padding:12px}a:focus-visible{outline:3px solid #9d6035}@media(max-width:600px){main{padding:16px}}"
+      },
+      "applicationReport": {
+        "id": "526c64b4-1472-4a33-916e-fd63da947b48",
+        "deliveryId": "4508cd66-0bd8-4d53-9523-e57085a757ef",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-02T07:54:57.345Z",
+        "items": [
+          {
+            "criterionId": "page-1",
+            "status": "supported",
+            "explanation": "index.html 含 doctype、非空 title 与非空 body 内容。",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 0,
+                "end": 163,
+                "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Laneway Noodles | Home</title>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-page-1"
+            ]
+          },
+          {
+            "criterionId": "page-2",
+            "status": "supported",
+            "explanation": "menu-en.html 含 doctype、非空 title 与非空 body 内容。",
+            "citations": [
+              {
+                "file": "menu-en.html",
+                "start": 0,
+                "end": 159,
+                "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Noodle Shop | Menu</title>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-page-2"
+            ]
+          },
+          {
+            "criterionId": "page-3",
+            "status": "supported",
+            "explanation": "menu-zh.html 含 doctype、非空 title 与非空 body 内容。",
+            "citations": [
+              {
+                "file": "menu-zh.html",
+                "start": 0,
+                "end": 152,
+                "excerpt": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>巷口面馆 | 中文菜单</title>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-page-3"
+            ]
+          },
+          {
+            "criterionId": "page-4",
+            "status": "supported",
+            "explanation": "visit.html 含 doctype、非空 title 与非空 body 内容。",
+            "citations": [
+              {
+                "file": "visit.html",
+                "start": 0,
+                "end": 160,
+                "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Noodle Shop | Visit</title>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-page-4"
+            ]
+          },
+          {
+            "criterionId": "link",
+            "status": "supported",
+            "explanation": "index.html 存在文字“View menu”、目标为 menu-en.html 的链接。",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 441,
+                "end": 477,
+                "excerpt": "<a href=\"menu-en.html\">View menu</a>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-link"
+            ]
+          },
+          {
+            "criterionId": "link-2",
+            "status": "supported",
+            "explanation": "menu-en.html 存在文字“中文菜单”、目标为 menu-zh.html 的链接。",
+            "citations": [
+              {
+                "file": "menu-en.html",
+                "start": 373,
+                "end": 404,
+                "excerpt": "<a href=\"menu-zh.html\">中文菜单</a>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-link-2"
+            ]
+          },
+          {
+            "criterionId": "link-3",
+            "status": "supported",
+            "explanation": "menu-zh.html 存在文字“查看到店说明”、目标为 visit.html#consultation 的链接，目标页含该 id。",
+            "citations": [
+              {
+                "file": "menu-zh.html",
+                "start": 339,
+                "end": 383,
+                "excerpt": "<a href=\"visit.html#consultation\">查看到店说明</a>"
+              },
+              {
+                "file": "visit.html",
+                "start": 235,
+                "end": 262,
+                "excerpt": "<section id=\"consultation\">"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-link-3"
+            ]
+          },
+          {
+            "criterionId": "mobile",
+            "status": "insufficient_evidence",
+            "explanation": "本项不属于明确可用源码核对的文本内容要求，或含运行、交互、手机体验及主观判断；需要其他证据或买家实际确认。",
+            "citations": [
+              {
+                "file": "site.css",
+                "start": 432,
+                "end": 475,
+                "excerpt": "@media(max-width:600px){main{padding:16px}}"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-mobile"
+            ]
+          },
+          {
+            "criterionId": "coverage-1",
+            "status": "supported",
+            "explanation": "menu-en.html 中 Beef noodles 标为 AUD 18.00，即 amountMinor 1800，与约定一致。",
+            "citations": [
+              {
+                "file": "menu-en.html",
+                "start": 250,
+                "end": 315,
+                "excerpt": "<span>Beef noodles</span> <span>AUD</span> <strong>18.00</strong>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-coverage-1"
+            ]
+          },
+          {
+            "criterionId": "coverage-2",
+            "status": "supported",
+            "explanation": "menu-zh.html 中牛肉面标为 AUD 18，金额 1800 minor units，与约定一致。",
+            "citations": [
+              {
+                "file": "menu-zh.html",
+                "start": 243,
+                "end": 296,
+                "excerpt": "<span>牛肉面</span> <span>AUD</span> <strong>18</strong>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-coverage-2"
+            ]
+          },
+          {
+            "criterionId": "coverage-3",
+            "status": "supported",
+            "explanation": "visit.html 到店板块内出现确切电话 +61 3 9000 0000 文本。",
+            "citations": [
+              {
+                "file": "visit.html",
+                "start": 383,
+                "end": 405,
+                "excerpt": "<p>+61 3 9000 0000</p>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-coverage-3"
+            ]
+          }
+        ],
+        "risks": [],
+        "limitations": [
+          "仅审查静态源码文本，未在浏览器或手机上渲染检查所有页面。",
+          "源码存在链接与锚点，不代表点击导航、焦点行为或页面跳转实际可用。",
+          "移动端可用性、可读性、无溢出与点击热区必须由人实机确认。",
+          "CSS 媒体查询只描述样式规则，不能证明手机显示效果。",
+          "未执行脚本、后端或表单提交测试；页面自述为静态演示。",
+          "画面外观、colors、layout 与主观设计质量不在源码审查能力内。",
+          "已发送全部受支持 HTML/CSS 原文，但完整输入不代表 AI 已正确理解；未运行浏览器、脚本或后台，不能证明功能、安全性或完整交付。",
+          "AI 建议与服务端规则分开记录。人工检查和最终验收由买家完成，不会自动验收、授权或付款。"
+        ],
+        "coverage": {
+          "includedFiles": [
+            "index.html",
+            "menu-en.html",
+            "menu-zh.html",
+            "visit.html",
+            "site.css"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "usage": {
+          "promptTokens": 4216,
+          "completionTokens": 1051
+        }
+      },
+      "clientBrowserReport": {
+        "id": "325c72e3-1ce7-4419-86ba-e85e1d4027dd",
+        "deliveryId": "4508cd66-0bd8-4d53-9523-e57085a757ef",
+        "method": "client-business-content-v1",
+        "receivedAt": "2026-11-02T07:54:37.719Z",
+        "readings": [
+          {
+            "criterionId": "coverage-1",
+            "file": "menu-en.html",
+            "source": {
+              "start": 0,
+              "end": 26,
+              "excerpt": "英文菜单标明 Beef noodles AUD 18"
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Beef noodles",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            },
+            "checkId": "business-1",
+            "stepId": "business:375:business-1",
+            "viewportWidth": 375,
+            "status": "observed",
+            "blocks": [
+              "Beef noodles AUD 18.00"
+            ],
+            "outcome": "expected_observation",
+            "explanation": "The item label and expected ISO currency/amount were observed together in an unambiguous visible block."
+          },
+          {
+            "criterionId": "coverage-1",
+            "file": "menu-en.html",
+            "source": {
+              "start": 0,
+              "end": 26,
+              "excerpt": "英文菜单标明 Beef noodles AUD 18"
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Beef noodles",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            },
+            "checkId": "business-1",
+            "stepId": "business:900:business-1",
+            "viewportWidth": 900,
+            "status": "observed",
+            "blocks": [
+              "Beef noodles AUD 18.00"
+            ],
+            "outcome": "expected_observation",
+            "explanation": "The item label and expected ISO currency/amount were observed together in an unambiguous visible block."
+          },
+          {
+            "criterionId": "coverage-3",
+            "file": "visit.html",
+            "source": {
+              "start": 44,
+              "end": 68,
+              "excerpt": "到店说明展示电话 +61 3 9000 0000"
+            },
+            "expected": {
+              "kind": "visible_copy",
+              "text": "+61 3 9000 0000"
+            },
+            "checkId": "business-2",
+            "stepId": "business:375:business-2",
+            "viewportWidth": 375,
+            "status": "observed",
+            "blocks": [
+              "+61 3 9000 0000"
+            ],
+            "outcome": "expected_observation",
+            "explanation": "The expected literal copy was observed in a supplied visible text block."
+          },
+          {
+            "criterionId": "coverage-3",
+            "file": "visit.html",
+            "source": {
+              "start": 44,
+              "end": 68,
+              "excerpt": "到店说明展示电话 +61 3 9000 0000"
+            },
+            "expected": {
+              "kind": "visible_copy",
+              "text": "+61 3 9000 0000"
+            },
+            "checkId": "business-2",
+            "stepId": "business:900:business-2",
+            "viewportWidth": 900,
+            "status": "observed",
+            "blocks": [
+              "+61 3 9000 0000"
+            ],
+            "outcome": "expected_observation",
+            "explanation": "The expected literal copy was observed in a supplied visible text block."
+          },
+          {
+            "criterionId": "coverage-2",
+            "file": "menu-zh.html",
+            "source": {
+              "start": 27,
+              "end": 43,
+              "excerpt": "中文菜单标明牛肉面 AUD 18"
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "牛肉面",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            },
+            "checkId": "business-3",
+            "stepId": "business:375:business-3",
+            "viewportWidth": 375,
+            "status": "observed",
+            "blocks": [
+              "牛肉面 AUD 18"
+            ],
+            "outcome": "expected_observation",
+            "explanation": "The item label and expected ISO currency/amount were observed together in an unambiguous visible block."
+          },
+          {
+            "criterionId": "coverage-2",
+            "file": "menu-zh.html",
+            "source": {
+              "start": 27,
+              "end": 43,
+              "excerpt": "中文菜单标明牛肉面 AUD 18"
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "牛肉面",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            },
+            "checkId": "business-3",
+            "stepId": "business:900:business-3",
+            "viewportWidth": 900,
+            "status": "observed",
+            "blocks": [
+              "牛肉面 AUD 18"
+            ],
+            "outcome": "expected_observation",
+            "explanation": "The item label and expected ISO currency/amount were observed together in an unambiguous visible block."
+          }
+        ],
+        "summary": {
+          "steps": 6,
+          "observed": 6,
+          "issues": 0,
+          "unavailable": 0
+        },
+        "reportedByRole": "seller"
+      }
+    }
+  ]
+}

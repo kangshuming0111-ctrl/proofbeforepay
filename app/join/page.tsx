@@ -1,10 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import { FileCheck2, LoaderCircle, ShieldCheck } from "lucide-react";
-import type { Currency, Language, ProofCriterion } from "@/lib/contracts";
+import type { Currency, Language, ProofBusinessCheck, ProofCriterion, RequirementCoverage } from "@/lib/contracts";
+import { BusinessChecksSource, businessExpectedLabel } from "../components/BusinessChecksPanel";
+import { RequirementCoverageSource } from "../components/RequirementCoveragePanel";
 import "../collaboration.css";
+import "../business-check.css";
+import "../requirement-coverage.css";
 
-type InvitationPreview = {project: {id: string; reference: string; title: string; summary: string; currency: Currency; totalCents: number; language: Language; paymentMode: "demo" | "sandbox"; criteria: ProofCriterion[]}; email: string; expiresAt: string};
+type InvitationPreview = {project: {id: string; reference: string; title: string; summary: string; currency: Currency; totalCents: number; language: Language; paymentMode: "demo" | "sandbox"; criteria: ProofCriterion[]; businessChecks: ProofBusinessCheck[]; coverage?: RequirementCoverage}; email: string; expiresAt: string};
 
 async function invitationRequest<T>(action: string, input: unknown): Promise<T> {
   const response = await fetch(`/api/proof-invitations/${action}`, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(input)});
@@ -54,10 +58,12 @@ export default function JoinProject() {
         <h2>{preview.project.title}</h2><p>{preview.project.summary}</p>
         <strong className="join-project-amount">{new Intl.NumberFormat(preview.project.language === "zh" ? "zh-CN" : "en-AU", {style: "currency", currency: preview.project.currency}).format(preview.project.totalCents / 100)}</strong>
         <ol>{preview.project.criteria.map(criterion => <li key={criterion.id}><strong>{criterion.title}</strong><p>{criterion.source}</p></li>)}</ol>
+        {preview.project.coverage && <RequirementCoverageSource coverage={preview.project.coverage} language={preview.project.language}/>}
+        {!!preview.project.businessChecks.length && <div className="join-project-business-scope"><h2>{tr("本次交付的业务内容标准", "Business content agreed for this delivery")}</h2><p className="collab-muted">{tr("核对指定页面、菜名、金额、币种和文案。这些是买家锁定的预期值，加入后交付会按同一份计划核对。", "Review the pages, item labels, amounts, currencies and copy. These are the buyer's locked expected values; the same plan will be used to inspect your delivery.")}</p><ul aria-label={tr("已锁定的业务检查", "Locked business checks")}>{preview.project.businessChecks.map(check => <li key={check.id}><strong>{check.file}</strong><p>{businessExpectedLabel(check.expected)}</p><blockquote>{check.source.excerpt}</blockquote></li>)}</ul><BusinessChecksSource checks={preview.project.businessChecks} language={preview.project.language}/></div>}
         <p className="collab-muted">{preview.project.paymentMode === "sandbox" ? tr("此项目使用 PayPal Sandbox 虚拟测试资金，收款方是服务端配置的测试商户，不向实际卖家结算。加入后可提交和修订交付；仅买家能在验收后单独确认授权与扣款。", "This project uses PayPal Sandbox virtual test funds paid to the configured test merchant, with no actual seller settlement. You can submit and revise deliveries. Only the buyer can authorize and capture test payment after acceptance.") : tr("此项目使用模拟付款，不会向卖家转账。加入后可提交和修订交付；验收与付款确认由买家操作。", "This project uses simulated payment and does not transfer funds to the seller. You can submit and revise deliveries; the buyer controls acceptance and payment confirmation.")}</p>
         <label htmlFor="sellerDisplayName">{tr("你的展示名称", "Your display name")}</label>
         <input id="sellerDisplayName" maxLength={100} value={name} onChange={event => setName(event.target.value)} disabled={busy}/>
-        <label className="join-project-confirm"><input type="checkbox" checked={confirmed} onChange={event => setConfirmed(event.target.checked)} disabled={busy}/><span>{tr("我已阅读并确认以上范围、金额和验收标准，同意作为卖家参与此项目。", "I have read and agree to this scope, amount and acceptance criteria, and agree to join this project as the seller.")}</span></label>
+        <label className="join-project-confirm"><input type="checkbox" checked={confirmed} onChange={event => setConfirmed(event.target.checked)} disabled={busy}/><span>{tr("我已阅读并确认以上范围、金额、排除项及业务内容检查，同意按这些验收标准作为卖家参与此项目。", "I have read and confirm the scope, amount, exclusions and business content checks above, and agree to join as seller under these acceptance criteria.")}</span></label>
         <button className="button primary" disabled={busy || !confirmed || !name.trim()} onClick={accept}>{busy ? <LoaderCircle size={16} className="spin"/> : <ShieldCheck size={16}/>} {tr("确认约定并加入", "Confirm scope and join")}</button>
       </> : !busy && <p className="collab-muted">{tr("请使用受邀邮箱登录，并确认你已有此网站的访问权限。若登录后邀请未恢复，请重新打开买家发来的原始链接。", "Sign in using the invited email and make sure you have access to this website. If the invitation is lost during sign-in, reopen the original link from the buyer.")}</p>}
     </section>

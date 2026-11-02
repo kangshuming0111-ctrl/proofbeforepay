@@ -12,6 +12,8 @@ import json
 import sys
 from pathlib import Path
 from uuid import uuid4
+from urllib.error import HTTPError
+from urllib.request import Request
 
 sys.dont_write_bytecode = True
 _spec = importlib.util.spec_from_file_location("business_chain_helpers", Path(__file__).with_name("chain-coverage-api-smoke.py"))
@@ -67,6 +69,73 @@ def consent(quote, reason=None, include_decision=True):
     return value
 
 
+def create_with_scope_preview(api, buyer, seller, outsider, specification):
+    quote = chain.quote_of(api.ok(buyer, "/api/proofs", specification), "buyer")
+    path = "/api/proofs/" + quote["id"]
+    api.ok(buyer, path + "/approve", {})
+    invitation = api.ok(buyer, path + "/invite", {"email": seller.email})["invitation"]
+    api.reject(outsider, "/api/proof-invitations/inspect", {"token": invitation["token"]}, codes=(404,))
+    preview = api.ok(seller, "/api/proof-invitations/inspect", {"token": invitation["token"]})["project"]
+    assert preview["businessChecks"] == quote["proof"]["project"]["businessChecks"]
+    assert len(preview["businessChecks"]) == 3
+    assert preview["coverage"] == quote["proof"]["project"]["coverage"]
+    assert preview["criteria"] == quote["proof"]["criteria"]
+    assert not any(key in preview for key in ("proof", "brief", "clientName", "paypalOrderId", "captureId"))
+    assert preview["businessChecks"][1]["file"] == "menu-zh.html"
+    assert preview["businessChecks"][1]["expected"] == {"kind": "item_price", "label": "牛肉面", "amountMinor": 1800, "currency": "AUD"}
+    chain.quote_of(api.ok(seller, "/api/proof-invitations/accept", {"token": invitation["token"], "confirm": True, "sellerName": "Synthetic business seller"}), "seller")
+    api.checked("The invited seller sees the exact locked business page/value/source plan and coverage before confirming; outsider access is rejected and private delivery/payment state is absent")
+    return path, "/api/quotes/" + quote["id"]
+
+
+def suggestion_endpoint_guards(api, buyer, base):
+    endpoint = "/api/business-check-suggestions"
+    payload = {key: copy.deepcopy(base[key]) for key in ("summary", "requiredPages", "coverage", "language")}
+    before = api.ok(buyer, "/api/proofs")
+    calls_before = api.ok(None, "/api/__synthetic_sandbox_test_mode")["syntheticCalls"]
+    api.reject(None, endpoint, payload, codes=(401,))
+    request = Request(api.origin + endpoint, data=json.dumps(payload).encode("utf-8"), method="POST",
+                      headers={"Content-Type": "application/json", "Origin": "https://unrelated.synthetic.example",
+                               "oai-authenticated-user-id": buyer.identifier, "oai-authenticated-user-email": buyer.email})
+    try:
+        response = api.opener.open(request, timeout=40)
+    except HTTPError as error:
+        response = error
+    with response:
+        assert response.status == 403, "Cross-origin suggestion requests must be refused before provider use"
+    malformed = []
+    value = copy.deepcopy(payload); value["unknown"] = True; malformed.append(value)
+    value = copy.deepcopy(payload); value["summary"] = 123; malformed.append(value)
+    value = copy.deepcopy(payload); value["requiredPages"] = ["index.html", "https://external.synthetic.example/menu.html"]; malformed.append(value)
+    value = copy.deepcopy(payload); value["coverage"]["sourceText"] += " stale"; malformed.append(value)
+    value = copy.deepcopy(payload); value["coverage"]["confirmed"] = False; malformed.append(value)
+    for value in malformed:
+        api.reject(buyer, endpoint, value, codes=(400,))
+    code, result, _ = api.request(buyer, endpoint, payload)
+    assert code == 409 and "not configured" in result.get("error", ""), "Empty provider configuration must explicitly preserve manual fallback"
+    # A fully valid draft can exceed 16KiB: both source fields contain the
+    # 1000-character CJK summary, and 11 excluded rows each retain a 300-CJK
+    # reason. These are the actual 12-unit/10-page limits, not a 40-file plan.
+    large_summary = "".join("门" + "店" * (96 if index == 11 else 80) + ";" for index in range(12))
+    long_pages = ["index.html"] + [f"p{index}/" + "a" * 64 + "/" + "b" * 64 + "/" + "c" * 22 + ".html" for index in range(9)]
+    assert len(large_summary) == 1000 and all(len(path) == 160 for path in long_pages[1:])
+    large = {"summary": large_summary, "requiredPages": long_pages, "language": "zh",
+             "coverage": {"version": 1, "sourceText": large_summary, "confirmed": True,
+                          "decisions": [{"id": f"coverage-{index + 1}", "disposition": "exclude" if index else "include",
+                                         **({"reason": "另" * 300} if index else {})} for index in range(12)]}}
+    large_valid_bytes = len(json.dumps(large, ensure_ascii=False).encode("utf-8"))
+    assert 16 * 1024 < large_valid_bytes < 32 * 1024
+    code, result, _ = api.request(buyer, endpoint, large)
+    assert code == 409 and "not configured" in result.get("error", ""), "A valid UTF-8 draft above 16KiB must reach the explicit no-key fallback, not 413"
+    oversized = {**large, "summary": "店" * 11000}
+    assert len(json.dumps(oversized, ensure_ascii=False).encode("utf-8")) > 32 * 1024
+    api.reject(buyer, endpoint, oversized, codes=(413,))
+    assert api.ok(buyer, "/api/proofs") == before, "Suggestion failure/validation must not create or mutate projects"
+    assert api.ok(None, "/api/__synthetic_sandbox_test_mode")["syntheticCalls"] == calls_before
+    api.checked("AI suggestion HTTP route rejects anonymous, cross-origin, malformed and stale inputs; valid drafts including a maximum-length CJK draft above16KiB reach the explicit no-key fallback, while bodies above32KiB are refused, with zero provider calls or project mutations")
+    return {"largeValidUtf8Bytes": large_valid_bytes, "bodyLimitBytes": 32 * 1024, "summaryCharacters": 1000, "coverageUnits": 12, "excludedReasons": 11, "requiredPages": 10}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--url", required=True)
@@ -82,6 +151,7 @@ def main():
     assert config["aiMode"] == "demo" and config["paymentMode"] == "sandbox"
     initial = api.ok(buyer, "/api/proofs")
     base = specification("Synthetic business verification")
+    suggestion_bounds = suggestion_endpoint_guards(api, buyer, base)
     malformed = []
     for patch in ({"confirmed": False}, {"unrecognized": True}):
         value = copy.deepcopy(base); value["businessChecks"].update(patch); malformed.append(value)
@@ -95,7 +165,7 @@ def main():
     assert api.ok(buyer, "/api/proofs") == initial
     api.checked("HTTP creation rejects unconfirmed/unknown business schema, forged criteria/source, unagreed pages, invalid cents and excluded requirements without creating records")
 
-    path, quote_path = chain.create_shared(api, buyer, seller, base)
+    path, quote_path = create_with_scope_preview(api, buyer, seller, outsider, base)
     buyer_view = chain.quote_of(api.ok(buyer, quote_path), "buyer")
     chain.quote_of(api.ok(seller, quote_path), "seller")
     assert buyer_view["proof"]["project"]["businessChecks"] == base["businessChecks"]["items"]
@@ -192,7 +262,7 @@ def main():
     assert exception_quote["proof"]["paymentState"] == "unfunded"
     api.checked("Unavailable business evidence is never rewritten as matching; a separate explicit buyer exception is required and frozen with the exact report while acceptance remains separate from payment")
     after = api.ok(None, "/api/__synthetic_sandbox_test_mode")
-    print(json.dumps({"result": "passed", "suite": "business-checks", "checks": api.checks, "rejectedCreatePayloads": len(malformed), "rejectedObservationPayloads": len(invalid_reports), "businessFacts": 3, "readingsPerReport": 6, "acceptanceSnapshotPreservedAcrossSupplementAndCapture": True, "providerNetworkRequests": 0, "businessCheckProviderFetches": 0, "syntheticProviderFetches": after["syntheticCalls"] - marker["syntheticCalls"], "scope": "Fresh isolated API/D1 with synthetic identity headers, visible-text readings and payment responses. No real browser actions or visibility, production authentication, independent users, model calls or genuine PayPal Sandbox funds."}, ensure_ascii=False, indent=2))
+    print(json.dumps({"result": "passed", "suite": "business-checks", "checks": api.checks, "suggestionRouteBounds": suggestion_bounds, "rejectedCreatePayloads": len(malformed), "rejectedObservationPayloads": len(invalid_reports), "businessFacts": 3, "readingsPerReport": 6, "acceptanceSnapshotPreservedAcrossSupplementAndCapture": True, "providerNetworkRequests": 0, "businessCheckProviderFetches": 0, "syntheticProviderFetches": after["syntheticCalls"] - marker["syntheticCalls"], "scope": "Fresh isolated API/D1 with synthetic identity headers, visible-text readings and payment responses. No real browser actions or visibility, production authentication, independent users, model calls or genuine PayPal Sandbox funds."}, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

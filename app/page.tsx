@@ -18,6 +18,8 @@ import { runBrowserChecks } from "@/lib/browser-check-probe";
 import { BrowserCheckPanel } from "./components/BrowserCheckPanel";
 import { runBusinessChecks } from "@/lib/business-check-probe";
 import { BusinessCheckEditor, BusinessChecksSource, BusinessChecksPanel, BusinessAcceptanceDecision, businessDraftReady, businessDraftItems, type BusinessCheckDraft } from "./components/BusinessChecksPanel";
+import { BusinessCheckSuggestions, suggestionAlreadyDrafted, type BusinessSuggestionCandidate, type BusinessSuggestionInput } from "./components/BusinessCheckSuggestions";
+import type { BusinessCheckSuggestions as BusinessSuggestionResult } from "@/lib/business-check-suggestions";
 import { EvidenceHistoryPanel } from "./components/EvidenceHistoryPanel";
 import { RequirementCoveragePanel, RequirementCoverageSource, type CoverageDraftDecision } from "./components/RequirementCoveragePanel";
 import { summaryCoverageUnits } from "@/lib/requirement-coverage";
@@ -793,6 +795,35 @@ export default function Home() {
     return "";
   }
 
+  async function suggestBusinessChecks(input: BusinessSuggestionInput): Promise<BusinessSuggestionResult> {
+    if (operationLock.current || busy || loading || layoutController.current || browserCheckController.current || businessCheckController.current) throw new Error(tr("请等待当前操作完成。", "Wait for the current action to finish."));
+    operationLock.current = true; setBusy("business-suggestions"); setError(""); setNotice("");
+    try {return (await request<{suggestions: BusinessSuggestionResult}>("/api/business-check-suggestions", "POST", input)).suggestions;}
+    finally {operationLock.current = false; setBusy("");}
+  }
+
+  function openBusinessEditor() {
+    window.requestAnimationFrame(() => {
+      const editor = workspaceRef.current?.querySelector<HTMLDetailsElement>(".business-check-editor");
+      if (editor) {editor.open = true; editor.scrollIntoView({block: "nearest", behavior: "smooth"}); editor.querySelector<HTMLElement>("summary")?.focus({preventScroll: true});}
+    });
+  }
+
+  function adoptBusinessSuggestion(candidate: BusinessSuggestionCandidate) {
+    if (busy || loading || !coverageConfirmed || !coverageReady) return;
+    const unit = coverageUnits.find(unit => unit.id === candidate.criterionId);
+    const decision = coverageRows.find(row => row.id === candidate.criterionId);
+    if (!unit || decision?.disposition !== "include" || candidate.source.start !== unit.start || candidate.source.end !== unit.end || candidate.source.excerpt !== unit.text
+      || candidate.file && !inputLines(requiredPagesInput).includes(candidate.file)) return;
+    const expected = candidate.expected;
+    setBusinessDrafts(current => current.length >= 8 || suggestionAlreadyDrafted(candidate, current) ? current : [...current,
+      {key: crypto.randomUUID(), criterionId: candidate.criterionId, file: candidate.file, kind: expected.kind,
+        text: expected.kind === "visible_copy" ? expected.text : "", label: expected.kind === "item_price" ? expected.label : "",
+        amount: expected.kind === "item_price" ? (expected.amountMinor / 100).toFixed(2) : "", currency: expected.kind === "item_price" ? expected.currency : currency}]);
+    setBusinessConfirmed(false);
+    window.requestAnimationFrame(() => {const editor = workspaceRef.current?.querySelector<HTMLDetailsElement>(".business-check-editor"); if (editor) editor.open = true;});
+  }
+
   async function analyzeRequirements(input: {sourceText: string; sourceName?: string}) {
     if (operationLock.current || busy || loading || layoutController.current || browserCheckController.current || businessCheckController.current) throw new Error(tr("请等待当前操作完成。", "Wait for the current action to finish."));
     operationLock.current = true;
@@ -1141,6 +1172,10 @@ export default function Home() {
                           onDecisionChange={decision => {setCoverageDecisions(current => ({...current, [decision.id]: decision})); setCoverageConfirmed(false);}}
                           onConfirmChange={setCoverageConfirmed}/>
                         {coverageError && <p className="requirement-coverage-warning" role="alert">{coverageError}</p>}
+                        <BusinessCheckSuggestions language={language} summary={projectSummary} pages={inputLines(requiredPagesInput)} coverageRows={coverageRows}
+                          confirmed={coverageConfirmed} scopeReady={coverageReady && inputLines(requiredPagesInput).length >= 1 && inputLines(requiredPagesInput).length <= 10 && inputLines(requiredPagesInput).includes("index.html") && coverageRows.some(row => row.disposition === "include") && inputLines(requiredPagesInput).every(isHtmlDeliveryPath) && new Set(inputLines(requiredPagesInput).map(file => file.toLowerCase())).size === inputLines(requiredPagesInput).length}
+                          aiAvailable={config?.aiMode === "live"} disabled={!!busy || loading} busy={busy === "business-suggestions"} drafts={businessDrafts}
+                          onAnalyze={suggestBusinessChecks} onAdopt={adoptBusinessSuggestion} onOpenEditor={openBusinessEditor}/>
                         <BusinessCheckEditor language={language} units={coverageUnits} decisions={coverageRows} pages={inputLines(requiredPagesInput)} rows={businessDrafts} confirmed={businessConfirmed} disabled={!!busy || loading} onChange={setBusinessDrafts} onConfirm={setBusinessConfirmed}/>
                         <details className="project-advanced-checks"><summary>{tr("补充页面与检查方式（可与开发者一起填写）", "Add pages and checks (with your developer)")}</summary>
                           <label htmlFor="requiredPages">{tr("必须交付的 HTML 页面", "Required HTML pages")}</label><textarea id="requiredPages" value={requiredPagesInput} required rows={3} maxLength={1000} aria-describedby="pages-help" onChange={event => setRequiredPagesInput(event.target.value)} />

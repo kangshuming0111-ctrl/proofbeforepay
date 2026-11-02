@@ -83,6 +83,13 @@ type Money = {currency: "aud" | "usd"; amountMinor: number};
 function prices(block: string): {values: Money[]; ambiguous: boolean} {
   const normalized = normalizeBusinessText(block), values: Money[] = [];
   let ambiguous = /[$€£¥₹₩₽₫฿₱₦₺₪]/u.test(normalized);
+  // Only AUD/USD ISO notation is supported by this observation. An explicit
+  // Chinese currency token beside a number must not disappear when another
+  // ISO price is parsed, even if that ISO price happens to match. Currency
+  // words inside an item name, such as 元气牛肉面, have no adjacent amount.
+  const foreignCurrency = "人民币|人民幣|港元|港币|港幣|日元|日圆|日圓|欧元|歐元|澳元|澳币|澳幣|美元|美金|英镑|英鎊|加元|纽元|紐元|韩元|韓元|法郎|卢比|盧比|卢布|盧布|泰铢|泰銖|台币|台幣|臺幣|元|圆|圓";
+  const foreignMoney = new RegExp(`(?:(?:${foreignCurrency})\\s*[+\\-]?\\d+(?:[.,]\\d+)?|[+\\-]?\\d+(?:[.,]\\d+)?\\s*(?:${foreignCurrency}))`, "u");
+  if (foreignMoney.test(normalized)) ambiguous = true;
   const consumed: {start: number; end: number}[] = [];
   // Sentence punctuation may follow a price; decimal/thousands fragments may
   // not be treated as a smaller standalone amount.

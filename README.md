@@ -323,3 +323,7 @@ MIT licensed. Included third-party starter tooling retains its original license 
 ## Buyer-confirmed business content checks (2026-11-02)
 
 Optional checks now bind literal visible copy or menu item/currency/price to an original included requirement and saved HTML page. Complete 375px/900px client observations, editable revision feedback, exact-version reports, explicit exception acceptance and immutable acceptance-time report references form one flow. See [the scope, example, verification and limits](docs/BUSINESS-CONTENT-CHECKS.md). The source fixture is `tests/fixtures/noodle-business`; the form has an explicit noodle-shop example button. This remains bounded static website delivery checking with human acceptance and a separate test payment.
+
+## One acceptance plan through AI, buyer and seller (2026-11-02)
+
+The buyer can explicitly request grounded AI business-check proposals, individually adopt/edit them and confirm the resulting plan. Seller invitation previews show the same precise values; source AI assessment receives that validated locked plan. Business revision comparison now presents agreed values and each version's actual recorded excerpts. See [the implementation, actual-model failures/retests, verification and remaining award-evidence gaps](docs/PLAN-COHERENCE-2026-11-02.md). No model suggestion accepts work or changes the project fee or payment.

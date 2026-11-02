@@ -5,6 +5,7 @@ import { ArrowUpRight, ChevronDown, GitCompareArrows } from "lucide-react";
 import type { Language, ProofCriterion, ProofDelivery, ProofDeliveryVersion, ProofFeedback, ProofLayoutUnavailableReason, ProofReview } from "@/lib/contracts";
 import { buildDeliveryComparison, type ComparisonUnavailableReason, type CriterionVersionEvidence } from "@/lib/delivery-comparison";
 import "../delivery-comparison.css";
+import { BusinessRevisionComparison } from "./BusinessRevisionComparison";
 
 export type DeliveryComparisonProps = {
   delivery: ProofDelivery;
@@ -67,6 +68,7 @@ export function DeliveryComparison({ delivery, review, criteria, previousVersion
     <div className="comparison-body">
       <p className="comparison-notice">{tr("保留同一份已确认要求，分别查看两版的记录。版本号更新或问题数量减少，不等于修复已被确认。", "Both versions use the same agreed requirement. A newer version or a smaller issue count does not establish that a fix is verified.")}</p>
       {comparison.previous.state === "unavailable" && reason(comparison.previous.reason)}
+      <BusinessRevisionComparison delivery={delivery} previousVersion={previousVersion} language={language}/>
       {row ? <>
         <label className="comparison-select-label" htmlFor={`${id}-criterion`}>{tr("选择验收要求", "Choose a requirement")}</label><select id={`${id}-criterion`} value={row.criterion.id} onChange={event => setSelected(event.target.value)}>{comparison.rows.map((item, index) => <option key={item.criterion.id} value={item.criterion.id}>{index + 1}/{comparison.rows.length} · {item.criterion.title}</option>)}</select>
         <div className="comparison-agreement"><strong>{tr("已确认的原始要求", "Original agreed requirement")}</strong><blockquote>{row.criterion.source}</blockquote></div>
