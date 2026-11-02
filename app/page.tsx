@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import {
   ArrowDownToLine, ArrowRight, ArrowUpRight, Check, CheckCheck,
-  ChevronRight, CircleAlert, Clock3, Code2, FileCheck2,
+  ChevronRight, CircleAlert, ClipboardCheck, Clock3, Code2, FileCheck2,
   FileCode2, FileText, FlaskConical, Globe2, History, Info, Monitor,
   LoaderCircle, LockKeyhole, Plus, ReceiptText, RefreshCw, ShieldCheck,
   Smartphone, Sparkles, SquareCheckBig, Undo2, Upload, X, ScanLine,
@@ -16,6 +16,8 @@ import { runLayoutProbe } from "@/lib/layout-probe";
 import { LayoutCheckPanel } from "./components/LayoutCheckPanel";
 import { runBrowserChecks } from "@/lib/browser-check-probe";
 import { BrowserCheckPanel } from "./components/BrowserCheckPanel";
+import { runBusinessChecks } from "@/lib/business-check-probe";
+import { BusinessCheckEditor, BusinessChecksSource, BusinessChecksPanel, BusinessAcceptanceDecision, businessDraftReady, businessDraftItems, type BusinessCheckDraft } from "./components/BusinessChecksPanel";
 import { EvidenceHistoryPanel } from "./components/EvidenceHistoryPanel";
 import { RequirementCoveragePanel, RequirementCoverageSource, type CoverageDraftDecision } from "./components/RequirementCoveragePanel";
 import { summaryCoverageUnits } from "@/lib/requirement-coverage";
@@ -36,6 +38,7 @@ import { AuthorizationStart } from "./components/AuthorizationStart";
 import { RequirementsSource, RequirementsDraftSource } from "./components/RequirementsSource";
 import "./layout-check.css";
 import "./browser-check.css";
+import "./business-check.css";
 import "./collaboration.css";
 import "./requirements.css";
 import "./requirement-coverage.css";
@@ -116,6 +119,9 @@ export default function Home() {
   const [browserSteps, setBrowserSteps] = useState<BrowserStepDraft[]>([]);
   const [coverageDecisions, setCoverageDecisions] = useState<Record<string, CoverageDraftDecision>>({});
   const [coverageConfirmed, setCoverageConfirmed] = useState(false);
+  const [businessDrafts, setBusinessDrafts] = useState<BusinessCheckDraft[]>([]);
+  const [businessConfirmed, setBusinessConfirmed] = useState(false);
+  const [businessExceptionReason, setBusinessExceptionReason] = useState("");
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [uploadError, setUploadError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -137,6 +143,7 @@ export default function Home() {
   const [deliveryTab, setDeliveryTab] = useState<"preview" | "evidence" | "layout">("preview");
   const [layoutProgress, setLayoutProgress] = useState<{done: number; total: number}>();
   const [browserCheckProgress, setBrowserCheckProgress] = useState<{done: number; total: number}>();
+  const [businessCheckProgress, setBusinessCheckProgress] = useState<{done: number; total: number}>();
   const [criterionIndex, setCriterionIndex] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
   const workspaceRef = useRef<HTMLDivElement>(null);
@@ -146,6 +153,8 @@ export default function Home() {
   const layoutController = useRef<AbortController | null>(null);
   const browserCheckController = useRef<AbortController | null>(null);
   const browserCheckSavePending = useRef(false);
+  const businessCheckController = useRef<AbortController | null>(null);
+  const businessCheckSavePending = useRef(false);
   const currentBrowserContext = useRef("");
   const currentDelivery = useRef("");
   const acceptanceRef = useRef<HTMLDivElement>(null);
@@ -158,6 +167,10 @@ export default function Home() {
   catch (cause) { coverageError = cause instanceof Error ? cause.message : tr("需求原文暂时无法整理，请检查长度和内容。", "Could not prepare the source requirements. Check their length and content."); }
   const coverageRows = coverageUnits.map(unit => coverageDecisions[unit.id] ?? {id: unit.id, disposition: "include" as const});
   const coverageReady = !!coverageUnits.length && !coverageError && coverageRows.every(row => row.disposition !== "pending" && (row.disposition !== "exclude" || !!row.reason?.trim()));
+
+  const businessDraftKey = JSON.stringify(businessDrafts);
+  const coverageDraftKey = JSON.stringify(coverageRows);
+  const businessDraftsReady = businessDraftReady(businessDrafts, coverageUnits, coverageRows, inputLines(requiredPagesInput));
 
   const proof = quote?.proof;
   const collaboration = proof?.collaboration;
@@ -205,8 +218,13 @@ export default function Home() {
   const canManageDelivery = !buyer && deliveryUnlocked && (!collaboration || ["in_progress", "changes_requested"].includes(collaboration.stage));
   const canCheckDelivery = deliveryUnlocked && (!collaboration || ["in_progress", "changes_requested", "submitted"].includes(collaboration.stage));
   const canObserveBrowser = !!quote && !!deliveryFiles && ["approved", "paid"].includes(quote.status) && !paymentPending;
-  const canAcceptDelivery = buyer && collaboration?.stage === "submitted" && deliveryUnlocked && reviewCurrent && evidenceComplete && !failed && allHumanChecked && deliveryConsent;
-  const canCapture = buyer && (!collaboration || collaboration.stage === "accepted") && authorized && !pendingVoid && (pendingCapture || (!expired && reviewCurrent && evidenceComplete && !failed && allHumanChecked && consent));
+  const businessChecksConfigured = !!customProject?.businessChecks?.length;
+  const businessReport = delivery?.businessChecks?.deliveryId === delivery?.id ? delivery?.businessChecks : undefined;
+  const businessHasExceptions = !!businessReport && (businessReport.summary.issues > 0 || businessReport.summary.unavailable > 0);
+  const businessDecisionReady = !businessChecksConfigured || !!businessReport && (!businessHasExceptions || businessExceptionReason.trim().length >= 10);
+  const businessDecision = businessChecksConfigured && businessReport ? {reportId: businessReport.id, ...(businessHasExceptions ? {exceptionReason: businessExceptionReason.trim()} : {})} : undefined;
+  const canAcceptDelivery = buyer && collaboration?.stage === "submitted" && deliveryUnlocked && reviewCurrent && evidenceComplete && !failed && allHumanChecked && deliveryConsent && businessDecisionReady;
+  const canCapture = buyer && (!collaboration || collaboration.stage === "accepted") && authorized && !pendingVoid && (pendingCapture || (!expired && reviewCurrent && evidenceComplete && !failed && allHumanChecked && consent && (acceptedCurrent || businessDecisionReady)));
   const aiMode = quote?.aiMode ?? (projectMode === "demo" || customRoleDemo ? "demo" : config?.aiMode);
   const paymentMode = quote?.paymentMode ?? (sandboxRehearsal || sandboxCollaboration ? "sandbox" : projectMode === "demo" || collaborative || customRoleDemo ? "demo" : config?.paymentMode);
   const canReconcile = authorized && paymentPending && quote?.paymentMode === "sandbox";
@@ -296,6 +314,9 @@ export default function Home() {
     setPreviewFile("index.html");
   }, [quote?.id, delivery?.id, proof?.review?.reviewedAt, collaboration?.stage, collaboration?.submission?.at]);
 
+  useEffect(() => {setBusinessConfirmed(false);}, [projectSummary, requiredPagesInput, coverageDraftKey, businessDraftKey]);
+  useEffect(() => {setBusinessExceptionReason(""); setDeliveryConsent(false); setConsent(false);}, [quote?.id, delivery?.id, businessReport?.id]);
+
   useEffect(() => {
     setDeliveryTab("preview");
     setCriterionIndex(0);
@@ -308,8 +329,8 @@ export default function Home() {
   useLayoutEffect(() => {
     currentBrowserContext.current = `${quote?.id ?? ""}:${delivery?.id ?? ""}:${displayRole}`;
     // Context changes and unmount invalidate an in-flight observation, never a received save.
-    browserCheckController.current?.abort();
-    return () => { browserCheckController.current?.abort(); };
+    browserCheckController.current?.abort(); businessCheckController.current?.abort();
+    return () => { browserCheckController.current?.abort(); businessCheckController.current?.abort(); };
   }, [quote?.id, delivery?.id, displayRole]);
 
   useEffect(() => {
@@ -392,7 +413,7 @@ export default function Home() {
     setRequirementsFromBrief(false);
     setRequiredPagesInput(DEFAULT_PAGES);
     setManualRequirementsInput("");
-    setBrowserSteps([]); setCoverageDecisions({}); setCoverageConfirmed(false);
+    setBrowserSteps([]); setCoverageDecisions({}); setCoverageConfirmed(false); setBusinessDrafts([]); setBusinessConfirmed(false);
     window.requestAnimationFrame(() => workspaceRef.current?.focus({ preventScroll: true }));
   }
 
@@ -404,7 +425,7 @@ export default function Home() {
   }
 
   function switchWorkspaceRole(next: ProofRole) {
-    if (operationLock.current || busy || layoutController.current || browserCheckController.current || next === workspaceRole) return;
+    if (operationLock.current || busy || layoutController.current || browserCheckController.current || businessCheckController.current || next === workspaceRole) return;
     const commitSwitch = () => {
       setWorkspaceRole(next);
       setWorkspaceView("workbench");
@@ -446,6 +467,21 @@ export default function Home() {
     setNotice(tr("示例需求已填入，请按实际项目编辑。未创建项目，也未调用 AI。", "Example requirements filled. Edit them for your project. No project was created and no AI was called."));
   }
 
+  function fillNoodleBusinessExample() {
+    setIntakeStarted(true); setProjectMode("custom"); setProjectStep(0); setWorkspacePanel("agreement");
+    setProjectTitle(tr("双语面馆：业务内容验收", "Bilingual noodle shop: business content checks"));
+    updateProjectSummary(tr("英文菜单标明 Beef noodles AUD 18\n中文菜单标明牛肉面 AUD 18\n到店说明展示电话 +61 3 9000 0000", "The English menu must show Beef noodles AUD 18\nThe Chinese menu must show 牛肉面 AUD 18\nThe visit page must show phone +61 3 9000 0000"));
+    setProjectAmount("1.00"); setCurrency("AUD"); setRequiredPagesInput("index.html\nmenu-en.html\nmenu-zh.html\nvisit.html"); setManualRequirementsInput("");
+    setBrowserSteps([{from: "index.html", text: "View menu", to: "menu-en.html"}, {from: "menu-en.html", text: "中文菜单", to: "menu-zh.html"}, {from: "menu-zh.html", text: "查看到店说明", to: "visit.html#consultation"}]);
+    setBusinessDrafts([
+      {key: "noodle-en", criterionId: "coverage-1", file: "menu-en.html", kind: "item_price", text: "", label: "Beef noodles", amount: "18.00", currency: "AUD"},
+      {key: "noodle-zh", criterionId: "coverage-2", file: "menu-zh.html", kind: "item_price", text: "", label: "牛肉面", amount: "18.00", currency: "AUD"},
+      {key: "noodle-phone", criterionId: "coverage-3", file: "visit.html", kind: "visible_copy", text: "+61 3 9000 0000", label: "", amount: "", currency: "AUD"},
+    ]);
+    setBusinessConfirmed(false); setRequirementsDraft(undefined); setRequirementsConfirmed(false); setRequirementsFromBrief(false);
+    setNotice(tr("已填入虚构面馆需求和 3 项业务检查，请先编辑，再在下一步逐条确认。尚未创建项目或付款。", "Fictional noodle-shop requirements and three business checks are filled in. Edit them, then confirm each scope row in the next step. No project or payment was created."));
+  }
+
   function beginIntake() {
     setIntakeStarted(true); setWorkspaceView("workbench"); setWorkspacePanel("agreement");
     setProjectMode("custom"); setProjectStep(0);
@@ -475,7 +511,7 @@ export default function Home() {
   }
 
   async function run(name: string, action: () => Promise<void>, refreshAfterFailure = true) {
-    if (operationLock.current || busy || layoutController.current || browserCheckController.current) return;
+    if (operationLock.current || busy || layoutController.current || browserCheckController.current || businessCheckController.current) return;
     operationLock.current = true;
     setBusy(name); setError(""); setNotice("");
     setReconciliation(null);
@@ -627,12 +663,13 @@ export default function Home() {
     if (!reviewCurrent) return {label: tr("核查当前交付", "Check this delivery"), help: tr("即时检查保存的文件，不调用 AI。", "Immediate checks of saved files, without AI."), action: () => {void mutate("review", {deliveryId: delivery.id}, tr("规则核查完成。", "Rule checks complete."));}};
     if (!buyer && collaboration) return {label: tr("填写说明并提交验收", "Add a note & submit"), help: tr("AI 评估可按需使用，无需等待即可提交。", "AI assessment is optional; you can submit without it."), action: () => focusPanel("payment", ".collaboration-submission-form textarea")};
     if (failed) return {label: tr("查看未通过项", "Inspect unmet requirements"), help: tr("核对证据，再准备具体修改意见。", "Inspect the evidence and prepare specific feedback."), action: () => openCriterion(evidence.find(item => item.finding === "fail")?.criterionId)};
+    if (businessChecksConfigured && !businessReport) return {label: tr("核对约定的业务内容", "Check agreed business content"), help: tr("先对照菜单价格、电话等约定，再进行人工验收。", "Compare agreed prices, contact details and copy before accepting."), action: openBusinessChecks};
     if (!allHumanChecked) return {label: tr(`检查下一项 · 剩余 ${pendingHumanCriteria.length} 项`, `Check next · ${pendingHumanCriteria.length} remaining`), help: tr(`人工检查已确认 ${humanCriteria.length - pendingHumanCriteria.length}/${humanCriteria.length} 项。`, `Human checks confirmed: ${humanCriteria.length - pendingHumanCriteria.length}/${humanCriteria.length}.`), action: openPendingHumanCheck};
     return {label: collaboration ? tr("继续验收确认（不付款）", "Continue acceptance — no payment") : tr("继续验收与付款确认", "Continue to acceptance & payment"), help: tr("下一步仍需你的明确确认。", "Your explicit confirmation is still required."), action: () => collaboration ? beginDeliveryAcceptance() : focusPanel("payment")};
   }
 
   async function checkLayout() {
-    if (!quote || !delivery || !canCheckDelivery || operationLock.current || busy || layoutController.current || browserCheckController.current) return;
+    if (!quote || !delivery || !canCheckDelivery || operationLock.current || busy || layoutController.current || browserCheckController.current || businessCheckController.current) return;
     const snapshot = quote;
     const key = `${quote.id}:${delivery.id}`;
     const controller = new AbortController();
@@ -670,7 +707,7 @@ export default function Home() {
   }
 
   async function checkBrowserBehavior() {
-    if (!quote || !delivery || !canObserveBrowser || operationLock.current || busy || layoutController.current || browserCheckController.current) return;
+    if (!quote || !delivery || !canObserveBrowser || operationLock.current || busy || layoutController.current || browserCheckController.current || businessCheckController.current) return;
     const snapshot = quote, key = `${quote.id}:${delivery.id}:${displayRole}`;
     const controller = new AbortController();
     browserCheckController.current = controller; browserCheckSavePending.current = false;
@@ -706,8 +743,44 @@ export default function Home() {
     }
   }
 
+  function openBusinessChecks() {
+    setWorkspaceView("workbench"); setWorkspacePanel("delivery"); setDeliveryTab("layout");
+    window.requestAnimationFrame(() => {
+      const panel = workspaceRef.current?.querySelector<HTMLDetailsElement>(".business-check-panel");
+      if (panel) {panel.open = true; panel.scrollIntoView({block: "nearest", behavior: "smooth"}); panel.querySelector<HTMLElement>("button")?.focus({preventScroll: true});}
+    });
+  }
+
+  async function checkBusinessContent() {
+    if (!quote || !delivery || !businessChecksConfigured || !canObserveBrowser || operationLock.current || busy || layoutController.current || browserCheckController.current || businessCheckController.current) return;
+    const snapshot = quote, key = `${quote.id}:${delivery.id}:${displayRole}`;
+    const controller = new AbortController();
+    businessCheckController.current = controller; businessCheckSavePending.current = false;
+    setBusy("business-check"); setError(""); setNotice(""); setBusinessCheckProgress(undefined);
+    try {
+      const input = await runBusinessChecks(snapshot, controller.signal, value => {
+        if (!controller.signal.aborted && currentBrowserContext.current === key) setBusinessCheckProgress(value);
+      });
+      if (controller.signal.aborted || currentBrowserContext.current !== key) return;
+      businessCheckSavePending.current = true; setBusy("business-check-save");
+      const result = await request<CaseResult>(`/api/proofs/${snapshot.id}/business-checks`, "POST", input);
+      if (currentBrowserContext.current !== key) return;
+      apply(result.quote, result.role);
+      setNotice(tr("业务内容核对已保存。逐项对照预期和实际观察，再决定修改或验收。", "Business content observations saved. Compare expected and observed details, then decide whether to request changes or accept."));
+    } catch (cause) {
+      if (currentBrowserContext.current !== key) return;
+      if (controller.signal.aborted && !businessCheckSavePending.current) setNotice(tr("业务内容核对已取消，本次未保存。", "Business content check cancelled; this run was not saved."));
+      else {
+        setError(cause instanceof RequestError && cause.status === 409 ? tr("交付或报告已更新，本次未覆盖已有记录。请核对当前版本后重试。", "The delivery or report changed. Existing records were not overwritten. Check the current version and retry.") : cause instanceof Error ? cause.message : tr("业务内容核对未完成，请重试。", "Business content check could not complete. Please retry."));
+        try {const refreshed = await request<CaseResult>(`/api/quotes/${snapshot.id}`); if (currentBrowserContext.current === key) apply(refreshed.quote, refreshed.role);} catch { /* Do not replay uncertain saves. */ }
+      }
+    } finally {
+      if (businessCheckController.current === controller) {businessCheckController.current = null; businessCheckSavePending.current = false; setBusy(""); setBusinessCheckProgress(undefined);}
+    }
+  }
+
   function updateProjectSummary(value: string) {
-    setProjectSummary(value); setCoverageDecisions({}); setCoverageConfirmed(false);
+    setProjectSummary(value); setCoverageDecisions({}); setCoverageConfirmed(false); setBusinessDrafts([]); setBusinessConfirmed(false);
   }
 
   function projectBasicsError() {
@@ -721,7 +794,7 @@ export default function Home() {
   }
 
   async function analyzeRequirements(input: {sourceText: string; sourceName?: string}) {
-    if (operationLock.current || busy || loading || layoutController.current || browserCheckController.current) throw new Error(tr("请等待当前操作完成。", "Wait for the current action to finish."));
+    if (operationLock.current || busy || loading || layoutController.current || browserCheckController.current || businessCheckController.current) throw new Error(tr("请等待当前操作完成。", "Wait for the current action to finish."));
     operationLock.current = true;
     setBusy("requirements"); setError(""); setNotice("");
     try {
@@ -767,6 +840,7 @@ export default function Home() {
         const pages = inputLines(requiredPagesInput);
         const manualRequirements = inputLines(manualRequirementsInput);
         if (!coverageConfirmed || !coverageReady) throw new Error(tr("请逐条处理原始需求，填写排除理由，并确认范围后再创建。", "Handle every source requirement, give reasons for exclusions, and confirm the scope before creating."));
+        if (businessDrafts.length && (!businessConfirmed || !businessDraftsReady)) throw new Error(tr("请补齐并确认业务内容检查。", "Complete and confirm the business content checks."));
         if (requirementsDraft && !requirementsConfirmed) throw new Error(tr("请先核对原文与最终验收清单，并勾选确认。", "Review the original requirements and final checklist, then confirm them."));
         if (!pages.length || pages.length > 10 || pages.some(file => !isHtmlDeliveryPath(file))) {
           throw new Error(tr("填写 1–10 个相对 HTML 路径，每行一个，例如 index.html。", "Enter 1–10 relative HTML paths, one per line, such as index.html."));
@@ -783,7 +857,7 @@ export default function Home() {
         input = { ...input, title: projectTitle.trim(), summary: projectSummary.trim(), amount: projectAmount.trim(), requiredPages: pages, manualRequirements,
           ...(requirementsDraft ? {requirementsDraftId: requirementsDraft.id, confirmRequirements: requirementsConfirmed} : {}),
           coverage: {version: 1, sourceText: projectSummary.trim(), confirmed: coverageConfirmed, decisions: coverageRows.map(row => ({id: row.id, disposition: row.disposition, ...(row.disposition === "exclude" ? {reason: row.reason?.trim()} : {})}))},
-          ...(links.length ? {links} : {}) };
+          ...(links.length ? {links} : {}), ...(businessDrafts.length ? {businessChecks: {confirmed: businessConfirmed, items: businessDraftItems(businessDrafts, coverageUnits)}} : {}) };
       }
       const result = await request<CaseResult>("/api/proofs", "POST", input);
       apply(result.quote, result.role);
@@ -844,7 +918,7 @@ export default function Home() {
 
   async function capture() {
     if (!quote || !delivery || !canCapture) return;
-    await mutate("capture", { confirm: true, deliveryId: pendingCapture ? proof?.acceptedDeliveryId ?? delivery.id : delivery.id, manualChecks: pendingCapture ? proof?.manualChecks ?? confirmedManualChecks : confirmedManualChecks },
+    await mutate("capture", { confirm: true, deliveryId: pendingCapture ? proof?.acceptedDeliveryId ?? delivery.id : delivery.id, manualChecks: pendingCapture ? proof?.manualChecks ?? confirmedManualChecks : confirmedManualChecks, ...(!collaboration && !pendingCapture && businessDecision ? {businessDecision} : {}) },
       tr("已确认当前交付版本，并完成测试扣款。收据已生成。", "This delivery was accepted and the test capture completed. Your receipt is ready."));
   }
 
@@ -936,6 +1010,7 @@ export default function Home() {
     risk_reviewed: tr("保存人工风险复核", "Human risk review saved"),
     layout_checked: tr("保存浏览器布局测量", "Browser layout observations saved"),
     browser_checked: tr("保存浏览器交付行为观察", "Browser delivery behavior observations saved"),
+    business_checked: tr("保存业务内容核对", "Business content observations saved"),
     seller_joined: tr("卖家确认约定并加入", "Seller confirmed the scope and joined"),
     delivery_sent: tr("卖家提交验收", "Seller submitted for acceptance"),
     changes_requested: tr("买家退回具体修改意见", "Buyer requested changes"),
@@ -1036,6 +1111,7 @@ export default function Home() {
                 </details>
                 {proof?.requirements && <RequirementsSource agreement={proof.requirements} language={language} criteria={proof.criteria}/>}
                 {customProject?.coverage && <RequirementCoverageSource coverage={customProject.coverage} language={language}/>}
+                <BusinessChecksSource checks={customProject?.businessChecks} language={language}/>
                 {customProject && !customProject.coverage && <p className="requirement-coverage-help">{tr("此旧项目没有逐条需求处理记录；现有约定和验收结果保持原样。", "This earlier project has no per-clause scope record; its existing agreement and acceptance are preserved.")}</p>}
               </> : <>
                 <div className="project-mode-switch no-print" aria-label={tr("项目类型", "Project type")}>
@@ -1048,6 +1124,7 @@ export default function Home() {
                       <ol className="project-steps" aria-label={tr("新建项目步骤", "Project setup steps")}><li aria-current={projectStep === 0 ? "step" : undefined}>{tr("01 项目与金额", "01 Project & price")}</li><li aria-current={projectStep === 1 ? "step" : undefined}>{tr("02 验收标准", "02 Acceptance")}</li></ol>
                       {projectStep === 0 ? <>
                         <p className="form-help">{tr("没有合同也可以开始。直接描述需求，下一步确认具体的验收标准。", "Start without a contract. Describe your requirements, then confirm specific acceptance criteria.")}</p>
+                        <button type="button" className="subtle-button business-example-button" disabled={!!busy || loading} onClick={fillNoodleBusinessExample}><ClipboardCheck size={13}/>{tr("填入面馆业务验收示例", "Fill a noodle-shop content-check example")}</button>
                         <label htmlFor="projectTitle">{tr("项目名称", "Project title")}</label><input id="projectTitle" name="projectTitle" value={projectTitle} maxLength={120} required placeholder={tr("例如：咖啡店网站交付", "e.g. Café website delivery")} onChange={event => setProjectTitle(event.target.value)} />
                         <label htmlFor="projectSummary">{tr("网站需求", "Website requirements")}</label><textarea id="projectSummary" value={projectSummary} maxLength={1000} required rows={3} placeholder={tr("例如：面馆网站展示菜单、价格、营业时间和地址。支持中文与英文。预约入口说明如何联系店家。每行一项会更清楚。", "For example: show the menu, prices, opening hours and address. Support Chinese and English. Explain how to contact the shop to arrange a booking. One requirement per line helps.")} onChange={event => {updateProjectSummary(event.target.value); if (requirementsFromBrief) {setRequirementsDraft(undefined); setRequirementsConfirmed(false); setRequirementsFromBrief(false);}}} />
                         <button type="button" className="requirements-button" disabled={!!busy || loading || !projectSummary.trim()} onClick={analyzeProjectBrief}>{busy === "requirements" ? <LoaderCircle size={13} className="spin"/> : <Sparkles size={13}/>} {config?.aiMode === "live" ? tr("用 AI 整理这些需求", "Organize these requirements with AI") : tr("用规则整理这些需求", "Organize these requirements with rules")}</button>
@@ -1064,6 +1141,7 @@ export default function Home() {
                           onDecisionChange={decision => {setCoverageDecisions(current => ({...current, [decision.id]: decision})); setCoverageConfirmed(false);}}
                           onConfirmChange={setCoverageConfirmed}/>
                         {coverageError && <p className="requirement-coverage-warning" role="alert">{coverageError}</p>}
+                        <BusinessCheckEditor language={language} units={coverageUnits} decisions={coverageRows} pages={inputLines(requiredPagesInput)} rows={businessDrafts} confirmed={businessConfirmed} disabled={!!busy || loading} onChange={setBusinessDrafts} onConfirm={setBusinessConfirmed}/>
                         <details className="project-advanced-checks"><summary>{tr("补充页面与检查方式（可与开发者一起填写）", "Add pages and checks (with your developer)")}</summary>
                           <label htmlFor="requiredPages">{tr("必须交付的 HTML 页面", "Required HTML pages")}</label><textarea id="requiredPages" value={requiredPagesInput} required rows={3} maxLength={1000} aria-describedby="pages-help" onChange={event => setRequiredPagesInput(event.target.value)} />
                           <p className="form-help" id="pages-help">{tr("默认检查 index.html。可与开发者约定更多页面，每行一个，最多 10 页。", "index.html is checked by default. Agree additional pages with your developer, one per line, up to ten.")}</p>
@@ -1090,7 +1168,7 @@ export default function Home() {
                       <label htmlFor="demoCurrency">{tr("测试币种", "Test currency")}</label><select id="demoCurrency" value={currency} onChange={event => setCurrency(event.target.value as Currency)}><option value="AUD">AUD</option><option value="USD">USD</option></select>
                       <label htmlFor="demoClientName">{tr("客户名称（选填）", "Client name (optional)")}</label><input id="demoClientName" value={clientName} maxLength={100} onChange={event => setClientName(event.target.value)} />
                     </>}
-                    <div className="project-form-actions">{projectMode === "custom" && projectStep === 1 && <button type="button" className="subtle-button" onClick={() => { setProjectStep(0); setError(""); }}>{tr("上一步", "Back")}</button>}<button className="button primary" type="submit" disabled={!!busy || loading || projectMode === "custom" && projectStep === 1 && (!coverageConfirmed || !coverageReady || !!requirementsDraft && !requirementsConfirmed)}>{busy === "create" ? <LoaderCircle className="spin" size={16} /> : <Plus size={16} />}{projectMode === "custom" && projectStep === 0 ? tr("下一步：验收标准", "Next: acceptance criteria") : projectMode === "custom" ? tr("创建项目", "Create project") : tr("创建内置演示", "Create built-in demo")}<ArrowRight size={15} /></button></div>
+                    <div className="project-form-actions">{projectMode === "custom" && projectStep === 1 && <button type="button" className="subtle-button" onClick={() => { setProjectStep(0); setError(""); }}>{tr("上一步", "Back")}</button>}<button className="button primary" type="submit" disabled={!!busy || loading || projectMode === "custom" && projectStep === 1 && (!coverageConfirmed || !coverageReady || !!requirementsDraft && !requirementsConfirmed || !!businessDrafts.length && (!businessConfirmed || !businessDraftsReady))}>{busy === "create" ? <LoaderCircle className="spin" size={16} /> : <Plus size={16} />}{projectMode === "custom" && projectStep === 0 ? tr("下一步：验收标准", "Next: acceptance criteria") : projectMode === "custom" ? tr("创建项目", "Create project") : tr("创建内置演示", "Create built-in demo")}<ArrowRight size={15} /></button></div>
                   </fieldset>
                 </form>
               </>}
@@ -1126,7 +1204,7 @@ export default function Home() {
               {delivery && <div className="current-delivery"><span className={`delivery-version variant-${delivery.variant}`}>{`v${deliverySequence}`}</span><div><strong>{delivery.label}</strong><code>{delivery.id}</code></div><span className={`small-state ${reviewCurrent ? "positive" : ""}`}>{reviewCurrent ? tr("当前版本已核查", "This version reviewed") : tr("新版本 · 待核查", "New version · review needed")}</span></div>}
               {delivery && proof && <DeliveryOverview key={delivery.id} delivery={delivery} criteria={proof.criteria} review={proof.review} manualChecks={confirmedManualChecks} language={language} role={displayRole} stage={collaboration?.stage} busy={!!busy}
                 previousVersion={versions.find(version => isOlderDelivery(version, delivery))}
-                onOpenLayout={canCheckDelivery || canObserveBrowser || delivery.layoutReport || delivery.browserChecks ? () => {setWorkspacePanel("delivery"); setDeliveryTab("layout");} : undefined}
+                onOpenLayout={canCheckDelivery || canObserveBrowser || delivery.layoutReport || delivery.browserChecks || businessChecksConfigured ? () => {setWorkspacePanel("delivery"); setDeliveryTab("layout");} : undefined}
                 onInspectLayout={(file, width) => {setPreviewFile(file); setPreviewWidth(width === 375 ? "mobile" : "desktop"); setPreviewEntry(value => value + 1); setDeliveryTab("preview"); setWorkspacePanel("delivery");}}
                 onInspect={openCriterion} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked ? prepareFeedback : undefined}
                 onViewHistory={openVersionHistory}/>}
@@ -1169,6 +1247,8 @@ export default function Home() {
                 <BrowserCheckPanel key={`browser-${delivery?.id ?? "empty"}`} language={language} report={delivery?.browserChecks?.deliveryId === delivery?.id ? delivery?.browserChecks : undefined}
                   enabled={canObserveBrowser && !busy} busy={busy === "browser-check"} progress={browserCheckProgress}
                   onRun={checkBrowserBehavior} onCancel={() => {if (!browserCheckSavePending.current) browserCheckController.current?.abort();}}/>
+                <BusinessChecksPanel key={`business-${delivery?.id ?? "empty"}`} language={language} count={customProject?.businessChecks?.length ?? 0} report={businessReport} enabled={canObserveBrowser && !busy} busy={busy === "business-check"} progress={businessCheckProgress} onRun={checkBusinessContent} onCancel={() => {if (!businessCheckSavePending.current) businessCheckController.current?.abort();}} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked && !busy ? (criterionId, comment) => prepareFeedback({deliveryId: delivery!.id, criterionId, comment}) : undefined}/>
+                {busy === "business-check-save" && <p className="layout-check-source" role="status">{tr("正在保存业务内容核对…", "Saving business content observations…")}</p>}
                 {delivery && <EvidenceHistoryPanel key={`history-${delivery.id}`} delivery={delivery} language={language} acceptedSnapshotId={collaboration?.acceptance?.evidenceSnapshotId}/>}
                 {busy === "browser-check-save" && <p className="layout-check-source" role="status">{tr("正在保存链接行为与资源观察…", "Saving link behavior and resource observations…")}</p>}
               </div>
@@ -1217,8 +1297,9 @@ export default function Home() {
               <p>{tr("仅接受当前交付，不进行预授权或付款。", "Accept this delivery only, without authorizing or capturing a payment.")}</p>
               {failed ? <p className="capture-blocked has-failure">{tr("仍有未通过的标准，请退回卖家修改。", "Some criteria are unmet. Request changes from the seller.")}</p> : <>
                 {!allHumanChecked && <button className="text-button" onClick={openPendingHumanCheck}>{tr("查看并确认人工检查项目", "Inspect the human-check requirements")}<ArrowRight size={13}/></button>}
-                <label className="pay-consent"><input type="checkbox" checked={deliveryConsent} disabled={!!busy || !deliveryUnlocked || !allHumanChecked || !reviewCurrent || !evidenceComplete} onChange={event => setDeliveryConsent(event.target.checked)}/><span>{tr("我已核查并接受此交付版本。本次确认不付款。", "I have checked and accept this delivery version. This confirmation does not make a payment.")}<code>{delivery?.id}</code></span></label>
-                <button className="button primary" disabled={!!busy || !canAcceptDelivery} onClick={() => mutate("accept_delivery", {deliveryId: delivery?.id, confirm: true, manualChecks}, tr("交付已接受。本次确认未发起预授权或付款。", "Delivery accepted. This confirmation did not initiate authorization or payment."))}>{tr("确认接受交付（不付款）", "Accept delivery — no payment")}</button>
+                {businessChecksConfigured && <BusinessAcceptanceDecision language={language} report={businessReport} reason={businessExceptionReason} disabled={!!busy} onReasonChange={value => {setBusinessExceptionReason(value); setDeliveryConsent(false); setConsent(false);}} onInspect={openBusinessChecks}/>}
+                <label className="pay-consent"><input type="checkbox" checked={deliveryConsent} disabled={!!busy || !deliveryUnlocked || !allHumanChecked || !reviewCurrent || !evidenceComplete || !businessDecisionReady} onChange={event => setDeliveryConsent(event.target.checked)}/><span>{tr("我已核查并接受此交付版本。本次确认不付款。", "I have checked and accept this delivery version. This confirmation does not make a payment.")}<code>{delivery?.id}</code></span></label>
+                <button className="button primary" disabled={!!busy || !canAcceptDelivery} onClick={() => mutate("accept_delivery", {deliveryId: delivery?.id, confirm: true, manualChecks, ...(businessDecision ? {businessDecision} : {})}, tr("交付已接受。本次确认未发起预授权或付款。", "Delivery accepted. This confirmation did not initiate authorization or payment."))}>{tr("确认接受交付（不付款）", "Accept delivery — no payment")}</button>
               </>}
             </div>}
             {!terminalPayment && paymentSummary}
@@ -1240,7 +1321,8 @@ export default function Home() {
 
               {buyer && authorized && delivery && <div className="acceptance-panel no-print">
                 <div className="acceptance-heading"><SquareCheckBig size={19} /><div><h3>{tr("证据之后，是你的决定", "The final decision is yours")}</h3><p>{tr("接受当前交付版本，才进入测试扣款。", "Accept this exact delivery before test capture.")}</p></div></div>
-                {pendingCapture ? <p className="capture-blocked"><Clock3 size={14} />{tr("付款确认尚未完成。交付版本和同意记录已锁定，请重试同一扣款操作。", "Payment confirmation is pending. The accepted delivery and consent are frozen. Retry the same capture.")}</p> : pendingVoid ? <p className="capture-blocked"><Undo2 size={14} />{tr("撤销正在处理中。请重试撤销，不能发起付款。", "A void is pending. Retry the void; capture is unavailable.")}</p> : !reviewCurrent ? <p className="capture-blocked"><LockKeyhole size={14} />{tr("此交付尚未核查。先运行核查，再继续。", "This delivery needs a review before acceptance.")}</p> : failed ? <p className="capture-blocked has-failure"><CircleAlert size={14} />{tr("存在未通过项，付款已阻止。提交修复版后重新核查。", "A criterion is not met. Capture is blocked. Submit the fix and review again.")}</p> : !evidenceComplete ? <p className="capture-blocked"><Info size={14} />{tr("证据尚不完整，不能确认付款。", "Evidence is incomplete. Capture is unavailable.")}</p> : <><label className="pay-consent"><input type="checkbox" checked={consent} disabled={!!busy || expired || !allHumanChecked || paymentPending} onChange={event => setConsent(event.target.checked)} /><span>{acceptedCurrent ? tr("我已接受当前交付，现在单独同意完成", "I already accepted this delivery and separately consent to capture") : tr("我接受当前交付，并同意完成", "I accept this delivery and consent to capture")} <strong>{money(quote?.totalCents ?? 0)} {quote?.currency}</strong> {tr("的测试扣款。", "in test funds.")}<code title={delivery.id}>{delivery.id}</code></span></label>{!allHumanChecked && <button className="human-reminder text-button" onClick={openPendingHumanCheck}>{tr("打开人工确认项目", "Open the human acceptance check")}<ArrowRight size={13} /></button>}</>}
+                {pendingCapture ? <p className="capture-blocked"><Clock3 size={14} />{tr("付款确认尚未完成。交付版本和同意记录已锁定，请重试同一扣款操作。", "Payment confirmation is pending. The accepted delivery and consent are frozen. Retry the same capture.")}</p> : pendingVoid ? <p className="capture-blocked"><Undo2 size={14} />{tr("撤销正在处理中。请重试撤销，不能发起付款。", "A void is pending. Retry the void; capture is unavailable.")}</p> : !reviewCurrent ? <p className="capture-blocked"><LockKeyhole size={14} />{tr("此交付尚未核查。先运行核查，再继续。", "This delivery needs a review before acceptance.")}</p> : failed ? <p className="capture-blocked has-failure"><CircleAlert size={14} />{tr("存在未通过项，付款已阻止。提交修复版后重新核查。", "A criterion is not met. Capture is blocked. Submit the fix and review again.")}</p> : !evidenceComplete ? <p className="capture-blocked"><Info size={14} />{tr("证据尚不完整，不能确认付款。", "Evidence is incomplete. Capture is unavailable.")}</p> : <><label className="pay-consent"><input type="checkbox" checked={consent} disabled={!!busy || expired || !allHumanChecked || paymentPending || !acceptedCurrent && !businessDecisionReady} onChange={event => setConsent(event.target.checked)} /><span>{acceptedCurrent ? tr("我已接受当前交付，现在单独同意完成", "I already accepted this delivery and separately consent to capture") : tr("我接受当前交付，并同意完成", "I accept this delivery and consent to capture")} <strong>{money(quote?.totalCents ?? 0)} {quote?.currency}</strong> {tr("的测试扣款。", "in test funds.")}<code title={delivery.id}>{delivery.id}</code></span></label>{!allHumanChecked && <button className="human-reminder text-button" onClick={openPendingHumanCheck}>{tr("打开人工确认项目", "Open the human acceptance check")}<ArrowRight size={13} /></button>}</>}
+                {!collaboration && !paymentPending && businessChecksConfigured && <BusinessAcceptanceDecision language={language} report={businessReport} reason={businessExceptionReason} disabled={!!busy} onReasonChange={value => {setBusinessExceptionReason(value); setDeliveryConsent(false); setConsent(false);}} onInspect={openBusinessChecks}/>}
                 <button className="button primary capture-button" disabled={!!busy || !canCapture} onClick={capture}>{busy === "capture" ? <LoaderCircle className="spin" size={16} /> : <ShieldCheck size={16} />}{pendingCapture ? tr("重试核实同一测试付款", "Retry the same test capture") : acceptedCurrent ? tr("单独确认测试扣款", "Confirm test capture") : tr("接受交付并完成测试付款", "Accept delivery & capture test payment")}<ArrowRight size={16} /></button>
                 <p className="capture-footnote">{tr("服务器将再次检查预授权、核查版本与人工确认。", "The server rechecks authorization, delivery version and your confirmations.")}</p>
               </div>}

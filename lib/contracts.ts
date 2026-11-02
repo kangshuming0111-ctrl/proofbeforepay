@@ -63,6 +63,18 @@ export type ProofBrowserCheckReport = {
   readings: (ProofBrowserCheckReading & ProofBrowserCheckStep & { outcome: "expected_observation" | "mismatch" | "unavailable" })[];
   summary: { steps: number; observed: number; issues: number; unavailable: number };
 };
+/** Buyer-confirmed expectations; source offsets refer to the original requirement summary. */
+export type ProofBusinessExpected = { kind: "visible_copy"; text: string } | { kind: "item_price"; label: string; amountMinor: number; currency: "AUD" | "USD" };
+export type ProofBusinessCheck = { id: string; criterionId: string; file: string; source: RequirementSource; expected: ProofBusinessExpected };
+export type ProofBusinessCheckStep = Omit<ProofBusinessCheck, "id"> & { stepId: string; checkId: string; viewportWidth: ProofLayoutWidth };
+export type ProofBusinessCheckReading =
+  | { stepId: string; status: "observed"; blocks: string[] }
+  | { stepId: string; status: "unavailable"; reason: ProofBrowserCheckReason | "ambiguous_content" | "text_limit" };
+export type ProofBusinessCheckReport = {
+  id: string; deliveryId: string; method: "client-business-content-v1"; receivedAt: string; reportedByRole?: ProofRole;
+  readings: (ProofBusinessCheckStep & ProofBusinessCheckReading & { outcome: "expected_observation" | "mismatch" | "unavailable"; explanation: string })[];
+  summary: { steps: number; observed: number; issues: number; unavailable: number };
+};
 /** Exact original-file substring; start/end are UTF-16 code-unit offsets, [start,end). */
 export type ProofAssessmentCitation = { file: string; start: number; end: number; excerpt: string };
 export type ProofAssessmentItem = { criterionId: string; status: "supported" | "changes_suggested" | "insufficient_evidence"; explanation: string; citations: ProofAssessmentCitation[]; ruleEvidenceIds: string[] };
@@ -76,7 +88,7 @@ export type ProofAssessment = {
   coverage: { includedFiles: string[]; truncatedFiles: string[]; omittedFiles: string[] };
   usage?: { promptTokens: number; completionTokens: number };
 };
-export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"; sequence?: number; label: string; submittedAt: string; evidence: ProofEvidence[]; files?: Record<string, string>; layoutReport?: ProofLayoutReport; layoutHistory?: ProofLayoutReport[]; browserChecks?: ProofBrowserCheckReport; browserCheckHistory?: ProofBrowserCheckReport[]; acceptanceEvidence?: ProofAcceptanceEvidence[]; assessment?: ProofAssessment; riskReviews?: ProofRiskReview[]; resources?: ProofResourceReport };
+export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"; sequence?: number; label: string; submittedAt: string; evidence: ProofEvidence[]; files?: Record<string, string>; layoutReport?: ProofLayoutReport; layoutHistory?: ProofLayoutReport[]; browserChecks?: ProofBrowserCheckReport; browserCheckHistory?: ProofBrowserCheckReport[]; businessChecks?: ProofBusinessCheckReport; businessCheckHistory?: ProofBusinessCheckReport[]; acceptanceEvidence?: ProofAcceptanceEvidence[]; assessment?: ProofAssessment; riskReviews?: ProofRiskReview[]; resources?: ProofResourceReport };
 export type ProofReview = { deliveryId: string; reviewedAt: string; mode: "demo" | "live"; summary: string };
 export type ProofRole = "buyer" | "seller";
 export type ProofSubmission = { deliveryId: string; note: string; at: string };
@@ -84,6 +96,7 @@ export type ProofFeedback = { id: string; deliveryId: string; criterionId: strin
 export type ProofAcceptanceEvidence = {
   id: string; deliveryId: string; at: string;
   browserReportId: string | null; layoutReportId: string | null; assessmentId: string | null;
+  businessReportId?: string | null; businessExceptionReason?: string;
   criteria: ProofCriterion[]; evidence: ProofEvidence[]; manualChecks: string[];
   review?: ProofReview; assessment?: ProofAssessment;
   riskReviews: ProofRiskReview[];
@@ -106,6 +119,7 @@ export type StaticProjectSpec = {
   links?: { from: string; text: string; to: string }[];
   manualRequirements: string[];
   coverage?: RequirementCoverage;
+  businessChecks?: ProofBusinessCheck[];
 };
 export type RequirementSource = { start: number; end: number; excerpt: string };
 export type RequirementExtraction = {
@@ -138,7 +152,7 @@ export type ProofPaymentReconciliation =
   | { kind: "voided"; verifiedAt: string }
   | { kind: "closed_unpaid"; reason: "authorization_denied"; verifiedAt: string }
   | { kind: "unresolved"; reason: "pending" | "authorization_still_active" | "provider_unavailable" | "inconsistent_resources" };
-export type ProofEvent = { at: string; kind: "created" | "scope_approved" | "seller_joined" | "authorized" | "delivery_submitted" | "delivery_sent" | "changes_requested" | "delivery_accepted" | "reviewed" | "assessed" | "risk_reviewed" | "layout_checked" | "browser_checked" | "accepted" | "captured" | "voided" | "payment_closed" | "payment_reconciled"; deliveryId?: string; reportId?: string; evidenceSnapshotId?: string };
+export type ProofEvent = { at: string; kind: "created" | "scope_approved" | "seller_joined" | "authorized" | "delivery_submitted" | "delivery_sent" | "changes_requested" | "delivery_accepted" | "reviewed" | "assessed" | "risk_reviewed" | "layout_checked" | "browser_checked" | "business_checked" | "accepted" | "captured" | "voided" | "payment_closed" | "payment_reconciled"; deliveryId?: string; reportId?: string; evidenceSnapshotId?: string };
 export type ProofState = {
   requirements?: RequirementAgreement;
   demoRoleplay?: true;

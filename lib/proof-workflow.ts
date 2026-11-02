@@ -2,6 +2,7 @@ import type { ProofDelivery, ProofDeliveryVersion, ProofEvent, ProofQuote, Proof
 import { DomainError } from "./domain.ts";
 import { requireProof } from "./proof-domain.ts";
 import { isSandboxCollaboration, isSandboxRehearsal } from "./proof-demo.ts";
+import { validateBusinessDecision } from "./business-decision.ts";
 import { createAcceptanceEvidence, withAcceptanceEvidence } from "./acceptance-evidence.ts";
 import { assertCoverageForAcceptance } from "./requirement-coverage.ts";
 
@@ -184,7 +185,7 @@ export function acceptDelivery(quote: ProofQuote, value: Record<string, unknown>
   }
   const at = timestamp(now);
   const next = structuredClone(quote);
-  const snapshot = createAcceptanceEvidence(quote, required, at);
+  const snapshot = createAcceptanceEvidence(quote, required, at, validateBusinessDecision(quote, input.businessDecision));
   next.proof.delivery = withAcceptanceEvidence(delivery, snapshot);
   next.proof.collaboration = { ...next.proof.collaboration!, stage: "accepted", acceptance: { deliveryId: delivery.id, at, manualChecks: required, evidenceSnapshotId: snapshot.id } };
   next.proof.audit.push({kind: "delivery_accepted", at, deliveryId: delivery.id, evidenceSnapshotId: snapshot.id});
@@ -203,6 +204,8 @@ export function prepareReplacement(quote: ProofQuote, newDelivery: ProofDelivery
   delete next.proof.delivery.assessment;
   delete next.proof.delivery.layoutReport;
   delete next.proof.delivery.layoutHistory;
+  delete next.proof.delivery.businessChecks;
+  delete next.proof.delivery.businessCheckHistory;
   delete next.proof.delivery.browserChecks;
   delete next.proof.delivery.browserCheckHistory;
   delete next.proof.delivery.acceptanceEvidence;

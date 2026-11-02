@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-02T05:44:22.025Z",
+  "generatedAt": "2026-11-02T06:06:14.435Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -38,8 +38,8 @@
     },
     {
       "file": "README.md",
-      "bytes": 69234,
-      "sha256": "6a0bd935b6ea8dc9040d54e03c3b1d65947b6dcb423d74d5a73cc4e0ac6f17d6"
+      "bytes": 69907,
+      "sha256": "44df41d3a488b4e3a2a4d70aab4c314e29993b0e1a32608656104511e376a19d"
     },
     {
       "file": "app/api/config/route.ts",
@@ -53,13 +53,18 @@
     },
     {
       "file": "app/api/proofs/[id]/[action]/route.ts",
-      "bytes": 13748,
-      "sha256": "c6b1d55651c06e7b775f7f890c91ba61a9378c82662edaa071ecbe298b82e509"
+      "bytes": 13913,
+      "sha256": "bd8a90be5148bb526cf73fa5ddca3056d02f8b131ac88fcaf77b35c897599ae6"
     },
     {
       "file": "app/api/proofs/[id]/browser-checks/route.ts",
       "bytes": 666,
       "sha256": "2ed5784154ef4cb2c63da8b8e95b9edc6d7c15be9a9da78531d368059e64c65c"
+    },
+    {
+      "file": "app/api/proofs/[id]/business-checks/route.ts",
+      "bytes": 670,
+      "sha256": "4d66b34ea990ea2c8d9668cd05109208d23bf6a23458f4d5e5d00d66065bea28"
     },
     {
       "file": "app/api/proofs/[id]/risk-reviews/route.ts",
@@ -122,6 +127,11 @@
       "sha256": "fbafd1bcbfff846bb661c2eec32a8598e2298035d51e0b3052179a29ee775fef"
     },
     {
+      "file": "app/business-check.css",
+      "bytes": 4195,
+      "sha256": "2196543981d00239c032dcd413e197a86e17406286a64cd17663186b7f6b67a2"
+    },
+    {
       "file": "app/chain-flow.css",
       "bytes": 4432,
       "sha256": "d27b325abc878850d72c6ed1787c429f389c956b6a0fe4c04532a56faf0c22ad"
@@ -147,6 +157,11 @@
       "sha256": "e2d2b1373dc63683f956e8cc17f76a7ea403a7b94d572a4cb16a2c13d49e55fd"
     },
     {
+      "file": "app/components/BusinessChecksPanel.tsx",
+      "bytes": 21464,
+      "sha256": "c8131bd78047eddf2fd38440a0de7b9aa9be19b49a2801720cecd1eeb275e61a"
+    },
+    {
       "file": "app/components/CollaborationPanel.tsx",
       "bytes": 25654,
       "sha256": "64d8d04b2c7490735f5d40805b94820620a6f0c00a26269032c1e51a10220e6d"
@@ -163,13 +178,13 @@
     },
     {
       "file": "app/components/DeliveryOverview.tsx",
-      "bytes": 11580,
-      "sha256": "9c4ee069e252202f26aa061c9bbb2b605af05bd40659b985d38b70933f01d40e"
+      "bytes": 13246,
+      "sha256": "0db77d57635395cedd21891c9ba8df2d5964531a9c7e6fd67d81d00da07340c8"
     },
     {
       "file": "app/components/EvidenceHistoryPanel.tsx",
-      "bytes": 9824,
-      "sha256": "459cabb3819fcdabb54b08f5eed0a6b1a3ee9bcd08a58c18fab49c387c955c57"
+      "bytes": 11364,
+      "sha256": "122e350edaedc0fce0bdc27993d927c322a8b68d8d68790f58bedda750588399"
     },
     {
       "file": "app/components/GettingStarted.tsx",
@@ -268,8 +283,8 @@
     },
     {
       "file": "app/page.tsx",
-      "bytes": 140324,
-      "sha256": "2ead3b5236fb974a96c294275d8b08b400e74f85dd988df53cd8ef4035f7ff0d"
+      "bytes": 150879,
+      "sha256": "87518ff66adeb44d821e51bc6456a53384b525f932466f74bd807d0af167894b"
     },
     {
       "file": "app/proof-versions/[id]/[deliveryId]/[...file]/route.ts",
@@ -637,6 +652,11 @@
       "sha256": "7e0f6962ac20c92bb147d9c04b0b085bbd434b8f8967d02cfbf4f26259cc1949"
     },
     {
+      "file": "docs/BUSINESS-CONTENT-CHECKS.md",
+      "bytes": 6032,
+      "sha256": "945642fd87503de1de83d41355f8db37b3be10b5147fedaaf55b4499f1f82665"
+    },
+    {
       "file": "docs/DELIVERY-COVERAGE-2026-11-02.md",
       "bytes": 10239,
       "sha256": "57317a8c8735b79bfea36075ac37e5c755533ba9885547a252ebe5f7b589a032"
@@ -743,8 +763,8 @@
     },
     {
       "file": "lib/acceptance-evidence.ts",
-      "bytes": 10921,
-      "sha256": "a3e446dc4ae1ca9afcc7e038f76ed1e334d79a914472924a93c72150ef9550c7"
+      "bytes": 13183,
+      "sha256": "866accf14c4d92dc390c25133b3982c5360757f85f292f292e1e59606c20b95f"
     },
     {
       "file": "lib/assessment-display.ts",
@@ -753,13 +773,33 @@
     },
     {
       "file": "lib/browser-check-probe.ts",
-      "bytes": 16027,
-      "sha256": "febafdd07100c75d0203396bf4549f354b9b269dfe655392b9c351541113f518"
+      "bytes": 8631,
+      "sha256": "17ad4dbc10236d8ea4458eb1597270a0490145b2a088d8e27679c01fd8156074"
     },
     {
       "file": "lib/browser-check-report.ts",
       "bytes": 9568,
       "sha256": "9f17f6b52be3031e0dd2759cb44a7c384344b0ed40ffc683e5d262d1eb0ea5ee"
+    },
+    {
+      "file": "lib/business-check-actions.ts",
+      "bytes": 1029,
+      "sha256": "8bbb4478ecc2388a9db31f7a84dd0a5b9da0079652b2c7319877293a96c661b3"
+    },
+    {
+      "file": "lib/business-check-probe.ts",
+      "bytes": 15047,
+      "sha256": "e2e07d4c14d986b34897b81f8fc6988339d4db95523e97a4fc1b81d64dc5ea56"
+    },
+    {
+      "file": "lib/business-checks.ts",
+      "bytes": 14799,
+      "sha256": "375a9b96bda41be68d1c72bcc8af9e0a3a80aad660c9a91b2abde6dbef87dbed"
+    },
+    {
+      "file": "lib/business-decision.ts",
+      "bytes": 1846,
+      "sha256": "cd4707dbecdc88289c0cb41b6cf8b32af6efac479c4573addcd5ef849e7b6880"
     },
     {
       "file": "lib/connector-context.ts",
@@ -788,8 +828,8 @@
     },
     {
       "file": "lib/contracts.ts",
-      "bytes": 10036,
-      "sha256": "22dd2c33df22382064c8f202a3bc7806bb515819683fdff6032624a4b4c51b04"
+      "bytes": 11426,
+      "sha256": "305bf2e57d575ecf858d372e8989ea2198fff0ebf6292aa96c7ec6545f20e6f8"
     },
     {
       "file": "lib/delivery-assessment.ts",
@@ -838,8 +878,8 @@
     },
     {
       "file": "lib/proof-domain.ts",
-      "bytes": 4825,
-      "sha256": "cfdccfa03ce4e30a9c76bb8cac6df39c979b5b2c94397be43700e9007530c40b"
+      "bytes": 5029,
+      "sha256": "56f6720c720d803cc36b8d6b0a1ab92ef3b0c42fe48affcf46a59439f5cacd92"
     },
     {
       "file": "lib/proof-evidence.ts",
@@ -848,13 +888,13 @@
     },
     {
       "file": "lib/proof-store.ts",
-      "bytes": 12067,
-      "sha256": "c5f131582156a47fc0eff340c46190a1f35cbfdc0fdbf1e01ae13011fe7e5a3c"
+      "bytes": 12193,
+      "sha256": "4f6dd80b15ea1646e0f34a8df47a66faf8ebe3e3240c76531d6c20c428649a14"
     },
     {
       "file": "lib/proof-workflow.ts",
-      "bytes": 15400,
-      "sha256": "40d61bf60d8dd9d58fba211c132f701a4b8995f40e5bd7132262aca7afcba683"
+      "bytes": 15620,
+      "sha256": "d904d047fbf38058836684d184237de29a56bd7fa4085adc083c96a6f328d391"
     },
     {
       "file": "lib/providers.ts",
@@ -882,14 +922,19 @@
       "sha256": "3b39e3b9dc84842a82661f6d5e5b4a2d14506b8374e4fd5664a9365dad97953e"
     },
     {
+      "file": "lib/saved-page-observation.ts",
+      "bytes": 7893,
+      "sha256": "23ee6a23a2336ddb283ad713a76efe00659a8958339c2a88f99bad8fc9838709"
+    },
+    {
       "file": "lib/server.ts",
       "bytes": 5547,
       "sha256": "2a40db0101d18ed60c60f8522bea8c9ef501822efcbe1a79d1d11a595d66de4c"
     },
     {
       "file": "lib/static-project.ts",
-      "bytes": 26151,
-      "sha256": "1f77eacee9fd64062ac201d9074a749f87b05a92632326f158a480f0a498259e"
+      "bytes": 26552,
+      "sha256": "fb55c349a57f49d53dad6ca3601411f62bb468c971b1d28cd9e8ad014ff32194"
     },
     {
       "file": "lib/static-resources.ts",
@@ -1147,6 +1192,21 @@
       "sha256": "9fa9254d54dbc122969dad47d84a3f9e501a0ac11cad8c6e8efe192cf0d18176"
     },
     {
+      "file": "tests/business-acceptance.test.ts",
+      "bytes": 8290,
+      "sha256": "0f17610c970b69ec88b22bce75cd69d2f980f168631fc8a44e64d56ad5b7156a"
+    },
+    {
+      "file": "tests/business-checks-api-smoke.py",
+      "bytes": 15756,
+      "sha256": "2b2c6a5f769f241cf19376f2427d64dce20dd76d28f270d691d99123797f3fb8"
+    },
+    {
+      "file": "tests/business-checks.test.ts",
+      "bytes": 15385,
+      "sha256": "32e8b018baf70e9691c09c1b56f4ba286c5bbe04a41a78dd677776666353cb85"
+    },
+    {
       "file": "tests/chain-coverage-api-smoke.py",
       "bytes": 17685,
       "sha256": "cedfb0732bfc7e435d990d728f0f1c27ab7afa9c5e677d798f7f311aa1c85a0a"
@@ -1200,6 +1260,61 @@
       "file": "tests/domain.test.ts",
       "bytes": 3068,
       "sha256": "c198889bfa45a11efd5214110081e5f8fc0f671e8881bf441ac7647d7d8e5334"
+    },
+    {
+      "file": "tests/fixtures/noodle-business/project.json",
+      "bytes": 662,
+      "sha256": "c714946f70abd3bfb189c85ab9ed4391381f39a72f746c7f0d83b7f50496324f"
+    },
+    {
+      "file": "tests/fixtures/noodle-business/v1/index.html",
+      "bytes": 563,
+      "sha256": "08d56b8e9eed01adb1cb7108c4130a7abd0be39a05038dfef5b0c6dc1de0c1d8"
+    },
+    {
+      "file": "tests/fixtures/noodle-business/v1/menu-en.html",
+      "bytes": 468,
+      "sha256": "cd5c4e5c3615a68631c88a5028a3c97c956258a6c10c5551a83ac5e31bc0e565"
+    },
+    {
+      "file": "tests/fixtures/noodle-business/v1/menu-zh.html",
+      "bytes": 541,
+      "sha256": "9dc2eb6fba9729aee8122b1f3f39608db71c16861c1e6da2a99a8f2bf66b0bad"
+    },
+    {
+      "file": "tests/fixtures/noodle-business/v1/site.css",
+      "bytes": 475,
+      "sha256": "92049b41078556ed4ca00b418e3350f5a8121dbbbc39f57f439b10db307e69d1"
+    },
+    {
+      "file": "tests/fixtures/noodle-business/v1/visit.html",
+      "bytes": 512,
+      "sha256": "082c269dfccc0c1cce0b1d88fb75114f2823cd6e7a0fb2fdc615db533f25d48b"
+    },
+    {
+      "file": "tests/fixtures/noodle-business/v2/index.html",
+      "bytes": 563,
+      "sha256": "08d56b8e9eed01adb1cb7108c4130a7abd0be39a05038dfef5b0c6dc1de0c1d8"
+    },
+    {
+      "file": "tests/fixtures/noodle-business/v2/menu-en.html",
+      "bytes": 468,
+      "sha256": "cd5c4e5c3615a68631c88a5028a3c97c956258a6c10c5551a83ac5e31bc0e565"
+    },
+    {
+      "file": "tests/fixtures/noodle-business/v2/menu-zh.html",
+      "bytes": 497,
+      "sha256": "41bf42edf6c6d0b4eca220cc48d56282f82d535337dfbbe3be7ed9883a5d5d90"
+    },
+    {
+      "file": "tests/fixtures/noodle-business/v2/site.css",
+      "bytes": 475,
+      "sha256": "92049b41078556ed4ca00b418e3350f5a8121dbbbc39f57f439b10db307e69d1"
+    },
+    {
+      "file": "tests/fixtures/noodle-business/v2/visit.html",
+      "bytes": 512,
+      "sha256": "6345a11bfcb835d7814d341bd2ad54869350e30f27b6dd4f3667626b07b80701"
     },
     {
       "file": "tests/fixtures/noodle-navigation/project.json",
@@ -1363,8 +1478,8 @@
     },
     {
       "file": "tests/run-collaborative-sandbox-local.mjs",
-      "bytes": 9488,
-      "sha256": "d2133175ba16e61c0d89e1eeca7853e32854d024a4296aeac10af1f4b42b1d23"
+      "bytes": 9592,
+      "sha256": "65a24c3e0db897c0b670d331da75c32c58916fbe1e2c66f723c7f8dc87d01e97"
     },
     {
       "file": "tests/sandbox-provider-worker.mjs",

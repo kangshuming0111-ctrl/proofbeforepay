@@ -3,6 +3,7 @@ import { requireProof, requireActiveAuthorization, validateAcceptance, applyPaym
 import { createProofDelivery } from "@/lib/proof-evidence";
 import { createUploadedDelivery } from "@/lib/static-project";
 import { recordLayoutReport } from "@/lib/layout-report";
+import { validateBusinessDecision } from "@/lib/business-decision";
 import { recordCaptureConsent } from "@/lib/acceptance-evidence";
 import { assessDelivery } from "@/lib/delivery-assessment";
 import { acceptDelivery, joinSeller, prepareReplacement, requestChanges, requireExpectedDelivery, requireWorkflowAction, submitDelivery, type ProofWorkflowAction } from "@/lib/proof-workflow";
@@ -156,7 +157,7 @@ export async function POST(request: Request, context: {params: Promise<{id: stri
       const manualChecks = validateAcceptance(quote, input);
       if (!quote.proof.paymentOperation) {
         // Persist consent and freeze this delivery before contacting the payment provider.
-        await persist(recordCaptureConsent(quote, manualChecks, captureConfirmedAt));
+        await persist(recordCaptureConsent(quote, manualChecks, captureConfirmedAt, quote.proof.collaboration ? undefined : validateBusinessDecision(quote, input.businessDecision)));
       }
       const captureId = quote.paymentMode === "demo" ? `SIM-CAP-${quote.id}` : (await captureAuthorization(quote, config)).captureId;
       await persist(log({...quote, status: "paid", paidAt: new Date().toISOString(), captureId, proof: {...quote.proof, paymentOperation: undefined, paymentState: "captured"}}, "captured", quote.proof.acceptedDeliveryId));

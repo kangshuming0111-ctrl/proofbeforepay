@@ -2,6 +2,7 @@ import type { Language, ProofCriterion, ProofDelivery, ProofEvidence, ProofResou
 import { DomainError } from "./domain.ts";
 import { assertStaticPath, decodeRasterDataUrl, resolveStaticReference, STATIC_RESOURCE_LIMITS, staticFileKind } from "./static-resources.ts";
 import { confirmCoverage, coverageCriteria, validateSavedCoverage } from "./requirement-coverage.ts";
+import { parseBusinessChecks, validateSavedBusinessChecks } from "./business-checks.ts";
 
 const HTML_NAME = /\.html$/iu;
 const LOCAL_TARGET = /^([^#]+\.html)(?:#([A-Za-z0-9_][A-Za-z0-9_.:-]{0,127}))?$/iu;
@@ -59,8 +60,10 @@ function projectSpec(value: unknown, preserveCoverage = false): StaticProjectSpe
     links = input.links.map(parseLink);
     if (new Set(links.map(row => `${row.from}\n${normalizedText(row.text)}`)).size !== links.length) throw new DomainError("Local steps must not repeat the same source page and link label.");
   }
-  return { requiredPages, ...(link ? { link } : {}), ...(links ? {links} : {}), manualRequirements,
+  const project: StaticProjectSpec = { requiredPages, ...(link ? { link } : {}), ...(links ? {links} : {}), manualRequirements,
     ...(preserveCoverage && input.coverage !== undefined ? {coverage: validateSavedCoverage(input.coverage)} : {}) };
+  if (preserveCoverage && input.businessChecks !== undefined) project.businessChecks = validateSavedBusinessChecks(input.businessChecks, project);
+  return project;
 }
 
 function criteriaFor(project: StaticProjectSpec, language: Language): ProofCriterion[] {
@@ -93,6 +96,7 @@ export function parseStaticProject(input: Record<string, unknown>, language: Lan
   if (totalCents < 1 || totalCents > 1_000_000) throw new DomainError("Amount must be between 0.01 and 10000.00.");
   const project = projectSpec(input);
   if (options.requireCoverage || input.coverage !== undefined) project.coverage = confirmCoverage(summary, input.coverage);
+  if (input.businessChecks !== undefined) project.businessChecks = parseBusinessChecks(input.businessChecks, project);
   return { title, summary, totalCents, project, criteria: criteriaFor(project, language) };
 }
 

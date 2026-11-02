@@ -28,6 +28,8 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
   const tr = (chinese: string, english: string) => zh ? chinese : english;
   const overview = deliveryOverview({ delivery, criteria, review, manualChecks, previousVersion });
   const layout = deliveryLayoutSummary(delivery);
+  const business = delivery.businessChecks?.deliveryId === delivery.id ? delivery.businessChecks : undefined;
+  const previousBusiness = overview.previous && previousVersion?.delivery.businessChecks?.deliveryId === previousVersion?.delivery.id ? previousVersion?.delivery.businessChecks : undefined;
   const layoutIssue = layout.state === "current" ? layout.firstIssue : undefined;
   const firstRows = overview.rows.slice(0, 3);
   const primaryNeedsAttention = firstRows[0] && (firstRows[0].rule === "fail" || firstRows[0].rule === "unreviewed"
@@ -36,6 +38,8 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
   const title = stage === "accepted" ? tr("买家已接受当前交付", "The buyer accepted this delivery")
     : !overview.reviewCurrent ? tr("先核查当前交付版本", "Check this delivery version first")
     : overview.ruleFailures ? tr("有交付要求尚未符合", "Some delivery requirements are unmet")
+    : business && business.summary.issues > 0 ? tr("约定的业务内容存在差异", "Agreed business content differs")
+    : business && business.summary.unavailable > 0 ? tr("部分业务内容仍需核对", "Some business content needs inspection")
     : overview.aiChanges ? tr("AI 提出了修改建议，请核对", "AI suggests changes for you to review")
     : overview.unreviewed ? tr("有要求尚无规则证据", "Some requirements have no rule evidence")
     : overview.humanRemaining ? tr("还有要求需要你亲自确认", "Some requirements need your direct check")
@@ -46,6 +50,7 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
 
   const ruleComparison = overview.previous?.ruleFailures !== undefined && overview.ruleFailures !== undefined;
   const aiComparison = overview.previous?.aiChanges !== undefined && overview.aiChanges !== undefined;
+  const businessComparison = !!business && !!previousBusiness;
 
   return <section className="delivery-overview" aria-label={tr("当前交付结果", "Current delivery results")}>
     <header className="delivery-overview-heading"><FileCheck2 size={16} aria-hidden="true"/><h3>{title}</h3><span>{delivery.sequence ? `v${delivery.sequence}` : tr("当前版", "Current")}</span></header>
@@ -57,6 +62,7 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
         ? <span>{tr("人工已确认", "Human-confirmed")} <strong>{overview.humanConfirmed}/{overview.humanRequired}</strong></span>
         : <span>{tr("人工待确认", "Human checks left")} <strong>{overview.humanRemaining ?? "—"}</strong></span>}
     </div>
+    {business && <div className="delivery-overview-layout-heading delivery-overview-layout-counts"><span className={business.summary.issues || business.summary.unavailable ? "overview-attention" : ""}>{tr("业务内容", "Business content")}: {tr(`${business.summary.issues} 次观察不符 / ${business.summary.unavailable} 次未确定`, `${business.summary.issues} mismatched / ${business.summary.unavailable} uncertain observations`)}{stage === "accepted" && <small>{tr("（当前观察不改写已验收记录）", " (current observations do not revise acceptance)")}</small>}</span>{onOpenLayout && <button type="button" disabled={busy} onClick={onOpenLayout}>{tr("查看业务报告", "View business report")}<ArrowRight size={12}/></button>}</div>}
     {!overview.reviewCurrent && <p className="delivery-overview-note">{tr("此版本尚未核查，不作通过判断。", "This version has not been checked; no pass is claimed.")}</p>}
     {overview.reviewCurrent && !!overview.unreviewed && <p className="delivery-overview-note">{tr(`另有 ${overview.unreviewed} 项尚无完整规则证据。`, `${overview.unreviewed} requirements still lack rule evidence.`)}</p>}
     {!!overview.aiInsufficient && !!overview.humanConfirmed && <p className="delivery-overview-note">{tr(`AI 有 ${overview.aiInsufficient} 项无法独立判断；人工确认另有记录，原始 AI 建议保留。`, `AI could not independently determine ${overview.aiInsufficient} requirement${overview.aiInsufficient === 1 ? "" : "s"}. Human confirmations and the original AI advice are recorded separately.`)}</p>}
@@ -80,7 +86,7 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
       </li>)}</ol>
       {overview.rows.length > 3 && <p className="delivery-overview-more">{tr(`共 ${overview.rows.length} 项要求；其余项目可在逐项核查中查看。`, `${overview.rows.length} requirements in total; inspect the rest in Evidence checks.`)}</p>}
     </details>
-    <footer className="delivery-overview-footer"><span>{tr("三类结果分别记录；AI 建议不代替人工验收。", "Results remain separate; AI advice does not replace buyer acceptance.")}</span>{onViewHistory && delivery.sequence !== 1 && <button type="button" disabled={busy} onClick={onViewHistory}><History size={12} aria-hidden="true"/>{tr("版本对照", "Version history")}</button>}</footer>
-    {(ruleComparison || aiComparison) && <p className="delivery-overview-comparison">{tr("已加载历史版", "Loaded historical version")}{overview.previous?.sequence ? ` v${overview.previous.sequence}` : ""} → {delivery.sequence ? `v${delivery.sequence}` : tr("当前版", "current")}{ruleComparison && <span>{tr("规则不符", "Rule mismatches")} {overview.previous?.ruleFailures} → {overview.ruleFailures}</span>}{aiComparison && <span>{tr("AI 修改建议", "AI change suggestions")} {overview.previous?.aiChanges} → {overview.aiChanges}</span>}</p>}
+    <footer className="delivery-overview-footer"><span>{tr("各类结果分别记录；AI 建议不代替人工验收。", "Results remain separate; AI advice does not replace buyer acceptance.")}</span>{onViewHistory && delivery.sequence !== 1 && <button type="button" disabled={busy} onClick={onViewHistory}><History size={12} aria-hidden="true"/>{tr("版本对照", "Version history")}</button>}</footer>
+    {(ruleComparison || aiComparison || businessComparison) && <p className="delivery-overview-comparison">{tr("已加载历史版", "Loaded historical version")}{overview.previous?.sequence ? ` v${overview.previous.sequence}` : ""} → {delivery.sequence ? `v${delivery.sequence}` : tr("当前版", "current")}{ruleComparison && <span>{tr("规则不符", "Rule mismatches")} {overview.previous?.ruleFailures} → {overview.ruleFailures}</span>}{aiComparison && <span>{tr("AI 修改建议", "AI change suggestions")} {overview.previous?.aiChanges} → {overview.aiChanges}</span>}{businessComparison && <span>{tr("业务观察不符", "Business observation mismatches")} {previousBusiness.summary.issues} → {business.summary.issues} / {tr("未确定", "uncertain")} {previousBusiness.summary.unavailable} → {business.summary.unavailable}</span>}</p>}
   </section>;
 }

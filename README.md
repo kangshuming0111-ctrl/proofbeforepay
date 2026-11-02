@@ -319,3 +319,7 @@ The [dated English recording script](docs/DEMO-RECORDING-2026-11-02.md) is prepa
 - [PayPal void an authorized payment](https://developer.paypal.com/checkout/void-authorized-payment/)
 
 MIT licensed. Included third-party starter tooling retains its original license notices.
+
+## Buyer-confirmed business content checks (2026-11-02)
+
+Optional checks now bind literal visible copy or menu item/currency/price to an original included requirement and saved HTML page. Complete 375px/900px client observations, editable revision feedback, exact-version reports, explicit exception acceptance and immutable acceptance-time report references form one flow. See [the scope, example, verification and limits](docs/BUSINESS-CONTENT-CHECKS.md). The source fixture is `tests/fixtures/noodle-business`; the form has an explicit noodle-shop example button. This remains bounded static website delivery checking with human acceptance and a separate test payment.

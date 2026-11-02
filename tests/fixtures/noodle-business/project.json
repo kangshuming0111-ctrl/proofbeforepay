@@ -1,0 +1,29 @@
+{
+  "title": "双语面馆：业务内容验收",
+  "summary": "英文菜单标明 Beef noodles AUD 18\n中文菜单标明牛肉面 AUD 18\n到店说明展示电话 +61 3 9000 0000",
+  "amount": "1.00",
+  "requiredPages": [
+    "index.html",
+    "menu-en.html",
+    "menu-zh.html",
+    "visit.html"
+  ],
+  "links": [
+    {
+      "from": "index.html",
+      "text": "View menu",
+      "to": "menu-en.html"
+    },
+    {
+      "from": "menu-en.html",
+      "text": "中文菜单",
+      "to": "menu-zh.html"
+    },
+    {
+      "from": "menu-zh.html",
+      "text": "查看到店说明",
+      "to": "visit.html#consultation"
+    }
+  ],
+  "manualRequirements": []
+}
