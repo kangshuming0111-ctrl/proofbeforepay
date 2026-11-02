@@ -64,6 +64,7 @@ export function acceptanceSnapshotReservationBytes(quote: ProofQuote): number {
     id: ID_RESERVE, deliveryId: delivery.id, at: "2099-01-01T00:00:00.000Z",
     businessReportId: reference(delivery.businessChecks?.id), businessExceptionReason: EXCEPTION_RESERVE,
     runtimeReportId: reference(delivery.runtimeReport?.id), runtimeDeliveryDigest: "a".repeat(64), runtimeTargetId: reference(delivery.runtimeReport?.target.id ?? delivery.backendTargetId),
+    ...(delivery.runtimeRegistration ? {runtimeRegistration: delivery.runtimeRegistration} : {}),
     runtimeExceptionReason: EXCEPTION_RESERVE,
     runtimeAcknowledgedSteps: Array.from({length: MAX_PROTOCOL_STEPS}, () => ID_RESERVE),
     browserReportId: reference(delivery.browserChecks?.id), layoutReportId: reference(delivery.layoutReport?.id), assessmentId: reference(assessment?.id),

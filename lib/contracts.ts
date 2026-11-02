@@ -91,6 +91,7 @@ export type ProofAssessment = {
 export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"; sequence?: number; label: string; submittedAt: string; evidence: ProofEvidence[]; files?: Record<string, string>; layoutReport?: ProofLayoutReport; layoutHistory?: ProofLayoutReport[]; browserChecks?: ProofBrowserCheckReport; browserCheckHistory?: ProofBrowserCheckReport[]; businessChecks?: ProofBusinessCheckReport; businessCheckHistory?: ProofBusinessCheckReport[]; acceptanceEvidence?: ProofAcceptanceEvidence[]; assessment?: ProofAssessment; riskReviews?: ProofRiskReview[]; resources?: ProofResourceReport;
   backendTargetId?: string;
   runtimeDeliveryDigest?: string;
+  runtimeRegistration?: import("./runtime-registration").RuntimeRegistrationSnapshot;
   runtimeReport?: import("./runtime-checks").RuntimeCheckReport;
   runtimeHistory?: import("./runtime-checks").RuntimeCheckReport[];
   runtimeRun?: {id:string;deliveryId:string;deliveryDigest:string;targetId:string;startedAt:string;expiresAt:string};
@@ -105,6 +106,7 @@ export type ProofAcceptanceEvidence = {
   browserReportId: string | null; layoutReportId: string | null; assessmentId: string | null;
   businessReportId?: string | null; businessExceptionReason?: string;
   runtimeReportId?: string | null; runtimeExceptionReason?: string; runtimeAcknowledgedSteps?: string[]; runtimeDeliveryDigest?: string; runtimeTargetId?: string;
+  runtimeRegistration?: import("./runtime-registration").RuntimeRegistrationSnapshot;
   criteria: ProofCriterion[]; evidence: ProofEvidence[]; manualChecks: string[];
   review?: ProofReview; assessment?: ProofAssessment;
   riskReviews: ProofRiskReview[];

@@ -1,0 +1,145 @@
+{
+  "schema": "pbp-winner-comparison-v1",
+  "checkedOn": "2026-11-02",
+  "scope": "Code and product iterations; user paused video and formal submission. Official descriptions are not competitor execution results.",
+  "rubric": {
+    "url": "https://paypalaihackathon.devpost.com/rules",
+    "weights": "equal",
+    "criteria": [
+      "technological implementation",
+      "design",
+      "potential impact",
+      "innovation",
+      "presentation"
+    ],
+    "constraints": [
+      "PayPal and AI central to a working product",
+      "judges must be able to run a functional build",
+      "current2026editionhasnotannouncedwinners"
+    ]
+  },
+  "references": [
+    {
+      "name": "CrawlerPal",
+      "award": "PayPal DevDays2025 firstplace",
+      "url": "https://developer.paypal.com/community/blog/winners-dev-days-hackathon/",
+      "verified": "official award and description",
+      "description": "AI agent assistant using PayPal APIs for paid access",
+      "comparisonInference": "Meaningful commercial task with AI and payment in one observable workflow",
+      "notVerified": [
+        "code reliability",
+        "current running demo",
+        "user outcomes"
+      ]
+    },
+    {
+      "name": "Agent Receipt",
+      "award": "IBM Bob2026 August MostInnovative, not grandprize",
+      "url": "https://www.bemyapp.com/insights/ai-builders-challenge-with-ibm-bob-2026-winners.html",
+      "verified": "official award and description",
+      "description": "Scope-aware permission checks and evidence-linked replayable receipts",
+      "comparisonInference": "Reproducible evidence, permission boundaries and retained decisions",
+      "notVerified": [
+        "code reliability",
+        "current running demo",
+        "user outcomes"
+      ]
+    },
+    {
+      "name": "PHAROS_INC",
+      "award": "IBM Bob2026 August firstplace",
+      "url": "https://www.bemyapp.com/insights/ai-builders-challenge-with-ibm-bob-2026-winners.html",
+      "verified": "official award and description",
+      "description": "Orbital-data workflows combining deterministic assessment with compliance reports",
+      "comparisonInference": "Real target-user inputs and inspectable deterministic results",
+      "notVerified": [
+        "code reliability",
+        "current running demo",
+        "user outcomes"
+      ]
+    }
+  ],
+  "baselineV36": {
+    "observedByRoot": true,
+    "tests": 394,
+    "sourceCommit": "21efb6d3d15f76689d5caed68ee38a37118199e5",
+    "implemented": [
+      "original-scope confirmation",
+      "bounded HTML/CSS/raster upload",
+      "source-grounded optionalAI",
+      "separate browser evidence",
+      "versioned buyer/seller revisions",
+      "registered-fixture18stepHTTPpolicychecks",
+      "explicit exact-version acceptance",
+      "separate Sandbox authorization/capture",
+      "immutable evidence history and storage reservation",
+      "public no-login synthetic lab"
+    ],
+    "knownLimits": [
+      "runtime registry hardcoded to owned synthetic fixtures",
+      "frontend digest is not backend build attestation",
+      "namedHTMLentities and optionalendtags may falsely hardfail valid markup",
+      "no independent unfamiliar-user evidence",
+      "video paused; overall presentation comparison remains incomplete"
+    ]
+  },
+  "rounds": [
+    {
+      "id": 1,
+      "priority": "Correct valid-real-HTML falsefailures before expanding backend adoption",
+      "acceptance": [
+        "HTML5 namedreferences accepted when semantically supported",
+        "optionalendtags handled as browserHTML",
+        "malformed/inert/unsafe content does not gain falsepass",
+        "links/resources retain exact source provenance",
+        "fullregression+real-inputcounterexamples+DeepSeekreview"
+      ],
+      "status": "implemented and counterexamples verified; DeepSeek findings adjudicated"
+    },
+    {
+      "id": 2,
+      "priority": "Operator-approved independent seller staging backend registration, source association and runnable adapter contract",
+      "constraints": [
+        "No arbitrary caller URL or scripts",
+        "test-only syntheticwrites with explicitconsent",
+        "serverregistry with projectscope+expiry",
+        "pin exact registration into delivery/reports and acceptance",
+        "frontend bundle digest association explicitly declared, not deployment attestation",
+        "preserve old v1/v2 fixture history"
+      ],
+      "status": "implemented;430tests and isolated API passed; real third-party staging not yet demonstrated"
+    }
+  ],
+  "decisionRules": [
+    "No invented scores or win probability",
+    "Do not infer competitor absence from unpublished evidence",
+    "Both reviewers must cite observed evidence and enumerate remaining gaps",
+    "Code parity cannot substitute for paused presentation or independent users"
+  ],
+  "verifiedPublicSources": [
+    {
+      "name": "CrawlerPal",
+      "repo": "https://github.com/positiveblue/CrawlerPal",
+      "commit": "2a5655f231128ecc339094a621177fffc5a38222",
+      "verified": "Python server confirms PayPal completion then returns scoped data credentials; not executed"
+    },
+    {
+      "name": "PHAROS",
+      "repo": "https://github.com/0xkinno/pharos",
+      "commit": "2b3eb2dbf8afd9e9fc1c4a789da9fe59556d6f65",
+      "verified": "Rule evaluators with observations/thresholds/units/sourceclauses and a claim-to-source disclosure endpoint; not executed"
+    },
+    {
+      "name": "Agent Receipt",
+      "verified": "Organizer description only; publicly visible proprietary repository is excluded from source/ML comparison"
+    }
+  ],
+  "currentJudgment": {
+    "overallStrongerProven": false,
+    "remaining": [
+      "Independently deployed authorised staging integration evidence",
+      "Unfamiliar-user outcomes",
+      "Presentation paused by user; not assessed"
+    ]
+  }
+}

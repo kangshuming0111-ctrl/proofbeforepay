@@ -1,9 +1,10 @@
 import { DomainError } from "./domain.ts";
 import { runtimeDeliveryDigest, runtimeIdentifier, runtimeReportMethod, runtimeReportSummary, validateRuntimePlan, validateRuntimeTarget, type RuntimeCheckPlan, type RuntimeCheckReport, type RuntimeCheckStep, type RuntimeCheckTarget } from "./runtime-checks.ts";
+import {registrationTarget,validateRuntimeRegistrationSnapshot,type RuntimeRegistrationSnapshot} from "./runtime-registration.ts";
 
 export type RuntimeFetch = (url: string, init: RequestInit) => Promise<Response>;
-export type RuntimeCheckInput = {deliveryId: string; deliveryDigest: string; runId: string; plan: RuntimeCheckPlan; target: RuntimeCheckTarget; startedAt?: string};
-export type RuntimeCheckOptions = {fetch?: RuntimeFetch; allowLoopback?: boolean; signal?: AbortSignal; requestTimeoutMs?: number; totalTimeoutMs?: number; /** Trusted server recovery of an expired, persisted run; never a client payload field. */ resuming?: boolean};
+export type RuntimeCheckInput = {deliveryId: string; deliveryDigest: string; runId: string; plan: RuntimeCheckPlan; target: RuntimeCheckTarget; startedAt?: string;registration?:RuntimeRegistrationSnapshot};
+export type RuntimeCheckOptions = {fetch?: RuntimeFetch; allowLoopback?: boolean; signal?: AbortSignal; requestTimeoutMs?: number; totalTimeoutMs?: number; /** Trusted server recovery of an expired, persisted run; never a client payload field. */ resuming?: boolean; /** Close an abandoned persisted lease without contacting a revoked target. Never a client field. */ noNetworkReason?: "registration_no_longer_approved"};
 const RESPONSE_BYTES = 16 * 1024;
 const FIELDS = ["testRunId","marker","customer","email","slot","partySize","revision"] as const;
 class Unavailable extends Error {}
@@ -44,6 +45,8 @@ export async function executeRuntimeCheck(input: RuntimeCheckInput, options: Run
   const deliveryDigest=runtimeDeliveryDigest(input.deliveryDigest);
   const plan=validateRuntimePlan(input.plan),target=validateRuntimeTarget(input.target,{allowLoopback:options.allowLoopback});
   if((target.protocol??"booking-http-v1")!==plan.protocol)throw new DomainError("The registered target does not support this agreed protocol.");
+  const registration=input.registration===undefined?undefined:validateRuntimeRegistrationSnapshot(input.registration);
+  if(registration&&(registration.frontendBundleDigest!==deliveryDigest||JSON.stringify(validateRuntimeTarget(registrationTarget(registration)))!==JSON.stringify(target)))throw new DomainError("The runtime registration differs from the uploaded frontend and target.",409);
   const policy=plan.protocol==="booking-http-v2"?plan.policy:undefined,maxRequests=policy?18:8;
   const startedAt=stamp(input.startedAt), deadline=Date.now()+Math.min(30_000,Math.max(1,options.totalTimeoutMs??30_000));
   const perRequest=Math.min(4_000,Math.max(1,options.requestTimeoutMs??4_000));
@@ -77,6 +80,11 @@ export async function executeRuntimeCheck(input: RuntimeCheckInput, options: Run
   let requests=0;
   async function request(step: RuntimeCheckStep, body?: Record<string,unknown>, idempotencyKey?:string): Promise<{status:number;data:unknown}> {
     if(options.signal?.aborted)throw new Unavailable("cancelled");
+    if(options.noNetworkReason)throw new Unavailable(options.noNetworkReason);
+    // Approval may expire after the route has committed its run lease. Retain
+    // an unavailable report so that lease can finish; never start another HTTP
+    // request after expiry, including midway through a valid-started run.
+    if(registration&&Date.parse(registration.expiresAt)<=Date.now())throw new Unavailable("registration_expired");
     if(++requests>maxRequests)throw new Unavailable("request_limit");
     const remaining=deadline-Date.now();if(remaining<=0)throw new Unavailable("run_timeout");
     const url=new URL(step.path,target.baseUrl);
@@ -114,7 +122,12 @@ export async function executeRuntimeCheck(input: RuntimeCheckInput, options: Run
     if(!candidate||id!==undefined&&candidate!==id)mismatches.unshift("id");
     return {matches:!!candidate&&(id===undefined||candidate===id)&&mismatches.length===0,actual:JSON.stringify({...(candidate?{id:candidate}:{}),matchedFields:FIELDS.filter(field=>data[field]===expected[field]),mismatchedFields:[...new Set(mismatches)],...(id!==undefined?{sameReceiptId:candidate===id}:{})}),...(candidate?{id:candidate}:{})};
   }
-  const revisionGood=await perform(0,undefined,undefined,response=>{const matches=response.status===200&&plain(response.data)&&response.data.revision===target.revision&&(!policy||response.data.protocol==="booking-http-v2");return{matches,actual:matches?`Declared revision matched: ${target.revision}`:"Declared revision, protocol or HTTP status did not match; no booking writes were attempted."};});
+  const revisionGood=await perform(0,undefined,undefined,response=>{
+    const data=response.data;
+    const association=!registration||plain(data)&&data.registrationRevision===registration.registrationRevision&&data.projectId===registration.projectId&&data.frontendBundleDigest===registration.frontendBundleDigest&&(!registration.backendArtifactDigest||data.backendArtifactDigest===registration.backendArtifactDigest)&&(!registration.backendSourceCommit||data.backendSourceCommit===registration.backendSourceCommit);
+    const matches=response.status===200&&plain(data)&&data.revision===target.revision&&(!policy||data.protocol==="booking-http-v2")&&association;
+    return{matches,actual:matches?`Declared revision matched: ${target.revision}${registration?"; declared registration association matched (not deployment attestation)":""}`:"Declared revision, protocol, registration association or HTTP status did not match; no booking writes were attempted."};
+  });
   if(revisionGood){
     const missingSlot:Record<string,unknown>={...payload};delete missingSlot.slot;
     const validationRejected=(response:{status:number;data:unknown})=>{
@@ -180,5 +193,5 @@ export async function executeRuntimeCheck(input: RuntimeCheckInput, options: Run
       else steps[17].reason="concurrent_not_verified";
     }
   }else{for(const step of steps.slice(1))step.reason="revision_not_verified";}
-  return {id:runId,deliveryId,deliveryDigest,runId,method:runtimeReportMethod(plan),startedAt,finishedAt:new Date().toISOString(),target:{id:target.id,label:target.label,origin:new URL(target.baseUrl).origin,revision:target.revision},plan,steps,summary:runtimeReportSummary(steps)};
+  return {id:runId,deliveryId,deliveryDigest,runId,method:runtimeReportMethod(plan),startedAt,finishedAt:new Date().toISOString(),target:{id:target.id,label:target.label,origin:new URL(target.baseUrl).origin,revision:target.revision,...(registration?{registration}: {})},plan,steps,summary:runtimeReportSummary(steps)};
 }

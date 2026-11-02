@@ -1,7 +1,8 @@
-import type { ProofQuote, StaticProjectSpec } from "./contracts.ts";
+import type { ProofDelivery, ProofQuote, StaticProjectSpec } from "./contracts.ts";
 import type { RuntimeCheckPlan, RuntimeCheckReport, RuntimeCheckTarget } from "./runtime-checks.ts";
 import { DomainError } from "./domain.ts";
 import {validateRuntimePlan,validateRuntimeReport} from "./runtime-checks.ts";
+import {registrationTarget,validateRuntimeRegistrationSnapshot} from "./runtime-registration.ts";
 
 export const RUNTIME_LAB_ORIGIN = "https://proofbeforepay-verification-lab.blueheron8.chatgpt.site";
 /** Operator-owned disposable targets. No caller URL or ambient credentials. Add
@@ -16,6 +17,18 @@ export function runtimeTarget(id: unknown): RuntimeCheckTarget {
   const target=RUNTIME_TARGETS.find(item=>item.id===id);
   if(!target) throw new DomainError("Select an operator-registered disposable backend target.");
   return structuredClone(target);
+}
+/** Historical evidence uses the immutable registration saved with its upload,
+ * never today's registry or expiry. Authorization for a new outbound run is a
+ * separate current-registry check in the server route before its lease CAS. */
+export function deliveryRuntimeTarget(delivery:ProofDelivery):RuntimeCheckTarget {
+  const registration=delivery.runtimeRegistration;
+  if(registration){
+    const snapshot=validateRuntimeRegistrationSnapshot(registration);
+    if(snapshot.id!==delivery.backendTargetId||snapshot.frontendBundleDigest!==delivery.runtimeDeliveryDigest)throw new DomainError("The saved backend registration does not match this delivery.",409);
+    return registrationTarget(snapshot);
+  }
+  return runtimeTarget(delivery.backendTargetId);
 }
 export function parseRuntimePlan(value:unknown, project:StaticProjectSpec, confirmed=false):RuntimeCheckPlan {
   if(!value || typeof value!=="object" || Array.isArray(value)) throw new DomainError("Backend check plan must be an object.");
@@ -57,8 +70,10 @@ export function validateRuntimeDecision(quote:ProofQuote,value:unknown):RuntimeD
   const delivery=quote.proof.delivery,report=delivery?.runtimeReport;
   if(delivery?.runtimeRun) throw new DomainError("Wait for the pending backend run before accepting.",409);
   if(!report || report.deliveryId!==delivery?.id || JSON.stringify(report.plan)!==JSON.stringify(plan) || report.target.id!==delivery.backendTargetId) throw new DomainError("Run the agreed backend checks on this delivery first.",409);
-  validateRuntimeReport(report,{deliveryId:delivery.id,deliveryDigest:delivery.runtimeDeliveryDigest!,plan,target:runtimeTarget(delivery.backendTargetId)});
-  if((runtimeTarget(delivery.backendTargetId).protocol??"booking-http-v1")!==plan.protocol)throw new DomainError("The registered backend protocol differs from the agreed plan.",409);
+  const target=deliveryRuntimeTarget(delivery);
+  if(delivery.runtimeRegistration&&delivery.runtimeRegistration.projectId!==quote.id)throw new DomainError("The backend registration belongs to another project.",409);
+  validateRuntimeReport(report,{deliveryId:delivery.id,deliveryDigest:delivery.runtimeDeliveryDigest!,plan,target,registration:delivery.runtimeRegistration});
+  if((target.protocol??"booking-http-v1")!==plan.protocol)throw new DomainError("The registered backend protocol differs from the agreed plan.",409);
   if(!value || typeof value!=="object" || Array.isArray(value))throw new DomainError("Confirm the exact backend report.",409);
   const input=value as RuntimeDecision;
   if(Object.keys(input).some(key=>!["reportId","exceptionReason","acknowledgedSteps"].includes(key)) || input.reportId!==report.id)throw new DomainError("The backend report changed. Review it again.",409);

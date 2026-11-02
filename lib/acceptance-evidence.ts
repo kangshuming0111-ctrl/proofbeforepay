@@ -4,12 +4,16 @@ import { getBusinessCheckPlan } from "./business-checks.ts";
 import { DomainError } from "./domain.ts";
 import { savedRuntimePlan,validateRuntimeDecision,runtimeReportsFor } from "./runtime-project.ts";
 import { assertDeliveryEvidenceBudget, consumeAcceptanceReservation } from "./evidence-budget.ts";
+import {sameRuntimeRegistration} from "./runtime-registration.ts";
 export { EVIDENCE_HISTORY_BYTE_LIMIT } from "./evidence-budget.ts";
 
 export const OBSERVATION_HISTORY_LIMIT = 100;
 export const ACCEPTANCE_HISTORY_LIMIT = 20;
 
 type Observation = ProofBrowserCheckReport | ProofLayoutReport | ProofBusinessCheckReport;
+function sameRegistration(left: unknown, right: unknown): boolean {
+  return left === undefined && right === undefined || sameRuntimeRegistration(left, right);
+}
 /** Include only genuinely saved reports. A legacy latest reading is the first
  * known report, never evidence of earlier runs or of what a past buyer saw. */
 function reports<T extends Observation>(delivery: ProofDelivery, history: T[] | undefined, latest: T | undefined): T[] {
@@ -77,7 +81,7 @@ export function createAcceptanceEvidence(quote: ProofQuote, manualChecks: string
   if (browser && browser.deliveryId !== delivery.id || layout && layout.deliveryId !== delivery.id || assessment && assessment.deliveryId !== delivery.id) throw new DomainError("Acceptance evidence contains a report from a different delivery.", 409);
   return structuredClone({id: crypto.randomUUID(), deliveryId: delivery.id, at,
     businessReportId: decision?.reportId ?? null, ...(decision?.exceptionReason ? {businessExceptionReason: decision.exceptionReason} : {}),
-    ...(runtimeDecision && runtime ? {runtimeReportId:runtimeDecision.reportId,runtimeDeliveryDigest:runtime.deliveryDigest,runtimeTargetId:runtime.target.id,...(runtimeDecision.exceptionReason?{runtimeExceptionReason:runtimeDecision.exceptionReason,runtimeAcknowledgedSteps:runtimeDecision.acknowledgedSteps}:{})} : {}),
+    ...(runtimeDecision && runtime ? {runtimeReportId:runtimeDecision.reportId,runtimeDeliveryDigest:runtime.deliveryDigest,runtimeTargetId:runtime.target.id,...(runtime.target.registration?{runtimeRegistration:runtime.target.registration}:{}),...(runtimeDecision.exceptionReason?{runtimeExceptionReason:runtimeDecision.exceptionReason,runtimeAcknowledgedSteps:runtimeDecision.acknowledgedSteps}:{})} : {}),
     browserReportId: browser?.id ?? null, layoutReportId: layout?.id ?? null, assessmentId: assessment?.id ?? null,
     manualChecks, criteria: quote.proof.criteria, evidence: delivery.evidence,
     ...(quote.proof.review?.deliveryId === delivery.id ? {review: quote.proof.review} : {}),
@@ -92,7 +96,7 @@ export function withAcceptanceEvidence(delivery: ProofDelivery, snapshot: ProofA
   const currentReviews = (delivery.riskReviews ?? []).filter(item => item.deliveryId === delivery.id && item.assessmentId === delivery.assessment?.id);
   const business = delivery.businessChecks;
   const runtime=delivery.runtimeReport;
-  if((snapshot.runtimeReportId??null)!==(runtime?.id??null)||runtime && (snapshot.runtimeDeliveryDigest!==runtime.deliveryDigest || snapshot.runtimeTargetId!==runtime.target.id || runtime.steps.some(step=>step.outcome!=="observed") && ((snapshot.runtimeExceptionReason?.trim().length??0)<10 || runtime.steps.filter(step=>step.outcome!=="observed").some(step=>!snapshot.runtimeAcknowledgedSteps?.includes(step.id)))))throw new DomainError("Acceptance must retain the exact backend evidence and explicit exceptions.",409);
+  if((snapshot.runtimeReportId??null)!==(runtime?.id??null)||!sameRegistration(snapshot.runtimeRegistration,runtime?.target.registration)||runtime && (snapshot.runtimeDeliveryDigest!==runtime.deliveryDigest || snapshot.runtimeTargetId!==runtime.target.id || runtime.steps.some(step=>step.outcome!=="observed") && ((snapshot.runtimeExceptionReason?.trim().length??0)<10 || runtime.steps.filter(step=>step.outcome!=="observed").some(step=>!snapshot.runtimeAcknowledgedSteps?.includes(step.id)))))throw new DomainError("Acceptance must retain the exact backend evidence and explicit exceptions.",409);
   if ((snapshot.businessReportId ?? null) !== (business?.id ?? null)
     || (business && (business.summary.issues || business.summary.unavailable) && (snapshot.businessExceptionReason?.trim().length ?? 0) < 10)
     || snapshot.businessExceptionReason !== undefined && (typeof snapshot.businessExceptionReason !== "string" || snapshot.businessExceptionReason.trim().length > 500)
@@ -137,7 +141,7 @@ export function assertAcceptedEvidenceReference(quote: ProofQuote): void {
   if (!delivery || !snapshot) throw new DomainError("The saved acceptance evidence snapshot could not be found. Refresh before confirming payment.", 409);
   if(savedRuntimePlan(quote)) {
     const runtime=runtimeReportsFor(delivery).find(row=>row.id===snapshot.runtimeReportId);
-    if(!runtime || runtime.deliveryDigest!==snapshot.runtimeDeliveryDigest || runtime.target.id!==snapshot.runtimeTargetId || runtime.deliveryDigest!==delivery.runtimeDeliveryDigest)throw new DomainError("The backend evidence accepted for payment is unavailable or has changed.",409);
+    if(!runtime || runtime.deliveryDigest!==snapshot.runtimeDeliveryDigest || runtime.target.id!==snapshot.runtimeTargetId || runtime.deliveryDigest!==delivery.runtimeDeliveryDigest || !sameRegistration(snapshot.runtimeRegistration,runtime.target.registration) || !sameRegistration(delivery.runtimeRegistration,runtime.target.registration))throw new DomainError("The backend evidence accepted for payment is unavailable or has changed.",409);
   }
   if (getBusinessCheckPlan(quote).length && !snapshot.businessReportId
     || snapshot.businessReportId && !businessReportsFor(delivery).some(item => item.id === snapshot.businessReportId)

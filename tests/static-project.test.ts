@@ -116,13 +116,17 @@ test("file limits count real UTF-8 bytes with exact per-file and total boundarie
   invalid(() => validateStaticFiles({...exact, "d.css": `${exact["d.css"]}x`}));
 });
 
-test("a page must contain an unambiguous real HTML doctype, nonempty title and body", () => {
-  for (const content of ["<p>not a document</p>", html().replace("<!doctype html>", ""), html().replace("Delivered page", " "), html().replace("<main>Delivered content</main>", ""), `<!--${html()}-->`, `<script>${html()}</script>`, `<template>${html()}</template>`, html().replace("</body>", ""), html().replace("</main>", "</section>"), html().replace("<body>", "<body><body>"), `<!doctype html>${html()}`]) {
+test("missing doctype, nonempty title or body content is a concrete source-document failure", () => {
+  for (const content of ["<p>not a document</p>", html().replace("<!doctype html>", ""), html().replace("Delivered page", " "), html().replace("<main>Delivered content</main>", ""), `<!--${html()}-->`, `<script>${html()}</script>`, `<template>${html()}</template>`]) {
     const result = createUploadedDelivery({"index.html": content}, spec(), "en", 1);
     assert.equal(finding(result.evidence, "page-1"), "fail", content);
   }
   const minimal = "<!doctype html><title>Home</title><body><p>Content</p></body>";
   assert.equal(finding(createUploadedDelivery({"index.html": minimal}, spec(), "en", 1).evidence, "page-1"), "pass");
+  assert.equal(finding(createUploadedDelivery({"index.html": html().replace("</body>", "")}, spec(), "en", 1).evidence, "page-1"), "pass");
+  for (const content of [html().replace("</main>", "</section>"), html().replace("<body>", "<body><body>"), `<!doctype html>${html()}`]) {
+    assert.equal(finding(createUploadedDelivery({"index.html": content}, spec(), "en", 1).evidence, "page-1"), "needs_human", content);
+  }
 });
 
 test("comments and raw/inert containers cannot supply a fake anchor or destination", () => {
@@ -155,7 +159,7 @@ test("safe relative/same-page links, nested text and supported entities are insp
   const samePage = {...spec(), link: {from: "index.html", text: "Book a call", to: "index.html#booking"}};
   const sameFiles = {"index.html": html('<a href="#booking">Book a call</a><section id="booking">Here</section>')};
   assert.equal(finding(createUploadedDelivery(sameFiles, samePage, "en", 1).evidence, "link"), "pass");
-  assert.equal(finding(createUploadedDelivery({...relative, "index.html": relative["index.html"].replace("<head>", '<head><base href="https://example.test/">')}, spec(), "en", 1).evidence, "link"), "fail");
+  assert.equal(finding(createUploadedDelivery({...relative, "index.html": relative["index.html"].replace("<head>", '<head><base href="https://example.test/">')}, spec(), "en", 1).evidence, "link"), "needs_human");
 });
 
 test("mobile and manual decisions never auto-pass even with convincing markup", () => {
@@ -163,6 +167,20 @@ test("mobile and manual decisions never auto-pass even with convincing markup", 
   const evidence = createUploadedDelivery(source, spec(), "zh", 1).evidence;
   assert.equal(finding(evidence, "mobile"), "needs_human");
   assert.equal(finding(evidence, "manual-1"), "needs_human");
+});
+
+test("base and unrelated parser recovery stay uncertain; hidden fragment ancestors never claim a source pass",()=>{
+  for(const attribute of ["hidden","inert"]){
+    const nested={...files(),"index.html":html(`<div ${attribute}><a href="contact.html#booking">Book a call</a></div>`)};
+    assert.equal(finding(createUploadedDelivery(nested,spec(),"en",1).evidence,"link"),"needs_human");
+  }
+  for(const body of ['<section hidden id="booking">Contact</section>','<div hidden><section id="booking">Contact</section></div>','<div inert><section id="booking">Contact</section></div>']){
+    assert.equal(finding(createUploadedDelivery({...files(),"contact.html":html(body)},spec(),"en",1).evidence,"link"),"needs_human");
+  }
+  const withBase=files();withBase["index.html"]=withBase["index.html"].replace("<head>",'<head><base href="/site/">');
+  assert.equal(finding(createUploadedDelivery(withBase,spec(),"en",1).evidence,"link"),"needs_human");
+  const unrelated=files();unrelated["index.html"]=html('<a href="contact.html#booking">Book a call</a><section id="unrelated" id="other">Elsewhere</section>');
+  assert.equal(finding(createUploadedDelivery(unrelated,spec(),"en",1).evidence,"link"),"needs_human");
 });
 
 function customAgreement(): ProofQuote {

@@ -1,5 +1,6 @@
 import { DomainError } from "./domain.ts";
 import {validateBookingPolicy,type BookingPartyPolicy} from "./booking-policy.ts";
+import type {RuntimeRegistrationSnapshot} from "./runtime-registration.ts";
 
 type RuntimePlanSource = {
   criterionId: string;
@@ -16,7 +17,7 @@ export type RuntimeCheckStep = {
 export type RuntimeCheckReport = {
   id: string; deliveryId: string; deliveryDigest: string; runId: string; method: "server-booking-http-v1"|"server-booking-http-v2";
   startedAt: string; finishedAt: string;
-  target: {id: string; label: string; origin: string; revision: string};
+  target: {id: string; label: string; origin: string; revision: string;registration?:RuntimeRegistrationSnapshot};
   plan: RuntimeCheckPlan; steps: RuntimeCheckStep[];
   summary: {steps: number; observed: number; issues: number; unavailable: number};
 };
@@ -90,7 +91,7 @@ export function runtimeDeliveryDigest(value: unknown): string {
 
 /** Validates stored identity, shape and summary. It does not independently replay
  * HTTP observations or cryptographically attest the target's declared revision. */
-export function validateRuntimeReport(value: unknown, expected: {deliveryId: string; deliveryDigest: string; runId?: string; plan: RuntimeCheckPlan; target?: Pick<RuntimeCheckTarget,"id"|"label"|"baseUrl"|"revision">}): RuntimeCheckReport {
+export function validateRuntimeReport(value: unknown, expected: {deliveryId: string; deliveryDigest: string; runId?: string; plan: RuntimeCheckPlan; target?: Pick<RuntimeCheckTarget,"id"|"label"|"baseUrl"|"revision">;registration?:RuntimeRegistrationSnapshot}): RuntimeCheckReport {
   const report=record(value,"Runtime report");
   if(Object.keys(report).some(key=>!["id","deliveryId","deliveryDigest","runId","method","startedAt","finishedAt","target","plan","steps","summary"].includes(key))
     || report.method!==runtimeReportMethod(expected.plan) || report.deliveryId!==expected.deliveryId || report.deliveryDigest!==runtimeDeliveryDigest(expected.deliveryDigest)) throw new DomainError("Runtime report does not match this exact delivery.",409);
@@ -100,11 +101,12 @@ export function validateRuntimeReport(value: unknown, expected: {deliveryId: str
   if(JSON.stringify(plan)!==JSON.stringify(validateRuntimePlan(expected.plan)))throw new DomainError("Runtime report does not match the locked test plan.",409);
   if(typeof report.startedAt!=="string"||typeof report.finishedAt!=="string"||!Number.isFinite(Date.parse(report.startedAt))||!Number.isFinite(Date.parse(report.finishedAt))||Date.parse(report.finishedAt)<Date.parse(report.startedAt))throw new DomainError("Runtime report timestamps are invalid.",409);
   const target=record(report.target,"Runtime report target");
-  if(Object.keys(target).some(key=>!["id","label","origin","revision"].includes(key)))throw new DomainError("Runtime report target is invalid.",409);
+  if(Object.keys(target).some(key=>!["id","label","origin","revision","registration"].includes(key)))throw new DomainError("Runtime report target is invalid.",409);
   runtimeIdentifier(target.id,"Runtime target ID");text(target.label,"Runtime target label",100);text(target.revision,"Runtime revision",120);
   let origin:URL;try{origin=new URL(text(target.origin,"Runtime target origin",500));}catch{throw new DomainError("Runtime target origin is invalid.",409);}
   if(origin.origin!==target.origin||origin.username||origin.password)throw new DomainError("Runtime target origin must be an origin without authentication.",409);
   if(expected.target&&(target.id!==expected.target.id||target.label!==expected.target.label||target.origin!==new URL(expected.target.baseUrl).origin||target.revision!==expected.target.revision))throw new DomainError("Runtime report target changed.",409);
+  if(JSON.stringify(target.registration)!==JSON.stringify(expected.registration))throw new DomainError("Runtime report registration differs from the frozen deployment declaration.",409);
   const ids=runtimeProtocolStepIds(plan);
   if(!Array.isArray(report.steps)||report.steps.length!==ids.length)throw new DomainError("Runtime report must retain every protocol step.",409);
   const steps=report.steps.map((value,index)=>{

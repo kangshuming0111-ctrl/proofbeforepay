@@ -5,6 +5,8 @@ import {ArrowRight, ChevronDown, FlaskConical, MessageSquarePlus} from "lucide-r
 import type {Language} from "@/lib/contracts";
 import {runtimeReportSummary, runtimeProtocolStepIds, runtimeReportMethod, type RuntimeCheckPlan, type RuntimeCheckReport} from "@/lib/runtime-checks";
 import {draftRuntimeFeedback, runtimeReasonLabel, runtimeStepName} from "@/lib/runtime-feedback";
+import type {RuntimeTargetDescriptor} from "@/lib/server-runtime-targets";
+import type {RuntimeRegistrationSnapshot} from "@/lib/runtime-registration";
 import "../runtime-check.css";
 
 export type RuntimeCheckPanelProps = {
@@ -12,6 +14,8 @@ export type RuntimeCheckPanelProps = {
   deliveryId: string;
   plan: RuntimeCheckPlan;
   targetId?: string;
+  target?: RuntimeTargetDescriptor;
+  registration?: RuntimeRegistrationSnapshot;
   deliveryDigest?: string;
   report?: RuntimeCheckReport;
   pending?: boolean;
@@ -33,10 +37,15 @@ export function currentRuntimeReport(report:RuntimeCheckReport|undefined, delive
     && !!targetId && report.target.id===targetId && !!deliveryDigest && report.deliveryDigest===deliveryDigest ? report : undefined;
 }
 function displayTime(value:string) {return Number.isFinite(Date.parse(value))?`${new Date(value).toISOString().slice(0,19).replace("T"," ")} UTC`:value;}
+function displayReason(reason:string,language:Language){
+  if(reason==="registration_expired")return language==="zh"?"测试部署登记已过期，本次没有继续发出请求。":"The staging approval expired; this run made no further requests.";
+  if(reason==="registration_no_longer_approved")return language==="zh"?"测试部署登记已撤销或改变，本次没有继续发出请求。":"The staging approval was revoked or changed; this run made no further requests.";
+  return runtimeReasonLabel(reason,language);
+}
 
 /** A report is server-executed HTTP evidence for one recorded test target and
  * exact uploaded-file digest; it is not an attestation that target runs those files. */
-export function RuntimeCheckPanel({language,deliveryId,plan,targetId,deliveryDigest,report,pending=false,busy=false,enabled,onRun,onPrepareFeedback}:RuntimeCheckPanelProps) {
+export function RuntimeCheckPanel({language,deliveryId,plan,targetId,target:descriptor,registration:deliveryRegistration,deliveryDigest,report,pending=false,busy=false,enabled,onRun,onPrepareFeedback}:RuntimeCheckPanelProps) {
   const tr=(zh:string,en:string)=>language==="zh"?zh:en;
   const current=currentRuntimeReport(report,deliveryId,plan,targetId,deliveryDigest);
   const summary=current?runtimeReportSummary(current.steps):undefined;
@@ -45,19 +54,24 @@ export function RuntimeCheckPanel({language,deliveryId,plan,targetId,deliveryDig
   const [consent,setConsent]=useState(false);
   const consentId=useId();
   useEffect(()=>{setConsent(false);setOpen(!current||issues||pending);},[deliveryId,targetId,current?.id,pending]);
-  const target=targetId?TARGETS[targetId]:undefined;
-  const canRun=enabled&&!busy&&!pending&&!!target;
+  const target=descriptor&&descriptor.id===targetId&&descriptor.protocol===plan.protocol?descriptor:undefined;
+  const registration=deliveryRegistration&&deliveryRegistration.id===targetId&&deliveryRegistration.protocol===plan.protocol&&deliveryRegistration.frontendBundleDigest===deliveryDigest?deliveryRegistration:current?.target.registration;
+  const fixture=targetId?TARGETS[targetId]:undefined;
+  const targetLabel=registration?.label??current?.target.label??target?.label??(fixture?tr(...fixture):undefined);
+  const registered=!!registration||target?.kind==="registered";
+  const canRun=enabled&&!busy&&!pending&&!!targetLabel;
   const policy=plan.protocol==="booking-http-v2"?plan.policy:undefined;
   const above=current?.steps.find(step=>step.id==="party_above");
   const concurrent=current?.steps.filter(step=>["concurrent_first","concurrent_second","concurrent_readback"].includes(step.id));
   return <details className="runtime-check-panel" open={open} onToggle={event=>setOpen(event.currentTarget.open)}>
     <summary><span><FlaskConical size={15} aria-hidden="true"/>{tr("预约接口实测","Booking HTTP check")}</span><span>{pending||busy?tr("正在运行","Running"):summary?tr(`${summary.issues} 项不符 · ${summary.unavailable} 项未确定`,`${summary.issues} mismatched · ${summary.unavailable} unavailable`):tr("尚无当前报告","No current report")}</span><ChevronDown size={14} aria-hidden="true"/></summary>
     <div className="runtime-check-body">
-      <p>{policy?tr("十八步真实 HTTP 检查将原文人数上限、边界请求及同键并发纳入检验，并独立查回预约。仅运行登记的受控虚构接口，不扫描任意卖家网址。","Eighteen actual HTTP steps test the original party-size maximum, boundaries and concurrent same-key requests, with independent booking readback. Only registered fictional services are tested; arbitrary seller URLs are not scanned."):tr("用真实 HTTP 请求检查基础八步：缺失字段、错误邮箱、创建、独立读回、重复请求、冲突和最终读回。仅运行服务端登记的受控虚构接口，不扫描任意卖家网址。","Actual HTTP requests check eight basic steps: missing fields, invalid email, creation, independent readback, replay, conflict and final readback. Only server-registered fictional test services can run; arbitrary seller URLs are not scanned.")}</p>
+      <p>{policy?tr("十八步真实 HTTP 检查将原文人数上限、边界请求及同键并发纳入检验，并独立查回预约。只运行平台运营者批准的测试目标，不扫描任意网址。","Eighteen actual HTTP steps test the original party-size maximum, boundaries and concurrent same-key requests, with independent booking readback. Only operator-approved test targets run; arbitrary URLs are not scanned."):tr("用真实 HTTP 请求检查基础八步：缺失字段、错误邮箱、创建、独立读回、重复请求、冲突和最终读回。只运行平台运营者批准的测试目标，不扫描任意网址。","Actual HTTP requests check eight basic steps: missing fields, invalid email, creation, independent readback, replay, conflict and final readback. Only operator-approved test targets run; arbitrary URLs are not scanned.")}</p>
       <p className="runtime-check-source"><strong>{tr("已确认的原始要求","Original agreed requirement")}</strong><span>{plan.source.excerpt}</span></p>
       {policy&&<p className="runtime-check-source"><strong>{tr(`每笔最多 ${policy.maxPartySize} 人；探测 ${policy.maxPartySize-1} / ${policy.maxPartySize} / ${policy.maxPartySize+1} 人`,`Maximum ${policy.maxPartySize} people; probe ${policy.maxPartySize-1} / ${policy.maxPartySize} / ${policy.maxPartySize+1}`)}</strong><span>{policy.source.excerpt}</span><span>{tr("预期以内和恰好上限可创建并查回，超过上限应拒绝。并发只核对同键响应与回读的一致性，不证明整个数据库没有重复记录。","Below-limit and exact-limit bookings should be created and read back; above-limit input should be rejected. Concurrency checks same-key response/readback consistency, not the absence of hidden duplicates throughout a database.")}</span></p>}
-      <p className="runtime-check-target">{tr("本版登记的测试目标","Registered test target")}: <strong>{target?tr(...target):tr("尚未选择受支持的目标","No supported target selected")}</strong></p>
-      <label className="runtime-check-consent" htmlFor={consentId}><input id={consentId} type="checkbox" checked={consent} disabled={!canRun} onChange={event=>setConsent(event.target.checked)}/><span>{tr("允许本次向受控示例接口提交生成的虚构预约测试数据。不会发送合同、页面文件或私人客户资料。","Allow this run to submit generated fictional booking data to the controlled example service. No contract, website files or private client material is sent.")}</span></label>
+      <p className="runtime-check-target">{registered?tr("本版卖家测试部署","Seller staging for this delivery"):tr("本版虚构演示接口","Synthetic demo for this delivery")}: <strong>{targetLabel??tr("尚未选择受支持的目标","No supported target selected")}</strong></p>
+      {registration&&<p className="runtime-check-note">{tr("登记修订","Registration revision")}: {registration.registrationRevision} · {tr("部署修订","Deployment revision")}: {registration.deploymentRevision}<br/>{tr("绑定上传摘要","Bound upload digest")}: <code title={registration.frontendBundleDigest}>{registration.frontendBundleDigest.slice(0,12)}…</code> · {tr("登记有效至","Approval expires")}: {displayTime(registration.expiresAt)}<br/>{tr("保存的报告继续保留；每次新增运行仍需服务器核对当前登记、有效期与本版文件摘要。","Saved reports remain readable. Every new run still requires server checks of current approval, expiry and this version's upload digest.")}</p>}
+      <label className="runtime-check-consent" htmlFor={consentId}><input id={consentId} type="checkbox" checked={consent} disabled={!canRun} onChange={event=>setConsent(event.target.checked)}/><span>{registered?tr("允许本次向上述卖家测试部署提交生成的虚构预约测试数据。不会发送合同、页面文件或私人客户资料。","Allow this run to submit generated fictional booking data to the seller staging target above. No contract, website files or private client material is sent."):tr("允许本次向上述虚构演示接口提交生成的虚构预约测试数据。不会发送合同、页面文件或私人客户资料。","Allow this run to submit generated fictional booking data to the synthetic demo service above. No contract, website files or private client material is sent.")}</span></label>
       <button type="button" className="runtime-check-run" disabled={!canRun||!consent} onClick={()=>{if(!canRun||!consent)return;setConsent(false);onRun();}}>{pending||busy?tr("正在请求和读回…","Requesting and reading back…"):current?tr("重新运行本版接口测试","Run this version’s HTTP check again"):tr("运行本版接口测试","Run this version’s HTTP check")}<ArrowRight size={13} aria-hidden="true"/></button>
       {!enabled&&!busy&&!pending&&<p className="runtime-check-note">{tr("当前状态不能新增测试，已有报告仍可查看。","New tests are unavailable in this state; saved reports remain readable.")}</p>}
       {(pending||busy)&&<p className="runtime-check-note" role="status">{tr("结果尚未完成，不能按通过处理；新报告不会替换已经验收时保存的依据。","The run is incomplete and cannot be treated as a pass. A new report does not replace evidence saved at acceptance.")}</p>}
@@ -72,7 +86,7 @@ export function RuntimeCheckPanel({language,deliveryId,plan,targetId,deliveryDig
             <div><dt>{tr("请求","Request")}</dt><dd><code>{step.method} {step.path}</code>{step.status!==undefined?` · HTTP ${step.status}`:""}</dd></div>
             <div><dt>{tr("预期","Expected")}</dt><dd>{step.expected}</dd></div>
             {step.actual&&<div><dt>{tr("实际","Actual")}</dt><dd>{step.actual}</dd></div>}
-            {step.reason&&<div><dt>{tr("未确定原因","Unavailable reason")}</dt><dd>{runtimeReasonLabel(step.reason,language)} <code>({step.reason})</code></dd></div>}
+            {step.reason&&<div><dt>{tr("未确定原因","Unavailable reason")}</dt><dd>{displayReason(step.reason,language)} <code>({step.reason})</code></dd></div>}
           </dl></details>
         </li>)}</ol>
         {issues&&onPrepareFeedback&&<button type="button" className="runtime-check-feedback" disabled={busy||pending} onClick={()=>onPrepareFeedback(plan.criterionId,draftRuntimeFeedback(current,language))}><MessageSquarePlus size={13} aria-hidden="true"/>{tr("起草接口修改意见","Draft HTTP change request")}</button>}

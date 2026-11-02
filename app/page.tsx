@@ -51,7 +51,7 @@ import { RuntimeCheckPanel, RuntimeAcceptanceDecision, currentRuntimeReport } fr
 import { RuntimePlanEditor } from "./components/RuntimePlanEditor";
 import { suggestBookingPolicy, type BookingPartyPolicy } from "@/lib/booking-policy";
 import type { RuntimeCheckPlan } from "@/lib/runtime-checks";
-import { RUNTIME_TARGETS } from "@/lib/runtime-project";
+import type { RuntimeTargetDescriptor } from "@/lib/server-runtime-targets";
 import "./sandbox-login-help.css";
 
 class RequestError extends Error {
@@ -82,6 +82,9 @@ type ProjectMode = "custom" | "demo";
 type CaseResult = {quote: ProofQuote; role?: ProofRole};
 type CaseList = {quotes: unknown[]; roles?: Record<string, ProofRole>};
 type BrowserStepDraft = { from: string; text: string; to: string };
+type RuntimeTargetList = { context: string; targets: RuntimeTargetDescriptor[]; status: "loading" | "ready" | "error"; error?: string };
+const runtimeTargetFingerprint = (target: RuntimeTargetDescriptor) => JSON.stringify([target.id, target.label, target.protocol, target.revision, target.kind,
+  ...(target.kind === "registered" ? [target.registrationRevision, target.frontendBundleDigest, target.expiresAt] : [])]);
 
 const DEFAULT_PAGES = "index.html";
 
@@ -134,7 +137,11 @@ export default function Home() {
   const [runtimeConfirmed,setRuntimeConfirmed]=useState(false);
   const [runtimeProtocol,setRuntimeProtocol]=useState<RuntimeCheckPlan["protocol"]>("booking-http-v1");
   const [runtimeCriterionId,setRuntimeCriterionId]=useState("");
-  const [backendTargetId,setBackendTargetId]=useState("lab-flawed");
+  const [backendTargetId,setBackendTargetId]=useState("");
+  const [runtimeTargetList,setRuntimeTargetList]=useState<RuntimeTargetList>();
+  const [runtimeTargetRefresh,setRuntimeTargetRefresh]=useState(0);
+  const [runtimeTargetSelectionChanged,setRuntimeTargetSelectionChanged]=useState(false);
+  const runtimeTargetChoice=useRef<{context:string;id:string;fingerprint?:string}|undefined>(undefined);
   const [runtimeReason,setRuntimeReason]=useState("");
   const [runtimeAcknowledged,setRuntimeAcknowledged]=useState(false);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
@@ -243,14 +250,45 @@ export default function Home() {
   const businessDecisionReady = !businessChecksConfigured || !!businessReport && (!businessHasExceptions || businessExceptionReason.trim().length >= 10);
   const businessDecision = businessChecksConfigured && businessReport ? {reportId: businessReport.id, ...(businessHasExceptions ? {exceptionReason: businessExceptionReason.trim()} : {})} : undefined;
   const runtimePlan=customProject?.runtimeCheck;
-  const runtimeTargets=runtimePlan?RUNTIME_TARGETS.filter(target=>(target.protocol??"booking-http-v1")===runtimePlan.protocol):[];
-  const selectedBackendTargetId=runtimeTargets.some(target=>target.id===backendTargetId)?backendTargetId:runtimeTargets[0]?.id??"";
+  const runtimePlanKey=JSON.stringify(runtimePlan??null);
+  const runtimeTargetContext=runtimePlan?`${quote?.id??""}:${workspaceRole}:${runtimePlanKey}`:"";
+  const runtimeTargets=runtimeTargetList?.context===runtimeTargetContext?runtimeTargetList.targets:[];
+  const runtimeTargetsLoading=!!runtimePlan&&(runtimeTargetList?.context!==runtimeTargetContext||runtimeTargetList.status==="loading");
+  const runtimeTargetsError=runtimeTargetList?.context===runtimeTargetContext&&runtimeTargetList.status==="error"?runtimeTargetList.error:"";
+  const selectedBackendTarget=runtimeTargets.find(target=>target.id===backendTargetId);
+  const selectedBackendTargetId=selectedBackendTarget?.id??"";
   const runtimeReport=delivery&&runtimePlan?currentRuntimeReport(delivery.runtimeReport,delivery.id,runtimePlan,delivery.backendTargetId,delivery.runtimeDeliveryDigest):undefined;
   const runtimeIssues=runtimeReport?.steps.filter(step=>step.outcome!=="observed")??[];
   const runtimeDecisionReady=!runtimePlan || !!runtimeReport && !delivery?.runtimeRun && (!runtimeIssues.length || runtimeAcknowledged && runtimeReason.trim().length>=10);
   const runtimeDecision=runtimePlan&&runtimeReport?{reportId:runtimeReport.id,...(runtimeIssues.length?{exceptionReason:runtimeReason.trim(),acknowledgedSteps:runtimeAcknowledged?runtimeIssues.map(step=>step.id):[]}:{})}:undefined;
   useEffect(()=>setRuntimeConfirmed(false),[projectSummary,runtimeCriterionId,runtimeEnabled,runtimeProtocol,coverageDraftKey]);
-  useEffect(()=>{setBackendTargetId(delivery?.backendTargetId??RUNTIME_TARGETS.find(target=>(target.protocol??"booking-http-v1")===runtimePlan?.protocol)?.id??"");},[quote?.id,delivery?.id,delivery?.backendTargetId,runtimePlan?.protocol]);
+  useEffect(()=>{
+    const id=delivery?.backendTargetId??"",registration=delivery?.runtimeRegistration;
+    const fingerprint=registration?runtimeTargetFingerprint({id:registration.id,label:registration.label,protocol:registration.protocol,revision:registration.deploymentRevision,
+      kind:"registered",registrationRevision:registration.registrationRevision,frontendBundleDigest:registration.frontendBundleDigest,expiresAt:registration.expiresAt}):undefined;
+    runtimeTargetChoice.current={context:runtimeTargetContext,id,...(fingerprint?{fingerprint}:{})};
+    setBackendTargetId(id);setRuntimeTargetSelectionChanged(false);
+  },[quote?.id,delivery?.id,delivery?.backendTargetId,runtimeTargetContext]);
+  useEffect(()=>{
+    let active=true;
+    if(!quote?.id||!runtimePlan){setRuntimeTargetList(undefined);return()=>{active=false;};}
+    const context=runtimeTargetContext,protocol=runtimePlan.protocol;
+    setRuntimeTargetList({context,targets:[],status:"loading"});
+    apiRequest<{targets:RuntimeTargetDescriptor[]}>(`/api/proofs/${encodeURIComponent(quote.id)}/runtime-targets`,"GET",undefined,workspaceRole).then(result=>{
+      if(!active)return;
+      if(!Array.isArray(result.targets)||result.targets.some(target=>!target||typeof target.id!=="string"||typeof target.label!=="string"||typeof target.revision!=="string"
+        ||target.protocol!==protocol||!["fixture","registered"].includes(target.kind)
+        ||target.kind==="registered"&&(typeof target.registrationRevision!=="string"||typeof target.frontendBundleDigest!=="string"||!Number.isFinite(Date.parse(target.expiresAt)))))throw new Error("Invalid runtime target list.");
+      const choice=runtimeTargetChoice.current,target=result.targets.find(target=>target.id===choice?.id);
+      if(choice?.context===context&&choice.id){
+        if(!target||choice.fingerprint&&choice.fingerprint!==runtimeTargetFingerprint(target)){
+          runtimeTargetChoice.current={context,id:""};setBackendTargetId("");setRuntimeTargetSelectionChanged(true);
+        }else runtimeTargetChoice.current={context,id:target.id,fingerprint:runtimeTargetFingerprint(target)};
+      }
+      setRuntimeTargetList({context,targets:result.targets,status:"ready"});
+    }).catch(cause=>{if(active)setRuntimeTargetList({context,targets:[],status:"error",error:cause instanceof Error?cause.message:"Could not load registered test targets."});});
+    return()=>{active=false;};
+  },[quote?.id,runtimePlanKey,runtimeTargetContext,runtimeTargetRefresh,delivery?.id,workspaceRole]);
   const canAcceptDelivery = runtimeDecisionReady && buyer && collaboration?.stage === "submitted" && deliveryUnlocked && reviewCurrent && evidenceComplete && !failed && allHumanChecked && deliveryConsent && businessDecisionReady;
   const canCapture = buyer && (!collaboration || collaboration.stage === "accepted") && authorized && !pendingVoid && (pendingCapture || (!expired && reviewCurrent && evidenceComplete && !failed && allHumanChecked && consent && (acceptedCurrent || businessDecisionReady && runtimeDecisionReady)));
   const aiMode = quote?.aiMode ?? (projectMode === "demo" || customRoleDemo ? "demo" : config?.aiMode);
@@ -940,6 +978,9 @@ export default function Home() {
 
   async function uploadDelivery() {
     if (!quote || !custom || !canManageDelivery) return;
+    if(runtimePlan&&(runtimeTargetsLoading||runtimeTargetsError||!selectedBackendTargetId)){
+      setUploadError(tr("请先加载并明确选择本次交付的测试目标，再保存文件。","Load the available test targets and explicitly choose one for this delivery before saving files."));return;
+    }
     setUploadError("");
     await run("upload", async () => {
       try {
@@ -953,12 +994,26 @@ export default function Home() {
         window.requestAnimationFrame(() => { setWorkspacePanel("delivery"); setDeliveryTab("evidence"); });
         setNotice(tr("文件已保存，规则核查已完成。可按需运行 AI 评估，或填写说明提交验收。旧版 AI 评估与验收同意未沿用。", "Files saved and rule checks complete. Optionally run AI assessment, or add a note and submit for review. Previous AI assessment and acceptance were not carried over."));
       } catch (cause) {
-        setUploadError(cause instanceof RequestError && cause.status === 409
+        setUploadError(cause instanceof RequestError && cause.status===409&&selectedBackendTarget?.kind==="registered"&&/registr|backend|frontend bundle/iu.test(cause.message)
+          ? tr("文件或测试部署与登记声明不一致，未保存本次交付。已保留文件；请运营者核对当前项目、上传摘要和部署修订后重新批准。","The files or staging deployment do not match the approved declaration, so this delivery was not saved. Your files are retained. Ask the operator to check the project, upload digest and deployment revision, then approve the updated registration.")
+          : cause instanceof RequestError && cause.status === 409
           ? tr("交付版本已更新或被锁定，未保存这次替换。已保留选中文件；请核对刷新后的当前版本，再决定是否替换。", "The delivery changed or is locked, so this replacement was not saved. Your files are retained. Check the refreshed current version before deciding whether to replace it.")
           : cause instanceof Error ? cause.message : tr("文件交付未完成，请保留选择并重试。", "The upload did not complete. Your selection is retained."));
         throw cause;
       }
     });
+  }
+
+  async function downloadRuntimeContract(){
+    if(!quote||!runtimePlan)return;
+    const context=runtimeTargetContext,reference=quote.reference;
+    await run("runtime-contract",async()=>{
+      const contract=await request<unknown>(`/api/proofs/${encodeURIComponent(quote.id)}/runtime-contract`);
+      if(runtimeTargetChoice.current?.context!==context)return;
+      const objectUrl=URL.createObjectURL(new Blob([JSON.stringify(contract,null,2)+"\n"],{type:"application/json"}));
+      const anchor=document.createElement("a");anchor.href=objectUrl;anchor.download=`${reference}-runtime-contract.json`;anchor.click();URL.revokeObjectURL(objectUrl);
+      setNotice(tr("当前项目的接口规范已下载。卖家须在测试环境实现，并由平台运营者批准登记后才能选择自己的部署。","The current project's HTTP contract was downloaded. Implement it in staging, then obtain operator approval before selecting your deployment."));
+    },false);
   }
 
   async function checkout() {
@@ -1261,14 +1316,33 @@ export default function Home() {
               {customView && !buyer && <details className="upload-delivery no-print" open={(!sampleRoleplay && !delivery) || pendingFiles.length > 0 || !!uploadError}>
                 <summary><Upload size={15} /><span className="upload-summary-label">{delivery ? tr("提交替换版本", "Submit a replacement") : tr("上传网站文件或文件夹", "Upload website files or folder")}</span>{delivery && <small>{tr(`${Object.keys(deliveryFiles ?? {}).length} 个已保存文件`, `${Object.keys(deliveryFiles ?? {}).length} saved files`)}</small>}</summary>
                 <p className="upload-help">{tr("保留目录结构，根目录包含 index.html。最多 40 个 HTML/CSS/PNG/JPEG/WebP 文件；文本每个 64 KiB、合计 256 KiB，图片每个 256 KiB、合计 1 MiB。脚本、表单和外部资源不运行。", "Keep the folder structure with index.html at its root. Up to 40 HTML/CSS/PNG/JPEG/WebP files: text 64 KiB each, 256 KiB total; images 256 KiB each, 1 MiB total. Scripts, forms and external resources do not run.")}</p>
-                {runtimePlan&&<label className="runtime-target-choice">{tr("声明本次交付对应的受控测试后端","Declare the controlled backend for this delivery")}<select value={selectedBackendTargetId} disabled={!!busy||!canManageDelivery} onChange={e=>setBackendTargetId(e.target.value)}>{runtimeTargets.map(target=><option key={target.id} value={target.id}>{target.label} · {target.revision}</option>)}</select><small>{tr("这是独立部署的虚构后端，文件不能证明部署版本；此声明与当前上传一起保存。自有后端需另行注册适配器。","This is a separately deployed fictional backend. Files do not attest deployment; the declaration is saved with this upload. An owned backend needs a separately registered adapter.")}</small></label>}
+                {runtimePlan&&<div className="runtime-target-choice">
+                  <label htmlFor="runtimeTargetChoice">{tr("选择本次交付的测试目标","Choose the test target for this delivery")}</label>
+                  <select id="runtimeTargetChoice" value={selectedBackendTargetId} disabled={!!busy||!canManageDelivery||runtimeTargetsLoading||!!runtimeTargetsError} onChange={event=>{
+                    const target=runtimeTargets.find(target=>target.id===event.target.value);
+                    runtimeTargetChoice.current={context:runtimeTargetContext,id:target?.id??"",...(target?{fingerprint:runtimeTargetFingerprint(target)}:{})};
+                    setBackendTargetId(target?.id??"");setRuntimeTargetSelectionChanged(false);setUploadError("");
+                  }}>
+                    <option value="">{runtimeTargetsLoading?tr("正在加载可用目标…","Loading available targets…"):tr("请明确选择一个测试目标","Choose a test target explicitly")}</option>
+                    {["registered","fixture"].map(kind=><optgroup key={kind} label={kind==="registered"?tr("卖家测试部署（已批准）","Seller staging (operator approved)"):tr("虚构演示接口","Synthetic demo services")}>{runtimeTargets.filter(target=>target.kind===kind).map(target=><option key={target.id} value={target.id}>{target.label} · {target.revision}{target.kind==="registered"?` · SHA-256 ${target.frontendBundleDigest.slice(0,12)}… · ${tr("有效至","expires")} ${target.expiresAt}`:""}</option>)}</optgroup>)}
+                  </select>
+                  {runtimeTargetsLoading&&<p className="form-help" role="status">{tr("正在读取当前项目与协议的已批准目标。文件选择会保留。","Loading approved targets for this project and protocol. Selected files are retained.")}</p>}
+                  {runtimeTargetsError&&<p className="upload-error" role="alert">{tr("测试目标加载失败，请重试。","Could not load test targets. Retry to continue.")} {runtimeTargetsError}</p>}
+                  {runtimeTargetSelectionChanged&&<p className="upload-error" role="status">{tr("之前选择的目标已失效或登记内容已改变，请重新明确选择；没有自动切换到演示接口。","The previous target is unavailable or its registration changed. Choose again explicitly; no demo service was selected automatically.")}</p>}
+                  {selectedBackendTarget?.kind==="registered"&&<p className="form-help">{tr("卖家测试部署；绑定上传摘要","Seller staging; approved upload digest")}: <code title={selectedBackendTarget.frontendBundleDigest}>{selectedBackendTarget.frontendBundleDigest.slice(0,12)}…</code> · {tr("登记修订","Registration revision")}: {selectedBackendTarget.registrationRevision} · {tr("有效至","Expires")}: {selectedBackendTarget.expiresAt}</p>}
+                  {selectedBackendTarget?.kind==="fixture"&&<p className="form-help">{tr("这是虚构演示接口，不是卖家的实际部署。此选择将与本次文件上传一起保存。","This is a synthetic demo service, separate from the seller's deployment. The selection is saved with this upload.")}</p>}
+                  {!runtimeTargetsLoading&&!runtimeTargetsError&&!runtimeTargets.some(target=>target.kind==="registered")&&<p className="form-help">{tr("当前项目还没有可用的卖家测试部署。","No approved seller staging deployment is currently available for this project.")}</p>}
+                  <p className="form-help">{tr("使用自己的后端：下载当前项目的接口规范，在测试环境实现，再由平台运营者审核登记。批准后才会出现在列表；上传文件不能证明远端部署的构建来源。","To use your backend, download this project's HTTP contract, implement it in staging and obtain operator approval. It appears here only after approval. Uploaded files do not attest the remote deployment's build provenance.")}</p>
+                  <button type="button" className="subtle-button" disabled={!!busy||runtimeTargetsLoading} onClick={()=>setRuntimeTargetRefresh(value=>value+1)}><RefreshCw size={12}/>{runtimeTargetsError?tr("重试加载目标","Retry target loading"):tr("刷新可用目标","Refresh available targets")}</button>
+                  <button type="button" className="subtle-button" disabled={!!busy} onClick={downloadRuntimeContract}><ArrowDownToLine size={12}/>{tr("下载本项目接口规范","Download project HTTP contract")}</button>
+                </div>}
                 <label className="sr-only" htmlFor="deliveryFiles">{tr("选择交付文件", "Choose delivery files")}</label><input id="deliveryFiles" ref={fileInputRef} type="file" accept=".html,.css,.png,.jpg,.jpeg,.webp" multiple disabled={!canManageDelivery || !!busy} onChange={event => { setPendingFiles(Array.from(event.target.files ?? [])); setUploadError(""); }} />
                 <input id="deliveryFolder" className="sr-only" ref={folderInputRef} type="file" multiple disabled={!canManageDelivery || !!busy} {...({webkitdirectory:""} as Record<string,string>)} onChange={event => {setPendingFiles(Array.from(event.target.files ?? [])); setUploadError("");}}/><button type="button" className="subtle-button" disabled={!canManageDelivery || !!busy} onClick={() => folderInputRef.current?.click()}>{tr("选择项目文件夹", "Choose project folder")}</button>
                 {pendingFiles.length > 0 && <div className="pending-file-selection"><div><strong>{tr(`${pendingFiles.length} 个待提交文件`, `${pendingFiles.length} selected files`)}</strong><button type="button" className="text-button" disabled={!!busy} onClick={() => { setPendingFiles([]); setUploadError(""); if (fileInputRef.current) fileInputRef.current.value = "";
         if (folderInputRef.current) folderInputRef.current.value = ""; }}>{tr("清空选择", "Clear selection")}</button></div><ul>{pendingFiles.map((file, index) => <li key={`${file.name}-${index}`}><code>{file.webkitRelativePath || file.name}</code><span>{Math.ceil(file.size / 1024)} KiB</span></li>)}</ul></div>}
                 {uploadError && <p className="upload-error" role="alert">{uploadError}</p>}
                 {delivery && <p className="upload-replacement-note">{tr("新文件将替换整份当前交付；旧核查与验收同意会失效。", "These files replace the entire delivery. The previous review and acceptance will no longer apply.")}</p>}
-                <button type="button" className="button primary upload-submit" disabled={!canManageDelivery || !pendingFiles.length || !!busy} onClick={uploadDelivery}>{busy === "upload" ? <LoaderCircle size={15} className="spin" /> : <Upload size={15} />}{delivery ? tr("替换文件并重新核查", "Replace files & run fresh checks") : tr("保存并核查交付", "Save & check delivery")}</button>
+                <button type="button" className="button primary upload-submit" disabled={!canManageDelivery || !pendingFiles.length || !!busy || !!runtimePlan&&(runtimeTargetsLoading||!!runtimeTargetsError||!selectedBackendTargetId)} onClick={uploadDelivery}>{busy === "upload" ? <LoaderCircle size={15} className="spin" /> : <Upload size={15} />}{delivery ? tr("替换文件并重新核查", "Replace files & run fresh checks") : tr("保存并核查交付", "Save & check delivery")}</button>
                 {!canManageDelivery && !captured && !voided && !closedUnpaid && <p className="form-help">{quote?.status === "draft" || !quote ? tr("先创建项目并锁定标准，即可上传核查。", "Create a project and lock its criteria to upload and review.") : collaboration?.stage === "submitted" ? tr("此版本已提交，等待买家验收；买家退回后可上传修订版。", "This version is submitted. Wait for buyer review; upload a revision after changes are requested.") : collaboration?.stage === "accepted" ? tr("此版本已被买家接受，不能再替换。", "The buyer accepted this version; it can no longer be replaced.") : tr("当前交付已锁定；请先处理待确认的付款状态。", "The delivery is locked. Resolve the pending payment state first.")}</p>}
               </details>}
               {(!customView || sampleRoleplay) && !buyer && <div className="demo-quick-deliveries no-print"><p>{roleplay ? tr("保存样例时自动核查，再填写说明提交。也可上传自己的文件。", "Save and check a sample, then submit a note. You can also upload your files.") : tr("旧版内置样例：卖家端准备交付，买家端验收。", "Older built-in sample: prepare as seller, accept as buyer.")}</p><div className="variant-options">
@@ -1328,7 +1402,7 @@ export default function Home() {
                   onRun={checkBrowserBehavior} onCancel={() => {if (!browserCheckSavePending.current) browserCheckController.current?.abort();}}/>
                 <BusinessChecksPanel key={`business-${delivery?.id ?? "empty"}`} language={language} count={customProject?.businessChecks?.length ?? 0} report={businessReport} enabled={canObserveBrowser && !busy} busy={busy === "business-check"} progress={businessCheckProgress} onRun={checkBusinessContent} onCancel={() => {if (!businessCheckSavePending.current) businessCheckController.current?.abort();}} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked && !busy ? (criterionId, comment) => prepareFeedback({deliveryId: delivery!.id, criterionId, comment}) : undefined}/>
                 {busy === "business-check-save" && <p className="layout-check-source" role="status">{tr("正在保存业务内容核对…", "Saving business content observations…")}</p>}
-                {delivery&&runtimePlan&&<RuntimeCheckPanel language={language} deliveryId={delivery.id} plan={runtimePlan} targetId={delivery.backendTargetId} deliveryDigest={delivery.runtimeDeliveryDigest} report={runtimeReport} pending={!!delivery.runtimeRun&&Date.parse(delivery.runtimeRun.expiresAt)>Date.now()} busy={busy==="runtime-check"} enabled={!!canObserveBrowser&&!busy} onRun={checkRuntimeBackend} onPrepareFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?(criterionId,comment)=>prepareFeedback({deliveryId:delivery.id,criterionId,comment}):undefined}/>}
+                {delivery&&runtimePlan&&<RuntimeCheckPanel language={language} deliveryId={delivery.id} plan={runtimePlan} targetId={delivery.backendTargetId} target={runtimeTargets.find(target=>target.id===delivery.backendTargetId)} registration={delivery.runtimeRegistration} deliveryDigest={delivery.runtimeDeliveryDigest} report={runtimeReport} pending={!!delivery.runtimeRun&&Date.parse(delivery.runtimeRun.expiresAt)>Date.now()} busy={busy==="runtime-check"} enabled={!!canObserveBrowser&&!busy} onRun={checkRuntimeBackend} onPrepareFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?(criterionId,comment)=>prepareFeedback({deliveryId:delivery.id,criterionId,comment}):undefined}/>}
                 {delivery && <EvidenceHistoryPanel key={`history-${delivery.id}`} delivery={delivery} language={language} acceptedSnapshotId={collaboration?.acceptance?.evidenceSnapshotId}/>}
                 {busy === "browser-check-save" && <p className="layout-check-source" role="status">{tr("正在保存链接行为与资源观察…", "Saving link behavior and resource observations…")}</p>}
               </div>

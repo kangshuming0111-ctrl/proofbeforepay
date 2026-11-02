@@ -11,7 +11,8 @@ import { createRoleplayDelivery, isDemoRoleplay, isOwnerRoleplay } from "@/lib/p
 import { issueInvitation, proofActor, proofResponse, readProofCase, saveProofCase } from "@/lib/proof-store";
 import { authorizeOrder, captureAuthorization, createAuthorizationOrder, reconcileProofPayment, reviewProof, voidAuthorization } from "@/lib/providers";
 import { body, handle, HttpError, json, providerEnv } from "@/lib/server";
-import { runtimeTarget, runtimeDeliveryDigest, savedRuntimePlan } from "@/lib/runtime-project";
+import { runtimeDeliveryDigest, savedRuntimePlan } from "@/lib/runtime-project";
+import {resolveUploadRuntimeTarget} from "@/lib/server-runtime-targets";
 export const dynamic = "force-dynamic";
 
 function log(quote: ProofQuote, kind: ProofEvent["kind"], deliveryId?: string): ProofQuote {
@@ -95,6 +96,7 @@ export async function POST(request: Request, context: {params: Promise<{id: stri
         return response();
       }
       if (action === "delivery") {
+        if(Object.keys(input).some(key=>!["files","variant","expectedDeliveryId","reviewRules","backendTargetId"].includes(key)))throw new HttpError(400,"Delivery uploads do not accept backend URLs, scripts, credentials or client registration snapshots.");
         requireExpectedDelivery(quote, input);
         if (input.reviewRules !== undefined && typeof input.reviewRules !== "boolean") throw new HttpError(400, "Choose whether to run the delivery's rule checks with a boolean flag.");
         const sequence = quote.proof.audit.filter(event => event.kind === "delivery_submitted").length + 1;
@@ -110,10 +112,11 @@ export async function POST(request: Request, context: {params: Promise<{id: stri
         }
         const backendPlan=savedRuntimePlan(quote);
         if (backendPlan) {
-          const target=runtimeTarget(input.backendTargetId);
-          if((target.protocol??"booking-http-v1")!==backendPlan.protocol)throw new HttpError(400,"Choose a test backend matching the agreed protocol.");
+          const digest=await runtimeDeliveryDigest(delivery.files);
+          const {target,registration}=resolveUploadRuntimeTarget(quote,input.backendTargetId,digest);
           delivery.backendTargetId = target.id;
-          delivery.runtimeDeliveryDigest = await runtimeDeliveryDigest(delivery.files);
+          delivery.runtimeDeliveryDigest = digest;
+          if(registration)delivery.runtimeRegistration=registration;
         } else if (input.backendTargetId !== undefined) throw new HttpError(400,"A backend target requires a buyer-confirmed backend check plan.");
         const replaced = quote.proof.collaboration ? prepareReplacement(quote, delivery)
           : {...quote, proof: {...quote.proof, delivery, review: undefined, acceptedAt: undefined, acceptedDeliveryId: undefined, acceptedEvidenceSnapshotId: undefined, manualChecks: undefined}};

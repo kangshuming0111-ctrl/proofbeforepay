@@ -4,6 +4,7 @@ import { assertStaticPath, decodeRasterDataUrl, resolveStaticReference, STATIC_R
 import { confirmCoverage, coverageCriteria, validateSavedCoverage } from "./requirement-coverage.ts";
 import { parseBusinessChecks, validateSavedBusinessChecks } from "./business-checks.ts";
 import { parseRuntimePlan } from "./runtime-project.ts";
+import { inspectHtmlSource as inspectHtml } from "./html-source-inspection.ts";
 
 const HTML_NAME = /\.html$/iu;
 const LOCAL_TARGET = /^([^#]+\.html)(?:#([A-Za-z0-9_][A-Za-z0-9_.:-]{0,127}))?$/iu;
@@ -143,158 +144,6 @@ export function validateStaticFiles(value: unknown): Record<string, string> {
   return files;
 }
 
-type Tag = { name: string; closing: boolean; selfClosing: boolean; attributes: Map<string, string>; start: number; end: number; valid: boolean };
-type Element = { tag: Tag; inBody: boolean };
-type Anchor = { tag: Tag; end: number; text: string; valid: boolean };
-type HtmlInspection = { valid: boolean; title?: string; anchors: Anchor[]; elements: Element[]; styles: string[]; ambiguous: boolean };
-const VOID = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"]);
-const RAW = new Set(["script", "style", "textarea", "xmp", "iframe", "noembed", "noframes", "plaintext"]);
-const BLOCKED = new Set(["template", "svg", "math", "noscript"]);
-
-function entities(value: string): { text: string; valid: boolean } {
-  let valid = true;
-  const named: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " " };
-  const decoded = value.replace(/&(?:#(?:x[0-9a-f]+|\d+)|[a-z][a-z0-9]*);?/giu, entity => {
-    if (!entity.endsWith(";")) { valid = false; return entity; }
-    const key = entity.slice(1, -1);
-    if (key.startsWith("#")) {
-      const number = key[1]?.toLowerCase() === "x" ? parseInt(key.slice(2), 16) : Number(key.slice(1));
-      if (!Number.isInteger(number) || number < 32 || number > 0x10ffff || number >= 0xd800 && number <= 0xdfff) { valid = false; return entity; }
-      return String.fromCodePoint(number);
-    }
-    if (Object.hasOwn(named, key)) return named[key];
-    valid = false;
-    return entity;
-  });
-  return { text: decoded, valid };
-}
-
-/** Quote-aware tokenization prevents '>' in an attribute from creating fake tags. */
-function tagAt(html: string, start: number): Tag | undefined {
-  const prefix = /^<(\/)?([A-Za-z][A-Za-z0-9:-]*)\b/u.exec(html.slice(start));
-  if (!prefix) return;
-  let quote = "";
-  let end = start + prefix[0].length;
-  for (; end < html.length; end++) {
-    const char = html[end];
-    if (quote) { if (char === quote) quote = ""; }
-    else if (char === '"' || char === "'") quote = char;
-    else if (char === ">") break;
-  }
-  if (end >= html.length || quote) return;
-  const closing = !!prefix[1];
-  const name = prefix[2].toLowerCase();
-  const raw = html.slice(start + prefix[0].length, end);
-  const selfClosing = /\/\s*$/u.test(raw);
-  let rest = selfClosing ? raw.replace(/\/\s*$/u, "") : raw;
-  const attributes = new Map<string, string>();
-  let valid = !closing || !rest.trim();
-  while (rest.trim()) {
-    const attribute = /^\s+([^\s"'<>/=]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/u.exec(rest);
-    if (!attribute) { valid = false; break; }
-    const key = attribute[1].toLowerCase();
-    const value = entities(attribute[2] ?? attribute[3] ?? attribute[4] ?? "");
-    if (attributes.has(key) || !value.valid) valid = false;
-    attributes.set(key, value.text);
-    rest = rest.slice(attribute[0].length);
-  }
-  return { name, closing, selfClosing, attributes, start, end: end + 1, valid };
-}
-
-function inspectHtml(html: string): HtmlInspection {
-  const anchors: Anchor[] = [];
-  const elements: Element[] = [];
-  const styles: string[] = [];
-  const stack: string[] = [];
-  const blocked: string[] = [];
-  let activeAnchor: Anchor | undefined;
-  let ambiguous = false;
-  let doctype = 0;
-  let titleCount = 0;
-  let title: string | undefined;
-  let bodyCount = 0;
-  let bodyClosed = false;
-  let bodyContent = "";
-  let index = 0;
-  while (index < html.length) {
-    if (html.startsWith("<!--", index)) {
-      const end = html.indexOf("-->", index + 4);
-      if (end < 0) { ambiguous = true; break; }
-      index = end + 3;
-      continue;
-    }
-    if (html[index] !== "<") {
-      const next = html.indexOf("<", index);
-      const end = next < 0 ? html.length : next;
-      if (!blocked.length) {
-        const raw = html.slice(index, end);
-        if (stack.includes("body")) bodyContent += raw;
-        if (activeAnchor) {
-          const content = entities(raw);
-          activeAnchor.text += content.text;
-          activeAnchor.valid &&= content.valid;
-        }
-      }
-      index = end;
-      continue;
-    }
-    const declaration = /^<!doctype\s+html\s*>/iu.exec(html.slice(index));
-    if (declaration) {
-      if (!blocked.length) { doctype++; if (bodyCount || titleCount || stack.length) ambiguous = true; }
-      index += declaration[0].length;
-      continue;
-    }
-    const tag = tagAt(html, index);
-    if (!tag) { ambiguous = true; break; }
-    index = tag.end;
-    if (!tag.closing && (RAW.has(tag.name) || tag.name === "title")) {
-      const close = new RegExp(`</${tag.name}\\s*>`, "giu");
-      close.lastIndex = index;
-      const found = close.exec(html);
-      if (!found) { ambiguous = true; break; }
-      if (!blocked.length && tag.name === "title") {
-        titleCount++;
-        const content = entities(html.slice(index, found.index));
-        title = html.slice(tag.start, close.lastIndex);
-        if (bodyCount || !content.valid || !content.text.trim() || /</u.test(content.text)) ambiguous = true;
-      }
-      if (!blocked.length && tag.name === "style") styles.push(html.slice(index, found.index));
-      if (!tag.valid) ambiguous = true;
-      index = close.lastIndex;
-      continue;
-    }
-    if (blocked.length) {
-      if (!tag.closing && tag.name === blocked[0]) blocked.push(tag.name);
-      else if (tag.closing && tag.name === blocked[blocked.length - 1]) blocked.pop();
-      continue;
-    }
-    if (!tag.closing && BLOCKED.has(tag.name)) { blocked.push(tag.name); continue; }
-    if (!tag.valid || tag.selfClosing && !VOID.has(tag.name)) ambiguous = true;
-    if (tag.name === "base") ambiguous = true; // A base URL changes the meaning of local hrefs.
-    if (tag.closing) {
-      if (stack.pop() !== tag.name) ambiguous = true;
-      if (tag.name === "body") bodyClosed = true;
-      if (tag.name === "a") {
-        if (!activeAnchor) ambiguous = true;
-        else { activeAnchor.end = tag.end; anchors.push(activeAnchor); activeAnchor = undefined; }
-      }
-      if (stack.includes("body")) bodyContent += html.slice(tag.start, tag.end);
-    } else {
-      const inBody = stack.includes("body");
-      elements.push({ tag, inBody });
-      if (tag.name === "body") { bodyCount++; if (bodyClosed) ambiguous = true; }
-      else if (inBody) bodyContent += html.slice(tag.start, tag.end);
-      if (tag.name === "a" && inBody) {
-        if (activeAnchor) ambiguous = true;
-        activeAnchor = { tag, end: tag.end, text: "", valid: tag.valid };
-      }
-      if (!VOID.has(tag.name)) stack.push(tag.name);
-    }
-  }
-  if (stack.length || blocked.length || activeAnchor) ambiguous = true;
-  return { valid: !ambiguous && doctype === 1 && titleCount === 1 && bodyCount === 1 && bodyClosed && !!bodyContent.trim(), title, anchors, elements, styles, ambiguous };
-}
-
 /** Deterministic source references only. This never fetches or executes a resource. */
 export function inspectStaticResources(files: Record<string, string>): ProofResourceReport {
   const findings: ProofResourceReport["findings"] = [], seen = new Set<string>();
@@ -332,6 +181,7 @@ export function inspectStaticResources(files: Record<string, string>): ProofReso
     if (kind === "css") { css(from, files[from]); continue; }
     if (kind !== "html") continue;
     const html = inspectHtml(files[from]);
+    if (html.ambiguous) finding({ from, reference: "[HTML source needs direct inspection; recovered or ambiguous markup may change resource references]", kind: "uninspectable" });
     for (const { tag } of html.elements) {
       if (!tag.valid) continue;
       if (tag.name === "link" && tag.attributes.get("rel")?.toLowerCase().split(/\s+/u).includes("stylesheet")) reference(from, tag.attributes.get("href") ?? "", "css");
@@ -365,10 +215,12 @@ export function createUploadedDelivery(value: unknown, rawProject: StaticProject
     const page = inspected.get(file);
     return {
       id: `evidence-page-${index + 1}`, criterionId: `page-${index + 1}`, file,
-      excerpt: snippet(page?.title ?? files[file] ?? ""), finding: page?.valid ? "pass" : "fail",
+      excerpt: snippet(page?.title ?? files[file] ?? ""), finding: page?.finding ?? "fail",
       explanation: page?.valid
         ? message(language, "已找到此独立文档的 doctype、非空 title 与 body。仅证明源码文档存在，不证明内容完整、视觉质量或功能可用。", "Found an independent document with a doctype, nonempty title and body. This proves source-document presence, not content completeness, visual quality or working functionality.")
-        : message(language, `${file} 未交付或未通过保守 HTML 结构检查；请检查 doctype、title、body 及含糊标记。`, `${file} is absent or did not pass conservative HTML structure checks. Check its doctype, title, body and ambiguous markup.`),
+        : page?.finding === "needs_human"
+          ? message(language, `${file} 包含需要直接核查的 HTML 解析修复、含糊结构或仅有惰性内容。不能据此断言页面不合格，也不能自动通过；请查看原始源码与实际页面。`, `${file} contains parser recovery, ambiguous structure or only inert content that requires direct inspection. This is uncertain source evidence, not an established failure or an automatic pass. Inspect the original source and rendered page.`)
+          : message(language, `${file} 未交付，或缺少 HTML doctype、非空 title 或 body 内容。此结果仅针对源码文档存在性。`, `${file} is absent or lacks an HTML doctype, nonempty title or body content. This result concerns source-document presence only.`),
     };
   });
   (project.links ?? (project.link ? [project.link] : [])).forEach((requirement, index) => {
@@ -383,14 +235,20 @@ export function createUploadedDelivery(value: unknown, rawProject: StaticProject
     const resolved = rawHref && resolveStaticReference(requirement.from, rawHref);
     const href = resolved ? `${resolved}${fragment ?? ""}` : undefined;
     const hiddenAnchor = anchor?.tag.attributes.has("hidden") || anchor?.tag.attributes.has("inert");
-    const passed = !!source?.valid && !!targetPage?.valid && !!anchor?.valid && !hiddenAnchor && href === requirement.to && (!target[2] || destinations.length === 1);
+    const passed = !!source?.valid && !!targetPage?.valid && !!anchor?.valid && !hiddenAnchor && href === requirement.to && (!target[2] || destinations.length === 1 && !destinations[0].hidden);
+    const failed = !source || !targetPage || source.finding === "fail" || targetPage.finding === "fail"
+      || matches.length > 1 || (!matches.length && source.valid)
+      || !!anchor && (!anchor.tag.valid || !!hiddenAnchor || href !== requirement.to)
+      || !!target[2] && (destinations.length > 1 || !destinations.length && targetPage.valid || destinations.some(element => !element.tag.valid));
     const sourceHtml = files[requirement.from] ?? "";
     const criterionId = index === 0 ? "link" : `link-${index + 1}`;
     evidence.push({ id: `evidence-${criterionId}`, criterionId, file: requirement.from,
-      excerpt: snippet(anchor ? sourceHtml.slice(anchor.tag.start, anchor.end) : sourceHtml), finding: passed ? "pass" : "fail",
+      excerpt: snippet(anchor ? sourceHtml.slice(anchor.tag.start, anchor.end) : sourceHtml), finding: passed ? "pass" : failed ? "fail" : "needs_human",
       explanation: passed
         ? message(language, `实际 a 链接的文字与 ${requirement.to} 匹配${target[2] ? "，目标文件中有唯一对应 id" : "，目标页面已交付"}。只证明源码本地目标存在；未测试点击、脚本、外部服务或完整功能。`, `An actual anchor has the agreed text and ${requirement.to} destination${target[2] ? ", with one matching target id" : ", with a delivered target page"}. This proves a local source target exists, not rendered clicks, scripts, external services or complete functionality.`)
-        : message(language, "未能无歧义地确认约定文字的实际 a 链接及唯一有效本地目标。缺页、重复文字/id、不匹配 href 或含糊 HTML 都不能算通过。", "Could not unambiguously confirm the agreed anchor text and one valid local target. Missing pages, duplicate labels/ids, a different href or ambiguous HTML cannot pass."),
+        : failed
+          ? message(language, "实际源码未满足约定链接：缺页、缺少实际链接/目标、重复文字/id、无效属性或 href 不匹配。", "The source does not satisfy the agreed link: a page, actual anchor or target is missing, labels/ids are duplicated, attributes are invalid or the href differs.")
+          : message(language, "解析修复、惰性状态或 base 等含糊结构使源码链接无法可靠确认；请直接核查。未自动通过，也未断言目标错误。", "Parser recovery, inert state or ambiguous structure such as a base URL prevents a reliable source-link conclusion. Direct inspection is required; this is neither an automatic pass nor an established wrong destination."),
     });
   });
   const supportFile = Object.keys(files).find(name => name.endsWith(".css")) ?? "index.html";

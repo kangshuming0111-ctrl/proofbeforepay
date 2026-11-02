@@ -143,7 +143,21 @@ def main():
     api.checked("HTTP creation refuses unconfirmed/forged/unsupported/out-of-scope backend plans without creating records")
 
     path, quote_path = chain.create_shared(api, buyer, seller, specification("Synthetic runtime lifecycle"))
+    buyer_targets = api.ok(buyer, path + "/runtime-targets")
+    assert buyer_targets == api.ok(seller, path + "/runtime-targets")
+    assert {item["id"] for item in buyer_targets["targets"]} == {"lab-flawed", "lab-fixed"}
+    assert all(item["kind"] == "fixture" and "baseUrl" not in item for item in buyer_targets["targets"])
+    contract = api.ok(seller, path + "/runtime-contract")
+    assert contract["projectId"] == path.split("/")[-1] and contract["protocol"] == "booking-http-v1"
+    assert contract["registration"]["required"] is True and contract["execution"]["autoAcceptance"] is False
+    assert len(contract["steps"]) == 8 and contract["registration"]["deploymentAttestation"] is False
+    for suffix in ("/runtime-targets", "/runtime-contract"):
+        api.reject(outsider, path + suffix, codes=(404,))
+        api.reject(None, path + suffix, codes=(401, 404))
+    api.checked("Authenticated member-only target descriptors omit endpoints; exact project contract downloads without granting outsiders access")
     before_upload = api.ok(buyer, quote_path)["quote"]
+    for extra in ({"backendUrl": "https://caller-url.synthetic.example"}, {"runtimeRegistration": {"id": "caller-forged"}}, {"target": {"baseUrl": "https://caller-url.synthetic.example"}}):
+        api.reject(seller, path + "/delivery", {"files": files(), "expectedDeliveryId": None, "reviewRules": True, "backendTargetId": "lab-fixed", **extra}, codes=(400,))
     api.reject(seller, path + "/delivery", {"files": files(), "expectedDeliveryId": None, "reviewRules": True, "backendTargetId": "unregistered"}, codes=(400,))
     assert_unchanged(api, buyer, quote_path, before_upload)
     quote = chain.quote_of(api.ok(seller, path + "/delivery", {"files": files(), "expectedDeliveryId": None, "reviewRules": True, "backendTargetId": "lab-fixed"}), "seller")
