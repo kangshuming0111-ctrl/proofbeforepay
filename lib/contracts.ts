@@ -94,6 +94,7 @@ export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"
   runtimeReport?: import("./runtime-checks").RuntimeCheckReport;
   runtimeHistory?: import("./runtime-checks").RuntimeCheckReport[];
   runtimeRun?: {id:string;deliveryId:string;deliveryDigest:string;targetId:string;startedAt:string;expiresAt:string};
+  evidenceReservation?: {runtimeRunId?:string;reportBytes:number;acceptanceBytes:number};
 };
 export type ProofReview = { deliveryId: string; reviewedAt: string; mode: "demo" | "live"; summary: string };
 export type ProofRole = "buyer" | "seller";

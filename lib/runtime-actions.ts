@@ -2,6 +2,7 @@ import type {ProofQuote,ProofRole} from "./contracts.ts";
 import {DomainError} from "./domain.ts";
 import {savedRuntimePlan,runtimeTarget,runtimeReportsFor} from "./runtime-project.ts";
 import {validateRuntimeReport,type RuntimeCheckReport} from "./runtime-checks.ts";
+import {finishRuntimeEvidenceReservation,reserveRuntimeEvidence} from "./evidence-budget.ts";
 
 export function beginRuntimeRun(quote:ProofQuote,role:ProofRole,input:Record<string,unknown>,digest:string,now=Date.now()):ProofQuote {
   if(role!=="buyer"&&role!=="seller")throw new DomainError("Only project members can start backend checks.",403);
@@ -11,13 +12,13 @@ export function beginRuntimeRun(quote:ProofQuote,role:ProofRole,input:Record<str
   if(quote.status!=="approved"||quote.proof.paymentOperation||["captured","voided","closed_unpaid"].includes(quote.proof.paymentState))throw new DomainError("This workflow is not open for backend tests.",409);
   if(input.previousReportId!==(delivery.runtimeReport?.id??null))throw new DomainError("The backend report changed. Reload before starting.",409);
   if(runtimeReportsFor(delivery).length>=20)throw new DomainError("Backend report history is full; prior runs were preserved.",409);
-  runtimeTarget(delivery.backendTargetId);
+  if((runtimeTarget(delivery.backendTargetId).protocol??"booking-http-v1")!==plan.protocol)throw new DomainError("The declared backend target does not support the locked test protocol.",409);
   const pending=delivery.runtimeRun;
   if(pending && Date.parse(pending.expiresAt)>now)throw new DomainError("A backend run is already pending. Refresh after it finishes.",409);
   if(pending&&(pending.deliveryId!==delivery.id||pending.deliveryDigest!==digest||pending.targetId!==delivery.backendTargetId))throw new DomainError("The pending backend run binding is inconsistent.",409);
   const next=structuredClone(quote);
   next.proof.delivery!.runtimeRun={id:pending?.id??crypto.randomUUID(),deliveryId:delivery.id,deliveryDigest:digest,targetId:delivery.backendTargetId,startedAt:pending?.startedAt??new Date(now).toISOString(),expiresAt:new Date(now+45_000).toISOString()};
-  return next;
+  return reserveRuntimeEvidence(next,next.proof.delivery!.runtimeRun!.id);
 }
 export function finishRuntimeRun(quote:ProofQuote,value:RuntimeCheckReport):ProofQuote {
   const delivery=quote.proof.delivery,run=delivery?.runtimeRun,plan=savedRuntimePlan(quote);
@@ -27,6 +28,5 @@ export function finishRuntimeRun(quote:ProofQuote,value:RuntimeCheckReport):Proo
   if(history.some(row=>row.id===report.id))throw new DomainError("A backend run cannot replace a saved report.",409);
   const next=structuredClone(quote);
   next.proof.delivery!.runtimeReport=report;next.proof.delivery!.runtimeHistory=[...history,report];delete next.proof.delivery!.runtimeRun;
-  if(new TextEncoder().encode(JSON.stringify(next.proof.delivery)).byteLength>2*1024*1024)throw new DomainError("Saved delivery evidence is full; the pending run was retained for recovery.",409);
-  return next;
+  return finishRuntimeEvidenceReservation(next,run.id,report);
 }

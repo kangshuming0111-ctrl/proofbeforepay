@@ -47,7 +47,10 @@ import "./requirements.css";
 import "./requirement-coverage.css";
 import "./smooth-flow.css";
 import "./chain-flow.css";
-import { RuntimeCheckPanel, RuntimeAcceptanceDecision } from "./components/RuntimeCheckPanel";
+import { RuntimeCheckPanel, RuntimeAcceptanceDecision, currentRuntimeReport } from "./components/RuntimeCheckPanel";
+import { RuntimePlanEditor } from "./components/RuntimePlanEditor";
+import { suggestBookingPolicy, type BookingPartyPolicy } from "@/lib/booking-policy";
+import type { RuntimeCheckPlan } from "@/lib/runtime-checks";
 import { RUNTIME_TARGETS } from "@/lib/runtime-project";
 import "./sandbox-login-help.css";
 
@@ -129,6 +132,7 @@ export default function Home() {
   const [businessExceptionReason, setBusinessExceptionReason] = useState("");
   const [runtimeEnabled,setRuntimeEnabled]=useState(false);
   const [runtimeConfirmed,setRuntimeConfirmed]=useState(false);
+  const [runtimeProtocol,setRuntimeProtocol]=useState<RuntimeCheckPlan["protocol"]>("booking-http-v1");
   const [runtimeCriterionId,setRuntimeCriterionId]=useState("");
   const [backendTargetId,setBackendTargetId]=useState("lab-flawed");
   const [runtimeReason,setRuntimeReason]=useState("");
@@ -182,6 +186,10 @@ export default function Home() {
   const businessDraftKey = JSON.stringify(businessDrafts);
   const coverageDraftKey = JSON.stringify(coverageRows);
   const businessDraftsReady = businessDraftReady(businessDrafts, coverageUnits, coverageRows, inputLines(requiredPagesInput));
+  const runtimeSourceUnit=coverageUnits.find(unit=>unit.id===runtimeCriterionId&&coverageRows.some(row=>row.id===unit.id&&row.disposition==="include"));
+  let runtimePolicy:BookingPartyPolicy|undefined;
+  try {if(runtimeSourceUnit)runtimePolicy=suggestBookingPolicy({start:runtimeSourceUnit.start,end:runtimeSourceUnit.end,excerpt:runtimeSourceUnit.text});}catch{/* Unsupported clauses remain for clarification. */}
+  const runtimeDraftReady=!!runtimeSourceUnit&&(runtimeProtocol==="booking-http-v1"||!!runtimePolicy);
 
   const proof = quote?.proof;
   const collaboration = proof?.collaboration;
@@ -235,11 +243,14 @@ export default function Home() {
   const businessDecisionReady = !businessChecksConfigured || !!businessReport && (!businessHasExceptions || businessExceptionReason.trim().length >= 10);
   const businessDecision = businessChecksConfigured && businessReport ? {reportId: businessReport.id, ...(businessHasExceptions ? {exceptionReason: businessExceptionReason.trim()} : {})} : undefined;
   const runtimePlan=customProject?.runtimeCheck;
-  const runtimeReport=delivery?.runtimeReport?.deliveryId===delivery?.id?delivery?.runtimeReport:undefined;
+  const runtimeTargets=runtimePlan?RUNTIME_TARGETS.filter(target=>(target.protocol??"booking-http-v1")===runtimePlan.protocol):[];
+  const selectedBackendTargetId=runtimeTargets.some(target=>target.id===backendTargetId)?backendTargetId:runtimeTargets[0]?.id??"";
+  const runtimeReport=delivery&&runtimePlan?currentRuntimeReport(delivery.runtimeReport,delivery.id,runtimePlan,delivery.backendTargetId,delivery.runtimeDeliveryDigest):undefined;
   const runtimeIssues=runtimeReport?.steps.filter(step=>step.outcome!=="observed")??[];
   const runtimeDecisionReady=!runtimePlan || !!runtimeReport && !delivery?.runtimeRun && (!runtimeIssues.length || runtimeAcknowledged && runtimeReason.trim().length>=10);
   const runtimeDecision=runtimePlan&&runtimeReport?{reportId:runtimeReport.id,...(runtimeIssues.length?{exceptionReason:runtimeReason.trim(),acknowledgedSteps:runtimeAcknowledged?runtimeIssues.map(step=>step.id):[]}:{})}:undefined;
-  useEffect(()=>setRuntimeConfirmed(false),[projectSummary,runtimeCriterionId,runtimeEnabled]);
+  useEffect(()=>setRuntimeConfirmed(false),[projectSummary,runtimeCriterionId,runtimeEnabled,runtimeProtocol,coverageDraftKey]);
+  useEffect(()=>{setBackendTargetId(delivery?.backendTargetId??RUNTIME_TARGETS.find(target=>(target.protocol??"booking-http-v1")===runtimePlan?.protocol)?.id??"");},[quote?.id,delivery?.id,delivery?.backendTargetId,runtimePlan?.protocol]);
   const canAcceptDelivery = runtimeDecisionReady && buyer && collaboration?.stage === "submitted" && deliveryUnlocked && reviewCurrent && evidenceComplete && !failed && allHumanChecked && deliveryConsent && businessDecisionReady;
   const canCapture = buyer && (!collaboration || collaboration.stage === "accepted") && authorized && !pendingVoid && (pendingCapture || (!expired && reviewCurrent && evidenceComplete && !failed && allHumanChecked && consent && (acceptedCurrent || businessDecisionReady && runtimeDecisionReady)));
   const aiMode = quote?.aiMode ?? (projectMode === "demo" || customRoleDemo ? "demo" : config?.aiMode);
@@ -660,8 +671,9 @@ export default function Home() {
   function fillBackendExample() {
     fillNoodleBusinessExample();
     setProjectTitle(tr("面馆网站与预约后端验收","Noodle website and booking backend acceptance"));
-    setProjectSummary(tr("英文菜单标明 Beef noodles AUD 18\n中文菜单标明牛肉面 AUD 18\n到店说明展示电话 +61 3 9000 0000\n预约后端应拒绝错误输入并创建可独立查询的预约且重复请求不重复创建同时冲突请求不改写原记录", "The English menu must show Beef noodles AUD 18\nThe Chinese menu must show 牛肉面 AUD 18\nThe visit page must show phone +61 3 9000 0000\nThe booking backend must reject invalid input and create independently readable bookings while avoiding duplicates on replay and preserving the original record on conflict"));
-    setRuntimeEnabled(true);setRuntimeCriterionId("coverage-4");
+    setProjectSummary(tr("英文菜单标明 Beef noodles AUD 18\n中文菜单标明牛肉面 AUD 18\n到店说明展示电话 +61 3 9000 0000\n每笔预约最多6人", "The English menu must show Beef noodles AUD 18\nThe Chinese menu must show 牛肉面 AUD 18\nThe visit page must show phone +61 3 9000 0000\nEach booking accepts at most 6 people."));
+    setRuntimeEnabled(true);setRuntimeProtocol("booking-http-v2");setRuntimeConfirmed(false);setRuntimeCriterionId("coverage-4");
+    setNotice(tr("已填入每笔最多6人的原始要求及十八步协议草案。请在下一步核对5／6／7人边界并单独确认；尚未创建项目。","The original maximum of 6 people and an eighteen-step draft are filled in. Review the 5/6/7-person boundaries and separately confirm in the next step. No project was created."));
   }
   function nextWorkspaceAction(): {label: string; help: string; action: () => void} {
     if (paymentPending || captured || voided || closedUnpaid || expired) return {
@@ -898,7 +910,7 @@ export default function Home() {
         const pages = inputLines(requiredPagesInput);
         const manualRequirements = inputLines(manualRequirementsInput);
         if (!coverageConfirmed || !coverageReady) throw new Error(tr("请逐条处理原始需求，填写排除理由，并确认范围后再创建。", "Handle every source requirement, give reasons for exclusions, and confirm the scope before creating."));
-        if(runtimeEnabled && (!runtimeConfirmed || !coverageRows.some(row=>row.id===runtimeCriterionId&&row.disposition==="include"))) throw new Error(tr("请单独确认后端协议及对应的纳入要求。","Confirm the backend protocol and its included requirement."));
+        if(runtimeEnabled && (!runtimeConfirmed || !runtimeDraftReady)) throw new Error(tr("请单独确认后端协议及对应的纳入要求。","Confirm the backend protocol and its included requirement."));
         if (businessDrafts.length && (!businessConfirmed || !businessDraftsReady)) throw new Error(tr("请补齐并确认业务内容检查。", "Complete and confirm the business content checks."));
         if (requirementsDraft && !requirementsConfirmed) throw new Error(tr("请先核对原文与最终验收清单，并勾选确认。", "Review the original requirements and final checklist, then confirm them."));
         if (!pages.length || pages.length > 10 || pages.some(file => !isHtmlDeliveryPath(file))) {
@@ -916,7 +928,7 @@ export default function Home() {
         input = { ...input, title: projectTitle.trim(), summary: projectSummary.trim(), amount: projectAmount.trim(), requiredPages: pages, manualRequirements,
           ...(requirementsDraft ? {requirementsDraftId: requirementsDraft.id, confirmRequirements: requirementsConfirmed} : {}),
           coverage: {version: 1, sourceText: projectSummary.trim(), confirmed: coverageConfirmed, decisions: coverageRows.map(row => ({id: row.id, disposition: row.disposition, ...(row.disposition === "exclude" ? {reason: row.reason?.trim()} : {})}))},
-          ...(links.length ? {links} : {}), ...(businessDrafts.length ? {businessChecks: {confirmed: businessConfirmed, items: businessDraftItems(businessDrafts, coverageUnits)}} : {}), ...(runtimeEnabled ? {runtimeCheck:{protocol:"booking-http-v1",criterionId:runtimeCriterionId,confirmed:runtimeConfirmed}} : {}) };
+          ...(links.length ? {links} : {}), ...(businessDrafts.length ? {businessChecks: {confirmed: businessConfirmed, items: businessDraftItems(businessDrafts, coverageUnits)}} : {}), ...(runtimeEnabled ? {runtimeCheck:{protocol:runtimeProtocol,criterionId:runtimeCriterionId,confirmed:runtimeConfirmed,...(runtimeProtocol==="booking-http-v2"?{policy:runtimePolicy}:{})}} : {}) };
       }
       const result = await request<CaseResult>("/api/proofs", "POST", input);
       apply(result.quote, result.role);
@@ -932,7 +944,7 @@ export default function Home() {
     await run("upload", async () => {
       try {
         const files = await readDeliveryUpload(pendingFiles);
-        const result = await request<CaseResult>(`/api/proofs/${quote.id}/delivery`, "POST", { files,...(runtimePlan?{backendTargetId}:{}), expectedDeliveryId: delivery?.id ?? null, reviewRules: true });
+        const result = await request<CaseResult>(`/api/proofs/${quote.id}/delivery`, "POST", { files,...(runtimePlan?{backendTargetId:selectedBackendTargetId}:{}), expectedDeliveryId: delivery?.id ?? null, reviewRules: true });
         apply(result.quote, result.role);
         setPendingFiles([]);
         if (fileInputRef.current) fileInputRef.current.value = "";
@@ -1205,7 +1217,7 @@ export default function Home() {
                           aiAvailable={config?.aiMode === "live"} disabled={!!busy || loading} busy={busy === "business-suggestions"} drafts={businessDrafts}
                           onAnalyze={suggestBusinessChecks} onAdopt={adoptBusinessSuggestion} onOpenEditor={openBusinessEditor}/>
                         <BusinessCheckEditor language={language} units={coverageUnits} decisions={coverageRows} pages={inputLines(requiredPagesInput)} rows={businessDrafts} confirmed={businessConfirmed} disabled={!!busy || loading} onChange={setBusinessDrafts} onConfirm={setBusinessConfirmed}/>
-                        <details className="business-check-editor"><summary>{tr("后端预约协议检查（可选）","Booking backend protocol checks (optional)")}</summary><p>{tr("固定八步：版本声明、错误输入、创建、独立回读、重试、冲突与原记录保持。仅面向已登记的可丢弃测试后端；不运行卖家脚本，不验证邮件。技术标准是你额外确认的检查协议。","Eight fixed steps cover declared revision, invalid input, create, independent readback, replay, conflict and unchanged original. Only registered disposable targets are used; seller scripts and email are not tested. This protocol is your additional technical agreement.")}</p><label><input type="checkbox" checked={runtimeEnabled} onChange={e=>{setRuntimeEnabled(e.target.checked);setRuntimeCriterionId(coverageRows.find(row=>row.disposition==="include")?.id??"");}}/>{tr("添加后端预约协议，卖家需声明所测后端版本","Add backend protocol checks; the seller must declare the tested revision")}</label>{runtimeEnabled&&<label>{tr("对应原始要求","Original requirement")}<select value={runtimeCriterionId} onChange={e=>setRuntimeCriterionId(e.target.value)}>{coverageUnits.filter(unit=>coverageRows.some(row=>row.id===unit.id&&row.disposition==="include")).map(unit=><option key={unit.id} value={unit.id}>{unit.text}</option>)}</select></label>}{runtimeEnabled&&<label><input type="checkbox" checked={runtimeConfirmed} onChange={e=>setRuntimeConfirmed(e.target.checked)}/>{tr("我已阅读并确认将固定八步协议纳入本次验收","I reviewed and confirm the fixed eight-step protocol for this acceptance")}</label>}</details>
+                        <RuntimePlanEditor language={language} enabled={runtimeEnabled} protocol={runtimeProtocol} criterionId={runtimeCriterionId} confirmed={runtimeConfirmed} disabled={!!busy||loading} units={coverageUnits} decisions={coverageRows} policy={runtimePolicy} onEnabledChange={value=>{setRuntimeEnabled(value);setRuntimeCriterionId(coverageRows.find(row=>row.disposition==="include")?.id??"");}} onProtocolChange={setRuntimeProtocol} onCriterionChange={setRuntimeCriterionId} onConfirmedChange={setRuntimeConfirmed}/>
                         <details className="project-advanced-checks"><summary>{tr("补充页面与检查方式（可与开发者一起填写）", "Add pages and checks (with your developer)")}</summary>
                           <label htmlFor="requiredPages">{tr("必须交付的 HTML 页面", "Required HTML pages")}</label><textarea id="requiredPages" value={requiredPagesInput} required rows={3} maxLength={1000} aria-describedby="pages-help" onChange={event => setRequiredPagesInput(event.target.value)} />
                           <p className="form-help" id="pages-help">{tr("默认检查 index.html。可与开发者约定更多页面，每行一个，最多 10 页。", "index.html is checked by default. Agree additional pages with your developer, one per line, up to ten.")}</p>
@@ -1232,7 +1244,7 @@ export default function Home() {
                       <label htmlFor="demoCurrency">{tr("测试币种", "Test currency")}</label><select id="demoCurrency" value={currency} onChange={event => setCurrency(event.target.value as Currency)}><option value="AUD">AUD</option><option value="USD">USD</option></select>
                       <label htmlFor="demoClientName">{tr("客户名称（选填）", "Client name (optional)")}</label><input id="demoClientName" value={clientName} maxLength={100} onChange={event => setClientName(event.target.value)} />
                     </>}
-                    <div className="project-form-actions">{projectMode === "custom" && projectStep === 1 && <button type="button" className="subtle-button" onClick={() => { setProjectStep(0); setError(""); }}>{tr("上一步", "Back")}</button>}<button className="button primary" type="submit" disabled={!!busy || loading || projectMode === "custom" && projectStep === 1 && (!coverageConfirmed || !coverageReady || !!requirementsDraft && !requirementsConfirmed || !!businessDrafts.length && (!businessConfirmed || !businessDraftsReady) || runtimeEnabled && (!runtimeConfirmed||!runtimeCriterionId))}>{busy === "create" ? <LoaderCircle className="spin" size={16} /> : <Plus size={16} />}{projectMode === "custom" && projectStep === 0 ? tr("下一步：验收标准", "Next: acceptance criteria") : projectMode === "custom" ? tr("创建项目", "Create project") : tr("创建内置演示", "Create built-in demo")}<ArrowRight size={15} /></button></div>
+                    <div className="project-form-actions">{projectMode === "custom" && projectStep === 1 && <button type="button" className="subtle-button" onClick={() => { setProjectStep(0); setError(""); }}>{tr("上一步", "Back")}</button>}<button className="button primary" type="submit" disabled={!!busy || loading || projectMode === "custom" && projectStep === 1 && (!coverageConfirmed || !coverageReady || !!requirementsDraft && !requirementsConfirmed || !!businessDrafts.length && (!businessConfirmed || !businessDraftsReady) || runtimeEnabled && (!runtimeConfirmed||!runtimeDraftReady))}>{busy === "create" ? <LoaderCircle className="spin" size={16} /> : <Plus size={16} />}{projectMode === "custom" && projectStep === 0 ? tr("下一步：验收标准", "Next: acceptance criteria") : projectMode === "custom" ? tr("创建项目", "Create project") : tr("创建内置演示", "Create built-in demo")}<ArrowRight size={15} /></button></div>
                   </fieldset>
                 </form>
               </>}
@@ -1249,7 +1261,7 @@ export default function Home() {
               {customView && !buyer && <details className="upload-delivery no-print" open={(!sampleRoleplay && !delivery) || pendingFiles.length > 0 || !!uploadError}>
                 <summary><Upload size={15} /><span className="upload-summary-label">{delivery ? tr("提交替换版本", "Submit a replacement") : tr("上传网站文件或文件夹", "Upload website files or folder")}</span>{delivery && <small>{tr(`${Object.keys(deliveryFiles ?? {}).length} 个已保存文件`, `${Object.keys(deliveryFiles ?? {}).length} saved files`)}</small>}</summary>
                 <p className="upload-help">{tr("保留目录结构，根目录包含 index.html。最多 40 个 HTML/CSS/PNG/JPEG/WebP 文件；文本每个 64 KiB、合计 256 KiB，图片每个 256 KiB、合计 1 MiB。脚本、表单和外部资源不运行。", "Keep the folder structure with index.html at its root. Up to 40 HTML/CSS/PNG/JPEG/WebP files: text 64 KiB each, 256 KiB total; images 256 KiB each, 1 MiB total. Scripts, forms and external resources do not run.")}</p>
-                {runtimePlan&&<label className="runtime-target-choice">{tr("声明本次交付对应的受控测试后端","Declare the controlled backend for this delivery")}<select value={backendTargetId} disabled={!!busy||!canManageDelivery} onChange={e=>setBackendTargetId(e.target.value)}>{RUNTIME_TARGETS.map(target=><option key={target.id} value={target.id}>{target.label} · {target.revision}</option>)}</select><small>{tr("这是独立部署的虚构后端，文件不能证明部署版本；此声明与当前上传一起保存。自有后端需另行注册适配器。","This is a separately deployed fictional backend. Files do not attest deployment; the declaration is saved with this upload. An owned backend needs a separately registered adapter.")}</small></label>}
+                {runtimePlan&&<label className="runtime-target-choice">{tr("声明本次交付对应的受控测试后端","Declare the controlled backend for this delivery")}<select value={selectedBackendTargetId} disabled={!!busy||!canManageDelivery} onChange={e=>setBackendTargetId(e.target.value)}>{runtimeTargets.map(target=><option key={target.id} value={target.id}>{target.label} · {target.revision}</option>)}</select><small>{tr("这是独立部署的虚构后端，文件不能证明部署版本；此声明与当前上传一起保存。自有后端需另行注册适配器。","This is a separately deployed fictional backend. Files do not attest deployment; the declaration is saved with this upload. An owned backend needs a separately registered adapter.")}</small></label>}
                 <label className="sr-only" htmlFor="deliveryFiles">{tr("选择交付文件", "Choose delivery files")}</label><input id="deliveryFiles" ref={fileInputRef} type="file" accept=".html,.css,.png,.jpg,.jpeg,.webp" multiple disabled={!canManageDelivery || !!busy} onChange={event => { setPendingFiles(Array.from(event.target.files ?? [])); setUploadError(""); }} />
                 <input id="deliveryFolder" className="sr-only" ref={folderInputRef} type="file" multiple disabled={!canManageDelivery || !!busy} {...({webkitdirectory:""} as Record<string,string>)} onChange={event => {setPendingFiles(Array.from(event.target.files ?? [])); setUploadError("");}}/><button type="button" className="subtle-button" disabled={!canManageDelivery || !!busy} onClick={() => folderInputRef.current?.click()}>{tr("选择项目文件夹", "Choose project folder")}</button>
                 {pendingFiles.length > 0 && <div className="pending-file-selection"><div><strong>{tr(`${pendingFiles.length} 个待提交文件`, `${pendingFiles.length} selected files`)}</strong><button type="button" className="text-button" disabled={!!busy} onClick={() => { setPendingFiles([]); setUploadError(""); if (fileInputRef.current) fileInputRef.current.value = "";
@@ -1316,7 +1328,7 @@ export default function Home() {
                   onRun={checkBrowserBehavior} onCancel={() => {if (!browserCheckSavePending.current) browserCheckController.current?.abort();}}/>
                 <BusinessChecksPanel key={`business-${delivery?.id ?? "empty"}`} language={language} count={customProject?.businessChecks?.length ?? 0} report={businessReport} enabled={canObserveBrowser && !busy} busy={busy === "business-check"} progress={businessCheckProgress} onRun={checkBusinessContent} onCancel={() => {if (!businessCheckSavePending.current) businessCheckController.current?.abort();}} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked && !busy ? (criterionId, comment) => prepareFeedback({deliveryId: delivery!.id, criterionId, comment}) : undefined}/>
                 {busy === "business-check-save" && <p className="layout-check-source" role="status">{tr("正在保存业务内容核对…", "Saving business content observations…")}</p>}
-                {delivery&&runtimePlan&&<RuntimeCheckPanel language={language} deliveryId={delivery.id} plan={runtimePlan} targetId={delivery.backendTargetId} report={runtimeReport} pending={!!delivery.runtimeRun&&Date.parse(delivery.runtimeRun.expiresAt)>Date.now()} busy={busy==="runtime-check"} enabled={!!canObserveBrowser&&!busy} onRun={checkRuntimeBackend} onPrepareFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?(criterionId,comment)=>prepareFeedback({deliveryId:delivery.id,criterionId,comment}):undefined}/>}
+                {delivery&&runtimePlan&&<RuntimeCheckPanel language={language} deliveryId={delivery.id} plan={runtimePlan} targetId={delivery.backendTargetId} deliveryDigest={delivery.runtimeDeliveryDigest} report={runtimeReport} pending={!!delivery.runtimeRun&&Date.parse(delivery.runtimeRun.expiresAt)>Date.now()} busy={busy==="runtime-check"} enabled={!!canObserveBrowser&&!busy} onRun={checkRuntimeBackend} onPrepareFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?(criterionId,comment)=>prepareFeedback({deliveryId:delivery.id,criterionId,comment}):undefined}/>}
                 {delivery && <EvidenceHistoryPanel key={`history-${delivery.id}`} delivery={delivery} language={language} acceptedSnapshotId={collaboration?.acceptance?.evidenceSnapshotId}/>}
                 {busy === "browser-check-save" && <p className="layout-check-source" role="status">{tr("正在保存链接行为与资源观察…", "Saving link behavior and resource observations…")}</p>}
               </div>

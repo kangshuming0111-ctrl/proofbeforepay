@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-02T09:41:05.557Z",
+  "generatedAt": "2026-11-02T10:45:08.569Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -38,8 +38,8 @@
     },
     {
       "file": "README.md",
-      "bytes": 72164,
-      "sha256": "acdd887125faf7e955aa0a66b0d760a0bb022eda87d8397ac29ea1a5204ecbc6"
+      "bytes": 74050,
+      "sha256": "ad87a6a445c82b35d8b3ee420e67867bbcb8b670cfa6bc19e3ac0866d53c9fd4"
     },
     {
       "file": "app/api/business-check-suggestions/route.ts",
@@ -58,8 +58,8 @@
     },
     {
       "file": "app/api/proofs/[id]/[action]/route.ts",
-      "bytes": 14943,
-      "sha256": "3b978a9d81a7cc9eb201461839761dd7d8b28f375ab7c3f1132e7a25c4464d9e"
+      "bytes": 15166,
+      "sha256": "62efa660bbcd31a2e47e5c3e6be9fa4fc05245fc2cef6c4c6a3b7c16a5d34d92"
     },
     {
       "file": "app/api/proofs/[id]/browser-checks/route.ts",
@@ -78,8 +78,8 @@
     },
     {
       "file": "app/api/proofs/[id]/runtime-checks/route.ts",
-      "bytes": 1681,
-      "sha256": "b00b50d98d1624313e6dbc80dfb7102e9c3758db703fe0daafc491521f75ea09"
+      "bytes": 1848,
+      "sha256": "465f4821f71ea368a141f2402ae257a58ac55c0e2884715bf6a48780447a071e"
     },
     {
       "file": "app/api/proofs/[id]/versions/[deliveryId]/route.ts",
@@ -218,13 +218,13 @@
     },
     {
       "file": "app/components/DeliveryOverview.tsx",
-      "bytes": 14736,
-      "sha256": "eb1e66a2f03f2390306a25ffa432bf16b67fbeb2e4abf5986e5b50bd3726bf69"
+      "bytes": 14777,
+      "sha256": "85500c7bde0b2d03db001ba23ae530d8c7efb274bbd5fe82a2da33e5ffa0b537"
     },
     {
       "file": "app/components/EvidenceHistoryPanel.tsx",
-      "bytes": 12815,
-      "sha256": "5780e3a43296bc16029b2224c804e563a6fb9fed53fd2e8f7ea6170b379c0ce0"
+      "bytes": 12919,
+      "sha256": "fe580f806c787d94a68ce8e29684263d12970a8267c2e3dc72c12b44f3236f69"
     },
     {
       "file": "app/components/GettingStarted.tsx",
@@ -263,8 +263,13 @@
     },
     {
       "file": "app/components/RuntimeCheckPanel.tsx",
-      "bytes": 13150,
-      "sha256": "3801105d86587fa00b261f5a81211db208610ba1723b2a70766522690351c1ff"
+      "bytes": 15549,
+      "sha256": "2902e283e28432a20463656ce83dd95b1e3ba20d222d19560aa69f15a1f66e73"
+    },
+    {
+      "file": "app/components/RuntimePlanEditor.tsx",
+      "bytes": 5412,
+      "sha256": "7829e0175c4d4d74ae53e32cf329b13b1622daf8cdf3dd530bf93b932fab898d"
     },
     {
       "file": "app/components/SandboxLoginHelp.tsx",
@@ -313,8 +318,8 @@
     },
     {
       "file": "app/guest-lab/entry.ts",
-      "bytes": 36529,
-      "sha256": "8953e5ba55801f87feea16958292113714d24a57c0a7cbf324d736bd181e6ce5"
+      "bytes": 47078,
+      "sha256": "676b01dded57f910cbb0d705ccd0627f1ce7e2f29e29188bfdcda4cdc7086c2c"
     },
     {
       "file": "app/guest-lab/index.html",
@@ -323,18 +328,18 @@
     },
     {
       "file": "app/guest-lab/server.ts",
-      "bytes": 3677,
-      "sha256": "a44a92fdecd2aa707dc8b9cb7ea00d43b78f0c10761e5349c519cff97c90cc3d"
+      "bytes": 4823,
+      "sha256": "fdfb59de230805fdd85dfbb60ab2916bf1c490c330319b0db6faee77c119d0a1"
     },
     {
       "file": "app/guest-lab/style.css",
-      "bytes": 8054,
-      "sha256": "51bcd318fb9e6db25bdf2221df9cb14ee7230f984da5ea75f9ab217ea1a22f3e"
+      "bytes": 9586,
+      "sha256": "bae7eae95b7a51aeac1634c0aaa2fb091de2e37e952087bc5a55f282b7c2a07a"
     },
     {
       "file": "app/join/page.tsx",
-      "bytes": 8296,
-      "sha256": "d55ee64a57368dab3911df2ef31e4e9a7f9f81a6ebb26b6ec2e1aa9ac4edeb42"
+      "bytes": 9321,
+      "sha256": "11bc38fc4ce51cd34f2d1ea6235d306aa02cbf2f15a8e52fe63872c3ea431459"
     },
     {
       "file": "app/layout-check.css",
@@ -348,8 +353,8 @@
     },
     {
       "file": "app/page.tsx",
-      "bytes": 162233,
-      "sha256": "897db9e981528c974af66722d9d5d34684953abcf09a3e0b63520bba361a3bc8"
+      "bytes": 162800,
+      "sha256": "2b8382c60ec92073798c3ee470b3aafefe6b9bdd7170843a74bc3406fddd275a"
     },
     {
       "file": "app/proof-versions/[id]/[deliveryId]/[...file]/route.ts",
@@ -727,6 +732,11 @@
       "sha256": "af3a1f14f1b105c94d6ba2cf61ffb72c901c16c065bbc6cf8bf56023eea039b6"
     },
     {
+      "file": "docs/BOOKING-POLICY-CHECKS.md",
+      "bytes": 9182,
+      "sha256": "7f09b866307e2f5745c82cc4579b3651b2ea27c6a6ac42a48dad1d28b6e1e548"
+    },
+    {
       "file": "docs/BUSINESS-CONTENT-CHECKS.md",
       "bytes": 6032,
       "sha256": "945642fd87503de1de83d41355f8db37b3be10b5147fedaaf55b4499f1f82665"
@@ -843,13 +853,18 @@
     },
     {
       "file": "lib/acceptance-evidence.ts",
-      "bytes": 14844,
-      "sha256": "a25998953e8474aaf7f2ecd521d6fdf2dd8f4e44189e4c5d631ed8c9bd9684f0"
+      "bytes": 14573,
+      "sha256": "e1dd45c8c8354cb529e168258f2e3965ab146a28c832bf678cef67b37aec7059"
     },
     {
       "file": "lib/assessment-display.ts",
       "bytes": 1982,
       "sha256": "4468c6574c7f761730b28deca5dd2850947d4eedf975daac48e869221448ae3e"
+    },
+    {
+      "file": "lib/booking-policy.ts",
+      "bytes": 4463,
+      "sha256": "3feb396eceb332229ed18fdd97f0e85d41509fd14492d803da0b7fb6c0852d7d"
     },
     {
       "file": "lib/browser-check-probe.ts",
@@ -923,8 +938,8 @@
     },
     {
       "file": "lib/contracts.ts",
-      "bytes": 11965,
-      "sha256": "9cb3ab734ccb197ed24642831ae5ccb5b4eb9fe5dfa4378a049625ee27e8d56a"
+      "bytes": 12055,
+      "sha256": "59b8c1e23f111cadbb1e7c440ac46f72dea13e43abce67b16f7d6ebf20f267fd"
     },
     {
       "file": "lib/delivery-assessment.ts",
@@ -955,6 +970,11 @@
       "file": "lib/domain.ts",
       "bytes": 5321,
       "sha256": "e122bd4af7124e3c72ce06505bc3f64acb2daa8a8e43ba75df1779f78952aa85"
+    },
+    {
+      "file": "lib/evidence-budget.ts",
+      "bytes": 9627,
+      "sha256": "8cc1426aa4d98014134ab279867f0ae93d9bdf5206bf8edd5bc0fd1a1b8d1814"
     },
     {
       "file": "lib/first-use-trial.ts",
@@ -998,13 +1018,13 @@
     },
     {
       "file": "lib/proof-store.ts",
-      "bytes": 12397,
-      "sha256": "36ec4a8b1854d43ad3c27430665a4a1eff19b2fbfc84351b9e6c2a90264d955b"
+      "bytes": 12495,
+      "sha256": "9d117c3c4f371415d61da3aef3620b0d3b720137f18199f4effe93f31ae87614"
     },
     {
       "file": "lib/proof-workflow.ts",
-      "bytes": 15906,
-      "sha256": "7e2202880f6e72352b76b5a4156e857193b815df60eb6f14ad045ee6c8193677"
+      "bytes": 15956,
+      "sha256": "a86b0c49c452f99c782ef8614a31b0d91cda30944bf5d16d69e4079819cf98fa"
     },
     {
       "file": "lib/providers.ts",
@@ -1033,28 +1053,28 @@
     },
     {
       "file": "lib/runtime-actions.ts",
-      "bytes": 3288,
-      "sha256": "d7ef2e1f05de572296e14091138e74fd3719421bd9fb092439a51547a331989b"
+      "bytes": 3443,
+      "sha256": "6e80dbd13e6e422cf6924d04b9853225e4417fdc6af4df8799b0c274d6e3d5e1"
     },
     {
       "file": "lib/runtime-checks.ts",
-      "bytes": 10862,
-      "sha256": "f0184ca2c451e2c0c1d2d20acb73c0a2918a222f985e83ba2c9aac3f8f493659"
+      "bytes": 12359,
+      "sha256": "cfbdff4dc71b03c4bb162234ba1f5bf3ce42878a69fc074e7c030f6f50c26fe9"
     },
     {
       "file": "lib/runtime-feedback.ts",
-      "bytes": 4049,
-      "sha256": "daa6eda99e22ed815b479182f299294845577a61527ef64f3575ae931b998158"
+      "bytes": 7591,
+      "sha256": "c96a242905113782f486332ff02d7c9e783e10bfe10af2c9355a0bd2fa354db1"
     },
     {
       "file": "lib/runtime-project.ts",
-      "bytes": 6016,
-      "sha256": "a95f1170df26bede95212e6eb6ac6418223bb738bf57cd5c8ab1b1e9506378bf"
+      "bytes": 6832,
+      "sha256": "474c178625137278ae69289ed5768622d54def76aad7def71b23710842a424b2"
     },
     {
       "file": "lib/runtime-runner.ts",
-      "bytes": 11507,
-      "sha256": "bbf9087bd3065de9dbdcef8007e095724a130bc0ed116518dd808864f79025f1"
+      "bytes": 17798,
+      "sha256": "e62074feefaa880d0378ef6d99a70608d804c3197aac92bd48213d0af7f38fdc"
     },
     {
       "file": "lib/saved-page-observation.ts",
@@ -1088,8 +1108,8 @@
     },
     {
       "file": "package.json",
-      "bytes": 2274,
-      "sha256": "01983d5d1819d8d1ebedfe164cb78339c1ae68bb38f8496f6687e3a78c5dcf1f"
+      "bytes": 2377,
+      "sha256": "e9e3443e5d8b266d3a358b102ebb3d5f550699e7414dede7d663de1c27223ffe"
     },
     {
       "file": "pnpm-lock.yaml",
@@ -1138,8 +1158,8 @@
     },
     {
       "file": "scripts/build-judge-pack.mjs",
-      "bytes": 19216,
-      "sha256": "73d103cb5ee5e75e537e608cd5122a97195fb741d5350fea2bda316a31a9489f"
+      "bytes": 19799,
+      "sha256": "58786c224c614fc44d5ea837a05657ca5199e76791317f18a37c0554ac68e860"
     },
     {
       "file": "scripts/build-showcase.mjs",
@@ -1357,6 +1377,16 @@
       "sha256": "ef65651900ed97821ff0ec44ba5121c256a2f7bcc562a8b69ecb013547a76b11"
     },
     {
+      "file": "tests/booking-policy-backend.test.mjs",
+      "bytes": 13897,
+      "sha256": "bfbc162f29a0d3552fdf8301595029277e098681d88cedb9706b65550cdb1df1"
+    },
+    {
+      "file": "tests/booking-policy.test.ts",
+      "bytes": 5306,
+      "sha256": "0affbdd7c3ec7ca2b242066d36a55d2311bd6034a7f8f92b1012cb85f7df56ae"
+    },
+    {
       "file": "tests/browser-check-report.test.ts",
       "bytes": 11604,
       "sha256": "35623e4b4013dc693a8276391a0586a1160cc01c45713537fe6d1e8676f1783d"
@@ -1452,14 +1482,19 @@
       "sha256": "c198889bfa45a11efd5214110081e5f8fc0f671e8881bf441ac7647d7d8e5334"
     },
     {
+      "file": "tests/evidence-budget.test.ts",
+      "bytes": 11599,
+      "sha256": "15c16af082dd404e63644df0295751103b46530ed2fa9f27d9d0ea5b9dd30b12"
+    },
+    {
       "file": "tests/first-use-trial.test.ts",
       "bytes": 3146,
       "sha256": "b69be27aaaf05f107f8a29eeaf7830ee664c569af9008edaff04ef997c6292aa"
     },
     {
       "file": "tests/fixtures/booking-backend/db/schema.ts",
-      "bytes": 1403,
-      "sha256": "b3f8e8a74910f5b07c388203b1b11e36bad662d41e47dcfcf53b492534e66753"
+      "bytes": 2952,
+      "sha256": "e493cf82770017ba5dab412509e3b628eceac031dc938eece64f77cb4cbbba5d"
     },
     {
       "file": "tests/fixtures/booking-backend/drizzle/0000_booking_lab.sql",
@@ -1467,14 +1502,24 @@
       "sha256": "bcc83cd7ac0aa59e51830cc5dd7aee3c7c807134fbbc5f8c58650b4006a095b0"
     },
     {
+      "file": "tests/fixtures/booking-backend/drizzle/0001_booking_policy_lab.sql",
+      "bytes": 1429,
+      "sha256": "3b9db40382d09cc5b6d94bf5d38ec2fcf14d93981d7500c47a4301ef10e7dd19"
+    },
+    {
       "file": "tests/fixtures/booking-backend/drizzle/meta/0000_snapshot.json",
       "bytes": 3780,
       "sha256": "6e36e8919d442d07d6a3ba87c76a8781e26895f82c8e7b1b0b0e50e5a2ecbd3e"
     },
     {
+      "file": "tests/fixtures/booking-backend/drizzle/meta/0001_snapshot.json",
+      "bytes": 7769,
+      "sha256": "b0617f3347c5575c7b80b1406969c1712ee1d6d212f12f9f039c0619bb873183"
+    },
+    {
       "file": "tests/fixtures/booking-backend/drizzle/meta/_journal.json",
-      "bytes": 201,
-      "sha256": "5c4e8ad10b963d28d853221dcaecbe75d1f99be3cf5ee2e550bde05eae88a41c"
+      "bytes": 347,
+      "sha256": "3a365d98fcbf95e223e59b1b0f434724946e654a571da0061cc815d25753644f"
     },
     {
       "file": "tests/fixtures/booking-backend/worker/booking-api.d.ts",
@@ -1485,6 +1530,16 @@
       "file": "tests/fixtures/booking-backend/worker/booking-api.js",
       "bytes": 9727,
       "sha256": "c2b663c1d1551584ab56e98d24ed58c925cc59f3065a4100fae77b2377459e7d"
+    },
+    {
+      "file": "tests/fixtures/booking-backend/worker/policy-booking-api.d.ts",
+      "bytes": 105,
+      "sha256": "7a04a05f1615b827e23cbedb3a650cb3705578c7bfb173c84752b035160e4fc4"
+    },
+    {
+      "file": "tests/fixtures/booking-backend/worker/policy-booking-api.js",
+      "bytes": 9262,
+      "sha256": "a34a03db551b29d17ed66eecbd9646ad4fb3ac0550d135d9e2df21ccd871b3c9"
     },
     {
       "file": "tests/fixtures/noodle-business/project.json",
@@ -1708,23 +1763,28 @@
     },
     {
       "file": "tests/runtime-actions.test.ts",
-      "bytes": 14641,
-      "sha256": "eb37d176d0c9ef67205fdbaaec594824d515c854aa4f7aaeeecfb9a7467cf065"
+      "bytes": 16229,
+      "sha256": "a9c6360297dd57074b8ced94264fd903f4ec25c9724a273498d6777e34c388e3"
     },
     {
       "file": "tests/runtime-api-smoke.py",
-      "bytes": 14284,
-      "sha256": "6ef6f5e38e4734b681b17baedc6f4ae0f52f65f17d5c6363bd6cf1b778278029"
+      "bytes": 20684,
+      "sha256": "4272e2abf9567cbecd9d0e9d1026112d1a0a7b1f0b731c02c6b6b26c3a97319a"
     },
     {
       "file": "tests/runtime-checks.test.ts",
-      "bytes": 12004,
-      "sha256": "ae8ffad6d5d869662ac17424f76ba54a374be6a4ecd1dabc2a8b0ed50bc20591"
+      "bytes": 14158,
+      "sha256": "6b98eaca6d743de8d2606511ad09d9d23c09f39d59c1a6dfcb8eed2f31bce6c0"
     },
     {
       "file": "tests/runtime-feedback.test.ts",
-      "bytes": 2865,
-      "sha256": "a532311182ad76632d693a5552b3f84ebc0e08f43e6f12830c750c3203b66841"
+      "bytes": 5448,
+      "sha256": "20e7740d970dd49b732c71cbcbb829e79e88cc07f2df4c4b6628bcb6a9f2c7cb"
+    },
+    {
+      "file": "tests/runtime-policy-backend.test.mjs",
+      "bytes": 7191,
+      "sha256": "43df08e6dc580703f105eb870636d27aca88b7f77cb9ee18ae97296dd2a87bd1"
     },
     {
       "file": "tests/sandbox-provider-worker.mjs",
@@ -1803,8 +1863,8 @@
     },
     {
       "file": "JUDGE-README.md",
-      "bytes": 10527,
-      "sha256": "7426ba333cc9fc2c63f67cba529b810015d61113251258f267d63955944aaa50"
+      "bytes": 11110,
+      "sha256": "6e90198516466b489492c59c8158625f45e43c69dc0f68c5ab102c719615dc4c"
     },
     {
       "file": "DEMO-SCRIPT.md",

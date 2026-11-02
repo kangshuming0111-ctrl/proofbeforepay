@@ -3,10 +3,11 @@ import { validateBusinessDecision, type BusinessDecision } from "./business-deci
 import { getBusinessCheckPlan } from "./business-checks.ts";
 import { DomainError } from "./domain.ts";
 import { savedRuntimePlan,validateRuntimeDecision,runtimeReportsFor } from "./runtime-project.ts";
+import { assertDeliveryEvidenceBudget, consumeAcceptanceReservation } from "./evidence-budget.ts";
+export { EVIDENCE_HISTORY_BYTE_LIMIT } from "./evidence-budget.ts";
 
 export const OBSERVATION_HISTORY_LIMIT = 100;
 export const ACCEPTANCE_HISTORY_LIMIT = 20;
-export const EVIDENCE_HISTORY_BYTE_LIMIT = 256 * 1024;
 
 type Observation = ProofBrowserCheckReport | ProofLayoutReport | ProofBusinessCheckReport;
 /** Include only genuinely saved reports. A legacy latest reading is the first
@@ -43,8 +44,7 @@ export function withBusinessReport(delivery: ProofDelivery, report: ProofBusines
 }
 
 function boundedHistory(delivery: ProofDelivery): ProofDelivery {
-  const bytes = new TextEncoder().encode(JSON.stringify({runtime:delivery.runtimeHistory,business: delivery.businessCheckHistory, browser: delivery.browserCheckHistory, layout: delivery.layoutHistory, acceptance: delivery.acceptanceEvidence})).byteLength;
-  if (bytes > EVIDENCE_HISTORY_BYTE_LIMIT) throw new DomainError("This delivery's saved evidence history is full. Existing records were retained; this new report or acceptance was not saved.", 409);
+  assertDeliveryEvidenceBudget(delivery);
   return delivery;
 }
 
@@ -120,7 +120,7 @@ export function withAcceptanceEvidence(delivery: ProofDelivery, snapshot: ProofA
     || snapshot.browserReportId && !next.browserCheckHistory.some(report => report.id === snapshot.browserReportId)
     || snapshot.layoutReportId && !next.layoutHistory.some(report => report.id === snapshot.layoutReportId)) throw new DomainError("Acceptance observations must be retained before they can be referenced.", 409);
   next.acceptanceEvidence = [...existing, structuredClone(snapshot)];
-  return boundedHistory(next);
+  return boundedHistory(consumeAcceptanceReservation(next));
 }
 
 /** Validate a stored binding without requiring it to equal the latest run.

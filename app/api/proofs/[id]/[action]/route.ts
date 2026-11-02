@@ -108,8 +108,11 @@ export async function POST(request: Request, context: {params: Promise<{id: stri
           if (input.variant !== "flawed" && input.variant !== "fixed" || input.files !== undefined) throw new HttpError(400, "Choose one of the two sample deliveries, or create a custom agreement to upload your files.");
           delivery = {...createProofDelivery(input.variant, quote.language), sequence};
         }
-        if (savedRuntimePlan(quote)) {
-          delivery.backendTargetId = runtimeTarget(input.backendTargetId).id;
+        const backendPlan=savedRuntimePlan(quote);
+        if (backendPlan) {
+          const target=runtimeTarget(input.backendTargetId);
+          if((target.protocol??"booking-http-v1")!==backendPlan.protocol)throw new HttpError(400,"Choose a test backend matching the agreed protocol.");
+          delivery.backendTargetId = target.id;
           delivery.runtimeDeliveryDigest = await runtimeDeliveryDigest(delivery.files);
         } else if (input.backendTargetId !== undefined) throw new HttpError(400,"A backend target requires a buyer-confirmed backend check plan.");
         const replaced = quote.proof.collaboration ? prepareReplacement(quote, delivery)

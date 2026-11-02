@@ -1,8 +1,8 @@
 """Runtime lease/report -> revision -> explicit acceptance in isolated API/D1.
 
 Use only the owned loopback Worker from run-collaborative-sandbox-local.mjs.
-All outbound fetch is blocked: the runtime report must retain eight unavailable
-steps, never manufacture successful backend observations. Synthetic gateway
+All outbound fetch is blocked: the runtime report must retain all eight basic
+or eighteen business steps as unavailable, never manufacture successful backend observations. Synthetic gateway
 identities are not actual sign-ins. No mutation is retried and no external
 model, backend or payment is contacted. Real backend protocol execution is a
 separate check against the hosted disposable verification lab.
@@ -28,6 +28,10 @@ roles = chain.roles
 
 SUMMARY = "Accept a synthetic booking with required slot and valid email and retain it for independent readback and idempotent repeated submission."
 LAB_ORIGIN = "https://proofbeforepay-verification-lab.blueheron8.chatgpt.site"
+POLICY_SUMMARY = "Each booking accepts at most 6 people."
+POLICY_STEP_IDS = ["revision", "missing_slot", "invalid_email", "create", "readback", "replay", "conflict", "unchanged",
+                   "party_zero", "party_fraction", "party_below", "party_below_readback", "party_exact", "party_exact_readback", "party_above",
+                   "concurrent_first", "concurrent_second", "concurrent_readback"]
 
 
 def specification(title, runtime=True):
@@ -42,6 +46,15 @@ def specification(title, runtime=True):
 
 def files(revised=False):
     return {"index.html": "<!doctype html><html><head><title>Synthetic booking handoff</title></head><body><h1>Book a test visit</h1><p>" + ("Revised owned fixture." if revised else "First owned fixture.") + "</p></body></html>"}
+
+
+def policy_specification(title):
+    value = specification(title)
+    value["summary"] = POLICY_SUMMARY
+    value["coverage"]["sourceText"] = POLICY_SUMMARY
+    value["runtimeCheck"] = {"protocol": "booking-http-v2", "criterionId": "coverage-1", "confirmed": True,
+                             "policy": {"maxPartySize": 6, "source": {"start": 0, "end": len(POLICY_SUMMARY) - 1, "excerpt": POLICY_SUMMARY[:-1]}}}
+    return value
 
 
 def digest(value):
@@ -83,6 +96,27 @@ def assert_report(quote, source_files):
 
 def assert_unchanged(api, buyer, quote_path, before):
     assert api.ok(buyer, quote_path)["quote"] == before
+
+
+def assert_policy_report(quote, source_files):
+    delivery = quote["proof"]["delivery"]
+    report = delivery["runtimeReport"]
+    assert report["deliveryId"] == delivery["id"] and report["id"] == report["runId"]
+    assert report["deliveryDigest"] == delivery["runtimeDeliveryDigest"] == digest(source_files)
+    assert report["target"] == {"id": "lab-policy-fixed", "label": "Controlled booking policy fixed", "origin": LAB_ORIGIN, "revision": "booking-policy-fixed-v1"}
+    assert report["plan"] == quote["proof"]["project"]["runtimeCheck"]
+    assert report["plan"]["protocol"] == "booking-http-v2"
+    assert report["plan"]["source"] == {"start": 0, "end": len(POLICY_SUMMARY), "excerpt": POLICY_SUMMARY}
+    assert report["plan"]["policy"] == policy_specification("Expected policy")["runtimeCheck"]["policy"]
+    assert report["method"] == "server-booking-http-v2"
+    assert report["summary"] == {"steps": 18, "observed": 0, "issues": 0, "unavailable": 18}
+    assert [step["id"] for step in report["steps"]] == POLICY_STEP_IDS
+    assert all(step["outcome"] == "unavailable" for step in report["steps"])
+    assert report["steps"][0]["reason"] == "network_unavailable"
+    assert all(step["reason"] == "revision_not_verified" for step in report["steps"][1:])
+    assert "runtimeRun" not in delivery
+    assert delivery["runtimeHistory"][-1] == report
+    return report
 
 
 def main():
@@ -127,7 +161,7 @@ def main():
         response = error
     with response:
         assert response.status == 403
-    for patch, codes in [({"url": "https://unregistered.synthetic.example"}, (400,)), ({"report": {"summary": {"observed": 8}}}, (400,)), ({"confirm": False}, (400,)), ({"deliveryId": "stale-upload"}, (409,)), ({"previousReportId": "stale-report"}, (409,))]:
+    for patch, codes in [({"url": "https://unregistered.synthetic.example"}, (400,)), ({"resuming": True}, (400,)), ({"report": {"summary": {"observed": 8}}}, (400,)), ({"confirm": False}, (400,)), ({"deliveryId": "stale-upload"}, (409,)), ({"previousReportId": "stale-report"}, (409,))]:
         api.reject(buyer, endpoint, {**payload, **patch}, codes=codes)
     api.reject(buyer, endpoint, {**payload, "oversize": "x" * 5000}, codes=(413,))
     assert_unchanged(api, buyer, quote_path, guarded)
@@ -192,9 +226,57 @@ def main():
     api.reject(outsider, path + "/versions/" + first_id, codes=(404,))
     assert api.ok(buyer, path + "/versions/" + first_id)["version"] == archived
     api.checked("Explicit buyer exceptions freeze exact reportA/digest/target/failed steps; later reportB remains supplemental; member-scoped lists omit histories and outsider archive reads reject, with no payment")
+
+    # A second, independent agreement exercises the v2 business policy through
+    # actual routes/storage without altering the basic v1 lifecycle above.
+    before_policy_creation = api.ok(buyer, "/api/proofs")
+    tampered_maximum = policy_specification("Rejected policy maximum")
+    tampered_maximum["runtimeCheck"]["policy"]["maxPartySize"] = 7
+    tampered_source = policy_specification("Rejected policy citation")
+    tampered_source["runtimeCheck"]["policy"]["source"]["excerpt"] = POLICY_SUMMARY[:-1].replace("6", "7")
+    minimum = policy_specification("Rejected minimum as maximum")
+    minimum_summary = "Each booking accepts at least 6 people."
+    minimum["summary"] = minimum_summary
+    minimum["coverage"]["sourceText"] = minimum_summary
+    minimum["runtimeCheck"]["policy"]["source"] = {"start": 0, "end": len(minimum_summary) - 1, "excerpt": minimum_summary[:-1]}
+    missing_policy = policy_specification("Rejected absent policy")
+    del missing_policy["runtimeCheck"]["policy"]
+    for invalid_policy in (tampered_maximum, tampered_source, minimum, missing_policy):
+        api.reject(buyer, "/api/proofs", invalid_policy, codes=(400,))
+    assert api.ok(buyer, "/api/proofs") == before_policy_creation
+
+    policy_path, policy_quote_path = chain.create_shared(api, buyer, seller, policy_specification("Synthetic maximum-party lifecycle"))
+    before_policy_upload = api.ok(buyer, policy_quote_path)["quote"]
+    api.reject(seller, policy_path + "/delivery", {"files": files(), "expectedDeliveryId": None, "reviewRules": True, "backendTargetId": "lab-fixed"}, codes=(400,))
+    assert_unchanged(api, buyer, policy_quote_path, before_policy_upload)
+    policy_quote = chain.quote_of(api.ok(seller, policy_path + "/delivery", {"files": files(), "expectedDeliveryId": None, "reviewRules": True, "backendTargetId": "lab-policy-fixed"}), "seller")
+    policy_endpoint = policy_path + "/runtime-checks"
+    policy_quote = api.ok(buyer, policy_endpoint, runtime_input(policy_quote))["quote"]
+    policy_report_a = copy.deepcopy(assert_policy_report(policy_quote, files()))
+    policy_id = policy_quote["proof"]["delivery"]["id"]
+    api.ok(seller, policy_path + "/submit_delivery", {"deliveryId": policy_id, "note": "Synthetic six-person policy for independent buyer review"})
+    policy_quote = api.ok(buyer, policy_quote_path)["quote"]
+    api.reject(buyer, policy_path + "/accept_delivery", consent(policy_quote), codes=(409,))
+    incomplete_policy_consent = consent(policy_quote, True)
+    incomplete_policy_consent["runtimeDecision"]["acknowledgedSteps"].pop()
+    api.reject(buyer, policy_path + "/accept_delivery", incomplete_policy_consent, codes=(409,))
+    policy_quote = api.ok(buyer, policy_path + "/accept_delivery", consent(policy_quote, True))["quote"]
+    policy_snapshot = copy.deepcopy(chain.snapshot(policy_quote))
+    assert policy_snapshot["runtimeReportId"] == policy_report_a["id"]
+    assert policy_snapshot["runtimeDeliveryDigest"] == policy_report_a["deliveryDigest"]
+    assert policy_snapshot["runtimeTargetId"] == "lab-policy-fixed"
+    assert policy_snapshot["runtimeAcknowledgedSteps"] == POLICY_STEP_IDS
+    policy_quote = api.ok(seller, policy_endpoint, runtime_input(policy_quote))["quote"]
+    policy_report_b = assert_policy_report(policy_quote, files())
+    assert policy_report_b["id"] != policy_report_a["id"]
+    assert len(policy_quote["proof"]["delivery"]["runtimeHistory"]) == 2
+    assert chain.snapshot(policy_quote) == policy_snapshot
+    assert policy_quote["proof"]["collaboration"]["stage"] == "accepted"
+    assert policy_quote["proof"]["paymentState"] == "unfunded" and not policy_quote.get("paypalOrderId")
+    api.checked("V2 routes reject tampered maximum/source, minimum-as-maximum, missing policy and incompatible v1 targets; preserve all18 unavailable steps and exact policy/digest; explicit complete exceptions freeze reportA while reportB stays supplemental, with no payment")
     after = api.ok(None, "/api/__synthetic_sandbox_test_mode")
     assert after["syntheticCalls"] == marker["syntheticCalls"]
-    print(json.dumps({"result": "passed", "suite": "runtime-checks", "checks": api.checks, "runtimeReportsSaved": 3, "concurrentStarts": {"attempts": 2, "successes": 1, "conflicts": 1}, "stepsPerReport": 8, "unavailablePerReport": 8, "acceptanceSnapshotPreservedAcrossSupplement": True, "providerNetworkRequests": 0, "applicationModelCalls": 0, "syntheticProviderFetches": 0, "mutationRetries": 0, "scope": "Fresh isolated API/D1 with synthetic gateway identity headers; all outbound backend/provider fetches blocked. This verifies roles, storage, leases, version/acceptance binding, not actual backend protocol execution, real sign-ins, UI use, independent users or payment."}, ensure_ascii=False, indent=2))
+    print(json.dumps({"result": "passed", "suite": "runtime-checks", "checks": api.checks, "runtimeReportsSaved": 5, "basicV1ReportsSaved": 3, "businessV2ReportsSaved": 2, "concurrentStarts": {"attempts": 2, "successes": 1, "conflicts": 1}, "stepsPerReport": 8, "unavailablePerReport": 8, "v2StepsPerReport": 18, "v2UnavailablePerReport": 18, "acceptanceSnapshotPreservedAcrossSupplement": True, "v2AcceptanceSnapshotPreservedAcrossSupplement": True, "providerNetworkRequests": 0, "applicationModelCalls": 0, "syntheticProviderFetches": 0, "mutationRetries": 0, "scope": "Fresh isolated API/D1 with synthetic gateway identity headers; all outbound backend/provider fetches blocked. This verifies roles, storage, leases, version/acceptance binding, not actual backend protocol execution, real sign-ins, UI use, independent users or payment."}, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

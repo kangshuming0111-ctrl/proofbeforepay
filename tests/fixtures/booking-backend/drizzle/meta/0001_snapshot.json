@@ -1,0 +1,264 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "bfd44f2f-6ffa-4b0b-8e3b-d5cf1d946462",
+  "prevId": "3eb26c2a-cbc9-421c-8e7e-b9ba00666352",
+  "tables": {
+    "lab_bookings": {
+      "name": "lab_bookings",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "test_run_id": {
+          "name": "test_run_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "marker": {
+          "name": "marker",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "customer": {
+          "name": "customer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "slot": {
+          "name": "slot",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "party_size": {
+          "name": "party_size",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "revision": {
+          "name": "revision",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "idempotency_key": {
+          "name": "idempotency_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "lab_bookings_revision_key_unique": {
+          "name": "lab_bookings_revision_key_unique",
+          "columns": [
+            "revision",
+            "idempotency_key"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "lab_bookings_synthetic_customer": {
+          "name": "lab_bookings_synthetic_customer",
+          "value": "\"lab_bookings\".\"customer\" = 'PBP synthetic'"
+        },
+        "lab_bookings_synthetic_email": {
+          "name": "lab_bookings_synthetic_email",
+          "value": "\"lab_bookings\".\"email\" = 'pbp-test@example.invalid'"
+        },
+        "lab_bookings_synthetic_slot": {
+          "name": "lab_bookings_synthetic_slot",
+          "value": "\"lab_bookings\".\"slot\" = '2099-01-01T10:00:00Z'"
+        },
+        "lab_bookings_marker": {
+          "name": "lab_bookings_marker",
+          "value": "\"lab_bookings\".\"marker\" = 'PBP-' || \"lab_bookings\".\"test_run_id\""
+        },
+        "lab_bookings_party_size": {
+          "name": "lab_bookings_party_size",
+          "value": "\"lab_bookings\".\"party_size\" IN (2, 3)"
+        },
+        "lab_bookings_revision": {
+          "name": "lab_bookings_revision",
+          "value": "\"lab_bookings\".\"revision\" = 'booking-fixed-v2'"
+        }
+      }
+    },
+    "lab_policy_bookings": {
+      "name": "lab_policy_bookings",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "test_run_id": {
+          "name": "test_run_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "marker": {
+          "name": "marker",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "customer": {
+          "name": "customer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "slot": {
+          "name": "slot",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "party_size": {
+          "name": "party_size",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "revision": {
+          "name": "revision",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "idempotency_key": {
+          "name": "idempotency_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "lab_policy_bookings_revision_key_unique": {
+          "name": "lab_policy_bookings_revision_key_unique",
+          "columns": [
+            "revision",
+            "idempotency_key"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "lab_policy_bookings_synthetic_customer": {
+          "name": "lab_policy_bookings_synthetic_customer",
+          "value": "\"lab_policy_bookings\".\"customer\" = 'PBP synthetic'"
+        },
+        "lab_policy_bookings_synthetic_email": {
+          "name": "lab_policy_bookings_synthetic_email",
+          "value": "\"lab_policy_bookings\".\"email\" = 'pbp-test@example.invalid'"
+        },
+        "lab_policy_bookings_synthetic_slot": {
+          "name": "lab_policy_bookings_synthetic_slot",
+          "value": "\"lab_policy_bookings\".\"slot\" = '2099-01-01T10:00:00Z'"
+        },
+        "lab_policy_bookings_marker": {
+          "name": "lab_policy_bookings_marker",
+          "value": "\"lab_policy_bookings\".\"marker\" = 'PBP-' || \"lab_policy_bookings\".\"test_run_id\""
+        },
+        "lab_policy_bookings_party_size": {
+          "name": "lab_policy_bookings_party_size",
+          "value": "typeof(\"lab_policy_bookings\".\"party_size\") = 'integer' AND \"lab_policy_bookings\".\"party_size\" BETWEEN 1 AND 13"
+        },
+        "lab_policy_bookings_revision": {
+          "name": "lab_policy_bookings_revision",
+          "value": "\"lab_policy_bookings\".\"revision\" IN ('booking-policy-fixed-v1', 'booking-policy-flawed-v1')"
+        },
+        "lab_policy_bookings_fixed_limit": {
+          "name": "lab_policy_bookings_fixed_limit",
+          "value": "\"lab_policy_bookings\".\"revision\" != 'booking-policy-fixed-v1' OR \"lab_policy_bookings\".\"party_size\" <= 6"
+        }
+      }
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}

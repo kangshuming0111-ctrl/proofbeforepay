@@ -8,6 +8,13 @@
       "when": 1793610524660,
       "tag": "0000_booking_lab",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1793615458237,
+      "tag": "0001_booking_policy_lab",
+      "breakpoints": true
     }
   ]
 }

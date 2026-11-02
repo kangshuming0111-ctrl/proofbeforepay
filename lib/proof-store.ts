@@ -7,6 +7,7 @@ import { requireProof } from "./proof-domain";
 import { joinSeller, snapshotVersion } from "./proof-workflow";
 import { isSandboxCollaboration, resolveProofRole } from "./proof-demo";
 import { HttpError, owner } from "./server";
+import { assertQuoteEvidenceBudget } from "./evidence-budget";
 
 export type ProofActor = {id: string; email: string; authenticated: boolean; requestedDemoRole?: ProofRole};
 export type ProofRecord = {
@@ -76,6 +77,7 @@ type SaveOptions = {archive?: boolean; invitation?: {hash: string; email: string
 /** One D1 transaction archives the prior snapshot and performs the quote-version CAS. */
 export async function saveProofCase(record: ProofRecord, next: ProofQuote, options: SaveOptions = {}) {
   if (next.id !== record.quote.id) throw new HttpError(409, "Project identity cannot change.");
+  assertQuoteEvidenceBudget(next);
   const db = env.DB as D1Database;
   const at = new Date().toISOString();
   const statements: D1PreparedStatement[] = [];

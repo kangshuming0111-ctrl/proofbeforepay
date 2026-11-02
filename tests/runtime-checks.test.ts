@@ -45,6 +45,31 @@ test("a success response with no independent readback cannot be recorded as pass
   assert.equal(report.steps[3].outcome,"observed");assert.equal(report.steps[4].outcome,"mismatch");assert.equal(report.steps[7].outcome,"mismatch");assert.equal(report.summary.issues,2);
   assert.ok(!JSON.stringify(report).includes("private-customer"));
 });
+test("resuming a committed run recovers the same receipt without inventing its original creation response",async()=>{
+  const state=backend(),first=await executeRuntimeCheck(input,{fetch:state.fetcher}),before=structuredClone(first);
+  const retry=await executeRuntimeCheck(input,{fetch:state.fetcher,resuming:true});
+  assert.deepEqual(first,before);assert.deepEqual(retry.summary,{steps:8,observed:7,issues:0,unavailable:1});
+  assert.equal(retry.steps[3].status,200);assert.equal(retry.steps[3].outcome,"unavailable");assert.equal(retry.steps[3].reason,"resumed_creation_not_observed");
+  assert.match(retry.steps[3].actual!,/original creation response was not observed/);
+  assert.ok(retry.steps.slice(4).every(step=>step.outcome==="observed"));
+  assert.equal(state.calls.length,16);assert.equal(state.calls[3].body!.testRunId,state.calls[11].body!.testRunId);
+  assert.equal((state.calls[3].init.headers as Record<string,string>)["Idempotency-Key"],(state.calls[11].init.headers as Record<string,string>)["Idempotency-Key"]);
+  assert.deepEqual(validateRuntimeReport(retry,input),retry);assert.ok(!JSON.stringify(retry).includes("private-backend-secret"));
+});
+test("an unexpected fresh create200 or an incomplete recovery record cannot unlock dependent checks",async()=>{
+  const state=backend();await executeRuntimeCheck(input,{fetch:state.fetcher});
+  const fresh=await executeRuntimeCheck(input,{fetch:state.fetcher});
+  assert.equal(fresh.steps[3].outcome,"mismatch");assert.equal(fresh.steps[3].status,200);
+  assert.ok(fresh.steps.slice(4).every(step=>step.outcome==="unavailable"&&step.reason==="create_not_verified"));
+  assert.equal(state.calls.length,12);
+  const incomplete=backend("missing_fields");let calls=0;
+  const invalidRecovery=await executeRuntimeCheck(input,{resuming:true,fetch:async(url,init)=>{
+    calls++;const response=await incomplete.fetcher(url,init);
+    return calls===4?Response.json({id:"booking-1"},{status:200}):response;
+  }});
+  assert.equal(invalidRecovery.steps[3].outcome,"mismatch");assert.equal(calls,4);
+  assert.ok(invalidRecovery.steps.slice(4).every(step=>step.reason==="create_not_verified"));
+});
 test("negative input acceptance and duplicate replay remain distinct protocol failures",async()=>{
   const negative=await executeRuntimeCheck(input,{fetch:backend("invalid_accepted").fetcher});
   assert.equal(negative.steps[1].outcome,"mismatch");assert.equal(negative.steps[2].outcome,"mismatch");assert.equal(negative.summary.issues,2);

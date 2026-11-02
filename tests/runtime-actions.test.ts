@@ -82,6 +82,23 @@ test("active duplicate is rejected and expired retry reuses the same idempotent 
   assert.throws(()=>beginRuntimeRun(inconsistent,"buyer",startInput(inconsistent),digest,now+46_000),/inconsistent/);
 });
 
+test("an expired committed run saves recovered checks but still requires acknowledgement of the unobserved creation",async()=>{
+  const q=await fixture(),now=Date.now(),digest=q.proof.delivery!.runtimeDeliveryDigest!,fetcher=backend();
+  const pending=beginRuntimeRun(q,"buyer",startInput(q),digest,now),run=pending.proof.delivery!.runtimeRun!;
+  const checkInput={deliveryId:run.deliveryId,deliveryDigest:digest,runId:run.id,startedAt:run.startedAt,plan:savedRuntimePlan(pending)!,target:fixed};
+  const unsaved=await executeRuntimeCheck(checkInput,{fetch:fetcher}),original=structuredClone(unsaved);
+  const retry=beginRuntimeRun(pending,"seller",startInput(pending),digest,now+46_000);
+  const recovered=await executeRuntimeCheck(checkInput,{fetch:fetcher,resuming:true});
+  const finished=finishRuntimeRun(retry,recovered);
+  assert.deepEqual(unsaved,original);assert.equal(finished.proof.delivery!.runtimeRun,undefined);
+  assert.deepEqual(recovered.summary,{steps:8,observed:7,issues:0,unavailable:1});
+  assert.deepEqual(finished.proof.delivery!.runtimeHistory,[recovered]);
+  assert.throws(()=>acceptDelivery(finished,consent(finished),at),/every failed or uncertain/);
+  const accepted=acceptDelivery(finished,consent(finished,{exceptionReason:"Buyer separately reviewed the recovered receipt and accepts the missing original creation response",acknowledgedSteps:["create"]}),at);
+  assert.equal(accepted.proof.delivery!.acceptanceEvidence![0].runtimeReportId,run.id);
+  assert.deepEqual(accepted.proof.delivery!.acceptanceEvidence![0].runtimeAcknowledgedSteps,["create"]);
+});
+
 test("finish appends exact validated report and rejects stale or replayed bindings without input mutation",async()=>{
   const q=await fixture(),pending=beginRuntimeRun(q,"buyer",startInput(q),q.proof.delivery!.runtimeDeliveryDigest!),delivery=pending.proof.delivery!,run=delivery.runtimeRun!;
   const report=await executeRuntimeCheck({deliveryId:delivery.id,deliveryDigest:delivery.runtimeDeliveryDigest!,runId:run.id,startedAt:run.startedAt,plan:savedRuntimePlan(pending)!,target:fixed},{fetch:backend()});

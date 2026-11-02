@@ -1,9 +1,12 @@
 import "./style.css";
 import { evaluateBusinessBlocks } from "../../lib/business-checks.ts";
 import type { ProofBusinessExpected } from "../../lib/contracts.ts";
+import {validateRuntimeReport,type RuntimeCheckPlan} from "../../lib/runtime-checks.ts";
+import {suggestBookingPolicy} from "../../lib/booking-policy.ts";
 import { createFirstUseTrial, startFirstUseTask, noteFirstUseHelp, finishFirstUseTask, recordFirstUseAction, exportFirstUseTrial, FIRST_USE_TASKS, type FirstUseTask, type FirstUseTrial, type TrialAction, type TrialOperator, type TrialOutcome } from "../../lib/first-use-trial.ts";
 type Lang = "zh" | "en";
 type Variant = "flawed" | "fixed";
+type HttpProtocol = "booking-http-v1" | "booking-http-v2";
 type Stage = "agreement" | "awaiting_delivery" | "submitted" | "changes_requested" | "accepted" | "simulated_paid";
 type LocalReport = {
     variant: Variant;
@@ -22,9 +25,8 @@ type HttpReport = {
     steps?: unknown;
     summary?: unknown;
     target?: unknown;
-    [key: string]: unknown;
 };
-const BUILD = "guest-lab-v1";
+const BUILD = "guest-lab-v2";
 const CHECKS: {
     id: string;
     file: string;
@@ -51,6 +53,7 @@ let language: Lang = "zh", role: "buyer" | "seller" = "buyer", stage: Stage = "a
 let feedback = "", draftReady = false, feedbackSent = false, manualConfirmed = false, httpConsent = false, httpBusy = false, httpReport: HttpReport | undefined, httpError = "", httpScenario: Variant | undefined;
 let labView:"local"|"http"="local";
 let httpReports:Partial<Record<Variant,HttpReport>>={};
+let httpProtocol:HttpProtocol="booking-http-v2", httpMaxPartySize=6;
 let trial: FirstUseTrial | undefined, operator: TrialOperator = "unknown", selectedTask: FirstUseTask = "T01", selectedOutcome: TrialOutcome = "not_completed", trialOpen = false, message = "", messageError = false;
 const tr = (zh: string, en: string) => language === "zh" ? zh : en;
 const node = (tag: string, className = "", text?: string) => { const value = document.createElement(tag); if (className)
@@ -100,7 +103,8 @@ function switchRole(next: "buyer" | "seller") { role = next; track(next === "buy
 function submit(variant: Variant) { delivery = variant; stage = "submitted"; report = undefined; manualConfirmed = false; draftReady = false; feedback = ""; track(variant === "flawed" ? "submit_v1" : "submit_v2"); }
 function checkStatic() { if (!delivery)
     return; report = { variant: delivery, rows: CHECKS.map(check => ({ ...check, actual: check[delivery!], outcome: evaluateBusinessBlocks(check.expected, [check[delivery!]]).outcome })) }; track("check_static"); }
-function resetCase() { role = "buyer"; stage = "agreement"; delivery = undefined; report = undefined; previousReport = undefined; feedback = ""; draftReady = false; feedbackSent = false; manualConfirmed = false; httpReport=undefined;httpReports={};httpScenario=undefined;httpError="";httpConsent=false;track("reset_case");message=tr("交付与接口显示已重置；已开始的本地试用记录保留，便于你先下载。","Handoff and HTTP display reset. Started local trial records are retained for download."); }
+function clearHttpDisplay() {httpReport=undefined;httpReports={};httpScenario=undefined;httpError="";httpConsent=false;}
+function resetCase() { role = "buyer"; stage = "agreement"; delivery = undefined; report = undefined; previousReport = undefined; feedback = ""; draftReady = false; feedbackSent = false; manualConfirmed = false; clearHttpDisplay();track("reset_case");message=tr("交付与接口显示已重置；已开始的本地试用记录保留，便于你先下载。","Handoff and HTTP display reset. Started local trial records are retained for download."); }
 function expectedLabel(expected: ProofBusinessExpected) { return expected.kind === "visible_copy" ? expected.text : `${expected.label} — ${expected.currency} ${(expected.amountMinor / 100).toFixed(2)}`; }
 function panel(title: string, label: string) { const section = node("section", "panel"), heading = node("header", "panel-heading"), body = node("div", "panel-body"); append(heading, node("h2", "", title), node("span", "", label)); append(section, heading, body); return { section, body }; }
 function renderComparison(body: HTMLElement) {
@@ -206,9 +210,12 @@ async function runHttp(scenario: Variant) {
     httpConsent = false;
     track(scenario === "flawed" ? "http_flawed_started" : "http_fixed_started");
     render();
-    const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 30000);
+    const protocol=httpProtocol,maxPartySize=httpMaxPartySize;
+    const source=httpRequirementText(protocol,maxPartySize),citation={start:0,end:source.length,excerpt:source};
+    const plan:RuntimeCheckPlan=protocol==="booking-http-v2"?{protocol,criterionId:"booking",source:citation,policy:suggestBookingPolicy(citation)!}:{protocol,criterionId:"booking",source:citation};
+    const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 40000);
     try {
-        const response = await fetch("/api/lab-check", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ scenario, consent: true }), credentials: "omit", redirect: "error", signal: controller.signal });
+        const response = await fetch("/api/lab-check", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ scenario, consent: true,...(protocol==="booking-http-v2"?{protocol,maxPartySize}:{}) }), credentials: "omit", redirect: "error", signal: controller.signal });
         const reader = response.body?.getReader();
         if (!reader)
             throw new Error(tr("接口没有返回报告。", "The endpoint returned no report."));
@@ -234,13 +241,21 @@ async function runHttp(scenario: Variant) {
         let result:unknown;try{result=JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes));}catch{throw new Error(tr(`接口返回 HTTP ${response.status}，未提供可读取的 JSON 报告。`,`The endpoint returned HTTP ${response.status} without a readable JSON report.`));} const value=asRecord(result);
         if (!response.ok)
             throw new Error(typeof value?.error === "string" ? value.error : tr(`接口返回 HTTP ${response.status}。`, `The endpoint returned HTTP ${response.status}.`));
-        if (!value || value.method !== "server-booking-http-v1" || !Array.isArray(value.steps) || value.steps.length > 16)
+        if (!value || typeof value.deliveryId!=="string" || typeof value.deliveryDigest!=="string")
             throw new Error(tr("返回内容不是受支持的预约 HTTP 报告。", "The response is not a supported booking HTTP report."));
-        httpReport = value; httpReports[scenario]=value;
+        // Validate the returned protocol, exact chosen policy and every step;
+        // compare only runs made with the same currently selected expectation.
+        const validated=validateRuntimeReport(value,{deliveryId:value.deliveryId,deliveryDigest:value.deliveryDigest,plan,target:{
+            id:protocol==="booking-http-v2"?`lab-policy-${scenario}`:`lab-${scenario}`,
+            label:`Controlled disposable ${scenario} booking fixture`,
+            baseUrl:`${location.origin}/test-api/${protocol==="booking-http-v2"?"policy-":""}${scenario}/`,
+            revision:protocol==="booking-http-v2"?`booking-policy-${scenario}-v1`:scenario==="fixed"?"booking-fixed-v2":"booking-flawed-v1",
+        }});
+        httpReport = validated; httpReports[scenario]=validated;
         track("http_completed");
     }
     catch (error) {
-        httpError = error instanceof Error ? (error.name === "AbortError" ? tr("30 秒内未得到报告；本次不能判断通过。", "No report within 30 seconds; this run does not establish a pass.") : error.message) : tr("接口检查未完成。", "The HTTP check did not complete.");
+        httpError = error instanceof Error ? (error.name === "AbortError" ? tr("40 秒内未得到报告；本次不能判断通过。", "No report within 40 seconds; this run does not establish a pass.") : error.message) : tr("接口检查未完成。", "The HTTP check did not complete.");
         track("http_error");
     }
     finally {
@@ -248,12 +263,55 @@ async function runHttp(scenario: Variant) {
         httpBusy = false;
     }
 }
-const HTTP_NAMES:Record<string,[string,string]>={revision:["核对声明的接口版本","Declared target revision"],missing_slot:["缺少预约时间应被拒绝","Reject missing slot"],invalid_email:["错误邮箱应被拒绝","Reject malformed email"],create:["创建虚构预约","Create a synthetic booking"],readback:["用独立请求查回预约","Read the booking independently"],replay:["重复提交应返回同一预约","Replay the same idempotency key"],conflict:["冲突提交应被拒绝","Reject changed data with the same key"],unchanged:["原预约内容应保持不变","Read the original record again"]};
+const HTTP_NAMES:Record<string,[string,string]>={
+    revision:["核对声明的接口版本","Declared target revision"],missing_slot:["缺少预约时间应被拒绝","Reject missing slot"],invalid_email:["错误邮箱应被拒绝","Reject malformed email"],create:["创建虚构预约","Create a synthetic booking"],readback:["用独立请求查回预约","Read the booking independently"],replay:["重复提交应返回同一预约","Replay the same idempotency key"],conflict:["冲突提交应被拒绝","Reject changed data with the same key"],unchanged:["原预约内容应保持不变","Read the original record again"],
+    party_zero:["零人预约应被拒绝","Reject zero people"],party_fraction:["非整数人数应被拒绝","Reject fractional party size"],party_below:["上限减一人数应可预约","Create one below the agreed maximum"],party_below_readback:["独立查回上限减一的预约","Read back the below-maximum booking"],party_exact:["恰好上限人数应可预约","Create exactly at the agreed maximum"],party_exact_readback:["独立查回上限人数的预约","Read back the maximum-size booking"],party_above:["超过约定上限应被拒绝","Reject one above the agreed maximum"],concurrent_first:["并发重复提交 · 第一份响应","Concurrent same-key request: first response"],concurrent_second:["并发重复提交 · 第二份响应","Concurrent same-key request: second response"],concurrent_readback:["独立查回并发请求的同一预约","Read back the concurrent requests’ booking"],
+};
 function httpStep(value:HttpReport,id:string){return (Array.isArray(value.steps)?value.steps:[]).map(asRecord).find(step=>step?.id===id);}
+function httpCounts(value:HttpReport){const steps=(Array.isArray(value.steps)?value.steps:[]).map(asRecord);return{total:steps.length,observed:steps.filter(step=>step?.outcome==="observed").length,issues:steps.filter(step=>step?.outcome==="mismatch").length,unavailable:steps.filter(step=>step?.outcome==="unavailable").length};}
+function httpRequirementText(protocol:HttpProtocol,maxPartySize:number){return protocol==="booking-http-v2"?`Each booking accepts at most ${maxPartySize} people.`:"The booking backend must reject invalid input, preserve independently readable bookings and handle replay/conflict without duplicate or overwritten records.";}
+function httpKeyResult(value:HttpReport):{text:string;different:boolean}{
+    const counts=httpCounts(value),create=httpStep(value,"create"),readback=httpStep(value,"readback");
+    if(httpProtocol==="booking-http-v2"){
+        const above=httpStep(value,"party_above"),exact=httpStep(value,"party_exact"),exactRead=httpStep(value,"party_exact_readback"),below=httpStep(value,"party_below"),belowRead=httpStep(value,"party_below_readback");
+        if(above?.outcome==="mismatch")return{text:tr(`约定每笔最多 ${httpMaxPartySize} 人，但 ${httpMaxPartySize+1} 人请求返回 HTTP ${above.status??"—"}，未按约定拒绝超限请求。`,`The agreement allows at most ${httpMaxPartySize} people, but a request for ${httpMaxPartySize+1} returned HTTP ${above.status??"—"} without the required rejection.`),different:true};
+        if(exact?.outcome!=="observed"||exactRead?.outcome!=="observed"||below?.outcome!=="observed"||belowRead?.outcome!=="observed")return{text:tr(`约定范围内的 ${httpMaxPartySize-1} 人或 ${httpMaxPartySize} 人预约，尚未同时得到创建与独立回读的预期支持。`,`Creation and independent readback are not both supported for the agreed ${httpMaxPartySize-1}-person or ${httpMaxPartySize}-person boundary.`),different:true};
+        if(counts.issues||counts.unavailable)return{text:tr("人数边界已有观测支持，其他步骤仍有不符或未确定结果；请查看完整报告。","The party-size boundaries have supporting observations, but other steps differ or remain unavailable. Inspect the full report."),different:true};
+        return{text:tr(`本次 ${counts.total} 步均有预期观测支持；人数边界、独立回读与并发重复提交分别记录。`,`All ${counts.total} steps have expected observations in this run; party-size boundaries, independent readback and concurrent retries are recorded separately.`),different:false};
+    }
+    if(create?.outcome==="observed"&&readback?.status===404)return{text:tr("接口返回创建成功，但独立查询找不到预约。","Creation claimed success, but an independent request could not find the booking."),different:true};
+    return readback?.outcome==="observed"?{text:tr("创建与独立回读一致；重复提交与冲突处理的结果另列。","Creation and independent readback agree; replay and conflict results are listed separately."),different:false}:{text:tr("独立回读尚未得到预期支持，请查看具体步骤。","Independent readback is not yet supported; inspect the individual steps."),different:true};
+}
+function renderHttpChoices(body:HTMLElement){
+    const choices=node("div","http-plan-controls"),protocolLabel=node("label","http-plan-field"),protocolSelect=document.createElement("select");
+    append(protocolLabel,node("span","",tr("检查范围","Check scope")));protocolSelect.id="http-protocol";protocolSelect.disabled=httpBusy;
+    for(const [value,copy]of [["booking-http-v2",tr("业务规则 · 18 步","Business rules · 18 steps")],["booking-http-v1",tr("基础保存与重复提交 · 8 步","Basic persistence and replay · 8 steps")]]){const option=document.createElement("option");option.value=value;option.textContent=copy;option.selected=value===httpProtocol;append(protocolSelect,option);}
+    protocolSelect.addEventListener("change",()=>{if(httpBusy)return;httpProtocol=protocolSelect.value as HttpProtocol;clearHttpDisplay();render();});append(protocolLabel,protocolSelect);append(choices,protocolLabel);
+    if(httpProtocol==="booking-http-v2"){
+        const maxLabel=node("label","http-plan-field"),select=document.createElement("select");select.id="http-maximum-party";select.disabled=httpBusy;append(maxLabel,node("span","",tr("约定每笔最多人数","Agreed maximum people per booking")));
+        for(let maximum=2;maximum<=12;maximum++){const option=document.createElement("option");option.value=String(maximum);option.textContent=tr(`${maximum} 人`,`${maximum} people`);option.selected=maximum===httpMaxPartySize;append(select,option);}
+        select.addEventListener("change",()=>{if(httpBusy)return;httpMaxPartySize=Number(select.value);clearHttpDisplay();render();});append(maxLabel,select);append(choices,maxLabel);
+    }
+    append(body,choices);
+    const requirement=node("div","http-test-agreement");append(requirement,node("span","",tr("本次虚构约定原文","Fictional agreement for this run")),node("blockquote","",httpRequirementText(httpProtocol,httpMaxPartySize)));
+    if(httpProtocol==="booking-http-v2")append(requirement,description(`将分别请求 ${httpMaxPartySize-1}、${httpMaxPartySize}、${httpMaxPartySize+1} 人，并独立读回允许范围内的预约。选择只改变检验预期，不会修改服务端实际配置。`,`Requests will test ${httpMaxPartySize-1}, ${httpMaxPartySize} and ${httpMaxPartySize+1} people, with independent readback inside the allowed range. Selection changes the expectation, not the service’s actual configuration.`));
+    append(requirement,description("更改检查范围或人数会清空本页两版 HTTP 结果，并需要重新授权。","Changing scope or maximum clears both displayed HTTP reports and requires fresh consent."));append(body,requirement);
+}
+function renderPolicyFacts(body:HTMLElement,value:HttpReport){
+    const facts=node("dl","http-policy-facts");
+    for(const [count,createId,readId]of [[httpMaxPartySize-1,"party_below","party_below_readback"],[httpMaxPartySize,"party_exact","party_exact_readback"]] as const){
+        const create=httpStep(value,createId),read=httpStep(value,readId),item=node("div");
+        append(item,node("dt","",tr(`${count} 人预约`,`${count}-person booking`)),node("dd","",`${tr("创建","Create")} ${create?.status??"—"} / ${tr("独立回读","readback")} ${read?.status??"—"}`));append(facts,item);
+    }
+    const above=httpStep(value,"party_above"),a=httpStep(value,"concurrent_first"),b=httpStep(value,"concurrent_second"),read=httpStep(value,"concurrent_readback");
+    const over=node("div",above?.outcome==="mismatch"?"is-different":"");append(over,node("dt","",tr(`${httpMaxPartySize+1} 人超限请求`,`${httpMaxPartySize+1}-person request above limit`)),node("dd","",tr(`预期拒绝；实际 HTTP ${above?.status??"—"}（${above?.outcome==="observed"?"观测支持":above?.outcome==="mismatch"?"不符":"未确定"}）`,`Expected rejection; actual HTTP ${above?.status??"—"} (${above?.outcome==="observed"?"observed support":above?.outcome==="mismatch"?"mismatch":"unavailable"})`)));append(facts,over);
+    const concurrent=node("div");append(concurrent,node("dt","",tr("同键并发重复提交","Concurrent requests with one key")),node("dd","",`HTTP ${a?.status??"—"} + ${b?.status??"—"} · ${tr("读回","readback")} ${read?.status??"—"}`),node("dd","note",a?.outcome==="observed"&&b?.outcome==="observed"?tr("两份响应返回同一 ID；一份创建、一份复用。","Both responses returned one ID: one creation and one replay."):tr("尚未得到一份创建、一份复用同一 ID 的预期支持。","One creation and one replay of the same ID are not yet supported.")));append(facts,concurrent);append(body,facts);
+}
 function renderHttp() {
-    const { section, body } = panel(tr("预约接口，真的写入了吗？", "Did the booking really persist?"), tr("真实 HTTP 实测", "Actual HTTP check"));section.classList.add("http-panel");
-    append(body, description("测试本实验室的两种受控虚构交付：缺陷版会出现“返回成功但未保存”等问题，修正版用于对照。每次运行都实际发出 HTTP 请求，再独立读回。", "Test two controlled fictional deliveries in this lab. The flawed service includes problems such as claiming success without saving; the corrected service provides a comparison. Every run sends actual HTTP requests and separately reads back the result.", "workflow-message"));
+    const { section, body } = panel(tr("预约接口，兑现约定了吗？", "Does the booking service meet the agreement?"), tr("真实 HTTP 实测", "Actual HTTP check"));section.classList.add("http-panel");
+    append(body, httpProtocol==="booking-http-v2"?description("两种接口都能保存预约，但缺陷版未执行声明的人数上限。按本次约定请求边界人数，再检查无效输入、重复请求与并发响应。结果由本次真实请求生成。","Both services persist bookings, but the flawed revision does not enforce its declared party-size limit. Test the agreed boundaries, invalid inputs, replay and concurrent responses with actual requests.","workflow-message"):description("测试本实验室的两种受控虚构交付：缺陷版会出现“返回成功但未保存”等问题，修正版用于对照。每次运行都实际发出 HTTP 请求，再独立读回。", "Test two controlled fictional deliveries in this lab. The flawed service includes problems such as claiming success without saving; the corrected service provides a comparison. Every run sends actual HTTP requests and separately reads back the result.", "workflow-message"));
     append(body, description("只针对这座实验室的固定接口，不扫描任意卖家网站；不是浏览器点击测试，也不验证邮件送达。请求只含生成的虚构测试资料，会写入独立测试数据库。", "Only this lab’s fixed endpoints are tested, not arbitrary sellers’ websites. This is not browser-click testing or email-delivery verification. Requests contain generated fictional test data and write to an isolated test database.", "boundary"));
+    renderHttpChoices(body);
     const consent = document.createElement("input");
     consent.type = "checkbox";
     consent.id = "http-consent";
@@ -272,11 +330,19 @@ function renderHttp() {
         append(body, node("p", "result-message error", httpError));
     if (httpReport) {
         append(body,description("接口修订号由受控目标声明，不证明它由任何上传文件构建。","The controlled target declares its revision; this does not attest that it was built from uploaded files."));
-        const target = asRecord(httpReport.target), summary = asRecord(httpReport.summary), steps = Array.isArray(httpReport.steps) ? httpReport.steps : [], issues = typeof summary?.issues === "number" ? summary.issues : undefined, unavailable = typeof summary?.unavailable === "number" ? summary.unavailable : undefined;
-        append(body, node("p", `result-message${issues || unavailable ? " error" : ""}`, tr(`本次${httpScenario === "flawed" ? "缺陷版" : "修正版"}报告：${issues ?? "—"} 项不符，${unavailable ?? "—"} 项无法确定。`, `This ${httpScenario === "flawed" ? "flawed" : "corrected"} run: ${issues ?? "—"} mismatched, ${unavailable ?? "—"} unavailable checks.`)));
-        const create=httpStep(httpReport,"create"),readback=httpStep(httpReport,"readback");
-        append(body,node("p",`http-key-result${readback?.outcome==="observed"?"":" is-different"}`,create?.outcome==="observed"&&readback?.status===404?tr("接口返回创建成功，但独立查询找不到预约。","Creation claimed success, but an independent request could not find the booking."):readback?.outcome==="observed"?tr("创建与独立回读一致；重复提交与冲突处理的结果另列。","Creation and independent readback agree; replay and conflict results are listed separately."):tr("独立回读尚未得到预期支持，请查看具体步骤。","Independent readback is not yet supported; inspect the individual steps.")));
-        if(httpReports.flawed&&httpReports.fixed){const comparison=node("div","http-version-comparison");append(comparison,node("h3","",tr("两次实际运行，使用同一协议","Two actual runs, one protocol")));for(const variant of ["flawed","fixed"] as const){const saved=httpReports[variant]!,c=httpStep(saved,"create"),r=httpStep(saved,"readback"),steps=Array.isArray(saved.steps)?saved.steps.map(asRecord):[],bad=steps.filter(step=>step?.outcome==="mismatch").length,unknown=steps.filter(step=>step?.outcome==="unavailable").length;append(comparison,node("p","",`${tr(variant==="flawed"?"缺陷版":"修正版",variant==="flawed"?"Flawed":"Corrected")}: ${tr("创建","Create")} HTTP ${c?.status??"—"} → ${tr("独立回读","Readback")} HTTP ${r?.status??"—"} · ${bad} ${tr("项不符","mismatched")} / ${unknown} ${tr("项未确定","unavailable")}`));}append(comparison,button(tr("下载两版实测对照","Download both actual runs"),()=>download({method:"controlled-http-comparison-v1",scope:"Two separately declared synthetic targets, not real buyer acceptance",reports:httpReports},"ProofBeforePay-HTTP-comparison.json")));append(body,comparison);}
+        const target = asRecord(httpReport.target), steps = Array.isArray(httpReport.steps) ? httpReport.steps : [], counts=httpCounts(httpReport);
+        append(body, node("p", `result-message${counts.issues || counts.unavailable ? " error" : ""}`, tr(`本次${httpScenario === "flawed" ? "缺陷版" : "修正版"} ${counts.total} 步：${counts.observed} 步有预期观测支持，${counts.issues} 项不符，${counts.unavailable} 项无法确定。`, `This ${httpScenario === "flawed" ? "flawed" : "corrected"} run: ${counts.total} steps, ${counts.observed} observed support, ${counts.issues} mismatched, ${counts.unavailable} unavailable.`)));
+        const keyResult=httpKeyResult(httpReport);append(body,node("p",`http-key-result${keyResult.different?" is-different":""}`,keyResult.text));
+        if(httpProtocol==="booking-http-v2")renderPolicyFacts(body,httpReport);
+        if(httpReports.flawed&&httpReports.fixed){
+            const comparison=node("div","http-version-comparison");append(comparison,node("h3","",tr("两次实际运行，使用同一约定和协议","Two actual runs, the same agreement and protocol")));
+            for(const variant of ["flawed","fixed"] as const){
+                const saved=httpReports[variant]!,c=httpStep(saved,"create"),r=httpStep(saved,"readback"),above=httpStep(saved,"party_above"),counts=httpCounts(saved);
+                const observed=httpProtocol==="booking-http-v2"?tr(`${httpMaxPartySize+1} 人超限请求 HTTP ${above?.status??"—"}`,`${httpMaxPartySize+1}-person request above limit: HTTP ${above?.status??"—"}`):`${tr("创建","Create")} HTTP ${c?.status??"—"} → ${tr("独立回读","Readback")} HTTP ${r?.status??"—"}`;
+                append(comparison,node("p","",`${tr(variant==="flawed"?"缺陷版":"修正版",variant==="flawed"?"Flawed":"Corrected")}: ${observed} · ${counts.issues} ${tr("项不符","mismatched")} / ${counts.unavailable} ${tr("项未确定","unavailable")}`));
+            }
+            append(comparison,button(tr("下载两版实测对照","Download both actual runs"),()=>download({method:"controlled-http-comparison-v2",scope:"Two separately declared synthetic targets, not real buyer acceptance",protocol:httpProtocol,agreedSource:httpRequirementText(httpProtocol,httpMaxPartySize),...(httpProtocol==="booking-http-v2"?{maxPartySize:httpMaxPartySize}:{}),reports:httpReports},"ProofBeforePay-HTTP-comparison.json")));append(body,comparison);
+        }
         const results = node("div", "http-results");
         append(results, node("h3", "", tr("逐步请求与读回证据", "Step-by-step request and readback evidence")), node("p", "report-meta", `${String(httpReport.method)} · ${typeof target?.label === "string" ? target.label : ""} · ${typeof target?.revision === "string" ? target.revision : ""}`));
         const list = node("ol");
@@ -362,6 +428,6 @@ function renderTrial() {
     append(details, body);
     return details;
 }
-function render() { document.documentElement.lang = language === "zh" ? "zh-CN" : "en"; app.replaceChildren(); const header = node("header", "site-header"), brand = node("div", "brand"); append(brand, document.createTextNode("proof"), node("span", "", "before"), document.createTextNode("pay.")); const actions = node("div", "header-actions"); append(actions, node("small", "", tr("访客实验室 · 无需登录", "Guest lab · no sign-in")), button(language === "zh" ? "EN" : "中文", () => { language = language === "zh" ? "en" : "zh"; }), button(tr("重置本页交付", "Reset local handoff"), resetCase, { className: "reset-button", disabled:httpBusy })); append(header, brand, actions); append(app, header); const main = node("main"), intro = node("section", "intro"), copy = node("div"); append(copy, node("h1", "", tr("付款前，先验证交付的承诺。", "Test the delivered promise before you pay.")), description("先核对约定与交付文字，再用真实 HTTP 请求识别“看起来成功、实际没保存”的预约接口。两种证据分别展示，最终决定始终由人确认。", "Compare agreed and delivered copy, then use actual HTTP requests to expose a booking service that claims success without saving. The evidence stays separate; a person makes the final decision.")); append(intro, copy, node("span", "scope-label", tr("独立虚构实验室\n不访问主站项目或密钥", "Isolated fictional lab\nNo main-workspace data or keys"))); append(main, intro); if (message)
+function render() { document.documentElement.lang = language === "zh" ? "zh-CN" : "en"; app.replaceChildren(); const header = node("header", "site-header"), brand = node("div", "brand"); append(brand, document.createTextNode("proof"), node("span", "", "before"), document.createTextNode("pay.")); const actions = node("div", "header-actions"); append(actions, node("small", "", tr("访客实验室 · 无需登录", "Guest lab · no sign-in")), button(language === "zh" ? "EN" : "中文", () => { language = language === "zh" ? "en" : "zh"; }), button(tr("重置本页交付", "Reset local handoff"), resetCase, { className: "reset-button", disabled:httpBusy })); append(header, brand, actions); append(app, header); const main = node("main"), intro = node("section", "intro"), copy = node("div"); append(copy, node("h1", "", tr("付款前，先验证交付的承诺。", "Test the delivered promise before you pay.")), description("先核对约定与交付文字，再用真实 HTTP 请求检查人数边界、重复提交和独立读回。两种证据分别展示，最终决定始终由人确认。", "Compare agreed and delivered copy, then use actual HTTP requests to test party-size boundaries, replay and independent readback. The evidence stays separate; a person makes the final decision.")); append(intro, copy, node("span", "scope-label", tr("独立虚构实验室\n不访问主站项目或密钥", "Isolated fictional lab\nNo main-workspace data or keys"))); append(main, intro); if (message)
     append(main, node("p", `message-bar${messageError ? " error" : ""}`, message)); const switcher=node("nav","mobile-lab-switch");switcher.setAttribute("aria-label",tr("实验室工作区","Lab workspace"));for(const view of ["local","http"] as const){const b=button(tr(view==="local"?"交付对照":"HTTP 深度检查",view==="local"?"Delivery comparison":"HTTP verification"),()=>{labView=view;});b.setAttribute("aria-pressed",String(labView===view));append(switcher,b);}append(main,switcher);const grid = node("div", `lab-grid mobile-${labView}`); append(grid, renderLocal(), renderHttp()); append(main, grid, renderTrial(), description("本页没有 AI 模型调用、PayPal 请求或真实商家订单。静态对照在浏览器内计算；预约 HTTP 测试只写入这座实验室独立的虚构服务。没有测试任意第三方网站或邮件系统。", "This page makes no AI model or PayPal calls and creates no real merchant orders. Static comparisons run locally; booking HTTP checks write only to this lab’s isolated fictional service. No arbitrary third-party website or email system is tested.", "lab-footer")); append(app, main); }
 render();

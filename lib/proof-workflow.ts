@@ -214,6 +214,7 @@ export function prepareReplacement(quote: ProofQuote, newDelivery: ProofDelivery
   delete next.proof.delivery.runtimeReport;
   delete next.proof.delivery.runtimeHistory;
   delete next.proof.delivery.runtimeRun;
+  delete next.proof.delivery.evidenceReservation;
   next.proof.review = undefined;
   next.proof.acceptedDeliveryId = undefined;
   next.proof.acceptedAt = undefined;

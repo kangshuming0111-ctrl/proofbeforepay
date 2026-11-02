@@ -1,19 +1,20 @@
 import { DomainError } from "./domain.ts";
+import {validateBookingPolicy,type BookingPartyPolicy} from "./booking-policy.ts";
 
-export type RuntimeCheckPlan = {
-  protocol: "booking-http-v1";
+type RuntimePlanSource = {
   criterionId: string;
   source: {start: number; end: number; excerpt: string};
 };
+export type RuntimeCheckPlan = RuntimePlanSource & ({protocol:"booking-http-v1"}|{protocol:"booking-http-v2";policy:BookingPartyPolicy});
 /** Only an operator-owned registry may supply this target, never a user URL. */
-export type RuntimeCheckTarget = {id: string; label: string; baseUrl: string; revision: string; testOnly: true};
+export type RuntimeCheckTarget = {id: string; label: string; baseUrl: string; revision: string; testOnly: true;protocol?:RuntimeCheckPlan["protocol"]};
 export type RuntimeCheckStep = {
   id: string; label: string; outcome: "observed" | "mismatch" | "unavailable";
   method: "GET" | "POST"; path: string; status?: number;
   expected: string; actual?: string; reason?: string;
 };
 export type RuntimeCheckReport = {
-  id: string; deliveryId: string; deliveryDigest: string; runId: string; method: "server-booking-http-v1";
+  id: string; deliveryId: string; deliveryDigest: string; runId: string; method: "server-booking-http-v1"|"server-booking-http-v2";
   startedAt: string; finishedAt: string;
   target: {id: string; label: string; origin: string; revision: string};
   plan: RuntimeCheckPlan; steps: RuntimeCheckStep[];
@@ -40,7 +41,7 @@ export function runtimeIdentifier(value: unknown, name = "Runtime identifier"): 
  * not a DNS-rebinding-safe validator for arbitrary user-supplied hostnames. */
 export function validateRuntimeTarget(value: unknown, options: {allowLoopback?: boolean} = {}): RuntimeCheckTarget {
   const input = record(value,"Runtime target");
-  if (Object.keys(input).some(key => !["id","label","baseUrl","revision","testOnly"].includes(key)) || input.testOnly !== true) throw new DomainError("Runtime targets must be explicitly test-only registry entries.");
+  if (Object.keys(input).some(key => !["id","label","baseUrl","revision","testOnly","protocol"].includes(key)) || input.testOnly !== true || input.protocol!==undefined&&!["booking-http-v1","booking-http-v2"].includes(input.protocol as string)) throw new DomainError("Runtime targets must be explicitly test-only registry entries.");
   const id = runtimeIdentifier(input.id,"Runtime target ID");
   const label = text(input.label,"Runtime target label",100), revision = text(input.revision,"Runtime revision",120);
   const raw = text(input.baseUrl,"Runtime target URL",500);
@@ -56,20 +57,26 @@ export function validateRuntimeTarget(value: unknown, options: {allowLoopback?: 
     if (url.protocol !== "https:" || !hostname.includes(".") || /^[\d.]+$/u.test(hostname) || hostname.includes(":") || /(?:^|\.)(?:localhost|local|internal|test|invalid|localdomain)$/u.test(hostname)) throw new DomainError("Runtime targets require a public HTTPS registry hostname.");
   }
   if (!url.pathname.endsWith("/")) url.pathname += "/";
-  return {id,label,baseUrl:url.href,revision,testOnly:true};
+  return {id,label,baseUrl:url.href,revision,testOnly:true,...(input.protocol?{protocol:input.protocol as RuntimeCheckPlan["protocol"]}:{})};
 }
 
 export function validateRuntimePlan(value: unknown, options: {sourceText?: string; criteria?: {id: string}[]} = {}): RuntimeCheckPlan {
   const input = record(value,"Runtime plan");
-  if (Object.keys(input).some(key => !["protocol","criterionId","source"].includes(key)) || input.protocol !== "booking-http-v1") throw new DomainError("Choose the supported booking HTTP test protocol.");
+  if (Object.keys(input).some(key => !["protocol","criterionId","source",...(input.protocol==="booking-http-v2"?["policy"]:[])].includes(key)) || !["booking-http-v1","booking-http-v2"].includes(input.protocol as string)) throw new DomainError("Choose the supported booking HTTP test protocol.");
   const criterionId = runtimeIdentifier(input.criterionId,"Runtime criterion ID");
   if (options.criteria && !options.criteria.some(item => item.id === criterionId)) throw new DomainError("Runtime plan must use an agreed criterion.");
   const source = record(input.source,"Runtime source");
   if (Object.keys(source).some(key => !["start","end","excerpt"].includes(key)) || !Number.isInteger(source.start) || !Number.isInteger(source.end) || (source.start as number) < 0 || (source.end as number) <= (source.start as number)) throw new DomainError("Runtime source positions are invalid.");
   const excerpt = text(source.excerpt,"Runtime source excerpt",1000);
   if ((source.end as number) - (source.start as number) !== excerpt.length || options.sourceText !== undefined && options.sourceText.slice(source.start as number,source.end as number) !== excerpt) throw new DomainError("Runtime source must retain the exact original substring.");
-  return {protocol:"booking-http-v1",criterionId,source:{start:source.start as number,end:source.end as number,excerpt}};
+  const exactSource={start:source.start as number,end:source.end as number,excerpt};
+  return input.protocol==="booking-http-v2"?{protocol:"booking-http-v2",criterionId,source:exactSource,policy:validateBookingPolicy(input.policy,exactSource)}:{protocol:"booking-http-v1",criterionId,source:exactSource};
 }
+
+const BASIC_IDS=["revision","missing_slot","invalid_email","create","readback","replay","conflict","unchanged"];
+const POLICY_IDS=["party_zero","party_fraction","party_below","party_below_readback","party_exact","party_exact_readback","party_above","concurrent_first","concurrent_second","concurrent_readback"];
+export function runtimeProtocolStepIds(plan:RuntimeCheckPlan):string[]{return [...BASIC_IDS,...(plan.protocol==="booking-http-v2"?POLICY_IDS:[])];}
+export function runtimeReportMethod(plan:RuntimeCheckPlan):RuntimeCheckReport["method"]{return plan.protocol==="booking-http-v2"?"server-booking-http-v2":"server-booking-http-v1";}
 
 /** Counters are derived from individual protocol observations, never client totals. */
 export function runtimeReportSummary(steps: RuntimeCheckStep[]): RuntimeCheckReport["summary"] {
@@ -86,7 +93,7 @@ export function runtimeDeliveryDigest(value: unknown): string {
 export function validateRuntimeReport(value: unknown, expected: {deliveryId: string; deliveryDigest: string; runId?: string; plan: RuntimeCheckPlan; target?: Pick<RuntimeCheckTarget,"id"|"label"|"baseUrl"|"revision">}): RuntimeCheckReport {
   const report=record(value,"Runtime report");
   if(Object.keys(report).some(key=>!["id","deliveryId","deliveryDigest","runId","method","startedAt","finishedAt","target","plan","steps","summary"].includes(key))
-    || report.method!=="server-booking-http-v1" || report.deliveryId!==expected.deliveryId || report.deliveryDigest!==runtimeDeliveryDigest(expected.deliveryDigest)) throw new DomainError("Runtime report does not match this exact delivery.",409);
+    || report.method!==runtimeReportMethod(expected.plan) || report.deliveryId!==expected.deliveryId || report.deliveryDigest!==runtimeDeliveryDigest(expected.deliveryDigest)) throw new DomainError("Runtime report does not match this exact delivery.",409);
   const runId=runtimeIdentifier(report.runId,"Runtime run ID");
   if(report.id!==runId||expected.runId!==undefined&&runId!==expected.runId)throw new DomainError("Runtime report does not match the saved run.",409);
   const plan=validateRuntimePlan(report.plan);
@@ -98,21 +105,22 @@ export function validateRuntimeReport(value: unknown, expected: {deliveryId: str
   let origin:URL;try{origin=new URL(text(target.origin,"Runtime target origin",500));}catch{throw new DomainError("Runtime target origin is invalid.",409);}
   if(origin.origin!==target.origin||origin.username||origin.password)throw new DomainError("Runtime target origin must be an origin without authentication.",409);
   if(expected.target&&(target.id!==expected.target.id||target.label!==expected.target.label||target.origin!==new URL(expected.target.baseUrl).origin||target.revision!==expected.target.revision))throw new DomainError("Runtime report target changed.",409);
-  const ids=["revision","missing_slot","invalid_email","create","readback","replay","conflict","unchanged"];
+  const ids=runtimeProtocolStepIds(plan);
   if(!Array.isArray(report.steps)||report.steps.length!==ids.length)throw new DomainError("Runtime report must retain every protocol step.",409);
   const steps=report.steps.map((value,index)=>{
     const step=record(value,"Runtime step");
-    const method=[0,4,7].includes(index)?"GET":"POST";
+    const readback=["readback","unchanged","party_below_readback","party_exact_readback","concurrent_readback"].includes(ids[index]);
+    const method=index===0||readback?"GET":"POST";
     if(Object.keys(step).some(key=>!["id","label","outcome","method","path","status","expected","actual","reason"].includes(key))||step.id!==ids[index]||step.method!==method||!["observed","mismatch","unavailable"].includes(step.outcome as string))throw new DomainError("Runtime protocol step is invalid.",409);
     text(step.label,"Runtime step label",160);text(step.expected,"Runtime expected description",500);
     const path=text(step.path,"Runtime request path",140);
-    if(index===0?path!=="meta":[4,7].includes(index)?!/^bookings\/(?:[A-Za-z0-9][A-Za-z0-9_-]{0,99}|:id)$/u.test(path):path!=="bookings")throw new DomainError("Runtime report contains an unsupported path.",409);
+    if(index===0?path!=="meta":readback?!/^bookings\/(?:[A-Za-z0-9][A-Za-z0-9_-]{0,99}|:id)$/u.test(path):path!=="bookings")throw new DomainError("Runtime report contains an unsupported path.",409);
     if(step.status!==undefined&&(!Number.isInteger(step.status)||(step.status as number)<100||(step.status as number)>599))throw new DomainError("Runtime HTTP status is invalid.",409);
     if(step.actual!==undefined)text(step.actual,"Runtime observed description",2000);
     if(step.reason!==undefined)text(step.reason,"Runtime unavailable reason",80);
     if(step.outcome==="unavailable"?!step.reason:step.status===undefined||typeof step.actual!=="string"||step.reason!==undefined)throw new DomainError("Runtime observation fields are inconsistent.",409);
-    const observedStatus=index===0||[4,7].includes(index)?[200]:[1,2].includes(index)?[400,422]:index===3?[201]:index===5?[200,201]:[409];
-    if(step.outcome==="observed"&&(!observedStatus.includes(step.status as number)||[4,7].includes(index)&&path==="bookings/:id"))throw new DomainError("Runtime observation cannot claim the expected outcome.",409);
+    const observedStatus=index===0||readback?[200]:["missing_slot","invalid_email","party_zero","party_fraction","party_above"].includes(ids[index])?[400,422]:ids[index]==="create"?[201]:ids[index]==="conflict"?[409]:[200,201];
+    if(step.outcome==="observed"&&(!observedStatus.includes(step.status as number)||readback&&path==="bookings/:id"))throw new DomainError("Runtime observation cannot claim the expected outcome.",409);
     return step as RuntimeCheckStep;
   });
   const summary=runtimeReportSummary(steps);

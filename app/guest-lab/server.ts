@@ -1,6 +1,8 @@
 import assets from "pbp-guest-assets";
 import {handleBookingRequest} from "../../tests/fixtures/booking-backend/worker/booking-api.js";
+import {handlePolicyBookingRequest} from "../../tests/fixtures/booking-backend/worker/policy-booking-api.js";
 import {executeRuntimeCheck} from "../../lib/runtime-runner.ts";
+import {suggestBookingPolicy} from "../../lib/booking-policy.ts";
 const headers={"Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer"};
 function json(value:unknown,status=200){return Response.json(value,{status,headers});}
 async function body(request:Request){
@@ -14,16 +16,20 @@ async function body(request:Request){
 export default {async fetch(request:Request,env:{DB?:D1Database;LAB_ALLOW_LOOPBACK?:string}):Promise<Response>{
   const url=new URL(request.url);
   const fixture=await handleBookingRequest(request,env);if(fixture)return fixture;
-  if(url.pathname==="/health")return json({service:"proofbeforepay-isolated-lab",protocol:"booking-http-v1",privateProjects:false,modelCredentials:false,realPayments:false});
+  const policyFixture=await handlePolicyBookingRequest(request,env);if(policyFixture)return policyFixture;
+  if(url.pathname==="/health")return json({service:"proofbeforepay-isolated-lab",protocols:["booking-http-v1","booking-http-v2"],privateProjects:false,modelCredentials:false,realPayments:false});
   if(url.pathname==="/api/lab-check"){
     if(request.method!=="POST")return json({error:"POST required"},405);
     if(request.headers.get("origin")!==url.origin)return json({error:"Same-origin request required"},403);
     let input;try{input=await body(request);}catch{return json({error:"Send a bounded JSON test consent"},400);}
-    if(!input||typeof input!=="object"||Array.isArray(input)||Object.keys(input).some(k=>!["scenario","consent"].includes(k))||!["flawed","fixed"].includes(input.scenario)||input.consent!==true)return json({error:"Confirm synthetic writes and choose a controlled scenario"},400);
+    if(!input||typeof input!=="object"||Array.isArray(input)||Object.keys(input).some(k=>!["scenario","consent","protocol","maxPartySize"].includes(k))||!["flawed","fixed"].includes(input.scenario)||input.consent!==true)return json({error:"Confirm synthetic writes and choose a controlled scenario"},400);
+    const protocol=input.protocol??"booking-http-v1";
+    if(!["booking-http-v1","booking-http-v2"].includes(protocol)||protocol==="booking-http-v1"&&input.maxPartySize!==undefined||protocol==="booking-http-v2"&&(!Number.isInteger(input.maxPartySize)||input.maxPartySize<2||input.maxPartySize>12))return json({error:"Choose a supported protocol and explicit synthetic maximum from2to12 for policy checks"},400);
     const scenario=input.scenario as "flawed"|"fixed",runId=crypto.randomUUID();
-    const source="The booking backend must reject invalid input, preserve independently readable bookings and handle replay/conflict without duplicate or overwritten records.";
+    const source=protocol==="booking-http-v2"?`Each booking accepts at most ${input.maxPartySize} people.`:"The booking backend must reject invalid input, preserve independently readable bookings and handle replay/conflict without duplicate or overwritten records.";
+    const citation={start:0,end:source.length,excerpt:source};
     const digest=Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(`controlled-fixture:${scenario}`)))).map(n=>n.toString(16).padStart(2,"0")).join("");
-    const report=await executeRuntimeCheck({deliveryId:`lab-${scenario}-${runId}`,deliveryDigest:digest,runId,plan:{protocol:"booking-http-v1",criterionId:"booking",source:{start:0,end:source.length,excerpt:source}},target:{id:`lab-${scenario}`,label:`Controlled disposable ${scenario} booking fixture`,baseUrl:`${url.origin}/test-api/${scenario}/`,revision:scenario==="fixed"?"booking-fixed-v2":"booking-flawed-v1",testOnly:true}}, {allowLoopback:env.LAB_ALLOW_LOOPBACK==="true"&&["127.0.0.1","localhost"].includes(url.hostname)});
+    const report=await executeRuntimeCheck({deliveryId:`lab-${scenario}-${runId}`,deliveryDigest:digest,runId,plan:protocol==="booking-http-v2"?{protocol,criterionId:"booking",source:citation,policy:suggestBookingPolicy(citation)!}:{protocol:"booking-http-v1",criterionId:"booking",source:citation},target:{id:protocol==="booking-http-v2"?`lab-policy-${scenario}`:`lab-${scenario}`,label:`Controlled disposable ${scenario} booking fixture`,baseUrl:`${url.origin}/test-api/${protocol==="booking-http-v2"?"policy-":""}${scenario}/`,revision:protocol==="booking-http-v2"?`booking-policy-${scenario}-v1`:scenario==="fixed"?"booking-fixed-v2":"booking-flawed-v1",testOnly:true,protocol}}, {allowLoopback:env.LAB_ALLOW_LOOPBACK==="true"&&["127.0.0.1","localhost"].includes(url.hostname)});
     return json(report);
   }
   if(request.method!=="GET"&&request.method!=="HEAD")return json({error:"Method not allowed"},405);
