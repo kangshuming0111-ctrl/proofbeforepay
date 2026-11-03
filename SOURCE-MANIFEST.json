@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-03T07:47:51.596Z",
+  "generatedAt": "2026-11-03T07:54:48.888Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -268,8 +268,8 @@
     },
     {
       "file": "app/components/ProjectJourneyPanel.tsx",
-      "bytes": 16652,
-      "sha256": "8391c2aa322ebc7da19b96e98737cf04c05f7e156dee6715a3e8bcbf105b70bd"
+      "bytes": 17737,
+      "sha256": "1f04d4337a6d3ab795c095af434818e1371f2a0a00a80dc37b4e504627af5885"
     },
     {
       "file": "app/components/RequirementCoveragePanel.tsx",
@@ -448,8 +448,8 @@
     },
     {
       "file": "app/project-journey.css",
-      "bytes": 1557,
-      "sha256": "de2bce437551098ed1c101473e898df6ee520ec296cf537ee7d8b72182299ded"
+      "bytes": 1808,
+      "sha256": "b09c9cd31472524f8cc0a322f1db11d825622f4bcfbc583734d311902057fbda"
     },
     {
       "file": "app/proof-versions/[id]/[deliveryId]/[...file]/route.ts",
@@ -960,6 +960,11 @@
       "file": "docs/collaboration/award-cycle-2026-11-03/round-5-adjudication.json",
       "bytes": 1351,
       "sha256": "d37b638e66e8e1c31a9b9cd76d7fefc55acad2264113d18e52c20bae928b9d1e"
+    },
+    {
+      "file": "docs/collaboration/award-cycle-2026-11-03/round-6-adjudication.json",
+      "bytes": 1717,
+      "sha256": "e72de471805725e34f99be4047e8d47b34ac7cf08a04a5784b6aeb8c7dd0156f"
     },
     {
       "file": "drizzle.config.ts",
