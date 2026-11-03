@@ -153,6 +153,33 @@ def assert_policy_report(quote, source_files):
     return report
 
 
+def assert_combined_report(quote, source_files, expected_delivery_id, previous_reports):
+    """Every supplemental run retains the exact v4 binding and prior history.
+
+    Acceptance deliberately stays frozen on reportA, not the newest supplement.
+    """
+    delivery = quote["proof"]["delivery"]
+    report = delivery["runtimeReport"]
+    expected_plan = combined_specification("Expected combined plan")["runtimeCheck"]
+    del expected_plan["confirmed"]
+    expected_plan["source"] = {"start": 0, "end": len(POLICY_SUMMARY), "excerpt": POLICY_SUMMARY}
+    assert delivery["id"] == expected_delivery_id and delivery["files"] == source_files
+    assert report["deliveryId"] == expected_delivery_id and report["id"] == report["runId"]
+    assert report["deliveryDigest"] == delivery["runtimeDeliveryDigest"] == digest(source_files)
+    assert report["plan"] == quote["proof"]["project"]["runtimeCheck"] == expected_plan
+    assert report["target"] == {"id": "lab-coverage-fixed", "label": "Combined input, replay and capacity checks", "origin": LAB_ORIGIN, "revision": "coverage-fixed-v1"}
+    assert report["method"] == "server-booking-http-v4"
+    assert report["summary"] == {"steps": 31, "observed": 0, "issues": 0, "unavailable": 31}
+    assert [row["id"] for row in report["steps"]] == COMBINED_STEP_IDS
+    assert all(row["outcome"] == "unavailable" for row in report["steps"])
+    assert report["steps"][0]["reason"] == "network_unavailable"
+    assert all(row["reason"] == "revision_not_verified" for row in report["steps"][1:])
+    assert "runtimeRun" not in delivery
+    assert delivery["runtimeHistory"] == previous_reports + [report]
+    assert len({row["id"] for row in delivery["runtimeHistory"]}) == len(previous_reports) + 1
+    return report
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--url", required=True)
@@ -434,10 +461,11 @@ def main():
     api.reject(seller, combined_path + "/delivery", {"files": files(), "expectedDeliveryId": None, "reviewRules": True, "backendTargetId": "lab-capacity-fixed"}, codes=(400,))
     assert_unchanged(api, buyer, combined_quote_path, before_combined_upload)
     combined_quote = api.ok(seller, combined_path + "/delivery", {"files": files(), "expectedDeliveryId": None, "reviewRules": True, "backendTargetId": "lab-coverage-fixed"})["quote"]
+    combined_delivery_id = combined_quote["proof"]["delivery"]["id"]
     combined_endpoint = combined_path + "/runtime-checks"
     combined_quote = api.ok(buyer, combined_endpoint, runtime_input(combined_quote))["quote"]
     combined_delivery = combined_quote["proof"]["delivery"]
-    combined_report = copy.deepcopy(combined_delivery["runtimeReport"])
+    combined_report = copy.deepcopy(assert_combined_report(combined_quote, files(), combined_delivery_id, []))
     assert combined_report["method"] == "server-booking-http-v4" and combined_report["plan"] == combined_quote["proof"]["project"]["runtimeCheck"]
     assert combined_report["deliveryId"] == combined_delivery["id"] and combined_report["deliveryDigest"] == digest(files())
     assert combined_report["target"]["id"] == "lab-coverage-fixed" and combined_report["target"]["revision"] == "coverage-fixed-v1"
@@ -460,6 +488,7 @@ def main():
     assert combined_snapshot["runtimeAcknowledgedSteps"] == COMBINED_STEP_IDS
     assert {row["id"] for row in combined_snapshot["criteria"]} >= {"coverage-1", "coverage-2"}
     combined_quote = api.ok(seller, combined_endpoint, runtime_input(combined_quote))["quote"]
+    assert_combined_report(combined_quote, files(), combined_delivery_id, [combined_report])
     combined_reports_saved = 2
     assert combined_quote["proof"]["delivery"]["runtimeReport"]["id"] != combined_report["id"]
     assert chain.snapshot(combined_quote) == combined_snapshot
@@ -486,6 +515,7 @@ def main():
                                   "reportsRetained": len(saved_delivery["runtimeHistory"]), "rejectedBeforeLease": True}
             break
         assert code == 200, (code, api.diagnostic(response))
+        assert_combined_report(response["quote"], files(), combined_delivery_id, before_budget_run["proof"]["delivery"]["runtimeHistory"])
         combined_quote = response["quote"]
         combined_reports_saved += 1
         assert chain.snapshot(combined_quote) == combined_snapshot

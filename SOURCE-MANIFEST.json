@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-03T03:36:01.563Z",
+  "generatedAt": "2026-11-03T03:42:38.225Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -2088,8 +2088,8 @@
     },
     {
       "file": "tests/runtime-api-smoke.py",
-      "bytes": 39344,
-      "sha256": "c9f5b4ee84bfd9a0e7a702f0b7fad5612d321e734af18c6a5aff514c7e59352d"
+      "bytes": 41446,
+      "sha256": "bbd8898d608f9b966ae62bb1ec08676b9cf7abec520dca2f6193a98f71401c19"
     },
     {
       "file": "tests/runtime-capacity-native.test.ts",
