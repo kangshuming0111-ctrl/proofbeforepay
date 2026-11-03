@@ -12,6 +12,7 @@ import type {RuntimePreflightResult,RuntimePreflightUnavailableReason} from "@/l
 import {capacityRecipeNumbers} from "@/lib/booking-capacity";
 import {runtimeCapacitySpotlightSteps,runtimeSavedActualExcerpt} from "@/lib/runtime-overview";
 import {RuntimeCoverageSummary} from "./RuntimeCoverageSummary";
+import {RUNTIME_LAB_ORIGIN} from "@/lib/runtime-project";
 import "../runtime-check.css";
 
 export type RuntimeCheckPanelProps = {
@@ -137,6 +138,7 @@ export function RuntimeCheckPanel({language,deliveryId,plan,targetId,target:desc
       {!enabled&&!busy&&!pending&&<p className="runtime-check-note">{tr("当前状态不能新增测试，已有报告仍可查看。","New tests are unavailable in this state; saved reports remain readable.")}</p>}
       {(pending||busy)&&<p className="runtime-check-note" role="status">{tr("结果尚未完成，不能按通过处理；新报告不会替换已经验收时保存的依据。","The run is incomplete and cannot be treated as a pass. A new report does not replace evidence saved at acceptance.")}</p>}
       {report&&!current&&<p className="runtime-check-warning">{tr("已保存报告不符合当前交付、目标或计划，未借用它显示当前结果。请重新检查。","The saved report does not match this delivery, target or plan. It is not used as the current result; check again.")}</p>}
+      <p className="runtime-check-note"><a href={`${RUNTIME_LAB_ORIGIN}/journeys.html`} target="_blank" rel="noreferrer">{tr("打开独立流程实验：表单、取消、改期与重试","Open the separate journey lab: forms, cancellation, rescheduling and retry")}</a><br/>{tr("仅检验实验室的虚构网页与原生存储，不关联当前交付、不改写这份报告。","Exercises the lab’s fictional frontend and native storage; it does not link this delivery or change this report.")}</p>
       {current&&summary&&<>
         <p className="runtime-check-counts">{tr(`本次 ${summary.steps} 步：${summary.observed} 步有预期观测支持，${summary.issues} 步不符，${summary.unavailable} 步无法确定。`,`${summary.steps} steps this run: ${summary.observed} with expected observations, ${summary.issues} mismatched, ${summary.unavailable} unavailable.`)}</p>
         {policy&&above?.outcome==="mismatch"&&above.status!==undefined&&above.status>=200&&above.status<300&&<p className="runtime-check-warning"><strong>{tr(`约定最多 ${policy.maxPartySize} 人，${policy.maxPartySize+1} 人请求却返回 HTTP ${above.status}`,`Agreed maximum ${policy.maxPartySize}; a ${policy.maxPartySize+1}-person request returned HTTP ${above.status}`)}</strong><br/>{tr("预期是 400/422 及结构化验证错误码；请查看这一步的实际证据。","Expected 400/422 and the structured validation code; inspect the actual evidence for this step.")}</p>}

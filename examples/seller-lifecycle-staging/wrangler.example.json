@@ -1,0 +1,7 @@
+{
+  "name": "proofbeforepay-disposable-lifecycle-staging",
+  "main": "worker/index.mjs",
+  "compatibility_date": "2026-11-03",
+  "vars": {"LIFECYCLE_PROFILE": "fixed"},
+  "d1_databases": [{"binding": "DB", "database_name": "replace-with-disposable-test-database", "database_id": "replace-with-own-test-database-id", "migrations_dir": "migrations"}]
+}

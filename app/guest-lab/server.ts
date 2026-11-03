@@ -7,6 +7,7 @@ import {suggestSlotCapacity} from "../../lib/booking-capacity.ts";
 import type {RuntimeCheckPlan} from "../../lib/runtime-checks.ts";
 import {handleSellerBookingRequest} from "../../examples/seller-staging/worker/booking-service.mjs";
 import {handleCapacityRequest} from "../../examples/seller-capacity-staging/worker/capacity-service.mjs";
+import {handleLifecycleRequest} from "../../examples/seller-lifecycle-staging/worker/lifecycle-service.mjs";
 const headers={"Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer"};
 function json(value:unknown,status=200){return Response.json(value,{status,headers});}
 async function body(request:Request){
@@ -19,6 +20,13 @@ async function body(request:Request){
 }
 export default {async fetch(request:Request,env:{DB?:D1Database;LAB_ALLOW_LOOPBACK?:string} & Record<string,unknown>):Promise<Response>{
   const url=new URL(request.url);
+  if(url.pathname.startsWith("/journey-api/")){
+    const route=/^\/journey-api\/(fixed|cancel-credit|move-loss|retry-duplicate)\/(pbp\/.*)$/u.exec(url.pathname);
+    if(!route||url.search||url.hash)return json({code:"not_found"},404);
+    if(request.method==="POST"&&request.headers.get("origin")!==url.origin)return json({code:"origin_not_allowed"},403);
+    const forwarded=new URL(request.url);forwarded.pathname=`/${route[2]}`;
+    return handleLifecycleRequest(new Request(forwarded,request),{DB:env.DB,LIFECYCLE_PROFILE:route[1]});
+  }
   const combinedFixture=/^\/test-api\/coverage-(fixed|validation-gap|overbook|baseline)\/(.*)$/u.exec(url.pathname);
   if(combinedFixture){
     const scenario=combinedFixture[1],forwarded=new URL(request.url);forwarded.pathname=`/pbp/${combinedFixture[2]}`;
@@ -92,5 +100,7 @@ export default {async fetch(request:Request,env:{DB?:D1Database;LAB_ALLOW_LOOPBA
   const asset=assets[url.pathname==="/"?"/index.html":url.pathname];
   if(!asset)return json({error:"Not found"},404);
   const bytes=Uint8Array.from(atob(asset.body),c=>c.charCodeAt(0));
-  return new Response(request.method==="HEAD"?null:bytes,{headers:{...headers,"Content-Type":asset.type,"Content-Security-Policy":"default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; frame-ancestors 'none'; form-action 'none'"}});
+  const isJourney=url.pathname==="/journey.html",isController=url.pathname==="/journeys.html";
+  const csp=`default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; frame-ancestors ${isJourney?"'self'":"'none'"}; form-action 'none'${isController?"; frame-src 'self'":""}`;
+  return new Response(request.method==="HEAD"?null:bytes,{headers:{...headers,"Content-Type":asset.type,"Content-Security-Policy":csp}});
 }};
