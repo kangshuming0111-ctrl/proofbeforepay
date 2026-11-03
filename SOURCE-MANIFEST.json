@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-03T16:06:28.465Z",
+  "generatedAt": "2026-11-03T16:08:28.942Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -283,8 +283,8 @@
     },
     {
       "file": "app/components/ModelCheckPanel.tsx",
-      "bytes": 12714,
-      "sha256": "f9e5eb41f6f349481982a43397687d805da449f2f4ef7f65f60e63d30e326ed4"
+      "bytes": 12782,
+      "sha256": "695b19512b4efe546887f78ee1bb27df4c294c76b767e63b52c46dc8ab0c2ce4"
     },
     {
       "file": "app/components/ModelEvidenceReadings.tsx",
