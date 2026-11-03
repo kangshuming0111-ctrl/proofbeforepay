@@ -1,0 +1,40 @@
+{
+  "round": 4,
+  "trigger": "Actual hosted browser firstjourney 764fead1-ef92-4c2f-a472-2f2972e075ae saved20unavailable; mainserver compatibility failure, not seller mismatch.",
+  "officialRuntimeSource": "https://developers.cloudflare.com/workers/runtime-apis/request/",
+  "fix": "Use manual redirect mode on Workers; explicitly reject3xx, opaqueredirect, redirected and differing nonempty responseURL before readingbody.",
+  "decisions": [
+    {
+      "finding": "Locationless302 bypasses3xxcheck",
+      "decision": "rejected",
+      "evidence": "Executed new Response(null,{status:302}) returns redirect_blocked. The reviewed status expression catches302 independently of Location."
+    },
+    {
+      "finding": "Latefetch changes alreadyretained result aftertimeout",
+      "decision": "rejected-as-stated; accepted-resource-defense",
+      "evidence": "Promise.race rejection does not resume caller assignment. Latebody disposal and perread signal checks now cancel an abort-ignoring fetch/stream; new tests verify zero late reads and unchanged saved observation."
+    },
+    {
+      "finding": "Require nonempty ResponseURL",
+      "decision": "rejected",
+      "evidence": "Legitimate native/stub Responses can have emptyurl; request itself is fixed and manual. Nonempty differing URLs are rejected."
+    },
+    {
+      "finding": "Runtimeconfiguration error masked as networkunavailable",
+      "decision": "accepted",
+      "evidence": "A bounded known redirect/cache TypeError maps to server_fetch_configuration; no rawerror persisted."
+    }
+  ],
+  "tests": [
+    "Workers-like fetch explicit olderror mutant-red",
+    "7types3xx",
+    "Locationless302",
+    "opaqueredirect",
+    "wrongfinalURL",
+    "latefetch cancellation",
+    "pendingstream cancellation",
+    "knownconfigurationerror mapping"
+  ],
+  "additionalChainFix": "Technical change requests bind journey-agreement and currentjourneyReportId, distinct from originalcriteria. Original source references remain untouched.",
+  "sourceReviewScope": "Local DeepSeek sourceadvisory; root independently adjudicated."
+}

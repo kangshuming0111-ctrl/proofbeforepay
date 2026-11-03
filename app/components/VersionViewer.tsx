@@ -7,7 +7,7 @@ import { deliveryFileUrl } from "@/lib/delivery-upload";
 import { ResourceChecks } from "./ResourceChecks";
 import { DeliveryAssessment } from "./DeliveryAssessment";
 import { BrowserCheckPanel } from "./BrowserCheckPanel";
-import { EvidenceHistoryPanel } from "./EvidenceHistoryPanel";
+import { EvidenceHistoryPanel,JourneyAgreementReadings,JourneyEvidenceReadings } from "./EvidenceHistoryPanel";
 import { BusinessChecksPanel } from "./BusinessChecksPanel";
 import "../business-check.css";
 
@@ -129,6 +129,8 @@ export function VersionViewer({ quoteId, version, language, criteria = [], onClo
         <ResourceChecks delivery={delivery} language={language}/>
         {delivery.businessChecks?.deliveryId === delivery.id && <BusinessChecksPanel language={language} report={delivery.businessChecks} readOnly/>}
         {delivery.browserChecks?.deliveryId === delivery.id && <BrowserCheckPanel language={language} report={delivery.browserChecks} readOnly enabled={false} busy={false} onRun={() => {}} onCancel={() => {}}/>}
+        {delivery.journeyPlan&&<JourneyAgreementReadings plan={delivery.journeyPlan} language={language}/>}
+        {delivery.journeyReport&&<details className="version-viewer-details"><summary>{tr("该版最后保存的业务旅程检验","Last saved business journey for this version")}<ChevronDown size={14} aria-hidden="true"/></summary><div className="version-viewer-details-body"><p className="version-viewer-help">{tr("这是该版本的已保存记录，不会加载当前版本或重新操作卖家站。验收时实际引用的报告请见下方证据快照。","This saved record belongs to this version. It does not load the current delivery or operate the seller site again. See the acceptance snapshot below for the report actually referenced at acceptance.")}</p><JourneyEvidenceReadings report={delivery.journeyReport} deliveryId={delivery.id} language={language}/></div></details>}
         <EvidenceHistoryPanel delivery={delivery} language={language}/>
         <DeliveryAssessment report={assessment} criteria={criteria} language={language} riskReviews={delivery.riskReviews} readOnly />
         <details className="version-viewer-details"><summary>{tr("卖家交付说明", "Seller's delivery note")}<ChevronDown size={14} aria-hidden="true" /></summary><div className="version-viewer-details-body">{submission ? <><p className="version-viewer-text">{submission.note}</p><p className="version-viewer-help">{tr("卖家陈述，不是独立证明。", "A seller statement, not independent proof.")} <time dateTime={submission.at}>{displayTime(submission.at)}</time></p><code>{submission.deliveryId}</code></> : <p className="version-viewer-help">{tr("没有与此快照版本绑定的交付说明。", "No delivery note is tied to this snapshot version.")}</p>}</div></details>

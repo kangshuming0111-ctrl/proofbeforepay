@@ -5,6 +5,7 @@ import { isSandboxCollaboration, isSandboxRehearsal } from "./proof-demo.ts";
 import { validateBusinessDecision } from "./business-decision.ts";
 import { createAcceptanceEvidence, withAcceptanceEvidence } from "./acceptance-evidence.ts";
 import { assertCoverageForAcceptance } from "./requirement-coverage.ts";
+import { savedProjectJourneyPlan, validateStoredProjectJourneyReport } from "./project-journey.ts";
 
 export type ProofWorkflowAction = "approve" | "checkout" | "authorize" | "delivery" | "review" | "assess" | "layout" | "capture" | "void" | "reconcile" | "return" | "accept_delivery" | "invite" | "submit_delivery";
 
@@ -46,7 +47,7 @@ function collaboration(quote: ProofQuote) {
 
 /** Freeze deliverables while a payment is pending, terminal, or past its acceptance window. */
 function requireUnlockedDelivery(quote: ProofQuote, approved = true) {
-  if (quote.proof.delivery?.runtimeRun) conflict("Finish the pending backend run before changing delivery, acceptance or payment.");
+  if (quote.proof.delivery?.runtimeRun || quote.proof.delivery?.journeyRun) conflict("Finish the pending backend run before changing delivery, acceptance or payment.");
   if (approved && quote.status !== "approved") conflict("Approve the exact scope before changing the delivery workflow.");
   if (quote.status === "paid" || ["captured", "voided", "closed_unpaid"].includes(quote.proof.paymentState)) conflict("This payment outcome has closed the delivery workflow.");
   if (quote.proof.paymentOperation) conflict("Finish the pending payment operation before changing the delivery workflow.");
@@ -145,7 +146,8 @@ export function requestChanges(quote: ProofQuote, value: Record<string, unknown>
   const input = record(value, "Change request");
   const delivery = currentDelivery(quote, input);
   const state = quote.proof.collaboration!;
-  if (!Array.isArray(input.feedback) || input.feedback.length < 1 || input.feedback.length > quote.proof.criteria.length) {
+  const journeyPlan = savedProjectJourneyPlan(quote);
+  if (!Array.isArray(input.feedback) || input.feedback.length < 1 || input.feedback.length > quote.proof.criteria.length + (journeyPlan ? 1 : 0)) {
     throw new DomainError("Feedback must contain 1 entry per selected agreed requirement, without duplicates.");
   }
   if (!Array.isArray(state.feedback) || state.feedback.length + input.feedback.length > 200) throw new DomainError("An agreement supports at most 200 feedback entries.");
@@ -153,11 +155,18 @@ export function requestChanges(quote: ProofQuote, value: Record<string, unknown>
   const at = timestamp(now);
   const feedback = input.feedback.map(value => {
     const entry = record(value, "Feedback");
-    if (typeof entry.criterionId !== "string" || !quote.proof.criteria.some(criterion => criterion.id === entry.criterionId) || seen.has(entry.criterionId)) {
+    const technical = entry.criterionId === "journey-agreement";
+    if (technical && Object.keys(entry).some(key => !["criterionId", "comment", "journeyReportId"].includes(key))) throw new DomainError("Technical feedback contains unsupported fields; original source references cannot be attached to it.");
+    if (typeof entry.criterionId !== "string" || !(technical ? journeyPlan : quote.proof.criteria.some(criterion => criterion.id === entry.criterionId)) || seen.has(entry.criterionId)) {
       throw new DomainError("Feedback must use unique agreed requirement identifiers.");
     }
+    if (technical) {
+      const report = delivery.journeyReport;
+      if (!report || typeof entry.journeyReportId !== "string" || entry.journeyReportId !== report.id) throw new DomainError("Technical change requests must reference the current journey report. Review it again.", 409);
+      validateStoredProjectJourneyReport(report, {deliveryId: delivery.id, deliveryDigest: report.deliveryDigest, plan: journeyPlan!, projectId: quote.id});
+    } else if (entry.journeyReportId !== undefined) throw new DomainError("A journey report belongs to the additional technical agreement, not an original requirement.");
     seen.add(entry.criterionId);
-    return { id: crypto.randomUUID(), deliveryId: delivery.id, criterionId: entry.criterionId, comment: text(entry.comment, "Feedback comment", 1000), at };
+    return { id: crypto.randomUUID(), deliveryId: delivery.id, criterionId: entry.criterionId, comment: text(entry.comment, "Feedback comment", 1000), at, ...(technical ? {journeyReportId: entry.journeyReportId as string} : {}) };
   });
   const next = structuredClone(quote);
   next.proof.collaboration = { ...next.proof.collaboration!, stage: "changes_requested", acceptance: undefined, feedback: [...next.proof.collaboration!.feedback, ...feedback] };
@@ -186,7 +195,7 @@ export function acceptDelivery(quote: ProofQuote, value: Record<string, unknown>
   }
   const at = timestamp(now);
   const next = structuredClone(quote);
-  const snapshot = createAcceptanceEvidence(quote, required, at, validateBusinessDecision(quote, input.businessDecision), input.runtimeDecision);
+  const snapshot = createAcceptanceEvidence(quote, required, at, validateBusinessDecision(quote, input.businessDecision), input.runtimeDecision, input.journeyDecision);
   next.proof.delivery = withAcceptanceEvidence(delivery, snapshot);
   next.proof.collaboration = { ...next.proof.collaboration!, stage: "accepted", acceptance: { deliveryId: delivery.id, at, manualChecks: required, evidenceSnapshotId: snapshot.id } };
   next.proof.audit.push({kind: "delivery_accepted", at, deliveryId: delivery.id, evidenceSnapshotId: snapshot.id});
@@ -214,6 +223,11 @@ export function prepareReplacement(quote: ProofQuote, newDelivery: ProofDelivery
   delete next.proof.delivery.runtimeReport;
   delete next.proof.delivery.runtimeHistory;
   delete next.proof.delivery.runtimeRun;
+  delete next.proof.delivery.journeyRun;
+  delete next.proof.delivery.journeyPlan;
+  delete next.proof.delivery.journeyReport;
+  delete next.proof.delivery.journeyHistory;
+  delete next.proof.delivery.journeyEvidenceReservation;
   delete next.proof.delivery.evidenceReservation;
   next.proof.review = undefined;
   next.proof.acceptedDeliveryId = undefined;

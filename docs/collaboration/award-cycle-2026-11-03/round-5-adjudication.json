@@ -1,0 +1,29 @@
+{
+  "round": 5,
+  "review": "outputs/award-cycle-2026-11-03/round-5-final-slice-review.json",
+  "reviewerAssessment": "No remaining concrete reachable P1/P2 defect in the supplied source slice. Runtime evidence remains separately required.",
+  "decisions": [
+    {
+      "finding": "MalformedJSON/invalidUTF8 classified as generic networkunavailable",
+      "decision": "accepted",
+      "resolution": "Both now map to invalid_json_response with no raw upstream payload."
+    },
+    {
+      "finding": "Readerror path does not safely cancelreader",
+      "decision": "accepted-resource-cleanup",
+      "resolution": "All read/parse error paths safely cancel; cleanup errors cannot hide original reason."
+    },
+    {
+      "finding": "Invitationexpiry implicitly alters sellerJoinedAt/stage and hidesrevoke",
+      "decision": "rejected",
+      "reason": "Expiry does not change sellerJoinedAt or workflowstage. canInvite does not depend on expiry. The reproduction invents an unrelated state transition and is outside this slice; no such reachable defect was shown."
+    }
+  ],
+  "tests": [
+    "malformedJSON and invalidUTF8",
+    "erroredstream cancellation",
+    "17 focused Workers/native cases",
+    "7 technicalfeedback tests and17 legacyworkflow tests",
+    "actual API/D1 technicalfeedback v1->v2/reportA+supplementB/mockcapture chain"
+  ]
+}

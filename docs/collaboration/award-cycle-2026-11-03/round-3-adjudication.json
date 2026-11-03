@@ -1,0 +1,26 @@
+{
+  "round": 3,
+  "review": "outputs/award-cycle-2026-11-03/round-3-completion-review.json",
+  "decisions": [
+    {
+      "finding": "P1 transient exception with function/BigInt in server JSON can permanently strand lease",
+      "decision": "rejected-as-stated",
+      "reason": "The actual server read layer parses bounded UTF8 JSON. Functions and BigInt cannot arrive from JSON.parse; lone surrogates stringify normally. A crash may leave the explicit run pending, which is intentionally not auto-replayed. The existing abort API/UI closes it without network, preserves the completed prefix and marks only the remaining suffix unknown. Actual API and timeout/oversize tests confirm reservation release. This is recoverable, not permanent, and the proposed impossible-input reproduction is not a production counterexample."
+    }
+  ],
+  "independentFixes": [
+    {
+      "issue": "Initial plan digest omitted full technical agreement text and canonical step inventory",
+      "resolution": "Hash the exported canonical definition including protocol, recipe, provenance, capacities, full agreement and ordered20step IDs. WebCrypto recomputation and mutation counterexamples pass. Newhash5a16c65b1a0ea00b0583f1629c8aa6917fb736f667aa0e5216a60ac20f7ff189."
+    },
+    {
+      "issue": "Derived step display could expose internally remapped lab paths",
+      "resolution": "Evaluator computation uses a temporary copy, while returned observations and actual excerpts retain original registered seller paths. All four native profile regressions prohibit temporary /journey-api/ paths."
+    }
+  ],
+  "reviewerArchitectureAssessment": "Competitive with source-grounded evidence systems, conditional on executed API/browser verification, not global superiority.",
+  "limits": [
+    "Reviewer did not execute tests or browser.",
+    "Controlled reference registration is an operator association to uploaded-file digest, not evidence that a remote deployed bundle was built from those files."
+  ]
+}

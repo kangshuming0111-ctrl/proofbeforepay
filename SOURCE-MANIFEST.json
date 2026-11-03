@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-03T06:59:49.279Z",
+  "generatedAt": "2026-11-03T07:47:51.596Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -38,8 +38,8 @@
     },
     {
       "file": "README.md",
-      "bytes": 80728,
-      "sha256": "9f4e48c86373301865f0c2a47f2d3893592ca28cdae05362e975c1e11dd83ed6"
+      "bytes": 83024,
+      "sha256": "11fb084c391ad64a2e44fba0bf01a8eb1afaa8a4b5a9ac3519cb716789a64ccd"
     },
     {
       "file": "app/api/business-check-suggestions/route.ts",
@@ -58,8 +58,8 @@
     },
     {
       "file": "app/api/proofs/[id]/[action]/route.ts",
-      "bytes": 15469,
-      "sha256": "bf9f982aed7b570a717ec34122296222f3aaba4d7fa1a0c22bc1abe5248571b5"
+      "bytes": 15851,
+      "sha256": "7922183eaef4cedb3713396c47bcf238de486225dae98a681450246eceb5939e"
     },
     {
       "file": "app/api/proofs/[id]/browser-checks/route.ts",
@@ -70,6 +70,16 @@
       "file": "app/api/proofs/[id]/business-checks/route.ts",
       "bytes": 670,
       "sha256": "4d66b34ea990ea2c8d9668cd05109208d23bf6a23458f4d5e5d00d66065bea28"
+    },
+    {
+      "file": "app/api/proofs/[id]/journey-checks/route.ts",
+      "bytes": 3326,
+      "sha256": "67b5d82ce4136fb6e2c73216cd45e7e30efff7b8a370067f46efcc8b49734e63"
+    },
+    {
+      "file": "app/api/proofs/[id]/journey-plan-suggestions/route.ts",
+      "bytes": 916,
+      "sha256": "11256a212d465b3b65b23291538b21cb72fcde5f468d1ce6d23e9f15e0f9e052"
     },
     {
       "file": "app/api/proofs/[id]/risk-reviews/route.ts",
@@ -218,8 +228,8 @@
     },
     {
       "file": "app/components/CollaborationPanel.tsx",
-      "bytes": 25654,
-      "sha256": "64d8d04b2c7490735f5d40805b94820620a6f0c00a26269032c1e51a10220e6d"
+      "bytes": 29812,
+      "sha256": "47650f8656a814f199f5e9e2bb092847caa33618e767dbfdee101b8756da6872"
     },
     {
       "file": "app/components/DeliveryAssessment.tsx",
@@ -233,8 +243,8 @@
     },
     {
       "file": "app/components/DeliveryOverview.tsx",
-      "bytes": 14941,
-      "sha256": "15b7130aaaf101f71193e048ecd44ba237186682333dc81b73e340fc03b7a691"
+      "bytes": 17059,
+      "sha256": "05e71b597448c6ef888d225dcbcca86d0510950b168b8342a14864eb75e3ae2d"
     },
     {
       "file": "app/components/EvidenceDownloads.tsx",
@@ -243,8 +253,8 @@
     },
     {
       "file": "app/components/EvidenceHistoryPanel.tsx",
-      "bytes": 12963,
-      "sha256": "b8055861b39d79bd492e6c87eece3d9cf6183fa56c6b806221bb1ff5a1f69837"
+      "bytes": 21200,
+      "sha256": "488410002a9c6036e567b16141ab704d3aa2584a9113c3b8938a660a44445ccc"
     },
     {
       "file": "app/components/GettingStarted.tsx",
@@ -255,6 +265,11 @@
       "file": "app/components/LayoutCheckPanel.tsx",
       "bytes": 11228,
       "sha256": "895a3d4feb3fe6d93bd2ca6dcda15938ad82fabb05ab9ab12b6ae26e6ee77e04"
+    },
+    {
+      "file": "app/components/ProjectJourneyPanel.tsx",
+      "bytes": 16652,
+      "sha256": "8391c2aa322ebc7da19b96e98737cf04c05f7e156dee6715a3e8bcbf105b70bd"
     },
     {
       "file": "app/components/RequirementCoveragePanel.tsx",
@@ -308,8 +323,8 @@
     },
     {
       "file": "app/components/VersionViewer.tsx",
-      "bytes": 13492,
-      "sha256": "2f3d547212c271d2de28fbaace415a9b7dec411531154a9fd419e5a7f8450e4d"
+      "bytes": 14440,
+      "sha256": "2b66ede88f608be3a9d6a34717e427ed0e67c7be3f076911c0a1e7995c44d5c4"
     },
     {
       "file": "app/components/WorkflowChoice.tsx",
@@ -398,8 +413,8 @@
     },
     {
       "file": "app/guest-lab/server.ts",
-      "bytes": 11536,
-      "sha256": "2cce3cb577b319054cf7354f9cf06e85c1d032df498c2fda99917391dad7dd7a"
+      "bytes": 13307,
+      "sha256": "4986186a14ee8b0cc708c4fd907326c99f4401de4cb2ca609d5cbd67c2c1b81c"
     },
     {
       "file": "app/guest-lab/style.css",
@@ -428,8 +443,13 @@
     },
     {
       "file": "app/page.tsx",
-      "bytes": 179082,
-      "sha256": "ef9411aeae84c6a73bb41df733390ffae161a07215813d13ef33b7610f697a8e"
+      "bytes": 181378,
+      "sha256": "5e7613e9f9aa6d5ba68e2c48528d730512e7328a0f8c519a61f8788155754537"
+    },
+    {
+      "file": "app/project-journey.css",
+      "bytes": 1557,
+      "sha256": "de2bce437551098ed1c101473e898df6ee520ec296cf537ee7d8b72182299ded"
     },
     {
       "file": "app/proof-versions/[id]/[deliveryId]/[...file]/route.ts",
@@ -917,6 +937,31 @@
       "sha256": "c08539af8bbe10ad1733a3a3fc88139ebebd6d5a580fbc46699d46493a907f2a"
     },
     {
+      "file": "docs/collaboration/award-cycle-2026-11-03/round-1-adjudication.json",
+      "bytes": 1307,
+      "sha256": "56e5ac0e039131a1844083e583b8e777241b610a6f103f12d4e23d94855bba14"
+    },
+    {
+      "file": "docs/collaboration/award-cycle-2026-11-03/round-2-adjudication.json",
+      "bytes": 1919,
+      "sha256": "453a2750a9189634846d1b9a038ca4d1631a47f83daa6ea427b3f0b400bb4445"
+    },
+    {
+      "file": "docs/collaboration/award-cycle-2026-11-03/round-3-adjudication.json",
+      "bytes": 1990,
+      "sha256": "83f69cfcd8249c23ceb80566df6fa1b598c84cafd9f8fd7882006c2bee686d72"
+    },
+    {
+      "file": "docs/collaboration/award-cycle-2026-11-03/round-4-adjudication.json",
+      "bytes": 2090,
+      "sha256": "fffdf9fdeb935fddc029f75e28794dc97919729e542a3c5179bbce885b73d2e0"
+    },
+    {
+      "file": "docs/collaboration/award-cycle-2026-11-03/round-5-adjudication.json",
+      "bytes": 1351,
+      "sha256": "d37b638e66e8e1c31a9b9cd76d7fefc55acad2264113d18e52c20bae928b9d1e"
+    },
+    {
       "file": "drizzle.config.ts",
       "bytes": 148,
       "sha256": "af081f7384aaeb0082cf422e29f139d137ca2f6a57c69b2c37b9fb1f8479867b"
@@ -993,8 +1038,38 @@
     },
     {
       "file": "examples/seller-lifecycle-staging/README.md",
-      "bytes": 7047,
-      "sha256": "c9821e1c5b58e1db07665994d2598cfba6749f4de74a66befd19dd7bd642f98b"
+      "bytes": 10007,
+      "sha256": "a40378f9abf9f54080771f7f26a143fbdcd91a45a0d068bdf8f7669c461b3083"
+    },
+    {
+      "file": "examples/seller-lifecycle-staging/frontend/bridge.mjs",
+      "bytes": 3882,
+      "sha256": "260ec46148faabfa59c4da2dfe71ba5c05a3739bbf7be3a1207af13d8079c359"
+    },
+    {
+      "file": "examples/seller-lifecycle-staging/frontend/config.mjs",
+      "bytes": 474,
+      "sha256": "c6b82a695fbf3b6dd335b44cd85358643706c6691954c8c8baa4479d0a669d7a"
+    },
+    {
+      "file": "examples/seller-lifecycle-staging/frontend/index.html",
+      "bytes": 3765,
+      "sha256": "0a4506eaec7dc2444b8048bd995ee1895684f6590e806219b299ce73a5de3743"
+    },
+    {
+      "file": "examples/seller-lifecycle-staging/frontend/runtime-config.mjs",
+      "bytes": 196,
+      "sha256": "3b3ad1594d35f6579393cbd587587e5c869c8f4379ec20109e46137ef3664472"
+    },
+    {
+      "file": "examples/seller-lifecycle-staging/frontend/seller.css",
+      "bytes": 2495,
+      "sha256": "c4b5fa84fdca13150a55a2903babb8da553b807cf54770fc1635e1be1ebe5ae7"
+    },
+    {
+      "file": "examples/seller-lifecycle-staging/frontend/seller.mjs",
+      "bytes": 6826,
+      "sha256": "4b38aa5d7bcecbcfdca2baf5d6476de0b4886bd8d9aa67abb52e25c6e15dee24"
     },
     {
       "file": "examples/seller-lifecycle-staging/migrations/0001_lifecycle.sql",
@@ -1003,8 +1078,8 @@
     },
     {
       "file": "examples/seller-lifecycle-staging/worker/index.mjs",
-      "bytes": 111,
-      "sha256": "8ea32125074de0989161a09c818c76d757702e6c07ff595ecf1e56e98309141f"
+      "bytes": 1024,
+      "sha256": "74b294e1fb9345a13d9adc36e10e78cc3edc5ec7ca12e5ff0af86af7bfb4aff1"
     },
     {
       "file": "examples/seller-lifecycle-staging/worker/lifecycle-service.mjs",
@@ -1013,8 +1088,8 @@
     },
     {
       "file": "examples/seller-lifecycle-staging/wrangler.example.json",
-      "bytes": 351,
-      "sha256": "8f52ad809a19948d18069d393e23af8589efd57ac922d7021fcb40a185d5675f"
+      "bytes": 437,
+      "sha256": "47b8fec80702d0ffcdc43864940a1c6fb90380245eac4f49d9373ae29576afff"
     },
     {
       "file": "examples/seller-staging/README.md",
@@ -1048,8 +1123,8 @@
     },
     {
       "file": "lib/acceptance-evidence.ts",
-      "bytes": 15124,
-      "sha256": "7646dc0339fe9045644b290391fec1a62b54fa63235768645b7f45b031daf6d3"
+      "bytes": 17455,
+      "sha256": "a006028139cd47462fb6a07c035495320106df0d6584742bb81088f86457e81d"
     },
     {
       "file": "lib/assessment-display.ts",
@@ -1138,8 +1213,8 @@
     },
     {
       "file": "lib/contracts.ts",
-      "bytes": 12336,
-      "sha256": "249312746b1efdecfcc6d66bd3357f6ec47ddafe355753c64110dd381fd02ab0"
+      "bytes": 13005,
+      "sha256": "7eb48bae776ffb2f1d9066a77e8e5d49bc4cb3b6b934e5613b29177e21f70482"
     },
     {
       "file": "lib/delivery-assessment.ts",
@@ -1173,13 +1248,13 @@
     },
     {
       "file": "lib/evidence-budget.ts",
-      "bytes": 10194,
-      "sha256": "e9fa9ac4114662f5174a0c4de2274cabc111f8830f180775d143d75471b74423"
+      "bytes": 13728,
+      "sha256": "fee88a1a8b0fb585e76a36ebccdb18923178867d03df7c5ea1bcc49bd7c04b6d"
     },
     {
       "file": "lib/evidence-export.ts",
-      "bytes": 36047,
-      "sha256": "458c8ad1a6e9b767f06f73648d880d8e038b04c33bbc0135d97e2f512d60d045"
+      "bytes": 38717,
+      "sha256": "637095054583b71a458eb653176487242fc9c37d69c11ab2704f30561d713e39"
     },
     {
       "file": "lib/first-use-trial.ts",
@@ -1202,6 +1277,16 @@
       "sha256": "e4822a416a7093665c8205d99738e084304ab248e2bae944719630a775c0bcb2"
     },
     {
+      "file": "lib/journey-plan-provider.ts",
+      "bytes": 6457,
+      "sha256": "6143e77e7974f7d1c4e57432fbc52733ef431a8caa8c12daeadb29beeac650af"
+    },
+    {
+      "file": "lib/journey-plan-suggestions.ts",
+      "bytes": 14932,
+      "sha256": "fd62dee4082d67b33ea93ebeef4d8bc0ecf20fbb9bb64c4385decf0cac0f98f6"
+    },
+    {
       "file": "lib/layout-probe.ts",
       "bytes": 11056,
       "sha256": "49c732b88e66e82a4ec36168765e038e1b8aafd3411f567e79e752e0a9e75ace"
@@ -1215,6 +1300,21 @@
       "file": "lib/previous-comparison-version.ts",
       "bytes": 4153,
       "sha256": "fbc59c3c7ba1264cbc49aa7c09780e7dd0e1b1b797f07412a92d548d621aeeb4"
+    },
+    {
+      "file": "lib/project-journey-actions.ts",
+      "bytes": 15950,
+      "sha256": "8c0f7ddb231caba6b8fac369304018df90d76496a339b672c38d07667c3b22c2"
+    },
+    {
+      "file": "lib/project-journey-display.ts",
+      "bytes": 16820,
+      "sha256": "ae6f5b0e500c085a1c5dad52f218730369b559c632a78026702b3a562aadbe0f"
+    },
+    {
+      "file": "lib/project-journey.ts",
+      "bytes": 15540,
+      "sha256": "31d475dff83675e9a24f2d72d5f41d00e630f1b7b72776eb220bcbc9a8a4deec"
     },
     {
       "file": "lib/proof-demo.ts",
@@ -1238,13 +1338,13 @@
     },
     {
       "file": "lib/proof-store.ts",
-      "bytes": 12495,
-      "sha256": "9d117c3c4f371415d61da3aef3620b0d3b720137f18199f4effe93f31ae87614"
+      "bytes": 12804,
+      "sha256": "6bbda74b9107b5a411cb68e9a2bbafb0f2ff343049c931d719ab29feee8a4157"
     },
     {
       "file": "lib/proof-workflow.ts",
-      "bytes": 15956,
-      "sha256": "a86b0c49c452f99c782ef8614a31b0d91cda30944bf5d16d69e4079819cf98fa"
+      "bytes": 17445,
+      "sha256": "59545a8745d5063368e490ce9f89eff6eb965cc0778e7d09c8b2e3ae3814814d"
     },
     {
       "file": "lib/providers.ts",
@@ -1273,8 +1373,8 @@
     },
     {
       "file": "lib/runtime-actions.ts",
-      "bytes": 3821,
-      "sha256": "fd4d6bd248561d78466362fb7206554c24be82af6abb5efce7a5cba62e4ba1a3"
+      "bytes": 3933,
+      "sha256": "1c3337b91093555feb3ffa0f9bd6c37b244ec03618a3c05593b354d08e61a3ef"
     },
     {
       "file": "lib/runtime-capacity.ts",
@@ -1345,6 +1445,21 @@
       "file": "lib/saved-page-observation.ts",
       "bytes": 7893,
       "sha256": "23ee6a23a2336ddb283ad713a76efe00659a8958339c2a88f99bad8fc9838709"
+    },
+    {
+      "file": "lib/seller-journey-bridge.ts",
+      "bytes": 8390,
+      "sha256": "b25115c7330d1ca7076436c4b759c28091ce108ddbd7947886c9045ce0ed2fbc"
+    },
+    {
+      "file": "lib/seller-journey-driver.ts",
+      "bytes": 5446,
+      "sha256": "c93aa3c4be0f20a145cf201ba936fa2e3a1debf24261986578d065d832760831"
+    },
+    {
+      "file": "lib/server-journey-targets.ts",
+      "bytes": 8421,
+      "sha256": "d474c3bc3c8c8183dbae5b18ac7c1c349d9794e56a54279747ee551eed14fee1"
     },
     {
       "file": "lib/server-runtime-preflight.ts",
@@ -1428,8 +1543,8 @@
     },
     {
       "file": "scripts/build-guest-lab.mjs",
-      "bytes": 2422,
-      "sha256": "cfe9d66c3acb21dfa4ae1b22660c46ea7673c59d2e48f1b9bc3fe173ffdb05d9"
+      "bytes": 3036,
+      "sha256": "402b425e85c3b97bcab72605204bc91faea433e02b1ddfafa1876ad916b419ec"
     },
     {
       "file": "scripts/build-judge-pack.mjs",
@@ -1443,8 +1558,8 @@
     },
     {
       "file": "scripts/build-verification-lab.mjs",
-      "bytes": 3213,
-      "sha256": "dbc998f11439a68c2e1071d8a7f0ac59bc724e9b59e3f0432f6e1c7b879d40e9"
+      "bytes": 3218,
+      "sha256": "ccf8e04ce62a7931f7c98a1428b354e76212d0ab675e705655c5d5fccdc94666"
     },
     {
       "file": "scripts/build-verified.sh",
@@ -2022,14 +2137,39 @@
       "sha256": "4031f5750dd13c8d546f9e55b208d0ad4371ea374d3a87f85933592c54d25380"
     },
     {
+      "file": "tests/guest-lab-seller-reference.test.ts",
+      "bytes": 7115,
+      "sha256": "329ba0beec00c515e5d286fc610bb888d8e212959cc39d80ce7afa0ae15af156"
+    },
+    {
       "file": "tests/html-source-inspection.test.ts",
       "bytes": 7630,
       "sha256": "a01c08cef48abec18f692105ec9fc7de31eefd3fc70cc1db50b583898bf9a002"
     },
     {
+      "file": "tests/journey-acceptance-export.test.ts",
+      "bytes": 7167,
+      "sha256": "93c277446345a977e7c5a2bdc5746665e2014df5ce55f057dd8ed4781cd97a84"
+    },
+    {
       "file": "tests/journey-checks.test.ts",
       "bytes": 14318,
       "sha256": "8960db87bf612890a415b72027858012f949c8687a8aa973c122eca31e0338fc"
+    },
+    {
+      "file": "tests/journey-feedback.test.ts",
+      "bytes": 10031,
+      "sha256": "0184c664441619f608cd6c5513beabd1b1a281d21fcba6db76b82f2e59e3b4d5"
+    },
+    {
+      "file": "tests/journey-plan-suggestions.test.ts",
+      "bytes": 15020,
+      "sha256": "580feeb8512e2813065f868a8d0a10f3b95f976dd902c4d1573854628dc0b37e"
+    },
+    {
+      "file": "tests/journey-workers-fetch.test.ts",
+      "bytes": 8633,
+      "sha256": "2b13d792822fa0b0956d7aab4178c586508cdc18a3830de14f265b55c4c49219"
     },
     {
       "file": "tests/judge-demo.test.mjs",
@@ -2070,6 +2210,21 @@
       "file": "tests/previous-comparison-version.test.ts",
       "bytes": 7486,
       "sha256": "fe477bdf9dc3339b3f3ba2d251e3d48abb27ad08fd741d9ae452c741203f4571"
+    },
+    {
+      "file": "tests/project-journey-api-smoke.py",
+      "bytes": 23264,
+      "sha256": "7a6bb2ff8cda1a1a177142f72846b39cc1cdca4459f53848a7164f8d19488a4c"
+    },
+    {
+      "file": "tests/project-journey-display.test.ts",
+      "bytes": 9810,
+      "sha256": "25d58d2f3fb916692e7070b644ad70f24530994836faa878a8710f5456c5f263"
+    },
+    {
+      "file": "tests/project-journey.test.ts",
+      "bytes": 19668,
+      "sha256": "7dfd1e8d220becc83f004bf8711ddf7dd5d452bb4e1f08b677b23d8cd887d7cb"
     },
     {
       "file": "tests/proof-api-smoke.py",
@@ -2155,6 +2310,11 @@
       "file": "tests/run-collaborative-sandbox-local.mjs",
       "bytes": 9861,
       "sha256": "f1025a349fe2184509c9a23f4f9bf2397c7cd47f1bf15c8a036796a5f41141ad"
+    },
+    {
+      "file": "tests/run-project-journey-local.mjs",
+      "bytes": 10061,
+      "sha256": "51496f97e908b4055f14f19b2dbff83721b8a3faffeea0839cd1c49effd7b4e0"
     },
     {
       "file": "tests/runtime-actions.test.ts",
@@ -2285,6 +2445,11 @@
       "file": "tests/seller-capacity-v4.test.ts",
       "bytes": 17629,
       "sha256": "42f1fa72deee20b9aa8434d608e633bce1c0faac9b11b78b8233fd930795db42"
+    },
+    {
+      "file": "tests/seller-journey-bridge.test.ts",
+      "bytes": 12200,
+      "sha256": "eba537541870baecd0b18e2d58694a2dfed097b20d5c60bd2689c5c57ea813d8"
     },
     {
       "file": "tests/seller-lifecycle.test.ts",

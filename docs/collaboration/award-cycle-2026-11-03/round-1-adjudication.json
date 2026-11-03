@@ -1,0 +1,24 @@
+{
+  "round": 1,
+  "review": "outputs/award-cycle-2026-11-03/round-1-backend-review.json",
+  "advisoryOnly": true,
+  "decisions": [
+    {
+      "finding": "Transient read prevents completion / deletion before reservation consume",
+      "decision": "rejected",
+      "reason": "finishJourneyEvidenceReservation reads saved reservation directly and compares the explicitly supplied run id; it never calls journeyReservation after deletion. Executed interrupted-report acceptance/export tests and native full-run tests finish successfully, including all-unavailable timeout case."
+    },
+    {
+      "finding": "Validated duplicate IDs evade uniqueness check",
+      "decision": "rejected",
+      "reason": "Set over validated IDs is exactly the correct effective-identity uniqueness test. Equal normalized IDs cannot survive its length comparison. runtimeIdentifier rejects unsupported raw forms."
+    }
+  ],
+  "independentFixes": [
+    {
+      "issue": "Repeated large server readings could fill a pending raw-input envelope before final report",
+      "resolution": "Bound per-step reads and reserve remaining report overhead; retain earlier observations and mark the new reading unavailable on evidence-size limit instead of stranding the lease.",
+      "test": "tests/project-journey.test.ts"
+    }
+  ]
+}

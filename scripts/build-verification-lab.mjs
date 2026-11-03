@@ -11,7 +11,7 @@ try{await lstat(output);throw new Error("Output exists; choose a new directory")
 await mkdir(output,{recursive:true});
 const guest=path.join(output,"frontend");await buildGuestLab(guest);
 const assets={};
-async function walk(folder){for(const entry of await readdir(folder,{withFileTypes:true})){const f=path.join(folder,entry.name);if(entry.isDirectory())await walk(f);else if(entry.isFile()&&entry.name!=="guest-build.json"){const name="/"+path.relative(guest,f).split(path.sep).join("/");assets[name]={body:(await readFile(f)).toString("base64"),type:name.endsWith(".html")?"text/html; charset=utf-8":name.endsWith(".js")?"text/javascript; charset=utf-8":"text/css; charset=utf-8"};}}}
+async function walk(folder){for(const entry of await readdir(folder,{withFileTypes:true})){const f=path.join(folder,entry.name);if(entry.isDirectory())await walk(f);else if(entry.isFile()&&entry.name!=="guest-build.json"){const name="/"+path.relative(guest,f).split(path.sep).join("/");assets[name]={body:(await readFile(f)).toString("base64"),type:name.endsWith(".html")?"text/html; charset=utf-8":/\.(?:m?js)$/u.test(name)?"text/javascript; charset=utf-8":"text/css; charset=utf-8"};}}}
 await walk(guest);
 const require=createRequire(import.meta.url),esbuild=createRequire(require.resolve("wrangler/package.json"))("esbuild");
 await mkdir(path.join(output,"worker"),{recursive:true});

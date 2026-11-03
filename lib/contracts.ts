@@ -89,6 +89,11 @@ export type ProofAssessment = {
   usage?: { promptTokens: number; completionTokens: number };
 };
 export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"; sequence?: number; label: string; submittedAt: string; evidence: ProofEvidence[]; files?: Record<string, string>; layoutReport?: ProofLayoutReport; layoutHistory?: ProofLayoutReport[]; browserChecks?: ProofBrowserCheckReport; browserCheckHistory?: ProofBrowserCheckReport[]; businessChecks?: ProofBusinessCheckReport; businessCheckHistory?: ProofBusinessCheckReport[]; acceptanceEvidence?: ProofAcceptanceEvidence[]; assessment?: ProofAssessment; riskReviews?: ProofRiskReview[]; resources?: ProofResourceReport;
+  journeyPlan?: import("./project-journey").ProjectJourneyPlan;
+  journeyReport?: import("./project-journey").ProjectJourneyReport;
+  journeyHistory?: import("./project-journey").ProjectJourneyReport[];
+  journeyRun?: import("./project-journey").ProjectJourneyRun;
+  journeyEvidenceReservation?: {runId?:string;reportBytes:number;acceptanceBytes:number};
   backendTargetId?: string;
   runtimeDeliveryDigest?: string;
   runtimeRegistration?: import("./runtime-registration").RuntimeRegistrationSnapshot;
@@ -100,13 +105,17 @@ export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"
 export type ProofReview = { deliveryId: string; reviewedAt: string; mode: "demo" | "live"; summary: string };
 export type ProofRole = "buyer" | "seller";
 export type ProofSubmission = { deliveryId: string; note: string; at: string };
-export type ProofFeedback = { id: string; deliveryId: string; criterionId: string; comment: string; at: string };
+export type ProofFeedback = { id: string; deliveryId: string; criterionId: string; comment: string; at: string; journeyReportId?: string };
 export type ProofAcceptanceEvidence = {
   id: string; deliveryId: string; at: string;
   browserReportId: string | null; layoutReportId: string | null; assessmentId: string | null;
   businessReportId?: string | null; businessExceptionReason?: string;
   runtimeReportId?: string | null; runtimeExceptionReason?: string; runtimeAcknowledgedSteps?: string[]; runtimeDeliveryDigest?: string; runtimeTargetId?: string;
   runtimeRegistration?: import("./runtime-registration").RuntimeRegistrationSnapshot;
+  journeyReportId?: string; journeyDeliveryDigest?: string; journeyPlanDigest?: string;
+  journeyRegistration?: import("./project-journey").JourneyRegistrationSnapshot;
+  journeyExceptionReason?: string; journeyAcknowledgedSteps?: string[];
+  journeyClientObservationAcknowledged?: true;
   criteria: ProofCriterion[]; evidence: ProofEvidence[]; manualChecks: string[];
   review?: ProofReview; assessment?: ProofAssessment;
   riskReviews: ProofRiskReview[];

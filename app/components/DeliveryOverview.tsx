@@ -6,6 +6,7 @@ import { criterionDisplayTitle, deliveryOverview, overviewFeedbackDraft, overvie
 import { deliveryLayoutSummary } from "@/lib/delivery-layout-summary";
 import { buildBusinessSpotlight } from "@/lib/business-spotlight";
 import { BusinessSpotlight } from "./BusinessSpotlight";
+import {evaluateStoredProjectJourneyReport,validateStoredProjectJourneyReport,type ProjectJourneyEvaluation} from "@/lib/project-journey";
 import {runtimeReportSummary} from "@/lib/runtime-checks";
 import {runtimeOverviewRows} from "@/lib/runtime-overview";
 import {RuntimeCoverageSummary} from "./RuntimeCoverageSummary";
@@ -27,10 +28,11 @@ export type DeliveryOverviewProps = {
   onOpenLayout?: () => void;
   onOpenBusiness?: () => void;
   onOpenRuntime?: () => void;
+  onOpenJourney?: () => void;
   onInspectLayout?: (file: string, width: ProofLayoutWidth) => void;
 };
 
-export function DeliveryOverview({ delivery, criteria, review, manualChecks, language, role, stage, previousVersion, busy = false, onInspect, onPrepareFeedback, onViewHistory, onOpenLayout, onOpenBusiness, onOpenRuntime, onInspectLayout }: DeliveryOverviewProps) {
+export function DeliveryOverview({ delivery, criteria, review, manualChecks, language, role, stage, previousVersion, busy = false, onInspect, onPrepareFeedback, onViewHistory, onOpenLayout, onOpenBusiness, onOpenRuntime, onOpenJourney, onInspectLayout }: DeliveryOverviewProps) {
   const zh = language === "zh";
   const tr = (chinese: string, english: string) => zh ? chinese : english;
   const overview = deliveryOverview({ delivery, criteria, review, manualChecks, previousVersion });
@@ -38,6 +40,8 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
   const business = buildBusinessSpotlight(delivery, previousVersion);
   const runtime=delivery.runtimeReport?.deliveryId===delivery.id?delivery.runtimeReport:undefined;
   const runtimeSummary=runtime?runtimeReportSummary(runtime.steps):undefined;
+  let journey:ProjectJourneyEvaluation|undefined;
+  try{if(delivery.journeyReport&&delivery.journeyPlan)journey=evaluateStoredProjectJourneyReport(validateStoredProjectJourneyReport(delivery.journeyReport,{deliveryId:delivery.id,deliveryDigest:delivery.journeyReport.deliveryDigest,plan:delivery.journeyPlan}));}catch{/* Never substitute a stale or malformed report. */}
   const runtimeRows=runtime?runtimeOverviewRows(runtime,language):[];
   const layoutIssue = layout.state === "current" ? layout.firstIssue : undefined;
   const firstRows = overview.rows.slice(0, 3);
@@ -48,6 +52,7 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
   const title = stage === "accepted" ? tr("买家已接受当前交付", "The buyer accepted this delivery")
     : !overview.reviewCurrent ? tr("先核查当前交付版本", "Check this delivery version first")
     : overview.ruleFailures ? tr("有交付要求尚未符合", "Some delivery requirements are unmet")
+    : delivery.journeyPlan&&(!journey||journey.summary.issues||journey.summary.unavailable) ? tr("业务旅程有差异或尚待补证", "The business journey differs or needs more evidence")
     : runtimeSummary && (runtimeSummary.issues || runtimeSummary.unavailable) ? tr("预约后端仍有不符或未确定步骤", "Booking backend steps differ or remain uncertain")
     : business && business.issues > 0 ? tr("约定的业务内容存在差异", "Agreed business content differs")
     : business && business.unavailable > 0 ? tr("部分业务内容仍需核对", "Some business content needs inspection")
@@ -66,6 +71,7 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
   return <section className="delivery-overview" aria-label={tr("当前交付结果", "Current delivery results")}>
     <header className="delivery-overview-heading"><FileCheck2 size={16} aria-hidden="true"/><h3>{title}</h3><span>{delivery.sequence ? `v${delivery.sequence}` : tr("当前版", "Current")}</span></header>
     {business && <BusinessSpotlight delivery={delivery} previousVersion={previousVersion} language={language} busy={busy} onInspect={onOpenBusiness ?? onOpenLayout ?? (() => {})} onPrepareFeedback={showDraft ? onPrepareFeedback : undefined}/>}
+    {delivery.journeyPlan&&<div className="delivery-overview-layout"><div className="delivery-overview-layout-heading"><strong>{tr("本版业务旅程","This delivery’s business journey")}: {delivery.journeyRun?tr("运行尚未完成","Run incomplete"):journey?`${journey.summary.observed}/20 ${tr("项观测支持","supported observations")}`:tr("尚未检验","Not checked")}</strong>{onOpenJourney&&<button type="button" disabled={busy} onClick={onOpenJourney}>{tr("查看表单与服务端证据","Inspect form and server evidence")}<ArrowRight size={12}/></button>}</div>{journey&&<p className="delivery-overview-layout-note">{tr("不符","Mismatched")} {journey.summary.issues} · {tr("未确定","Unavailable")} {journey.summary.unavailable} · {tr("创建、取消、改期、响应丢失后原键重试与最终对账分别留证。","Creation, cancellation, moves, original-key retry after lost response, and final reconciliation are recorded separately.")}</p>}<p className="delivery-overview-layout-note">{tr("客户端表单记录＋主站独立读取卖家接口；按登记关联本版文件，不证明源码部署真实性，也不自动接受或付款。","Client form records plus separate server reads of seller endpoints. The operator links this upload; deployed-source provenance is not attested. No automatic acceptance or payment.")}</p></div>}
     {runtime&&runtimeSummary&&<div className="delivery-overview-layout"><div className="delivery-overview-layout-heading"><strong>{tr("预约接口实测","Booking HTTP check")}: {runtimeSummary.observed}/{runtimeSummary.steps} {tr("步有预期观测支持","steps with expected observations")}</strong>{onOpenRuntime&&<button type="button" disabled={busy} onClick={onOpenRuntime}>{tr(`查看 ${runtimeSummary.steps} 步证据`, `Inspect ${runtimeSummary.steps}-step evidence`)}<ArrowRight size={12}/></button>}</div>{runtimeRows.map(row=><p key={row.id} className="delivery-overview-layout-note"><strong>{row.label}</strong>: {row.detail}</p>)}<p className="delivery-overview-layout-note">{tr("不符","Mismatched")} {runtimeSummary.issues} · {tr("未确定","Unavailable")} {runtimeSummary.unavailable}</p><RuntimeCoverageSummary plan={runtime.plan} report={runtime} pending={!!delivery.runtimeRun} language={language}/></div>}
     <div className="delivery-overview-metrics" aria-label={tr("分别记录的检查结果", "Separately recorded check results")}>
       <span className={overview.ruleFailures ? "overview-attention" : ""}>{tr("规则不符", "Rule mismatches")} <strong>{overview.ruleFailures ?? "—"}</strong></span>

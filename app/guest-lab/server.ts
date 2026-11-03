@@ -20,6 +20,22 @@ async function body(request:Request){
 }
 export default {async fetch(request:Request,env:{DB?:D1Database;LAB_ALLOW_LOOPBACK?:string} & Record<string,unknown>):Promise<Response>{
   const url=new URL(request.url);
+  if(url.pathname.startsWith("/seller-reference/")){
+    const route=/^\/seller-reference\/(fixed|cancel-credit|move-loss|retry-duplicate)\/(pbp\/.*|index\.html|seller\.css|seller\.mjs|bridge\.mjs|config\.mjs|runtime-config\.mjs)$/u.exec(url.pathname);
+    if(!route)return json({code:"not_found"},404);
+    if(route[2].startsWith("pbp/")){
+      if(url.search||url.hash)return json({code:"not_found"},404);
+      if(request.method==="POST"&&request.headers.get("origin")!==url.origin)return json({code:"origin_not_allowed"},403);
+      const forwarded=new URL(request.url);forwarded.pathname=`/${route[2]}`;
+      return handleLifecycleRequest(new Request(forwarded,request),{DB:env.DB,LIFECYCLE_PROFILE:route[1]});
+    }
+    if(!["GET","HEAD"].includes(request.method))return json({code:"method_not_allowed"},405);
+    const asset=assets[url.pathname];if(!asset)return json({code:"not_found"},404);
+    const allowLoopback=env.LAB_ALLOW_LOOPBACK==="1",allowedParents=`https://briefpay-kang-lab.blueheron8.chatgpt.site${allowLoopback?" http://127.0.0.1:*":""}`;
+    const bytes=route[2]==="runtime-config.mjs"&&allowLoopback?new TextEncoder().encode("export const allowLoopbackParent = true;\n"):Uint8Array.from(atob(asset.body),c=>c.charCodeAt(0));
+    const csp=`default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; frame-ancestors ${allowedParents}; form-action 'self'`;
+    return new Response(request.method==="HEAD"?null:bytes,{headers:{...headers,"Content-Type":asset.type,"Content-Security-Policy":csp}});
+  }
   if(url.pathname.startsWith("/journey-api/")){
     const route=/^\/journey-api\/(fixed|cancel-credit|move-loss|retry-duplicate)\/(pbp\/.*)$/u.exec(url.pathname);
     if(!route||url.search||url.hash)return json({code:"not_found"},404);
@@ -70,7 +86,7 @@ export default {async fetch(request:Request,env:{DB?:D1Database;LAB_ALLOW_LOOPBA
   }
   const fixture=await handleBookingRequest(request,env);if(fixture)return fixture;
   const policyFixture=await handlePolicyBookingRequest(request,env);if(policyFixture)return policyFixture;
-  if(url.pathname==="/health")return json({service:"proofbeforepay-isolated-lab",protocols:["booking-http-v1","booking-http-v2","booking-http-v3","booking-http-v4"],privateProjects:false,modelCredentials:false,realPayments:false,referenceStaging:{handler:"separate-native-business-handler",syntheticOnly:true,sharesPhysicalLabDatabase:true},capacityStaging:{handler:"native-aggregate-capacity-sql",syntheticOnly:true,sharesPhysicalLabDatabase:true}});
+  if(url.pathname==="/health")return json({service:"proofbeforepay-isolated-lab",protocols:["booking-http-v1","booking-http-v2","booking-http-v3","booking-http-v4"],privateProjects:false,modelCredentials:false,realPayments:false,referenceStaging:{handler:"separate-native-business-handler",syntheticOnly:true,sharesPhysicalLabDatabase:true},capacityStaging:{handler:"native-aggregate-capacity-sql",syntheticOnly:true,sharesPhysicalLabDatabase:true},sellerJourneyReference:{protocol:"booking-lifecycle-http-v1",bridge:"pbp-seller-bridge-v1",developerOperated:true,independentSeller:false,syntheticOnly:true,sharesPhysicalLabDatabase:true}});
   if(url.pathname==="/api/lab-check"){
     if(request.method!=="POST")return json({error:"POST required"},405);
     if(request.headers.get("origin")!==url.origin)return json({error:"Same-origin request required"},403);

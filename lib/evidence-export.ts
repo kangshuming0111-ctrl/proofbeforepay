@@ -4,6 +4,7 @@ import {createUploadedDelivery, parseStaticProject, validateStaticFiles} from ".
 import {getProofFixture, inspectProofFiles, proofCriteria} from "./proof-evidence.ts";
 import {runtimeDeliveryDigest, runtimeReportsFor, deliveryRuntimeTarget, savedRuntimePlan} from "./runtime-project.ts";
 import {runtimeIdentifier,validateRuntimeReport} from "./runtime-checks.ts";
+import {savedProjectJourneyPlan,projectJourneyReportsFor,validateProjectJourneyPlan,validateStoredProjectJourneyReport,evaluateStoredProjectJourneyReport,sameJourneyRegistration} from "./project-journey.ts";
 import {sameRuntimeRegistration} from "./runtime-registration.ts";
 import {browserReportsFor, businessReportsFor, layoutReportsFor} from "./acceptance-evidence.ts";
 import {validateSavedCoverage} from "./requirement-coverage.ts";
@@ -14,8 +15,8 @@ import {createLayoutReport} from "./layout-report.ts";
 export const EVIDENCE_EXPORT_SCHEMA = "proofbeforepay-evidence-export-v1";
 export const EVIDENCE_EXPORT_RULES = "pbp-static-source-v2";
 export const EVIDENCE_EXPORT_BYTE_LIMIT = 4 * 1024 * 1024;
-const DELIVERY_KEYS = ["id","variant","sequence","label","submittedAt","files","evidence","resources","layoutReport","layoutHistory","browserChecks","browserCheckHistory","businessChecks","businessCheckHistory","assessment","riskReviews","acceptanceEvidence","backendTargetId","runtimeDeliveryDigest","runtimeRegistration","runtimeReport","runtimeHistory","runtimeRun"] as const;
-const SNAPSHOT_KEYS = ["id","deliveryId","at","browserReportId","layoutReportId","assessmentId","businessReportId","businessExceptionReason","runtimeReportId","runtimeExceptionReason","runtimeAcknowledgedSteps","runtimeDeliveryDigest","runtimeTargetId","runtimeRegistration","criteria","evidence","manualChecks","review","assessment","riskReviews"];
+const DELIVERY_KEYS = ["id","variant","sequence","label","submittedAt","files","evidence","resources","layoutReport","layoutHistory","browserChecks","browserCheckHistory","businessChecks","businessCheckHistory","assessment","riskReviews","acceptanceEvidence","backendTargetId","runtimeDeliveryDigest","runtimeRegistration","runtimeReport","runtimeHistory","runtimeRun","journeyPlan","journeyReport","journeyHistory"] as const;
+const SNAPSHOT_KEYS = ["id","deliveryId","at","browserReportId","layoutReportId","assessmentId","businessReportId","businessExceptionReason","runtimeReportId","runtimeExceptionReason","runtimeAcknowledgedSteps","runtimeDeliveryDigest","runtimeTargetId","runtimeRegistration","journeyReportId","journeyDeliveryDigest","journeyPlanDigest","journeyRegistration","journeyExceptionReason","journeyAcknowledgedSteps","journeyClientObservationAcknowledged","criteria","evidence","manualChecks","review","assessment","riskReviews"];
 type AcceptanceReference = {kind:"delivery-acceptance"|"capture-consent";deliveryId:string;evidenceSnapshotId:string|null};
 export type EvidenceExport = {
   schema:typeof EVIDENCE_EXPORT_SCHEMA; verificationRules:typeof EVIDENCE_EXPORT_RULES; scope:"current-delivery-only";
@@ -112,6 +113,7 @@ function dataShapes(bundle:EvidenceExport):void{
   }
   if(delivery.resources){object(delivery.resources,["method","checked","findings"],"Resource report");for(const value of array(delivery.resources.findings,401,"Resource findings"))object(value,["from","reference","target","kind"],"Resource finding");}
   if(delivery.runtimeRun)object(delivery.runtimeRun,["id","deliveryId","deliveryDigest","targetId","startedAt","expiresAt"],"Pending runtime run");
+  if(delivery.journeyPlan)validateProjectJourneyPlan(delivery.journeyPlan);
   riskReviews(delivery.riskReviews);
   for(const value of array(delivery.acceptanceEvidence??[],20,"Acceptance history")){const snapshot=object(value,SNAPSHOT_KEYS,"Acceptance snapshot");review(snapshot.review);riskReviews(snapshot.riskReviews);}
 }
@@ -271,9 +273,13 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
     }
     requireValue(!runtimeRows.length||!!plan,"A runtime report requires its locked plan.");
     for(const report of runtimeRows){const target=deliveryRuntimeTarget(bundle.delivery);validateRuntimeReport(report,{deliveryId:bundle.delivery.id,deliveryDigest:bundle.fileDigest,plan:plan!,target,registration:bundle.delivery.runtimeRegistration});}
+    const journeyPlan=savedProjectJourneyPlan(quote),journeyRows=projectJourneyReportsFor(bundle.delivery);
+    requireValue(!journeyRows.length||!!journeyPlan,"Journey evidence requires a separately confirmed technical agreement.");
+    for(const report of journeyRows)validateStoredProjectJourneyReport(report,{deliveryId:bundle.delivery.id,deliveryDigest:bundle.fileDigest,plan:journeyPlan!,projectId:bundle.project.id});
   },"Included HTTP reports bind to the supplied delivery, file digest, plan and frozen target. No HTTP execution or present approval is proven.");
   await check("acceptance-references",()=>{
     const delivery=bundle.delivery,criteriaIds=bundle.project.criteria.map(row=>row.id);
+    const journeyPlan=savedProjectJourneyPlan(quote),journeyRows=projectJourneyReportsFor(delivery);
     const runtimeRequired=!!savedRuntimePlan(quote),businessRequired=!!bundle.project.spec?.businessChecks?.length;
     const browser=browserReportsFor(delivery),business=businessReportsFor(delivery),layout=layoutReportsFor(delivery);
     const snapshots=array(delivery.acceptanceEvidence??[],20,"Acceptance snapshots");const ids=new Set<string>();
@@ -299,6 +305,17 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
         requireValue(snapshot.runtimeRegistration===undefined&&report.target.registration===undefined||sameRuntimeRegistration(snapshot.runtimeRegistration,report.target.registration),"Historical runtime registration differs.");
         if(snapshot.runtimeAcknowledgedSteps!==undefined){const acknowledged=array(snapshot.runtimeAcknowledgedSteps,report.steps.length,"Acknowledged runtime steps");requireValue(new Set(acknowledged).size===acknowledged.length&&acknowledged.every(id=>typeof id==="string"&&report.steps.some(step=>step.id===id)),"Acknowledged runtime steps must be unique supported step IDs.");}
         const exceptions=report.steps.filter(row=>row.outcome!=="observed");if(exceptions.length)requireValue(text(snapshot.runtimeExceptionReason,500).trim().length>=10&&exceptions.every(row=>array(snapshot.runtimeAcknowledgedSteps,report.steps.length,"Acknowledged runtime steps").includes(row.id)),"Runtime exceptions were not explicitly retained.");
+      }
+      requireValue(!journeyPlan||typeof snapshot.journeyReportId==="string","A journey-enabled acceptance must retain its journey evidence.");
+      if(!snapshot.journeyReportId)requireValue(["journeyDeliveryDigest","journeyPlanDigest","journeyRegistration","journeyExceptionReason","journeyAcknowledgedSteps","journeyClientObservationAcknowledged"].every(key=>snapshot[key]===undefined),"Journey acceptance metadata requires its retained report.");
+      if(snapshot.journeyReportId){
+        const report=journeyRows.find(row=>row.id===snapshot.journeyReportId);
+        requireValue(report&&snapshot.journeyDeliveryDigest===bundle.fileDigest&&snapshot.journeyPlanDigest===report.planDigest&&sameJourneyRegistration(snapshot.journeyRegistration,report.registration)&&snapshot.journeyClientObservationAcknowledged===true,"Historical journey reference is missing or stale.");
+        const steps=evaluateStoredProjectJourneyReport(report).steps,exceptions=steps.filter(step=>step.outcome!=="observed");
+        const acks=array(snapshot.journeyAcknowledgedSteps??[],20,"Acknowledged journey steps");
+        requireValue(new Set(acks).size===acks.length&&acks.every(id=>steps.some(step=>step.id===id)),"Journey acknowledgements contain unsupported steps.");
+        if(snapshot.journeyExceptionReason!==undefined)requireValue(text(snapshot.journeyExceptionReason,500).trim().length>=10,"Journey exception reason is invalid.");
+        if(exceptions.length)requireValue(text(snapshot.journeyExceptionReason,500).trim().length>=10&&exceptions.every(step=>acks.includes(step.id)),"Journey exceptions were not explicitly retained.");
       }
       if(snapshot.businessReportId){const report=business.find(row=>row.id===snapshot.businessReportId)!;if(report.summary.issues||report.summary.unavailable)requireValue(text(snapshot.businessExceptionReason,500).trim().length>=10,"Business exceptions need their original reason.");}
     }

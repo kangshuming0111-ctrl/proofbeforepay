@@ -1,0 +1,36 @@
+{
+  "round": 2,
+  "review": "outputs/award-cycle-2026-11-03/round-2-bridge-ai-review.json",
+  "advisoryOnly": true,
+  "decisions": [
+    {
+      "finding": "64 lowercase hex regex accepts a nonhex nonce",
+      "decision": "rejected",
+      "reason": "The proposed reproduction explicitly uses 64 hex characters. That is a canonical 32-byte hex nonce. Parent origin/source and exact echoed nonce are checked; a new legitimate session selects its nonce by design."
+    },
+    {
+      "finding": "Source excerpts not verified",
+      "decision": "rejected",
+      "reason": "validateSavedCoverage rebuilds canonical groups from exact saved source and compares start/end/text/criterion id. The cited missing helper was omitted from the reviewer packet. Existing coverage tampering tests execute this boundary."
+    },
+    {
+      "finding": "Blocked candidates survive in API response",
+      "decision": "rejected",
+      "reason": "Parser returns candidates: accepted after filtering both blocked capability and unresolved criterion. It does not return the provisional candidates variable. Conditional/conflicting requirement tests already cover this."
+    },
+    {
+      "finding": "UI decision can retain stale exception set with same report identity",
+      "decision": "accepted-as-defensive-refinement",
+      "reason": "Server storage forbids mutating a report id, so proposed persisted rewrite is not a valid normal flow. UI now also depends on delivery id, evaluation validity and exception-id signature, and cannot emit a decision for an invalid evaluation."
+    }
+  ],
+  "independentFixes": [
+    {
+      "issue": "Bridge ready message declares backend path",
+      "resolution": "Controller checks ready.backendBasePath equals the server-approved registration path before any command."
+    }
+  ],
+  "limits": [
+    "No reviewer executed a browser or provider; runtime evidence is collected separately."
+  ]
+}
