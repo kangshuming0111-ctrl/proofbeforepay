@@ -1,3 +1,4 @@
+import {acceptDeliveryWithBasis as acceptDelivery} from "./acceptance-client.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import {register} from "node:module";
@@ -8,8 +9,8 @@ import {createUploadedDelivery,parseStaticProject} from "../lib/static-project.t
 import {runtimeDeliveryDigest} from "../lib/runtime-project.ts";
 import {JOURNEY_STEP_IDS,JOURNEY_SLOTS,journeyKey,type JourneyObservation,type JourneyStepId} from "../lib/journey-checks.ts";
 import {newProjectJourneyPlan,validateProjectJourneyPlan,validateJourneyRegistration,validateStoredProjectJourneyReport,evaluateStoredProjectJourneyReport,validateProjectJourneyDecision,projectJourneyReportsFor,PROJECT_JOURNEY_AGREEMENT,PROJECT_JOURNEY_CANONICAL_DEFINITION,PROJECT_JOURNEY_DEFINITION,PROJECT_JOURNEY_PLAN_DIGEST,type JourneyRegistrationSnapshot,type ProjectJourneyReport} from "../lib/project-journey.ts";
-import {beginProjectJourneyRun,beginProjectJourneyStep,finishProjectJourneyStep,finishProjectJourneyRun,confirmProjectJourneyPlan,projectJourneyCommand} from "../lib/project-journey-actions.ts";
-import {acceptDelivery,prepareReplacement} from "../lib/proof-workflow.ts";
+import {beginProjectJourneyRun,beginProjectJourneyStep,finishProjectJourneyStep,finishProjectJourneyRun,confirmProjectJourneyPlan,projectJourneyCommand,projectJourneyClientWindowOpen} from "../lib/project-journey-actions.ts";
+import {prepareReplacement} from "../lib/proof-workflow.ts";
 import {assertAcceptedEvidenceReference} from "../lib/acceptance-evidence.ts";
 import {handleLifecycleRequest} from "../examples/seller-lifecycle-staging/worker/lifecycle-service.mjs";
 register(`data:text/javascript,${encodeURIComponent(`export async function resolve(specifier,context,nextResolve){return specifier==="cloudflare:workers"?{url:"data:text/javascript,export const env = {}",shortCircuit:true}:nextResolve(specifier,context);}`)}`,import.meta.url);
@@ -95,4 +96,24 @@ test("large server evidence is marked unavailable without stranding a run or evi
  const f=await fixture();let q=beginProjectJourneyRun(f.quote,"buyer",startInput(f.quote,f.registration.id),f.digest,f.registration);
  for(const stepId of JOURNEY_STEP_IDS){const run=q.proof.delivery!.journeyRun!,begun=beginProjectJourneyStep(q,"buyer",{action:"observe",deliveryId:run.deliveryId,runId:run.id,stepId});q=begun.quote;const reading:JourneyObservation={...begun.observation,unavailableReason:"synthetic-test-no-browser",merchant:{status:200,body:{unused:"x".repeat(15000)}}};q=persisted(finishProjectJourneyStep(q,run.id,begun.leaseId,reading));}
  const run=q.proof.delivery!.journeyRun!;q=finishProjectJourneyRun(q,"buyer",{action:"finish",deliveryId:run.deliveryId,runId:run.id});assert.ok(q.proof.delivery!.journeyReport!.input.observations.some(o=>o.unavailableReason?.startsWith("evidence_size_limit")));assert.equal(q.proof.delivery!.journeyReport!.input.observations[0].merchant?.status,200);assert.equal(q.proof.delivery!.journeyReport!.input.observations.length,20);
+});
+
+test("a native adapter declares its own revision separately from the canonical bridge without changing scoring or old registrations",async()=>{
+ const f=await fixture(),result=await execute(f.quote,f.digest,f.registration),legacy=structuredClone(result.report);
+ assert.equal(legacy.registration.bridgeRevision,undefined);assert.deepEqual(validateJourneyRegistration(f.registration),f.registration);
+ const adapted=structuredClone(legacy);adapted.registration=validateJourneyRegistration({...adapted.registration,deploymentRevision:"florist-enrolments-v1",bridgeRevision:"lifecycle-fixed-v1"});
+ adapted.input.metadata={...(adapted.input.metadata as object),nativeRevision:"florist-enrolments-v1"};adapted.input.observations[0].requests![0].response=structuredClone(adapted.input.metadata);
+ assert.equal(evaluateStoredProjectJourneyReport(adapted).summary.observed,20);
+ assert.equal(evaluateStoredProjectJourneyReport(adapted).frontendEntry,adapted.input.frontendEntry);
+ assert.deepEqual(validateStoredProjectJourneyReport(adapted),adapted);
+ adapted.input.metadata={...(adapted.input.metadata as object),nativeRevision:"other-native-revision"};adapted.input.observations[0].requests![0].response=structuredClone(adapted.input.metadata);
+ assert.equal(evaluateStoredProjectJourneyReport(adapted).steps[0].outcome,"mismatch");
+ assert.throws(()=>validateJourneyRegistration({...f.registration,deploymentRevision:"native-without-bridge"}));
+ assert.throws(()=>validateJourneyRegistration({...f.registration,deploymentRevision:"florist-enrolments-v1",bridgeRevision:"lifecycle-move-loss-v1"}));
+});
+
+test("a resumed client cannot send its next browser action at or after run/registration expiry",async()=>{
+ const f=await fixture(),now=Date.now(),q=beginProjectJourneyRun(f.quote,"buyer",startInput(f.quote,f.registration.id),f.digest,f.registration,now),run=q.proof.delivery!.journeyRun!;
+ assert.equal(projectJourneyClientWindowOpen(run,now),true);assert.equal(projectJourneyClientWindowOpen(run,Date.parse(run.expiresAt)),false);assert.equal(projectJourneyClientWindowOpen(run,Date.parse(run.expiresAt)+1),false);
+ assert.equal(projectJourneyClientWindowOpen({...run,registration:{...run.registration,expiresAt:new Date(now).toISOString()}},now),false);assert.equal(projectJourneyClientWindowOpen(run,NaN),false);
 });

@@ -1,9 +1,10 @@
+import {acceptDeliveryWithBasis as acceptDelivery, validateAcceptanceWithBasis as validateAcceptance} from "./acceptance-client.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { ProofAssessment, ProofCollaboration, ProofQuote, ProofRole } from "../lib/contracts.ts";
-import { acceptDelivery, joinSeller, prepareReplacement, requestChanges, requireExpectedDelivery, requireWorkflowAction, snapshotVersion, submitDelivery } from "../lib/proof-workflow.ts";
+import {joinSeller, prepareReplacement, requestChanges, requireExpectedDelivery, requireWorkflowAction, snapshotVersion, submitDelivery} from "../lib/proof-workflow.ts";
 import type { ProofWorkflowAction } from "../lib/proof-workflow.ts";
-import { validateAcceptance } from "../lib/proof-domain.ts";
+
 import { createUploadedDelivery, parseStaticProject } from "../lib/static-project.ts";
 
 const html = "<!doctype html><html><head><title>Work</title></head><body><main>Delivered website</main></body></html>";

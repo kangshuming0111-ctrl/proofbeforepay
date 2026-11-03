@@ -1,0 +1,57 @@
+"use client";
+
+import {useEffect,useRef,useState} from "react";
+import type {Language,ProofQuote,ProofRole} from "@/lib/contracts";
+import {evaluateModelCheckReport,generateModelTrace,type ModelCheckEvaluation,type ModelCheckReport} from "@/lib/model-checks";
+import type {ModelCheckRun,ModelDecision} from "@/lib/model-check-actions";
+
+type Target={id:string;label:string};
+type State={targets:Target[];run:ModelCheckRun|null;report:ModelCheckReport|null;evaluation:ModelCheckEvaluation|null};
+type Request=<T>(path:string,method?:string,data?:unknown)=>Promise<T>;
+
+/** A bounded server experiment, deliberately separate from the20-step browser journey. */
+export function ModelCheckPanel({quote,role,language,enabled,request,onApply,onBusy,onDecision,onFeedback}:{quote:ProofQuote;role:ProofRole;language:Language;enabled:boolean;request:Request;onApply:(quote:ProofQuote,role:ProofRole)=>void;onBusy:(busy:boolean)=>void;onDecision:(decision:ModelDecision|undefined)=>void;onFeedback?:(comment:string)=>void}){
+ const delivery=quote.proof.delivery!,tr=(zh:string,en:string)=>language==="zh"?zh:en;
+ const path=`/api/proofs/${encodeURIComponent(quote.id)}/model-checks`;
+ const [state,setState]=useState<State>(),[target,setTarget]=useState(""),[seed,setSeed]=useState("42"),[consent,setConsent]=useState(false),[error,setError]=useState(""),[running,setRunning]=useState(false),[closing,setClosing]=useState(false);
+ const [ackReport,setAckReport]=useState<string>(),[reason,setReason]=useState("");
+ const alive=useRef(true);
+ const report=delivery.modelReport;
+ let evaluation:ModelCheckEvaluation|undefined;try{evaluation=report?evaluateModelCheckReport(report):undefined;}catch{/* Invalid evidence is never a passing result. */}
+ const exception=!!evaluation&&evaluation.outcome!=="compatible";
+ const lease=delivery.modelRun??state?.run??undefined;
+ const seedNumber=Number(seed),validSeed=/^\d{1,10}$/u.test(seed)&&Number.isInteger(seedNumber)&&seedNumber>=0&&seedNumber<=0xffffffff;
+ const parameters=validSeed?generateModelTrace(seedNumber):undefined;
+ const closed=quote.status!=="approved"||["captured","voided","closed_unpaid"].includes(quote.proof.paymentState)||!!quote.proof.paymentOperation;
+ useEffect(()=>{alive.current=true;let active=true;request<State>(path).then(value=>{if(active){setState(value);setTarget(old=>value.targets.some(t=>t.id===old)?old:value.targets[0]?.id??"");}}).catch(cause=>{if(active)setError(cause instanceof Error?cause.message:String(cause));});return()=>{active=false;alive.current=false;};},[path,delivery.id,role]);
+ useEffect(()=>{setAckReport(undefined);setReason("");},[report?.id,delivery.id]);
+ useEffect(()=>{onDecision(report&&evaluation&&ackReport===report.id&&(!exception||reason.trim().length>=10)?{reportId:report.id,acknowledgeServerCheck:true,...(exception?{exceptionReason:reason.trim()}: {})}:undefined);},[report?.id,evaluation?.outcome,ackReport,reason,exception]);
+ async function refresh(){const [next,current]=await Promise.all([request<State>(path),request<{quote:ProofQuote;role:ProofRole}>(`/api/quotes/${encodeURIComponent(quote.id)}`)]);if(alive.current){setState(next);onApply(current.quote,current.role);}}
+ async function post(input:Record<string,unknown>){const result=await request<{quote:ProofQuote;role:ProofRole;model:State}>(path,"POST",{deliveryId:delivery.id,...input});if(alive.current){setState(result.model);onApply(result.quote,result.role);}}
+ async function run(){if(!validSeed||!consent||!target||lease||running||!enabled)return;setRunning(true);setConsent(false);setError("");onBusy(true);try{await post({action:"run",previousReportId:report?.id??null,targetId:target,seed:seedNumber,confirm:true});}catch(cause){if(alive.current)setError(cause instanceof Error?cause.message:String(cause));try{await refresh();}catch{/* The persisted lease still blocks finance server-side. No request is replayed. */}}finally{if(alive.current)setRunning(false);onBusy(false);}}
+ async function close(){if(!lease||running||closing)return;setClosing(true);setError("");onBusy(true);try{await post({action:"close",runId:lease.id});}catch(cause){if(alive.current)setError(cause instanceof Error?cause.message:String(cause));}finally{if(alive.current)setClosing(false);onBusy(false);}}
+ const outcomeLabel=(value:ModelCheckEvaluation["outcome"])=>value==="compatible"?tr("符合一种合法执行顺序","Matches a legal execution order"):value==="violated"?tr("结果违反状态模型","State-model violation"):tr("证据不足，未确定","Insufficient evidence — inconclusive");
+ const orderLabel=(value:string)=>value==="cancel_then_move"?tr("先取消，再改期：改期成功，原单仍在且移至目标时段。","Cancel then move: the move succeeds and preserves the booking in the target slot."):tr("先改期，再取消：目标原先已满，改期拒绝，原单保留在原时段。","Move then cancel: the full target rejects the move and the original booking remains in its source slot.");
+ function feedback(){if(!report||!evaluation||!onFeedback)return;onFeedback((tr("附加并发状态检验：","Additional concurrent state check: ")+outcomeLabel(evaluation.outcome)+`\n${evaluation.reason}\n`+tr("请修复取消与改期重叠时的记录、收据及容量一致性，再提交新版本复测。报告：","Repair booking, receipt and occupancy consistency when cancellation and move overlap, then submit a revision. Report: ")+report.id).slice(0,1000));}
+ return <details className="project-journey" id="model-checks">
+  <summary><span>{tr("深入检查 · 并发状态一致性","Deeper check · concurrent state consistency")}</span><b>{running||lease?tr("运行中","Running"):evaluation?(evaluation.outcome==="compatible"?tr("模型符合","Compatible"):evaluation.outcome==="violated"?tr("发现冲突","Violation"):tr("未确定","Inconclusive")):tr("可选","Optional")}</b></summary>
+  <p>{tr("让取消一笔满时段预约和把另一笔预约改到该时段同时发出；独立模型会检查结果能否由某一种合法执行顺序解释。","Issue a cancellation from a full slot and another booking’s transfer into that slot concurrently. An independent model checks whether a legal execution order can explain the result.")}</p>
+  <details><summary>{tr("两种合法结果、范围与限制","Legal outcomes, scope and limits")}</summary><ol><li>{orderLabel("cancel_then_move")}</li><li>{orderLabel("move_then_cancel")}</li></ol><p>{tr("逐笔查询、商家账目和三个时段人数都须一致；还会核对原订单 ID、人数和创建键。时间记录只证明请求的调用与完成顺序，不能证明数据库内部的执行时刻。","Individual receipts, merchant records and occupancy for three slots must agree, preserving booking IDs, party sizes and creation keys. Timing records establish invocation/completion order, not internal database execution times.")}</p><p>{tr("这是一个有限状态实验，最多 5 次合成写入、24 次请求、20 秒。更换种子只改变人数及三个时段的排列，不构成全面压力测试、浏览器验证、源码来源证明或全站安全审计。","This finite experiment uses at most5 synthetic writes,24 requests and20 seconds. A new seed changes party sizes and the permutation of three slots. It is not a comprehensive load test, browser test, source-provenance proof or full security audit.")}</p></details>
+  {error&&<p className="journey-warning" role="alert">{error}</p>}
+  {!delivery.journeyPlan?<p>{tr("先由买家确认上方业务旅程的附加技术约定，才可运行此项。","The buyer must first confirm the additional technical agreement in the business-journey panel.")}</p>:<>
+   <label>{tr("已登记的合成测试站","Registered synthetic staging target")}<select value={target} disabled={!enabled||running||!!lease||closed} onChange={e=>{setTarget(e.target.value);setConsent(false);}}>{!state?.targets.length&&<option value="">{tr("没有匹配当前文件的登记站点","No target registered for this upload")}</option>}{state?.targets.map(t=><option key={t.id} value={t.id}>{t.label}</option>)}</select></label>
+   <label>{tr("可复现的输入种子","Reproducible input seed")}<input inputMode="numeric" value={seed} maxLength={10} disabled={!enabled||running||!!lease||closed} onChange={e=>{setSeed(e.target.value);setConsent(false);}}/></label>
+   {parameters&&<p>{tr(`本轮人数 p=${parameters.p}；源时段 ${parameters.source}，目标 ${parameters.target}，备用 ${parameters.spare}。每轮使用新命名空间，种子不复用旧记录。`,`Party p=${parameters.p}; source ${parameters.source}, target ${parameters.target}, spare ${parameters.spare}. Each run uses a fresh namespace; a repeated seed does not reuse records.`)}</p>}
+   {!lease&&!closed&&<><label><input type="checkbox" checked={consent} disabled={!enabled||running||!target||!validSeed} onChange={e=>setConsent(e.target.checked)}/>{tr("允许最多 5 次虚构预约写入；不会接受交付或付款。未知写入不会自动重试。","Allow at most5 synthetic booking writes. This does not accept work or pay. Unknown writes are never automatically retried.")}</label><button className="button primary" disabled={!enabled||running||!target||!validSeed||!consent} onClick={run}>{tr("运行并发状态检验","Run concurrent state check")}</button></>}
+   {(running||lease)&&<div role="status"><p>{tr("运行已保存，正在记录服务器观测。其他检查与付款暂时锁定。","The saved run is collecting server observations. Other checks and payment are temporarily locked.")}</p>{lease&&<p>{tr("已保存观测：","Retained observations: ")}{lease.trace.length}/24 · {tr("最迟关闭时间：","Close after: ")}{lease.expiresAt}</p>}{!running&&lease&&<button className="subtle-button" disabled={closing} onClick={close}>{tr("尝试关闭过期运行，保留未知结果","Try closing expired run and retain unknown outcomes")}</button>}</div>}
+  </>}
+  {report&&evaluation&&<>
+   <p className={evaluation.outcome==="compatible"?"journey-result":"journey-warning"}>{outcomeLabel(evaluation.outcome)}</p>
+   <p>{report.registration.label} · {report.finishedAt.slice(0,19).replace("T"," ")} UTC · {tr("输入种子：","Seed: ")}{report.seed}</p>
+   <details><summary>{tr("模型判定与原始证据","Model verdict and raw evidence")}</summary><p>{evaluation.reason}</p>{evaluation.compatibleOrders.map(order=><p key={order}>{orderLabel(order)}</p>)}<p>{tr("交付版本 / 文件摘要 / 模型摘要","Delivery / file digest / model digest")}<br/><code>{report.deliveryId}</code><br/><code>{report.deliveryDigest}</code><br/><code>{report.modelSpecDigest}</code></p><ol>{report.trace.map(row=><li key={row.operationId}><strong>{row.operationId} · {row.status??tr("未知","Unknown")}</strong><small> {row.invokedOrdinal} → {row.completedOrdinal??"?"}</small><pre>{JSON.stringify(row.body??{unavailableReason:row.unavailableReason},null,2)}</pre></li>)}</ol></details>
+   {onFeedback&&exception&&<button className="subtle-button" onClick={feedback}>{tr("把并发问题带入修改意见","Prepare change request from this check")}</button>}
+   {role==="buyer"&&<fieldset disabled={!enabled||!!lease}><legend>{tr("本报告的独立验收决定","Separate acceptance decision for this report")}</legend><label><input type="checkbox" checked={ackReport===report.id} onChange={e=>setAckReport(e.target.checked?report.id:undefined)}/>{tr("我已核查本报告，理解它只反映登记测试接口及本轮输入。","I reviewed this report and understand it covers only the registered test endpoints and this run’s inputs.")}</label>{exception&&<textarea value={reason} minLength={10} maxLength={500} rows={3} aria-label={tr("并发检验例外原因","Concurrent check exception reason")} placeholder={tr("建议先要求修复；如仍接受，说明原因（10–500 字符）。","Request repairs first, or explain why you accept these exceptions (10–500 characters).")} onChange={e=>setReason(e.target.value)}/>}</fieldset>}
+  </>}
+  {!!delivery.modelHistory?.length&&<details><summary>{tr("本版本保留的此前实验","Earlier experiments retained for this delivery")} · {delivery.modelHistory.length}</summary><ul>{delivery.modelHistory.map(item=><li key={item.id}>{item.finishedAt} · {tr("种子","Seed")} {item.seed} · {outcomeLabel(item.result.outcome)} <code>{item.id}</code></li>)}</ul><p>{tr("历史记录不会覆盖当前验收引用；可在离线证据包中核对原始观测。","History does not replace the report referenced by acceptance. Raw observations are included in the offline evidence export.")}</p></details>}
+ </details>;
+}

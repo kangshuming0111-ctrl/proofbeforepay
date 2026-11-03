@@ -1,3 +1,4 @@
+import {acceptDeliveryWithBasis as acceptDelivery, validateAcceptanceWithBasis as validateAcceptance} from "./acceptance-client.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { ProofQuote, ProofRole } from "../lib/contracts.ts";
@@ -6,9 +7,9 @@ import { summaryCoverageUnits } from "../lib/requirement-coverage.ts";
 import { beginRuntimeRun, finishRuntimeRun } from "../lib/runtime-actions.ts";
 import { parseRuntimePlan, RUNTIME_TARGETS, runtimeDeliveryDigest, runtimeReportsFor, savedRuntimePlan, validateRuntimeDecision } from "../lib/runtime-project.ts";
 import { executeRuntimeCheck, type RuntimeFetch } from "../lib/runtime-runner.ts";
-import { acceptDelivery, prepareReplacement } from "../lib/proof-workflow.ts";
+import {prepareReplacement} from "../lib/proof-workflow.ts";
 import { assertAcceptedEvidenceReference, recordCaptureConsent } from "../lib/acceptance-evidence.ts";
-import { validateAcceptance } from "../lib/proof-domain.ts";
+
 
 const summary="Accept a booking with required slot and valid email; retain its record for readback and handle repeated submissions without duplicates.";
 const at=new Date().toISOString();

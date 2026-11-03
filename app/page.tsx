@@ -50,7 +50,12 @@ import "./requirement-coverage.css";
 import "./smooth-flow.css";
 import "./chain-flow.css";
 import { RuntimeCheckPanel, RuntimeAcceptanceDecision, currentRuntimeReport } from "./components/RuntimeCheckPanel";
+import {acceptanceBasis} from "@/lib/acceptance-basis";
+import {hasPendingEvidenceRun,hasFrozenCaptureEvidence,captureEvidenceReady} from "@/lib/proof-readiness";
+import {ProofReadinessPanel} from "./components/ProofReadinessPanel";
 import {ProjectJourneyPanel} from "./components/ProjectJourneyPanel";
+import {ModelCheckPanel} from "./components/ModelCheckPanel";
+import type {ModelDecision} from "@/lib/model-check-actions";
 import type {ProjectJourneyDecision} from "@/lib/project-journey";
 import { RuntimePlanEditor } from "./components/RuntimePlanEditor";
 import {buildRuntimePlanDraft,confirmedRuntimeDraft,CAPACITY_EXAMPLE_REQUIREMENTS,CAPACITY_EXAMPLE_PROTOCOL} from "@/lib/runtime-plan-draft";
@@ -110,6 +115,7 @@ export default function Home() {
   const [workspaceRole, setWorkspaceRole] = useState<ProofRole>("buyer");
   const request = <T,>(path: string, method = "GET", body?: unknown) => apiRequest<T>(path, method, body, workspaceRole);
   const [journeyDecision,setJourneyDecision]=useState<ProjectJourneyDecision>();
+  const [modelDecision,setModelDecision]=useState<ModelDecision>();
   const [recordRoles, setRecordRoles] = useState<Record<string, ProofRole>>({});
   const [collaborative, setCollaborative] = useState(true);
   const [customRoleDemo, setCustomRoleDemo] = useState(true);
@@ -124,6 +130,8 @@ export default function Home() {
   const versionRequestContext=useRef("");
   const [viewedVersion, setViewedVersion] = useState<ProofDeliveryVersion>();
   const [deliveryConsent, setDeliveryConsent] = useState(false);
+  const [deliveryConsentBasis,setDeliveryConsentBasis]=useState<string>();
+  const [captureConsentBasis,setCaptureConsentBasis]=useState<string>();
   const [showDeliveryAcceptance, setShowDeliveryAcceptance] = useState(false);
   const [feedbackSuggestion, setFeedbackSuggestion] = useState<FeedbackSuggestion>();
   const feedbackSerial = useRef(0);
@@ -260,11 +268,11 @@ export default function Home() {
   const pendingCapture = proof?.paymentOperation === "capture";
   const pendingVoid = proof?.paymentOperation === "void";
   const paymentPending = pendingCapture || pendingVoid;
-  const deliveryUnlocked = !delivery?.journeyRun && !delivery?.runtimeRun && quote?.status === "approved" && !paymentPending
+  const deliveryUnlocked = !delivery?.modelRun && !delivery?.journeyRun && !delivery?.runtimeRun && quote?.status === "approved" && !paymentPending
     && ((authorized && !expired) || (custom && proof?.paymentState === "unfunded"));
   const canManageDelivery = !buyer && deliveryUnlocked && (!collaboration || ["in_progress", "changes_requested"].includes(collaboration.stage));
   const canCheckDelivery = deliveryUnlocked && (!collaboration || ["in_progress", "changes_requested", "submitted"].includes(collaboration.stage));
-  const canObserveBrowser = !!quote && !!deliveryFiles && ["approved", "paid"].includes(quote.status) && !paymentPending && !delivery?.journeyRun;
+  const canObserveBrowser = !!quote && !!deliveryFiles && ["approved", "paid"].includes(quote.status) && !paymentPending && !delivery?.journeyRun && !delivery?.modelRun;
   const canRunRuntime = canObserveBrowser && quote?.status === "approved" && !["captured", "voided", "closed_unpaid"].includes(proof?.paymentState ?? "");
   const businessChecksConfigured = !!customProject?.businessChecks?.length;
   const businessReport = delivery?.businessChecks?.deliveryId === delivery?.id ? delivery?.businessChecks : undefined;
@@ -282,6 +290,7 @@ export default function Home() {
   const runtimeReport=delivery&&runtimePlan?currentRuntimeReport(delivery.runtimeReport,delivery.id,runtimePlan,delivery.backendTargetId,delivery.runtimeDeliveryDigest):undefined;
   const runtimeIssues=runtimeReport?.steps.filter(step=>step.outcome!=="observed")??[];
   const journeyDecisionReady=!delivery?.journeyPlan || !!journeyDecision && journeyDecision.reportId===delivery.journeyReport?.id && !delivery.journeyRun;
+  const modelDecisionReady=!delivery?.modelReport || !!modelDecision && modelDecision.reportId===delivery.modelReport.id && !delivery.modelRun;
   const runtimeDecisionReady=!runtimePlan || !!runtimeReport && !delivery?.runtimeRun && (!runtimeIssues.length || runtimeAcknowledged && runtimeReason.trim().length>=10);
   const runtimeDecision=runtimePlan&&runtimeReport?{reportId:runtimeReport.id,...(runtimeIssues.length?{exceptionReason:runtimeReason.trim(),acknowledgedSteps:runtimeAcknowledged?runtimeIssues.map(step=>step.id):[]}:{})}:undefined;
   useEffect(()=>setRuntimeConfirmed(false),[projectSummary,runtimeCriterionId,runtimeCapacityCriterionId,runtimeEnabled,runtimeProtocol,coverageDraftKey]);
@@ -312,8 +321,15 @@ export default function Home() {
     }).catch(cause=>{if(active)setRuntimeTargetList({context,targets:[],status:"error",error:cause instanceof Error?cause.message:"Could not load registered test targets."});});
     return()=>{active=false;};
   },[quote?.id,runtimePlanKey,runtimeTargetContext,runtimeTargetRefresh,delivery?.id,workspaceRole]);
-  const canAcceptDelivery = journeyDecisionReady && runtimeDecisionReady && buyer && collaboration?.stage === "submitted" && deliveryUnlocked && reviewCurrent && evidenceComplete && !failed && allHumanChecked && deliveryConsent && businessDecisionReady;
-  const canCapture = buyer && (!collaboration || collaboration.stage === "accepted") && authorized && !pendingVoid && (pendingCapture || (!expired && reviewCurrent && evidenceComplete && !failed && allHumanChecked && consent && (acceptedCurrent || businessDecisionReady && runtimeDecisionReady && journeyDecisionReady)));
+  const currentAcceptanceBasis=quote&&delivery?acceptanceBasis(quote):undefined;
+  const acceptanceBasisKey=JSON.stringify(currentAcceptanceBasis??null);
+  const acceptanceDecisionKey=JSON.stringify([currentAcceptanceBasis??null,businessDecision??null,runtimeDecision??null,journeyDecision??null,modelDecision??null,[...confirmedManualChecks].sort()]);
+  const frozenAcceptanceId=collaboration?.acceptance?.evidenceSnapshotId??proof?.acceptedEvidenceSnapshotId;
+  const captureBasisKey=acceptedCurrent||pendingCapture?`snapshot:${frozenAcceptanceId??"missing"}`:acceptanceDecisionKey;
+  const evidenceRunPending=quote?hasPendingEvidenceRun(quote):false;
+  const frozenCaptureReady=quote?hasFrozenCaptureEvidence(quote):false;
+  const canAcceptDelivery = modelDecisionReady && journeyDecisionReady && runtimeDecisionReady && buyer && collaboration?.stage === "submitted" && deliveryUnlocked && reviewCurrent && evidenceComplete && !failed && allHumanChecked && deliveryConsent && deliveryConsentBasis===acceptanceDecisionKey && businessDecisionReady;
+  const canCapture = !!quote&&captureEvidenceReady(quote)&&!evidenceRunPending && buyer && (!collaboration || collaboration.stage === "accepted") && authorized && !pendingVoid && (pendingCapture && frozenCaptureReady || (!expired && reviewCurrent && evidenceComplete && !failed && allHumanChecked && consent && captureConsentBasis===captureBasisKey && (acceptedCurrent || businessDecisionReady && runtimeDecisionReady && journeyDecisionReady && modelDecisionReady)));
   const aiMode = quote?.aiMode ?? (projectMode === "demo" || customRoleDemo ? "demo" : config?.aiMode);
   const paymentMode = quote?.paymentMode ?? (sandboxRehearsal || sandboxCollaboration ? "sandbox" : projectMode === "demo" || collaborative || customRoleDemo ? "demo" : config?.paymentMode);
   const canReconcile = authorized && paymentPending && quote?.paymentMode === "sandbox";
@@ -403,6 +419,9 @@ export default function Home() {
     setPreviewFile("index.html");
   }, [quote?.id, delivery?.id, proof?.review?.reviewedAt, collaboration?.stage, collaboration?.submission?.at]);
 
+  useEffect(()=>{setDeliveryConsent(false);setDeliveryConsentBasis(undefined);setShowDeliveryAcceptance(false);if(!acceptedCurrent)setManualChecks([]);},[acceptanceBasisKey,workspaceRole]);
+  useEffect(()=>{setConsent(false);setCaptureConsentBasis(undefined);},[captureBasisKey,workspaceRole]);
+  useEffect(()=>{setDeliveryConsent(false);setConsent(false);},[JSON.stringify(journeyDecision??null),JSON.stringify(modelDecision??null)]);
   useEffect(() => {setBusinessConfirmed(false);}, [projectSummary, requiredPagesInput, coverageDraftKey, businessDraftKey]);
   useEffect(() => {setBusinessExceptionReason(""); setRuntimeReason("");setRuntimeAcknowledged(false);setDeliveryConsent(false); setConsent(false);}, [quote?.id, delivery?.id, businessReport?.id, runtimeReport?.id, delivery?.journeyReport?.id]);
 
@@ -728,9 +747,9 @@ export default function Home() {
     else setWorkspacePanel("payment");
   }
 
-  function prepareFeedback(input: {deliveryId: string; criterionId: string; comment: string; journeyReportId?:string}) {
+  function prepareFeedback(input: {deliveryId: string; criterionId: string; comment: string; journeyReportId?:string; modelReportId?:string}) {
     if (!quote || !buyer || collaboration?.stage !== "submitted" || !deliveryUnlocked || busy
-      || input.deliveryId !== delivery?.id || !(proof?.criteria.some(item => item.id === input.criterionId) || input.criterionId==="journey-agreement"&&!!delivery?.journeyPlan&&input.journeyReportId===delivery.journeyReport?.id)) return;
+      || input.deliveryId !== delivery?.id || !(proof?.criteria.some(item => item.id === input.criterionId) || input.criterionId==="journey-agreement"&&!!delivery?.journeyPlan&&input.journeyReportId===delivery.journeyReport?.id || input.criterionId==="model-agreement"&&!!delivery?.journeyPlan&&input.modelReportId===delivery.modelReport?.id)) return;
     setFeedbackSuggestion({...input, quoteId: quote.id, serial: ++feedbackSerial.current});
     setWorkspaceView("workbench"); setWorkspacePanel("payment");
     setNotice(tr("已定位到可编辑的修改草稿；已有文字会保留。核对后再点击“退回修改”，本次尚未提交。", "Opened the editable change-request draft; existing text is preserved. Check it before clicking Request changes. Nothing has been sent."));
@@ -803,6 +822,7 @@ export default function Home() {
       help: tr("查看具体约定和观察，起草修改意见；若仍选择接受，需另行说明例外原因。", "Inspect agreed and observed values, then draft changes. Accepting exceptions requires a separate reason."), action: openBusinessChecks,
     };
     if(delivery.journeyPlan&&!journeyDecisionReady)return {label:tr("复核本版业务旅程证据","Review this delivery’s journey evidence"),help:tr("查看步骤、未知项和已保存报告，再明确确认检验边界。","Inspect steps, unknowns and the saved report, then acknowledge its observation limits."),action:openProjectJourney};
+    if(delivery.modelReport&&!modelDecisionReady)return {label:tr("复核本版并发状态报告","Review the concurrent state report"),help:tr("查看合法顺序、实际记录及未确定项，再明确确认。","Inspect legal orders, actual records and unknowns before acknowledging."),action:()=>focusPanel("delivery","#model-checks")};
     if(runtimePlan && (!runtimeReport || runtimeIssues.length && !runtimeDecisionReady || delivery?.runtimeRun))return {label:tr("核查预约后端流程","Inspect booking backend flow"),help:tr("独立回读、重复请求和错误输入分别留证。","Keep separate evidence for readback, replay and invalid input."),action:openRuntimeChecks};
     if (!allHumanChecked) return {label: tr(`检查下一项 · 剩余 ${pendingHumanCriteria.length} 项`, `Check next · ${pendingHumanCriteria.length} remaining`), help: tr(`人工检查已确认 ${humanCriteria.length - pendingHumanCriteria.length}/${humanCriteria.length} 项。`, `Human checks confirmed: ${humanCriteria.length - pendingHumanCriteria.length}/${humanCriteria.length}.`), action: openPendingHumanCheck};
     return {label: collaboration ? tr("继续验收确认（不付款）", "Continue acceptance — no payment") : tr("继续验收与付款确认", "Continue to acceptance & payment"), help: tr("下一步仍需你的明确确认。", "Your explicit confirmation is still required."), action: () => collaboration ? beginDeliveryAcceptance() : focusPanel("payment")};
@@ -1078,7 +1098,7 @@ export default function Home() {
   }
 
   async function checkout() {
-    if (!quote) return;
+    if (!quote||hasPendingEvidenceRun(quote)) return;
     await run("checkout", async () => {
       const result = await request<CheckoutResult>(`/api/proofs/${quote.id}/checkout`, "POST", {});
       if (result.mode === "demo") {
@@ -1092,7 +1112,7 @@ export default function Home() {
   }
 
   async function authorize(orderId: string) {
-    if (!quote) return;
+    if (!quote||hasPendingEvidenceRun(quote)) return;
     await run("authorize", async () => {
       const result = await request<CaseResult>(`/api/proofs/${quote.id}/authorize`, "POST", { orderId });
       apply(result.quote, result.role);
@@ -1105,7 +1125,7 @@ export default function Home() {
 
   async function capture() {
     if (!quote || !delivery || !canCapture) return;
-    await mutate("capture", { confirm: true, deliveryId: pendingCapture ? proof?.acceptedDeliveryId ?? delivery.id : delivery.id, manualChecks: pendingCapture ? proof?.manualChecks ?? confirmedManualChecks : confirmedManualChecks, ...(!collaboration&&!pendingCapture&&businessDecision?{businessDecision}:{}),...(!collaboration&&!pendingCapture&&runtimeDecision?{runtimeDecision}:{}),...(!collaboration&&!pendingCapture&&journeyDecision?{journeyDecision}:{}) },
+    await mutate("capture", { confirm: true, ...(acceptedCurrent||pendingCapture?{acceptedEvidenceSnapshotId:frozenAcceptanceId}:{expectedEvidence:currentAcceptanceBasis}), deliveryId: pendingCapture ? proof?.acceptedDeliveryId ?? delivery.id : delivery.id, manualChecks: pendingCapture ? proof?.manualChecks ?? confirmedManualChecks : confirmedManualChecks, ...(!collaboration&&!pendingCapture&&businessDecision?{businessDecision}:{}),...(!collaboration&&!pendingCapture&&runtimeDecision?{runtimeDecision}:{}),...(!collaboration&&!pendingCapture&&journeyDecision?{journeyDecision}:{}),...(!collaboration&&!pendingCapture&&modelDecision?{modelDecision}:{}) },
       tr("已确认当前交付版本，并完成测试扣款。收据已生成。", "This delivery was accepted and the test capture completed. Your receipt is ready."));
   }
 
@@ -1465,6 +1485,7 @@ export default function Home() {
                 {busy === "business-check-save" && <p className="layout-check-source" role="status">{tr("正在保存业务内容核对…", "Saving business content observations…")}</p>}
                 {quote&&delivery&&runtimePlan&&<RuntimeCheckPanel language={language} deliveryId={delivery.id} plan={runtimePlan} targetId={delivery.backendTargetId} target={runtimeTargets.find(target=>target.id===delivery.backendTargetId)} registration={delivery.runtimeRegistration} deliveryDigest={delivery.runtimeDeliveryDigest} report={runtimeReport} pending={!!delivery.runtimeRun&&Date.parse(delivery.runtimeRun.expiresAt)>Date.now()} busy={busy==="runtime-check"} enabled={!!canRunRuntime&&!busy} onRun={checkRuntimeBackend} preflightContext={JSON.stringify([quote.id,delivery.id,workspaceRole,role,delivery.backendTargetId,delivery.runtimeDeliveryDigest,runtimePlan,delivery.runtimeRegistration])} onPreflight={signal=>apiRequest<RuntimePreflightResult>(`/api/proofs/${encodeURIComponent(quote.id)}/runtime-preflight`,"POST",{deliveryId:delivery.id},workspaceRole,signal)} onPrepareFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?(criterionId,comment)=>prepareFeedback({deliveryId:delivery.id,criterionId,comment}):undefined}/>}
                 {quote&&delivery&&custom&&<ProjectJourneyPanel key={`journey-${quote.id}-${delivery.id}-${workspaceRole}`} quote={quote} role={role} language={language} enabled={!!canRunRuntime&&!busy} request={request} onApply={apply} onBusy={value=>setBusy(value?"journey-check":"")} onDecision={setJourneyDecision} onFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?comment=>prepareFeedback({deliveryId:delivery.id,criterionId:"journey-agreement",journeyReportId:delivery.journeyReport?.id,comment}):undefined}/>}
+                {quote&&delivery&&custom&&<ModelCheckPanel key={`model-${quote.id}-${delivery.id}-${workspaceRole}`} quote={quote} role={role} language={language} enabled={!!canRunRuntime&&!busy} request={request} onApply={apply} onBusy={value=>setBusy(value?"model-check":"")} onDecision={setModelDecision} onFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?comment=>prepareFeedback({deliveryId:delivery.id,criterionId:"model-agreement",modelReportId:delivery.modelReport?.id,comment}):undefined}/>}
                 {delivery && <EvidenceHistoryPanel key={`history-${delivery.id}`} delivery={delivery} language={language} acceptedSnapshotId={collaboration?.acceptance?.evidenceSnapshotId}/>}
                 {busy === "browser-check-save" && <p className="layout-check-source" role="status">{tr("正在保存链接行为与资源观察…", "Saving link behavior and resource observations…")}</p>}
               </div>
@@ -1514,10 +1535,11 @@ export default function Home() {
               {failed ? <p className="capture-blocked has-failure">{tr("仍有未通过的标准，请退回卖家修改。", "Some criteria are unmet. Request changes from the seller.")}</p> : <>
                 {!allHumanChecked && <button className="text-button" onClick={openPendingHumanCheck}>{tr("查看并确认人工检查项目", "Inspect the human-check requirements")}<ArrowRight size={13}/></button>}
                 {delivery?.journeyPlan&&!journeyDecisionReady&&<button className="subtle-button" onClick={openProjectJourney}>{tr("先复核并确认业务旅程报告","Review and acknowledge journey evidence first")}<ArrowRight size={13}/></button>}
+                {delivery?.modelReport&&!modelDecisionReady&&<button className="subtle-button" onClick={()=>focusPanel("delivery","#model-checks")}>{tr("先复核并确认并发状态报告","Review and acknowledge the concurrent state report first")}<ArrowRight size={13}/></button>}
                 {runtimePlan&&<RuntimeAcceptanceDecision language={language} report={runtimeReport} reason={runtimeReason} acknowledged={runtimeAcknowledged} disabled={!!busy} onReasonChange={value=>{setRuntimeReason(value);setDeliveryConsent(false);setConsent(false);}} onAcknowledge={value=>{setRuntimeAcknowledged(value);setDeliveryConsent(false);setConsent(false);}} onInspect={openRuntimeChecks}/>}
                 {businessChecksConfigured && <BusinessAcceptanceDecision language={language} report={businessReport} reason={businessExceptionReason} disabled={!!busy} onReasonChange={value => {setBusinessExceptionReason(value); setDeliveryConsent(false); setConsent(false);}} onInspect={openBusinessChecks}/>}
-                <label className="pay-consent"><input type="checkbox" checked={deliveryConsent} disabled={!!busy || !deliveryUnlocked || !allHumanChecked || !reviewCurrent || !evidenceComplete || !businessDecisionReady || !runtimeDecisionReady} onChange={event => setDeliveryConsent(event.target.checked)}/><span>{tr("我已核查并接受此交付版本。本次确认不付款。", "I have checked and accept this delivery version. This confirmation does not make a payment.")}<code>{delivery?.id}</code></span></label>
-                <button className="button primary" disabled={!!busy || !canAcceptDelivery} onClick={() => mutate("accept_delivery", {deliveryId: delivery?.id, confirm: true, manualChecks, ...(businessDecision ? {businessDecision} : {}),...(runtimeDecision?{runtimeDecision}:{}),...(journeyDecision?{journeyDecision}:{})}, tr("交付已接受。本次确认未发起预授权或付款。", "Delivery accepted. This confirmation did not initiate authorization or payment."))}>{tr("确认接受交付（不付款）", "Accept delivery — no payment")}</button>
+                <label className="pay-consent"><input type="checkbox" checked={deliveryConsent&&deliveryConsentBasis===acceptanceDecisionKey} disabled={!!busy || !deliveryUnlocked || !allHumanChecked || !reviewCurrent || !evidenceComplete || !businessDecisionReady || !runtimeDecisionReady || !journeyDecisionReady || !modelDecisionReady} onChange={event => {setDeliveryConsent(event.target.checked);setDeliveryConsentBasis(event.target.checked?acceptanceDecisionKey:undefined);}}/><span>{tr("我已核查并接受此交付版本。本次确认不付款。", "I have checked and accept this delivery version. This confirmation does not make a payment.")}<code>{delivery?.id}</code></span></label>
+                <button className="button primary" disabled={!!busy || !canAcceptDelivery} onClick={() => mutate("accept_delivery", {deliveryId: delivery?.id, confirm: true,expectedEvidence:currentAcceptanceBasis, manualChecks, ...(businessDecision ? {businessDecision} : {}),...(runtimeDecision?{runtimeDecision}:{}),...(journeyDecision?{journeyDecision}:{}),...(modelDecision?{modelDecision}:{})}, tr("交付已接受。本次确认未发起预授权或付款。", "Delivery accepted. This confirmation did not initiate authorization or payment."))}>{tr("确认接受交付（不付款）", "Accept delivery — no payment")}</button>
               </>}
             </div>}
             {!terminalPayment && paymentSummary}
@@ -1531,7 +1553,8 @@ export default function Home() {
               {currentReconciliation?.kind === "unresolved" && <div className="reconciliation-unresolved" role="status"><CircleAlert size={16} /><div><strong>{tr("最终结果仍未确认", "Final result still unconfirmed")}</strong><p>{unresolvedPaymentMessage(currentReconciliation.reason)}</p><p>{currentReconciliation.reason === "inconsistent_resources" ? tr("交付与验收记录继续锁定。请先查看 PayPal Sandbox 的订单、授权和扣款记录，必要时联系 PayPal 支持；确认清楚后再核对状态。", "Delivery and acceptance remain locked. Inspect the PayPal Sandbox order, authorization and capture records, and contact PayPal support if needed. Check the status again after the history is understood.") : tr("交付与验收记录继续锁定，原操作的同一重试入口保留。请继续核对；若状态持续不明，请查看 PayPal Sandbox 交易记录或联系 PayPal 支持，不要据此认定已付款或授权已关闭。", "Delivery and acceptance remain locked, and the same operation can still be retried. Continue checking; if the outcome remains unclear, inspect the PayPal Sandbox transaction record or contact PayPal support. This result does not confirm payment or a closed authorization.")}</p></div></div>}
             </section>}
             {sandboxRoleplay && !terminalPayment && <p className="sandbox-rehearsal-note">{tr("PayPal Sandbox 双端演练：虚拟卖家，测试商户收款。验收不扣款；预授权和扣款需由买家分别确认。", "PayPal Sandbox role rehearsal: simulated seller, configured test merchant. Acceptance does not capture; the buyer separately confirms authorization and capture.")}</p>}
-            {buyer && quote && quote.status === "approved" && proof?.paymentState === "unfunded" && (!collaboration || collaboration.stage === "accepted") && <div className="authorization-action no-print">{returnOrder?.proofId === quote.id ? <><div><strong>{tr("已从 PayPal 返回，尚需完成预授权", "Back from PayPal. Complete the authorization.")}</strong><p>{tr("返回链接不代表预授权成功。点击后向服务器核实并完成，不会扣款。", "Returning is not authorization. Verify and complete it with the server; no capture yet.")}</p></div><button className="button primary" disabled={!!busy} onClick={() => authorize(returnOrder.orderId)}>{busy === "authorize" ? <LoaderCircle className="spin" size={16} /> : <ShieldCheck size={16} />}{tr("完成预授权", "Complete authorization")}</button></> : <AuthorizationStart language={language} mode={paymentMode ?? "demo"} busy={!!busy} checkingOut={busy === "checkout"} onCheckout={checkout} />}</div>}
+            {quote&&delivery&&<ProofReadinessPanel quote={quote} role={displayRole} language={language}/>}
+            {buyer && quote && quote.status === "approved" && proof?.paymentState === "unfunded" && (!collaboration || collaboration.stage === "accepted") && <div className="authorization-action no-print">{returnOrder?.proofId === quote.id ? <><div><strong>{tr("已从 PayPal 返回，尚需完成预授权", "Back from PayPal. Complete the authorization.")}</strong><p>{tr("返回链接不代表预授权成功。点击后向服务器核实并完成，不会扣款。", "Returning is not authorization. Verify and complete it with the server; no capture yet.")}</p></div><button className="button primary" disabled={!!busy||evidenceRunPending} onClick={() => authorize(returnOrder.orderId)}>{busy === "authorize" ? <LoaderCircle className="spin" size={16} /> : <ShieldCheck size={16} />}{tr("完成预授权", "Complete authorization")}</button></> : <AuthorizationStart language={language} mode={paymentMode ?? "demo"} busy={!!busy||evidenceRunPending} checkingOut={busy === "checkout"} onCheckout={checkout} />}</div>}
             {authorized && <div className={`authorization-expiry ${expired ? "expired" : ""}`}><Clock3 size={13} /><span>{expired ? pendingCapture
               ? paymentMode === "sandbox" ? tr("本地测试操作时限已到；原扣款结果仍需核对，不代表 PayPal 授权已过期。", "The local test window ended. The original capture still needs verification; this does not mean the PayPal authorization expired.") : tr("演示预授权时限已到；已确认的扣款操作仍需继续核实。", "The demo authorization window ended; the previously accepted capture still needs verification.")
               : paymentMode === "sandbox" ? tr("本地测试操作时限已到，不能发起新的扣款；这不证明 PayPal 授权已过期。", "The local test window ended, so no new capture can start. This does not establish that the PayPal authorization expired.") : tr("演示预授权时限已到，不能发起新的扣款。", "The demo authorization window ended. No new capture can be started.")
@@ -1539,7 +1562,7 @@ export default function Home() {
 
               {buyer && authorized && delivery && <div className="acceptance-panel no-print">
                 <div className="acceptance-heading"><SquareCheckBig size={19} /><div><h3>{tr("证据之后，是你的决定", "The final decision is yours")}</h3><p>{tr("接受当前交付版本，才进入测试扣款。", "Accept this exact delivery before test capture.")}</p></div></div>
-                {pendingCapture ? <p className="capture-blocked"><Clock3 size={14} />{tr("付款确认尚未完成。交付版本和同意记录已锁定，请重试同一扣款操作。", "Payment confirmation is pending. The accepted delivery and consent are frozen. Retry the same capture.")}</p> : pendingVoid ? <p className="capture-blocked"><Undo2 size={14} />{tr("撤销正在处理中。请重试撤销，不能发起付款。", "A void is pending. Retry the void; capture is unavailable.")}</p> : !reviewCurrent ? <p className="capture-blocked"><LockKeyhole size={14} />{tr("此交付尚未核查。先运行核查，再继续。", "This delivery needs a review before acceptance.")}</p> : failed ? <p className="capture-blocked has-failure"><CircleAlert size={14} />{tr("存在未通过项，付款已阻止。提交修复版后重新核查。", "A criterion is not met. Capture is blocked. Submit the fix and review again.")}</p> : !evidenceComplete ? <p className="capture-blocked"><Info size={14} />{tr("证据尚不完整，不能确认付款。", "Evidence is incomplete. Capture is unavailable.")}</p> : <><label className="pay-consent"><input type="checkbox" checked={consent} disabled={!!busy || expired || !allHumanChecked || paymentPending || !acceptedCurrent && !businessDecisionReady} onChange={event => setConsent(event.target.checked)} /><span>{acceptedCurrent ? tr("我已接受当前交付，现在单独同意完成", "I already accepted this delivery and separately consent to capture") : tr("我接受当前交付，并同意完成", "I accept this delivery and consent to capture")} <strong>{money(quote?.totalCents ?? 0)} {quote?.currency}</strong> {tr("的测试扣款。", "in test funds.")}<code title={delivery.id}>{delivery.id}</code></span></label>{!allHumanChecked && <button className="human-reminder text-button" onClick={openPendingHumanCheck}>{tr("打开人工确认项目", "Open the human acceptance check")}<ArrowRight size={13} /></button>}</>}
+                {pendingCapture ? <p className="capture-blocked"><Clock3 size={14} />{frozenCaptureReady?tr("付款确认尚未完成。交付版本和同意记录已锁定，请重试同一扣款操作。", "Payment confirmation is pending. The accepted delivery and consent are frozen. Retry the same capture."):tr("原扣款的证据快照缺失，不能重新扣款；请先明确查询 PayPal 已保存结果。", "The original capture snapshot is missing. Do not start another capture; explicitly reconcile the saved PayPal outcome first.")}</p> : pendingVoid ? <p className="capture-blocked"><Undo2 size={14} />{tr("撤销正在处理中。请重试撤销，不能发起付款。", "A void is pending. Retry the void; capture is unavailable.")}</p> : !reviewCurrent ? <p className="capture-blocked"><LockKeyhole size={14} />{tr("此交付尚未核查。先运行核查，再继续。", "This delivery needs a review before acceptance.")}</p> : failed ? <p className="capture-blocked has-failure"><CircleAlert size={14} />{tr("存在未通过项，付款已阻止。提交修复版后重新核查。", "A criterion is not met. Capture is blocked. Submit the fix and review again.")}</p> : !evidenceComplete ? <p className="capture-blocked"><Info size={14} />{tr("证据尚不完整，不能确认付款。", "Evidence is incomplete. Capture is unavailable.")}</p> : <><label className="pay-consent"><input type="checkbox" checked={consent&&captureConsentBasis===captureBasisKey} disabled={!!busy || !quote || !captureEvidenceReady(quote) || evidenceRunPending || expired || !allHumanChecked || paymentPending || !acceptedCurrent && !businessDecisionReady} onChange={event => {setConsent(event.target.checked);setCaptureConsentBasis(event.target.checked?captureBasisKey:undefined);}} /><span>{acceptedCurrent ? tr("我已接受当前交付，现在单独同意完成", "I already accepted this delivery and separately consent to capture") : tr("我接受当前交付，并同意完成", "I accept this delivery and consent to capture")} <strong>{money(quote?.totalCents ?? 0)} {quote?.currency}</strong> {tr("的测试扣款。", "in test funds.")}<code title={delivery.id}>{delivery.id}</code></span></label>{!allHumanChecked && <button className="human-reminder text-button" onClick={openPendingHumanCheck}>{tr("打开人工确认项目", "Open the human acceptance check")}<ArrowRight size={13} /></button>}</>}
                 {!collaboration&&!paymentPending&&runtimePlan&&<RuntimeAcceptanceDecision language={language} report={runtimeReport} reason={runtimeReason} acknowledged={runtimeAcknowledged} disabled={!!busy} onReasonChange={value=>{setRuntimeReason(value);setDeliveryConsent(false);setConsent(false);}} onAcknowledge={value=>{setRuntimeAcknowledged(value);setDeliveryConsent(false);setConsent(false);}} onInspect={openRuntimeChecks}/>}
                 {!collaboration && !paymentPending && businessChecksConfigured && <BusinessAcceptanceDecision language={language} report={businessReport} reason={businessExceptionReason} disabled={!!busy} onReasonChange={value => {setBusinessExceptionReason(value); setDeliveryConsent(false); setConsent(false);}} onInspect={openBusinessChecks}/>}
                 <button className="button primary capture-button" disabled={!!busy || !canCapture} onClick={capture}>{busy === "capture" ? <LoaderCircle className="spin" size={16} /> : <ShieldCheck size={16} />}{pendingCapture ? tr("重试核实同一测试付款", "Retry the same test capture") : acceptedCurrent ? tr("单独确认测试扣款", "Confirm test capture") : tr("接受交付并完成测试付款", "Accept delivery & capture test payment")}<ArrowRight size={16} /></button>
@@ -1554,7 +1577,7 @@ export default function Home() {
       </main>
 
       {viewedVersion && quote && <VersionViewer quoteId={quote.id} version={viewedVersion} criteria={quote.proof.criteria} language={language} onClose={() => setViewedVersion(undefined)}/>}
-      {modal && <div className="modal-overlay no-print" onMouseDown={event => { if (event.target === event.currentTarget && !busy) setModal(null); }}><div className="confirmation-modal" ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="confirmation-title" aria-describedby="confirmation-copy" onKeyDown={onModalKey}><button className="icon-button modal-close" disabled={!!busy} aria-label={tr("关闭", "Close")} onClick={() => setModal(null)}><X size={18} /></button><span className="modal-symbol">{modal.kind === "authorize" ? <LockKeyhole size={27} strokeWidth={1.5} /> : <Undo2 size={27} strokeWidth={1.5} />}</span><span className="mode-badge">{modal.kind === "authorize" ? "DEMO AUTHORIZATION" : "VOID AUTHORIZATION"}</span><h2 id="confirmation-title">{modal.kind === "authorize" ? tr("先预授权，暂不付款。", "Authorize first. Don’t pay yet.") : tr("结束这次预授权？", "End this authorization?")}</h2><p id="confirmation-copy">{modal.kind === "authorize" ? tr("这会模拟买方批准 24 小时短期预授权。不会跳转 PayPal、扣款或移动真实资金。交付核查与人工确认后，仍需单独完成测试付款。", "This simulates buyer approval of a 24-hour authorization. It does not open PayPal, capture payment or move real funds. Delivery review and your acceptance are still required before test capture.") : tr("撤销后，本次预授权不能再用于扣款。操作记录与交付证据将保留。", "Once voided, this authorization cannot be captured. The delivery evidence and audit record remain available.")}</p><div className="modal-amount"><span>{tr("本次约定", "AGREEMENT TOTAL")}</span><strong>{money(quote?.totalCents ?? 0)}<small>{quote?.currency}</small></strong></div><button className="button primary" disabled={!!busy} onClick={() => modal.kind === "authorize" ? authorize(modal.orderId) : release()}>{busy ? <LoaderCircle size={16} className="spin" /> : modal.kind === "authorize" ? <Check size={16} /> : <Undo2 size={16} />}{modal.kind === "authorize" ? tr("模拟完成预授权（不扣款）", "Simulate authorization — no capture") : tr("确认撤销预授权", "Confirm void authorization")}</button><button className="cancel-button" disabled={!!busy} onClick={() => setModal(null)}>{tr("返回工作台", "Back to workspace")}</button></div></div>}
+      {modal && <div className="modal-overlay no-print" onMouseDown={event => { if (event.target === event.currentTarget && !busy) setModal(null); }}><div className="confirmation-modal" ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="confirmation-title" aria-describedby="confirmation-copy" onKeyDown={onModalKey}><button className="icon-button modal-close" disabled={!!busy} aria-label={tr("关闭", "Close")} onClick={() => setModal(null)}><X size={18} /></button><span className="modal-symbol">{modal.kind === "authorize" ? <LockKeyhole size={27} strokeWidth={1.5} /> : <Undo2 size={27} strokeWidth={1.5} />}</span><span className="mode-badge">{modal.kind === "authorize" ? "DEMO AUTHORIZATION" : "VOID AUTHORIZATION"}</span><h2 id="confirmation-title">{modal.kind === "authorize" ? tr("先预授权，暂不付款。", "Authorize first. Don’t pay yet.") : tr("结束这次预授权？", "End this authorization?")}</h2><p id="confirmation-copy">{modal.kind === "authorize" ? tr("这会模拟买方批准 24 小时短期预授权。不会跳转 PayPal、扣款或移动真实资金。交付核查与人工确认后，仍需单独完成测试付款。", "This simulates buyer approval of a 24-hour authorization. It does not open PayPal, capture payment or move real funds. Delivery review and your acceptance are still required before test capture.") : tr("撤销后，本次预授权不能再用于扣款。操作记录与交付证据将保留。", "Once voided, this authorization cannot be captured. The delivery evidence and audit record remain available.")}</p><div className="modal-amount"><span>{tr("本次约定", "AGREEMENT TOTAL")}</span><strong>{money(quote?.totalCents ?? 0)}<small>{quote?.currency}</small></strong></div><button className="button primary" disabled={!!busy||evidenceRunPending} onClick={() => modal.kind === "authorize" ? authorize(modal.orderId) : release()}>{busy ? <LoaderCircle size={16} className="spin" /> : modal.kind === "authorize" ? <Check size={16} /> : <Undo2 size={16} />}{modal.kind === "authorize" ? tr("模拟完成预授权（不扣款）", "Simulate authorization — no capture") : tr("确认撤销预授权", "Confirm void authorization")}</button><button className="cancel-button" disabled={!!busy} onClick={() => setModal(null)}>{tr("返回工作台", "Back to workspace")}</button></div></div>}
     </div>
   );
 }

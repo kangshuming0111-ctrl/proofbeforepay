@@ -35,6 +35,24 @@ SELLER = Actor("collab-qa-seller-b", "seller@test.example")
 OUTSIDER = Actor("collab-qa-outsider-c", "outsider@test.example")
 
 
+def acceptance_basis(quote):
+    """Use the exact reports already observed, including explicit null values."""
+    proof = quote["proof"]
+    delivery = proof.get("delivery") or {}
+    assessment_id = (delivery.get("assessment") or {}).get("id")
+    return {"deliveryId": delivery.get("id"),
+            "reviewReviewedAt": (proof.get("review") or {}).get("reviewedAt") if (proof.get("review") or {}).get("deliveryId") == delivery.get("id") else None,
+            "browserReportId": (delivery.get("browserChecks") or {}).get("id"),
+            "layoutReportId": (delivery.get("layoutReport") or {}).get("id"),
+            "assessmentId": assessment_id,
+            "riskReviewIds": sorted({row["id"] for row in delivery.get("riskReviews", []) if row.get("deliveryId") == delivery.get("id") and row.get("assessmentId") == assessment_id}),
+            "businessReportId": (delivery.get("businessChecks") or {}).get("id"),
+            "runtimeReportId": (delivery.get("runtimeReport") or {}).get("id"),
+            "journeyReportId": (delivery.get("journeyReport") or {}).get("id"),
+            "journeyPlanDigest": (delivery.get("journeyPlan") or {}).get("planDigest"),
+            "modelReportId": (delivery.get("modelReport") or {}).get("id")}
+
+
 class NoRedirect(HTTPRedirectHandler):
     def redirect_request(self, request, response, code, message, headers, new_url):
         return None
@@ -51,6 +69,7 @@ class LocalAPI:
         self.opener = build_opener(ProxyHandler({}), NoRedirect())
         self.checks = []
         self.delivery_views = {}
+        self.evidence_views = {}
 
     def with_delivery_baseline(self, actor, path, payload):
         """Use only this caller's previously observed view; never fetch a fresher baseline."""
@@ -59,6 +78,21 @@ class LocalAPI:
             key = (actor.identifier, match.group(1))
             if key in self.delivery_views:
                 return {**payload, "expectedDeliveryId": self.delivery_views[key]}
+        return payload
+
+    def with_acceptance_baseline(self, actor, path, payload):
+        match = re.fullmatch(r"/api/proofs/([^/]+)/(accept_delivery|capture)", path)
+        if actor is not None and match and isinstance(payload, dict):
+            quote = self.evidence_views.get((actor.identifier, match.group(1)))
+            if quote is not None:
+                result = copy.deepcopy(payload)
+                proof = quote["proof"]
+                snapshot_id = proof.get("acceptedEvidenceSnapshotId") or ((proof.get("collaboration") or {}).get("acceptance") or {}).get("evidenceSnapshotId")
+                if match.group(2) == "capture" and snapshot_id:
+                    result.setdefault("acceptedEvidenceSnapshotId", snapshot_id)
+                else:
+                    result.setdefault("expectedEvidence", acceptance_basis(quote))
+                return result
         return payload
 
     def request(self, actor, path, payload=None, method=None):
@@ -84,6 +118,7 @@ class LocalAPI:
                 quote = result.get("quote")
                 if isinstance(quote, dict) and quote.get("workflow") == "proof-v1":
                     self.delivery_views[(actor.identifier, quote["id"])] = quote["proof"].get("delivery", {}).get("id")
+                    self.evidence_views[(actor.identifier, quote["id"])] = copy.deepcopy(quote)
             return response.status, result, {name.lower(): value for name, value in response.headers.items()}
 
     @staticmethod
@@ -94,6 +129,7 @@ class LocalAPI:
 
     def ok(self, actor, path, payload=None, method=None):
         payload = self.with_delivery_baseline(actor, path, payload)
+        payload = self.with_acceptance_baseline(actor, path, payload)
         code, result, _ = self.request(actor, path, payload, method)
         assert code in {200, 201}, (path, code, self.diagnostic(result))
         assert isinstance(result, dict), (path, "Expected JSON object")
@@ -101,6 +137,7 @@ class LocalAPI:
 
     def reject(self, actor, path, payload=None, codes=(403,), method=None):
         payload = self.with_delivery_baseline(actor, path, payload)
+        payload = self.with_acceptance_baseline(actor, path, payload)
         code, result, _ = self.request(actor, path, payload, method)
         assert code in codes, (path, code, codes, self.diagnostic(result))
         return code
@@ -371,6 +408,7 @@ def main():
     api.reject(BUYER, path + "/accept_delivery", {"confirm": True, "deliveryId": first_delivery, "manualChecks": checks}, (409,))
     api.reject(BUYER, path + "/accept_delivery", {"confirm": False, "deliveryId": second_delivery, "manualChecks": checks}, (400,))
     api.reject(BUYER, path + "/accept_delivery", {"confirm": True, "deliveryId": second_delivery, "manualChecks": []}, (400,))
+    read_quote(api, BUYER, quote_id, "buyer")
     quote = quote_response(api.ok(BUYER, path + "/accept_delivery", {"confirm": True, "deliveryId": second_delivery, "manualChecks": checks}), "buyer")
     assert shared_state(quote)["stage"] == "accepted"
     acceptance = shared_state(quote)["acceptance"]

@@ -5,6 +5,7 @@ import { createUploadedDelivery } from "@/lib/static-project";
 import { recordLayoutReport } from "@/lib/layout-report";
 import { validateBusinessDecision } from "@/lib/business-decision";
 import { recordCaptureConsent } from "@/lib/acceptance-evidence";
+import { assertAcceptedSnapshotConsent } from "@/lib/acceptance-basis";
 import { assessDelivery } from "@/lib/delivery-assessment";
 import { acceptDelivery, joinSeller, prepareReplacement, requestChanges, requireExpectedDelivery, requireWorkflowAction, submitDelivery, type ProofWorkflowAction } from "@/lib/proof-workflow";
 import { createRoleplayDelivery, isDemoRoleplay, isOwnerRoleplay } from "@/lib/proof-demo";
@@ -30,9 +31,10 @@ export async function POST(request: Request, context: {params: Promise<{id: stri
     if (quote.proof.demoRoleplay && !isOwnerRoleplay(quote)) throw new HttpError(409, "This role-play record has an invalid provider or workflow configuration.");
     requireWorkflowAction(quote, stored.role, action as ProofWorkflowAction);
     const input = await body(request, action === "delivery" ? 2 * 1024 * 1024 : action === "return" ? 96_000 : 24_000);
-    if (["accept_delivery","capture","void","checkout","authorize","return","delivery","submit_delivery"].includes(action) && (quote.proof.delivery?.runtimeRun || quote.proof.delivery?.journeyRun)) throw new HttpError(409,"Finish the pending backend run before changing acceptance, delivery or payment.");
+    if (["accept_delivery","capture","void","checkout","authorize","return","delivery","submit_delivery"].includes(action) && (quote.proof.delivery?.runtimeRun || quote.proof.delivery?.journeyRun || quote.proof.delivery?.modelRun)) throw new HttpError(409,"Finish the pending backend or model check before changing acceptance, delivery or payment.");
     if (["accept_delivery","capture"].includes(action) && quote.proof.delivery?.journeyPlan && quote.proof.delivery.journeyReport && await runtimeDeliveryDigest(quote.proof.delivery.files)!==quote.proof.delivery.journeyReport.deliveryDigest) throw new HttpError(409,"The accepted journey file binding is inconsistent.");
     if (["accept_delivery","capture"].includes(action) && savedRuntimePlan(quote) && quote.proof.delivery && await runtimeDeliveryDigest(quote.proof.delivery.files)!==quote.proof.delivery.runtimeDeliveryDigest) throw new HttpError(409,"The accepted backend file binding is inconsistent.");
+    if (["accept_delivery","capture"].includes(action) && quote.proof.delivery?.modelReport && await runtimeDeliveryDigest(quote.proof.delivery.files)!==quote.proof.delivery.modelReport.deliveryDigest) throw new HttpError(409,"The model-check file binding is inconsistent.");
     const config = isDemoRoleplay(quote) ? {} : providerEnv();
     const persist = async (next: ProofQuote, archive = false) => {await saveProofCase(stored, next, {archive}); quote = next;};
     const response = () => json(proofResponse(stored, quote));
@@ -162,6 +164,7 @@ export async function POST(request: Request, context: {params: Promise<{id: stri
     if (action === "capture") {
       if (quote.proof.paymentState === "captured") {
         if (input.confirm !== true || input.deliveryId !== quote.proof.acceptedDeliveryId) throw new HttpError(409, "This receipt belongs to a different delivery version.");
+        assertAcceptedSnapshotConsent(quote, input.acceptedEvidenceSnapshotId);
         return response();
       }
       if (quote.proof.paymentOperation === "void") throw new HttpError(409, "Cancellation is already in progress.");
@@ -171,7 +174,7 @@ export async function POST(request: Request, context: {params: Promise<{id: stri
       const manualChecks = validateAcceptance(quote, input);
       if (!quote.proof.paymentOperation) {
         // Persist consent and freeze this delivery before contacting the payment provider.
-        await persist(recordCaptureConsent(quote, manualChecks, captureConfirmedAt, quote.proof.collaboration ? undefined : validateBusinessDecision(quote, input.businessDecision), input.runtimeDecision, input.journeyDecision));
+        await persist(recordCaptureConsent(quote, manualChecks, captureConfirmedAt, quote.proof.collaboration ? undefined : validateBusinessDecision(quote, input.businessDecision), input.runtimeDecision, input.journeyDecision, input.modelDecision));
       }
       const captureId = quote.paymentMode === "demo" ? `SIM-CAP-${quote.id}` : (await captureAuthorization(quote, config)).captureId;
       await persist(log({...quote, status: "paid", paidAt: new Date().toISOString(), captureId, proof: {...quote.proof, paymentOperation: undefined, paymentState: "captured"}}, "captured", quote.proof.acceptedDeliveryId));

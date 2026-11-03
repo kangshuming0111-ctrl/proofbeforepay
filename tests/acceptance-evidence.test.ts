@@ -1,11 +1,12 @@
+import {acceptDeliveryWithBasis as acceptDelivery, validateAcceptanceWithBasis as validateAcceptance} from "./acceptance-client.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { ProofBrowserCheckReading, ProofQuote } from "../lib/contracts.ts";
 import { assertAcceptedEvidenceReference, browserReportsFor, createAcceptanceEvidence, layoutReportsFor, recordCaptureConsent, withAcceptanceEvidence, withBrowserReport, OBSERVATION_HISTORY_LIMIT, ACCEPTANCE_HISTORY_LIMIT } from "../lib/acceptance-evidence.ts";
 import { createBrowserCheckReport, getBrowserCheckPlan, recordBrowserChecks } from "../lib/browser-check-report.ts";
 import { recordLayoutReport } from "../lib/layout-report.ts";
-import { acceptDelivery, prepareReplacement, snapshotVersion } from "../lib/proof-workflow.ts";
-import { validateAcceptance } from "../lib/proof-domain.ts";
+import {prepareReplacement, snapshotVersion} from "../lib/proof-workflow.ts";
+
 import { createUploadedDelivery, parseStaticProject } from "../lib/static-project.ts";
 import { DomainError } from "../lib/domain.ts";
 

@@ -30,11 +30,16 @@ function source(value: unknown, name: string): BookingPolicySource {
 /** Deliberately narrow complete-clause grammars. A value elsewhere in a clause,
  * a minimum, alternative limits, negatives or a compound sentence is not a
  * proposal. Unsupported wording remains a requirement for manual clarification.
- * These rules never infer a price, capacity/inventory rule or deployment policy. */
+ * These rules never infer a price, capacity/inventory rule or deployment policy.
+ * Synonyms are slots in an anchored grammar, not text substitutions: "no more
+ * than" is a positive upper bound only inside one of these complete clauses. */
+const ENGLISH_UPPER_BOUND = String.raw`(?:at\s+most|no\s+more\s+than|up\s+to|a\s+max(?:imum)?\s+of)`;
+const ENGLISH_BOOKING_VERB = String.raw`(?:accepts|allows|supports|contains|holds|accommodates|(?:can|may)\s+(?:accept|allow|support|contain|hold|accommodate))`;
 const CLAUSES = [
-  /^(?:(?:每(?:笔|次|个)|单次)(?:预约|预订)(?:人数)?最多(?:接受|接待|容纳)?|(?:预约|预订)(?:人数上限(?:为|是)?|最多(?:接受|接待|容纳)?))\s*([1-9]\d?)\s*(?:人|位客人)$/u,
-  /^(?:each|every|a|one|single)\s+booking\s+(?:accepts|allows|supports)\s+(?:at\s+most|a\s+maximum\s+of)\s+([1-9]\d?)\s+(?:people|persons|guests)$/iu,
-  /^(?:the\s+)?maximum\s+party\s+size\s+(?:per\s+booking|for\s+each\s+booking)(?:\s+is|\s*:)\s*([1-9]\d?)\s+(?:people|persons|guests)$/iu,
+  /^(?:(?:每(?:笔|次|个)|单次|单笔))?(?:预约|预订)(?:的)?(?:人数)?(?:(?:最多|至多)(?:可)?(?:接受|接待|容纳)?|(?:不|不得|不能)超过|上限(?:为|是)?)\s*([1-9]\d?)\s*(?:人|位客人)$/u,
+  new RegExp(String.raw`^(?:each|every|a|one|single)\s+booking\s+${ENGLISH_BOOKING_VERB}\s+${ENGLISH_UPPER_BOUND}\s+([1-9]\d?)\s+(?:people|persons|guests)$`, "iu"),
+  /^(?:the\s+)?max(?:imum)?\s+party\s+size\s+(?:per\s+booking|for\s+each\s+booking)(?:\s+is|\s*:)\s*([1-9]\d?)\s+(?:people|persons|guests)$/iu,
+  new RegExp(String.raw`^${ENGLISH_UPPER_BOUND}\s+([1-9]\d?)\s+(?:people|persons|guests)\s+per\s+booking$`, "iu"),
 ] as const;
 
 /** A proposal is deterministic and source-grounded, not an adopted check. The

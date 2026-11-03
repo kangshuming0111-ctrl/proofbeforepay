@@ -57,7 +57,7 @@ export function proofResponse(record: ProofRecord, quote = record.quote) {
 export async function listProofCases(actor: ProofActor) {
   const rows = await getDb().select({
     id: quotes.id, ownerId: quotes.ownerId, sellerId: quotes.sellerId,
-    payload: sql<string>`json_remove(${quotes.payload}, '$.proof.delivery.files', '$.proof.delivery.assessment', '$.proof.delivery.browserCheckHistory', '$.proof.delivery.businessCheckHistory', '$.proof.delivery.layoutHistory', '$.proof.delivery.acceptanceEvidence', '$.proof.delivery.runtimeHistory', '$.proof.delivery.runtimeRun', '$.proof.delivery.journeyRun', '$.proof.delivery.journeyReport', '$.proof.delivery.journeyHistory', '$.proof.requirements.sourceText')`,
+    payload: sql<string>`json_remove(${quotes.payload}, '$.proof.delivery.files', '$.proof.delivery.assessment', '$.proof.delivery.browserCheckHistory', '$.proof.delivery.businessCheckHistory', '$.proof.delivery.layoutHistory', '$.proof.delivery.acceptanceEvidence', '$.proof.delivery.runtimeHistory', '$.proof.delivery.runtimeRun', '$.proof.delivery.journeyRun', '$.proof.delivery.journeyReport', '$.proof.delivery.journeyHistory', '$.proof.delivery.journeyPlanSuggestions', '$.proof.delivery.journeyPlanAdoption', '$.proof.delivery.journeyExplanation', '$.proof.delivery.modelRun', '$.proof.delivery.modelReport', '$.proof.delivery.modelHistory', '$.proof.delivery.modelEvidenceReservation', '$.proof.requirements.sourceText')`,
   }).from(quotes).where(and(or(eq(quotes.ownerId, actor.id), eq(quotes.sellerId, actor.id)), sql`json_extract(${quotes.payload}, '$.workflow') = 'proof-v1'`)).orderBy(desc(quotes.updatedAt)).limit(50);
   const result: ProofQuote[] = [];
   const roles: Record<string, ProofRole> = {};
@@ -103,7 +103,7 @@ export async function saveProofCase(record: ProofRecord, next: ProofQuote, optio
 }
 
 export async function listProofVersions(record: ProofRecord): Promise<ProofDeliveryVersion[]> {
-  const rows = await getDb().select({payload: sql<string>`json_remove(${proofVersions.payload}, '$.delivery.files', '$.delivery.browserCheckHistory', '$.delivery.businessCheckHistory', '$.delivery.layoutHistory', '$.delivery.acceptanceEvidence', '$.delivery.runtimeHistory', '$.delivery.runtimeRun', '$.delivery.journeyRun', '$.delivery.journeyReport', '$.delivery.journeyHistory')`}).from(proofVersions)
+  const rows = await getDb().select({payload: sql<string>`json_remove(${proofVersions.payload}, '$.delivery.files', '$.delivery.browserCheckHistory', '$.delivery.businessCheckHistory', '$.delivery.layoutHistory', '$.delivery.acceptanceEvidence', '$.delivery.runtimeHistory', '$.delivery.runtimeRun', '$.delivery.journeyRun', '$.delivery.journeyReport', '$.delivery.journeyHistory', '$.delivery.journeyPlanSuggestions', '$.delivery.journeyPlanAdoption', '$.delivery.journeyExplanation', '$.delivery.modelRun', '$.delivery.modelReport', '$.delivery.modelHistory', '$.delivery.modelEvidenceReservation')`}).from(proofVersions)
     .where(eq(proofVersions.quoteId, record.quote.id)).orderBy(desc(proofVersions.archivedAt)).limit(50);
   const list = rows.map(row => JSON.parse(row.payload) as ProofDeliveryVersion);
   if (record.quote.proof.delivery) {
@@ -116,8 +116,15 @@ export async function listProofVersions(record: ProofRecord): Promise<ProofDeliv
     delete current.delivery.runtimeHistory;
     delete current.delivery.runtimeRun;
     delete current.delivery.journeyRun;
+    delete current.delivery.modelRun;
+    delete current.delivery.modelReport;
+    delete current.delivery.modelHistory;
+    delete current.delivery.modelEvidenceReservation;
     delete current.delivery.journeyReport;
     delete current.delivery.journeyHistory;
+    delete current.delivery.journeyPlanSuggestions;
+    delete current.delivery.journeyPlanAdoption;
+    delete current.delivery.journeyExplanation;
     list.unshift(current);
   }
   return list;

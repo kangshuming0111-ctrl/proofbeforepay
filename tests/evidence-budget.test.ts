@@ -1,3 +1,4 @@
+import {acceptDeliveryWithBasis as acceptDelivery} from "./acceptance-client.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { ProofQuote } from "../lib/contracts.ts";
@@ -7,7 +8,7 @@ import { getLayoutFiles, recordLayoutReport } from "../lib/layout-report.ts";
 import { beginRuntimeRun, finishRuntimeRun } from "../lib/runtime-actions.ts";
 import { runtimeDeliveryDigest, savedRuntimePlan, RUNTIME_TARGETS } from "../lib/runtime-project.ts";
 import { executeRuntimeCheck } from "../lib/runtime-runner.ts";
-import { acceptDelivery } from "../lib/proof-workflow.ts";
+
 import { createAcceptanceEvidence } from "../lib/acceptance-evidence.ts";
 import { acceptanceSnapshotReservationBytes, assertQuoteEvidenceBudget, evidenceHistoryBytes, EVIDENCE_HISTORY_BYTE_LIMIT, RUNTIME_REPORT_RESERVATION_BYTES } from "../lib/evidence-budget.ts";
 

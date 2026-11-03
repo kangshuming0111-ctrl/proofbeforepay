@@ -1,9 +1,10 @@
+import {acceptDeliveryWithBasis as acceptDelivery, validateAcceptanceWithBasis as validateAcceptance} from "./acceptance-client.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { ProofQuote } from "../lib/contracts.ts";
 import { isOwnerRoleplay, isSandboxCollaboration, requestSandboxTesting, resolveProofRole } from "../lib/proof-demo.ts";
-import { acceptDelivery, joinSeller, prepareReplacement, requestChanges, requireExpectedDelivery, requireWorkflowAction, snapshotVersion, submitDelivery } from "../lib/proof-workflow.ts";
-import { validateAcceptance } from "../lib/proof-domain.ts";
+import {joinSeller, prepareReplacement, requestChanges, requireExpectedDelivery, requireWorkflowAction, snapshotVersion, submitDelivery} from "../lib/proof-workflow.ts";
+
 import { createUploadedDelivery, parseStaticProject } from "../lib/static-project.ts";
 import { authorizeOrder, captureAuthorization, createAuthorizationOrder, PAYPAL_SANDBOX_URL, type Fetcher } from "../lib/providers.ts";
 

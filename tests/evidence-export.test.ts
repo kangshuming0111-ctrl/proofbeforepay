@@ -1,3 +1,4 @@
+import {acceptDeliveryWithBasis as acceptDelivery} from "./acceptance-client.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import {mkdtemp,writeFile,symlink,rm} from "node:fs/promises";
@@ -8,7 +9,7 @@ import type {ProofQuote} from "../lib/contracts.ts";
 import {createEvidenceExport,verifyEvidenceExport,EVIDENCE_EXPORT_BYTE_LIMIT,EVIDENCE_EXPORT_SCHEMA,EVIDENCE_EXPORT_RULES} from "../lib/evidence-export.ts";
 import {createUploadedDelivery,parseStaticProject} from "../lib/static-project.ts";
 import {createProofDelivery,proofCriteria} from "../lib/proof-evidence.ts";
-import {acceptDelivery} from "../lib/proof-workflow.ts";
+
 import {recordCaptureConsent} from "../lib/acceptance-evidence.ts";
 import {recordBrowserChecks,getBrowserCheckPlan} from "../lib/browser-check-report.ts";
 import {recordLayoutReport} from "../lib/layout-report.ts";

@@ -101,6 +101,7 @@ def main():
     api.reject(seller, path + "/submit_delivery", {"deliveryId": first_id, "note": "Stale"}, codes=(409,))
     api.ok(seller, path + "/submit_delivery", {"deliveryId": current_id, "note": "Revised contact page included"})
     api.reject(buyer, path + "/accept_delivery", {"deliveryId": first_id, "confirm": True, "manualChecks": ["mobile", "coverage-1", "coverage-2"]}, codes=(409,))
+    quote_response(api.ok(buyer, "/api/quotes/" + quote_id), "buyer")
     api.ok(buyer, path + "/accept_delivery", {"deliveryId": current_id, "confirm": True, "manualChecks": ["mobile", "coverage-1", "coverage-2"]})
     api.checked("Seller revision and buyer acceptance use the exact current snapshot; stale upload, submission and acceptance are rejected")
 

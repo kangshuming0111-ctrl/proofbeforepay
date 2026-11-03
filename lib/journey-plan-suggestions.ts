@@ -18,7 +18,7 @@ export type JourneyPlanSuggestions = {
   warnings: string[]; usage?: {promptTokens: number; completionTokens: number};
 };
 const CONTROL = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f\u200b-\u200f\u202a-\u202e\u2066-\u2069]/u;
-const CONDITIONAL = /\b(?:if|unless|except|provided|depending|weekends?|holidays?|maybe|perhaps|tentative|tbd|alternatively|either|or)\b|如果|若|除非|除了|例外|周末|节假日|工作日|取决于|视情况|或者|或是|暂定|待定|待确认|另行/iu;
+const CONDITIONAL = /\b(?:if|unless|except|provided|depending|weekends?|holidays?|maybe|perhaps|tentative|tbd|alternatively|either|or|but)\b|\b(?:only\s+when|subject\s+to)\b|如果|若|除非|除了|除外|例外|周末|节假日|工作日|取决于|视情况|或者|或是|暂定|待定|待确认|另行|仅当|只有|但是|但|否则|需经|须经/iu;
 const NEGATION = /\b(?:no|not|never|cannot|can't|mustn't|disabled?|unavailable|forbidden|prohibit(?:ed)?|disallow(?:ed)?)\b|不要|不得|禁止|不允许|不支持|不提供|不能|不可|无需|无须|排除|不开放|没有|取消此功能/iu;
 const RULE_QUALIFIER = /\b(?:minimum|maximum|unlimited|limits?|instead|different|at\s+least)\b|\d|至少|最多|上限|不限|不设|限制/iu;
 const FINANCIAL = /\b(?:payment|pay|paypal|capture|refund|escrow|price|fee|budget|authorization|transfer)\b|支付|扣款|付款|托管|退款|金额|预算|报价|制作费|开发费/iu;
@@ -29,20 +29,22 @@ const relevant: Record<JourneyPlanCapability, RegExp> = {
   atomic_reschedule: /\b(?:mov(?:e|es|ing)|reschedul(?:e|es|ing)|atomic(?:ally)?)\b|改期|变更时间|原子/iu,
   same_key_retry: /\b(?:retr(?:y|ies)|idempotenc[ey]|same[ -]key|lost response)\b|重试|幂等|同一.{0,3}键|相同.{0,3}键|响应丢失/iu,
 };
-// Complete positive grammars are deliberately small. A matching substring is
-// insufficient: qualifiers, negations and extra instructions cannot disappear.
+// Complete positive grammars are deliberately small. Synonyms occupy bounded
+// grammatical slots; we never delete negation or extract a matching substring.
+// Qualifiers, negations and extra instructions cannot disappear.
 const lifecycleGrammar: Record<Exclude<JourneyPlanCapability, "max_party_size" | "slot_capacity">, RegExp[]> = {
   cancellation_once: [
-    /^cancellation\s+releases\s+(?:the\s+)?capacity\s+(?:exactly\s+)?once\s+and\s+(?:repeated|repeating)\s+cancellation\s+has\s+no\s+further\s+effect$/iu,
-    /^取消(?:预约|预订)?(?:时)?(?:仅|只)?释放一次(?:容量|名额)(?:并且|并|且|和)重复取消(?:不会|不再)释放(?:额外)?(?:容量|名额)$/u,
+    /^(?:cancellation|cancell?ing\s+(?:a|the)\s+booking)\s+(?:releases|frees)\s+(?:the\s+)?capacity\s+(?:(?:exactly|only)\s+)?once\s+and\s+(?:(?:repeated|repeating)\s+cancellation|cancell?ing\s+it\s+again)\s+(?:has\s+no\s+further\s+effect|does\s+not\s+release\s+(?:any\s+)?(?:additional|extra)\s+capacity)$/iu,
+    /^取消(?:预约|预订)?(?:时)?(?:仅|只)?释放一次(?:容量|名额)(?:并且|并|且|和)(?:重复|再次)取消(?:不会|不再|不得)(?:再次|重复)?释放(?:额外)?(?:容量|名额)$/u,
   ],
   atomic_reschedule: [
-    /^a\s+(?:rejected|failed)\s+(?:move|reschedule)\s+preserves\s+the\s+original\s+booking\s+and\s+a\s+successful\s+(?:move|reschedule)\s+changes\s+the\s+same\s+booking\s+atomically$/iu,
-    /^(?:失败|被拒绝)的?改期(?:必须)?保留原(?:预约|预订)(?:并且|并|且|和)成功的?改期(?:必须)?原子(?:地)?修改同一(?:预约|预订)$/u,
+    /^a\s+(?:rejected|failed)\s+(?:move|reschedule)\s+(?:preserves|keeps)\s+the\s+original\s+booking(?:\s+unchanged)?\s+and\s+a\s+successful\s+(?:move|reschedule)\s+(?:changes|updates)\s+the\s+same\s+booking\s+atomically$/iu,
+    /^(?:失败|被拒绝)的?改期(?:必须)?保留原(?:预约|预订)(?:并且|并|且|和)成功的?改期(?:必须)?原子(?:地)?(?:修改|更新)同一(?:预约|预订)$/u,
+    /^改期失败时(?:必须)?保留原(?:预约|预订)(?:并且|并|且|和)改期成功时(?:必须)?原子(?:地)?(?:修改|更新)同一(?:预约|预订)$/u,
   ],
   same_key_retry: [
-    /^after\s+a\s+lost\s+response\s+query\s+the\s+original\s+booking\s+and\s+retry\s+with\s+the\s+same\s+key\s+without\s+creating\s+another\s+booking$/iu,
-    /^响应丢失后(?:先)?查询原(?:预约|预订)(?:并且|并|且|再|和)使用(?:相同|同一)(?:幂等)?键重试(?:不得|不能|不会)创建重复(?:预约|预订)$/u,
+    /^after\s+(?:a\s+lost\s+response|a\s+response\s+is\s+lost)\s+(?:first\s+)?(?:query|look\s+up)\s+the\s+original\s+booking\s+and\s+(?:then\s+)?retry\s+with\s+the\s+(?:same|original)\s+(?:idempotency\s+)?key\s+without\s+creating\s+(?:another|a\s+duplicate)\s+booking$/iu,
+    /^响应丢失后(?:先)?(?:查询|查找)原(?:预约|预订)(?:并且|并|且|再|和)使用(?:相同|同一|原)(?:幂等)?键重试(?:不得|不能|不会)(?:创建|产生)重复(?:预约|预订)$/u,
   ],
 };
 function object(value: unknown, allowed: readonly string[], required = allowed): Record<string, unknown> {

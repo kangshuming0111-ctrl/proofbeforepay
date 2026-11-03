@@ -7,7 +7,7 @@ import { spawnSync } from "node:child_process";
 // Build a local reviewable export. This never reads runtime credentials, publishes
 // a repository, changes Site access, starts a provider call or installs packages.
 const ROOT_FILES = ["README.md", "LICENSE", "AGENTS.md", "package.json", "pnpm-lock.yaml", "pnpm-workspace.yaml", "tsconfig.json", "next.config.ts", "vite.config.ts", "postcss.config.mjs", "eslint.config.mjs", "drizzle.config.ts", "cloudflare-env.d.ts", "components.json", ".gitignore", ".agents/skills/proofbeforepay-delivery/SKILL.md", ".agents/skills/proofbeforepay-delivery/references/code-map.md"];
-const SOURCE_DIRS = ["app", "lib", "db", "drizzle", "components", "hooks", "worker", "vendor", "public", "scripts", "tests", "docs", "examples/seller-staging", "examples/seller-capacity-staging", "examples/seller-lifecycle-staging"];
+const SOURCE_DIRS = ["app", "lib", "db", "drizzle", "components", "hooks", "worker", "vendor", "public", "scripts", "tests", "docs", "examples/seller-staging", "examples/seller-capacity-staging", "examples/seller-lifecycle-staging", "examples/seller-workshop-python"];
 const EXTENSIONS = new Set([".html", ".ts", ".tsx", ".mts", ".cts", ".js", ".mjs", ".cjs", ".css", ".json", ".sql", ".md", ".yaml", ".yml", ".svg", ".py", ".sh", ".csv", ".LICENSE"]);
 const DENIED_PART = /^(?:\.git|node_modules|dist|\.next|\.wrangler|\.sites-runtime|outputs|work|\.codex|__pycache__|\.env(?:\..*)?|\.dev\.vars(?:\..*)?|credentials?|cookies?|secrets?|private[-_]?keys?|auth[-_]?state|storage[-_]?state)$/iu;
 const SECRET_LIKE = /\bBearer\s+[A-Za-z0-9._~+/=-]{24,}|\bsk-[A-Za-z0-9_-]{24,}|-----BEGIN [A-Z ]*PRIVATE KEY-----/u;
@@ -68,6 +68,8 @@ For an immediate account-free preview, open https://proofbeforepay-verification-
 Source resource checks show missing local targets, out-of-scope references and uninspectable syntax for the exact saved delivery. A source finding labelled blocked does not establish that the browser attempted and blocked a navigation; links may leave the saved preview, so return to a saved entry before judging it.
 
 Compare each requirement displays the unchanged agreed clause, version-matched old buyer feedback, and separate old/current rule excerpts, AI source citations and browser observations. Missing or stale records are unavailable rather than borrowed from another version. A newer version or smaller issue count does not prove a fix. Source AI reads bounded HTML/CSS text, not image pixels. Either participant may append a reasoned human review of an AI risk; the original model report remains unchanged. These annotations do not accept work or initiate payment.
+
+A separate optional release-vs-transfer model experiment issues at most five synthetic writes and 24 requests against a registered staging backend. An independent finite-state oracle checks cancellation/transfer results, receipts, merchant records and three occupancies against both real-time-consistent serial orders. Seeds vary party size and slot permutation; they do not generate arbitrary workflows or prove broad concurrency safety. Unknown writes are never automatically replayed. Saved reports and exact acceptance acknowledgements survive refresh and remain tied to their original file digest. See docs/collaboration/four-cycles-2026-11-03/round-4.md for measured evidence and limits.
 
 ## Clean local setup
 

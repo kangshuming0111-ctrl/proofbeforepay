@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stem Room | Flower workshops</title><link rel="stylesheet" href="/workshop.css"><script type="module" src="/workshop.mjs"></script></head>
+<body>
+<header><a class="wordmark" href="/workshop.html">Stem Room<span>Flower workshops</span></a><p class="exercise">Fictional practice studio<br>No real bookings or payment</p></header>
+<main>
+  <section class="studio"><div class="flower" aria-hidden="true">✳</div><h1>A little time<br>with flowers.</h1><p>Bring your people. Make something<br>lovely to take home.</p>
+    <dl class="sessions"><div><dt>10:00</dt><dd>Garden bouquet<span>Loose stems, generous shapes</span></dd></div><div><dt>11:00</dt><dd>Seasonal stems<span>A study in colour and texture</span></dd></div><div><dt>12:00</dt><dd>Table flowers<span>Small arrangements to share</span></dd></div></dl>
+    <p class="studio-note">Each group can have up to 6 people.<br>Each workshop has 8 places in total.</p>
+  </section>
+  <section class="booking-desk" aria-label="Workshop booking desk">
+    <div class="desk-heading"><h2>Your place at the table</h2><p id="connection-status">Start a fictional session to try the workshop.</p><button id="new-session" type="button" class="text-button">Start a fresh practice session</button></div>
+    <nav class="tabs" aria-label="Booking tasks"><button type="button" data-panel="join" aria-selected="true">Book a workshop</button><button type="button" data-panel="manage" aria-selected="false">Manage a booking</button><button type="button" data-panel="roster" aria-selected="false">Studio roster</button></nav>
+    <section id="panel-join" class="panel">
+      <form id="enrol-form"><label for="session-choice">Choose your workshop</label><select id="session-choice" required><option value="2099-01-01T10:00:00Z">10:00 · Garden bouquet</option><option value="2099-01-01T11:00:00Z">11:00 · Seasonal stems</option><option value="2099-01-01T12:00:00Z">12:00 · Table flowers</option></select>
+        <label for="seat-count">How many people?</label><input id="seat-count" type="number" min="1" max="6" step="1" value="5" required><p class="field-note">Practice name: PBP synthetic. No personal details needed.</p>
+        <details class="exercise-controls"><summary>Practice step</summary><label for="enrol-purpose">Booking instruction</label><select id="enrol-purpose"><option value="cancel-create">First booking</option><option value="cancel-five">Book again after cancellation</option><option value="cancel-three">Fill remaining places</option><option value="cancel-extra">Try an additional place</option><option value="source-create">Booking to move</option><option value="loss-create">Recover a response lost after saving</option></select></details>
+        <button id="enrol-submit" class="primary" type="submit">Reserve places</button>
+      </form>
+    </section>
+    <section id="panel-manage" class="panel" hidden>
+      <label for="enrolment-choice">Your saved booking</label><select id="enrolment-choice"><option value="">No booking saved in this page yet</option></select>
+      <form id="transfer-form"><label for="transfer-session">Move to another workshop</label><select id="transfer-session"><option value="2099-01-01T10:00:00Z">10:00 · Garden bouquet</option><option value="2099-01-01T11:00:00Z">11:00 · Seasonal stems</option><option value="2099-01-01T12:00:00Z">12:00 · Table flowers</option></select><details class="exercise-controls"><summary>Practice step</summary><label for="transfer-purpose">Move instruction</label><select id="transfer-purpose"><option value="move-full">Try the full workshop</option><option value="move-free">Move to the available workshop</option></select></details><button id="transfer-submit" class="primary" type="submit">Move this booking</button></form>
+      <form id="withdraw-form" class="withdraw"><details class="exercise-controls"><summary>Cancellation instruction</summary><label for="withdraw-purpose">Cancellation step</label><select id="withdraw-purpose"><option value="cancel-first">Cancel first booking</option><option value="cancel-repeat">Repeat the original cancellation</option></select></details><button id="withdraw-submit" type="submit" class="text-button">Cancel this booking</button></form>
+    </section>
+    <section id="panel-roster" class="panel" hidden><p>The roster reads this practice session’s saved bookings directly from the studio.</p><button id="read-roster" class="primary" type="button">Read saved bookings</button><div id="roster-results" aria-live="polite"></div></section>
+    <section class="result-section"><h3>Booking update</h3><p id="booking-result" role="status" aria-live="polite">Your booking result will appear here.</p><button id="retry-original" type="button" class="text-button" disabled>Retry the original request</button><p id="recovery-note" class="field-note" hidden>A response was lost after sending. Read the saved roster before deciding whether to retry. Retry uses the original request and key.</p><details><summary>Saved request details</summary><pre id="request-details">No request sent.</pre></details></section>
+    <p class="boundary">This practice studio sends only fictional data. Client observations are cooperative declarations; they are not an independent audit or an acceptance decision.</p>
+  </section>
+</main>
+<footer>Stem Room is an invented workshop for delivery testing. All sessions use 1 January 2099.</footer>
+</body></html>

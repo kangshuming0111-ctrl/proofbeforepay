@@ -14,7 +14,7 @@ export function beginRuntimeRun(quote:ProofQuote,role:ProofRole,input:Record<str
   if(runtimeReportsFor(delivery).length>=20)throw new DomainError("Backend report history is full; prior runs were preserved.",409);
   if(delivery.runtimeRegistration&&delivery.runtimeRegistration.projectId!==quote.id)throw new DomainError("The registered backend belongs to another project.",409);
   if((deliveryRuntimeTarget(delivery).protocol??"booking-http-v1")!==plan.protocol)throw new DomainError("The declared backend target does not support the locked test protocol.",409);
-  if(delivery.journeyRun)throw new DomainError("Finish the pending journey before another backend check.",409);
+  if(delivery.journeyRun||delivery.modelRun)throw new DomainError("Finish the pending journey or model run before another backend check.",409);
   const pending=delivery.runtimeRun;
   if(pending && Date.parse(pending.expiresAt)>now)throw new DomainError("A backend run is already pending. Refresh after it finishes.",409);
   if(pending&&(pending.deliveryId!==delivery.id||pending.deliveryDigest!==digest||pending.targetId!==delivery.backendTargetId))throw new DomainError("The pending backend run binding is inconsistent.",409);

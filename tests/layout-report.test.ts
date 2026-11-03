@@ -1,9 +1,10 @@
+import {validateAcceptanceWithBasis as validateAcceptance} from "./acceptance-client.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { ProofQuote } from "../lib/contracts.ts";
 import { DomainError } from "../lib/domain.ts";
 import { createLayoutReport, getLayoutFiles, LAYOUT_HEIGHT, LAYOUT_WIDTHS } from "../lib/layout-report.ts";
-import { validateAcceptance } from "../lib/proof-domain.ts";
+
 import { createProofDelivery } from "../lib/proof-evidence.ts";
 import { createUploadedDelivery, parseStaticProject } from "../lib/static-project.ts";
 

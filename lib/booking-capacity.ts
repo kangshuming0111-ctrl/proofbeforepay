@@ -22,9 +22,14 @@ function exactSource(value:unknown,name:string):BookingPolicySource{
     ||(source.end as number)-(source.start as number)!==source.excerpt.length)throw new DomainError(`${name} must retain an exact complete UTF-16 source clause.`);
   return{start:source.start as number,end:source.end as number,excerpt:source.excerpt};
 }
+const ENGLISH_UPPER_BOUND=String.raw`(?:at\s+most|no\s+more\s+than|up\s+to|a\s+max(?:imum)?\s+of)`;
+const ENGLISH_SLOT_VERB=String.raw`(?:accepts|allows|supports|holds|accommodates|(?:can|may)\s+(?:accept|allow|support|hold|accommodate))`;
+// The subject must still be a whole time slot, never "guests per booking".
+// An optional "in total" cannot hide a trailing exception or another policy.
 const GRAMMARS=[
-  /^(?:each|every)\s+time\s+slot\s+(?:accepts|allows|supports)\s+(?:at\s+most|a\s+maximum\s+of)\s+([1-9]\d?)\s+(?:people|persons|guests)\s+in\s+total$/iu,
-  /^每(?:个|個|一|一個)?(?:时间段|时段|時間段|時段)(?:合计|合計|总共|總共|总计|總計)?最多(?:接受|接待|容纳|容納)?\s*([1-9]\d?)\s*(?:人|位客人)(?:合计|合計|总计|總計)?$/u,
+  new RegExp(String.raw`^(?:each|every)\s+(?:time\s+)?slot\s+${ENGLISH_SLOT_VERB}\s+${ENGLISH_UPPER_BOUND}\s+([1-9]\d?)\s+(?:people|persons|guests)(?:\s+in\s+total)?$`,"iu"),
+  /^(?:the\s+)?max(?:imum)?\s+(?:total\s+)?(?:guest\s+)?capacity\s+(?:per|for\s+each)\s+(?:time\s+)?slot(?:\s+is|\s*:)\s*([1-9]\d?)\s+(?:people|persons|guests)$/iu,
+  /^每(?:个|個|一|一個)?(?:时间段|时段|時間段|時段)(?:的)?(?:合计|合計|总共|總共|总计|總計|总|總)?(?:人数|人數|容量)?(?:(?:最多|至多)(?:可)?(?:接受|接待|容纳|容納)?|(?:不|不得|不能)超(?:过|過)|上限(?:为|是|為)?)\s*([1-9]\d?)\s*(?:人|位客人)(?:合计|合計|总计|總計)?$/u,
 ] as const;
 
 /** A narrow complete-clause proposal. The original span, including punctuation,

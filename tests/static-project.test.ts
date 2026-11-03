@@ -1,8 +1,9 @@
+import {validateAcceptanceWithBasis as validateAcceptance} from "./acceptance-client.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { DomainError } from "../lib/domain.ts";
 import { createUploadedDelivery, parseStaticProject, validateStaticFiles } from "../lib/static-project.ts";
-import { validateAcceptance } from "../lib/proof-domain.ts";
+
 import type { ProofQuote, StaticProjectSpec } from "../lib/contracts.ts";
 
 const html = (body = "<main>Delivered content</main>", title = "Delivered page") => `<!doctype html><html><head><title>${title}</title></head><body>${body}</body></html>`;

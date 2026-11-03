@@ -1,8 +1,9 @@
+import {acceptDeliveryWithBasis as acceptDelivery} from "./acceptance-client.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { ProofQuote, ProofRole } from "../lib/contracts.ts";
 import { canUseRoleplaySamples, createRoleplayDelivery, createRoleplayProject, isDemoRoleplay, resolveProofRole } from "../lib/proof-demo.ts";
-import { acceptDelivery, joinSeller, prepareReplacement, requestChanges, requireWorkflowAction, snapshotVersion, submitDelivery } from "../lib/proof-workflow.ts";
+import {joinSeller, prepareReplacement, requestChanges, requireWorkflowAction, snapshotVersion, submitDelivery} from "../lib/proof-workflow.ts";
 
 const now = "2026-10-30T00:00:00.000Z";
 function demo(language: "zh" | "en" = "en"): ProofQuote {

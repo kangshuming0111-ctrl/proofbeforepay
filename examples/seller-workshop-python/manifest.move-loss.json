@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "native": {
+    "stack": "python-sqlite",
+    "schemaRevision": "florist-enrolments-v1",
+    "deploymentRevision": "florist-workshop-python-move-loss-v1",
+    "receiptFields": {
+      "id": "enrolments.enrolment_ref",
+      "testRunId": "enrolments.exercise_id",
+      "marker": "enrolments.exercise_tag",
+      "customer": "enrolments.participant_label",
+      "email": "enrolments.participant_contact",
+      "slot": "sessions.starts_at",
+      "partySize": "enrolments.seat_count",
+      "status": "enrolments.enrolment_state",
+      "idempotencyKey": "enrolments.creation_command"
+    },
+    "statusValues": {"confirmed": "active", "withdrawn": "cancelled"}
+  },
+  "bridge": {
+    "protocol": "pbp-seller-bridge-v1",
+    "backendProtocol": "booking-lifecycle-http-v1",
+    "recipe": "booking-lifecycle-20-v1",
+    "revision": "lifecycle-move-loss-v1",
+    "supportedActions": ["create", "cancel", "rebook", "fill", "cancel_repeat", "reject_extra", "source_create", "move_full", "move_free", "response_loss_create", "response_loss_retry"]
+  },
+  "deployment": {
+    "frontendEntryUrl": "https://workshop-staging.example.org/workshop.html",
+    "backendBaseUrl": "https://workshop-staging.example.org/pbp/",
+    "allowedParentOrigin": "https://briefpay-kang-lab.blueheron8.chatgpt.site"
+  },
+  "syntheticOnly": true
+}

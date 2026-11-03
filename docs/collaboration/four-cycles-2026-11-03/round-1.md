@@ -1,0 +1,13 @@
+# Round 1: buyer-adopted source mapping and recorded-evidence explanation
+
+Four sequential rounds: AI plan/adoption/explanation; second native integration; exact delivery-to-Sandbox chain; deeper interleaving/fault checks. Devpost and video are excluded.
+
+The first round persists one bounded current suggestion and a separate adoption snapshot. AI candidates retain complete original citations and exact upload/source digests. Explicit buyer selection covers all five fixed lifecycle capabilities; unsupported clauses stay unresolved. Existing immutable recipe digest is unchanged. A separate AI explanation references current/retained report IDs and canonical step IDs; it has no acceptance or payment authority. Compact input aliases receipts and drops URLs/customer/email/keys/arbitrary response text. Replacement removes these current-version fields; offline exports revalidate their bindings. Budget counts planning against shared evidence capacity.
+
+DeepSeek design: accepted exact UUID/upload/source binding, immutable old plan digest, bounded advice and pre-confirmation-only adoption. Rejected treating all unrelated original requirements as executable journey coverage. DeepSeek implementation review: rejected ID-space mismatch because JourneyObservation.id is explicitly JourneyStepId and saved-report validation requires exactly twenty canonical ordered IDs. Accepted report-bound explanation consent; added exact report-ID guard and reset after submission/report replacement. Added exact upload/source UI guards. Advice remains conservative and bounded, not arbitrary-language understanding.
+
+Verification is recorded under outputs/four-cycles-2026-11-03. Synthetic API testing uses cloned source, empty app keys and blocked outbound fetch. It does not prove live AI or PayPal execution. Production publication and real-model checks are recorded separately in the release ledger.
+
+Published main v46 (df3417e077270fdacad9645941bdf561cb49e751), unchanged custom audience/env4. Live DeepSeek explanation of actual saved20/20 report completed and persisted across reload; no acceptance/payment changed. Source helper ran complete tests/typecheck/build successfully. New API guards were separately added and are rerun with round2 integration.
+
+Focused DeepSeek followup confirmed the observation-ID finding was false. Rejected its remaining speculations: pending UI globally disables inputs, parent keys this panel by quote/delivery/workspaceRole (so role changes remount), and immutable report IDs cannot be reused with changed data. Retained server validators and exact UI bindings. No acceptance authority was given to AI.

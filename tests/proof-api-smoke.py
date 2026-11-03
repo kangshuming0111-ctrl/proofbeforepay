@@ -31,6 +31,20 @@ def new():
     assert q["totalCents"] == 48000 and q["paymentMode"] == "demo"
     return q, "/api/proofs/" + q["id"]
 
+def acceptance_input(quote, checks):
+    proof = quote["proof"]
+    delivery = proof["delivery"]
+    return {"confirm": True, "deliveryId": delivery["id"], "manualChecks": checks,
+            "expectedEvidence": {"deliveryId": delivery["id"], "reviewReviewedAt": proof.get("review", {}).get("reviewedAt"),
+                                 "browserReportId": delivery.get("browserChecks", {}).get("id"),
+                                 "layoutReportId": delivery.get("layoutReport", {}).get("id"),
+                                 "assessmentId": delivery.get("assessment", {}).get("id"),
+                                 "riskReviewIds": [], "businessReportId": delivery.get("businessChecks", {}).get("id"),
+                                 "runtimeReportId": delivery.get("runtimeReport", {}).get("id"),
+                                 "journeyReportId": delivery.get("journeyReport", {}).get("id"),
+                                 "journeyPlanDigest": delivery.get("journeyPlan", {}).get("planDigest"),
+                                 "modelReportId": delivery.get("modelReport", {}).get("id")}}
+
 q, p = new()
 denied(p + "/checkout", {})
 for action in ("approve", "checkout", "capture"):
@@ -58,9 +72,10 @@ q = ok(p + "/review", {})["quote"]
 checks = [e["criterionId"] for e in q["proof"]["delivery"]["evidence"] if e["finding"] == "needs_human"]
 denied(p + "/capture", {"confirm": True, "deliveryId": delivery, "manualChecks": []})
 denied(p + "/capture", {"confirm": True, "deliveryId": "old-version", "manualChecks": checks})
-accept = {"confirm": True, "deliveryId": delivery, "manualChecks": checks}
+accept = acceptance_input(q, checks)
 q = ok(p + "/capture", accept)["quote"]
 assert q["status"] == "paid" and q["proof"]["acceptedDeliveryId"] == delivery and q["captureId"].startswith("SIM-CAP-")
+accept["acceptedEvidenceSnapshotId"] = q["proof"]["acceptedEvidenceSnapshotId"]
 assert ok(p + "/capture", accept)["quote"]["captureId"] == q["captureId"]
 assert ok(p + "/reconcile", {})["quote"] == q  # Finished queries are idempotent and do not rewrite receipts.
 denied(p + "/void", {"confirm": True})
@@ -82,7 +97,7 @@ order = ok(p + "/checkout", {})["orderId"]
 ok(p + "/authorize", {"orderId": order})
 ok(p + "/delivery", {"variant": "fixed", "expectedDeliveryId": None})
 q = ok(p + "/review", {})["quote"]
-accept = {"confirm": True, "deliveryId": q["proof"]["delivery"]["id"], "manualChecks": ["mobile"]}
+accept = acceptance_input(q, ["mobile"])
 with ThreadPoolExecutor(max_workers=2) as executor:
     outcomes = list(executor.map(lambda _: call(p + "/capture", accept)[0], range(2)))
 assert 200 in outcomes and all(code in {200, 409} for code in outcomes), outcomes

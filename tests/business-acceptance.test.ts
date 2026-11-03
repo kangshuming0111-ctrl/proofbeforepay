@@ -1,3 +1,4 @@
+import {acceptDeliveryWithBasis as acceptDelivery, validateAcceptanceWithBasis as validateAcceptance} from "./acceptance-client.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { ProofQuote } from "../lib/contracts.ts";
@@ -6,9 +7,9 @@ import { summaryCoverageUnits } from "../lib/requirement-coverage.ts";
 import { getBusinessCheckPlan } from "../lib/business-checks.ts";
 import { recordBusinessChecks } from "../lib/business-check-actions.ts";
 import { validateBusinessDecision } from "../lib/business-decision.ts";
-import { acceptDelivery, prepareReplacement } from "../lib/proof-workflow.ts";
+import {prepareReplacement} from "../lib/proof-workflow.ts";
 import { businessReportsFor, assertAcceptedEvidenceReference, recordCaptureConsent } from "../lib/acceptance-evidence.ts";
-import { validateAcceptance } from "../lib/proof-domain.ts";
+
 const now="2026-11-02T02:00:00.000Z";
 function fixture(): ProofQuote {
   const summary="Show Beef noodles AUD 18 on the English menu";

@@ -1,7 +1,9 @@
+import {validateAcceptanceWithBasis as validateAcceptance} from "./acceptance-client.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { requireProof, validateAcceptance, applyPaymentReconciliation } from "../lib/proof-domain.ts";
+import {requireProof, applyPaymentReconciliation} from "../lib/proof-domain.ts";
 import type { ProofQuote } from "../lib/contracts.ts";
+import {recordCaptureConsent} from "../lib/acceptance-evidence.ts";
 
 function agreement(): ProofQuote {
   return {
@@ -31,8 +33,9 @@ test("failed or missing evidence and expired authorization block a new capture",
   const expired = agreement();
   expired.proof.authorizationExpiresAt = new Date(Date.now() - 1000).toISOString();
   assert.throws(() => validateAcceptance(expired, input));
-  expired.proof.paymentOperation = "capture";
-  assert.deepEqual(validateAcceptance(expired, input), ["mobile"], "a payment accepted within the window remains retryable with frozen consent");
+  const pending = recordCaptureConsent(agreement(), ["mobile"], new Date(Date.now() - 2000).toISOString());
+  pending.proof.authorizationExpiresAt = new Date(Date.now() - 1000).toISOString();
+  assert.deepEqual(validateAcceptance(pending, input), ["mobile"], "a payment accepted within the window remains retryable with its real frozen consent snapshot");
 });
 
 test("proof records cannot accept inconsistent saved totals", () => {

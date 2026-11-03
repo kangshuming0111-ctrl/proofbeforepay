@@ -90,10 +90,17 @@ export type ProofAssessment = {
 };
 export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"; sequence?: number; label: string; submittedAt: string; evidence: ProofEvidence[]; files?: Record<string, string>; layoutReport?: ProofLayoutReport; layoutHistory?: ProofLayoutReport[]; browserChecks?: ProofBrowserCheckReport; browserCheckHistory?: ProofBrowserCheckReport[]; businessChecks?: ProofBusinessCheckReport; businessCheckHistory?: ProofBusinessCheckReport[]; acceptanceEvidence?: ProofAcceptanceEvidence[]; assessment?: ProofAssessment; riskReviews?: ProofRiskReview[]; resources?: ProofResourceReport;
   journeyPlan?: import("./project-journey").ProjectJourneyPlan;
+  journeyPlanSuggestions?: import("./journey-plan-adoption").SavedJourneyPlanSuggestions;
+  journeyPlanAdoption?: import("./journey-plan-adoption").JourneyPlanAdoption;
+  journeyExplanation?: import("./journey-evidence-explanation").JourneyEvidenceExplanation;
   journeyReport?: import("./project-journey").ProjectJourneyReport;
   journeyHistory?: import("./project-journey").ProjectJourneyReport[];
   journeyRun?: import("./project-journey").ProjectJourneyRun;
   journeyEvidenceReservation?: {runId?:string;reportBytes:number;acceptanceBytes:number};
+  modelRun?: import("./model-check-actions").ModelCheckRun;
+  modelReport?: import("./model-checks").ModelCheckReport;
+  modelHistory?: import("./model-checks").ModelCheckReport[];
+  modelEvidenceReservation?: {runId?:string;reportBytes:number;acceptanceBytes:number};
   backendTargetId?: string;
   runtimeDeliveryDigest?: string;
   runtimeRegistration?: import("./runtime-registration").RuntimeRegistrationSnapshot;
@@ -105,7 +112,7 @@ export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"
 export type ProofReview = { deliveryId: string; reviewedAt: string; mode: "demo" | "live"; summary: string };
 export type ProofRole = "buyer" | "seller";
 export type ProofSubmission = { deliveryId: string; note: string; at: string };
-export type ProofFeedback = { id: string; deliveryId: string; criterionId: string; comment: string; at: string; journeyReportId?: string };
+export type ProofFeedback = { id: string; deliveryId: string; criterionId: string; comment: string; at: string; journeyReportId?: string; modelReportId?: string };
 export type ProofAcceptanceEvidence = {
   id: string; deliveryId: string; at: string;
   browserReportId: string | null; layoutReportId: string | null; assessmentId: string | null;
@@ -116,6 +123,8 @@ export type ProofAcceptanceEvidence = {
   journeyRegistration?: import("./project-journey").JourneyRegistrationSnapshot;
   journeyExceptionReason?: string; journeyAcknowledgedSteps?: string[];
   journeyClientObservationAcknowledged?: true;
+  modelReportId?: string; modelSpecDigest?: string; modelDeliveryDigest?: string;
+  modelDecision?: import("./model-check-actions").ModelDecision;
   criteria: ProofCriterion[]; evidence: ProofEvidence[]; manualChecks: string[];
   review?: ProofReview; assessment?: ProofAssessment;
   riskReviews: ProofRiskReview[];

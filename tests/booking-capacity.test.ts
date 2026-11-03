@@ -16,6 +16,40 @@ test("complete English and Chinese capacity clauses preserve original punctuatio
   const source=span("  Each time slot accepts at most 8 guests in total.  ","🍜".length),value=suggestSlotCapacity(source)!;
   assert.deepEqual(value.source,source);assert.equal(value.source.start,2);
 });
+test("bounded slot-capacity synonyms keep an aggregate slot subject and full source",()=>{
+  for(const[text,expected]of[
+    ["Each time slot accommodates no more than 8 guests in total.",8],
+    ["Every slot allows up to 9 people.",9],
+    ["Each time slot can hold at most 10 guests.",10],
+    ["Each time slot accepts a max of 8 persons in total.",8],
+    ["The maximum total capacity per time slot is 8 guests.",8],
+    ["Max guest capacity for each slot: 9 guests.",9],
+    ["每个时间段合计人数不超过8人。",8],
+    ["每个时段的总人数上限为8人。",8],
+    ["每个时段至多可容纳9位客人。",9],
+    ["每個時段的總人數不得超過 8 人。",8],
+  ]as const){
+    const source=span(text,"🍜 ".length),before=structuredClone(source),value=suggestSlotCapacity(source);
+    assert.ok(value,text);assert.equal(value.maxGuestsPerSlot,expected,text);
+    assert.deepEqual(value.source,source);assert.deepEqual(validateSlotCapacity(value,source),value);assert.deepEqual(source,before);
+  }
+});
+test("slot-capacity synonyms reject per-booking units, exceptions, negations and additional rules",()=>{
+  for(const text of[
+    "Each time slot accepts up to 8 guests per booking.",
+    "Each time slot does not accept up to 8 guests in total.",
+    "Each time slot accepts no fewer than 8 guests in total.",
+    "Each time slot accepts up to 8 guests in total unless a manager approves.",
+    "Each time slot accommodates no more than 8 guests or 10 guests.",
+    "The maximum total capacity per time slot is 8 guests and payment is captured.",
+    "Max guest capacity for each slot: 8 AUD.",
+    "每个时段的总容量不限，不采用8人上限。",
+    "每个时段的总人数上限为8人但周末可加人。",
+    "每个时段最多接受8人，每笔预约至少2人。",
+    "每个时段的总人数上限至少为8人。",
+    "每个时段的总人数上限为8到10人。",
+  ])assert.equal(suggestSlotCapacity(span(text)),undefined,text);
+});
 test("minimums, exceptions, alternatives, compound policies and unsupported bounds are not guessed",()=>{
   for(const text of["Each time slot accepts at least 8 guests in total.","Each time slot accepts at most 8 guests in total except on Fridays.","Each time slot accepts at most 8 or 10 guests in total.","Each time slot accepts at most 8 guests in total. Each booking accepts at most 6 people.","Do not limit each time slot to 8 guests in total.","每个时段最多8人，节假日最多10人","每个时段至少8人","每个时段最多8到10人","每个时段最多08人","每个时段最多８人","每个时段最多2人","每个时段最多13人"]){
     assert.equal(suggestSlotCapacity(span(text)),undefined,text);

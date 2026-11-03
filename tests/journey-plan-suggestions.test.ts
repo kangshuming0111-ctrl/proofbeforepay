@@ -82,6 +82,98 @@ test("Chinese supported clauses remain positive when the exact retry obligation 
   const value = parseJourneyPlanProposal(proposal(), context(sourceText));assert.equal(value.candidates.length, 5);assert.equal(value.unresolved.length, 0);assert.ok(value.recipeSuggestion);
 });
 
+test("finite English and Chinese paraphrases form the same fixed recipe without rewriting source", () => {
+  const variants = [
+    [
+      "A booking may contain no more than 6 guests.",
+      "The maximum total capacity per time slot is 8 guests.",
+      "Cancelling a booking frees capacity only once and cancelling it again has no further effect.",
+      "A failed reschedule keeps the original booking unchanged and a successful reschedule updates the same booking atomically.",
+      "After a response is lost first look up the original booking and then retry with the original idempotency key without creating a duplicate booking.",
+    ],
+    [
+      "每笔预约人数不超过6人。",
+      "每个时段的总人数上限为8人。",
+      "取消预约仅释放一次容量并且再次取消不会再次释放容量。",
+      "改期失败时保留原预约并且改期成功时原子地更新同一预约。",
+      "响应丢失后先查找原预约并使用原幂等键重试不得产生重复预约。",
+    ],
+  ];
+  for (const lines of variants) {
+    const sourceText = lines.join("\n"), original = context(sourceText), before = structuredClone(original);
+    const result = parseJourneyPlanProposal(proposal(), original);
+    assert.equal(result.candidates.length, 5); assert.deepEqual(result.unresolved, []);
+    assert.ok(result.recipeSuggestion); assert.equal(result.recipeSuggestion.maxPartySize, 6); assert.equal(result.recipeSuggestion.maxGuestsPerSlot, 8);
+    for (const row of result.candidates) assert.equal(sourceText.slice(row.source.start, row.source.end), row.source.excerpt);
+    assert.deepEqual(original, before);
+  }
+});
+
+test("same-meaning capacity proposals remain fixed M6/C8 and conflicting paraphrases block selected originals", () => {
+  for (const [sourceText, capability, value] of [
+    ["A booking may contain no more than 7 guests.", "max_party_size", 6],
+    ["Every slot allows up to 9 guests.", "slot_capacity", 8],
+  ] as const) {
+    const result = parseJourneyPlanProposal(proposal([{criterionId: "coverage-1", capability, value}]), context(sourceText));
+    assert.equal(result.candidates.length, 0); assert.equal(result.unresolved.length, 1); assert.equal(result.recipeSuggestion, undefined);
+    assert.equal(result.unresolved[0].source.excerpt, sourceText);
+  }
+  for (const [extra, capability] of [
+    ["A booking may contain no more than 7 guests.", "max_party_size"],
+    ["Up to 7 guests per booking.", "max_party_size"],
+    ["每笔预约人数上限为7人。", "max_party_size"],
+    ["Each time slot accommodates no more than 9 guests in total.", "slot_capacity"],
+    ["每个时段的总人数上限为9人。", "slot_capacity"],
+  ] as const) {
+    const result = parseJourneyPlanProposal(proposal(), context([...clauses, extra].join("\n")));
+    assert.equal(result.recipeSuggestion, undefined, extra);
+    assert.ok(!result.candidates.some(row => row.capability === capability), extra);
+    assert.ok(result.unresolved.some(row => row.criterionId === "coverage-6"), extra);
+  }
+});
+
+test("paraphrased bounds cannot drop split conditions, denials, contradictions or financial instructions", () => {
+  for (const extra of [
+    "Only when a manager approves,",
+    "Subject to manual approval,",
+    "But an administrator may increase party size.",
+    "但管理员可以额外加人。",
+    "仅当经理批准时，",
+  ]) {
+    const sourceText = `${extra}\n${clauses.join("\n")}`, value = context(sourceText);
+    const offset = value.includedRequirements.length - clauses.length;
+    const shifted = candidates().map((row, index) => ({...row, criterionId: `coverage-${index + offset + 1}`}));
+    const result = parseJourneyPlanProposal(proposal(shifted), value);
+    assert.equal(result.recipeSuggestion, undefined, extra); assert.equal(result.candidates.length, 0, extra);
+  }
+  for (const sourceText of [
+    "A booking may contain no more than 6 guests except on weekends.",
+    "Each booking does not accept up to 6 guests.",
+    "Each booking accepts up to 6 people or 8 people.",
+    "Each booking accepts up to 6 guests and automatically capture payment.",
+    "每笔预约人数不限制在6人以内。",
+    "每笔预约最多容纳6位客人但管理员可以额外加人。",
+  ]) {
+    const result = parseJourneyPlanProposal(proposal([{criterionId: "coverage-1", capability: "max_party_size", value: 6}]), context(sourceText));
+    assert.equal(result.candidates.length, 0, sourceText); assert.equal(result.recipeSuggestion, undefined, sourceText);
+    assert.ok(result.unresolved.length > 0, sourceText);
+  }
+});
+
+test("lifecycle paraphrases still require both obligations and never negate a supported positive into a candidate", () => {
+  for (const [sourceText, capability] of [
+    ["Cancelling a booking frees capacity only once.", "cancellation_once"],
+    ["Cancelling a booking does not free capacity once and cancelling it again has no further effect.", "cancellation_once"],
+    ["A failed reschedule keeps the original booking unchanged.", "atomic_reschedule"],
+    ["A failed reschedule keeps the original booking unchanged and a successful reschedule updates another booking atomically.", "atomic_reschedule"],
+    ["After a response is lost retry with the original key without creating a duplicate booking.", "same_key_retry"],
+    ["After a response is lost first look up the original booking and then retry with a new key without creating a duplicate booking.", "same_key_retry"],
+  ] as const) {
+    const result = parseJourneyPlanProposal(proposal([{criterionId: "coverage-1", capability}]), context(sourceText));
+    assert.equal(result.candidates.length, 0, sourceText); assert.equal(result.unresolved.length, 1, sourceText);
+  }
+});
+
 test("unmentioned included scope stays explicit and Unicode offsets retain the whole original unit", () => {
   const sourceText = ["🍜 Show a large menu photo.", ...clauses].join("\n"), shifted = candidates().map((row, index) => ({...row, criterionId: `coverage-${index + 2}`}));
   const result = parseJourneyPlanProposal(proposal(shifted), context(sourceText));assert.equal(result.unresolved.length, 1);assert.equal(result.unresolved[0].source.excerpt, "🍜 Show a large menu photo.");

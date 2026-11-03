@@ -66,7 +66,7 @@ def listed_projection(api, actor, project_id):
     listing = api.ok(actor, "/api/proofs")
     quote = next(row for row in listing["quotes"] if row["id"] == project_id)
     delivery = quote["proof"]["delivery"]
-    assert not any(key in delivery for key in ("files", "journeyRun", "journeyReport", "journeyHistory", "acceptanceEvidence"))
+    assert not any(key in delivery for key in ("files", "journeyRun", "journeyReport", "journeyHistory", "journeyPlanSuggestions", "journeyPlanAdoption", "journeyExplanation", "acceptanceEvidence"))
     roles.private_columns_absent(quote)
     return quote
 
@@ -84,6 +84,11 @@ def seed(api, state_file):
     assert initial["plan"] is None and initial["targets"] == [] and initial["run"] is None and initial["report"] is None
     assert api.ok(seller, endpoint) == initial
     api.reject(outsider, endpoint, codes=(404,))
+    explain = path + "/journey-explanation"
+    api.reject(None, explain, codes=(401,))
+    api.reject(None, explain, {"confirm": True}, codes=(401,))
+    api.reject(outsider, explain, codes=(404,))
+    custom_origin_reject(api, buyer, explain, {"confirm": True})
     confirm = {"action": "confirm-plan", "deliveryId": delivery_id, "confirm": True}
     api.reject(seller, endpoint, confirm, role="buyer", codes=(403,))
     api.reject(outsider, endpoint, confirm, codes=(404,))
@@ -91,6 +96,18 @@ def seed(api, state_file):
         api.reject(buyer, endpoint, {**confirm, **patch}, codes=codes)
     custom_origin_reject(api, buyer, endpoint, confirm)
     assert chain.quote_of(api.ok(buyer, quote_path), "buyer") == quote
+    before_ai = chain.quote_of(api.ok(buyer, quote_path), "buyer")
+    ai = path + "/journey-plan-suggestions"
+    api.reject(None, ai, {"confirm": True}, codes=(401,))
+    api.reject(outsider, ai, {"confirm": True}, codes=(404,))
+    api.reject(seller, ai, {"confirm": True,"deliveryId":delivery_id,"sourceDigest":hashlib.sha256(SUMMARY.encode()).hexdigest()}, role="buyer", codes=(403,))
+    for payload in ({"confirm": False}, {"confirm": True, "role": "buyer"}, {"confirm": True, "summary": "Client replacement"}):
+        api.reject(buyer, ai, payload, codes=(400,))
+    custom_origin_reject(api, buyer, ai, {"confirm": True})
+    api.reject(buyer, ai, {"confirm": True,"deliveryId":delivery_id,"sourceDigest":hashlib.sha256(SUMMARY.encode()).hexdigest()}, codes=(409,))
+    assert chain.quote_of(api.ok(buyer, quote_path), "buyer") == before_ai
+    money_unchanged(before_ai)
+    api.checked("No registry means no journey start; AI recommendation guards authenticate buyer/CSRF/source and fail truthfully with no provider key, without changing the project")
     quote = chain.quote_of(api.ok(buyer, endpoint, confirm, role="seller"), "buyer")
     plan = copy.deepcopy(quote["proof"]["delivery"]["journeyPlan"])
     assert plan["provenance"] == "buyer-confirmed-technical-agreement" and plan["maxPartySize"] == 6 and plan["maxGuestsPerSlot"] == 8
@@ -100,18 +117,6 @@ def seed(api, state_file):
 
     start = {"action": "start", "deliveryId": delivery_id, "previousReportId": None, "targetId": "unregistered-seller", "confirm": True}
     api.reject(buyer, endpoint, start, codes=(404,))
-    before_ai = chain.quote_of(api.ok(buyer, quote_path), "buyer")
-    ai = path + "/journey-plan-suggestions"
-    api.reject(None, ai, {"confirm": True}, codes=(401,))
-    api.reject(outsider, ai, {"confirm": True}, codes=(404,))
-    api.reject(seller, ai, {"confirm": True}, role="buyer", codes=(403,))
-    for payload in ({"confirm": False}, {"confirm": True, "role": "buyer"}, {"confirm": True, "summary": "Client replacement"}):
-        api.reject(buyer, ai, payload, codes=(400,))
-    custom_origin_reject(api, buyer, ai, {"confirm": True})
-    api.reject(buyer, ai, {"confirm": True}, codes=(409,))
-    assert chain.quote_of(api.ok(buyer, quote_path), "buyer") == before_ai
-    money_unchanged(before_ai)
-    api.checked("No registry means no journey start; AI recommendation guards authenticate buyer/CSRF/source and fail truthfully with no provider key, without changing the project")
     state = {"buyer": buyer.__dict__, "seller": seller.__dict__, "outsider": outsider.__dict__, "path": path, "quotePath": quote_path, "projectId": quote["id"], "deliveryId": delivery_id, "plan": plan, "registry": [registration(quote["id"]), registration(quote["id"], True)], "checks": api.checks}
     state_file.write_text(json.dumps(state, ensure_ascii=False), encoding="utf-8")
     return {"result": "seeded", "suite": "project-journey", "checks": api.checks, "registeredSyntheticTargets": 0, "sourceDigest": digest(files()), "outboundFetch": "blocked"}
@@ -172,6 +177,11 @@ def registered(api, state_file):
         api.ok(buyer, endpoint, {"action": "observe", "deliveryId": delivery_id, "runId": run_id, "stepId": step})
     final = api.ok(buyer, endpoint, {"action": "finish", "deliveryId": delivery_id, "runId": run_id})
     first = copy.deepcopy(final["journey"]["report"])
+    explanation_input = {"confirm": True,"deliveryId":delivery_id,"reportId":first["id"],"previousExplanationId":None}
+    assert api.ok(buyer, path+"/journey-explanation")["explanation"] is None
+    api.reject(buyer,path+"/journey-explanation",{**explanation_input,"reportId":"stale"},codes=(409,))
+    api.reject(buyer,path+"/journey-explanation",explanation_input,codes=(409,))
+    assert api.ok(seller,path+"/journey-explanation")["explanation"] is None
     assert final["journey"]["evaluation"]["summary"] == {"steps": 20, "observed": 0, "issues": 0, "unavailable": 20}
     assert first["input"]["observations"][0]["unavailableReason"] == "server_read_unavailable"
     assert "journeyRun" not in final["quote"]["proof"]["delivery"]
@@ -234,7 +244,7 @@ def registered(api, state_file):
         versions = api.ok(actor, path + "/versions")["versions"]
         assert len(versions) == 2
         for row in versions:
-            assert not any(key in row["delivery"] for key in ("files", "journeyRun", "journeyReport", "journeyHistory", "acceptanceEvidence"))
+            assert not any(key in row["delivery"] for key in ("files", "journeyRun", "journeyReport", "journeyHistory", "journeyPlanSuggestions", "journeyPlanAdoption", "journeyExplanation", "acceptanceEvidence"))
     api.checked("Incomplete or stale journey consent cannot accept; explicit per-step unknown exceptions freeze reportA/digest/plan/registration, while member-saved aborted reportB stays supplemental across refresh and authorized reads; list projections omit evidence payloads")
 
     assert api.ok(None, "/api/__synthetic_sandbox_test_mode")["syntheticCalls"] == 0

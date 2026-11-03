@@ -5,7 +5,7 @@ import { ArrowUpRight, Check, ChevronDown, Copy, History, Link2, LoaderCircle, S
 import type { Language, ProofDeliveryVersion, ProofQuote, ProofRole } from "@/lib/contracts";
 import { criterionDisplayTitle } from "@/lib/delivery-overview";
 
-export type FeedbackSuggestion = { quoteId: string; deliveryId: string; criterionId: string; comment: string; serial: number; journeyReportId?: string };
+export type FeedbackSuggestion = { quoteId: string; deliveryId: string; criterionId: string; comment: string; serial: number; journeyReportId?: string; modelReportId?: string };
 export type CollaborationHistoryHandle = { quoteId: string; reveal: () => void };
 
 export type CollaborationPanelProps = {
@@ -19,7 +19,7 @@ export type CollaborationPanelProps = {
   onInvite: (email: string) => void;
   onRevokeInvite: () => void;
   onSubmit: (note: string) => void;
-  onReturn: (feedback: { criterionId: string; comment: string; journeyReportId?: string }[]) => void;
+  onReturn: (feedback: { criterionId: string; comment: string; journeyReportId?: string; modelReportId?: string }[]) => void;
   onAccept: () => void;
   onLoadVersions: () => void;
   onViewVersion: (deliveryId: string) => void;
@@ -60,6 +60,7 @@ export function CollaborationPanel({ quote, role, language, busy, invitation, ve
   const [selectedCriteria, setSelectedCriteria] = useState<Record<string, boolean>>({});
   const [comments, setComments] = useState<Record<string, string>>({});
   const [journeyDraftReportId, setJourneyDraftReportId] = useState<string>();
+  const [modelDraftReportId, setModelDraftReportId] = useState<string>();
   const [suggestionNotice, setSuggestionNotice] = useState(false);
   const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
   const invitationInput = useRef<HTMLInputElement>(null);
@@ -72,11 +73,15 @@ export function CollaborationPanel({ quote, role, language, busy, invitation, ve
   const criteria = quote.proof.criteria;
   const technicalAgreement = delivery?.journeyPlan;
   const journeyReport = technicalAgreement && delivery?.journeyReport?.deliveryId === delivery.id && delivery.journeyReport.planDigest === technicalAgreement.planDigest ? delivery.journeyReport : undefined;
+  const modelReport=technicalAgreement && delivery?.modelReport?.deliveryId===delivery.id && delivery.modelReport.journeyPlanDigest===technicalAgreement.planDigest ? delivery.modelReport : undefined;
+  const modelSelected=Boolean(technicalAgreement&&selectedCriteria["model-agreement"]);
   const journeySelected = Boolean(technicalAgreement && selectedCriteria["journey-agreement"]);
-  const feedbackDraft: {criterionId: string; comment: string; journeyReportId?: string}[] = criteria.filter(criterion => selectedCriteria[criterion.id]).map(criterion => ({ criterionId: criterion.id, comment: (comments[criterion.id] ?? "").trim() }));
+  const feedbackDraft: {criterionId: string; comment: string; journeyReportId?: string; modelReportId?: string}[] = criteria.filter(criterion => selectedCriteria[criterion.id]).map(criterion => ({ criterionId: criterion.id, comment: (comments[criterion.id] ?? "").trim() }));
   if (journeySelected) feedbackDraft.push({criterionId: "journey-agreement", comment: (comments["journey-agreement"] ?? "").trim(), journeyReportId: journeyDraftReportId});
+  if(modelSelected)feedbackDraft.push({criterionId:"model-agreement",comment:(comments["model-agreement"]??"").trim(),modelReportId:modelDraftReportId});
+  const modelDraftCurrent=!modelSelected||Boolean(modelReport&&modelDraftReportId===modelReport.id);
   const journeyDraftCurrent = !journeySelected || Boolean(journeyReport && journeyDraftReportId === journeyReport.id);
-  const returnReady = feedbackDraft.length > 0 && journeyDraftCurrent && feedbackDraft.every(item => item.comment.length > 0 && item.comment.length <= 1000);
+  const returnReady = feedbackDraft.length > 0 && journeyDraftCurrent && modelDraftCurrent && feedbackDraft.every(item => item.comment.length > 0 && item.comment.length <= 1000);
   const submitReady = Boolean(delivery && reviewCurrent && note.trim().length > 0 && note.trim().length <= 2000);
 
   useImperativeHandle(historyRef, () => ({
@@ -100,6 +105,7 @@ export function CollaborationPanel({ quote, role, language, busy, invitation, ve
     setSelectedCriteria({});
     setComments({});
     setJourneyDraftReportId(undefined);
+    setModelDraftReportId(undefined);
     setSuggestionNotice(false);
     pendingCommentFocus.current = null;
   }, [quote.id, delivery?.id]);
@@ -110,7 +116,8 @@ export function CollaborationPanel({ quote, role, language, busy, invitation, ve
     if (!feedbackSuggestion || feedbackSuggestion.quoteId !== quote.id || feedbackSuggestion.deliveryId !== delivery?.id
       || !isBuyer || stage !== "submitted" || frozen) return;
     const technical = feedbackSuggestion.criterionId === "journey-agreement";
-    if (technical ? !journeyReport || feedbackSuggestion.journeyReportId !== journeyReport.id : !criteria.some(criterion => criterion.id === feedbackSuggestion.criterionId)) return;
+    const modelTechnical=feedbackSuggestion.criterionId==="model-agreement";
+    if (technical ? !journeyReport || feedbackSuggestion.journeyReportId !== journeyReport.id : modelTechnical ? !modelReport || feedbackSuggestion.modelReportId!==modelReport.id : !criteria.some(criterion => criterion.id === feedbackSuggestion.criterionId)) return;
     const key = `${feedbackSuggestion.quoteId}:${feedbackSuggestion.deliveryId}:${feedbackSuggestion.serial}`;
     if (handledSuggestion.current === key) return;
     handledSuggestion.current = key;
@@ -124,8 +131,9 @@ export function CollaborationPanel({ quote, role, language, busy, invitation, ve
     // Existing text always wins. Repeated suggestions never append or overwrite it.
     setComments(current => current[criterionId]?.length ? current : { ...current, [criterionId]: comment });
     if (technical) setJourneyDraftReportId(current => current ?? feedbackSuggestion.journeyReportId);
+    if (modelTechnical) setModelDraftReportId(current=>current??feedbackSuggestion.modelReportId);
     setSuggestionNotice(true);
-  }, [feedbackSuggestion, quote.id, delivery?.id, isBuyer, stage, frozen, criteria, journeyReport]);
+  }, [feedbackSuggestion, quote.id, delivery?.id, isBuyer, stage, frozen, criteria, journeyReport, modelReport]);
 
   useEffect(() => {
     const criterionId = pendingCommentFocus.current;
@@ -169,12 +177,13 @@ export function CollaborationPanel({ quote, role, language, busy, invitation, ve
   const allFeedback = [...feedbackById.values()].sort((a, b) => a.at.localeCompare(b.at));
   const currentFeedback = allFeedback.filter(item => item.deliveryId === delivery?.id);
   const historicalFeedback = allFeedback.filter(item => item.deliveryId !== delivery?.id);
-  const criterionTitle = (criterionId: string) => criterionId === "journey-agreement" ? tr("附加技术协议 · 业务旅程", "Additional technical agreement · business journey") : criteria.find(criterion => criterion.id === criterionId)?.title ?? criterionId;
+  const criterionTitle = (criterionId: string) => criterionId === "model-agreement" ? tr("附加技术协议 · 并发状态", "Additional technical agreement · concurrent state") : criterionId === "journey-agreement" ? tr("附加技术协议 · 业务旅程", "Additional technical agreement · business journey") : criteria.find(criterion => criterion.id === criterionId)?.title ?? criterionId;
   const feedbackList = (items: typeof allFeedback) => <ul className="collaboration-feedback-list">
     {items.map(item => <li key={item.id}>
       <strong>{criterionTitle(item.criterionId)}</strong>
       <div className="collaboration-feedback-meta"><span>{tr("版本", "Version")} <code>{item.deliveryId}</code></span><time dateTime={item.at}>{displayTime(item.at)}</time></div>
       {item.criterionId === "journey-agreement" && <p className="collaboration-help">{tr("针对另行确认的技术协议，不代表原始需求自动失败。绑定报告：", "This addresses the separately confirmed technical agreement; it does not automatically fail an original requirement. Bound report: ")}<code>{item.journeyReportId ?? tr("未记录", "Not recorded")}</code></p>}
+      {item.criterionId === "model-agreement" && <p className="collaboration-help">{tr("另行确认的技术协议；绑定并发报告：", "Separately confirmed technical agreement; bound concurrent report: ")}<code>{item.modelReportId ?? tr("未记录", "Not recorded")}</code></p>}
       <p>{item.comment}</p>
     </li>)}
   </ul>;
@@ -248,6 +257,10 @@ export function CollaborationPanel({ quote, role, language, busy, invitation, ve
               <label className="collaboration-criterion-choice"><input type="checkbox" checked={journeySelected} disabled={!journeyReport && !journeySelected} onChange={event => {const checked = event.target.checked;setSelectedCriteria(current => ({...current, "journey-agreement": checked}));setJourneyDraftReportId(checked ? journeyReport?.id : undefined);}} /><span>{tr("附加技术协议 · 业务旅程", "Additional technical agreement · business journey")}</span></label>
               <p className="collaboration-help" id={`${id}-journey-feedback-help`}>{tr("这是买家另行确认的技术协议，与原始验收标准分别记录；旅程问题不会自动标记原始条款失败。", "This technical agreement was separately confirmed by the buyer and is recorded alongside the original criteria. Journey findings do not automatically fail an original clause.")}{!journeyReport && <> {tr("请先保存当前版本的旅程报告，再填写此项反馈。", "Save a journey report for this version before requesting technical changes.")}</>}</p>
               {journeySelected && <div className="collaboration-comment-field"><label htmlFor={`${id}-journey-comment`}>{tr("技术协议修改意见", "Technical change request")}</label><textarea id={`${id}-journey-comment`} ref={field => {if (field) commentFields.current.set("journey-agreement", field);else commentFields.current.delete("journey-agreement");}} required maxLength={1000} rows={3} value={comments["journey-agreement"] ?? ""} onChange={event => setComments(current => ({...current, "journey-agreement": event.target.value}))} aria-describedby={`${id}-return-help ${id}-journey-feedback-help`} /><span className="collaboration-comment-count">{(comments["journey-agreement"] ?? "").length} / 1000</span><p className="collaboration-help">{tr("草稿绑定报告：", "Draft bound to report: ")}<code>{journeyDraftReportId ?? tr("未选择", "Not selected")}</code></p>{!journeyDraftCurrent && <p className="collaboration-help" role="status">{tr("报告已更新。原有文字和报告关联已保留；请取消本项后重新选择以绑定当前报告，并核对修改意见。", "The report changed. Your text and original report reference are retained. Deselect and select this item to bind the current report, then review your comment.")}</p>}</div>}
+            </div>}{technicalAgreement && <div className="collaboration-return-criterion">
+              <label className="collaboration-criterion-choice"><input type="checkbox" checked={modelSelected} disabled={!modelReport&&!modelSelected} onChange={event=>{const checked=event.target.checked;setSelectedCriteria(current=>({...current,"model-agreement":checked}));setModelDraftReportId(checked?modelReport?.id:undefined);}}/><span>{tr("附加技术协议 · 并发状态","Additional technical agreement · concurrent state")}</span></label>
+              <p className="collaboration-help">{tr("与原始验收标准分开记录。先保存当前版本的并发报告；它不会自动判定合同违约。","Recorded separately from original acceptance criteria. Save a concurrent report for this version first; it does not automatically establish a contract breach.")}</p>
+              {modelSelected&&<div className="collaboration-comment-field"><label htmlFor={`${id}-model-comment`}>{tr("并发状态修改意见","Concurrent state change request")}</label><textarea id={`${id}-model-comment`} ref={field=>{if(field)commentFields.current.set("model-agreement",field);else commentFields.current.delete("model-agreement");}} required maxLength={1000} rows={3} value={comments["model-agreement"]??""} onChange={event=>setComments(current=>({...current,"model-agreement":event.target.value}))}/><span className="collaboration-comment-count">{(comments["model-agreement"]??"").length} / 1000</span><p className="collaboration-help">{tr("草稿绑定报告：","Draft bound to report: ")}<code>{modelDraftReportId??tr("未选择","Not selected")}</code></p>{!modelDraftCurrent&&<p role="status">{tr("报告已更新，请取消后重新选择此项，并核对保留的文字。","The report changed. Deselect and select this item again, then review your retained text.")}</p>}</div>}
             </div>}</div>
             <button className="collaboration-button collaboration-button-secondary" type="submit" disabled={busy || frozen || !delivery || !returnReady}>{tr("退回修改", "Request changes")}</button>
           </fieldset>

@@ -14,6 +14,8 @@ Source resource checks show missing local targets, out-of-scope references and u
 
 Compare each requirement displays the unchanged agreed clause, version-matched old buyer feedback, and separate old/current rule excerpts, AI source citations and browser observations. Missing or stale records are unavailable rather than borrowed from another version. A newer version or smaller issue count does not prove a fix. Source AI reads bounded HTML/CSS text, not image pixels. Either participant may append a reasoned human review of an AI risk; the original model report remains unchanged. These annotations do not accept work or initiate payment.
 
+A separate optional release-vs-transfer model experiment issues at most five synthetic writes and 24 requests against a registered staging backend. An independent finite-state oracle checks cancellation/transfer results, receipts, merchant records and three occupancies against both real-time-consistent serial orders. Seeds vary party size and slot permutation; they do not generate arbitrary workflows or prove broad concurrency safety. Unknown writes are never automatically replayed. Saved reports and exact acceptance acknowledgements survive refresh and remain tied to their original file digest. See docs/collaboration/four-cycles-2026-11-03/round-4.md for measured evidence and limits.
+
 ## Clean local setup
 
 On macOS or a POSIX environment, with Node.js 22.13+ and npm installed (Node.js 24 recommended), run one command from this checkout:

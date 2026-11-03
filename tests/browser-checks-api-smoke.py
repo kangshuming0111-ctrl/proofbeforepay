@@ -53,6 +53,45 @@ def report_of(quote):
     return quote["proof"]["delivery"]["browserChecks"]
 
 
+def first_capture_stale_guards(api, owner, specification, files):
+    """A held browser-tab vector must fail before any first-capture provider call."""
+    single = copy.deepcopy(specification)
+    single.update(collaborative=False, title="Synthetic single-user stale capture evidence")
+    single.pop("paymentTesting", None)
+    quote = quote_of(api.ok(owner, "/api/proofs", single), "buyer")
+    path = "/api/proofs/" + quote["id"]
+    api.ok(owner, path + "/approve", {})
+    quote = quote_of(api.ok(owner, path + "/delivery", {"files": files, "expectedDeliveryId": None, "reviewRules": True}), "buyer")
+    checkout = api.ok(owner, path + "/checkout", {})
+    quote = quote_of(api.ok(owner, path + "/authorize", {"orderId": checkout["orderId"]}), "buyer")
+    calls = api.ok(None, "/api/__synthetic_sandbox_test_mode")["syntheticCalls"]
+    consent = {"deliveryId": quote["proof"]["delivery"]["id"], "confirm": True, "manualChecks": ["mobile", "coverage-1", "coverage-2"], "expectedEvidence": roles.acceptance_basis(quote)}
+    assert consent["expectedEvidence"]["browserReportId"] is None
+    report_a = quote_of(api.ok(owner, path + "/browser-checks", browser_input(quote)), "buyer")
+    for held in (consent, {**consent, "expectedEvidence": roles.acceptance_basis(report_a)}):
+        if held["expectedEvidence"]["browserReportId"] is not None:
+            report_b = browser_input(report_a)
+            report_b["readings"][0]["stylesLoaded"] = 0
+            quote_of(api.ok(owner, path + "/browser-checks", report_b), "buyer")
+        code, rejected, _ = api.request(owner, path + "/capture", held)
+        assert code == 409 and "evidence" in rejected.get("error", "").lower(), (code, api.diagnostic(rejected))
+        quote = quote_of(api.ok(owner, "/api/quotes/" + quote["id"]), "buyer")
+        assert quote["proof"]["paymentState"] == "authorized" and not quote["proof"].get("paymentOperation")
+        assert not quote["proof"].get("acceptedDeliveryId") and not quote["proof"]["delivery"].get("acceptanceEvidence")
+        assert api.ok(None, "/api/__synthetic_sandbox_test_mode")["syntheticCalls"] == calls
+    # The same route succeeds once the current vector is explicitly reviewed.
+    paid = quote_of(api.ok(owner, path + "/capture", {**consent, "expectedEvidence": roles.acceptance_basis(quote)}), "buyer")
+    snapshot_id = paid["proof"]["acceptedEvidenceSnapshotId"]
+    assert paid["proof"]["paymentState"] == "captured" and snapshot_id
+    calls = api.ok(None, "/api/__synthetic_sandbox_test_mode")["syntheticCalls"]
+    for patch, expected_status in (({}, 400), ({"acceptedEvidenceSnapshotId": "different-acceptance"}, 409)):
+        code, _, _ = api.request(owner, path + "/capture", {"deliveryId": consent["deliveryId"], "confirm": True, **patch})
+        assert code == expected_status
+    assert quote_of(api.ok(owner, path + "/capture", {"deliveryId": consent["deliveryId"], "confirm": True, "acceptedEvidenceSnapshotId": snapshot_id}), "buyer") == paid
+    assert api.ok(None, "/api/__synthetic_sandbox_test_mode")["syntheticCalls"] == calls
+    api.checked("First single-user capture rejects explicit null→A and A→B evidence vectors with409 and zero provider/consent changes; fresh review succeeds, while captured receipt replay requires its frozen snapshot and never calls the provider again")
+
+
 def only_supplemental_changed(before, after):
     left, right = copy.deepcopy(before), copy.deepcopy(after)
     left["proof"]["delivery"].pop("browserChecks", None)
@@ -200,19 +239,42 @@ def main():
     api.reject(buyer, endpoint, {**browser_input(current), "previousReportId": archived_report["id"]}, codes=(409,))
     api.checked("Replacement starts with no inherited browser report; both members can read the old exact-version report and old report/version IDs cannot save against the replacement")
 
+    api.ok(seller, path + "/submit_delivery", {"deliveryId": second_delivery, "note": "Revised synthetic delivery"})
+    # Send explicit caller-observed vectors through request(), bypassing the
+    # helper that fills missing fields. A failure must come from a changed
+    # evidence vector, not missing submission, human checks or authorization.
+    marker_before_stale = api.ok(None, "/api/__synthetic_sandbox_test_mode")["syntheticCalls"]
+    null_basis = roles.acceptance_basis(current)
+    assert null_basis["browserReportId"] is None
+    report_a_quote = quote_of(api.ok(seller, endpoint, browser_input(current)), "seller")
+    stale_null = {"deliveryId": second_delivery, "confirm": True, "manualChecks": ["mobile", "coverage-1", "coverage-2"], "expectedEvidence": null_basis}
+    code, rejected, _ = api.request(buyer, path + "/accept_delivery", stale_null)
+    assert code == 409 and "evidence" in rejected.get("error", "").lower(), (code, api.diagnostic(rejected))
+    current = quote_of(api.ok(buyer, quote_path), "buyer")
+    assert current == report_a_quote and current["proof"]["collaboration"]["stage"] == "submitted"
+    assert not current["proof"].get("acceptedDeliveryId") and not current["proof"]["delivery"].get("acceptanceEvidence")
+    stale_a = {**stale_null, "expectedEvidence": roles.acceptance_basis(current)}
+    assert stale_a["expectedEvidence"]["browserReportId"] == report_of(current)["id"]
+
     before = copy.deepcopy(current)
     mismatch = browser_input(current)
     mismatch["readings"][0]["stylesLoaded"] = 0
     mismatch["readings"][-1]["targetVisible"] = False
-    current = quote_of(api.ok(buyer, endpoint, mismatch), "buyer")
+    quote_of(api.ok(seller, endpoint, mismatch), "seller")
+    code, rejected, _ = api.request(buyer, path + "/accept_delivery", stale_a)
+    assert code == 409 and "evidence" in rejected.get("error", "").lower(), (code, api.diagnostic(rejected))
+    current = quote_of(api.ok(buyer, quote_path), "buyer")
     only_supplemental_changed(before, current)
     assert report_of(current)["summary"] == dict(steps=8, observed=8, issues=2, unavailable=0)
     assert current["proof"].get("manualChecks") is None and current["proof"].get("acceptedDeliveryId") is None
     assert current["proof"]["paymentState"] == "unfunded"
+    assert report_of(current)["id"] != stale_a["expectedEvidence"]["browserReportId"]
+    assert not current["proof"]["delivery"].get("acceptanceEvidence")
+    assert api.ok(None, "/api/__synthetic_sandbox_test_mode")["syntheticCalls"] == marker_before_stale
+    api.checked("Actual acceptance routes reject caller-observed null→reportA and reportA→reportB vectors with409, preserve submitted state with no frozen acceptance, and make zero provider calls")
     api.checked("Resource shortfalls and an invisible reached target derive mismatches but never tick manual checks, accept delivery or fund payment")
 
     assert api.ok(None, "/api/__synthetic_sandbox_test_mode")["syntheticCalls"] == marker["syntheticCalls"]
-    api.ok(seller, path + "/submit_delivery", {"deliveryId": second_delivery, "note": "Revised synthetic delivery"})
     api.ok(buyer, path + "/accept_delivery", {"deliveryId": second_delivery, "confirm": True, "manualChecks": ["mobile", "coverage-1", "coverage-2"]})
     checkout = api.ok(buyer, path + "/checkout", {})
     api.ok(buyer, path + "/authorize", {"orderId": checkout["orderId"]})
@@ -241,6 +303,8 @@ def main():
     assert full_current["delivery"]["acceptanceEvidence"] == current["proof"]["delivery"]["acceptanceEvidence"]
     api.reject(outsider, path + "/versions/" + first_delivery, codes=(404,))
     api.checked("Persisted old/current version listings retain their own reports and unrelated identities cannot retrieve archives")
+    first_capture_stale_guards(api, buyer, specification, files)
+    payment_marker = api.ok(None, "/api/__synthetic_sandbox_test_mode")
     print(json.dumps(dict(result="passed", suite="browser-checks", checks=api.checks,
                           rejectedMalformedPayloads=len(malformed), concurrentStatuses=sorted(code for code, _, _ in races),
                           providerNetworkRequests=0, browserCheckProviderFetches=0,

@@ -1,3 +1,4 @@
+import {acceptDeliveryWithBasis as acceptDelivery} from "./acceptance-client.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import type {ProofQuote} from "../lib/contracts.ts";
@@ -5,7 +6,7 @@ import {parseStaticProject,createUploadedDelivery} from "../lib/static-project.t
 import {runtimeDeliveryDigest} from "../lib/runtime-project.ts";
 import {confirmProjectJourneyPlan,beginProjectJourneyRun,finishProjectJourneyRun} from "../lib/project-journey-actions.ts";
 import {validateProjectJourneyDecision,evaluateStoredProjectJourneyReport,type JourneyRegistrationSnapshot} from "../lib/project-journey.ts";
-import {acceptDelivery,prepareReplacement} from "../lib/proof-workflow.ts";
+import {prepareReplacement} from "../lib/proof-workflow.ts";
 import {assertAcceptedEvidenceReference} from "../lib/acceptance-evidence.ts";
 import {createEvidenceExport,verifyEvidenceExport} from "../lib/evidence-export.ts";
 import {assertQuoteEvidenceBudget,EVIDENCE_HISTORY_BYTE_LIMIT} from "../lib/evidence-budget.ts";
@@ -44,4 +45,14 @@ test("replacement clears the optional agreement and every current journey field;
  let{quote,registration}=await fixture();quote=closeWithoutNetwork(quote,registration);quote.proof.collaboration!.stage="changes_requested";
  const next=prepareReplacement(quote,{...quote.proof.delivery!,id:crypto.randomUUID()});for(const key of ["journeyPlan","journeyRun","journeyReport","journeyHistory","journeyEvidenceReservation"])assert.equal((next.proof.delivery as unknown as Record<string,unknown>)[key],undefined);
  const tooLarge=structuredClone(quote);tooLarge.proof.delivery!.journeyHistory![0].input.observations[0].unavailableReason="x".repeat(EVIDENCE_HISTORY_BYTE_LIMIT);tooLarge.proof.delivery!.journeyReport=structuredClone(tooLarge.proof.delivery!.journeyHistory![0]);assert.throws(()=>assertQuoteEvidenceBudget(tooLarge),/history is full/);
+});
+
+test("offline evidence validates manual adoption and a step-bound AI explanation without changing acceptance",async()=>{
+ let{quote,registration}=await fixture();quote=closeWithoutNetwork(quote,registration);
+ const report=quote.proof.delivery!.journeyReport!,before=structuredClone(report);
+ quote.proof.delivery!.journeyExplanation={id:crypto.randomUUID(),method:"ai-journey-evidence-explanation-v1",mode:"live",model:"synthetic-no-network",generatedAt:new Date().toISOString(),deliveryId:report.deliveryId,deliveryDigest:report.deliveryDigest,planDigest:report.planDigest,reportId:report.id,stepIds:evaluateStoredProjectJourneyReport(report).steps.map(s=>s.id),findings:[{stepIds:["meta"],priority:"high",explanation:"The interrupted run has no complete server evidence.",retest:"Reconnect the staging service and start a new run."}],limitations:["This is a synthetic explanation fixture, not an external AI call."]};
+ const bundle=await createEvidenceExport(quote);assert.equal((await verifyEvidenceExport(bundle)).consistency,"consistent");
+ for(const change of [(b:typeof bundle)=>{b.delivery.journeyPlanAdoption!.planDigest="f".repeat(64);},(b:typeof bundle)=>{b.delivery.journeyExplanation!.reportId="foreign-report";},(b:typeof bundle)=>{b.delivery.journeyExplanation!.findings[0].stepIds=["unknown" as "meta"];}]){const altered=structuredClone(bundle);change(altered);assert.equal((await verifyEvidenceExport(altered)).consistency,"inconsistent");}
+ assert.deepEqual(quote.proof.delivery!.journeyReport,before);assert.equal(quote.proof.acceptedDeliveryId,undefined);
+ quote=closeWithoutNetwork(quote,registration);assert.notEqual(quote.proof.delivery!.journeyReport!.id,report.id);assert.equal((await verifyEvidenceExport(await createEvidenceExport(quote))).consistency,"consistent");
 });

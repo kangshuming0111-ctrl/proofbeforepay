@@ -1,9 +1,10 @@
+import {acceptDeliveryWithBasis as acceptDelivery, validateAcceptanceWithBasis as validateAcceptance} from "./acceptance-client.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { ProofQuote } from "../lib/contracts.ts";
 import { canUseRoleplaySamples, createRoleplayDelivery, createRoleplayProject, isDemoRoleplay, isOwnerRoleplay, isSandboxRehearsal, requestSandboxRehearsal, resolveProofRole } from "../lib/proof-demo.ts";
-import { acceptDelivery, joinSeller, prepareReplacement, requestChanges, requireWorkflowAction, snapshotVersion, submitDelivery } from "../lib/proof-workflow.ts";
-import { requireActiveAuthorization, validateAcceptance } from "../lib/proof-domain.ts";
+import {joinSeller, prepareReplacement, requestChanges, requireWorkflowAction, snapshotVersion, submitDelivery} from "../lib/proof-workflow.ts";
+import {requireActiveAuthorization} from "../lib/proof-domain.ts";
 import { parseStaticProject } from "../lib/static-project.ts";
 import { authorizeOrder, captureAuthorization, createAuthorizationOrder, PAYPAL_SANDBOX_URL, voidAuthorization, type Fetcher } from "../lib/providers.ts";
 

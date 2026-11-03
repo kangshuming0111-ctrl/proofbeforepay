@@ -1,3 +1,4 @@
+import {acceptDeliveryWithBasis as acceptDelivery} from "./acceptance-client.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import {createServer} from "node:http";
@@ -10,7 +11,7 @@ import {executeRuntimeCheck,type RuntimeFetch} from "../lib/runtime-runner.ts";
 import {beginRuntimeRun,finishRuntimeRun} from "../lib/runtime-actions.ts";
 import {registrationTarget,type RuntimeRegistrationSnapshot} from "../lib/runtime-registration.ts";
 import {assertAcceptedEvidenceReference,createAcceptanceEvidence,withAcceptanceEvidence} from "../lib/acceptance-evidence.ts";
-import {acceptDelivery} from "../lib/proof-workflow.ts";
+
 import {acceptanceSnapshotReservationBytes} from "../lib/evidence-budget.ts";
 import {validateRuntimeReport} from "../lib/runtime-checks.ts";
 import {suggestBookingPolicy} from "../lib/booking-policy.ts";

@@ -1,10 +1,11 @@
+import {acceptDeliveryWithBasis as acceptDelivery} from "./acceptance-client.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { ProofQuote } from "../lib/contracts.ts";
 import { DomainError } from "../lib/domain.ts";
 import { assertCoverageForAcceptance, confirmCoverage, coverageCriteria, summaryCoverageUnits, validateSavedCoverage } from "../lib/requirement-coverage.ts";
 import { createUploadedDelivery, parseStaticProject } from "../lib/static-project.ts";
-import { acceptDelivery } from "../lib/proof-workflow.ts";
+
 
 const summary = "为墨尔本面馆制作手机友好的网站，展示菜单、营业时间、地址，提供可用的预约入口和中文英文切换。";
 const at = "2026-11-02T00:00:00.000Z";

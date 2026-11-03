@@ -5,18 +5,22 @@ import {getProofFixture, inspectProofFiles, proofCriteria} from "./proof-evidenc
 import {runtimeDeliveryDigest, runtimeReportsFor, deliveryRuntimeTarget, savedRuntimePlan} from "./runtime-project.ts";
 import {runtimeIdentifier,validateRuntimeReport} from "./runtime-checks.ts";
 import {savedProjectJourneyPlan,projectJourneyReportsFor,validateProjectJourneyPlan,validateStoredProjectJourneyReport,evaluateStoredProjectJourneyReport,sameJourneyRegistration} from "./project-journey.ts";
+import {validateSavedJourneySuggestions,validateSavedJourneyAdoption} from "./journey-plan-adoption.ts";
+import {validateJourneyEvidenceExplanation} from "./journey-evidence-explanation.ts";
 import {sameRuntimeRegistration} from "./runtime-registration.ts";
 import {browserReportsFor, businessReportsFor, layoutReportsFor} from "./acceptance-evidence.ts";
 import {validateSavedCoverage} from "./requirement-coverage.ts";
 import {createBrowserCheckReport} from "./browser-check-report.ts";
 import {createBusinessCheckReport} from "./business-checks.ts";
 import {createLayoutReport} from "./layout-report.ts";
+import {assertModelAcceptanceReference,modelReportsFor} from "./model-check-actions.ts";
+import {MODEL_SPEC_DIGEST,modelCheckReportFromTrace,validateStoredModelCheckReport} from "./model-checks.ts";
 
 export const EVIDENCE_EXPORT_SCHEMA = "proofbeforepay-evidence-export-v1";
 export const EVIDENCE_EXPORT_RULES = "pbp-static-source-v2";
 export const EVIDENCE_EXPORT_BYTE_LIMIT = 4 * 1024 * 1024;
-const DELIVERY_KEYS = ["id","variant","sequence","label","submittedAt","files","evidence","resources","layoutReport","layoutHistory","browserChecks","browserCheckHistory","businessChecks","businessCheckHistory","assessment","riskReviews","acceptanceEvidence","backendTargetId","runtimeDeliveryDigest","runtimeRegistration","runtimeReport","runtimeHistory","runtimeRun","journeyPlan","journeyReport","journeyHistory"] as const;
-const SNAPSHOT_KEYS = ["id","deliveryId","at","browserReportId","layoutReportId","assessmentId","businessReportId","businessExceptionReason","runtimeReportId","runtimeExceptionReason","runtimeAcknowledgedSteps","runtimeDeliveryDigest","runtimeTargetId","runtimeRegistration","journeyReportId","journeyDeliveryDigest","journeyPlanDigest","journeyRegistration","journeyExceptionReason","journeyAcknowledgedSteps","journeyClientObservationAcknowledged","criteria","evidence","manualChecks","review","assessment","riskReviews"];
+const DELIVERY_KEYS = ["id","variant","sequence","label","submittedAt","files","evidence","resources","layoutReport","layoutHistory","browserChecks","browserCheckHistory","businessChecks","businessCheckHistory","assessment","riskReviews","acceptanceEvidence","backendTargetId","runtimeDeliveryDigest","runtimeRegistration","runtimeReport","runtimeHistory","runtimeRun","journeyPlan","journeyReport","journeyHistory","journeyPlanSuggestions","journeyPlanAdoption","journeyExplanation","modelRun","modelReport","modelHistory"] as const;
+const SNAPSHOT_KEYS = ["id","deliveryId","at","browserReportId","layoutReportId","assessmentId","businessReportId","businessExceptionReason","runtimeReportId","runtimeExceptionReason","runtimeAcknowledgedSteps","runtimeDeliveryDigest","runtimeTargetId","runtimeRegistration","journeyReportId","journeyDeliveryDigest","journeyPlanDigest","journeyRegistration","journeyExceptionReason","journeyAcknowledgedSteps","journeyClientObservationAcknowledged","modelReportId","modelSpecDigest","modelDeliveryDigest","modelDecision","criteria","evidence","manualChecks","review","assessment","riskReviews"];
 type AcceptanceReference = {kind:"delivery-acceptance"|"capture-consent";deliveryId:string;evidenceSnapshotId:string|null};
 export type EvidenceExport = {
   schema:typeof EVIDENCE_EXPORT_SCHEMA; verificationRules:typeof EVIDENCE_EXPORT_RULES; scope:"current-delivery-only";
@@ -113,9 +117,10 @@ function dataShapes(bundle:EvidenceExport):void{
   }
   if(delivery.resources){object(delivery.resources,["method","checked","findings"],"Resource report");for(const value of array(delivery.resources.findings,401,"Resource findings"))object(value,["from","reference","target","kind"],"Resource finding");}
   if(delivery.runtimeRun)object(delivery.runtimeRun,["id","deliveryId","deliveryDigest","targetId","startedAt","expiresAt"],"Pending runtime run");
+  if(delivery.modelRun)object(delivery.modelRun,["id","deliveryId","deliveryDigest","journeyPlanDigest","modelSpecDigest","seed","registration","startedAt","expiresAt","startedByRole","trace"],"Pending model run");
   if(delivery.journeyPlan)validateProjectJourneyPlan(delivery.journeyPlan);
   riskReviews(delivery.riskReviews);
-  for(const value of array(delivery.acceptanceEvidence??[],20,"Acceptance history")){const snapshot=object(value,SNAPSHOT_KEYS,"Acceptance snapshot");review(snapshot.review);riskReviews(snapshot.riskReviews);}
+  for(const value of array(delivery.acceptanceEvidence??[],20,"Acceptance history")){const snapshot=object(value,SNAPSHOT_KEYS,"Acceptance snapshot");review(snapshot.review);riskReviews(snapshot.riskReviews);if(snapshot.modelDecision)object(snapshot.modelDecision,["reportId","acknowledgeServerCheck","exceptionReason"],"Model acceptance decision");}
 }
 
 /** A local, allowlisted copy; no membership, client identity, payment identifiers,
@@ -251,7 +256,18 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
     for(const report of reports)assessment(report,bundle.delivery,bundle.project.criteria);
     riskBindings(bundle.delivery.riskReviews,bundle.delivery.id,reports);
   },"Included AI citations resolve to source and risk annotations reference their recorded delivery/report/risk; model judgment, human identity and provider execution are not proven.");
-  const quote=quoteFor(bundle);let runtimeRows:ReturnType<typeof runtimeReportsFor>=[];
+  const quote=quoteFor(bundle);
+  if(bundle.delivery.journeyPlanSuggestions||bundle.delivery.journeyPlanAdoption||bundle.delivery.journeyExplanation)await check("journey-plan-source-mapping",async()=>{
+    await validateSavedJourneySuggestions(quote);await validateSavedJourneyAdoption(quote);
+    const explanation=bundle.delivery.journeyExplanation;
+    if(explanation){
+      const report=projectJourneyReportsFor(bundle.delivery).find(row=>row.id===explanation.reportId);
+      requireValue(report,"The AI explanation must retain its exact journey report.");
+      validateStoredProjectJourneyReport(report,{deliveryId:bundle.delivery.id,deliveryDigest:bundle.fileDigest,plan:savedProjectJourneyPlan(quote),projectId:bundle.project.id});
+      validateJourneyEvidenceExplanation(explanation,{deliveryId:report.deliveryId,deliveryDigest:report.deliveryDigest,planDigest:report.planDigest,reportId:report.id,stepIds:evaluateStoredProjectJourneyReport(report).steps.map(step=>step.id)});
+    }
+  },"Saved advice and adopted mappings match the original source and exact uploaded delivery; this does not prove model execution or test success.");
+  let runtimeRows:ReturnType<typeof runtimeReportsFor>=[];
   await check("reported-observation-consistency",()=>{
     const delivery=bundle.delivery;
     const compare=(saved:object,replayed:object)=>requireValue(same(pick(saved,Object.keys(saved).filter(key=>!["id","reportedByRole"].includes(key))),pick(replayed,Object.keys(replayed).filter(key=>key!=="id"))),"Reported observation fields or derived counts differ.");
@@ -276,6 +292,15 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
     const journeyPlan=savedProjectJourneyPlan(quote),journeyRows=projectJourneyReportsFor(bundle.delivery);
     requireValue(!journeyRows.length||!!journeyPlan,"Journey evidence requires a separately confirmed technical agreement.");
     for(const report of journeyRows)validateStoredProjectJourneyReport(report,{deliveryId:bundle.delivery.id,deliveryDigest:bundle.fileDigest,plan:journeyPlan!,projectId:bundle.project.id});
+    const modelRows=modelReportsFor(bundle.delivery),pendingModel=bundle.delivery.modelRun;
+    requireValue(!modelRows.length&&!pendingModel||!!journeyPlan,"Model evidence requires the original fixed technical agreement.");
+    for(const report of modelRows)validateStoredModelCheckReport(report,{deliveryId:bundle.delivery.id,deliveryDigest:bundle.fileDigest,journeyPlanDigest:journeyPlan!.planDigest,projectId:bundle.project.id});
+    if(pendingModel){
+      requireValue(pendingModel.deliveryId===bundle.delivery.id&&pendingModel.deliveryDigest===bundle.fileDigest&&pendingModel.journeyPlanDigest===journeyPlan!.planDigest&&pendingModel.modelSpecDigest===MODEL_SPEC_DIGEST&&pendingModel.registration.projectId===bundle.project.id,"The pending model lease belongs to another delivery or agreement.");
+      requireValue(["buyer","seller"].includes(pendingModel.startedByRole)&&typeof pendingModel.expiresAt==="string"&&Number.isFinite(Date.parse(pendingModel.expiresAt))&&Date.parse(pendingModel.expiresAt)>Date.parse(pendingModel.startedAt),"Pending model timestamps or initiating role are invalid.");
+      requireValue(!modelRows.some(report=>report.id===pendingModel.id||report.runId===pendingModel.id),"A model run cannot be both pending and completed.");
+      modelCheckReportFromTrace(pendingModel,pendingModel.trace,pendingModel.startedAt,"offline_pending_unknown; no network execution proven");
+    }
   },"Included HTTP reports bind to the supplied delivery, file digest, plan and frozen target. No HTTP execution or present approval is proven.");
   await check("acceptance-references",()=>{
     const delivery=bundle.delivery,criteriaIds=bundle.project.criteria.map(row=>row.id);
@@ -285,6 +310,7 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
     const snapshots=array(delivery.acceptanceEvidence??[],20,"Acceptance snapshots");const ids=new Set<string>();
     for(const entry of snapshots){
       const snapshot=object(entry,SNAPSHOT_KEYS,"Acceptance snapshot");const id=text(snapshot.id,100);requireValue(!ids.has(id)&&snapshot.deliveryId===delivery.id&&Number.isFinite(Date.parse(snapshot.at as string)),"Acceptance identity is invalid.");ids.add(id);
+      assertModelAcceptanceReference(quote,snapshot as unknown as import("./contracts.ts").ProofAcceptanceEvidence);
       // Optional metadata is still untrusted even when the retained report has
       // no exception. Never let an unused field carry arbitrary nested data.
       for(const key of ["businessExceptionReason","runtimeExceptionReason"] as const)if(snapshot[key]!==undefined)text(snapshot[key],500);

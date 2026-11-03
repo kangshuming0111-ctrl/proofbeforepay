@@ -4,6 +4,8 @@ import { assertCoverageForAcceptance } from "./requirement-coverage.ts";
 import { validateBusinessDecision } from "./business-decision.ts";
 import { assertAcceptedEvidenceReference } from "./acceptance-evidence.ts";
 import {validateRuntimeDecision} from "./runtime-project.ts";
+import {assertAcceptanceBasis, assertAcceptedSnapshotConsent} from "./acceptance-basis.ts";
+import {validateModelDecision} from "./model-check-actions.ts";
 
 export function requireProof(quote: Quote): asserts quote is ProofQuote {
   if (quote.workflow !== "proof-v1" || !quote.proof) throw new DomainError("This record is not a ProofBeforePay agreement.");
@@ -19,11 +21,14 @@ export function requireActiveAuthorization(quote: ProofQuote, now = Date.now()) 
   }
 }
 
-export function validateAcceptance(quote: ProofQuote, input: Record<string, unknown>) {
+/** Shared stored-state facts. Reconciliation validates the consent already
+ * persisted before its provider operation; it cannot reconstruct a past client
+ * view or require a new client token from a historical pending operation. */
+function validateAcceptanceFacts(quote: ProofQuote, input: Record<string, unknown>) {
   requireActiveAuthorization(quote);
   assertCoverageForAcceptance(quote);
   if (quote.proof.collaboration || quote.proof.acceptedEvidenceSnapshotId) assertAcceptedEvidenceReference(quote);
-  else {validateBusinessDecision(quote, input.businessDecision);validateRuntimeDecision(quote,input.runtimeDecision);}
+  else {validateBusinessDecision(quote, input.businessDecision);validateRuntimeDecision(quote,input.runtimeDecision);validateModelDecision(quote,input.modelDecision);}
   const { delivery, review, criteria } = quote.proof;
   if (input.confirm !== true) throw new DomainError("Explicit confirmation is required to accept delivery and capture payment.");
   if (!delivery || !review || review.deliveryId !== delivery.id || input.deliveryId !== delivery.id) throw new DomainError("Review the current delivery version before accepting it.");
@@ -34,6 +39,17 @@ export function validateAcceptance(quote: ProofQuote, input: Record<string, unkn
   if (!Array.isArray(input.manualChecks) || input.manualChecks.some(v => typeof v !== "string") || required.some(id => !(input.manualChecks as string[]).includes(id))) {
     throw new DomainError("Confirm each requirement that needs a human check.");
   }
+  return required;
+}
+
+/** New client capture requests must bind either their current first-acceptance
+ * view or the exact previously frozen acceptance, never a later supplement. */
+export function validateAcceptance(quote: ProofQuote, input: Record<string, unknown>) {
+  if(quote.proof.delivery?.modelRun)throw new DomainError("Finish the pending model run before confirming payment.",409);
+  const required = validateAcceptanceFacts(quote, input);
+  if (quote.proof.collaboration || quote.proof.acceptedEvidenceSnapshotId || quote.proof.paymentOperation === "capture") {
+    assertAcceptedSnapshotConsent(quote, input.acceptedEvidenceSnapshotId);
+  } else assertAcceptanceBasis(quote, input.expectedEvidence);
   return required;
 }
 
@@ -56,7 +72,7 @@ export function applyPaymentReconciliation(quote: ProofQuote, result: ProofPayme
       || acceptedDeliveryId !== delivery?.id) {
       throw new DomainError("PayPal found a capture, but the saved delivery acceptance needs manual reconciliation.");
     }
-    validateAcceptance(quote, { confirm: true, deliveryId: acceptedDeliveryId, manualChecks });
+    validateAcceptanceFacts(quote, { confirm: true, deliveryId: acceptedDeliveryId, manualChecks });
     audit.push({ kind: "captured", at: result.verifiedAt, deliveryId: acceptedDeliveryId });
     audit.push({ kind: "payment_reconciled", at: result.verifiedAt, deliveryId: acceptedDeliveryId });
     return { ...quote, status: "paid", paidAt: result.verifiedAt, captureId: result.captureId,

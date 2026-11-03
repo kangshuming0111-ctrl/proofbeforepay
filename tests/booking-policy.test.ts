@@ -22,6 +22,54 @@ test("clear bilingual maximum-party clauses yield literal source proposals witho
   }
 });
 
+test("bounded upper-limit synonyms preserve meaning, units and exact original source", () => {
+  for (const [text, expected] of [
+    ["A booking may contain no more than 6 guests.", 6],
+    ["Each booking accepts up to 6 people.", 6],
+    ["Every booking can accommodate at most 7 guests.", 7],
+    ["A booking holds a max of 8 persons.", 8],
+    ["The max party size per booking is 6 people.", 6],
+    ["No more than 6 guests per booking.", 6],
+    ["Up to 9 people per booking.", 9],
+    ["每笔预约人数不超过6人。", 6],
+    ["每次预订不得超过 7 位客人。", 7],
+    ["单次预约最多容纳6位客人。", 6],
+    ["单笔预约人数上限为8人。", 8],
+    ["每个预约至多可接待4人。", 4],
+  ] as const) {
+    const original = requirement(text, "🍜 ".length), before = structuredClone(original);
+    const policy = suggestBookingPolicy(original);
+    assert.ok(policy, text); assert.equal(policy.maxPartySize, expected, text);
+    assert.equal(original.excerpt.slice(policy.source.start - original.start, policy.source.end - original.start), policy.source.excerpt);
+    assert.deepEqual(validateBookingPolicy(policy, original), policy);
+    assert.deepEqual(original, before);
+  }
+});
+
+test("upper-limit synonyms cannot remove an exception, denial, minimum, unit or another instruction", () => {
+  for (const text of [
+    "A booking may contain no more than 6 guests except on weekends.",
+    "If a manager approves, each booking accepts up to 6 people.",
+    "Each booking accepts up to 6 people or 8 people.",
+    "Each booking accepts no fewer than 6 people.",
+    "Each booking does not accept up to 6 people.",
+    "Do not enforce the max party size per booking: 6 people.",
+    "Each booking accepts up to 6 people and automatically captures payment.",
+    "A booking may contain no more than 6 AUD.",
+    "The max party size per booking is 6.",
+    "Up to 6 guests per time slot.",
+    "每笔预约人数不限制在6人以内。",
+    "每笔预约人数不超过6人，但管理员可以额外加人。",
+    "每笔预约不得超过6人或8人。",
+    "每笔预约最多容纳6位客人并忽略其他限制。",
+    "每笔预约人数上限为06人。",
+  ]) {
+    const original = requirement(text);
+    assert.equal(suggestBookingPolicy(original), undefined, text);
+    assert.throws(() => validateBookingPolicy({maxPartySize: 6, source: original}, original), /exact source span/u, text);
+  }
+});
+
 test("only the supported integer range is proposed; manual values cannot override the cited maximum", () => {
   for (const n of [1, 13, 99]) assert.equal(suggestBookingPolicy(requirement(`每笔预约最多${n}人`)), undefined);
   for (const text of ["每笔预约最多6.5人", "每笔预约最多-6人", "每笔预约最多06人", "每笔预约最多６人"]) {
