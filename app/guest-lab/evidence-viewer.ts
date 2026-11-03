@@ -21,6 +21,8 @@ const gates:Record<string,[string,string,string,string]>={
   "ai-source-citations":["AI 引用与人工批注","AI citations and annotations","核对来源位置与批注关联；不验证模型判断。","Check source positions and annotation bindings, not model judgment."],
   "reported-observation-consistency":["已报告的浏览器读数","Reported browser observations","按提供的读数重算结果；未运行浏览器。","Recalculate supplied readings; no browser is run."],
   "runtime-bindings":["接口报告关联","HTTP report bindings","核对本版、计划、摘要及冻结目标。","Check delivery, plan, digest and frozen target bindings."],
+  "journey-plan-source-mapping":["业务计划原文关联","Journey plan source mapping","核对计划建议保留的原文来源与关联；不验证模型判断。","Check retained source spans and bindings for plan suggestions, not model judgment."],
+  "model-evidence-explanation":["并发报告 AI 解释关联","Concurrent-report AI explanation","核对解释与指定报告、诊断项的关联；不验证解释结论。","Check explanation bindings to the exact report and diagnostic findings, not its conclusions."],
   "acceptance-references":["验收快照关联","Acceptance snapshot references","核对原快照、报告与明确例外。","Check retained snapshots, reports and explicit exceptions."],
 };
 const errors:Record<EvidenceViewerError,[string,string]>={
@@ -56,18 +58,22 @@ function inputPanel(){
 }
 
 function gatePanel(){
-  const section=node("section","ev-gates");section.setAttribute("aria-label",tr("八项离线核对","Eight offline checks"));
+  const section=node("section","ev-gates");section.setAttribute("aria-label",tr("离线核对项目","Offline evidence checks"));
   const checks=state.phase==="ready"?state.verification.checks:[];
   const list=node("ol");
   for(const [id,copy] of Object.entries(gates)){
-    const check=checks.find(row=>row.id===id),outcome=check?.status??"not_checked",row=node("li",`ev-gate ${outcome}`),heading=node("div","ev-gate-heading");
+    const check=checks.find(row=>row.id===id);
+    if(!check&&["journey-plan-source-mapping","model-evidence-explanation"].includes(id))continue;
+    const outcome=check?.status??"not_checked",row=node("li",`ev-gate ${outcome}`),heading=node("div","ev-gate-heading");
     append(heading,node("h3","",tr(copy[0],copy[1])),node("span","ev-gate-status",outcome==="consistent"?tr("一致","Consistent"):outcome==="inconsistent"?tr("不一致","Inconsistent"):tr("未核对","Not checked")));
     append(row,heading,node("p","",tr(copy[2],copy[3])));
     if(check?.status==="inconsistent")append(row,node("p","ev-gate-failure",tr("无法从这份记录建立此项一致性。请检查原始导出；这里不会补造证据。","This gate cannot be established from the supplied record. Inspect the original export; missing evidence is not reconstructed.")));
     append(list,row);
   }
-  const early=checks.find(row=>!Object.hasOwn(gates,row.id));
+  const early=checks.find(row=>row.id==="schema"||row.id==="structure"&&row.status!=="consistent");
   if(early)append(section,node("p","ev-callout issue",early.id==="schema"?tr("请选择版本化证据包；原始项目 JSON 不会被当作可核对格式。","Choose the versioned evidence export. Raw project JSON is not silently treated as this format."):tr("输入超出有界普通 JSON 的范围，未继续核对。","The input is outside bounded plain JSON limits; later checks were not run.")));
+  const unknown=checks.filter(row=>row.id!=="schema"&&!Object.hasOwn(gates,row.id));
+  if(unknown.length)append(section,node("p","ev-callout",tr("文件包含本页尚未命名的核对项目，请按其记录结果复核；这不表示文件超出 JSON 范围。","This file includes checks not yet named by this view. Inspect their recorded outcomes; this does not mean the file exceeds JSON limits.")));
   append(section,list);return section;
 }
 
@@ -145,7 +151,7 @@ function render(){
     if(runtime.state==="recorded")append(summary,recordedOutcome(runtime.report));
   }
   append(results,summary);
-  const tabs=node("nav","ev-tabs");tabs.setAttribute("aria-label",tr("核对视图","Check views"));for(const [key,zh,en] of [["gates","八项核对","Eight checks"],["runtime","接口记录","HTTP evidence"],["source","查看原文","Retained source"]] as const){const b=button(tr(zh,en),()=>{detailTab=key;render();},detailTab===key?"active":"");b.setAttribute("aria-pressed",String(detailTab===key));append(tabs,b);}append(results,tabs);
+  const tabs=node("nav","ev-tabs");tabs.setAttribute("aria-label",tr("核对视图","Check views"));for(const [key,zh,en] of [["gates","核对项目","Evidence checks"],["runtime","接口记录","HTTP evidence"],["source","查看原文","Retained source"]] as const){const b=button(tr(zh,en),()=>{detailTab=key;render();},detailTab===key?"active":"");b.setAttribute("aria-pressed",String(detailTab===key));append(tabs,b);}append(results,tabs);
   const pane=node("div","ev-detail-pane"),packet=state.phase==="ready"?state.packet:undefined;append(pane,detailTab==="gates"?gatePanel():detailTab==="runtime"?runtimePanel(packet):sourcePanel(packet));append(results,pane,limitsPanel());
   append(workbench,inputPanel(),results);append(main,intro,privacy,workbench);append(root,header,main);
   if(focused)[...root.querySelectorAll<HTMLElement>("[data-ev-focus]")].find(item=>item.dataset.evFocus===focused)?.focus({preventScroll:true});

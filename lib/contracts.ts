@@ -100,6 +100,7 @@ export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"
   modelRun?: import("./model-check-actions").ModelCheckRun;
   modelReport?: import("./model-checks").ModelCheckReport;
   modelHistory?: import("./model-checks").ModelCheckReport[];
+  modelExplanation?: import("./model-evidence-explanation").ModelEvidenceExplanation;
   modelEvidenceReservation?: {runId?:string;reportBytes:number;acceptanceBytes:number};
   backendTargetId?: string;
   runtimeDeliveryDigest?: string;

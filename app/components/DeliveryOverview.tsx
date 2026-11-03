@@ -10,6 +10,9 @@ import {evaluateStoredProjectJourneyReport,validateStoredProjectJourneyReport,ty
 import {runtimeReportSummary} from "@/lib/runtime-checks";
 import {runtimeOverviewRows} from "@/lib/runtime-overview";
 import {RuntimeCoverageSummary} from "./RuntimeCoverageSummary";
+import {useModelDiagnosis} from "./useModelDiagnosis";
+import {ModelSpotlight,modelSpotlightTitle} from "./ModelSpotlight";
+import {ModelDiagnosticComparison} from "./ModelDiagnosticComparison";
 import "../delivery-overview.css";
 
 export type DeliveryOverviewProps = {
@@ -21,6 +24,7 @@ export type DeliveryOverviewProps = {
   role: ProofRole;
   stage?: ProofCollaboration["stage"];
   previousVersion?: ProofDeliveryVersion;
+  previousVersionLoading?: boolean;
   busy?: boolean;
   onInspect: (criterionId: string) => void;
   onPrepareFeedback?: (input: { deliveryId: string; criterionId: string; comment: string }) => void;
@@ -29,14 +33,19 @@ export type DeliveryOverviewProps = {
   onOpenBusiness?: () => void;
   onOpenRuntime?: () => void;
   onOpenJourney?: () => void;
+  onOpenModel?: () => void;
+  projectId?: string;
+  acceptedSnapshotId?: string;
   onInspectLayout?: (file: string, width: ProofLayoutWidth) => void;
 };
 
-export function DeliveryOverview({ delivery, criteria, review, manualChecks, language, role, stage, previousVersion, busy = false, onInspect, onPrepareFeedback, onViewHistory, onOpenLayout, onOpenBusiness, onOpenRuntime, onOpenJourney, onInspectLayout }: DeliveryOverviewProps) {
+export function DeliveryOverview({ delivery, criteria, review, manualChecks, language, role, stage, previousVersion, previousVersionLoading=false, busy = false, onInspect, onPrepareFeedback, onViewHistory, onOpenLayout, onOpenBusiness, onOpenRuntime, onOpenJourney, onOpenModel, projectId, acceptedSnapshotId, onInspectLayout }: DeliveryOverviewProps) {
   const zh = language === "zh";
   const tr = (chinese: string, english: string) => zh ? chinese : english;
   const overview = deliveryOverview({ delivery, criteria, review, manualChecks, previousVersion });
   const layout = deliveryLayoutSummary(delivery);
+  const model=useModelDiagnosis(delivery,{projectId,acceptedSnapshotId,accepted:stage==="accepted"});
+  const modelNeedsAttention=model.state!=="none"&&(model.state!=="ready"||model.diagnosis?.outcome!=="compatible");
   const business = buildBusinessSpotlight(delivery, previousVersion);
   const runtime=delivery.runtimeReport?.deliveryId===delivery.id?delivery.runtimeReport:undefined;
   const runtimeSummary=runtime?runtimeReportSummary(runtime.steps):undefined;
@@ -50,6 +59,7 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
   const showPrimary = !business || firstRows[0]?.rule === "fail" || firstRows[0]?.rule === "unreviewed" || firstRows[0]?.ai?.status === "changes_suggested";
   const showDraft = role === "buyer" && stage === "submitted" && !!onPrepareFeedback;
   const title = stage === "accepted" ? tr("买家已接受当前交付", "The buyer accepted this delivery")
+    : modelNeedsAttention ? modelSpotlightTitle(model,language)
     : !overview.reviewCurrent ? tr("先核查当前交付版本", "Check this delivery version first")
     : overview.ruleFailures ? tr("有交付要求尚未符合", "Some delivery requirements are unmet")
     : delivery.journeyPlan&&(!journey||journey.summary.issues||journey.summary.unavailable) ? tr("业务旅程有差异或尚待补证", "The business journey differs or needs more evidence")
@@ -70,6 +80,8 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
 
   return <section className="delivery-overview" aria-label={tr("当前交付结果", "Current delivery results")}>
     <header className="delivery-overview-heading"><FileCheck2 size={16} aria-hidden="true"/><h3>{title}</h3><span>{delivery.sequence ? `v${delivery.sequence}` : tr("当前版", "Current")}</span></header>
+    <ModelSpotlight data={model} language={language} busy={busy} onInspect={onOpenModel}/>
+    <ModelDiagnosticComparison delivery={delivery} previousVersion={previousVersion} loading={previousVersionLoading} projectId={projectId} language={language} onInspect={onOpenModel}/>
     {business && <BusinessSpotlight delivery={delivery} previousVersion={previousVersion} language={language} busy={busy} onInspect={onOpenBusiness ?? onOpenLayout ?? (() => {})} onPrepareFeedback={showDraft ? onPrepareFeedback : undefined}/>}
     {delivery.journeyPlan&&<div className="delivery-overview-layout"><div className="delivery-overview-layout-heading"><strong>{tr("本版业务旅程","This delivery’s business journey")}: {delivery.journeyRun?tr("运行尚未完成","Run incomplete"):journey?`${journey.summary.observed}/20 ${tr("项观测支持","supported observations")}`:tr("尚未检验","Not checked")}</strong>{onOpenJourney&&<button type="button" disabled={busy} onClick={onOpenJourney}>{tr("查看表单与服务端证据","Inspect form and server evidence")}<ArrowRight size={12}/></button>}</div>{journey&&<p className="delivery-overview-layout-note">{tr("不符","Mismatched")} {journey.summary.issues} · {tr("未确定","Unavailable")} {journey.summary.unavailable} · {tr("创建、取消、改期、响应丢失后原键重试与最终对账分别留证。","Creation, cancellation, moves, original-key retry after lost response, and final reconciliation are recorded separately.")}</p>}<p className="delivery-overview-layout-note">{tr("客户端表单记录＋主站独立读取卖家接口；按登记关联本版文件，不证明源码部署真实性，也不自动接受或付款。","Client form records plus separate server reads of seller endpoints. The operator links this upload; deployed-source provenance is not attested. No automatic acceptance or payment.")}</p></div>}
     {runtime&&runtimeSummary&&<div className="delivery-overview-layout"><div className="delivery-overview-layout-heading"><strong>{tr("预约接口实测","Booking HTTP check")}: {runtimeSummary.observed}/{runtimeSummary.steps} {tr("步有预期观测支持","steps with expected observations")}</strong>{onOpenRuntime&&<button type="button" disabled={busy} onClick={onOpenRuntime}>{tr(`查看 ${runtimeSummary.steps} 步证据`, `Inspect ${runtimeSummary.steps}-step evidence`)}<ArrowRight size={12}/></button>}</div>{runtimeRows.map(row=><p key={row.id} className="delivery-overview-layout-note"><strong>{row.label}</strong>: {row.detail}</p>)}<p className="delivery-overview-layout-note">{tr("不符","Mismatched")} {runtimeSummary.issues} · {tr("未确定","Unavailable")} {runtimeSummary.unavailable}</p><RuntimeCoverageSummary plan={runtime.plan} report={runtime} pending={!!delivery.runtimeRun} language={language}/></div>}

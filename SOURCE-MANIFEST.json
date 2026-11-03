@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-03T16:08:28.942Z",
+  "generatedAt": "2026-11-03T19:38:57.013Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -90,6 +90,11 @@
       "file": "app/api/proofs/[id]/model-checks/route.ts",
       "bytes": 4107,
       "sha256": "b2bbc505dfdaab14c763ee34f1b4dfeb9aa69efe78514e38dfff4cd56e245563"
+    },
+    {
+      "file": "app/api/proofs/[id]/model-explanation/route.ts",
+      "bytes": 1643,
+      "sha256": "ca601dd70ea711c8cd6ab7af7c38a9db424ac80cb10ac036a76db7a51ef26618"
     },
     {
       "file": "app/api/proofs/[id]/readiness/route.ts",
@@ -258,8 +263,8 @@
     },
     {
       "file": "app/components/DeliveryOverview.tsx",
-      "bytes": 17059,
-      "sha256": "05e71b597448c6ef888d225dcbcca86d0510950b168b8342a14864eb75e3ae2d"
+      "bytes": 18004,
+      "sha256": "3571fac586adb1c149d01597adcd86ff6297eedf71e307d61337ce23007c2bce"
     },
     {
       "file": "app/components/EvidenceDownloads.tsx",
@@ -268,8 +273,8 @@
     },
     {
       "file": "app/components/EvidenceHistoryPanel.tsx",
-      "bytes": 23941,
-      "sha256": "bd6d74bd29e2dde7da2e8c724ceca12dbf8c7e1c310e59dfc60e07a07bd7ec07"
+      "bytes": 24034,
+      "sha256": "37e9c228c5ed838d12ff99b08f9011bebc3281be90f1e8d0c304734d20120dd3"
     },
     {
       "file": "app/components/GettingStarted.tsx",
@@ -283,13 +288,28 @@
     },
     {
       "file": "app/components/ModelCheckPanel.tsx",
-      "bytes": 12782,
-      "sha256": "695b19512b4efe546887f78ee1bb27df4c294c76b767e63b52c46dc8ab0c2ce4"
+      "bytes": 17797,
+      "sha256": "3b3f21715a368db6636b9acf972b31f4f6f1a6bd1fc11e96e4f04ab2c85a9c28"
+    },
+    {
+      "file": "app/components/ModelDiagnosticComparison.tsx",
+      "bytes": 4280,
+      "sha256": "01710c2507856dbcda972d5aa10797426241c3aeaf68e6fa041a23a9d6d3d9d4"
+    },
+    {
+      "file": "app/components/ModelDiagnosticDetails.tsx",
+      "bytes": 4339,
+      "sha256": "5b961c8edec9c9be6159062da5eead86090a6f7c964be7b6a820b41dae326c84"
     },
     {
       "file": "app/components/ModelEvidenceReadings.tsx",
-      "bytes": 1793,
-      "sha256": "c863892b0ecedb0f05183e4be49ff1f11f536246d15f44af82f3e653bf6bde21"
+      "bytes": 4777,
+      "sha256": "e8dc2137f729305c5c1ae8c7d70a791851264fdd0c8f5d06b8814a8c45459d37"
+    },
+    {
+      "file": "app/components/ModelSpotlight.tsx",
+      "bytes": 3800,
+      "sha256": "72e542f93f20e250a43ca8abd3a584d9ac8ea1a20443b12b0cc6407bb0a02cc5"
     },
     {
       "file": "app/components/ProjectJourneyPanel.tsx",
@@ -358,13 +378,18 @@
     },
     {
       "file": "app/components/VersionViewer.tsx",
-      "bytes": 14808,
-      "sha256": "8cd2ab6ed89d2893439950fd13a0855681c8f25721d1fb3b12a17950e4cefec1"
+      "bytes": 14867,
+      "sha256": "653a40d2dd9610203976e0535221a2eb7272080bb1cb92536b1b84f7877f7d7c"
     },
     {
       "file": "app/components/WorkflowChoice.tsx",
       "bytes": 3880,
       "sha256": "68672d4ba0a571bdb2ca8af5f1ee23cfaf00007ec398754e4f7bb46870e6995c"
+    },
+    {
+      "file": "app/components/useModelDiagnosis.ts",
+      "bytes": 1383,
+      "sha256": "43d5559f21bb55f1ade047f6d5ed8c39c4b5ed2f7de145dfd1f1751df1f64f38"
     },
     {
       "file": "app/deliveries/[id]/[deliveryId]/[...file]/route.ts",
@@ -413,8 +438,8 @@
     },
     {
       "file": "app/guest-lab/evidence-viewer.ts",
-      "bytes": 19731,
-      "sha256": "b8b8ef9377f798aa6672e03de6078b35fe1672ac3994e3036d9084b73800f1ec"
+      "bytes": 20820,
+      "sha256": "f58eb56bc6a242a76273a581affa5c03a028628812540d9a8ffd0f50133b4c22"
     },
     {
       "file": "app/guest-lab/index.html",
@@ -477,9 +502,14 @@
       "sha256": "b9c5607c38f0081f6b3fb840861b825a3c628a2498814a57fbb60ef424f954ab"
     },
     {
+      "file": "app/model-diagnosis.css",
+      "bytes": 3223,
+      "sha256": "08cc659c3238fc1ecf789536927d6c54732b5ce0fda021b74eee193fc80f41c5"
+    },
+    {
       "file": "app/page.tsx",
-      "bytes": 185904,
-      "sha256": "522b5df519939943aa8b533a62cb609951a20c022739f0eeabfb1e856ac4dfa3"
+      "bytes": 187027,
+      "sha256": "22619622d2091d0f15a1012aee5e74c6d0a64f8c3d8169a892d5d0c998ea5372"
     },
     {
       "file": "app/project-journey.css",
@@ -1002,6 +1032,16 @@
       "sha256": "e72de471805725e34f99be4047e8d47b34ac7cf08a04a5784b6aeb8c7dd0156f"
     },
     {
+      "file": "docs/collaboration/diagnosis-cycle-2026-11-04/remaining-gaps.md",
+      "bytes": 8809,
+      "sha256": "602e85adcf6a55aa82dc9aed557db33d14885c7a4e51be478777d5bc9cae5ee1"
+    },
+    {
+      "file": "docs/collaboration/diagnosis-cycle-2026-11-04/review-adjudication.md",
+      "bytes": 12367,
+      "sha256": "0b8378c6d367d2897c213f593c0c74d0021062a4d2f9aed8740e2d3e4fc58ab5"
+    },
+    {
       "file": "docs/collaboration/four-cycles-2026-11-03/round-1.md",
       "bytes": 2637,
       "sha256": "c3235e1fd797503db297e2054433ac7c5fc580e3d402beae6cc53298db12697b"
@@ -1328,8 +1368,8 @@
     },
     {
       "file": "lib/contracts.ts",
-      "bytes": 13706,
-      "sha256": "f0218a2cafa8b508ced72ee210ee98c2aaf52b23344337cfd34e126e6763f08f"
+      "bytes": 13792,
+      "sha256": "daee10b9fee8332dacdd6baea1b891f6dc3a5d97871776ab691e10f79fc2cd3a"
     },
     {
       "file": "lib/delivery-assessment.ts",
@@ -1363,13 +1403,13 @@
     },
     {
       "file": "lib/evidence-budget.ts",
-      "bytes": 17494,
-      "sha256": "cc3756e445234e8f5df57010a1b3fc7d6d618386d969228549798294addb1c57"
+      "bytes": 17579,
+      "sha256": "aee91d33234fdbd2ea51ac264a24f879e7d61b395aca9e4107445b5f63526ab8"
     },
     {
       "file": "lib/evidence-export.ts",
-      "bytes": 42290,
-      "sha256": "723fa101b73f043949d67e1ced0388f4edce62698b0d4a74170b1cd82da3d740"
+      "bytes": 43263,
+      "sha256": "273460a3715af71476aacae12067ac39bb2147c294f8401799409bff4dd3eb6f"
     },
     {
       "file": "lib/first-use-trial.ts",
@@ -1447,6 +1487,31 @@
       "sha256": "ab3dd936bb9d0a63860234b9bb4b65fae6abb213f5f24fb9e511b46b4085f839"
     },
     {
+      "file": "lib/model-diagnostic-comparison.ts",
+      "bytes": 5978,
+      "sha256": "84406a52bd8e3694d3a62fbeb3018e7a3e2d0bd88906d92e989c26b83d226ab5"
+    },
+    {
+      "file": "lib/model-diagnostics.ts",
+      "bytes": 24217,
+      "sha256": "b465c6fa5c2a46ea0b9a7ca9f76bf9f2f0b0bb0fa41042440887613dc1c60a2d"
+    },
+    {
+      "file": "lib/model-evidence-explanation.ts",
+      "bytes": 9398,
+      "sha256": "1061898a574466e8192b8943055808af465d4aa035fdb5bce9873e21412a84c1"
+    },
+    {
+      "file": "lib/model-evidence-provider.ts",
+      "bytes": 5252,
+      "sha256": "6cfd30e1b15d94ae82f135f6f741b7e7a1463eb42b34798da26a343c1b8943ce"
+    },
+    {
+      "file": "lib/model-spotlight.ts",
+      "bytes": 3666,
+      "sha256": "87ba1264ce162bb2d97a27402c45d576bd11d2de1427f820fb1c9e6a272a7206"
+    },
+    {
       "file": "lib/previous-comparison-version.ts",
       "bytes": 4153,
       "sha256": "fbc59c3c7ba1264cbc49aa7c09780e7dd0e1b1b797f07412a92d548d621aeeb4"
@@ -1493,13 +1558,13 @@
     },
     {
       "file": "lib/proof-store.ts",
-      "bytes": 13608,
-      "sha256": "38dc8187d8933485cac1addabb038f27fde67679cab59ea06a2e1c3f5d6ec3f4"
+      "bytes": 13722,
+      "sha256": "aa3b60de7193cf9eb87cf1a343c7d2186af2a030dcdf29aeea30699bc06a1b78"
     },
     {
       "file": "lib/proof-workflow.ts",
-      "bytes": 18995,
-      "sha256": "e29cd7826de989a65c34478084029e948ab7ac1523e747d4f98f8dcc214a9a82"
+      "bytes": 19042,
+      "sha256": "8317e174c58e9743960763deb8c22424895a5d9c2cb2cf002c94801156a6a787"
     },
     {
       "file": "lib/providers.ts",
@@ -2408,13 +2473,33 @@
     },
     {
       "file": "tests/model-checks-api-smoke.py",
-      "bytes": 18014,
-      "sha256": "6a61ed8c2611c8940deb57d43e9e4987b3ef896484bb7addd3b25ef8c3ef31a8"
+      "bytes": 19446,
+      "sha256": "2f918cbe3d7ffa49b94a70182c455007ce9a66928ca901747bf8a70f285c04a6"
     },
     {
       "file": "tests/model-checks.test.ts",
       "bytes": 11110,
       "sha256": "754a5fe63d7ac8117ecfbde656c3f87743dff2b47af07090e44f545cde1428cb"
+    },
+    {
+      "file": "tests/model-diagnostics-regression.test.ts",
+      "bytes": 19493,
+      "sha256": "6215c3b3f3ae025dac4d872d11e5a5793ecc79d9561b0a27d55712aa7ef09ed1"
+    },
+    {
+      "file": "tests/model-diagnostics.test.ts",
+      "bytes": 8368,
+      "sha256": "f63a21d3e1033e76ffab84f3d59fadfa964791ec09bfdcd015c91545c61c0342"
+    },
+    {
+      "file": "tests/model-evidence-explanation.test.ts",
+      "bytes": 9689,
+      "sha256": "c5ddf3ced9fa0a4bebebc9632e0dc1f97b6ca385370e1e35dca600c6c661c905"
+    },
+    {
+      "file": "tests/model-spotlight.test.ts",
+      "bytes": 5983,
+      "sha256": "b86d08ddf71dfa43efd519d714ccf01b018d52d2b2a1c615cc8f5eda5e0a4076"
     },
     {
       "file": "tests/noodle-navigation.test.ts",

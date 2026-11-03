@@ -95,6 +95,24 @@ def seed(api, state_file):
     return {"result": "seeded", "outboundFetch": "blocked", "checks": ["Authentication, membership, CSRF and readonly readiness reject outsiders without provider calls; no target exists before operator registration"]}
 
 
+def explanation_guards(api, buyer, seller, outsider, state, report):
+    endpoint = state["path"] + "/model-explanation"
+    payload = {"confirm": True, "deliveryId": state["deliveryId"], "reportId": report["id"], "previousExplanationId": None}
+    before = chain.quote_of(api.ok(buyer, state["quotePath"]), "buyer")
+    assert api.ok(buyer, endpoint)["explanation"] is None
+    assert api.ok(seller, endpoint)["explanation"] is None
+    api.reject(None, endpoint, codes=(401,))
+    api.reject(None, endpoint, payload, codes=(401,))
+    api.reject(outsider, endpoint, codes=(404,))
+    api.reject(outsider, endpoint, payload, codes=(404,))
+    journey.custom_origin_reject(api, buyer, endpoint, payload)
+    for patch, codes in (({"confirm": False}, (400,)), ({"reportId": "stale-report"}, (409,)), ({"deliveryId": "stale-upload"}, (409,)), ({"previousExplanationId": "other"}, (409,)), ({"report": report}, (400,)), ({"payment": "capture"}, (400,))):
+        api.reject(buyer, endpoint, {**payload, **patch}, codes=codes)
+    response = api.reject(buyer, endpoint, payload, codes=(409,))
+    assert chain.quote_of(api.ok(buyer, state["quotePath"]), "buyer") == before
+    api.checked("Model explanation route authenticates membership/CSRF, rejects stale or forged bindings and truthfully fails without model configuration; saved verdict and money unchanged")
+
+
 def registered(api, state_file):
     state = json.loads(state_file.read_text())
     buyer, seller, outsider = actors(state)
@@ -145,6 +163,7 @@ def registered(api, state_file):
         results = [future.result(timeout=30) for future in futures]
     assert sorted(row[0] for row in results) == [200, 409], [(row[0], api.diagnostic(row[1])) for row in results]
     report_a = model_report(next(value for status, value, _ in results if status == 200))
+    explanation_guards(api, buyer, seller, outsider, state, report_a)
     quote = chain.quote_of(api.ok(buyer, state["quotePath"]), "buyer")
     assert quote["proof"]["delivery"]["browserChecks"] == annotated["proof"]["delivery"]["browserChecks"]
     marker = api.ok(None, "/api/__synthetic_model_test_mode")

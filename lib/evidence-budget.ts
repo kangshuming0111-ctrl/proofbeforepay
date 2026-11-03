@@ -44,7 +44,7 @@ function histories(delivery: ProofDelivery) {
     browser: retained(delivery, delivery.browserCheckHistory, delivery.browserChecks),
     layout: retained(delivery, delivery.layoutHistory, delivery.layoutReport),
     acceptance: delivery.acceptanceEvidence ?? [],
-    planning: {suggestions: delivery.journeyPlanSuggestions, adoption: delivery.journeyPlanAdoption, explanation: delivery.journeyExplanation},
+    planning: {suggestions: delivery.journeyPlanSuggestions, adoption: delivery.journeyPlanAdoption, explanation: delivery.journeyExplanation, modelExplanation: delivery.modelExplanation},
   };
 }
 function reservation(delivery: ProofDelivery): Reservation | undefined {
@@ -124,7 +124,7 @@ function needsAcceptanceSnapshot(quote: ProofQuote): boolean {
   return !id || !delivery?.acceptanceEvidence?.some(row => row.id === id && row.deliveryId === delivery.id);
 }
 function check(delivery: ProofDelivery, acceptanceBytes?: number): void {
-  for (const [value, limit] of [[delivery.journeyPlanSuggestions, 32 * 1024], [delivery.journeyPlanAdoption, 32 * 1024], [delivery.journeyExplanation, 16 * 1024]] as const) {
+  for (const [value, limit] of [[delivery.journeyPlanSuggestions, 32 * 1024], [delivery.journeyPlanAdoption, 32 * 1024], [delivery.journeyExplanation, 16 * 1024], [delivery.modelExplanation, 16 * 1024]] as const) {
     if (value !== undefined && bytes(value) > limit) throw new DomainError("The saved journey planning or explanation record exceeds its bounded evidence allowance.", 409);
   }
   const saved = reservation(delivery), journey = journeyReservation(delivery), model=modelReservation(delivery);

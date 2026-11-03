@@ -237,6 +237,7 @@ export function prepareReplacement(quote: ProofQuote, newDelivery: ProofDelivery
   delete next.proof.delivery.journeyPlanSuggestions;
   delete next.proof.delivery.journeyPlanAdoption;
   delete next.proof.delivery.journeyExplanation;
+  delete next.proof.delivery.modelExplanation;
   delete next.proof.delivery.journeyReport;
   delete next.proof.delivery.journeyHistory;
   delete next.proof.delivery.journeyEvidenceReservation;

@@ -6,6 +6,8 @@ import {runtimeDeliveryDigest, runtimeReportsFor, deliveryRuntimeTarget, savedRu
 import {runtimeIdentifier,validateRuntimeReport} from "./runtime-checks.ts";
 import {savedProjectJourneyPlan,projectJourneyReportsFor,validateProjectJourneyPlan,validateStoredProjectJourneyReport,evaluateStoredProjectJourneyReport,sameJourneyRegistration} from "./project-journey.ts";
 import {validateSavedJourneySuggestions,validateSavedJourneyAdoption} from "./journey-plan-adoption.ts";
+import {modelEvidenceBinding,validateModelEvidenceExplanation} from "./model-evidence-explanation.ts";
+import {modelDiagnosisExplanationPacket} from "./model-diagnostics.ts";
 import {validateJourneyEvidenceExplanation} from "./journey-evidence-explanation.ts";
 import {sameRuntimeRegistration} from "./runtime-registration.ts";
 import {browserReportsFor, businessReportsFor, layoutReportsFor} from "./acceptance-evidence.ts";
@@ -19,7 +21,7 @@ import {MODEL_SPEC_DIGEST,modelCheckReportFromTrace,validateStoredModelCheckRepo
 export const EVIDENCE_EXPORT_SCHEMA = "proofbeforepay-evidence-export-v1";
 export const EVIDENCE_EXPORT_RULES = "pbp-static-source-v2";
 export const EVIDENCE_EXPORT_BYTE_LIMIT = 4 * 1024 * 1024;
-const DELIVERY_KEYS = ["id","variant","sequence","label","submittedAt","files","evidence","resources","layoutReport","layoutHistory","browserChecks","browserCheckHistory","businessChecks","businessCheckHistory","assessment","riskReviews","acceptanceEvidence","backendTargetId","runtimeDeliveryDigest","runtimeRegistration","runtimeReport","runtimeHistory","runtimeRun","journeyPlan","journeyReport","journeyHistory","journeyPlanSuggestions","journeyPlanAdoption","journeyExplanation","modelRun","modelReport","modelHistory"] as const;
+const DELIVERY_KEYS = ["id","variant","sequence","label","submittedAt","files","evidence","resources","layoutReport","layoutHistory","browserChecks","browserCheckHistory","businessChecks","businessCheckHistory","assessment","riskReviews","acceptanceEvidence","backendTargetId","runtimeDeliveryDigest","runtimeRegistration","runtimeReport","runtimeHistory","runtimeRun","journeyPlan","journeyReport","journeyHistory","journeyPlanSuggestions","journeyPlanAdoption","journeyExplanation","modelRun","modelReport","modelHistory","modelExplanation"] as const;
 const SNAPSHOT_KEYS = ["id","deliveryId","at","browserReportId","layoutReportId","assessmentId","businessReportId","businessExceptionReason","runtimeReportId","runtimeExceptionReason","runtimeAcknowledgedSteps","runtimeDeliveryDigest","runtimeTargetId","runtimeRegistration","journeyReportId","journeyDeliveryDigest","journeyPlanDigest","journeyRegistration","journeyExceptionReason","journeyAcknowledgedSteps","journeyClientObservationAcknowledged","modelReportId","modelSpecDigest","modelDeliveryDigest","modelDecision","criteria","evidence","manualChecks","review","assessment","riskReviews"];
 type AcceptanceReference = {kind:"delivery-acceptance"|"capture-consent";deliveryId:string;evidenceSnapshotId:string|null};
 export type EvidenceExport = {
@@ -267,6 +269,12 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
       validateJourneyEvidenceExplanation(explanation,{deliveryId:report.deliveryId,deliveryDigest:report.deliveryDigest,planDigest:report.planDigest,reportId:report.id,stepIds:evaluateStoredProjectJourneyReport(report).steps.map(step=>step.id)});
     }
   },"Saved advice and adopted mappings match the original source and exact uploaded delivery; this does not prove model execution or test success.");
+  if(bundle.delivery.modelExplanation)await check("model-evidence-explanation",()=>{
+    const explanation=bundle.delivery.modelExplanation!,report=modelReportsFor(bundle.delivery).find(row=>row.id===explanation.reportId);
+    requireValue(report,"The AI model explanation must retain its exact model report.");
+    const packet=modelDiagnosisExplanationPacket(report,{deliveryId:bundle.delivery.id,deliveryDigest:bundle.fileDigest,journeyPlanDigest:savedProjectJourneyPlan(quote)?.planDigest,projectId:bundle.project.id});
+    validateModelEvidenceExplanation(explanation,modelEvidenceBinding(packet));
+  },"Saved AI explanation binds to the original deterministic model diagnosis and retained report; it does not change verdicts, prove model judgement or establish payment.");
   let runtimeRows:ReturnType<typeof runtimeReportsFor>=[];
   await check("reported-observation-consistency",()=>{
     const delivery=bundle.delivery;
