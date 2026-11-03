@@ -19,6 +19,15 @@ async function body(request:Request){
 }
 export default {async fetch(request:Request,env:{DB?:D1Database;LAB_ALLOW_LOOPBACK?:string} & Record<string,unknown>):Promise<Response>{
   const url=new URL(request.url);
+  const combinedFixture=/^\/test-api\/coverage-(fixed|validation-gap|overbook|baseline)\/(.*)$/u.exec(url.pathname);
+  if(combinedFixture){
+    const scenario=combinedFixture[1],forwarded=new URL(request.url);forwarded.pathname=`/pbp/${combinedFixture[2]}`;
+    return handleCapacityRequest(new Request(forwarded,request),{CAPACITY_DB:env.DB,
+      CAPACITY_PROJECT_ID:"lab-combined-reference",CAPACITY_REGISTRATION_REVISION:"combined-reference-v1",
+      CAPACITY_DEPLOYMENT_REVISION:`coverage-${scenario}-v1`,CAPACITY_FRONTEND_BUNDLE_DIGEST:"0".repeat(64),
+      CAPACITY_POLICY_ID:scenario==="overbook"?"overbook":"fixed",CAPACITY_PROTOCOL:scenario==="baseline"?"booking-http-v3":"booking-http-v4",
+      CAPACITY_VALIDATION_PROFILE:scenario==="validation-gap"||scenario==="baseline"?"email-gap":"strict"});
+  }
   const capacityFixture=/^\/test-api\/capacity-(flawed|fixed|underlimit)\/(.*)$/u.exec(url.pathname);
   if(capacityFixture){
     const scenario=capacityFixture[1],policyId=scenario==="flawed"?"overbook":scenario;
@@ -35,6 +44,8 @@ export default {async fetch(request:Request,env:{DB?:D1Database;LAB_ALLOW_LOOPBA
       CAPACITY_PROJECT_ID:env.CAPACITY_PROJECT_ID,CAPACITY_REGISTRATION_REVISION:env.CAPACITY_REGISTRATION_REVISION,
       CAPACITY_DEPLOYMENT_REVISION:env.CAPACITY_DEPLOYMENT_REVISION,CAPACITY_FRONTEND_BUNDLE_DIGEST:env.CAPACITY_FRONTEND_BUNDLE_DIGEST,
       CAPACITY_POLICY_ID:env.CAPACITY_POLICY_ID,
+      ...(env.CAPACITY_PROTOCOL===undefined?{}:{CAPACITY_PROTOCOL:env.CAPACITY_PROTOCOL}),
+      ...(env.CAPACITY_VALIDATION_PROFILE===undefined?{}:{CAPACITY_VALIDATION_PROFILE:env.CAPACITY_VALIDATION_PROFILE}),
       ...(env.CAPACITY_BACKEND_ARTIFACT_DIGEST===undefined?{}:{CAPACITY_BACKEND_ARTIFACT_DIGEST:env.CAPACITY_BACKEND_ARTIFACT_DIGEST}),
       ...(env.CAPACITY_BACKEND_SOURCE_COMMIT===undefined?{}:{CAPACITY_BACKEND_SOURCE_COMMIT:env.CAPACITY_BACKEND_SOURCE_COMMIT})});
   }
@@ -51,30 +62,30 @@ export default {async fetch(request:Request,env:{DB?:D1Database;LAB_ALLOW_LOOPBA
   }
   const fixture=await handleBookingRequest(request,env);if(fixture)return fixture;
   const policyFixture=await handlePolicyBookingRequest(request,env);if(policyFixture)return policyFixture;
-  if(url.pathname==="/health")return json({service:"proofbeforepay-isolated-lab",protocols:["booking-http-v1","booking-http-v2","booking-http-v3"],privateProjects:false,modelCredentials:false,realPayments:false,referenceStaging:{handler:"separate-native-business-handler",syntheticOnly:true,sharesPhysicalLabDatabase:true},capacityStaging:{handler:"native-aggregate-capacity-sql",syntheticOnly:true,sharesPhysicalLabDatabase:true}});
+  if(url.pathname==="/health")return json({service:"proofbeforepay-isolated-lab",protocols:["booking-http-v1","booking-http-v2","booking-http-v3","booking-http-v4"],privateProjects:false,modelCredentials:false,realPayments:false,referenceStaging:{handler:"separate-native-business-handler",syntheticOnly:true,sharesPhysicalLabDatabase:true},capacityStaging:{handler:"native-aggregate-capacity-sql",syntheticOnly:true,sharesPhysicalLabDatabase:true}});
   if(url.pathname==="/api/lab-check"){
     if(request.method!=="POST")return json({error:"POST required"},405);
     if(request.headers.get("origin")!==url.origin)return json({error:"Same-origin request required"},403);
     let input;try{input=await body(request);}catch{return json({error:"Send a bounded JSON test consent"},400);}
     if(!input||typeof input!=="object"||Array.isArray(input)||Object.keys(input).some(k=>!["scenario","consent","protocol","maxPartySize","maxGuestsPerSlot"].includes(k))||!["flawed","fixed"].includes(input.scenario)||input.consent!==true)return json({error:"Confirm synthetic writes and choose a controlled scenario"},400);
     const protocol=input.protocol??"booking-http-v1";
-    if(!["booking-http-v1","booking-http-v2","booking-http-v3"].includes(protocol)||protocol==="booking-http-v1"&&(input.maxPartySize!==undefined||input.maxGuestsPerSlot!==undefined)
+    if(!["booking-http-v1","booking-http-v2","booking-http-v3","booking-http-v4"].includes(protocol)||protocol==="booking-http-v1"&&(input.maxPartySize!==undefined||input.maxGuestsPerSlot!==undefined)
       ||protocol==="booking-http-v2"&&(!Number.isInteger(input.maxPartySize)||input.maxPartySize<2||input.maxPartySize>12||input.maxGuestsPerSlot!==undefined)
-      ||protocol==="booking-http-v3"&&(input.maxPartySize!==6||input.maxGuestsPerSlot!==8))return json({error:"Choose v1, v2 with maximum2–12, or the explicit v3 party maximum6 and slot total8"},400);
+      ||(protocol==="booking-http-v3"||protocol==="booking-http-v4")&&(input.maxPartySize!==6||input.maxGuestsPerSlot!==8))return json({error:"Choose v1, v2 with maximum2–12, or the explicit v3/v4 party maximum6 and slot total8"},400);
     const scenario=input.scenario as "flawed"|"fixed",runId=crypto.randomUUID();
     const source=protocol!=="booking-http-v1"?`Each booking accepts at most ${input.maxPartySize} people.`:"The booking backend must reject invalid input, preserve independently readable bookings and handle replay/conflict without duplicate or overwritten records.";
     const citation={start:0,end:source.length,excerpt:source};
     const capacitySource="Each time slot accepts at most 8 guests in total.",slotCitation={start:source.length+1,end:source.length+1+capacitySource.length,excerpt:capacitySource};
-    const plan:RuntimeCheckPlan=protocol==="booking-http-v3"?{protocol,criterionId:"booking",source:citation,policy:suggestBookingPolicy(citation)!,slotCapacity:{criterionId:"slot-capacity",...suggestSlotCapacity(slotCitation)!}}
+    const plan:RuntimeCheckPlan=protocol==="booking-http-v3"||protocol==="booking-http-v4"?{protocol,criterionId:"booking",source:citation,policy:suggestBookingPolicy(citation)!,slotCapacity:{criterionId:"slot-capacity",...suggestSlotCapacity(slotCitation)!}}
       :protocol==="booking-http-v2"?{protocol,criterionId:"booking",source:citation,policy:suggestBookingPolicy(citation)!}:{protocol:"booking-http-v1",criterionId:"booking",source:citation};
     // This binds a declared synthetic fixture identity, not uploaded frontend
     // bytes or backend build provenance. The client recomputes it independently.
-    const digest=Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(protocol==="booking-http-v3"?`controlled-fixture:${protocol}:${scenario}`:`controlled-fixture:${scenario}`)))).map(n=>n.toString(16).padStart(2,"0")).join("");
+    const digest=Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(protocol==="booking-http-v3"||protocol==="booking-http-v4"?`controlled-fixture:${protocol}:${scenario}`:`controlled-fixture:${scenario}`)))).map(n=>n.toString(16).padStart(2,"0")).join("");
     const report=await executeRuntimeCheck({deliveryId:`lab-${scenario}-${runId}`,deliveryDigest:digest,runId,plan,target:{
-      id:protocol==="booking-http-v3"?`lab-capacity-${scenario}`:protocol==="booking-http-v2"?`lab-policy-${scenario}`:`lab-${scenario}`,
-      label:protocol==="booking-http-v3"?`Controlled native ${scenario} capacity fixture`:`Controlled disposable ${scenario} booking fixture`,
-      baseUrl:`${url.origin}/test-api/${protocol==="booking-http-v3"?"capacity-":protocol==="booking-http-v2"?"policy-":""}${scenario}/`,
-      revision:protocol==="booking-http-v3"?`capacity-${scenario==="flawed"?"overbook":"fixed"}-v1`:protocol==="booking-http-v2"?`booking-policy-${scenario}-v1`:scenario==="fixed"?"booking-fixed-v2":"booking-flawed-v1",testOnly:true,protocol}}, {allowLoopback:env.LAB_ALLOW_LOOPBACK==="true"&&["127.0.0.1","localhost"].includes(url.hostname)});
+      id:protocol==="booking-http-v4"?`lab-coverage-${scenario==="flawed"?"validation-gap":"fixed"}`:protocol==="booking-http-v3"?`lab-capacity-${scenario}`:protocol==="booking-http-v2"?`lab-policy-${scenario}`:`lab-${scenario}`,
+      label:protocol==="booking-http-v4"?`Controlled combined ${scenario==="flawed"?"validation-gap":"fixed"} booking fixture`:protocol==="booking-http-v3"?`Controlled native ${scenario} capacity fixture`:`Controlled disposable ${scenario} booking fixture`,
+      baseUrl:`${url.origin}/test-api/${protocol==="booking-http-v4"?`coverage-${scenario==="flawed"?"validation-gap":"fixed"}`:`${protocol==="booking-http-v3"?"capacity-":protocol==="booking-http-v2"?"policy-":""}${scenario}`}/`,
+      revision:protocol==="booking-http-v4"?`coverage-${scenario==="flawed"?"validation-gap":"fixed"}-v1`:protocol==="booking-http-v3"?`capacity-${scenario==="flawed"?"overbook":"fixed"}-v1`:protocol==="booking-http-v2"?`booking-policy-${scenario}-v1`:scenario==="fixed"?"booking-fixed-v2":"booking-flawed-v1",testOnly:true,protocol}}, {allowLoopback:env.LAB_ALLOW_LOOPBACK==="true"&&["127.0.0.1","localhost"].includes(url.hostname)});
     return json(report);
   }
   if(request.method!=="GET"&&request.method!=="HEAD")return json({error:"Method not allowed"},405);

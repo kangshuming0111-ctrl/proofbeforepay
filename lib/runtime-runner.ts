@@ -49,7 +49,7 @@ export async function executeRuntimeCheck(input: RuntimeCheckInput, options: Run
   if((target.protocol??"booking-http-v1")!==plan.protocol)throw new DomainError("The registered target does not support this agreed protocol.");
   const registration=input.registration===undefined?undefined:validateRuntimeRegistrationSnapshot(input.registration);
   if(registration&&(registration.frontendBundleDigest!==deliveryDigest||JSON.stringify(validateRuntimeTarget(registrationTarget(registration)))!==JSON.stringify(target)))throw new DomainError("The runtime registration differs from the uploaded frontend and target.",409);
-  if(plan.protocol==="booking-http-v3")return executeRuntimeCapacityCheck({deliveryId,deliveryDigest,runId,plan,target:{...target,protocol:"booking-http-v3"},...(registration?{registration:{...registration,protocol:"booking-http-v3"}}:{}),...(input.startedAt?{startedAt:input.startedAt}:{})},options);
+  if(plan.protocol==="booking-http-v3"||plan.protocol==="booking-http-v4")return executeRuntimeCapacityCheck({deliveryId,deliveryDigest,runId,plan,target:{...target,protocol:plan.protocol},...(registration?{registration:{...registration,protocol:plan.protocol}}:{}),...(input.startedAt?{startedAt:input.startedAt}:{})},options);
   const policy=plan.protocol==="booking-http-v2"?plan.policy:undefined,maxRequests=policy?18:8;
   const startedAt=stamp(input.startedAt), deadline=Date.now()+Math.min(30_000,Math.max(1,options.totalTimeoutMs??30_000));
   const perRequest=Math.min(4_000,Math.max(1,options.requestTimeoutMs??4_000));

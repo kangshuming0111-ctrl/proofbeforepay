@@ -120,21 +120,21 @@ test("input snapshots are captured before asynchronous hashing and built-in targ
   assert.equal((await buildRuntimeComparison(legacy)).current.state,"available");
 });
 
-async function capacityFixture():Promise<RuntimeComparisonInput>{
+async function capacityFixture(protocol:"booking-http-v3"|"booking-http-v4"="booking-http-v3"):Promise<RuntimeComparisonInput>{
   const capacityText="Each time slot accepts at most 8 guests in total.",sourceSpan={start:0,end:source.length,excerpt:source},capacitySpan={start:source.length+1,end:source.length+1+capacityText.length,excerpt:capacityText};
-  const capacityPlan=validateRuntimePlan({protocol:"booking-http-v3",criterionId:"coverage-party",source:sourceSpan,policy:suggestBookingPolicy(sourceSpan),slotCapacity:{criterionId:"coverage-capacity",...suggestSlotCapacity(capacitySpan)}});
+  const capacityPlan=validateRuntimePlan({protocol,criterionId:"coverage-party",source:sourceSpan,policy:suggestBookingPolicy(sourceSpan),slotCapacity:{criterionId:"coverage-capacity",...suggestSlotCapacity(capacitySpan)}});
   async function version(sequence:number,flawed:boolean){
-    const value=await delivery(sequence,false),runId=crypto.randomUUID();value.runtimeRegistration!.protocol="booking-http-v3";
-    if(capacityPlan.protocol!=="booking-http-v3")throw new Error("fixture protocol");
+    const value=await delivery(sequence,false),runId=crypto.randomUUID();value.runtimeRegistration!.protocol=protocol;
+    if(capacityPlan.protocol!=="booking-http-v3"&&capacityPlan.protocol!=="booking-http-v4")throw new Error("fixture protocol");
     const dependent=new Set(["race_winner_readback","slot_a_after_race","race_winner_replay","slot_a_after_replay","fill_remainder","fill_readback","slot_a_full","reject_extra","slot_a_after_rejection"]);
     const steps:RuntimeCheckReport["steps"]=runtimeCapacityStepDefinitions(capacityPlan).map(definition=>{
       const race=definition.id==="capacity_race_first"||definition.id==="capacity_race_second",unavailable=flawed&&dependent.has(definition.id);
-      const status=definition.id==="party_above"?422:definition.id==="capacity_race_first"||definition.id==="capacity_race_second"&&flawed||definition.id==="fill_remainder"||definition.id==="slot_b_create"?201:definition.id==="capacity_race_second"||definition.id==="reject_extra"?409:200;
+      const status=["party_above","missing_slot","invalid_email","party_zero","party_fraction","party_negative","party_string"].includes(definition.id)?422:definition.id==="winner_conflict"?409:["same_key_first","party_one","party_below"].includes(definition.id)?201:definition.id==="capacity_race_first"||definition.id==="capacity_race_second"&&flawed||definition.id==="fill_remainder"||definition.id==="slot_b_create"?201:definition.id==="capacity_race_second"||definition.id==="reject_extra"?409:200;
       return{id:definition.id,label:definition.label,method:definition.method,path:definition.pathKind==="receipt"?unavailable?"bookings/:id":`bookings/receipt-${sequence}-${definition.id}`:definition.path.replace("{runId}",runId),expected:definition.expected,
         outcome:unavailable?"unavailable":flawed&&race?"mismatch":"observed",...(unavailable?{reason:"race_not_verified"}:{status,actual:"Synthetic saved capacity response; no HTTP execution in this projection test"})};
     });
     const previous=value.runtimeReport!;
-    value.runtimeReport={...previous,id:runId,runId,method:"server-booking-http-v3",plan:structuredClone(capacityPlan),target:{...previous.target,registration:structuredClone(value.runtimeRegistration)},steps,summary:runtimeReportSummary(steps)};
+    value.runtimeReport={...previous,id:runId,runId,method:protocol==="booking-http-v4"?"server-booking-http-v4":"server-booking-http-v3",plan:structuredClone(capacityPlan),target:{...previous.target,registration:structuredClone(value.runtimeRegistration)},steps,summary:runtimeReportSummary(steps)};
     value.runtimeHistory=[structuredClone(value.runtimeReport)];return value;
   }
   return{projectId,plan:capacityPlan,delivery:await version(2,false),previousVersion:{delivery:await version(1,true),feedback:[],archivedAt:"2026-11-02T00:02:00.000Z"}};
@@ -172,4 +172,13 @@ test("v3 comparison rejects a supposedly observed two201 race instead of showing
   const input=await capacityFixture(),value=input.delivery;value.runtimeReport!.steps.find(step=>step.id==="capacity_race_second")!.status=201;
   value.runtimeReport!.summary=runtimeReportSummary(value.runtimeReport!.steps);value.runtimeHistory=[structuredClone(value.runtimeReport!)];
   assert.equal(reason((await buildRuntimeComparison(input)).current),"invalid_report");
+});
+
+test("v4 version comparison independently retains31steps, same-key and distinct-key races under the exact two-source agreement",async()=>{
+  const input=await capacityFixture("booking-http-v4"),before=structuredClone(input),result=await buildRuntimeComparison(input);assert.deepEqual(input,before);
+  assert.equal(result.current.state,"available");assert.equal(result.previous.state,"available");if(result.current.state!=="available"||result.previous.state!=="available")return;
+  for(const side of[result.previous.data,result.current.data]){assert.equal(side.report.plan.protocol,"booking-http-v4");assert.equal(side.report.steps.length,31);assert.equal(side.concurrency!.observedPair,true);assert.deepEqual(side.concurrency!.responses.map(row=>row.status),[201,200]);assert.equal(side.concurrency!.readback.id,"same_key_readback");assert.equal(side.boundary!.id,"party_above");assert.equal(side.capacity!.occupancy.afterRace.id,"slot_a_after_race");assert.equal(side.capacity!.occupancy.finalA.id,"slot_a_after_rejection");}
+  assert.equal(result.previous.data.capacity!.observedPair,false);assert.equal(result.current.data.capacity!.observedPair,true);
+  input.previousVersion!.delivery.runtimeReport!.plan.protocol="booking-http-v3";
+  assert.equal(reason((await buildRuntimeComparison(input)).previous),"plan_mismatch");
 });

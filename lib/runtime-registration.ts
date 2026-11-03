@@ -48,7 +48,7 @@ function text(value: unknown, name: string, max: number): string {
   return value;
 }
 function protocol(value: unknown): RuntimeCheckPlan["protocol"] {
-  if (value !== "booking-http-v1" && value !== "booking-http-v2" && value !== "booking-http-v3") throw new DomainError("Choose a supported registered backend protocol.");
+  if (value !== "booking-http-v1" && value !== "booking-http-v2" && value !== "booking-http-v3" && value !== "booking-http-v4") throw new DomainError("Choose a supported registered backend protocol.");
   return value;
 }
 function expiry(value: unknown): string {

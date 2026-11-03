@@ -22,9 +22,9 @@ test("overbooking summary retains the independently observed10 rather than using
   for(const language of["zh","en"] as const){
     const rows=runtimeOverviewRows(report,language),spotlight=runtimeCapacitySpotlightSteps(report);
     assert.deepEqual(rows.map(row=>row.id),["capacity-race","slot_a_after_race","slot_a_after_rejection"]);
-    assert.equal(rows[0].detail.match(/HTTP 201/gu)?.length,2);assert.ok(rows[0].detail.includes(language==="zh"?"不符":"mismatch"));
+    assert.equal(rows[0].detail.match(/HTTP 201/gu)?.length,2);assert.ok(rows[0].detail.toLowerCase().includes(language==="zh"?"不符":"mismatch"));
     assert.ok(rows[1].detail.includes('"guestCount":10'));assert.ok(rows[1].detail.includes(language==="zh"?"保存的实际片段":"Saved actual excerpt"));
-    assert.ok(rows[2].detail.includes(language==="zh"?"未确定":"unavailable"));assert.ok(!rows[2].detail.includes('"guestCount":8'));
+    assert.ok(rows[2].detail.toLowerCase().includes(language==="zh"?"未确定":"unavailable"));assert.ok(!rows[2].detail.includes('"guestCount":8'));
     assert.ok(spotlight.includes(aggregate));assert.ok(!rows.some(row=>row.id==="create"||row.id==="readback"));
   }
   assert.deepEqual(report,before);
@@ -41,7 +41,7 @@ test("HTTP200 without aggregate data never invents a guest count, and displayed 
 test("v3 successful or partial final readings show their own saved outcomes without borrowing earlier evidence",()=>{
   const report=capacityReport(),final=report.steps.find(step=>step.id==="slot_a_after_rejection")!;
   Object.assign(final,{status:200,outcome:"observed",actual:'HTTP 200; {"guestCount":8,"bookingIds":["winner","fill"],"mismatchedFields":[]}'});delete final.reason;
-  const rows=runtimeOverviewRows(report,"en");assert.ok(rows[0].detail.includes("unavailable"));assert.ok(!rows[1].detail.includes("guestCount"));assert.ok(rows[2].detail.includes('"guestCount":8'));assert.ok(rows[2].detail.includes("expected observation"));
+  const rows=runtimeOverviewRows(report,"en");assert.ok(rows[0].detail.toLowerCase().includes("unavailable"));assert.ok(!rows[1].detail.includes("guestCount"));assert.ok(rows[2].detail.includes('"guestCount":8'));assert.ok(rows[2].detail.toLowerCase().includes("expected observation"));
   report.steps=report.steps.filter(row=>row.id!=="slot_a_after_rejection");assert.equal(runtimeOverviewRows(report,"en")[2].detail,"Not recorded");
 });
 test("recorded v2 and legacy v1 summaries preserve create/readback scopes and never expose capacity labels",async()=>{
@@ -58,4 +58,10 @@ test("old and revised capacity excerpts keep after-race and final stages distinc
   assert.ok(runtimeSavedActualExcerpt(oldRace)!.includes('"guestCount":10'));assert.ok(runtimeSavedActualExcerpt(newRace)!.includes('"guestCount":5'));assert.ok(runtimeSavedActualExcerpt(newFinal)!.includes('"guestCount":8'));
   assert.equal(runtimeSavedActualExcerpt(old.steps.find(row=>row.id==="slot_a_after_rejection")),undefined);
   const rows=runtimeOverviewRows(revised,"en");assert.equal(rows[1].label,"Independent slot A read after race");assert.ok(rows[1].detail.includes('"guestCount":5'));assert.ok(rows[2].label.startsWith("Final slot A"));assert.ok(rows[2].detail.includes('"guestCount":8'));
+});
+
+test("expandedv4 overview adds same-key responses without confusing them with the distinct-key capacity race",()=>{
+  const report=capacityReport();report.plan.protocol="booking-http-v4";report.method="server-booking-http-v4";
+  for(const[id,status]of[["same_key_first",201],["same_key_second",200]]as const)report.steps.push({id,label:id,method:"POST",path:"bookings",outcome:"observed",status,expected:"one201/one200",actual:"Saved synthetic pair"});
+  const rows=runtimeOverviewRows(report,"en");assert.equal(rows[0].id,"same-key-pair");assert.ok(rows[0].detail.includes("HTTP201")||rows[0].detail.includes("HTTP 201"));assert.ok(rows[0].detail.includes("HTTP 200"));assert.equal(rows[1].id,"capacity-race");assert.ok(rows[1].detail.toLowerCase().includes("unavailable"));assert.ok(runtimeCapacitySpotlightSteps(report).some(row=>row.id==="slot_a_after_race"));
 });

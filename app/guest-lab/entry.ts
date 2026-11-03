@@ -5,8 +5,9 @@ import type { ProofBusinessExpected } from "../../lib/contracts.ts";
 import {validateRuntimeReport,type RuntimeCheckPlan} from "../../lib/runtime-checks.ts";
 import {suggestBookingPolicy} from "../../lib/booking-policy.ts";
 import {suggestSlotCapacity} from "../../lib/booking-capacity.ts";
-import {CAPACITY_EXECUTION_ORDER,CAPACITY_SLOTS,runtimeCapacityStepDefinitions} from "../../lib/runtime-capacity.ts";
+import {CAPACITY_EXECUTION_ORDER,CAPACITY_SLOTS,CAPACITY_V4_EXECUTION_ORDER,CAPACITY_V4_SLOTS,runtimeCapacityStepDefinitions} from "../../lib/runtime-capacity.ts";
 import {runtimeStepName} from "../../lib/runtime-feedback.ts";
+import {runtimeCoverage,runtimeCoverageFamilyName} from "../../lib/runtime-coverage.ts";
 import { createFirstUseTrial, startFirstUseTask, noteFirstUseHelp, finishFirstUseTask, recordFirstUseAction, exportFirstUseTrial, FIRST_USE_TASKS, type FirstUseTask, type FirstUseTrial, type TrialAction, type TrialOperator, type TrialOutcome } from "../../lib/first-use-trial.ts";
 type Lang = "zh" | "en";
 type Variant = "flawed" | "fixed";
@@ -30,7 +31,7 @@ type HttpReport = {
     summary?: unknown;
     target?: unknown;
 };
-const BUILD = "guest-lab-v3-capacity";
+const BUILD = "guest-lab-v4-combined";
 const CHECKS: {
     id: string;
     file: string;
@@ -57,7 +58,7 @@ let language: Lang = "zh", role: "buyer" | "seller" = "buyer", stage: Stage = "a
 let feedback = "", draftReady = false, feedbackSent = false, manualConfirmed = false, httpConsent = false, httpBusy = false, httpReport: HttpReport | undefined, httpError = "", httpScenario: Variant | undefined;
 let labView:"local"|"http"="local";
 let httpReports:Partial<Record<Variant,HttpReport>>={};
-let httpProtocol:HttpProtocol="booking-http-v3", httpMaxPartySize=6;
+let httpProtocol:HttpProtocol="booking-http-v4", httpMaxPartySize=6;
 let httpSequence=0,httpController:AbortController|undefined;
 let trial: FirstUseTrial | undefined, operator: TrialOperator = "unknown", selectedTask: FirstUseTask = "T01", selectedOutcome: TrialOutcome = "not_completed", trialOpen = false, message = "", messageError = false;
 const tr = (zh: string, en: string) => language === "zh" ? zh : en;
@@ -222,7 +223,7 @@ async function runHttp(scenario: Variant) {
     const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 40000);
     httpController=controller;
     try {
-        const response = await fetch("/api/lab-check", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ scenario, consent: true,...(protocol!=="booking-http-v1"?{protocol,maxPartySize}:{}),...(protocol==="booking-http-v3"?{maxGuestsPerSlot:8}:{}) }), credentials: "omit", redirect: "error", signal: controller.signal });
+        const response = await fetch("/api/lab-check", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ scenario, consent: true,...(protocol!=="booking-http-v1"?{protocol,maxPartySize}:{}),...((protocol==="booking-http-v3"||protocol==="booking-http-v4")?{maxGuestsPerSlot:8}:{}) }), credentials: "omit", redirect: "error", signal: controller.signal });
         if(!current())return;
         if(response.headers.get("content-type")?.split(";",1)[0].trim().toLowerCase()!=="application/json")throw new Error(tr("接口未返回 JSON 报告，本次未记录通过。","The endpoint did not return a JSON report; no pass was recorded."));
         const reader = response.body?.getReader();
@@ -256,7 +257,7 @@ async function runHttp(scenario: Variant) {
             throw new Error(tr("返回内容不是受支持的预约 HTTP 报告。", "The response is not a supported booking HTTP report."));
         // Validate the returned protocol, exact chosen policy and every step;
         // compare only runs made with the same currently selected expectation.
-        const expectedDigest=Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(protocol==="booking-http-v3"?`controlled-fixture:${protocol}:${scenario}`:`controlled-fixture:${scenario}`)))).map(n=>n.toString(16).padStart(2,"0")).join("");
+        const expectedDigest=Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode((protocol==="booking-http-v3"||protocol==="booking-http-v4")?`controlled-fixture:${protocol}:${scenario}`:`controlled-fixture:${scenario}`)))).map(n=>n.toString(16).padStart(2,"0")).join("");
         if(!current())return;if(controller.signal.aborted)throw new DOMException("aborted","AbortError");
         const validated=validateRuntimeReport(value,{deliveryId:`lab-${scenario}-${value.runId}`,deliveryDigest:expectedDigest,runId:value.runId,plan,target:httpTarget(protocol,scenario)});
         httpReport = validated; httpReports[scenario]=validated;
@@ -289,22 +290,23 @@ function httpPlan(protocol:HttpProtocol,maxPartySize:number):RuntimeCheckPlan{
     return{protocol,criterionId:"booking",source:citation,policy,slotCapacity:{criterionId:"slot-capacity",...suggestSlotCapacity(slotCitation)!}};
 }
 function httpTarget(protocol:HttpProtocol,scenario:Variant){return{
-    id:protocol==="booking-http-v3"?`lab-capacity-${scenario}`:protocol==="booking-http-v2"?`lab-policy-${scenario}`:`lab-${scenario}`,
-    label:protocol==="booking-http-v3"?`Controlled native ${scenario} capacity fixture`:`Controlled disposable ${scenario} booking fixture`,
-    baseUrl:`${location.origin}/test-api/${protocol==="booking-http-v3"?"capacity-":protocol==="booking-http-v2"?"policy-":""}${scenario}/`,
-    revision:protocol==="booking-http-v3"?`capacity-${scenario==="flawed"?"overbook":"fixed"}-v1`:protocol==="booking-http-v2"?`booking-policy-${scenario}-v1`:scenario==="fixed"?"booking-fixed-v2":"booking-flawed-v1",
+    id:protocol==="booking-http-v4"?`lab-coverage-${scenario==="flawed"?"validation-gap":"fixed"}`:protocol==="booking-http-v3"?`lab-capacity-${scenario}`:protocol==="booking-http-v2"?`lab-policy-${scenario}`:`lab-${scenario}`,
+    label:protocol==="booking-http-v4"?`Controlled combined ${scenario==="flawed"?"validation-gap":"fixed"} booking fixture`:protocol==="booking-http-v3"?`Controlled native ${scenario} capacity fixture`:`Controlled disposable ${scenario} booking fixture`,
+    baseUrl:`${location.origin}/test-api/${protocol==="booking-http-v4"?`coverage-${scenario==="flawed"?"validation-gap":"fixed"}`:`${protocol==="booking-http-v3"?"capacity-":protocol==="booking-http-v2"?"policy-":""}${scenario}`}/`,
+    revision:protocol==="booking-http-v4"?`coverage-${scenario==="flawed"?"validation-gap":"fixed"}-v1`:protocol==="booking-http-v3"?`capacity-${scenario==="flawed"?"overbook":"fixed"}-v1`:protocol==="booking-http-v2"?`booking-policy-${scenario}-v1`:scenario==="fixed"?"booking-fixed-v2":"booking-flawed-v1",
     protocol,testOnly:true as const,
 };}
 function capacityContract(){
-    const plan=httpPlan("booking-http-v3",6);if(plan.protocol!=="booking-http-v3")throw new Error("Capacity plan unavailable");
-    return{schema:"proofbeforepay-guest-capacity-contract-v1",plan,slots:CAPACITY_SLOTS,steps:runtimeCapacityStepDefinitions(plan),executionOrder:CAPACITY_EXECUTION_ORDER,
+    const plan=httpPlan(httpProtocol==="booking-http-v4"?"booking-http-v4":"booking-http-v3",6);if(plan.protocol!=="booking-http-v3"&&plan.protocol!=="booking-http-v4")throw new Error("Capacity plan unavailable");
+    return{schema:"proofbeforepay-guest-capacity-contract-v1",namespace:{runId:"Generate one fresh UUID per consented run; replace every {runId} template with it",marker:"PBP-{runId}",syntheticCanary:{testRunId:"{runId}",marker:"PBP-{runId}",customer:"PBP synthetic",email:"pbp-test@example.invalid",slot:CAPACITY_SLOTS.a,partySize:5},actualWinningRaceKey:"Use the key of the actual 201 capacity contender; never assume race-a wins"},plan,slots:plan.protocol==="booking-http-v4"?CAPACITY_V4_SLOTS:CAPACITY_SLOTS,steps:runtimeCapacityStepDefinitions(plan),executionOrder:plan.protocol==="booking-http-v4"?CAPACITY_V4_EXECUTION_ORDER:CAPACITY_EXECUTION_ORDER,
       keys:{above:"pbp-{runId}-capacity-above",raceA:"pbp-{runId}-capacity-race-a",raceB:"pbp-{runId}-capacity-race-b",replay:"actual winning race key",fill:"pbp-{runId}-capacity-fill",extra:"pbp-{runId}-capacity-extra",slotB:"pbp-{runId}-capacity-slot-b"},
+      ...(plan.protocol==="booking-http-v4"?{additionalRequests:{missing_slot:{key:"pbp-{runId}-capacity-missing-slot",omit:["slot"]},invalid_email:{key:"pbp-{runId}-capacity-invalid-email",email:"not-an-email"},party_zero:{key:"pbp-{runId}-capacity-zero",partySize:0},party_fraction:{key:"pbp-{runId}-capacity-fraction",partySize:1.5},party_negative:{key:"pbp-{runId}-capacity-negative",partySize:-1},party_string:{key:"pbp-{runId}-capacity-string",partySize:"1"},winner_conflict:{key:"actual winning race key",partySize:1},same_key_first:{key:"pbp-{runId}-capacity-same-key",partySize:1,slot:CAPACITY_V4_SLOTS.c,concurrentGroup:"same-key-coverage-pair"},same_key_second:{key:"pbp-{runId}-capacity-same-key",partySize:1,slot:CAPACITY_V4_SLOTS.c,concurrentGroup:"same-key-coverage-pair"},party_one:{key:"pbp-{runId}-capacity-one",partySize:1,slot:CAPACITY_V4_SLOTS.d},party_below:{key:"pbp-{runId}-capacity-below",partySize:5,slot:CAPACITY_V4_SLOTS.e}}}:{}),
       occupancy:{path:"occupancy/{runId}/{a|b}",required:["testRunId","slot","revision","guestCount","bookingIds"],expectedValuesSentInGet:false},
-      targets:{flawed:httpTarget("booking-http-v3","flawed"),fixed:httpTarget("booking-http-v3","fixed")},
-      bounds:{maxRequests:17,maxResponseBytes:16384,totalTimeoutMs:30000,perRequestTimeoutMs:4000},
+      targets:{flawed:httpTarget(plan.protocol,"flawed"),fixed:httpTarget(plan.protocol,"fixed")},
+      bounds:{maxRequests:plan.protocol==="booking-http-v4"?31:17,maxResponseBytes:16384,totalTimeoutMs:30000,perRequestTimeoutMs:4000},
       scope:"Controlled native SQL policies sharing this lab's physical synthetic D1, not independent external sellers. Fresh consent is required for each run. No identity, AI, real payments or private projects.",
       declaration:"The report fingerprint identifies a declared synthetic fixture, not uploaded frontend bytes, a backend build attestation or a signature.",
-      limitations:["Only bounded backend HTTP paths, not frontend form/browser clicks, email, arbitrary-site scanning or a full database/security audit.","Different-key race requires one201 and one409; same winning key must replay200 without consuming occupancy.","Final original receipt and slot-A witnesses follow slot-B writes. Failed or missing checkpoints remain visible and never imply acceptance or payment."],
+      limitations:["Only bounded backend HTTP paths, not frontend form/browser clicks, email, arbitrary-site scanning or a full database/security audit.","Different-key race requires one201 and one409; same winning key must replay200 without consuming occupancy.","Final original receipts follow all later writes; v4 includes C/D/E writes before the final independent receipt GETs. Failed or missing checkpoints remain visible and never imply acceptance or payment."],
     };
 }
 function httpAggregate(value:HttpReport,id:string):{guestCount:number;bookingIds:string[]}|undefined{
@@ -316,12 +318,14 @@ function httpAggregate(value:HttpReport,id:string):{guestCount:number;bookingIds
 }
 function httpKeyResult(value:HttpReport):{text:string;different:boolean}{
     const counts=httpCounts(value),create=httpStep(value,"create"),readback=httpStep(value,"readback");
-    if(httpProtocol==="booking-http-v3"){
+    if((httpProtocol==="booking-http-v3"||httpProtocol==="booking-http-v4")){
+        const invalidEmail=httpStep(value,"invalid_email"),initial=httpAggregate(value,"slot_a_initial");
+        if(httpProtocol==="booking-http-v4"&&invalidEmail?.outcome==="mismatch")return{text:tr(`非法邮箱请求返回 HTTP ${invalidEmail.status??"—"}；负例后独立查询 A 为 ${initial?.guestCount??"未取得读数"} 人。系统未把容量检查跳过的部分当作通过。`,`Invalid email returned HTTP ${invalidEmail.status??"—"}; independent slot A after negative probes reports ${initial?.guestCount??"no reading"} guests. Skipped dependent capacity steps are not passes.`),different:true};
         const aggregate=httpAggregate(value,"slot_a_after_race"),a=httpStep(value,"capacity_race_first"),b=httpStep(value,"capacity_race_second");
         if(aggregate&&aggregate.guestCount>8)return{text:tr(`约定同一时段合计最多 8 人；本次后台独立读回 ${aggregate.guestCount} 人、${aggregate.bookingIds.length} 笔订单，超出约定。`,`Agreed slot total: 8 guests. This run's independent backend readback reports ${aggregate.guestCount} guests across ${aggregate.bookingIds.length} bookings, above the limit.`),different:true};
         if(a?.status===201&&b?.status===201)return{text:tr("两个不同订单都返回创建成功；这不符合只能成功一笔的约定。总人数回读见逐步证据。","Both distinct orders returned creation success, contrary to the one-winner capacity expectation. Inspect the aggregate readback in the step evidence."),different:true};
         return counts.issues||counts.unavailable?{text:tr("容量链条仍有不符或未确定步骤；没有把缺失读数当成通过。","The capacity flow has mismatches or unavailable checkpoints; missing readings are not treated as passes."),different:true}
-          :{text:tr("本次 17 步均有预期观测支持：不同订单争用、原键重放、补满与拒绝多一人，以及其他时段写入后的旧订单保留。","All 17 steps have supporting observations: distinct orders contend for capacity, the winner replays, the slot fills and rejects an extra guest, and old receipts survive other-slot writes."),different:false};
+          :{text:tr("本次全部步骤均有预期观测支持：不同订单争用、原键重放、补满与拒绝多一人，以及其他时段写入后的旧订单保留。","All selected steps have supporting observations: distinct orders contend for capacity, the winner replays, the slot fills and rejects an extra guest, and old receipts survive other-slot writes."),different:false};
     }
     if(httpProtocol==="booking-http-v2"){
         const above=httpStep(value,"party_above"),exact=httpStep(value,"party_exact"),exactRead=httpStep(value,"party_exact_readback"),below=httpStep(value,"party_below"),belowRead=httpStep(value,"party_below_readback");
@@ -336,8 +340,8 @@ function httpKeyResult(value:HttpReport):{text:string;different:boolean}{
 function renderHttpChoices(body:HTMLElement){
     const choices=node("div","http-plan-controls"),protocolLabel=node("label","http-plan-field"),protocolSelect=document.createElement("select");
     append(protocolLabel,node("span","",tr("检查范围","Check scope")));protocolSelect.id="http-protocol";protocolSelect.disabled=httpBusy;
-    for(const [value,copy]of [["booking-http-v3",tr("同一时段总容量 · 17 步","Shared slot capacity · 17 steps")],["booking-http-v2",tr("每笔人数规则 · 18 步","Per-booking limits · 18 steps")],["booking-http-v1",tr("基础保存与重复提交 · 8 步","Basic persistence and replay · 8 steps")]]){const option=document.createElement("option");option.value=value;option.textContent=copy;option.selected=value===httpProtocol;append(protocolSelect,option);}
-    protocolSelect.addEventListener("change",()=>{if(httpBusy)return;httpProtocol=protocolSelect.value as HttpProtocol;if(httpProtocol==="booking-http-v3")httpMaxPartySize=6;clearHttpDisplay();render();});append(protocolLabel,protocolSelect);append(choices,protocolLabel);
+    for(const [value,copy]of [["booking-http-v4",tr("基础、边界与容量组合 · 31 步","Combined inputs, boundaries and capacity · 31 steps")],["booking-http-v3",tr("同一时段总容量 · 17 步","Shared slot capacity · 17 steps")],["booking-http-v2",tr("每笔人数规则 · 18 步","Per-booking limits · 18 steps")],["booking-http-v1",tr("基础保存与重复提交 · 8 步","Basic persistence and replay · 8 steps")]]){const option=document.createElement("option");option.value=value;option.textContent=copy;option.selected=value===httpProtocol;append(protocolSelect,option);}
+    protocolSelect.addEventListener("change",()=>{if(httpBusy)return;httpProtocol=protocolSelect.value as HttpProtocol;if((httpProtocol==="booking-http-v3"||httpProtocol==="booking-http-v4"))httpMaxPartySize=6;clearHttpDisplay();render();});append(protocolLabel,protocolSelect);append(choices,protocolLabel);
     if(httpProtocol==="booking-http-v2"){
         const maxLabel=node("label","http-plan-field"),select=document.createElement("select");select.id="http-maximum-party";select.disabled=httpBusy;append(maxLabel,node("span","",tr("约定每笔最多人数","Agreed maximum people per booking")));
         for(let maximum=2;maximum<=12;maximum++){const option=document.createElement("option");option.value=String(maximum);option.textContent=tr(`${maximum} 人`,`${maximum} people`);option.selected=maximum===httpMaxPartySize;append(select,option);}
@@ -346,9 +350,9 @@ function renderHttpChoices(body:HTMLElement){
     append(body,choices);
     const requirement=node("div","http-test-agreement");append(requirement,node("span","",tr("本次虚构约定原文","Fictional agreement for this run")),node("blockquote","",httpRequirementText(httpProtocol,httpMaxPartySize)));
     if(httpProtocol==="booking-http-v2")append(requirement,description(`将分别请求 ${httpMaxPartySize-1}、${httpMaxPartySize}、${httpMaxPartySize+1} 人，并独立读回允许范围内的预约。选择只改变检验预期，不会修改服务端实际配置。`,`Requests will test ${httpMaxPartySize-1}, ${httpMaxPartySize} and ${httpMaxPartySize+1} people, with independent readback inside the allowed range. Selection changes the expectation, not the service’s actual configuration.`));
-    if(httpProtocol==="booking-http-v3"){
+    if((httpProtocol==="booking-http-v3"||httpProtocol==="booking-http-v4")){
         append(requirement,node("blockquote","",httpCapacityText()),description("两项分别确认的固定虚构约定：每笔最多 6 人，每个时段合计最多 8 人。两个不同订单各请求 5 人，应只有一笔成功；补入 3 人后拒绝额外 1 人，再验证另一时段可独立预约 6 人。","Two separate fixed fictional clauses: at most 6 guests per booking and 8 in total per slot. Two distinct 5-guest orders should yield one winner; fill 3, reject 1 extra, then independently book 6 in another slot."));
-        const handoff=document.createElement("details");append(handoff,node("summary","",tr("查看并下载这次接口交接约定","Inspect and download this backend contract")),description("列出完整原文、17 个步骤、真实执行顺序与固定测试目标。指纹仅标识声明的示例，不证明任何上传网页与后端的构建关系。","Includes both complete clauses, 17 steps, actual execution order and fixed test targets. Its fingerprint identifies the declared fixture, not a build relationship between an uploaded frontend and backend."),button(tr("下载容量测试约定 JSON","Download capacity contract JSON"),()=>download(capacityContract(),"ProofBeforePay-capacity-contract.json")));append(requirement,handoff);
+        const handoff=document.createElement("details");append(handoff,node("summary","",tr("查看并下载这次接口交接约定","Inspect and download this backend contract")),description("列出完整原文、本方案的全部步骤、真实执行顺序与固定测试目标。指纹仅标识声明的示例，不证明任何上传网页与后端的构建关系。","Includes both complete clauses, the selected protocol steps, actual execution order and fixed test targets. Its fingerprint identifies the declared fixture, not a build relationship between an uploaded frontend and backend."),button(tr("下载容量测试约定 JSON","Download capacity contract JSON"),()=>download(capacityContract(),"ProofBeforePay-capacity-contract.json")));append(requirement,handoff);
     }
     append(requirement,description("更改检查范围或人数会清空本页两版 HTTP 结果，并需要重新授权。","Changing scope or maximum clears both displayed HTTP reports and requires fresh consent."));append(body,requirement);
 }
@@ -365,17 +369,24 @@ function renderPolicyFacts(body:HTMLElement,value:HttpReport){
 function renderCapacityFacts(body:HTMLElement,value:HttpReport){
     const facts=node("dl","http-policy-facts"),a=httpStep(value,"capacity_race_first"),b=httpStep(value,"capacity_race_second"),aggregate=httpAggregate(value,"slot_a_after_race");
     const race=node("div",a?.outcome==="mismatch"||b?.outcome==="mismatch"?"is-different":"");append(race,node("dt","",tr("不同订单各 5 人，同时争用 8 人时段","Two distinct 5-guest orders contend for an 8-guest slot")),node("dd","",`HTTP ${a?.status??"—"} + ${b?.status??"—"}`));append(facts,race);
-    for(const[id,zh,en]of[["slot_a_after_race","争用后 A，约定总人数 ≤ 8","A after race; agreed total ≤ 8"],["slot_a_after_replay","原键重放后的 A","A after winning-key replay"],["slot_a_after_rejection","其他时段写入后的 A","Final A after other-slot writes"],["slot_b_occupancy","独立时段 B","Independent slot B"]] as const){
+    for(const[id,zh,en]of[["slot_a_initial","非法输入后 A 应仍为空","A must remain empty after invalid inputs"],["slot_a_after_race","争用后 A，约定总人数 ≤ 8","A after race; agreed total ≤ 8"],["slot_a_after_replay","原键重放后的 A","A after winning-key replay"],["slot_a_after_rejection","其他时段写入后的 A","Final A after other-slot writes"],["slot_b_occupancy","独立时段 B","Independent slot B"]] as const){
         const reading=httpAggregate(value,id),item=node("div",reading&&id!=="slot_b_occupancy"&&reading.guestCount>8?"is-different":"");append(item,node("dt","",tr(zh,en)),node("dd","",reading?tr(`后台回传 ${reading.guestCount} 人，${reading.bookingIds.length} 笔订单`,`Backend reports ${reading.guestCount} guests across ${reading.bookingIds.length} bookings`):tr("没有完整读数，未当作 0 或通过。","No complete reading; not treated as zero or a pass.")));append(facts,item);
     }
     if(aggregate&&aggregate.guestCount>8){const excess=node("div","is-different");append(excess,node("dt","",tr("超出约定","Above the agreed total")),node("dd","",tr(`实际回传 ${aggregate.guestCount} > 约定 8`,`Reported ${aggregate.guestCount} > agreed 8`)));append(facts,excess);}
     append(body,facts,description("人数和编号来自本次独立 GET 回传的有界状态，不是全数据库审计。两个订单争用不同键；赢家重放使用其原来的同一键。","Counts and IDs come from bounded state returned by this run's independent GET, not a complete database audit. The contenders use different keys; replay uses the actual winner's original key."));
 }
+function renderCombinedFacts(body:HTMLElement,value:HttpReport){
+    const section=node("div","http-version-comparison");append(section,node("h3","",tr("这次31步覆盖了什么","What this31-step run covers")));
+    const coverage=runtimeCoverage(httpPlan("booking-http-v4",6),value as import("../../lib/runtime-checks.ts").RuntimeCheckReport);
+    for(const group of coverage.groups)append(section,node("p","",`${runtimeCoverageFamilyName(group.id,language)}: ${tr(`预期观测 ${group.observed??0}/${group.planned}，不符 ${group.mismatched??0}，未确定 ${group.unavailable??group.planned}`,`expected ${group.observed??0}/${group.planned}, mismatched ${group.mismatched??0}, unavailable ${group.unavailable??group.planned}`)}`));
+    const email=httpStep(value,"invalid_email");append(section,node("p","",tr(`错误邮箱这一项：HTTP ${email?.status??"—"}；${email?.outcome??"unavailable"}`,`Malformed email: HTTP ${email?.status??"—"}; ${email?.outcome??"unavailable"}`)));append(body,section);
+}
 function renderHttp() {
     const { section, body } = panel(tr("预约接口，兑现约定了吗？", "Does the booking service meet the agreement?"), tr("真实 HTTP 实测", "Actual HTTP check"));section.classList.add("http-panel");
-    append(body, httpProtocol==="booking-http-v3"?description("让两个不同订单同时争用一个时段，检查系统是否真的控制总容量。缺陷版会超卖，修正版由原生 SQL 规则约束；报告来自本次真实 HTTP 与独立回读。","Make two distinct orders contend for one slot and test whether the total is enforced. The flawed native policy overbooks; the corrected policy uses SQL constraints. Reports come from this run's actual HTTP requests and independent readbacks.","workflow-message"):httpProtocol==="booking-http-v2"?description("两种接口都能保存预约，但缺陷版未执行声明的人数上限。按本次约定请求边界人数，再检查无效输入、重复请求与并发响应。结果由本次真实请求生成。","Both services persist bookings, but the flawed revision does not enforce its declared party-size limit. Test the agreed boundaries, invalid inputs, replay and concurrent responses with actual requests.","workflow-message"):description("测试本实验室的两种受控虚构交付：缺陷版会出现“返回成功但未保存”等问题，修正版用于对照。每次运行都实际发出 HTTP 请求，再独立读回。", "Test two controlled fictional deliveries in this lab. The flawed service includes problems such as claiming success without saving; the corrected service provides a comparison. Every run sends actual HTTP requests and separately reads back the result.", "workflow-message"));
+    append(body, httpProtocol==="booking-http-v4"?description("基础检查与容量检查在同一轮运行。这个缺陷版能正确控制容量，却错误接受了虚构非法邮箱；增加的检查会实际检出它。修正版同时满足输入、重放和容量约定。","Basic and capacity checks run together. This flawed service controls capacity but wrongly accepts a fictional invalid email; the expanded checks actually detect it. The corrected service satisfies the input, replay and capacity agreement.","workflow-message"):httpProtocol==="booking-http-v3"?description("让两个不同订单同时争用一个时段，检查系统是否真的控制总容量。缺陷版会超卖，修正版由原生 SQL 规则约束；报告来自本次真实 HTTP 与独立回读。","Make two distinct orders contend for one slot and test whether the total is enforced. The flawed native policy overbooks; the corrected policy uses SQL constraints. Reports come from this run's actual HTTP requests and independent readbacks.","workflow-message"):httpProtocol==="booking-http-v2"?description("两种接口都能保存预约，但缺陷版未执行声明的人数上限。按本次约定请求边界人数，再检查无效输入、重复请求与并发响应。结果由本次真实请求生成。","Both services persist bookings, but the flawed revision does not enforce its declared party-size limit. Test the agreed boundaries, invalid inputs, replay and concurrent responses with actual requests.","workflow-message"):description("测试本实验室的两种受控虚构交付：缺陷版会出现“返回成功但未保存”等问题，修正版用于对照。每次运行都实际发出 HTTP 请求，再独立读回。", "Test two controlled fictional deliveries in this lab. The flawed service includes problems such as claiming success without saving; the corrected service provides a comparison. Every run sends actual HTTP requests and separately reads back the result.", "workflow-message"));
     append(body, description("只访问本实验室固定接口，不扫描任意卖家网站，不点击卖家前端、不验证邮件。只发送生成的虚构测试资料；容量策略使用本实验库的专用 SQL 表，物理数据库共享。不访问主站项目、身份或密钥。", "Only fixed lab endpoints run; no arbitrary seller scan, frontend clicks or email test. Generated fictional data uses dedicated native capacity tables in this lab's shared physical database. Main-site projects, identities and secrets are not accessed.", "boundary"));
     renderHttpChoices(body);
+    if(httpProtocol==="booking-http-v4")append(body,description("本方案把基础输入、合法人数、同键重复请求及容量争抢放在同一轮：错误邮箱、缺少时间、零人、小数、负数、字符串人数、1人／上限减1／上限、改动数据冲突、两类并发及最终回读。共31个有界观测；不是全站自动验收。缺陷版故意允许虚构的非法邮箱落库，修正版拒绝它。","One run combines basic inputs, valid party boundaries, same-key replay and capacity contention: malformed email, missing slot, zero, fractional, negative and string counts;1/below/max parties; changed-data conflict; both concurrency patterns and final readbacks. These31 bounded observations are not a whole-site acceptance test. The flawed policy deliberately stores one fictional invalid email; the corrected policy rejects it.","workflow-message"));
     const consent = document.createElement("input");
     consent.type = "checkbox";
     consent.id = "http-consent";
@@ -399,16 +410,17 @@ function renderHttp() {
         append(body, node("p", `result-message${counts.issues || counts.unavailable ? " error" : ""}`, tr(`本次${httpScenario === "flawed" ? "缺陷版" : "修正版"} ${counts.total} 步：${counts.observed} 步有预期观测支持，${counts.issues} 项不符，${counts.unavailable} 项无法确定。`, `This ${httpScenario === "flawed" ? "flawed" : "corrected"} run: ${counts.total} steps, ${counts.observed} observed support, ${counts.issues} mismatched, ${counts.unavailable} unavailable.`)));
         const keyResult=httpKeyResult(httpReport);append(body,node("p",`http-key-result${keyResult.different?" is-different":""}`,keyResult.text));
         if(httpProtocol==="booking-http-v2")renderPolicyFacts(body,httpReport);
-        if(httpProtocol==="booking-http-v3")renderCapacityFacts(body,httpReport);
+        if(httpProtocol==="booking-http-v4")renderCombinedFacts(body,httpReport);
+        if((httpProtocol==="booking-http-v3"||httpProtocol==="booking-http-v4"))renderCapacityFacts(body,httpReport);
         if(httpReports.flawed&&httpReports.fixed){
             const comparison=node("div","http-version-comparison");append(comparison,node("h3","",tr("两次实际运行，使用同一约定和协议","Two actual runs, the same agreement and protocol")));
             for(const variant of ["flawed","fixed"] as const){
                 const saved=httpReports[variant]!,c=httpStep(saved,"create"),r=httpStep(saved,"readback"),above=httpStep(saved,"party_above"),counts=httpCounts(saved);
                 const raceA=httpStep(saved,"capacity_race_first"),raceB=httpStep(saved,"capacity_race_second"),aggregate=httpAggregate(saved,"slot_a_after_race"),finalA=httpAggregate(saved,"slot_a_after_rejection");
-                const observed=httpProtocol==="booking-http-v3"?tr(`不同订单争用 HTTP ${raceA?.status??"—"} / ${raceB?.status??"—"}；争用后 A ${aggregate?.guestCount??"—"} 人，最后 A ${finalA?.guestCount??"—"} 人`,`Distinct-order contention HTTP ${raceA?.status??"—"} / ${raceB?.status??"—"}; A after race ${aggregate?.guestCount??"—"} guests, final A ${finalA?.guestCount??"—"} guests`):httpProtocol==="booking-http-v2"?tr(`${httpMaxPartySize+1} 人超限请求 HTTP ${above?.status??"—"}`,`${httpMaxPartySize+1}-person request above limit: HTTP ${above?.status??"—"}`):`${tr("创建","Create")} HTTP ${c?.status??"—"} → ${tr("独立回读","Readback")} HTTP ${r?.status??"—"}`;
+                const observed=httpProtocol==="booking-http-v4"?tr(`非法邮箱 HTTP ${httpStep(saved,"invalid_email")?.status??"—"}；负例后 A ${httpAggregate(saved,"slot_a_initial")?.guestCount??"—"} 人；最后 A ${finalA?.guestCount??"—"} 人`,`Malformed email HTTP ${httpStep(saved,"invalid_email")?.status??"—"}; A after negatives ${httpAggregate(saved,"slot_a_initial")?.guestCount??"—"} guests; final A ${finalA?.guestCount??"—"}`):httpProtocol==="booking-http-v3"?tr(`不同订单争用 HTTP ${raceA?.status??"—"} / ${raceB?.status??"—"}；争用后 A ${aggregate?.guestCount??"—"} 人，最后 A ${finalA?.guestCount??"—"} 人`,`Distinct-order contention HTTP ${raceA?.status??"—"} / ${raceB?.status??"—"}; A after race ${aggregate?.guestCount??"—"} guests, final A ${finalA?.guestCount??"—"} guests`):httpProtocol==="booking-http-v2"?tr(`${httpMaxPartySize+1} 人超限请求 HTTP ${above?.status??"—"}`,`${httpMaxPartySize+1}-person request above limit: HTTP ${above?.status??"—"}`):`${tr("创建","Create")} HTTP ${c?.status??"—"} → ${tr("独立回读","Readback")} HTTP ${r?.status??"—"}`;
                 append(comparison,node("p","",`${tr(variant==="flawed"?"缺陷版":"修正版",variant==="flawed"?"Flawed":"Corrected")}: ${observed} · ${counts.issues} ${tr("项不符","mismatched")} / ${counts.unavailable} ${tr("项未确定","unavailable")}`));
             }
-            append(comparison,button(tr("下载两版实测对照","Download both actual runs"),()=>download({method:httpProtocol==="booking-http-v3"?"controlled-http-comparison-v3":"controlled-http-comparison-v2",scope:"Two separately declared synthetic targets, not real buyer acceptance or frontend/build attestation",protocol:httpProtocol,agreedSource:httpRequirementText(httpProtocol,httpMaxPartySize),...(httpProtocol==="booking-http-v2"?{maxPartySize:httpMaxPartySize}:{}),plan:httpPlan(httpProtocol,httpMaxPartySize),...(httpProtocol==="booking-http-v3"?{contract:capacityContract()}:{}),reports:httpReports},"ProofBeforePay-HTTP-comparison.json")));append(body,comparison);
+            append(comparison,button(tr("下载两版实测对照","Download both actual runs"),()=>download({method:httpProtocol==="booking-http-v4"?"controlled-http-comparison-v4":httpProtocol==="booking-http-v3"?"controlled-http-comparison-v3":"controlled-http-comparison-v2",scope:"Two separately declared synthetic targets, not real buyer acceptance or frontend/build attestation",protocol:httpProtocol,agreedSource:httpRequirementText(httpProtocol,httpMaxPartySize),...(httpProtocol==="booking-http-v2"?{maxPartySize:httpMaxPartySize}:{}),plan:httpPlan(httpProtocol,httpMaxPartySize),...((httpProtocol==="booking-http-v3"||httpProtocol==="booking-http-v4")?{contract:capacityContract()}:{}),reports:httpReports},"ProofBeforePay-HTTP-comparison.json")));append(body,comparison);
         }
         const results = node("div", "http-results");
         append(results, node("h3", "", tr("逐步请求与读回证据", "Step-by-step request and readback evidence")), node("p", "report-meta", `${String(httpReport.method)} · ${typeof target?.label === "string" ? target.label : ""} · ${typeof target?.revision === "string" ? target.revision : ""}`));

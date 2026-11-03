@@ -3,6 +3,7 @@ import {suggestBookingPolicy,type BookingPartyPolicy} from "./booking-policy.ts"
 import {suggestSlotCapacity,validateBookingCapacityPlan,type BookingSlotCapacity} from "./booking-capacity.ts";
 import type {RuntimeCheckPlan} from "./runtime-checks.ts";
 
+export const CAPACITY_EXAMPLE_PROTOCOL="booking-http-v4" as const;
 export const CAPACITY_EXAMPLE_REQUIREMENTS="Each booking accepts at most 6 people.\nEach time slot accepts at most 8 guests in total.";
 type Input={protocol:RuntimeCheckPlan["protocol"];criterionId:string;capacityCriterionId:string;units:RequirementCoverageUnit[];decisions:{id:string;disposition:"include"|"exclude"|"pending"}[]};
 export type RuntimePlanDraft={ready:boolean;plan?:RuntimeCheckPlan;policy?:BookingPartyPolicy;slotCapacity?:BookingSlotCapacity;reason?:"primary"|"party"|"capacity"|"recipe"};

@@ -14,7 +14,7 @@ const CONTROL = /[\u0000-\u001f\u007f]/u;
 function valid(field:RuntimeMetadataField,value:unknown):boolean {
   if(typeof value!=="string")return false;
   if(field==="revision")return value.length>0&&value.length<=120&&value===value.trim()&&!CONTROL.test(value);
-  if(field==="protocol")return value==="booking-http-v1"||value==="booking-http-v2"||value==="booking-http-v3";
+  if(field==="protocol")return value==="booking-http-v1"||value==="booking-http-v2"||value==="booking-http-v3"||value==="booking-http-v4";
   if(field==="projectId"||field==="registrationRevision")return IDENTIFIER.test(value);
   if(field==="backendSourceCommit")return COMMIT.test(value);
   return DIGEST.test(value);

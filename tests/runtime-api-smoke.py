@@ -1,8 +1,9 @@
 """Runtime lease/report -> revision -> explicit acceptance in isolated API/D1.
 
 Use only the owned loopback Worker from run-collaborative-sandbox-local.mjs.
-All outbound fetch is blocked: the runtime report must retain all eight basic
-or eighteen business steps as unavailable, never manufacture successful backend observations. Synthetic gateway
+All outbound fetch is blocked: the runtime report must retain all eight basic,
+eighteen party-policy, seventeen capacity or thirty-one combined steps as unavailable,
+never manufacture successful backend observations. Synthetic gateway
 identities are not actual sign-ins. No mutation is retried and no external
 model, backend or payment is contacted. Real backend protocol execution is a
 separate check against the hosted disposable verification lab.
@@ -32,6 +33,11 @@ POLICY_SUMMARY = "Each booking accepts at most 6 people."
 POLICY_STEP_IDS = ["revision", "missing_slot", "invalid_email", "create", "readback", "replay", "conflict", "unchanged",
                    "party_zero", "party_fraction", "party_below", "party_below_readback", "party_exact", "party_exact_readback", "party_above",
                    "concurrent_first", "concurrent_second", "concurrent_readback"]
+CAPACITY_STEP_IDS = ["revision", "slot_a_initial", "party_above", "capacity_race_first", "capacity_race_second", "race_winner_readback",
+                     "slot_a_after_race", "race_winner_replay", "slot_a_after_replay", "fill_remainder", "fill_readback", "slot_a_full",
+                     "reject_extra", "slot_a_after_rejection", "slot_b_create", "slot_b_readback", "slot_b_occupancy"]
+COMBINED_STEP_IDS = CAPACITY_STEP_IDS + ["missing_slot", "invalid_email", "party_zero", "party_fraction", "party_negative", "party_string",
+    "winner_conflict", "same_key_first", "same_key_second", "same_key_readback", "party_one", "party_one_readback", "party_below", "party_below_readback"]
 
 
 def specification(title, runtime=True):
@@ -73,6 +79,21 @@ def capacity_specification(title):
     value["runtimeCheck"]["slotCapacity"] = {"criterionId": "coverage-2", "maxGuestsPerSlot": 8,
         "source": {"start": len(POLICY_SUMMARY) + 1, "end": len(summary), "excerpt": capacity_clause}}
     return value
+
+
+def combined_specification(title):
+    value = capacity_specification(title)
+    value["runtimeCheck"]["protocol"] = "booking-http-v4"
+    return value
+
+
+def retained_history_bytes(delivery):
+    # Same persisted collections as the public evidence-budget boundary; do not
+    # count the duplicate latest runtimeReport twice or infer a hidden reserve.
+    histories = {"runtime": delivery.get("runtimeHistory", []), "business": delivery.get("businessCheckHistory", []),
+                 "browser": delivery.get("browserCheckHistory", []), "layout": delivery.get("layoutHistory", []),
+                 "acceptance": delivery.get("acceptanceEvidence", [])}
+    return len(json.dumps(histories, ensure_ascii=False, separators=(",", ":")).encode("utf-8"))
 
 
 def runtime_input(quote):
@@ -370,9 +391,110 @@ def main():
     assert chain.snapshot(capacity_quote) == capacity_snapshot
     assert capacity_quote["proof"]["paymentState"] == "unfunded" and not capacity_quote.get("paypalOrderId")
     api.checked("V3 requires two separately included complete source clauses, rejects forged capacities and v2 targets; retains all17 unavailable observations and exact-version exceptions while later reports stay supplemental, without payment")
+    before_combined = api.ok(buyer, "/api/proofs")
+    combined_invalid = []
+    for label, missing in (("capacity", "slotCapacity"), ("party policy", "policy")):
+        invalid = combined_specification("Rejected v4 missing " + label)
+        del invalid["runtimeCheck"][missing]
+        combined_invalid.append(invalid)
+    for key in ("slotCapacity", "policy"):
+        invalid = combined_specification("Rejected v4 missing source")
+        del invalid["runtimeCheck"][key]["source"]
+        combined_invalid.append(invalid)
+    for index in (0, 1):
+        invalid = combined_specification("Rejected v4 excluded clause")
+        invalid["coverage"]["decisions"][index].update(disposition="exclude", reason="This source is deliberately outside acceptance")
+        combined_invalid.append(invalid)
+    shortened_v4 = combined_specification("Rejected v4 shortened capacity clause")
+    shortened_v4["runtimeCheck"]["slotCapacity"]["source"]["end"] -= 1
+    shortened_v4["runtimeCheck"]["slotCapacity"]["source"]["excerpt"] = shortened_v4["runtimeCheck"]["slotCapacity"]["source"]["excerpt"][:-1]
+    combined_invalid.append(shortened_v4)
+    forged_v4 = combined_specification("Rejected v4 forged original capacity")
+    forged_v4["runtimeCheck"]["slotCapacity"]["maxGuestsPerSlot"] = 9
+    forged_v4["runtimeCheck"]["slotCapacity"]["source"]["excerpt"] = forged_v4["runtimeCheck"]["slotCapacity"]["source"]["excerpt"].replace("8", "9")
+    combined_invalid.append(forged_v4)
+    reused_v4 = combined_specification("Rejected v4 single-clause reuse")
+    reused_v4["runtimeCheck"]["slotCapacity"]["criterionId"] = "coverage-1"
+    combined_invalid.append(reused_v4)
+    for invalid in combined_invalid:
+        api.reject(buyer, "/api/proofs", invalid, codes=(400,))
+    assert api.ok(buyer, "/api/proofs") == before_combined
+    combined_path, combined_quote_path = chain.create_shared(api, buyer, seller, combined_specification("Synthetic combined31 lifecycle"))
+    combined_targets = api.ok(seller, combined_path + "/runtime-targets")["targets"]
+    assert {row["id"] for row in combined_targets} == {"lab-coverage-fixed", "lab-coverage-validation-gap", "lab-coverage-overbook"}
+    assert all(row["protocol"] == "booking-http-v4" for row in combined_targets)
+    combined_contract = api.ok(seller, combined_path + "/runtime-contract")
+    assert combined_contract["protocol"] == "booking-http-v4" and combined_contract["bounds"]["maxRequests"] == 31
+    assert [row["id"] for row in combined_contract["steps"]] == COMBINED_STEP_IDS
+    assert len(set(combined_contract["execution"]["stepOrder"])) == 31
+    assert {combined_contract["plan"]["criterionId"], combined_contract["plan"]["slotCapacity"]["criterionId"]} == {"coverage-1", "coverage-2"}
+    assert combined_contract["plan"]["source"]["excerpt"] == POLICY_SUMMARY
+    assert combined_contract["plan"]["slotCapacity"]["source"] == combined_specification("Expected")["runtimeCheck"]["slotCapacity"]["source"]
+    before_combined_upload = api.ok(buyer, combined_quote_path)["quote"]
+    api.reject(seller, combined_path + "/delivery", {"files": files(), "expectedDeliveryId": None, "reviewRules": True, "backendTargetId": "lab-capacity-fixed"}, codes=(400,))
+    assert_unchanged(api, buyer, combined_quote_path, before_combined_upload)
+    combined_quote = api.ok(seller, combined_path + "/delivery", {"files": files(), "expectedDeliveryId": None, "reviewRules": True, "backendTargetId": "lab-coverage-fixed"})["quote"]
+    combined_endpoint = combined_path + "/runtime-checks"
+    combined_quote = api.ok(buyer, combined_endpoint, runtime_input(combined_quote))["quote"]
+    combined_delivery = combined_quote["proof"]["delivery"]
+    combined_report = copy.deepcopy(combined_delivery["runtimeReport"])
+    assert combined_report["method"] == "server-booking-http-v4" and combined_report["plan"] == combined_quote["proof"]["project"]["runtimeCheck"]
+    assert combined_report["deliveryId"] == combined_delivery["id"] and combined_report["deliveryDigest"] == digest(files())
+    assert combined_report["target"]["id"] == "lab-coverage-fixed" and combined_report["target"]["revision"] == "coverage-fixed-v1"
+    assert combined_report["summary"] == {"steps": 31, "observed": 0, "issues": 0, "unavailable": 31}
+    assert [row["id"] for row in combined_report["steps"]] == COMBINED_STEP_IDS
+    assert combined_report["steps"][0]["reason"] == "network_unavailable"
+    assert all(row["outcome"] == "unavailable" for row in combined_report["steps"])
+    assert all(row["reason"] == "revision_not_verified" for row in combined_report["steps"][1:])
+    assert "runtimeRun" not in combined_delivery and combined_delivery["runtimeHistory"] == [combined_report]
+    api.ok(seller, combined_path + "/submit_delivery", {"deliveryId": combined_delivery["id"], "note": "Synthetic31-check combined protocol for explicit buyer review"})
+    combined_quote = api.ok(buyer, combined_quote_path)["quote"]
+    api.reject(buyer, combined_path + "/accept_delivery", consent(combined_quote), codes=(409,))
+    incomplete_combined = consent(combined_quote, True)
+    incomplete_combined["runtimeDecision"]["acknowledgedSteps"].pop()
+    api.reject(buyer, combined_path + "/accept_delivery", incomplete_combined, codes=(409,))
+    combined_quote = api.ok(buyer, combined_path + "/accept_delivery", consent(combined_quote, True))["quote"]
+    combined_snapshot = copy.deepcopy(chain.snapshot(combined_quote))
+    assert combined_snapshot["runtimeReportId"] == combined_report["id"]
+    assert combined_snapshot["runtimeDeliveryDigest"] == combined_report["deliveryDigest"] and combined_snapshot["runtimeTargetId"] == "lab-coverage-fixed"
+    assert combined_snapshot["runtimeAcknowledgedSteps"] == COMBINED_STEP_IDS
+    assert {row["id"] for row in combined_snapshot["criteria"]} >= {"coverage-1", "coverage-2"}
+    combined_quote = api.ok(seller, combined_endpoint, runtime_input(combined_quote))["quote"]
+    combined_reports_saved = 2
+    assert combined_quote["proof"]["delivery"]["runtimeReport"]["id"] != combined_report["id"]
+    assert chain.snapshot(combined_quote) == combined_snapshot
+    assert combined_quote["proof"]["collaboration"]["stage"] == "accepted"
+    assert combined_quote["proof"]["paymentState"] == "unfunded" and not combined_quote.get("paypalOrderId")
+    # Observe admission at the actual API/storage boundary, without a flaky
+    # poll of the transient lease. Every success is a separate explicit start;
+    # a rejected admission is never retried and must preserve all prior data.
+    budget_observation = None
+    for _ in range(20):
+        before_budget_run = copy.deepcopy(combined_quote)
+        code, response, _ = api.request(buyer, combined_endpoint, runtime_input(combined_quote))
+        if code == 409:
+            assert "saved evidence history is full" in str(response.get("error", "")).lower(), api.diagnostic(response)
+            assert_unchanged(api, buyer, combined_quote_path, before_budget_run)
+            saved_delivery = before_budget_run["proof"]["delivery"]
+            retained_bytes = retained_history_bytes(saved_delivery)
+            assert len(saved_delivery["runtimeHistory"]) < 20
+            assert retained_bytes + 96 * 1024 > 256 * 1024
+            assert retained_bytes + 48 * 1024 <= 256 * 1024
+            assert "runtimeRun" not in saved_delivery
+            budget_observation = {"retainedHistoryBytes": retained_bytes, "v4ReportReservationBytes": 96 * 1024,
+                                  "oldReportReservationBytes": 48 * 1024, "historyLimitBytes": 256 * 1024,
+                                  "reportsRetained": len(saved_delivery["runtimeHistory"]), "rejectedBeforeLease": True}
+            break
+        assert code == 200, (code, api.diagnostic(response))
+        combined_quote = response["quote"]
+        combined_reports_saved += 1
+        assert chain.snapshot(combined_quote) == combined_snapshot
+        assert combined_quote["proof"]["paymentState"] == "unfunded" and not combined_quote.get("paypalOrderId")
+    assert budget_observation is not None, "V4 runtime admission did not enforce the expanded report reservation"
+    api.checked("V4 actual routes require both complete included sources and compatible targets; preserve31 unavailable steps, complete exception acknowledgements and frozen acceptance across supplemental runs; admission reserves96KiB before a new lease without eviction or payment")
     after = api.ok(None, "/api/__synthetic_sandbox_test_mode")
     assert after["syntheticCalls"] == marker["syntheticCalls"]
-    print(json.dumps({"result": "passed", "suite": "runtime-checks", "checks": api.checks, "runtimeReportsSaved": 7, "capacityV3ReportsSaved": 2, "capacityV3StepsPerReport": 17, "capacitySnapshotPreservedAcrossSupplement": True, "basicV1ReportsSaved": 3, "businessV2ReportsSaved": 2, "concurrentStarts": {"attempts": 2, "successes": 1, "conflicts": 1}, "stepsPerReport": 8, "unavailablePerReport": 8, "v2StepsPerReport": 18, "v2UnavailablePerReport": 18, "acceptanceSnapshotPreservedAcrossSupplement": True, "v2AcceptanceSnapshotPreservedAcrossSupplement": True, "providerNetworkRequests": 0, "applicationModelCalls": 0, "syntheticProviderFetches": 0, "mutationRetries": 0, "scope": "Fresh isolated API/D1 with synthetic gateway identity headers; all outbound backend/provider fetches blocked. This verifies roles, storage, leases, version/acceptance binding, not actual backend protocol execution, real sign-ins, UI use, independent users or payment."}, ensure_ascii=False, indent=2))
+    print(json.dumps({"result": "passed", "suite": "runtime-checks", "checks": api.checks, "runtimeReportsSaved": 7 + combined_reports_saved, "combinedV4ReportsSaved": combined_reports_saved, "combinedV4StepsPerReport": 31, "combinedV4SnapshotPreservedAcrossSupplement": True, "combinedV4BudgetAdmission": budget_observation, "capacityV3ReportsSaved": 2, "capacityV3StepsPerReport": 17, "capacitySnapshotPreservedAcrossSupplement": True, "basicV1ReportsSaved": 3, "businessV2ReportsSaved": 2, "concurrentStarts": {"attempts": 2, "successes": 1, "conflicts": 1}, "stepsPerReport": 8, "unavailablePerReport": 8, "v2StepsPerReport": 18, "v2UnavailablePerReport": 18, "acceptanceSnapshotPreservedAcrossSupplement": True, "v2AcceptanceSnapshotPreservedAcrossSupplement": True, "providerNetworkRequests": 0, "applicationModelCalls": 0, "syntheticProviderFetches": 0, "mutationRetries": 0, "scope": "Fresh isolated API/D1 with synthetic gateway identity headers; all outbound backend/provider fetches blocked. This verifies roles, storage, leases, version/acceptance binding, not actual backend protocol execution, real sign-ins, UI use, independent users or payment."}, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

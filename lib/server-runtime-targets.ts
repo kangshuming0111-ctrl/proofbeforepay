@@ -7,7 +7,7 @@ import {approvedRuntimeRegistration,parseRuntimeRegistrations,registrationTarget
   type RuntimeRegistrationDescriptor,type RuntimeRegistrationSnapshot} from "./runtime-registration.ts";
 
 export type RuntimeTargetDescriptor = RuntimeRegistrationDescriptor | {
-  id:string;label:string;protocol:"booking-http-v1"|"booking-http-v2"|"booking-http-v3";revision:string;kind:"fixture";
+  id:string;label:string;protocol:"booking-http-v1"|"booking-http-v2"|"booking-http-v3"|"booking-http-v4";revision:string;kind:"fixture";
 };
 
 /** Server-only configuration: no registry JSON, endpoint URL, backend artifact

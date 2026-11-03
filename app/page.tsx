@@ -51,7 +51,7 @@ import "./smooth-flow.css";
 import "./chain-flow.css";
 import { RuntimeCheckPanel, RuntimeAcceptanceDecision, currentRuntimeReport } from "./components/RuntimeCheckPanel";
 import { RuntimePlanEditor } from "./components/RuntimePlanEditor";
-import {buildRuntimePlanDraft,confirmedRuntimeDraft,CAPACITY_EXAMPLE_REQUIREMENTS} from "@/lib/runtime-plan-draft";
+import {buildRuntimePlanDraft,confirmedRuntimeDraft,CAPACITY_EXAMPLE_REQUIREMENTS,CAPACITY_EXAMPLE_PROTOCOL} from "@/lib/runtime-plan-draft";
 import type { RuntimeCheckPlan } from "@/lib/runtime-checks";
 import type { RuntimePreflightResult } from "@/lib/runtime-preflight";
 import type { RuntimeTargetDescriptor } from "@/lib/server-runtime-targets";
@@ -762,8 +762,8 @@ export default function Home() {
     setProjectAmount("1.00");setCurrency("AUD");setRequiredPagesInput("index.html");setManualRequirementsInput("");
     setBrowserSteps([]);setBusinessDrafts([]);setBusinessConfirmed(false);
     setRequirementsDraft(undefined);setRequirementsConfirmed(false);setRequirementsFromBrief(false);
-    setRuntimeEnabled(true);setRuntimeProtocol("booking-http-v3");setRuntimeCriterionId("coverage-1");setRuntimeCapacityCriterionId("coverage-2");setRuntimeConfirmed(false);
-    setNotice(tr("已填入单笔最多6人、每时段合计最多8人的两条原文。下一步分别核对并确认十七步容量协议；未创建项目或付款。","Two source clauses are filled in: at most 6 per booking and 8 in total per slot. Review both and separately confirm the seventeen-step protocol next. No project or payment was created."));
+    setRuntimeEnabled(true);setRuntimeProtocol(CAPACITY_EXAMPLE_PROTOCOL);setRuntimeCriterionId("coverage-1");setRuntimeCapacityCriterionId("coverage-2");setRuntimeConfirmed(false);
+    setNotice(tr("已填入单笔最多6人、每时段合计最多8人的两条原文。下一步分别核对并确认三十一步预约协议；旧版十七步仍可选择。未创建项目或付款。","Two source clauses are filled in: at most 6 per booking and 8 in total per slot. Review both and separately confirm the 31-step booking protocol next; the 17-step option remains available. No project or payment was created."));
   }
   function nextWorkspaceAction(): {label: string; help: string; action: () => void} {
     if (paymentPending || captured || voided || closedUnpaid || expired) return {

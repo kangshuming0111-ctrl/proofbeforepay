@@ -57,3 +57,11 @@ test("malformed sources, getters, extra fields and unsupported protocols fail wi
   assert.throws(()=>validateBookingCapacityPlan({...raw,confirmed:true}));
   assert.throws(()=>validateBookingCapacityPlan({...raw,slotCapacity:{...raw.slotCapacity,confirmed:true}}));
 });
+test("v4 explicitly reuses the same two complete source clauses without aliasing a saved v3 plan",()=>{
+  const original=plan(),before=structuredClone(original),v3=validateBookingCapacityPlan(original),v4=validateBookingCapacityPlan({...original,protocol:"booking-http-v4"});
+  assert.equal(v3.protocol,"booking-http-v3");assert.equal(v4.protocol,"booking-http-v4");assert.deepEqual({...v4,protocol:"booking-http-v3"},v3);assert.deepEqual(original,before);
+  const shortened=structuredClone(v4);shortened.slotCapacity.source.end--;shortened.slotCapacity.source.excerpt=shortened.slotCapacity.source.excerpt.slice(0,-1);
+  const text=`${original.source.excerpt}\n${original.slotCapacity.source.excerpt}`;
+  assert.throws(()=>validateBookingCapacityPlan(shortened,{sourceText:text,criteria:[{id:original.criterionId,source:original.source.excerpt},{id:original.slotCapacity.criterionId,source:original.slotCapacity.source.excerpt}]}));
+  assert.throws(()=>validateBookingCapacityPlan({...original,protocol:"booking-http-v5"}));
+});

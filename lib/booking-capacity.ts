@@ -2,7 +2,7 @@ import {DomainError} from "./domain.ts";
 import {validateBookingPolicy,type BookingPartyPolicy,type BookingPolicySource} from "./booking-policy.ts";
 
 export type BookingSlotCapacity={criterionId:string;maxGuestsPerSlot:number;source:BookingPolicySource};
-export type BookingCapacityPlan={protocol:"booking-http-v3";criterionId:string;source:BookingPolicySource;policy:BookingPartyPolicy;slotCapacity:BookingSlotCapacity};
+export type BookingCapacityPlan={protocol:"booking-http-v3"|"booking-http-v4";criterionId:string;source:BookingPolicySource;policy:BookingPartyPolicy;slotCapacity:BookingSlotCapacity};
 export type SlotCapacityProposal=Pick<BookingSlotCapacity,"maxGuestsPerSlot"|"source">;
 
 const CONTROL_OR_FORMAT=/[\u0000-\u001f\u007f\u200b-\u200f\u202a-\u202e\u2066-\u2069]/u;
@@ -61,7 +61,7 @@ export function capacityRecipeNumbers(plan:BookingCapacityPlan):{maxPartySize:nu
  * Root intake additionally resolves the capacity clause against saved coverage. */
 export function validateBookingCapacityPlan(value:unknown,options:{sourceText?:string;criteria?:{id:string;source?:string}[]}={}):BookingCapacityPlan{
   const raw=object(value,["protocol","criterionId","source","policy","slotCapacity"],"Capacity test plan");
-  if(raw.protocol!=="booking-http-v3")throw new DomainError("Choose the explicit booking-http-v3 capacity protocol.");
+  if(raw.protocol!=="booking-http-v3"&&raw.protocol!=="booking-http-v4")throw new DomainError("Choose the explicit booking-http-v3 or booking-http-v4 capacity protocol.");
   const criterionId=identifier(raw.criterionId,"Party-limit criterion"),source=exactSource(raw.source,"Party-limit source");
   const policy=validateBookingPolicy(raw.policy,source),capacity=object(raw.slotCapacity,["criterionId","maxGuestsPerSlot","source"],"Slot-capacity criterion");
   const capacityId=identifier(capacity.criterionId,"Slot-capacity criterion"),capacitySource=exactSource(capacity.source,"Complete slot-capacity source");
@@ -71,6 +71,6 @@ export function validateBookingCapacityPlan(value:unknown,options:{sourceText?:s
     if(options.sourceText!==undefined&&options.sourceText.slice(clause.start,clause.end)!==clause.excerpt)throw new DomainError("Capacity sources must retain the exact original requirement substrings.");
     if(options.criteria){const criterion=options.criteria.find(item=>item.id===id);if(!criterion||criterion.source!==undefined&&criterion.source!==clause.excerpt)throw new DomainError("Capacity sources must match separate included original criteria.");}
   }
-  const plan:BookingCapacityPlan={protocol:"booking-http-v3",criterionId,source,policy,slotCapacity:{criterionId:capacityId,...proposed}};
+  const plan:BookingCapacityPlan={protocol:raw.protocol,criterionId,source,policy,slotCapacity:{criterionId:capacityId,...proposed}};
   capacityRecipeNumbers(plan);return plan;
 }

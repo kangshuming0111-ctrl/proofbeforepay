@@ -108,3 +108,23 @@ test("mixed capacity failures keep the distinct-key race advisory and every exce
     assert.ok(draft.includes(language==="zh"?"不同键容量争抢":"Distinct-key capacity race"));
   }
 });
+
+test("expanded31-step feedback keeps every exception and actual status inside1000characters in both languages",async()=>{
+  const {CAPACITY_V4_STEP_IDS}=await import("../lib/runtime-capacity.ts"),{runtimeStepName,runtimeFeedbackCriterion}=await import("../lib/runtime-feedback.ts");
+  for(const language of["zh","en"]as const)for(const outcome of["mismatch","unavailable"]as const)for(let statusCount=0;statusCount<=31;statusCount++){
+    const original=capacityReport(CAPACITY_V4_STEP_IDS.map((id,index)=>{const row=step(id,outcome);if(index>=statusCount)delete row.status;return row;}));original.plan.protocol="booking-http-v4";original.method="server-booking-http-v4";
+    const before=structuredClone(original),draft=draftRuntimeFeedback(original,language);assert.ok(draft.length<=1000,`${language}/${outcome}/${statusCount}: ${draft.length}`);
+    for(const id of CAPACITY_V4_STEP_IDS){assert.ok(draft.includes(`${id} `),id);assert.notEqual(runtimeStepName(id,language),language==="zh"?"接口步骤":"HTTP step");const row=original.steps.find(step=>step.id===id)!;if(row.status!==undefined)assert.ok(draft.split("\n").find(line=>line.startsWith(`${id} `))!.includes(String(row.status)),`${id} status omitted`);}
+    assert.ok(draft.includes(language==="zh"?"技术协议":"technical agreement"));
+    assert.ok(draft.endsWith(language==="zh"?"不更改报告或验收状态。":"changes no report or acceptance."));assert.deepEqual(original,before);
+  }
+  const emailOnly=capacityReport(CAPACITY_V4_STEP_IDS.map(id=>step(id,id==="invalid_email"?"mismatch":"observed")));emailOnly.plan.protocol="booking-http-v4";assert.equal(runtimeFeedbackCriterion(emailOnly),"coverage-4");assert.match(draftRuntimeFeedback(emailOnly,"en"),/technical agreement/u);
+  const capacityOnly=structuredClone(emailOnly);capacityOnly.steps=capacityOnly.steps.map(row=>({...row,outcome:row.id==="capacity_race_first"?"mismatch":"observed"}));assert.equal(runtimeFeedbackCriterion(capacityOnly),"coverage-5");
+});
+
+test("unexecuted labels preserve unknown outcomes and technical-only winning-key feedback stays with the protocol's primary anchor",async()=>{
+  const {runtimeStepOutcomeLabel,runtimeFeedbackCriterion}=await import("../lib/runtime-feedback.ts");
+  assert.equal(runtimeStepOutcomeLabel({outcome:"unavailable",reason:"not_run"},"en"),"Not executed");assert.equal(runtimeStepOutcomeLabel({outcome:"unavailable",reason:"not_run"},"zh"),"未执行");
+  assert.equal(runtimeStepOutcomeLabel({outcome:"unavailable",reason:"network_unavailable"},"en"),"Unavailable");
+  const report=capacityReport([step("winner_conflict","mismatch")]);report.plan.protocol="booking-http-v4";assert.equal(runtimeFeedbackCriterion(report),"coverage-4");assert.match(draftRuntimeFeedback(report,"en"),/technical agreement/u);
+});

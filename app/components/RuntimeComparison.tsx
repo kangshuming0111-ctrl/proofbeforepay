@@ -5,9 +5,10 @@ import {ChevronDown,FlaskConical,LoaderCircle} from "lucide-react";
 import type {Language,ProofDelivery,ProofDeliveryVersion} from "@/lib/contracts";
 import type {RuntimeCheckPlan,RuntimeCheckStep} from "@/lib/runtime-checks";
 import {runtimeProtocolStepIds} from "@/lib/runtime-checks";
-import {runtimeReasonLabel,runtimeStepName} from "@/lib/runtime-feedback";
+import {runtimeReasonLabel,runtimeStepName,runtimeStepOutcomeLabel} from "@/lib/runtime-feedback";
 import {buildRuntimeComparison,type RuntimeComparison as ComparisonResult,type RuntimeComparisonSide,type RuntimeComparisonReason} from "@/lib/runtime-comparison";
 import {runtimeSavedActualExcerpt} from "@/lib/runtime-overview";
+import {RuntimeCoverageSummary} from "./RuntimeCoverageSummary";
 import "../runtime-comparison.css";
 
 type Props={projectId?:string;plan:RuntimeCheckPlan;delivery:ProofDelivery;previousVersion?:ProofDeliveryVersion;language:Language};
@@ -40,7 +41,7 @@ export function RuntimeComparison({projectId,plan,delivery,previousVersion,langu
   },[projectId,plan,delivery,previousVersion]);
   const context=saved?.projectId===projectId&&saved?.plan===plan&&saved.delivery===delivery&&saved.previousVersion===previousVersion?saved:undefined;
   const result=context?.result;
-  const outcome=(step:RuntimeCheckStep)=>step.outcome==="observed"?tr("观测支持","Observed support"):step.outcome==="mismatch"?tr("不符","Mismatch"):tr("未确定","Unavailable");
+  const outcome=(step:RuntimeCheckStep)=>runtimeStepOutcomeLabel(step,language);
   const response=(step:RuntimeCheckStep|undefined)=>!step?tr("未保存读数","No saved reading"):`HTTP ${step.status??"—"} · ${outcome(step)}`;
   function sideCard(side:RuntimeComparisonSide,earlier:boolean){
     const data=side.state==="available"?side.data:undefined,version=data?.delivery??(side.state==="unavailable"?side.delivery:undefined);
@@ -49,7 +50,7 @@ export function RuntimeComparison({projectId,plan,delivery,previousVersion,langu
       {data?<>
         <p className="runtime-comparison-score"><strong>{data.report.summary.observed}/{data.report.summary.steps}</strong><span>{tr("步有预期观测支持","steps with expected observations")}</span></p>
         <p className="runtime-comparison-counts">{tr(`${data.report.summary.issues} 步不符；${data.report.summary.unavailable} 步未确定`,`${data.report.summary.issues} mismatched; ${data.report.summary.unavailable} unavailable`)}</p>
-        {data.boundary&&result?.plan?.protocol==="booking-http-v2"&&<p className={`runtime-comparison-boundary runtime-comparison-${data.boundary.outcome}`}><strong>{tr(`${result.plan.policy.maxPartySize+1} 人请求`,`${result.plan.policy.maxPartySize+1}-person request`)}</strong><span>{response(data.boundary)}</span></p>}
+        {data.boundary&&(result?.plan?.protocol==="booking-http-v2"||result?.plan?.protocol==="booking-http-v4")&&<p className={`runtime-comparison-boundary runtime-comparison-${data.boundary.outcome}`}><strong>{tr(`${result.plan.policy.maxPartySize+1} 人请求`,`${result.plan.policy.maxPartySize+1}-person request`)}</strong><span>{response(data.boundary)}</span></p>}
         {data.concurrency&&<p className="runtime-comparison-concurrency"><strong>{tr("同键并发响应","Concurrent same-key responses")}</strong><span>{data.concurrency.responses.map(step=>`HTTP ${step.status??"—"}`).join(" / ")}</span><span>{tr(`201 响应 ${data.concurrency.creationResponses} 次；200 响应 ${data.concurrency.replayResponses} 次`,`201 responses: ${data.concurrency.creationResponses}; 200 responses: ${data.concurrency.replayResponses}`)}</span><span>{data.concurrency.observedPair?tr("一次创建响应、一次重放响应有观测支持","One creation and one replay response observed"):tr("未完整观察到预期并发对","Expected concurrent pair not fully observed")}</span><span>{tr("独立回读","Independent readback")}: {response(data.concurrency.readback)}</span></p>}
         {data.capacity&&<div className="runtime-comparison-concurrency"><strong>{tr("不同订单并发争用同一时段","Distinct orders contend for one slot")}</strong>
           <span>{data.capacity.responses.map(step=>response(step)).join(" / ")}</span>
@@ -62,6 +63,7 @@ export function RuntimeComparison({projectId,plan,delivery,previousVersion,langu
           <strong>{tr("保存的时段总人数与订单编号检查","Saved slot-total and booking-ID observations")}</strong>
           {([["初始 A","Initial A",data.capacity.occupancy.initial],["争用后 A","A after race",data.capacity.occupancy.afterRace],["重放后 A","A after replay",data.capacity.occupancy.afterReplay],["满额 A","Full A",data.capacity.occupancy.full],["其他时段写入后 A","Final A after other-slot writes",data.capacity.occupancy.finalA],["独立 B","Independent B",data.capacity.occupancy.slotB]] as const).map(([zh,en,step])=>{const excerpt=["slot_a_after_race","slot_a_after_rejection"].includes(step.id)?runtimeSavedActualExcerpt(step):undefined;return <span key={step.id}>{tr(zh,en)}: {response(step)}{excerpt&&<><br/>{tr("保存的实际片段","Saved actual excerpt")}: <code>{excerpt}</code></>}</span>;})}
         </div>}
+        <RuntimeCoverageSummary plan={data.report.plan} report={data.report} language={language}/>
         <dl className="runtime-comparison-refs"><div><dt>{tr("报告","Report")}</dt><dd><code>{data.report.id}</code></dd></div><div><dt>{tr("交付","Delivery")}</dt><dd><code>{data.delivery.id}</code></dd></div><div><dt>{tr("目标","Target")}</dt><dd>{data.report.target.label}</dd></div><div><dt>{tr("修订","Revision")}</dt><dd>{data.report.target.revision}</dd></div><div><dt>{tr("文件摘要","File digest")}</dt><dd><code title={data.fileDigest}>{data.fileDigest.slice(0,12)}…</code></dd></div></dl>
       </>:<><p className="runtime-comparison-unavailable">{side.state==="unavailable"?tr(...reasons[side.reason]):""}</p>{version&&<code className="runtime-comparison-delivery-id">{version.id}</code>}</>}
     </article>;
@@ -73,7 +75,7 @@ export function RuntimeComparison({projectId,plan,delivery,previousVersion,langu
     <h3><FlaskConical size={14} aria-hidden="true"/>{tr("这次接口记录具体变了什么","What changed in the HTTP evidence")}</h3>
     <blockquote>{result?.plan?.source.excerpt??plan.source.excerpt}</blockquote>
     {activePlan.protocol==="booking-http-v2"&&<p className="runtime-comparison-agreed">{tr(`已约定每笔最多 ${activePlan.policy.maxPartySize} 人；超过上限应拒绝。`,`Agreed maximum: ${activePlan.policy.maxPartySize} people per booking; above-limit input should be rejected.`)}</p>}
-    {activePlan.protocol==="booking-http-v3"&&<><p className="runtime-comparison-agreed">{tr(`两项独立约定：每笔最多 ${activePlan.policy.maxPartySize} 人；每个时段合计最多 ${activePlan.slotCapacity.maxGuestsPerSlot} 人。`,`Two separate constraints: at most ${activePlan.policy.maxPartySize} guests per booking and ${activePlan.slotCapacity.maxGuestsPerSlot} guests in total per slot.`)}</p><blockquote>{activePlan.slotCapacity.source.excerpt}</blockquote><p className="runtime-comparison-counts">{tr("不同订单争用容量；检查独立回读、重放不重复占位，以及其他时段写入后旧订单仍保留。","Distinct orders contend for capacity, with independent readback, replay without extra occupancy, and retained earlier bookings after other-slot writes.")}</p></>}
+    {(activePlan.protocol==="booking-http-v3"||activePlan.protocol==="booking-http-v4")&&<><p className="runtime-comparison-agreed">{tr(`两项独立约定：每笔最多 ${activePlan.policy.maxPartySize} 人；每个时段合计最多 ${activePlan.slotCapacity.maxGuestsPerSlot} 人。`,`Two separate constraints: at most ${activePlan.policy.maxPartySize} guests per booking and ${activePlan.slotCapacity.maxGuestsPerSlot} guests in total per slot.`)}</p><blockquote>{activePlan.slotCapacity.source.excerpt}</blockquote><p className="runtime-comparison-counts">{tr("不同订单争用容量；检查独立回读、重放不重复占位，以及其他时段写入后旧订单仍保留。","Distinct orders contend for capacity, with independent readback, replay without extra occupancy, and retained earlier bookings after other-slot writes.")}</p></>}
     {!context?<p className="runtime-comparison-loading" role="status"><LoaderCircle size={13} className="spin"/>{tr("正在独立核对两版文件摘要与已保存的报告…","Checking each version’s file digest and saved report independently…")}</p>:context.error?<p className="runtime-comparison-unavailable" role="status">{tr("暂时无法核对这两版记录。请刷新项目后重试，未显示通过结果。","These records could not be checked. Refresh the project and retry; no successful result is shown.")}</p>:result&&<>
       {before?.status!==undefined&&after?.status!==undefined&&before.status!==after.status&&<p className="runtime-comparison-change">{tr("超上限请求的已保存响应","Saved response to above-limit input")}: <strong>HTTP {before.status} → HTTP {after.status}</strong></p>}
       {beforeCapacity&&afterCapacity&&capacityResponses(beforeCapacity)!==capacityResponses(afterCapacity)&&<p className="runtime-comparison-change">{tr("不同订单容量争用的已保存响应","Saved responses to distinct-order capacity contention")}: <strong>{capacityResponses(beforeCapacity)} → {capacityResponses(afterCapacity)}</strong></p>}

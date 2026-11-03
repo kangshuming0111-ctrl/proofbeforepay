@@ -4,8 +4,12 @@ import { DomainError } from "./domain.ts";
 export const EVIDENCE_HISTORY_BYTE_LIMIT = 256 * 1024;
 export const DELIVERY_EVIDENCE_BYTE_LIMIT = 2 * 1024 * 1024;
 export const RUNTIME_REPORT_RESERVATION_BYTES = 48 * 1024;
+export const EXPANDED_RUNTIME_REPORT_RESERVATION_BYTES = 96 * 1024;
 const MAX_ACCEPTANCES = 20;
 const MAX_PROTOCOL_STEPS = 18;
+const EXPANDED_PROTOCOL_STEPS = 31;
+function expanded(quote: ProofQuote): boolean { return quote.proof.project?.runtimeCheck?.protocol === "booking-http-v4"; }
+export function runtimeReportReservationBytes(quote: ProofQuote): number { return expanded(quote) ? EXPANDED_RUNTIME_REPORT_RESERVATION_BYTES : RUNTIME_REPORT_RESERVATION_BYTES; }
 const ID_RESERVE = "r".repeat(80);
 const EXCEPTION_RESERVE = "\u0000".repeat(500); // JSON escapes use the maximum six bytes per UTF-16 character.
 
@@ -42,7 +46,7 @@ function reservation(delivery: ProofDelivery): Reservation | undefined {
   const value = delivery.evidenceReservation;
   if (!value) return;
   if (Object.keys(value).some(key => !["runtimeRunId", "reportBytes", "acceptanceBytes"].includes(key))
-    || !Number.isSafeInteger(value.reportBytes) || value.reportBytes < 0 || value.reportBytes > RUNTIME_REPORT_RESERVATION_BYTES
+    || !Number.isSafeInteger(value.reportBytes) || value.reportBytes < 0 || value.reportBytes > EXPANDED_RUNTIME_REPORT_RESERVATION_BYTES
     || !Number.isSafeInteger(value.acceptanceBytes) || value.acceptanceBytes < 0 || value.acceptanceBytes > EVIDENCE_HISTORY_BYTE_LIMIT
     || value.reportBytes > 0 && (!value.runtimeRunId || value.runtimeRunId !== delivery.runtimeRun?.id)
     || value.reportBytes === 0 && value.runtimeRunId !== undefined) {
@@ -66,7 +70,7 @@ export function acceptanceSnapshotReservationBytes(quote: ProofQuote): number {
     runtimeReportId: reference(delivery.runtimeReport?.id), runtimeDeliveryDigest: "a".repeat(64), runtimeTargetId: reference(delivery.runtimeReport?.target.id ?? delivery.backendTargetId),
     ...(delivery.runtimeRegistration ? {runtimeRegistration: delivery.runtimeRegistration} : {}),
     runtimeExceptionReason: EXCEPTION_RESERVE,
-    runtimeAcknowledgedSteps: Array.from({length: MAX_PROTOCOL_STEPS}, () => ID_RESERVE),
+    runtimeAcknowledgedSteps: Array.from({length: expanded(quote) ? EXPANDED_PROTOCOL_STEPS : MAX_PROTOCOL_STEPS}, () => ID_RESERVE),
     browserReportId: reference(delivery.browserChecks?.id), layoutReportId: reference(delivery.layoutReport?.id), assessmentId: reference(assessment?.id),
     manualChecks: [...new Set(delivery.evidence.filter(item => item.finding === "needs_human").map(item => item.criterionId))],
     criteria: quote.proof.criteria, evidence: delivery.evidence,
@@ -114,7 +118,7 @@ export function reserveRuntimeEvidence(quote: ProofQuote, runId: string): ProofQ
   if (!delivery || delivery.runtimeRun?.id !== runId) throw new DomainError("Reserve evidence only for the saved backend run identity.", 409);
   if (needsAcceptanceSnapshot(quote) && (delivery.acceptanceEvidence?.length ?? 0) >= MAX_ACCEPTANCES) full();
   const next = structuredClone(quote);
-  next.proof.delivery!.evidenceReservation = {runtimeRunId: runId, reportBytes: RUNTIME_REPORT_RESERVATION_BYTES,
+  next.proof.delivery!.evidenceReservation = {runtimeRunId: runId, reportBytes: runtimeReportReservationBytes(quote),
     acceptanceBytes: needsAcceptanceSnapshot(quote) ? acceptanceSnapshotReservationBytes(quote) : 0};
   assertQuoteEvidenceBudget(next);
   return next;
@@ -129,7 +133,7 @@ export function finishRuntimeEvidenceReservation(quote: ProofQuote, runId: strin
   // The run has just been removed on the cloned completion; inspect its saved
   // reservation without the pending-lease consistency check used by writers.
   const saved = delivery.evidenceReservation;
-  if (!saved || saved.runtimeRunId !== runId || saved.reportBytes !== RUNTIME_REPORT_RESERVATION_BYTES || bytes(report) > saved.reportBytes) {
+  if (!saved || saved.runtimeRunId !== runId || saved.reportBytes !== runtimeReportReservationBytes(quote) || bytes(report) > saved.reportBytes) {
     throw new DomainError("The backend report exceeds its saved evidence reservation. Prior evidence and the pending run were retained.", 409);
   }
   const next = structuredClone(quote);

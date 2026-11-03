@@ -12,6 +12,10 @@ test("legacy v1 remains revision-only while every explicit newer protocol requir
   assert.deepEqual(diagnoseRuntimeMetadata({revision:"new-1"},{revision:"new-1",protocol:"booking-http-v2"}).missing,["protocol"]);
   assert.deepEqual(diagnoseRuntimeMetadata({revision:"new-1",protocol:"booking-http-v2"},{revision:"new-1",protocol:"booking-http-v3"}).mismatch,["protocol"]);
   assert.equal(diagnoseRuntimeMetadata({revision:"new-1",protocol:"booking-http-v3"},{revision:"new-1",protocol:"booking-http-v3"}).matches,true);
+  assert.equal(diagnoseRuntimeMetadata({revision:"new-1",protocol:"booking-http-v4"},{revision:"new-1",protocol:"booking-http-v4"}).matches,true);
+  assert.deepEqual(diagnoseRuntimeMetadata({revision:"new-1",protocol:"booking-http-v3"},{revision:"new-1",protocol:"booking-http-v4"}).mismatch,["protocol"]);
+  assert.deepEqual(diagnoseRuntimeMetadata({revision:"new-1"},{revision:"new-1",protocol:"booking-http-v4"}).missing,["protocol"]);
+  assert.deepEqual(diagnoseRuntimeMetadata({revision:"new-1",protocol:"booking-http-v5"},{revision:"new-1",protocol:"booking-http-v4"}).malformed,["protocol"]);
 });
 
 test("all pinned association declarations must match; unrelated response data is never retained",()=>{

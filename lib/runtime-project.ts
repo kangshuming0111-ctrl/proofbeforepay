@@ -15,6 +15,9 @@ export const RUNTIME_TARGETS: RuntimeCheckTarget[] = [
   {id:"lab-capacity-flawed",label:"Controlled slot-capacity overbooking",baseUrl:`${RUNTIME_LAB_ORIGIN}/test-api/capacity-flawed/`,revision:"capacity-overbook-v1",testOnly:true,protocol:"booking-http-v3"},
   {id:"lab-capacity-fixed",label:"Controlled atomic slot capacity",baseUrl:`${RUNTIME_LAB_ORIGIN}/test-api/capacity-fixed/`,revision:"capacity-fixed-v1",testOnly:true,protocol:"booking-http-v3"},
   {id:"lab-capacity-underlimit",label:"Controlled slot-capacity over-rejection",baseUrl:`${RUNTIME_LAB_ORIGIN}/test-api/capacity-underlimit/`,revision:"capacity-underlimit-v1",testOnly:true,protocol:"booking-http-v3"},
+  {id:"lab-coverage-fixed",label:"Combined input, replay and capacity checks",baseUrl:`${RUNTIME_LAB_ORIGIN}/test-api/coverage-fixed/`,revision:"coverage-fixed-v1",testOnly:true,protocol:"booking-http-v4"},
+  {id:"lab-coverage-validation-gap",label:"Combined checks · invalid-email persistence defect",baseUrl:`${RUNTIME_LAB_ORIGIN}/test-api/coverage-validation-gap/`,revision:"coverage-validation-gap-v1",testOnly:true,protocol:"booking-http-v4"},
+  {id:"lab-coverage-overbook",label:"Combined checks · capacity overbooking defect",baseUrl:`${RUNTIME_LAB_ORIGIN}/test-api/coverage-overbook/`,revision:"coverage-overbook-v1",testOnly:true,protocol:"booking-http-v4"},
 ];
 export function runtimeTarget(id: unknown): RuntimeCheckTarget {
   const target=RUNTIME_TARGETS.find(item=>item.id===id);
@@ -36,13 +39,13 @@ export function deliveryRuntimeTarget(delivery:ProofDelivery):RuntimeCheckTarget
 export function parseRuntimePlan(value:unknown, project:StaticProjectSpec, confirmed=false):RuntimeCheckPlan {
   if(!value || typeof value!=="object" || Array.isArray(value)) throw new DomainError("Backend check plan must be an object.");
   const input=value as Record<string,unknown>;
-  if(Object.keys(input).some(key=>!["protocol","criterionId","source","confirmed",...(input.protocol!=="booking-http-v1"?["policy"]:[]),...(input.protocol==="booking-http-v3"?["slotCapacity"]:[])].includes(key)) || !["booking-http-v1","booking-http-v2","booking-http-v3"].includes(input.protocol as string) || confirmed && input.confirmed!==true) throw new DomainError("Explicitly confirm the booking HTTP protocol.");
+  if(Object.keys(input).some(key=>!["protocol","criterionId","source","confirmed",...(input.protocol!=="booking-http-v1"?["policy"]:[]),...((input.protocol==="booking-http-v3"||input.protocol==="booking-http-v4")?["slotCapacity"]:[])].includes(key)) || !["booking-http-v1","booking-http-v2","booking-http-v3","booking-http-v4"].includes(input.protocol as string) || confirmed && input.confirmed!==true) throw new DomainError("Explicitly confirm the booking HTTP protocol.");
   const row=project.coverage?.decisions.find(row=>row.criterionId===input.criterionId && row.disposition==="include");
   if(!row || !project.coverage || project.coverage.sourceText.slice(row.start,row.end)!==row.text) throw new DomainError("Link the backend check to an included original requirement.");
   const source={start:row.start,end:row.end,excerpt:row.text};
   if(input.source!==undefined && JSON.stringify(input.source)!==JSON.stringify(source)) throw new DomainError("The backend source reference changed.");
   let slotCapacity:unknown;
-  if(input.protocol==="booking-http-v3"){
+  if((input.protocol==="booking-http-v3"||input.protocol==="booking-http-v4")){
     const capacity=input.slotCapacity;
     if(!capacity||typeof capacity!=="object"||Array.isArray(capacity))throw new DomainError("Link slot capacity to its own complete included requirement.");
     const candidate=capacity as Record<string,unknown>,capacityRow=project.coverage.decisions.find(item=>item.criterionId===candidate.criterionId&&item.disposition==="include");
@@ -52,14 +55,14 @@ export function parseRuntimePlan(value:unknown, project:StaticProjectSpec, confi
     if(!given||given.start!==completeSource.start||given.end!==completeSource.end||given.excerpt!==completeSource.excerpt)throw new DomainError("Slot capacity must retain its complete included original clause.");
     slotCapacity=capacity;
   }
-  return validateRuntimePlan({protocol:input.protocol,criterionId:row.criterionId!,source,...(input.protocol!=="booking-http-v1"?{policy:input.policy}:{}),...(input.protocol==="booking-http-v3"?{slotCapacity}:{})},{sourceText:project.coverage.sourceText,criteria:project.coverage.decisions.filter(item=>item.disposition==="include").map(item=>({id:item.criterionId!}))});
+  return validateRuntimePlan({protocol:input.protocol,criterionId:row.criterionId!,source,...(input.protocol!=="booking-http-v1"?{policy:input.policy}:{}),...((input.protocol==="booking-http-v3"||input.protocol==="booking-http-v4")?{slotCapacity}:{})},{sourceText:project.coverage.sourceText,criteria:project.coverage.decisions.filter(item=>item.disposition==="include").map(item=>({id:item.criterionId!}))});
 }
 export function savedRuntimePlan(quote:ProofQuote):RuntimeCheckPlan|undefined {
   const project=quote.proof.project;
   if(!project?.runtimeCheck) return;
   const plan=parseRuntimePlan(project.runtimeCheck,project);
   if(!quote.proof.criteria.some(item=>item.id===plan.criterionId && item.source===plan.source.excerpt) || project.coverage?.sourceText!==quote.summary.trim()) throw new DomainError("The backend requirement and saved scope differ.",409);
-  if(plan.protocol==="booking-http-v3"&&!quote.proof.criteria.some(item=>item.id===plan.slotCapacity.criterionId&&item.source===plan.slotCapacity.source.excerpt))throw new DomainError("The slot-capacity requirement and saved scope differ.",409);
+  if((plan.protocol==="booking-http-v3"||plan.protocol==="booking-http-v4")&&!quote.proof.criteria.some(item=>item.id===plan.slotCapacity.criterionId&&item.source===plan.slotCapacity.source.excerpt))throw new DomainError("The slot-capacity requirement and saved scope differ.",409);
   return plan;
 }
 export async function runtimeDeliveryDigest(files:Record<string,string>|undefined):Promise<string> {

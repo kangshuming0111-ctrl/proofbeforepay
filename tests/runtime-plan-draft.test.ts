@@ -23,3 +23,8 @@ test("switching protocols rebuilds the draft and preserves v1/v2 behavior withou
   const v1=buildRuntimePlanDraft({...value,protocol:"booking-http-v1",criterionId:value.capacityCriterionId});assert.equal(v1.ready,true);assert.equal(v1.policy,undefined);
   assert.equal(buildRuntimePlanDraft({...value,criterionId:""}).ready,false);
 });
+
+test("fresh capacity example proposesv4 butv3 remains a separate17-step agreement requiring its own confirmation",async()=>{
+  const {CAPACITY_EXAMPLE_PROTOCOL}=await import("../lib/runtime-plan-draft.ts");assert.equal(CAPACITY_EXAMPLE_PROTOCOL,"booking-http-v4");
+  for(const protocol of["booking-http-v3","booking-http-v4"]as const){const value=input(),draft=buildRuntimePlanDraft({...value,protocol});assert.equal(draft.ready,true);assert.equal(draft.plan?.protocol,protocol);assert.throws(()=>confirmedRuntimeDraft(draft,false));const adopted=confirmedRuntimeDraft(draft,true);assert.equal(adopted.protocol,protocol);if(adopted.protocol!=="booking-http-v3"&&adopted.protocol!=="booking-http-v4")throw new Error("capacity fixture");assert.equal(adopted.slotCapacity.maxGuestsPerSlot,8);assert.equal(adopted.source.excerpt,value.units[0].text);}
+});
