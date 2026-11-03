@@ -10,6 +10,9 @@ export type RuntimeVersionEvidence={
   delivery:DeliveryReference;report:RuntimeCheckReport;fileDigest:string;
   boundary?:RuntimeCheckStep;
   concurrency?:{responses:RuntimeCheckStep[];creationResponses:number;replayResponses:number;observedPair:boolean;readback:RuntimeCheckStep};
+  capacity?:{responses:RuntimeCheckStep[];creationResponses:number;capacityRejections:number;observedPair:boolean;
+    winnerReadback:RuntimeCheckStep;fillReadback:RuntimeCheckStep;winnerReplay:RuntimeCheckStep;rejectExtra:RuntimeCheckStep;slotBCreate:RuntimeCheckStep;slotBReadback:RuntimeCheckStep;
+    occupancy:{initial:RuntimeCheckStep;afterRace:RuntimeCheckStep;afterReplay:RuntimeCheckStep;full:RuntimeCheckStep;finalA:RuntimeCheckStep;slotB:RuntimeCheckStep}};
 };
 export type RuntimeComparisonSide={state:"available";data:RuntimeVersionEvidence}|{state:"unavailable";reason:RuntimeComparisonReason;delivery?:DeliveryReference};
 export type RuntimeComparison={plan?:RuntimeCheckPlan;previous:RuntimeComparisonSide;current:RuntimeComparisonSide};
@@ -46,9 +49,14 @@ async function versionEvidence(delivery:ProofDelivery,plan:RuntimeCheckPlan,proj
   const pair=validated.steps.filter(step=>step.id==="concurrent_first"||step.id==="concurrent_second");
   const readback=validated.steps.find(step=>step.id==="concurrent_readback");
   const creationResponses=pair.filter(step=>step.status===201).length,replayResponses=pair.filter(step=>step.status===200).length;
+  const capacityPair=validated.steps.filter(step=>step.id==="capacity_race_first"||step.id==="capacity_race_second");
+  const capacityCreations=capacityPair.filter(step=>step.status===201).length,capacityRejections=capacityPair.filter(step=>step.status===409).length;
+  const step=(id:string)=>validated.steps.find(step=>step.id===id)!;
   return {state:"available",data:{delivery:metadata(delivery),report:validated,fileDigest:digest,
     ...(plan.protocol==="booking-http-v2"?{boundary:validated.steps.find(step=>step.id==="party_above"),
-      ...(readback?{concurrency:{responses:pair,creationResponses,replayResponses,observedPair:pair.length===2&&pair.every(step=>step.outcome==="observed")&&creationResponses===1&&replayResponses===1,readback}}:{})}:{})}};
+      ...(readback?{concurrency:{responses:pair,creationResponses,replayResponses,observedPair:pair.length===2&&pair.every(step=>step.outcome==="observed")&&creationResponses===1&&replayResponses===1,readback}}:{})}:plan.protocol==="booking-http-v3"?{capacity:{responses:capacityPair,creationResponses:capacityCreations,capacityRejections,observedPair:capacityPair.length===2&&capacityPair.every(step=>step.outcome==="observed")&&capacityCreations===1&&capacityRejections===1,
+        winnerReadback:step("race_winner_readback"),fillReadback:step("fill_readback"),winnerReplay:step("race_winner_replay"),rejectExtra:step("reject_extra"),slotBCreate:step("slot_b_create"),slotBReadback:step("slot_b_readback"),
+        occupancy:{initial:step("slot_a_initial"),afterRace:step("slot_a_after_race"),afterReplay:step("slot_a_after_replay"),full:step("slot_a_full"),finalA:step("slot_a_after_rejection"),slotB:step("slot_b_occupancy")}}}:{})}};
 }
 
 /** Read-only comparison of saved HTTP observations. Each side must bind its own

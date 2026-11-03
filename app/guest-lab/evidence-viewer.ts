@@ -1,0 +1,153 @@
+import "./evidence-viewer.css";
+import recordedV1 from "../../tests/fixtures/recorded-seller-staging/v1-evidence.json";
+import recordedV2 from "../../tests/fixtures/recorded-seller-staging/v2-evidence.json";
+import {createEvidenceViewerController,runtimeEvidenceForViewer,type EvidenceViewerState,type EvidenceViewerError} from "./evidence-controller.ts";
+import type {EvidenceExport} from "../../lib/evidence-export.ts";
+import type {RuntimeCheckReport} from "../../lib/runtime-checks.ts";
+import {runtimeStepName,runtimeReasonLabel} from "../../lib/runtime-feedback.ts";
+
+type Language="zh"|"en";
+let language:Language="zh",state:EvidenceViewerState={phase:"empty"},selectedFile="",detailTab:"gates"|"runtime"|"source"="gates";
+const root=document.querySelector<HTMLDivElement>("#evidence-app")!;
+const tr=(zh:string,en:string)=>language==="zh"?zh:en;
+const node=<T extends keyof HTMLElementTagNameMap>(tag:T,className="",text?:string)=>{const item=document.createElement(tag);item.className=className;if(text!==undefined)item.textContent=text;return item;};
+const append=(parent:Node,...children:Node[])=>children.forEach(child=>parent.appendChild(child));
+const controller=createEvidenceViewerController(next=>{state=next;selectedFile="";render();});
+const gates:Record<string,[string,string,string,string]>={
+  structure:["文件格式与范围","Format and scope","支持的当前交付格式，且结构在上限内。","Supported current-delivery format within structural limits."],
+  "file-digest":["交付文件摘要","File-map digest","重新计算文件映射的 SHA-256。","Recompute SHA-256 for the exact file map."],
+  requirements:["原始要求引用","Original requirement spans","核对原文范围与保留的字面引用。","Resolve retained literal spans in the original source."],
+  "source-rule-replay":["源码规则重放","Source-rule replay","对保存的文件重算命名版本的规则。","Replay the named source rules on the saved files."],
+  "ai-source-citations":["AI 引用与人工批注","AI citations and annotations","核对来源位置与批注关联；不验证模型判断。","Check source positions and annotation bindings, not model judgment."],
+  "reported-observation-consistency":["已报告的浏览器读数","Reported browser observations","按提供的读数重算结果；未运行浏览器。","Recalculate supplied readings; no browser is run."],
+  "runtime-bindings":["接口报告关联","HTTP report bindings","核对本版、计划、摘要及冻结目标。","Check delivery, plan, digest and frozen target bindings."],
+  "acceptance-references":["验收快照关联","Acceptance snapshot references","核对原快照、报告与明确例外。","Check retained snapshots, reports and explicit exceptions."],
+};
+const errors:Record<EvidenceViewerError,[string,string]>={
+  too_large:["请选择不超过 4 MiB 的单个 JSON 文件。","Choose one JSON file no larger than 4 MiB."],
+  invalid_utf8:["文件不是有效 UTF-8。请重新导出 JSON 后选择。","This file is not valid UTF-8. Export the JSON again and retry."],
+  invalid_json:["文件不是完整 JSON。请选择下载的证据包。","This is not complete JSON. Choose the downloaded evidence export."],
+  read_failed:["未能读取本地文件。请重新选择；没有上传文件。","The local file could not be read. Select it again; nothing was uploaded."],
+  verification_failed:["此次核对未完成。请重新导出文件后重试；未显示通过结果。","This check did not complete. Export the file again and retry; no successful result is shown."],
+};
+function button(text:string,action:()=>void|Promise<void>,className="",focusKey=text){
+  const value=node("button",className,text);value.type="button";value.dataset.evFocus=focusKey;value.addEventListener("click",()=>{void action();});return value;
+}
+function labelledValue(label:string,value:string){const row=node("div");append(row,node("dt","",label),node("dd","",value));return row;}
+function statusLabel(value:"consistent"|"inconsistent"|"unsupported"){
+  return value==="consistent"?tr("记录内部一致","Internally consistent"):value==="inconsistent"?tr("记录存在不一致","Inconsistency found"):tr("不支持此格式","Unsupported format");
+}
+function displayTime(value:string){return value.replace("T"," ").replace(".000Z"," UTC");}
+
+function inputPanel(){
+  const side=node("aside","ev-input"),label=node("label","ev-file-label",tr("选择本地证据包","Choose a local evidence file"));
+  label.htmlFor="evidence-file";
+  const input=node("input","ev-file-input");input.id="evidence-file";input.type="file";input.accept=".json,application/json";input.dataset.evFocus="local-file";
+  input.addEventListener("change",()=>{const file=input.files?.[0];if(file){detailTab="gates";void controller.openFile(file);}});
+  append(side,label,input,node("p","ev-note",tr("单个 UTF-8 JSON，最多 4 MiB。只在本页内存读取；刷新或清除后不保留。","One UTF-8 JSON, up to 4 MiB. Read in this page’s memory; cleared on reset or refresh.")));
+  const sampleGroup=node("div","ev-samples");append(sampleGroup,node("h2","",tr("先核对一份已记录的样例","Try a recorded example")));
+  const sample=(version:1|2)=>{
+    const b=button(tr(`记录的 v${version}`,`Recorded v${version}`),()=>{detailTab="gates";return controller.openRecorded(version===1?recordedV1:recordedV2,`ProofBeforePay-recorded-v${version}.json`);},"ev-sample");
+    append(b,node("span","",version===1?tr("保留超限不符 · 17/18","Above-limit mismatch retained · 17/18"):tr("该次有限记录 · 18/18","That bounded recorded run · 18/18")));return b;
+  };
+  append(sampleGroup,sample(1),sample(2),node("p","ev-note",tr("两份虚构开发者记录，使用受控卖家参考服务。点击只核对随页面打包的文件，不会重新调用服务。","Two fictional developer records from a controlled seller-reference service. These bundled files are checked without calling that service again.")));
+  append(side,sampleGroup,button(tr("清除本页文件","Clear this file"),()=>{detailTab="gates";controller.reset();},"ev-clear"));
+  return side;
+}
+
+function gatePanel(){
+  const section=node("section","ev-gates");section.setAttribute("aria-label",tr("八项离线核对","Eight offline checks"));
+  const checks=state.phase==="ready"?state.verification.checks:[];
+  const list=node("ol");
+  for(const [id,copy] of Object.entries(gates)){
+    const check=checks.find(row=>row.id===id),outcome=check?.status??"not_checked",row=node("li",`ev-gate ${outcome}`),heading=node("div","ev-gate-heading");
+    append(heading,node("h3","",tr(copy[0],copy[1])),node("span","ev-gate-status",outcome==="consistent"?tr("一致","Consistent"):outcome==="inconsistent"?tr("不一致","Inconsistent"):tr("未核对","Not checked")));
+    append(row,heading,node("p","",tr(copy[2],copy[3])));
+    if(check?.status==="inconsistent")append(row,node("p","ev-gate-failure",tr("无法从这份记录建立此项一致性。请检查原始导出；这里不会补造证据。","This gate cannot be established from the supplied record. Inspect the original export; missing evidence is not reconstructed.")));
+    append(list,row);
+  }
+  const early=checks.find(row=>!Object.hasOwn(gates,row.id));
+  if(early)append(section,node("p","ev-callout issue",early.id==="schema"?tr("请选择版本化证据包；原始项目 JSON 不会被当作可核对格式。","Choose the versioned evidence export. Raw project JSON is not silently treated as this format."):tr("输入超出有界普通 JSON 的范围，未继续核对。","The input is outside bounded plain JSON limits; later checks were not run.")));
+  append(section,list);return section;
+}
+
+function runtimePanel(packet:EvidenceExport|undefined){
+  const section=node("section","ev-runtime");
+  const view=runtimeEvidenceForViewer(state);
+  if(!packet||view.state==="unavailable"){append(section,node("p","ev-empty-note",tr("这份记录没有可可靠展示的接口关联。先查看核对结果；未借用样例或其他文件。","No reliable HTTP binding is available for this file. Inspect the checks first; another file or sample is not substituted.")));return section;}
+  if(view.state==="missing"){append(section,node("p","ev-empty-note",tr("此交付没有包含接口报告。源码规则一致不代表测试过网站后端。","No HTTP report was included. Source-rule consistency does not mean a website backend was tested.")));return section;}
+  if(view.state==="pending")append(section,node("p","ev-callout issue",tr("文件保留了一次未完成运行。下面如有旧报告，仅是较早记录，不能说明未完成运行的结果。","The file retains an unfinished run. Any earlier report below is historical and cannot establish that run’s result.")));
+  const report=view.state==="recorded"?view.report:view.previousReport;
+  if(!report)return section;
+  append(section,node("p","ev-callout",tr("下面是文件里保存的有限 HTTP 观测。这次离线核对没有发出这些请求。","These are bounded HTTP observations saved in the file. This offline check did not issue those requests.")));
+  const refs=node("dl","ev-refs");append(refs,labelledValue(tr("报告","Report"),report.id),labelledValue(tr("声明修订","Declared revision"),report.target.revision),labelledValue(tr("目标","Target"),report.target.label),labelledValue(tr("运行时间","Recorded run"),`${displayTime(report.startedAt)} / ${displayTime(report.finishedAt)}`));append(section,refs);
+  const list=node("ol","ev-runtime-steps");
+  for(const step of report.steps){
+    const row=node("li",`ev-runtime-step ${step.outcome}`),head=node("div","ev-gate-heading");
+    append(head,node("h3","",runtimeStepName(step.id,language,step.label)),node("span","ev-step-state",`${step.status===undefined?tr("无 HTTP 读数","No HTTP reading"):`HTTP ${step.status}`} · ${step.outcome==="observed"?tr("观测支持","Observed support"):step.outcome==="mismatch"?tr("不符","Mismatch"):tr("未确定","Unavailable")}`));append(row,head);
+    const details=node("details");append(details,node("summary","",tr("查看该步骤记录","Inspect this step")),node("code","",`${step.method} ${step.path}`),node("p","",`${tr("预期","Expected")}: ${step.expected}`));
+    if(step.actual)append(details,node("pre","",step.actual));if(step.reason)append(details,node("p","",`${runtimeReasonLabel(step.reason,language)} (${step.reason})`));append(row,details);append(list,row);
+  }
+  append(section,list);return section;
+}
+
+function sourcePanel(packet:EvidenceExport|undefined){
+  const section=node("section","ev-source");
+  if(!packet){append(section,node("p","ev-empty-note",tr("文件结构尚未核对，暂不显示来源。","Sources are hidden until the file structure has been checked.")));return section;}
+  const files=Object.keys(packet.delivery.files??{}).sort((a,b)=>a.localeCompare(b,"en"));
+  const textFiles=files.filter(file=>/\.(?:html|css)$/iu.test(file)||file==="delivery-manifest.json");
+  const choices=["@requirements",...textFiles];if(!choices.includes(selectedFile))selectedFile=choices[0];
+  const label=node("label","ev-source-label",tr("选择要查看的原文","Choose retained source text")),select=node("select");select.id="retained-source";select.dataset.evFocus="source-choice";label.htmlFor=select.id;
+  for(const file of choices){const option=node("option","",file==="@requirements"?tr("原始要求与约定","Original requirements and agreement"):file);option.value=file;option.selected=file===selectedFile;append(select,option);}
+  select.addEventListener("change",()=>{selectedFile=select.value;render();});append(section,label,select);
+  const source=selectedFile==="@requirements"?[packet.project.summary,...(packet.project.requirements?[packet.project.requirements.sourceText]:[])].join("\n\n"):packet.delivery.files![selectedFile];
+  const limit=24_000,pre=node("pre","ev-source-text",source.length>limit?source.slice(0,limit)+tr("\n… 本页仅显示前 24,000 字符；核对使用完整受支持文件。","\n… Display limited to 24,000 characters; the verifier used the complete supported file."):source);
+  pre.tabIndex=0;append(section,node("p","ev-note",tr("仅以纯文本展示；不会渲染 HTML、应用 CSS、读取图片像素或跟随文件中的链接。","Text only: HTML is not rendered, CSS is not applied, image pixels are not read, and links in the file are not followed.")),pre);
+  const inventory=node("details","ev-inventory");append(inventory,node("summary","",tr(`全部 ${files.length} 份保存文件`,`All ${files.length} retained files`)));const names=node("ul");for(const file of files)append(names,node("li","",file));append(inventory,names);append(section,inventory);return section;
+}
+
+function limitsPanel(){
+  const section=node("details","ev-limits");append(section,node("summary","",tr("一致究竟证明了什么？","What does consistency establish?")));
+  const list=node("ul");for(const line of [
+    tr("仅核对当前交付文件及其保留的报告、验收关联；更早交付版本不在同一个包内。","Only this delivery’s files, retained reports and acceptance references are checked; earlier deliveries are outside this package."),
+    tr("没有可信签名或外部锚点。完全伪造但内部自洽的文件也可能通过。","There is no trusted signature or external anchor. A fully fabricated but internally coherent file can pass."),
+    tr("不证明签发者、真实身份、实际 HTTP 或模型调用、网站全部合格、法律结论或付款。","This does not prove issuance, identity, actual HTTP or model execution, complete website correctness, a legal conclusion or payment."),
+    tr("原始要求和源文件可能包含个人文字。本页不上传、不存储到浏览器持久空间，也不是自动匿名化工具。","Requirements and source files may contain personal text. This page does not upload them or persist them in browser storage, and is not an automatic anonymiser."),
+  ])append(list,node("li","",line));append(section,list);return section;
+}
+
+function recordedOutcome(report:RuntimeCheckReport,historical=false){
+  const counts=report.summary,result=node("div",`ev-outcome${counts.issues||counts.unavailable?" issue":""}`);
+  append(result,node("strong","",historical?tr(`较早记录：${counts.observed}/${counts.steps} 步有预期观测`,`Earlier recorded run: ${counts.observed}/${counts.steps} expected observations`):tr(`记录的接口结果：${counts.observed}/${counts.steps} 步有预期观测`,`Recorded HTTP result: ${counts.observed}/${counts.steps} expected observations`)),node("span","",tr(`${counts.issues} 项不符，${counts.unavailable} 项未确定。这里只核对保存记录，没有实测服务。`,`${counts.issues} mismatched, ${counts.unavailable} unavailable. The stored record is checked; the service is not tested now.`)));
+  const above=report.steps.find(step=>step.id==="party_above");if(above)append(result,node("span","",`${tr("超限请求","Above-limit request")}: HTTP ${above.status??"—"} · ${above.outcome==="mismatch"?tr("保留不符","Mismatch retained"):above.outcome==="observed"?tr("该次观测支持","Supported by that recorded observation"):tr("未确定","Unavailable")}`));
+  return result;
+}
+
+function render(){
+  const focused=document.activeElement instanceof HTMLElement?document.activeElement.dataset.evFocus:undefined;
+  document.documentElement.lang=language==="zh"?"zh-CN":"en";document.title=tr("ProofBeforePay · 本地证据核对","ProofBeforePay · Local evidence check");root.replaceChildren();
+  const header=node("header","ev-header"),brand=node("a","ev-brand","proofbeforepay.");brand.href="./";
+  const nav=node("nav","ev-header-nav");nav.setAttribute("aria-label",tr("页面导航","Page navigation"));const back=node("a","evidence-navigation",tr("返回实验室","Back to lab"));back.href="./";
+  append(nav,back,button(language==="zh"?"EN":"中文",()=>{language=language==="zh"?"en":"zh";render();},"ev-language","language"));append(header,brand,nav);
+  const main=node("main","ev-main"),intro=node("div","ev-intro");append(intro,node("h1","",tr("把证据放在一起核对。","Put the evidence back together.")),node("p","",tr("选择一份导出，查看文件、引用和验收记录是否彼此一致。","Choose an export and check whether its files, citations and acceptance records agree.")));
+  const privacy=node("p","ev-privacy",tr("本页核对在浏览器内完成 · 文件不上传 · 不调用模型或付款服务","Checked in this browser · no file upload · no model or payment calls"));
+  const workbench=node("div","ev-workbench"),results=node("section","ev-results");results.setAttribute("aria-label",tr("证据核对结果","Evidence check result"));
+  const summary=node("header","ev-result-heading");summary.setAttribute("aria-live","polite");
+  if(state.phase==="empty")append(summary,node("h2","",tr("先选择证据包，或打开一份记录样例。","Choose an export or open a recorded example.")),node("p","",tr("不会自动扫描网站，也不会重新执行文件中的动作。","No website is scanned and no recorded action is re-executed.")));
+  else if(state.phase==="checking")append(summary,node("h2","",tr("正在核对这份记录…","Checking this record…")),node("p","ev-filename",state.label));
+  else if(state.phase==="error")append(summary,node("h2","ev-error",tr("这份文件尚未完成核对","This file has not been checked")),node("p","",tr(...errors[state.error])),node("p","ev-filename",state.label));
+  else{
+    append(summary,node("h2",`ev-verdict ${state.verification.consistency}`,statusLabel(state.verification.consistency)),node("p","ev-filename",state.label));
+    append(summary,node("p","ev-summary-limit",tr("一致性不等于网站已全部合格，也不等于已验收或已付款。","Consistency is not a fully correct website, acceptance or payment.")));
+    if(state.recorded)append(summary,node("p","ev-recorded-label",tr("已记录的虚构样例 · 没有发起新的 HTTP 请求","Recorded fictional example · no new HTTP requests")));
+    const runtime=runtimeEvidenceForViewer(state);
+    if(runtime.state==="pending"){append(summary,node("p","ev-callout issue",tr("此文件包含未完成的接口运行；本次结果未知。以下旧报告不代表这次运行已完成。","This file contains an unfinished HTTP run; its result is unknown. The earlier report below is not that run’s completed result.")));if(runtime.previousReport)append(summary,recordedOutcome(runtime.previousReport,true));}
+    if(runtime.state==="recorded")append(summary,recordedOutcome(runtime.report));
+  }
+  append(results,summary);
+  const tabs=node("nav","ev-tabs");tabs.setAttribute("aria-label",tr("核对视图","Check views"));for(const [key,zh,en] of [["gates","八项核对","Eight checks"],["runtime","接口记录","HTTP evidence"],["source","查看原文","Retained source"]] as const){const b=button(tr(zh,en),()=>{detailTab=key;render();},detailTab===key?"active":"");b.setAttribute("aria-pressed",String(detailTab===key));append(tabs,b);}append(results,tabs);
+  const pane=node("div","ev-detail-pane"),packet=state.phase==="ready"?state.packet:undefined;append(pane,detailTab==="gates"?gatePanel():detailTab==="runtime"?runtimePanel(packet):sourcePanel(packet));append(results,pane,limitsPanel());
+  append(workbench,inputPanel(),results);append(main,intro,privacy,workbench);append(root,header,main);
+  if(focused)[...root.querySelectorAll<HTMLElement>("[data-ev-focus]")].find(item=>item.dataset.evFocus===focused)?.focus({preventScroll:true});
+}
+render();

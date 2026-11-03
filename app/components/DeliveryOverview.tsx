@@ -7,6 +7,7 @@ import { deliveryLayoutSummary } from "@/lib/delivery-layout-summary";
 import { buildBusinessSpotlight } from "@/lib/business-spotlight";
 import { BusinessSpotlight } from "./BusinessSpotlight";
 import {runtimeReportSummary} from "@/lib/runtime-checks";
+import {runtimeOverviewRows} from "@/lib/runtime-overview";
 import "../delivery-overview.css";
 
 export type DeliveryOverviewProps = {
@@ -36,7 +37,7 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
   const business = buildBusinessSpotlight(delivery, previousVersion);
   const runtime=delivery.runtimeReport?.deliveryId===delivery.id?delivery.runtimeReport:undefined;
   const runtimeSummary=runtime?runtimeReportSummary(runtime.steps):undefined;
-  const createStep=runtime?.steps.find(step=>step.id==="create"),readbackStep=runtime?.steps.find(step=>step.id==="readback");
+  const runtimeRows=runtime?runtimeOverviewRows(runtime,language):[];
   const layoutIssue = layout.state === "current" ? layout.firstIssue : undefined;
   const firstRows = overview.rows.slice(0, 3);
   const primaryNeedsAttention = firstRows[0] && (firstRows[0].rule === "fail" || firstRows[0].rule === "unreviewed"
@@ -64,7 +65,7 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
   return <section className="delivery-overview" aria-label={tr("当前交付结果", "Current delivery results")}>
     <header className="delivery-overview-heading"><FileCheck2 size={16} aria-hidden="true"/><h3>{title}</h3><span>{delivery.sequence ? `v${delivery.sequence}` : tr("当前版", "Current")}</span></header>
     {business && <BusinessSpotlight delivery={delivery} previousVersion={previousVersion} language={language} busy={busy} onInspect={onOpenBusiness ?? onOpenLayout ?? (() => {})} onPrepareFeedback={showDraft ? onPrepareFeedback : undefined}/>}
-    {runtime&&runtimeSummary&&<div className="delivery-overview-layout"><div className="delivery-overview-layout-heading"><strong>{tr("预约接口实测","Booking HTTP check")}: {runtimeSummary.observed}/{runtimeSummary.steps} {tr("步有预期观测支持","steps with expected observations")}</strong>{onOpenRuntime&&<button type="button" disabled={busy} onClick={onOpenRuntime}>{tr(`查看 ${runtimeSummary.steps} 步证据`, `Inspect ${runtimeSummary.steps}-step evidence`)}<ArrowRight size={12}/></button>}</div><p className="delivery-overview-layout-note">{tr("创建请求","Create request")} {createStep?.status??"—"} · {tr("独立回读","Independent readback")} {readbackStep?.status??"—"} · {tr("不符","Mismatched")} {runtimeSummary.issues} · {tr("未确定","Unavailable")} {runtimeSummary.unavailable}</p></div>}
+    {runtime&&runtimeSummary&&<div className="delivery-overview-layout"><div className="delivery-overview-layout-heading"><strong>{tr("预约接口实测","Booking HTTP check")}: {runtimeSummary.observed}/{runtimeSummary.steps} {tr("步有预期观测支持","steps with expected observations")}</strong>{onOpenRuntime&&<button type="button" disabled={busy} onClick={onOpenRuntime}>{tr(`查看 ${runtimeSummary.steps} 步证据`, `Inspect ${runtimeSummary.steps}-step evidence`)}<ArrowRight size={12}/></button>}</div>{runtimeRows.map(row=><p key={row.id} className="delivery-overview-layout-note"><strong>{row.label}</strong>: {row.detail}</p>)}<p className="delivery-overview-layout-note">{tr("不符","Mismatched")} {runtimeSummary.issues} · {tr("未确定","Unavailable")} {runtimeSummary.unavailable}</p></div>}
     <div className="delivery-overview-metrics" aria-label={tr("分别记录的检查结果", "Separately recorded check results")}>
       <span className={overview.ruleFailures ? "overview-attention" : ""}>{tr("规则不符", "Rule mismatches")} <strong>{overview.ruleFailures ?? "—"}</strong></span>
       <span className={overview.aiChanges ? "overview-attention" : ""}>{tr("AI 建议修改", "AI change suggestions")} <strong>{overview.aiChanges ?? tr("未运行", "Not run")}</strong></span>

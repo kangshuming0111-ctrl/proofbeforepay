@@ -15,6 +15,13 @@
       "when": 1793631309197,
       "tag": "0003_seller_reference_policy_fix",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1793672905268,
+      "tag": "0004_capacity_reference",
+      "breakpoints": true
     }
   ]
 }

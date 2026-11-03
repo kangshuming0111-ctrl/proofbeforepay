@@ -1,4 +1,6 @@
 import { DomainError } from "./domain.ts";
+import {diagnoseRuntimeMetadata} from "./runtime-metadata.ts";
+import {executeRuntimeCapacityCheck} from "./runtime-capacity.ts";
 import { runtimeDeliveryDigest, runtimeIdentifier, runtimeReportMethod, runtimeReportSummary, validateRuntimePlan, validateRuntimeTarget, type RuntimeCheckPlan, type RuntimeCheckReport, type RuntimeCheckStep, type RuntimeCheckTarget } from "./runtime-checks.ts";
 import {registrationTarget,validateRuntimeRegistrationSnapshot,type RuntimeRegistrationSnapshot} from "./runtime-registration.ts";
 
@@ -47,6 +49,7 @@ export async function executeRuntimeCheck(input: RuntimeCheckInput, options: Run
   if((target.protocol??"booking-http-v1")!==plan.protocol)throw new DomainError("The registered target does not support this agreed protocol.");
   const registration=input.registration===undefined?undefined:validateRuntimeRegistrationSnapshot(input.registration);
   if(registration&&(registration.frontendBundleDigest!==deliveryDigest||JSON.stringify(validateRuntimeTarget(registrationTarget(registration)))!==JSON.stringify(target)))throw new DomainError("The runtime registration differs from the uploaded frontend and target.",409);
+  if(plan.protocol==="booking-http-v3")return executeRuntimeCapacityCheck({deliveryId,deliveryDigest,runId,plan,target:{...target,protocol:"booking-http-v3"},...(registration?{registration:{...registration,protocol:"booking-http-v3"}}:{}),...(input.startedAt?{startedAt:input.startedAt}:{})},options);
   const policy=plan.protocol==="booking-http-v2"?plan.policy:undefined,maxRequests=policy?18:8;
   const startedAt=stamp(input.startedAt), deadline=Date.now()+Math.min(30_000,Math.max(1,options.totalTimeoutMs??30_000));
   const perRequest=Math.min(4_000,Math.max(1,options.requestTimeoutMs??4_000));
@@ -77,6 +80,9 @@ export async function executeRuntimeCheck(input: RuntimeCheckInput, options: Run
     ["concurrent_readback","Read back the concurrent receipt","GET","bookings/:id","HTTP 200 with the agreed original fields and the same receipt ID"],
   );
   const steps:RuntimeCheckStep[]=definitions.map(([id,label,method,path,expected])=>({id,label,method,path,expected,outcome:"unavailable",reason:"not_run"}));
+  if(policy)for(const step of steps){
+    if(["readback","unchanged","party_below_readback","party_exact_readback","concurrent_readback"].includes(step.id))step.expected+="; after all later independent-key writes have completed";
+  }
   let requests=0;
   async function request(step: RuntimeCheckStep, body?: Record<string,unknown>, idempotencyKey?:string): Promise<{status:number;data:unknown}> {
     if(options.signal?.aborted)throw new Unavailable("cancelled");
@@ -122,11 +128,31 @@ export async function executeRuntimeCheck(input: RuntimeCheckInput, options: Run
     if(!candidate||id!==undefined&&candidate!==id)mismatches.unshift("id");
     return {matches:!!candidate&&(id===undefined||candidate===id)&&mismatches.length===0,actual:JSON.stringify({...(candidate?{id:candidate}:{}),matchedFields:FIELDS.filter(field=>data[field]===expected[field]),mismatchedFields:[...new Set(mismatches)],...(id!==undefined?{sameReceiptId:candidate===id}:{})}),...(candidate?{id:candidate}:{})};
   }
+  // Different independent keys must create different receipts. A same-key
+  // replay keeps its ID, including recovery of a previously committed run.
+  const independentReceipts=new Map<string,string>();
+  function independentReceipt(owner:string,id:string):boolean{
+    if(!policy)return true;
+    const prior=independentReceipts.get(id);
+    if(prior!==undefined&&prior!==owner)return false;
+    independentReceipts.set(id,owner);return true;
+  }
+  const finalReadbacks:(()=>Promise<unknown>)[]=[];
+  async function readRecord(index:number,id:string,partySize=payload.partySize){
+    steps[index].path=`bookings/${encodeURIComponent(id)}`;
+    return perform(index,undefined,undefined,response=>{const record=compareRecord(response.data,id,partySize);return{matches:response.status===200&&record.matches,actual:`HTTP ${response.status}; ${record.actual}`};});
+  }
+  async function readNowOrAfterWrites(index:number,id:string,partySize=payload.partySize){
+    // The v2 witnesses run after all other creates. Immediate readback alone
+    // misses a backend that overwrites earlier bookings on a later new key.
+    if(policy)finalReadbacks.push(()=>readRecord(index,id,partySize));
+    else await readRecord(index,id,partySize);
+  }
   const revisionGood=await perform(0,undefined,undefined,response=>{
-    const data=response.data;
-    const association=!registration||plain(data)&&data.registrationRevision===registration.registrationRevision&&data.projectId===registration.projectId&&data.frontendBundleDigest===registration.frontendBundleDigest&&(!registration.backendArtifactDigest||data.backendArtifactDigest===registration.backendArtifactDigest)&&(!registration.backendSourceCommit||data.backendSourceCommit===registration.backendSourceCommit);
-    const matches=response.status===200&&plain(data)&&data.revision===target.revision&&(!policy||data.protocol==="booking-http-v2")&&association;
-    return{matches,actual:matches?`Declared revision matched: ${target.revision}${registration?"; declared registration association matched (not deployment attestation)":""}`:"Declared revision, protocol, registration association or HTTP status did not match; no booking writes were attempted."};
+    const diagnosis=diagnoseRuntimeMetadata(response.data,{revision:target.revision,protocol:plan.protocol,registration});
+    const matches=response.status===200&&diagnosis.matches;
+    const fields=`missing: ${diagnosis.missing.join(",")||"none"}; mismatch: ${diagnosis.mismatch.join(",")||"none"}; malformed: ${diagnosis.malformed.join(",")||"none"}`;
+    return{matches,actual:matches?`Declared revision matched: ${target.revision}${registration?"; declared registration association matched (not deployment attestation)":""}`:`HTTP ${response.status}; metadata ${fields}; no booking writes were attempted.`};
   });
   if(revisionGood){
     const missingSlot:Record<string,unknown>={...payload};delete missingSlot.slot;
@@ -139,9 +165,10 @@ export async function executeRuntimeCheck(input: RuntimeCheckInput, options: Run
     let id:string|undefined,recoveredReceipt=false;
     const created=await perform(3,payload,key,response=>{
       const record=compareRecord(response.data);
-      recoveredReceipt=options.resuming===true&&response.status===200&&record.matches;
-      if(record.matches&&(response.status===201||recoveredReceipt))id=record.id;
-      return{matches:response.status===201&&record.matches,actual:`HTTP ${response.status}; ${record.actual}`};
+      const unique=!!record.id&&record.matches&&[200,201].includes(response.status)&&independentReceipt("create",record.id);
+      recoveredReceipt=options.resuming===true&&response.status===200&&record.matches&&unique;
+      if(record.matches&&unique&&(response.status===201||recoveredReceipt))id=record.id;
+      return{matches:response.status===201&&record.matches&&unique,actual:`HTTP ${response.status}; ${record.actual}${policy?`; distinctIndependentReceiptId: ${unique}`:""}`};
     });
     if(recoveredReceipt){
       // A prior attempt may have committed before its report was saved. The
@@ -151,14 +178,13 @@ export async function executeRuntimeCheck(input: RuntimeCheckInput, options: Run
       steps[3].actual=`${steps[3].actual} Recovered the exact receipt on a resumed run; the original creation response was not observed.`;
     }
     if((created||recoveredReceipt)&&id){
-      steps[4].path=`bookings/${encodeURIComponent(id)}`;steps[7].path=steps[4].path;
-      await perform(4,undefined,undefined,response=>{const record=compareRecord(response.data,id);return{matches:response.status===200&&record.matches,actual:`HTTP ${response.status}; ${record.actual}`};});
+      await readNowOrAfterWrites(4,id);
       await perform(5,payload,key,response=>{const record=compareRecord(response.data,id);return{matches:[200,201].includes(response.status)&&record.matches,actual:`HTTP ${response.status}; ${record.actual}`};});
       await perform(6,{...payload,partySize:policy?2:3},key,response=>{
         const codeMatches=plain(response.data)&&response.data.code==="idempotency_conflict";
         return{matches:response.status===409&&codeMatches,actual:`HTTP ${response.status}; structured idempotency-conflict code ${codeMatches?"matched":"did not match"}.`};
       });
-      await perform(7,undefined,undefined,response=>{const record=compareRecord(response.data,id);return{matches:response.status===200&&record.matches,actual:`HTTP ${response.status}; ${record.actual}`};});
+      await readNowOrAfterWrites(7,id);
     }else{for(const step of steps.slice(4,8))step.reason="create_not_verified";}
     if(policy){
       const reject=(code:string)=>(response:{status:number;data:unknown})=>{const matched=plain(response.data)&&response.data.code===code;return{matches:[400,422].includes(response.status)&&matched,actual:`HTTP ${response.status}; expected structured code ${code} ${matched?"matched":"did not match"}.`};};
@@ -166,8 +192,8 @@ export async function executeRuntimeCheck(input: RuntimeCheckInput, options: Run
       await perform(9,{...payload,partySize:1.5},`${key}-fraction`,reject("party_size_invalid"));
       async function boundary(index:number,partySize:number,suffix:string){
         let receipt:string|undefined;
-        const accepted=await perform(index,{...payload,partySize},`${key}-${suffix}`,response=>{const record=compareRecord(response.data,undefined,partySize);if([200,201].includes(response.status)&&record.matches)receipt=record.id;return{matches:[200,201].includes(response.status)&&record.matches,actual:`HTTP ${response.status}; requested partySize ${partySize}; ${record.actual}`};});
-        if(accepted&&receipt){steps[index+1].path=`bookings/${receipt}`;await perform(index+1,undefined,undefined,response=>{const record=compareRecord(response.data,receipt,partySize);return{matches:response.status===200&&record.matches,actual:`HTTP ${response.status}; ${record.actual}`};});}
+        const accepted=await perform(index,{...payload,partySize},`${key}-${suffix}`,response=>{const record=compareRecord(response.data,undefined,partySize);const unique=!!record.id&&record.matches&&[200,201].includes(response.status)&&independentReceipt(suffix,record.id);if(unique)receipt=record.id;return{matches:[200,201].includes(response.status)&&record.matches&&unique,actual:`HTTP ${response.status}; requested partySize ${partySize}; ${record.actual}; distinctIndependentReceiptId: ${unique}`};});
+        if(accepted&&receipt)await readNowOrAfterWrites(index+1,receipt,partySize);
         else steps[index+1].reason="boundary_not_verified";
       }
       await boundary(10,policy.maxPartySize-1,"below");
@@ -178,7 +204,9 @@ export async function executeRuntimeCheck(input: RuntimeCheckInput, options: Run
       const pair=await Promise.allSettled([request(steps[15],payload,`${key}-concurrent`),request(steps[16],payload,`${key}-concurrent`)]);
       const first=pair[0].status==="fulfilled"?pair[0].value:undefined,second=pair[1].status==="fulfilled"?pair[1].value:undefined;
       const a=first?compareRecord(first.data):undefined,b=second?compareRecord(second.data,a?.id):undefined;
-      const consistent=!!first&&!!second&&!!a?.matches&&!!b?.matches&&[200,201].includes(first.status)&&[200,201].includes(second.status);
+      const pairSameReceipt=!!first&&!!second&&!!a?.matches&&!!b?.matches&&[200,201].includes(first.status)&&[200,201].includes(second.status);
+      const unique=!!a?.id&&pairSameReceipt&&independentReceipt("concurrent",a.id);
+      const consistent=pairSameReceipt&&unique;
       const fresh=consistent&&[first!.status,second!.status].sort().join(",")==="200,201";
       const resumed=consistent&&options.resuming===true&&first!.status===200&&second!.status===200;
       for(let offset=0;offset<2;offset++){
@@ -186,11 +214,12 @@ export async function executeRuntimeCheck(input: RuntimeCheckInput, options: Run
         if(result.status==="rejected"){step.reason=result.reason instanceof Unavailable?result.reason.message:"network_unavailable";continue;}
         const record=compareRecord(result.value.data,a?.id);
         const missingPeer=!first||!second;
-        Object.assign(step,{status:result.value.status,outcome:resumed||missingPeer?"unavailable":fresh?"observed":"mismatch",actual:`HTTP ${result.value.status}; pairSameReceipt: ${consistent}; exactlyOneCreatedResponse: ${fresh}; ${record.actual}`});
+        Object.assign(step,{status:result.value.status,outcome:resumed||missingPeer?"unavailable":fresh?"observed":"mismatch",actual:`HTTP ${result.value.status}; pairSameReceipt: ${pairSameReceipt}; distinctIndependentReceiptId: ${unique}; exactlyOneCreatedResponse: ${fresh}; ${record.actual}`});
         if(missingPeer)step.reason="concurrent_peer_unavailable";else if(resumed)step.reason="resumed_concurrency_not_observed";else delete step.reason;
       }
-      if(consistent&&a?.id){steps[17].path=`bookings/${a.id}`;await perform(17,undefined,undefined,response=>{const record=compareRecord(response.data,a.id);return{matches:response.status===200&&record.matches,actual:`HTTP ${response.status}; ${record.actual}`};});}
+      if(consistent&&a?.id)finalReadbacks.push(()=>readRecord(17,a.id!));
       else steps[17].reason="concurrent_not_verified";
+      for(const readback of finalReadbacks)await readback();
     }
   }else{for(const step of steps.slice(1))step.reason="revision_not_verified";}
   return {id:runId,deliveryId,deliveryDigest,runId,method:runtimeReportMethod(plan),startedAt,finishedAt:new Date().toISOString(),target:{id:target.id,label:target.label,origin:new URL(target.baseUrl).origin,revision:target.revision,...(registration?{registration}: {})},plan,steps,summary:runtimeReportSummary(steps)};

@@ -51,8 +51,9 @@ import "./smooth-flow.css";
 import "./chain-flow.css";
 import { RuntimeCheckPanel, RuntimeAcceptanceDecision, currentRuntimeReport } from "./components/RuntimeCheckPanel";
 import { RuntimePlanEditor } from "./components/RuntimePlanEditor";
-import { suggestBookingPolicy, type BookingPartyPolicy } from "@/lib/booking-policy";
+import {buildRuntimePlanDraft,confirmedRuntimeDraft,CAPACITY_EXAMPLE_REQUIREMENTS} from "@/lib/runtime-plan-draft";
 import type { RuntimeCheckPlan } from "@/lib/runtime-checks";
+import type { RuntimePreflightResult } from "@/lib/runtime-preflight";
 import type { RuntimeTargetDescriptor } from "@/lib/server-runtime-targets";
 import "./sandbox-login-help.css";
 
@@ -147,6 +148,7 @@ export default function Home() {
   const [runtimeConfirmed,setRuntimeConfirmed]=useState(false);
   const [runtimeProtocol,setRuntimeProtocol]=useState<RuntimeCheckPlan["protocol"]>("booking-http-v1");
   const [runtimeCriterionId,setRuntimeCriterionId]=useState("");
+  const [runtimeCapacityCriterionId,setRuntimeCapacityCriterionId]=useState("");
   const [backendTargetId,setBackendTargetId]=useState("");
   const [runtimeTargetList,setRuntimeTargetList]=useState<RuntimeTargetList>();
   const [runtimeTargetRefresh,setRuntimeTargetRefresh]=useState(0);
@@ -203,10 +205,8 @@ export default function Home() {
   const businessDraftKey = JSON.stringify(businessDrafts);
   const coverageDraftKey = JSON.stringify(coverageRows);
   const businessDraftsReady = businessDraftReady(businessDrafts, coverageUnits, coverageRows, inputLines(requiredPagesInput));
-  const runtimeSourceUnit=coverageUnits.find(unit=>unit.id===runtimeCriterionId&&coverageRows.some(row=>row.id===unit.id&&row.disposition==="include"));
-  let runtimePolicy:BookingPartyPolicy|undefined;
-  try {if(runtimeSourceUnit)runtimePolicy=suggestBookingPolicy({start:runtimeSourceUnit.start,end:runtimeSourceUnit.end,excerpt:runtimeSourceUnit.text});}catch{/* Unsupported clauses remain for clarification. */}
-  const runtimeDraftReady=!!runtimeSourceUnit&&(runtimeProtocol==="booking-http-v1"||!!runtimePolicy);
+  const runtimeDraft=buildRuntimePlanDraft({protocol:runtimeProtocol,criterionId:runtimeCriterionId,capacityCriterionId:runtimeCapacityCriterionId,units:coverageUnits,decisions:coverageRows});
+  const runtimeDraftReady=runtimeDraft.ready;
 
   const proof = quote?.proof;
   const collaboration = proof?.collaboration;
@@ -280,7 +280,7 @@ export default function Home() {
   const runtimeIssues=runtimeReport?.steps.filter(step=>step.outcome!=="observed")??[];
   const runtimeDecisionReady=!runtimePlan || !!runtimeReport && !delivery?.runtimeRun && (!runtimeIssues.length || runtimeAcknowledged && runtimeReason.trim().length>=10);
   const runtimeDecision=runtimePlan&&runtimeReport?{reportId:runtimeReport.id,...(runtimeIssues.length?{exceptionReason:runtimeReason.trim(),acknowledgedSteps:runtimeAcknowledged?runtimeIssues.map(step=>step.id):[]}:{})}:undefined;
-  useEffect(()=>setRuntimeConfirmed(false),[projectSummary,runtimeCriterionId,runtimeEnabled,runtimeProtocol,coverageDraftKey]);
+  useEffect(()=>setRuntimeConfirmed(false),[projectSummary,runtimeCriterionId,runtimeCapacityCriterionId,runtimeEnabled,runtimeProtocol,coverageDraftKey]);
   useEffect(()=>{
     const id=delivery?.backendTargetId??"",registration=delivery?.runtimeRegistration;
     const fingerprint=registration?runtimeTargetFingerprint({id:registration.id,label:registration.label,protocol:registration.protocol,revision:registration.deploymentRevision,
@@ -515,7 +515,7 @@ export default function Home() {
     setRequirementsFromBrief(false);
     setRequiredPagesInput(DEFAULT_PAGES);
     setManualRequirementsInput("");
-    setBrowserSteps([]); setCoverageDecisions({}); setCoverageConfirmed(false); setBusinessDrafts([]); setBusinessConfirmed(false);setRuntimeEnabled(false);setRuntimeCriterionId("");
+    setBrowserSteps([]); setCoverageDecisions({}); setCoverageConfirmed(false); setBusinessDrafts([]); setBusinessConfirmed(false);setRuntimeEnabled(false);setRuntimeCriterionId("");setRuntimeCapacityCriterionId("");
     window.requestAnimationFrame(() => workspaceRef.current?.focus({ preventScroll: true }));
   }
 
@@ -558,7 +558,7 @@ export default function Home() {
   }
 
   function fillNoodleBusinessExample() {
-    setRuntimeEnabled(false);setRuntimeCriterionId("");
+    setRuntimeEnabled(false);setRuntimeCriterionId("");setRuntimeCapacityCriterionId("");
     setIntakeStarted(true); setProjectMode("custom"); setProjectStep(0); setWorkspacePanel("agreement");
     setProjectTitle(tr("双语面馆：业务内容验收", "Bilingual noodle shop: business content checks"));
     updateProjectSummary(tr("英文菜单标明 Beef noodles AUD 18\n中文菜单标明牛肉面 AUD 18\n到店说明展示电话 +61 3 9000 0000", "The English menu must show Beef noodles AUD 18\nThe Chinese menu must show 牛肉面 AUD 18\nThe visit page must show phone +61 3 9000 0000"));
@@ -754,6 +754,16 @@ export default function Home() {
     setProjectSummary(tr("英文菜单标明 Beef noodles AUD 18\n中文菜单标明牛肉面 AUD 18\n到店说明展示电话 +61 3 9000 0000\n每笔预约最多6人", "The English menu must show Beef noodles AUD 18\nThe Chinese menu must show 牛肉面 AUD 18\nThe visit page must show phone +61 3 9000 0000\nEach booking accepts at most 6 people."));
     setRuntimeEnabled(true);setRuntimeProtocol("booking-http-v2");setRuntimeConfirmed(false);setRuntimeCriterionId("coverage-4");
     setNotice(tr("已填入每笔最多6人的原始要求及十八步协议草案。请在下一步核对5／6／7人边界并单独确认；尚未创建项目。","The original maximum of 6 people and an eighteen-step draft are filled in. Review the 5/6/7-person boundaries and separately confirm in the next step. No project was created."));
+  }
+  function fillCapacityExample() {
+    setIntakeStarted(true);setProjectMode("custom");setProjectStep(0);setWorkspacePanel("agreement");
+    setProjectTitle(tr("预约容量：跨请求原子性验收","Booking capacity: cross-request atomicity checks"));
+    updateProjectSummary(CAPACITY_EXAMPLE_REQUIREMENTS);
+    setProjectAmount("1.00");setCurrency("AUD");setRequiredPagesInput("index.html");setManualRequirementsInput("");
+    setBrowserSteps([]);setBusinessDrafts([]);setBusinessConfirmed(false);
+    setRequirementsDraft(undefined);setRequirementsConfirmed(false);setRequirementsFromBrief(false);
+    setRuntimeEnabled(true);setRuntimeProtocol("booking-http-v3");setRuntimeCriterionId("coverage-1");setRuntimeCapacityCriterionId("coverage-2");setRuntimeConfirmed(false);
+    setNotice(tr("已填入单笔最多6人、每时段合计最多8人的两条原文。下一步分别核对并确认十七步容量协议；未创建项目或付款。","Two source clauses are filled in: at most 6 per booking and 8 in total per slot. Review both and separately confirm the seventeen-step protocol next. No project or payment was created."));
   }
   function nextWorkspaceAction(): {label: string; help: string; action: () => void} {
     if (paymentPending || captured || voided || closedUnpaid || expired) return {
@@ -1008,7 +1018,7 @@ export default function Home() {
         input = { ...input, title: projectTitle.trim(), summary: projectSummary.trim(), amount: projectAmount.trim(), requiredPages: pages, manualRequirements,
           ...(requirementsDraft ? {requirementsDraftId: requirementsDraft.id, confirmRequirements: requirementsConfirmed} : {}),
           coverage: {version: 1, sourceText: projectSummary.trim(), confirmed: coverageConfirmed, decisions: coverageRows.map(row => ({id: row.id, disposition: row.disposition, ...(row.disposition === "exclude" ? {reason: row.reason?.trim()} : {})}))},
-          ...(links.length ? {links} : {}), ...(businessDrafts.length ? {businessChecks: {confirmed: businessConfirmed, items: businessDraftItems(businessDrafts, coverageUnits)}} : {}), ...(runtimeEnabled ? {runtimeCheck:{protocol:runtimeProtocol,criterionId:runtimeCriterionId,confirmed:runtimeConfirmed,...(runtimeProtocol==="booking-http-v2"?{policy:runtimePolicy}:{})}} : {}) };
+          ...(links.length ? {links} : {}), ...(businessDrafts.length ? {businessChecks: {confirmed: businessConfirmed, items: businessDraftItems(businessDrafts, coverageUnits)}} : {}), ...(runtimeEnabled ? {runtimeCheck:confirmedRuntimeDraft(runtimeDraft,runtimeConfirmed)} : {}) };
       }
       const result = await request<CaseResult>("/api/proofs", "POST", input);
       apply(result.quote, result.role);
@@ -1292,7 +1302,7 @@ export default function Home() {
                       <ol className="project-steps" aria-label={tr("新建项目步骤", "Project setup steps")}><li aria-current={projectStep === 0 ? "step" : undefined}>{tr("01 项目与金额", "01 Project & price")}</li><li aria-current={projectStep === 1 ? "step" : undefined}>{tr("02 验收标准", "02 Acceptance")}</li></ol>
                       {projectStep === 0 ? <>
                         <p className="form-help">{tr("没有合同也可以开始。直接描述需求，下一步确认具体的验收标准。", "Start without a contract. Describe your requirements, then confirm specific acceptance criteria.")}</p>
-                        <button type="button" className="subtle-button business-example-button" disabled={!!busy || loading} onClick={fillNoodleBusinessExample}><ClipboardCheck size={13}/>{tr("填入面馆业务验收示例", "Fill a noodle-shop content-check example")}</button><button type="button" className="subtle-button" disabled={!!busy||loading} onClick={fillBackendExample}>{tr("填入预约后端深度检验示例","Fill a backend verification example")}</button>
+                        <button type="button" className="subtle-button business-example-button" disabled={!!busy || loading} onClick={fillNoodleBusinessExample}><ClipboardCheck size={13}/>{tr("填入面馆业务验收示例", "Fill a noodle-shop content-check example")}</button><button type="button" className="subtle-button" disabled={!!busy||loading} onClick={fillBackendExample}>{tr("填入预约后端深度检验示例","Fill a backend verification example")}</button><button type="button" className="subtle-button" disabled={!!busy||loading} onClick={fillCapacityExample}>{tr("填入时段容量争抢示例","Fill a slot-capacity race example")}</button>
                         <label htmlFor="projectTitle">{tr("项目名称", "Project title")}</label><input id="projectTitle" name="projectTitle" value={projectTitle} maxLength={120} required placeholder={tr("例如：咖啡店网站交付", "e.g. Café website delivery")} onChange={event => setProjectTitle(event.target.value)} />
                         <label htmlFor="projectSummary">{tr("网站需求", "Website requirements")}</label><textarea id="projectSummary" value={projectSummary} maxLength={1000} required rows={3} placeholder={tr("例如：面馆网站展示菜单、价格、营业时间和地址。支持中文与英文。预约入口说明如何联系店家。每行一项会更清楚。", "For example: show the menu, prices, opening hours and address. Support Chinese and English. Explain how to contact the shop to arrange a booking. One requirement per line helps.")} onChange={event => {updateProjectSummary(event.target.value); if (requirementsFromBrief) {setRequirementsDraft(undefined); setRequirementsConfirmed(false); setRequirementsFromBrief(false);}}} />
                         <button type="button" className="requirements-button" disabled={!!busy || loading || !projectSummary.trim()} onClick={analyzeProjectBrief}>{busy === "requirements" ? <LoaderCircle size={13} className="spin"/> : <Sparkles size={13}/>} {config?.aiMode === "live" ? tr("用 AI 整理这些需求", "Organize these requirements with AI") : tr("用规则整理这些需求", "Organize these requirements with rules")}</button>
@@ -1314,7 +1324,7 @@ export default function Home() {
                           aiAvailable={config?.aiMode === "live"} disabled={!!busy || loading} busy={busy === "business-suggestions"} drafts={businessDrafts}
                           onAnalyze={suggestBusinessChecks} onAdopt={adoptBusinessSuggestion} onOpenEditor={openBusinessEditor}/>
                         <BusinessCheckEditor language={language} units={coverageUnits} decisions={coverageRows} pages={inputLines(requiredPagesInput)} rows={businessDrafts} confirmed={businessConfirmed} disabled={!!busy || loading} onChange={setBusinessDrafts} onConfirm={setBusinessConfirmed}/>
-                        <RuntimePlanEditor language={language} enabled={runtimeEnabled} protocol={runtimeProtocol} criterionId={runtimeCriterionId} confirmed={runtimeConfirmed} disabled={!!busy||loading} units={coverageUnits} decisions={coverageRows} policy={runtimePolicy} onEnabledChange={value=>{setRuntimeEnabled(value);setRuntimeCriterionId(coverageRows.find(row=>row.disposition==="include")?.id??"");}} onProtocolChange={setRuntimeProtocol} onCriterionChange={setRuntimeCriterionId} onConfirmedChange={setRuntimeConfirmed}/>
+                        <RuntimePlanEditor language={language} enabled={runtimeEnabled} protocol={runtimeProtocol} criterionId={runtimeCriterionId} capacityCriterionId={runtimeCapacityCriterionId} confirmed={runtimeConfirmed} disabled={!!busy||loading} units={coverageUnits} decisions={coverageRows} onEnabledChange={setRuntimeEnabled} onProtocolChange={setRuntimeProtocol} onCriterionChange={setRuntimeCriterionId} onCapacityCriterionChange={setRuntimeCapacityCriterionId} onConfirmedChange={setRuntimeConfirmed}/>
                         <details className="project-advanced-checks"><summary>{tr("补充页面与检查方式（可与开发者一起填写）", "Add pages and checks (with your developer)")}</summary>
                           <label htmlFor="requiredPages">{tr("必须交付的 HTML 页面", "Required HTML pages")}</label><textarea id="requiredPages" value={requiredPagesInput} required rows={3} maxLength={1000} aria-describedby="pages-help" onChange={event => setRequiredPagesInput(event.target.value)} />
                           <p className="form-help" id="pages-help">{tr("默认检查 index.html。可与开发者约定更多页面，每行一个，最多 10 页。", "index.html is checked by default. Agree additional pages with your developer, one per line, up to ten.")}</p>
@@ -1408,7 +1418,7 @@ export default function Home() {
               <nav className="delivery-view-switch no-print" hidden={!quote} aria-label={tr("交付查看方式", "Delivery view")}>
                 <button aria-pressed={deliveryTab === "preview"} className={deliveryTab === "preview" ? "active" : ""} onClick={() => setDeliveryTab("preview")}><Monitor size={15} />{tr("交付预览", "Preview")}</button>
                 <button aria-pressed={deliveryTab === "evidence"} className={deliveryTab === "evidence" ? "active" : ""} onClick={() => setDeliveryTab("evidence")}><FileCheck2 size={15} />{tr("逐项核查", "Evidence checks")}</button>
-                <button aria-pressed={deliveryTab === "layout"} className={deliveryTab === "layout" ? "active" : ""} onClick={() => setDeliveryTab("layout")}><ScanLine size={15} />{tr("浏览器检查", "Browser checks")}</button>
+                <button aria-pressed={deliveryTab === "layout"} className={deliveryTab === "layout" ? "active" : ""} onClick={() => setDeliveryTab("layout")}><ScanLine size={15} />{runtimePlan?tr("页面与后端检验", "Page & backend checks"):tr("浏览器检查", "Browser checks")}</button>
               </nav>
               <div className="delivery-preview-view" hidden={!quote || deliveryTab !== "preview"}>
                 {!delivery && <div className="empty-delivery"><span><FileCode2 size={30} strokeWidth={1.3} /></span><h4>{buyer ? tr("等待卖家提交交付", "Awaiting the seller’s delivery") : tr("准备你的交付", "Prepare your delivery")}</h4><p>{buyer ? roleplay || !collaboration ? tr("买家不需要上传交付证据。锁定约定后，切换右上角卖家端，体验上传和提交；再切回买家端验收。", "Buyers do not upload delivery evidence. Lock the scope, switch to Seller to prepare and submit, then switch back to Buyer to accept.") : tr("确认约定后，在右侧邀请卖家。卖家上传并提交验收后，你可以在这里查看文件和逐项证据。", "Lock the scope and invite your seller on the right. Once they submit, inspect the files and evidence here.") : sampleRoleplay ? tr("先选择一个样例，或上传自己的 HTML/CSS。核查后填写说明，并提交给买家验收。", "Choose a sample or upload your HTML/CSS. Run the checks, add a delivery note and submit for buyer acceptance.") : tr("上传自己的 HTML/CSS，核查当前版本并填写交付说明后，提交给买家。", "Upload your HTML/CSS, check this version, add a delivery note and submit it to the buyer.")}</p>{buyer && (!collaboration || roleplay) && <button className="subtle-button no-print" disabled={!!busy} onClick={() => switchWorkspaceRole("seller")}>{tr("切换卖家端体验交付", "Switch to Seller to try delivery")}<ArrowRight size={14}/></button>}<div className="empty-evidence-lines" aria-hidden="true"><i /><i /><i /></div></div>}
@@ -1444,7 +1454,7 @@ export default function Home() {
                   onRun={checkBrowserBehavior} onCancel={() => {if (!browserCheckSavePending.current) browserCheckController.current?.abort();}}/>
                 <BusinessChecksPanel key={`business-${delivery?.id ?? "empty"}`} language={language} count={customProject?.businessChecks?.length ?? 0} report={businessReport} enabled={canObserveBrowser && !busy} busy={busy === "business-check"} progress={businessCheckProgress} onRun={checkBusinessContent} onCancel={() => {if (!businessCheckSavePending.current) businessCheckController.current?.abort();}} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked && !busy ? (criterionId, comment) => prepareFeedback({deliveryId: delivery!.id, criterionId, comment}) : undefined}/>
                 {busy === "business-check-save" && <p className="layout-check-source" role="status">{tr("正在保存业务内容核对…", "Saving business content observations…")}</p>}
-                {delivery&&runtimePlan&&<RuntimeCheckPanel language={language} deliveryId={delivery.id} plan={runtimePlan} targetId={delivery.backendTargetId} target={runtimeTargets.find(target=>target.id===delivery.backendTargetId)} registration={delivery.runtimeRegistration} deliveryDigest={delivery.runtimeDeliveryDigest} report={runtimeReport} pending={!!delivery.runtimeRun&&Date.parse(delivery.runtimeRun.expiresAt)>Date.now()} busy={busy==="runtime-check"} enabled={!!canRunRuntime&&!busy} onRun={checkRuntimeBackend} onPrepareFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?(criterionId,comment)=>prepareFeedback({deliveryId:delivery.id,criterionId,comment}):undefined}/>}
+                {quote&&delivery&&runtimePlan&&<RuntimeCheckPanel language={language} deliveryId={delivery.id} plan={runtimePlan} targetId={delivery.backendTargetId} target={runtimeTargets.find(target=>target.id===delivery.backendTargetId)} registration={delivery.runtimeRegistration} deliveryDigest={delivery.runtimeDeliveryDigest} report={runtimeReport} pending={!!delivery.runtimeRun&&Date.parse(delivery.runtimeRun.expiresAt)>Date.now()} busy={busy==="runtime-check"} enabled={!!canRunRuntime&&!busy} onRun={checkRuntimeBackend} preflightContext={JSON.stringify([quote.id,delivery.id,workspaceRole,role,delivery.backendTargetId,delivery.runtimeDeliveryDigest,runtimePlan,delivery.runtimeRegistration])} onPreflight={signal=>apiRequest<RuntimePreflightResult>(`/api/proofs/${encodeURIComponent(quote.id)}/runtime-preflight`,"POST",{deliveryId:delivery.id},workspaceRole,signal)} onPrepareFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?(criterionId,comment)=>prepareFeedback({deliveryId:delivery.id,criterionId,comment}):undefined}/>}
                 {delivery && <EvidenceHistoryPanel key={`history-${delivery.id}`} delivery={delivery} language={language} acceptedSnapshotId={collaboration?.acceptance?.evidenceSnapshotId}/>}
                 {busy === "browser-check-save" && <p className="layout-check-source" role="status">{tr("正在保存链接行为与资源观察…", "Saving link behavior and resource observations…")}</p>}
               </div>

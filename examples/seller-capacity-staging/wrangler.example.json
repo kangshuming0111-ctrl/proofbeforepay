@@ -1,0 +1,18 @@
+{
+  "name": "proofbeforepay-synthetic-capacity-staging",
+  "main": "index.mjs",
+  "compatibility_date": "2026-10-01",
+  "d1_databases": [{
+    "binding": "CAPACITY_DB",
+    "database_name": "YOUR_SEPARATE_SYNTHETIC_CAPACITY_DATABASE",
+    "database_id": "REPLACE_WITH_OWN_D1_DATABASE_ID",
+    "migrations_dir": "migrations"
+  }],
+  "vars": {
+    "CAPACITY_PROJECT_ID": "REPLACE_WITH_PROJECT_ID",
+    "CAPACITY_REGISTRATION_REVISION": "operator-review-1",
+    "CAPACITY_FRONTEND_BUNDLE_DIGEST": "REPLACE_WITH_EXACT_64_HEX_FRONTEND_DIGEST",
+    "CAPACITY_DEPLOYMENT_REVISION": "capacity-staging-build-1",
+    "CAPACITY_POLICY_ID": "fixed"
+  }
+}

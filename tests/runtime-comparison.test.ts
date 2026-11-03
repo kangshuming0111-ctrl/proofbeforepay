@@ -3,6 +3,8 @@ import test from "node:test";
 import type {ProofDelivery,ProofDeliveryVersion} from "../lib/contracts.ts";
 import {buildRuntimeComparison,type RuntimeComparisonInput} from "../lib/runtime-comparison.ts";
 import {suggestBookingPolicy} from "../lib/booking-policy.ts";
+import {suggestSlotCapacity} from "../lib/booking-capacity.ts";
+import {runtimeCapacityStepDefinitions} from "../lib/runtime-capacity.ts";
 import {createUploadedDelivery} from "../lib/static-project.ts";
 import {runtimeDeliveryDigest,RUNTIME_TARGETS} from "../lib/runtime-project.ts";
 import {runtimeProtocolStepIds,runtimeReportSummary,validateRuntimePlan,type RuntimeCheckPlan,type RuntimeCheckReport} from "../lib/runtime-checks.ts";
@@ -116,4 +118,58 @@ test("input snapshots are captured before asynchronous hashing and built-in targ
   const legacy=await fixture(),target=RUNTIME_TARGETS.find(target=>target.id==="lab-policy-fixed")!;delete legacy.delivery.runtimeRegistration;legacy.delivery.backendTargetId=target.id;
   Object.assign(legacy.delivery.runtimeReport!.target,{id:target.id,label:target.label,origin:new URL(target.baseUrl).origin,revision:target.revision});delete legacy.delivery.runtimeReport!.target.registration;legacy.delivery.runtimeHistory=[structuredClone(legacy.delivery.runtimeReport!)];
   assert.equal((await buildRuntimeComparison(legacy)).current.state,"available");
+});
+
+async function capacityFixture():Promise<RuntimeComparisonInput>{
+  const capacityText="Each time slot accepts at most 8 guests in total.",sourceSpan={start:0,end:source.length,excerpt:source},capacitySpan={start:source.length+1,end:source.length+1+capacityText.length,excerpt:capacityText};
+  const capacityPlan=validateRuntimePlan({protocol:"booking-http-v3",criterionId:"coverage-party",source:sourceSpan,policy:suggestBookingPolicy(sourceSpan),slotCapacity:{criterionId:"coverage-capacity",...suggestSlotCapacity(capacitySpan)}});
+  async function version(sequence:number,flawed:boolean){
+    const value=await delivery(sequence,false),runId=crypto.randomUUID();value.runtimeRegistration!.protocol="booking-http-v3";
+    if(capacityPlan.protocol!=="booking-http-v3")throw new Error("fixture protocol");
+    const dependent=new Set(["race_winner_readback","slot_a_after_race","race_winner_replay","slot_a_after_replay","fill_remainder","fill_readback","slot_a_full","reject_extra","slot_a_after_rejection"]);
+    const steps:RuntimeCheckReport["steps"]=runtimeCapacityStepDefinitions(capacityPlan).map(definition=>{
+      const race=definition.id==="capacity_race_first"||definition.id==="capacity_race_second",unavailable=flawed&&dependent.has(definition.id);
+      const status=definition.id==="party_above"?422:definition.id==="capacity_race_first"||definition.id==="capacity_race_second"&&flawed||definition.id==="fill_remainder"||definition.id==="slot_b_create"?201:definition.id==="capacity_race_second"||definition.id==="reject_extra"?409:200;
+      return{id:definition.id,label:definition.label,method:definition.method,path:definition.pathKind==="receipt"?unavailable?"bookings/:id":`bookings/receipt-${sequence}-${definition.id}`:definition.path.replace("{runId}",runId),expected:definition.expected,
+        outcome:unavailable?"unavailable":flawed&&race?"mismatch":"observed",...(unavailable?{reason:"race_not_verified"}:{status,actual:"Synthetic saved capacity response; no HTTP execution in this projection test"})};
+    });
+    const previous=value.runtimeReport!;
+    value.runtimeReport={...previous,id:runId,runId,method:"server-booking-http-v3",plan:structuredClone(capacityPlan),target:{...previous.target,registration:structuredClone(value.runtimeRegistration)},steps,summary:runtimeReportSummary(steps)};
+    value.runtimeHistory=[structuredClone(value.runtimeReport)];return value;
+  }
+  return{projectId,plan:capacityPlan,delivery:await version(2,false),previousVersion:{delivery:await version(1,true),feedback:[],archivedAt:"2026-11-02T00:02:00.000Z"}};
+}
+test("v3 compares each version's two-constraint race and occupancy evidence without relabeling it as v2",async()=>{
+  const input=await capacityFixture(),before=structuredClone(input),result=await buildRuntimeComparison(input);assert.deepEqual(input,before);
+  assert.equal(result.plan!.protocol,"booking-http-v3");assert.equal(result.previous.state,"available");assert.equal(result.current.state,"available");
+  if(result.previous.state!=="available"||result.current.state!=="available"||result.plan?.protocol!=="booking-http-v3")return;
+  const old=result.previous.data,current=result.current.data;
+  assert.equal(result.plan.policy.maxPartySize,6);assert.equal(result.plan.slotCapacity.maxGuestsPerSlot,8);assert.equal(result.plan.slotCapacity.source.excerpt,"Each time slot accepts at most 8 guests in total.");
+  assert.equal(old.report.steps.length,17);assert.equal(current.report.steps.length,17);assert.equal(old.capacity!.creationResponses,2);assert.equal(old.capacity!.capacityRejections,0);assert.equal(old.capacity!.observedPair,false);
+  assert.equal(current.capacity!.creationResponses,1);assert.equal(current.capacity!.capacityRejections,1);assert.equal(current.capacity!.observedPair,true);assert.equal(current.capacity!.winnerReplay.status,200);
+  assert.equal(current.capacity!.winnerReadback.id,"race_winner_readback");assert.equal(current.capacity!.fillReadback.id,"fill_readback");assert.equal(current.capacity!.occupancy.finalA.id,"slot_a_after_rejection");assert.equal(current.capacity!.occupancy.slotB.id,"slot_b_occupancy");
+  assert.equal(old.concurrency,undefined);assert.equal(current.concurrency,undefined);assert.equal(old.boundary,undefined);assert.notEqual(old.fileDigest,current.fileDigest);
+  assert.equal(old.report.target.id,"seller-staging-1");assert.equal(current.report.target.id,"seller-staging-2");assert.equal("accepted"in current,false);
+  current.capacity!.occupancy.full.actual="mutated returned projection";assert.deepEqual(input,before);
+});
+test("capacity comparison cannot substitute a v2 report or a different second source constraint",async()=>{
+  const input=await capacityFixture(),v2=await delivery(1,false);input.previousVersion!.delivery=v2;
+  let result=await buildRuntimeComparison(input);assert.equal(reason(result.previous),"plan_mismatch");assert.equal(result.current.state,"available");
+  const changed=await capacityFixture(),old=changed.previousVersion!.delivery.runtimeReport!,oldPlan=old.plan;
+  if(oldPlan.protocol!=="booking-http-v3")throw new Error("fixture protocol");
+  oldPlan.slotCapacity.maxGuestsPerSlot=9;oldPlan.slotCapacity.source.excerpt=oldPlan.slotCapacity.source.excerpt.replace("8","9");
+  result=await buildRuntimeComparison(changed);assert.equal(reason(result.previous),"plan_mismatch");assert.equal(result.current.state,"available");
+});
+test("v3 saved evidence remains subject to exact files, registration and pending-run guards",async()=>{
+  const changed=await capacityFixture();changed.delivery.files!["index.html"]+="<p>Later changed file</p>";
+  assert.equal(reason((await buildRuntimeComparison(changed)).current),"digest_mismatch");
+  const pin=await capacityFixture();pin.delivery.runtimeRegistration!.registrationRevision="unmatched-pin";
+  assert.equal(reason((await buildRuntimeComparison(pin)).current),"invalid_report");
+  const pending=await capacityFixture(),value=pending.delivery;value.runtimeRun={id:crypto.randomUUID(),deliveryId:value.id,deliveryDigest:value.runtimeDeliveryDigest!,targetId:value.backendTargetId!,startedAt:value.submittedAt,expiresAt:"2099-01-01T00:00:00.000Z"};
+  assert.equal(reason((await buildRuntimeComparison(pending)).current),"pending_run");
+});
+test("v3 comparison rejects a supposedly observed two201 race instead of showing an observed capacity pair",async()=>{
+  const input=await capacityFixture(),value=input.delivery;value.runtimeReport!.steps.find(step=>step.id==="capacity_race_second")!.status=201;
+  value.runtimeReport!.summary=runtimeReportSummary(value.runtimeReport!.steps);value.runtimeHistory=[structuredClone(value.runtimeReport!)];
+  assert.equal(reason((await buildRuntimeComparison(input)).current),"invalid_report");
 });

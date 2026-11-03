@@ -62,6 +62,19 @@ def digest(value):
     return hashlib.sha256(raw).hexdigest()
 
 
+def capacity_specification(title):
+    value = policy_specification(title)
+    capacity_clause = "Each time slot accepts at most 8 guests in total."
+    summary = POLICY_SUMMARY + "\n" + capacity_clause
+    value["summary"] = summary
+    value["coverage"] = {"version": 1, "sourceText": summary, "confirmed": True,
+                         "decisions": [{"id": "coverage-1", "disposition": "include"}, {"id": "coverage-2", "disposition": "include"}]}
+    value["runtimeCheck"]["protocol"] = "booking-http-v3"
+    value["runtimeCheck"]["slotCapacity"] = {"criterionId": "coverage-2", "maxGuestsPerSlot": 8,
+        "source": {"start": len(POLICY_SUMMARY) + 1, "end": len(summary), "excerpt": capacity_clause}}
+    return value
+
+
 def runtime_input(quote):
     delivery = quote["proof"]["delivery"]
     return {"deliveryId": delivery["id"], "previousReportId": delivery.get("runtimeReport", {}).get("id"), "confirm": True}
@@ -163,6 +176,30 @@ def main():
     quote = chain.quote_of(api.ok(seller, path + "/delivery", {"files": files(), "expectedDeliveryId": None, "reviewRules": True, "backendTargetId": "lab-fixed"}), "seller")
     assert quote["proof"]["delivery"]["runtimeDeliveryDigest"] == digest(files())
     first_id = quote["proof"]["delivery"]["id"]
+    # Connection preflight reads only meta. The isolated wrapper blocks external
+    # fetch, so this must remain unavailable and must not create a lease/report.
+    preflight_endpoint = path + "/runtime-preflight"
+    preflight_input = {"deliveryId": first_id}
+    before_preflight = api.ok(buyer, quote_path)["quote"]
+    api.reject(outsider, preflight_endpoint, preflight_input, codes=(404,))
+    api.reject(None, preflight_endpoint, preflight_input, codes=(401, 404))
+    api.reject(buyer, preflight_endpoint, {"deliveryId": "stale-delivery"}, codes=(409,))
+    for extra in ({"url": "https://unregistered.synthetic.example/"}, {"metadata": {"revision": "caller-claim"}}, {"confirm": True}):
+        api.reject(buyer, preflight_endpoint, {**preflight_input, **extra}, codes=(400,))
+    request = Request(api.origin + preflight_endpoint, data=json.dumps(preflight_input).encode("utf-8"), headers={"Content-Type": "application/json", "Origin": "https://unrelated.synthetic.example", "oai-authenticated-user-id": buyer.identifier, "oai-authenticated-user-email": buyer.email}, method="POST")
+    try:
+        api.opener.open(request, timeout=40)
+        raise AssertionError("Cross-origin preflight unexpectedly succeeded")
+    except HTTPError as error:
+        assert error.code == 403
+    for member in (buyer, seller):
+        preflight = api.ok(member, preflight_endpoint, preflight_input)
+        assert preflight["method"] == "server-booking-meta-preflight-v1" and preflight["deliveryId"] == first_id
+        assert preflight["targetId"] == "lab-fixed" and preflight["protocol"] == "booking-http-v1"
+        assert preflight["status"] == "unavailable" and preflight["reason"] == "network_unavailable"
+        assert not any(field in preflight for field in ("steps", "runId", "metadata", "source", "quote"))
+    assert_unchanged(api, buyer, quote_path, before_preflight)
+    api.checked("Connection-only preflight enforces member/origin/current-upload boundaries, refuses caller URLs/metadata, and leaves no saved lease/report/audit mutation")
     endpoint = path + "/runtime-checks"
     payload = runtime_input(quote)
     guarded = api.ok(buyer, quote_path)["quote"]
@@ -288,9 +325,54 @@ def main():
     assert policy_quote["proof"]["collaboration"]["stage"] == "accepted"
     assert policy_quote["proof"]["paymentState"] == "unfunded" and not policy_quote.get("paypalOrderId")
     api.checked("V2 routes reject tampered maximum/source, minimum-as-maximum, missing policy and incompatible v1 targets; preserve all18 unavailable steps and exact policy/digest; explicit complete exceptions freeze reportA while reportB stays supplemental, with no payment")
+    before_capacity = api.ok(buyer, "/api/proofs")
+    wrong_capacity = capacity_specification("Rejected ungrounded capacity")
+    wrong_capacity["runtimeCheck"]["slotCapacity"]["maxGuestsPerSlot"] = 9
+    partial_capacity = capacity_specification("Rejected partial capacity clause")
+    partial_capacity["runtimeCheck"]["slotCapacity"]["source"]["end"] -= 1
+    partial_capacity["runtimeCheck"]["slotCapacity"]["source"]["excerpt"] = partial_capacity["runtimeCheck"]["slotCapacity"]["source"]["excerpt"][:-1]
+    same_clause = capacity_specification("Rejected reused capacity citation")
+    same_clause["runtimeCheck"]["slotCapacity"]["criterionId"] = "coverage-1"
+    excluded_capacity = capacity_specification("Rejected excluded capacity")
+    excluded_capacity["coverage"]["decisions"][1].update(disposition="exclude", reason="Not included in this delivery")
+    for invalid in (wrong_capacity, partial_capacity, same_clause, excluded_capacity):
+        api.reject(buyer, "/api/proofs", invalid, codes=(400,))
+    assert api.ok(buyer, "/api/proofs") == before_capacity
+    capacity_path, capacity_quote_path = chain.create_shared(api, buyer, seller, capacity_specification("Synthetic two-constraint capacity lifecycle"))
+    capacity_targets = api.ok(seller, capacity_path + "/runtime-targets")["targets"]
+    assert {row["id"] for row in capacity_targets} == {"lab-capacity-flawed", "lab-capacity-fixed", "lab-capacity-underlimit"}
+    capacity_contract = api.ok(seller, capacity_path + "/runtime-contract")
+    assert capacity_contract["protocol"] == "booking-http-v3" and len(capacity_contract["steps"]) == 17
+    before_capacity_upload = api.ok(buyer, capacity_quote_path)["quote"]
+    api.reject(seller, capacity_path + "/delivery", {"files": files(), "expectedDeliveryId": None, "reviewRules": True, "backendTargetId": "lab-policy-fixed"}, codes=(400,))
+    assert_unchanged(api, buyer, capacity_quote_path, before_capacity_upload)
+    capacity_quote = api.ok(seller, capacity_path + "/delivery", {"files": files(), "expectedDeliveryId": None, "reviewRules": True, "backendTargetId": "lab-capacity-fixed"})["quote"]
+    capacity_endpoint = capacity_path + "/runtime-checks"
+    capacity_quote = api.ok(buyer, capacity_endpoint, runtime_input(capacity_quote))["quote"]
+    capacity_delivery = capacity_quote["proof"]["delivery"]
+    capacity_report = copy.deepcopy(capacity_delivery["runtimeReport"])
+    assert capacity_report["method"] == "server-booking-http-v3"
+    assert capacity_report["summary"] == {"steps": 17, "observed": 0, "issues": 0, "unavailable": 17}
+    assert capacity_report["plan"]["slotCapacity"] == capacity_specification("Expected")["runtimeCheck"]["slotCapacity"]
+    assert capacity_report["deliveryDigest"] == digest(files())
+    api.ok(seller, capacity_path + "/submit_delivery", {"deliveryId": capacity_delivery["id"], "note": "Synthetic per-booking and aggregate slot limits for explicit buyer review"})
+    capacity_quote = api.ok(buyer, capacity_quote_path)["quote"]
+    api.reject(buyer, capacity_path + "/accept_delivery", consent(capacity_quote), codes=(409,))
+    capacity_incomplete = consent(capacity_quote, True)
+    capacity_incomplete["runtimeDecision"]["acknowledgedSteps"].pop()
+    api.reject(buyer, capacity_path + "/accept_delivery", capacity_incomplete, codes=(409,))
+    capacity_quote = api.ok(buyer, capacity_path + "/accept_delivery", consent(capacity_quote, True))["quote"]
+    capacity_snapshot = copy.deepcopy(chain.snapshot(capacity_quote))
+    assert capacity_snapshot["runtimeReportId"] == capacity_report["id"]
+    assert len(capacity_snapshot["runtimeAcknowledgedSteps"]) == 17
+    assert {row["id"] for row in capacity_snapshot["criteria"]} >= {"coverage-1", "coverage-2"}
+    capacity_quote = api.ok(seller, capacity_endpoint, runtime_input(capacity_quote))["quote"]
+    assert chain.snapshot(capacity_quote) == capacity_snapshot
+    assert capacity_quote["proof"]["paymentState"] == "unfunded" and not capacity_quote.get("paypalOrderId")
+    api.checked("V3 requires two separately included complete source clauses, rejects forged capacities and v2 targets; retains all17 unavailable observations and exact-version exceptions while later reports stay supplemental, without payment")
     after = api.ok(None, "/api/__synthetic_sandbox_test_mode")
     assert after["syntheticCalls"] == marker["syntheticCalls"]
-    print(json.dumps({"result": "passed", "suite": "runtime-checks", "checks": api.checks, "runtimeReportsSaved": 5, "basicV1ReportsSaved": 3, "businessV2ReportsSaved": 2, "concurrentStarts": {"attempts": 2, "successes": 1, "conflicts": 1}, "stepsPerReport": 8, "unavailablePerReport": 8, "v2StepsPerReport": 18, "v2UnavailablePerReport": 18, "acceptanceSnapshotPreservedAcrossSupplement": True, "v2AcceptanceSnapshotPreservedAcrossSupplement": True, "providerNetworkRequests": 0, "applicationModelCalls": 0, "syntheticProviderFetches": 0, "mutationRetries": 0, "scope": "Fresh isolated API/D1 with synthetic gateway identity headers; all outbound backend/provider fetches blocked. This verifies roles, storage, leases, version/acceptance binding, not actual backend protocol execution, real sign-ins, UI use, independent users or payment."}, ensure_ascii=False, indent=2))
+    print(json.dumps({"result": "passed", "suite": "runtime-checks", "checks": api.checks, "runtimeReportsSaved": 7, "capacityV3ReportsSaved": 2, "capacityV3StepsPerReport": 17, "capacitySnapshotPreservedAcrossSupplement": True, "basicV1ReportsSaved": 3, "businessV2ReportsSaved": 2, "concurrentStarts": {"attempts": 2, "successes": 1, "conflicts": 1}, "stepsPerReport": 8, "unavailablePerReport": 8, "v2StepsPerReport": 18, "v2UnavailablePerReport": 18, "acceptanceSnapshotPreservedAcrossSupplement": True, "v2AcceptanceSnapshotPreservedAcrossSupplement": True, "providerNetworkRequests": 0, "applicationModelCalls": 0, "syntheticProviderFetches": 0, "mutationRetries": 0, "scope": "Fresh isolated API/D1 with synthetic gateway identity headers; all outbound backend/provider fetches blocked. This verifies roles, storage, leases, version/acceptance binding, not actual backend protocol execution, real sign-ins, UI use, independent users or payment."}, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

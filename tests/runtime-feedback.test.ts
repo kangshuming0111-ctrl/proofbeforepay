@@ -65,3 +65,46 @@ test("recovery and dependency reasons explain what was not observed instead of i
     }
   }
 });
+
+test("all seventeen capacity exceptions retain every ID and truthful state within 1000 characters",async()=>{
+  const {CAPACITY_STEP_IDS}=await import("../lib/runtime-capacity.ts");
+  for(const language of ["zh","en"] as const)for(const outcome of ["mismatch","unavailable"] as const){
+    const original=capacityReport(CAPACITY_STEP_IDS.map(id=>step(id,outcome))),before=structuredClone(original),draft=draftRuntimeFeedback(original,language);
+    assert.ok(draft.length<=1000,`${language}/${outcome}: ${draft.length}`);
+    for(const id of CAPACITY_STEP_IDS)assert.ok(draft.includes(`${id} `),`${id} omitted`);
+    assert.ok(!draft.includes("sensitive raw response"));assert.deepEqual(original,before);
+    assert.ok(draft.endsWith(language==="zh"?"不更改报告或验收状态。":"changes no report or acceptance."));
+  }
+});
+function capacityReport(steps:RuntimeCheckStep[]):RuntimeCheckReport{
+  const original=policyReport(steps),source="Each time slot accepts at most 8 guests in total.";
+  if(original.plan.protocol!=="booking-http-v2")throw new Error("fixture");
+  return{...original,method:"server-booking-http-v3",plan:{...original.plan,protocol:"booking-http-v3",slotCapacity:{criterionId:"coverage-5",maxGuestsPerSlot:8,source:{start:38,end:38+source.length,excerpt:source}}}};
+}
+test("capacity-only feedback uses its own source clause and exposes a double-201 race",async()=>{
+  const {runtimeFeedbackCriterion}=await import("../lib/runtime-feedback.ts");
+  const original=capacityReport([step("revision","observed"),step("party_above","observed"),step("capacity_race_first"),step("capacity_race_second")]);
+  assert.equal(runtimeFeedbackCriterion(original),"coverage-5");
+  for(const language of ["zh","en"] as const){const draft=draftRuntimeFeedback(original,language);assert.match(draft,/201\/201/);assert.match(draft,/201.*409/);assert.ok(draft.includes(language==="zh"?"两条原文":"separate clauses"));}
+  original.steps=original.steps.map(item=>({...item,outcome:item.id==="party_above"?"mismatch":"observed"}));
+  assert.equal(runtimeFeedbackCriterion(original),"coverage-4");
+});
+test("every capacity step and recovery dependency has a meaningful bilingual label",async()=>{
+  const {CAPACITY_STEP_IDS}=await import("../lib/runtime-capacity.ts");
+  const {runtimeStepName}=await import("../lib/runtime-feedback.ts");
+  for(const language of ["zh","en"] as const){
+    for(const id of CAPACITY_STEP_IDS)assert.notEqual(runtimeStepName(id,language),language==="zh"?"接口步骤":"HTTP step");
+    for(const reason of ["resumed_initial_state_not_observed","resumed_capacity_run_not_replayed","initial_slot_not_empty_or_unavailable","race_not_verified","race_or_replay_state_not_verified","fill_not_verified","full_slot_not_verified","slot_b_not_verified"]){const label=runtimeReasonLabel(reason,language);assert.notEqual(label,language==="zh"?"详见报告原因":"see report reason");assert.ok(!/pass|通过/u.test(label));}
+  }
+});
+
+test("mixed capacity failures keep the distinct-key race advisory and every exception at each status-count boundary",async()=>{
+  const {CAPACITY_STEP_IDS}=await import("../lib/runtime-capacity.ts");
+  for(const language of ["zh","en"] as const)for(const outcome of ["mismatch","unavailable"] as const)for(let count=0;count<=17;count++){
+    const steps=CAPACITY_STEP_IDS.map((id,index)=>{const value=step(id,outcome);if(index>=count)delete value.status;return value;});
+    const draft=draftRuntimeFeedback(capacityReport(steps),language);
+    assert.ok(draft.length<=1000,`${language}/${outcome}/${count}: ${draft.length}`);
+    for(const id of CAPACITY_STEP_IDS)assert.ok(draft.includes(`${id} `));
+    assert.ok(draft.includes(language==="zh"?"不同键容量争抢":"Distinct-key capacity race"));
+  }
+});

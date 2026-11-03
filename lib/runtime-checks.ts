@@ -1,12 +1,14 @@
 import { DomainError } from "./domain.ts";
 import {validateBookingPolicy,type BookingPartyPolicy} from "./booking-policy.ts";
 import {sameRuntimeRegistration,type RuntimeRegistrationSnapshot} from "./runtime-registration.ts";
+import {validateBookingCapacityPlan,type BookingCapacityPlan} from "./booking-capacity.ts";
+import {CAPACITY_STEP_IDS,runtimeCapacityStepDefinitions} from "./runtime-capacity.ts";
 
 type RuntimePlanSource = {
   criterionId: string;
   source: {start: number; end: number; excerpt: string};
 };
-export type RuntimeCheckPlan = RuntimePlanSource & ({protocol:"booking-http-v1"}|{protocol:"booking-http-v2";policy:BookingPartyPolicy});
+export type RuntimeCheckPlan = (RuntimePlanSource & ({protocol:"booking-http-v1"}|{protocol:"booking-http-v2";policy:BookingPartyPolicy}))|BookingCapacityPlan;
 /** Only an operator-owned registry may supply this target, never a user URL. */
 export type RuntimeCheckTarget = {id: string; label: string; baseUrl: string; revision: string; testOnly: true;protocol?:RuntimeCheckPlan["protocol"]};
 export type RuntimeCheckStep = {
@@ -15,7 +17,7 @@ export type RuntimeCheckStep = {
   expected: string; actual?: string; reason?: string;
 };
 export type RuntimeCheckReport = {
-  id: string; deliveryId: string; deliveryDigest: string; runId: string; method: "server-booking-http-v1"|"server-booking-http-v2";
+  id: string; deliveryId: string; deliveryDigest: string; runId: string; method: "server-booking-http-v1"|"server-booking-http-v2"|"server-booking-http-v3";
   startedAt: string; finishedAt: string;
   target: {id: string; label: string; origin: string; revision: string;registration?:RuntimeRegistrationSnapshot};
   plan: RuntimeCheckPlan; steps: RuntimeCheckStep[];
@@ -42,7 +44,7 @@ export function runtimeIdentifier(value: unknown, name = "Runtime identifier"): 
  * not a DNS-rebinding-safe validator for arbitrary user-supplied hostnames. */
 export function validateRuntimeTarget(value: unknown, options: {allowLoopback?: boolean} = {}): RuntimeCheckTarget {
   const input = record(value,"Runtime target");
-  if (Object.keys(input).some(key => !["id","label","baseUrl","revision","testOnly","protocol"].includes(key)) || input.testOnly !== true || input.protocol!==undefined&&!["booking-http-v1","booking-http-v2"].includes(input.protocol as string)) throw new DomainError("Runtime targets must be explicitly test-only registry entries.");
+  if (Object.keys(input).some(key => !["id","label","baseUrl","revision","testOnly","protocol"].includes(key)) || input.testOnly !== true || input.protocol!==undefined&&!["booking-http-v1","booking-http-v2","booking-http-v3"].includes(input.protocol as string)) throw new DomainError("Runtime targets must be explicitly test-only registry entries.");
   const id = runtimeIdentifier(input.id,"Runtime target ID");
   const label = text(input.label,"Runtime target label",100), revision = text(input.revision,"Runtime revision",120);
   const raw = text(input.baseUrl,"Runtime target URL",500);
@@ -63,6 +65,7 @@ export function validateRuntimeTarget(value: unknown, options: {allowLoopback?: 
 
 export function validateRuntimePlan(value: unknown, options: {sourceText?: string; criteria?: {id: string}[]} = {}): RuntimeCheckPlan {
   const input = record(value,"Runtime plan");
+  if(input.protocol==="booking-http-v3")return validateBookingCapacityPlan(input,options);
   if (Object.keys(input).some(key => !["protocol","criterionId","source",...(input.protocol==="booking-http-v2"?["policy"]:[])].includes(key)) || !["booking-http-v1","booking-http-v2"].includes(input.protocol as string)) throw new DomainError("Choose the supported booking HTTP test protocol.");
   const criterionId = runtimeIdentifier(input.criterionId,"Runtime criterion ID");
   if (options.criteria && !options.criteria.some(item => item.id === criterionId)) throw new DomainError("Runtime plan must use an agreed criterion.");
@@ -76,8 +79,8 @@ export function validateRuntimePlan(value: unknown, options: {sourceText?: strin
 
 const BASIC_IDS=["revision","missing_slot","invalid_email","create","readback","replay","conflict","unchanged"];
 const POLICY_IDS=["party_zero","party_fraction","party_below","party_below_readback","party_exact","party_exact_readback","party_above","concurrent_first","concurrent_second","concurrent_readback"];
-export function runtimeProtocolStepIds(plan:RuntimeCheckPlan):string[]{return [...BASIC_IDS,...(plan.protocol==="booking-http-v2"?POLICY_IDS:[])];}
-export function runtimeReportMethod(plan:RuntimeCheckPlan):RuntimeCheckReport["method"]{return plan.protocol==="booking-http-v2"?"server-booking-http-v2":"server-booking-http-v1";}
+export function runtimeProtocolStepIds(plan:RuntimeCheckPlan):string[]{return plan.protocol==="booking-http-v3"?[...CAPACITY_STEP_IDS]:[...BASIC_IDS,...(plan.protocol==="booking-http-v2"?POLICY_IDS:[])];}
+export function runtimeReportMethod(plan:RuntimeCheckPlan):RuntimeCheckReport["method"]{return plan.protocol==="booking-http-v3"?"server-booking-http-v3":plan.protocol==="booking-http-v2"?"server-booking-http-v2":"server-booking-http-v1";}
 
 /** Counters are derived from individual protocol observations, never client totals. */
 export function runtimeReportSummary(steps: RuntimeCheckStep[]): RuntimeCheckReport["summary"] {
@@ -108,20 +111,24 @@ export function validateRuntimeReport(value: unknown, expected: {deliveryId: str
   if(expected.target&&(target.id!==expected.target.id||target.label!==expected.target.label||target.origin!==new URL(expected.target.baseUrl).origin||target.revision!==expected.target.revision))throw new DomainError("Runtime report target changed.",409);
   if(!(target.registration===undefined&&expected.registration===undefined)&&!sameRuntimeRegistration(target.registration,expected.registration))throw new DomainError("Runtime report registration differs from the frozen deployment declaration.",409);
   const ids=runtimeProtocolStepIds(plan);
+  const capacityDefinitions=plan.protocol==="booking-http-v3"?runtimeCapacityStepDefinitions(plan):undefined;
+  if(plan.protocol==="booking-http-v3"&&!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(runId))throw new DomainError("Capacity reports require the generated UUID run namespace.",409);
   if(!Array.isArray(report.steps)||report.steps.length!==ids.length)throw new DomainError("Runtime report must retain every protocol step.",409);
   const steps=report.steps.map((value,index)=>{
     const step=record(value,"Runtime step");
-    const readback=["readback","unchanged","party_below_readback","party_exact_readback","concurrent_readback"].includes(ids[index]);
-    const method=index===0||readback?"GET":"POST";
+    const capacityStep=capacityDefinitions?.[index];
+    const readback=capacityStep?capacityStep.pathKind==="receipt":["readback","unchanged","party_below_readback","party_exact_readback","concurrent_readback"].includes(ids[index]);
+    const method=capacityStep?.method??(index===0||readback?"GET":"POST");
     if(Object.keys(step).some(key=>!["id","label","outcome","method","path","status","expected","actual","reason"].includes(key))||step.id!==ids[index]||step.method!==method||!["observed","mismatch","unavailable"].includes(step.outcome as string))throw new DomainError("Runtime protocol step is invalid.",409);
     text(step.label,"Runtime step label",160);text(step.expected,"Runtime expected description",500);
     const path=text(step.path,"Runtime request path",140);
-    if(index===0?path!=="meta":readback?!/^bookings\/(?:[A-Za-z0-9][A-Za-z0-9_-]{0,99}|:id)$/u.test(path):path!=="bookings")throw new DomainError("Runtime report contains an unsupported path.",409);
+    const occupancySlot=capacityStep?.pathKind==="occupancy-a"?"a":capacityStep?.pathKind==="occupancy-b"?"b":undefined;
+    if(index===0?path!=="meta":occupancySlot?path!==`occupancy/${runId}/${occupancySlot}`:readback?!/^bookings\/(?:[A-Za-z0-9][A-Za-z0-9_-]{0,99}|:id)$/u.test(path):path!=="bookings")throw new DomainError("Runtime report contains an unsupported path.",409);
     if(step.status!==undefined&&(!Number.isInteger(step.status)||(step.status as number)<100||(step.status as number)>599))throw new DomainError("Runtime HTTP status is invalid.",409);
     if(step.actual!==undefined)text(step.actual,"Runtime observed description",2000);
     if(step.reason!==undefined)text(step.reason,"Runtime unavailable reason",80);
     if(step.outcome==="unavailable"?!step.reason:step.status===undefined||typeof step.actual!=="string"||step.reason!==undefined)throw new DomainError("Runtime observation fields are inconsistent.",409);
-    const observedStatus=index===0||readback?[200]:["missing_slot","invalid_email","party_zero","party_fraction","party_above"].includes(ids[index])?[400,422]:ids[index]==="create"?[201]:ids[index]==="conflict"?[409]:[200,201];
+    const observedStatus=capacityStep?.observedStatuses??(index===0||readback?[200]:["missing_slot","invalid_email","party_zero","party_fraction","party_above"].includes(ids[index])?[400,422]:ids[index]==="create"?[201]:ids[index]==="conflict"?[409]:[200,201]);
     if(step.outcome==="observed"&&(!observedStatus.includes(step.status as number)||readback&&path==="bookings/:id"))throw new DomainError("Runtime observation cannot claim the expected outcome.",409);
     return step as RuntimeCheckStep;
   });
@@ -129,6 +136,10 @@ export function validateRuntimeReport(value: unknown, expected: {deliveryId: str
   if(plan.protocol==="booking-http-v2"){
     const pair=steps.filter(step=>step.id==="concurrent_first"||step.id==="concurrent_second");
     if(pair.some(step=>step.outcome==="observed")&&(!pair.every(step=>step.outcome==="observed")||pair.map(step=>step.status).sort().join(",")!=="200,201"))throw new DomainError("Observed concurrent receipts must retain exactly one creation and one replay response.",409);
+  }
+  if(plan.protocol==="booking-http-v3"){
+    const pair=steps.filter(step=>step.id==="capacity_race_first"||step.id==="capacity_race_second");
+    if(pair.some(step=>step.outcome==="observed")&&(!pair.every(step=>step.outcome==="observed")||pair.map(step=>step.status).sort().join(",")!=="201,409"))throw new DomainError("Observed capacity contenders must retain one creation and one capacity rejection.",409);
   }
   const saved=record(report.summary,"Runtime summary");
   if(Object.keys(saved).length!==4||Object.entries(summary).some(([key,count])=>saved[key]!==count))throw new DomainError("Runtime summary differs from its saved steps.",409);
