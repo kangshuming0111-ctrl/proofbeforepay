@@ -1,0 +1,166 @@
+{
+  "schema": "pbp-independent-page-response-fence-probe-v1",
+  "generatedAt": "2026-11-04T14:57:15.150Z",
+  "sourceSha256": "624a1e7352ed6c1f3c0f938efa9cb991b88e47e5731503b1b40d671c4a6d3d2a",
+  "helperSha256": "fcf32cd9ee4749d25f4de059ad0a1c34078fa4aa4766f24630c8d1472b217921",
+  "actualFunctionsExtracted": [
+    "publishQuoteResponseView",
+    "apply",
+    "getQuoteResponseFence",
+    "onConcurrentQuote",
+    "refreshEvidenceCatalog",
+    "run",
+    "mutate",
+    "saveRiskReview",
+    "switchWorkspaceRole"
+  ],
+  "actualFenceInitializationExtracted": true,
+  "singleUseRefInstanceSourceVerified": true,
+  "productFilesChanged": false,
+  "browserRuns": 0,
+  "networkRequests": 0,
+  "modelCalls": 0,
+  "reactCommitDeferred": true,
+  "rows": [
+    {
+      "id": "risk-after-task-actual-handlers",
+      "passed": true,
+      "saved": true,
+      "postCount": 1,
+      "getCount": 1,
+      "recordsConverged": true,
+      "commitDeferred": true
+    },
+    {
+      "id": "task-after-risk-unchanged-catalog-actual-handlers",
+      "passed": true,
+      "oldTaskTicketRevision": 0,
+      "riskAppliedBeforeTask": true,
+      "getCount": 1,
+      "recordsConverged": true
+    },
+    {
+      "id": "post-saved-refresh-failed-actual-handler",
+      "passed": true,
+      "saved": true,
+      "postCount": 1,
+      "getCount": 1,
+      "savedAndRefreshWarning": true,
+      "noFalseWriteFailure": true
+    },
+    {
+      "id": "late-get-does-not-revert-actual-handler",
+      "passed": true,
+      "saved": true,
+      "lateGetSuperseded": true,
+      "recordsUnchanged": true
+    },
+    {
+      "id": "switch-project-before-commit-actual-apply",
+      "passed": true,
+      "saved": true,
+      "synchronousRefUpdate": true,
+      "reactStateNotCommittedAtResponse": true,
+      "staleNoticesSuppressed": true,
+      "getCount": 0
+    },
+    {
+      "id": "switch-delivery-before-commit-actual-apply",
+      "passed": true,
+      "saved": true,
+      "synchronousRefUpdate": true,
+      "reactStateNotCommittedAtResponse": true,
+      "staleNoticesSuppressed": true,
+      "getCount": 0
+    },
+    {
+      "id": "switch-role-before-commit-actual-handler",
+      "passed": true,
+      "synchronousRefUpdate": true,
+      "oldTaskIgnored": true,
+      "recordsUnchanged": true
+    },
+    {
+      "id": "ordinary-risk-save-actual-handler",
+      "passed": true,
+      "saved": true,
+      "postCount": 1,
+      "getCount": 0
+    },
+    {
+      "id": "legitimate-delivery-change-actual-mutate",
+      "passed": true,
+      "deliveryId": "edition-two",
+      "postCount": 1,
+      "getCount": 0
+    },
+    {
+      "id": "failed-risk-post-not-replayed-actual-handler",
+      "passed": true,
+      "saved": false,
+      "postCount": 1,
+      "getCount": 0
+    },
+    {
+      "id": "roleplay-legitimate-projection-actual-switch",
+      "passed": true,
+      "sellerProjectionRequested": true,
+      "finalPerspective": "seller",
+      "postCount": 0
+    },
+    {
+      "id": "roleplay-switch-get-after-task-response",
+      "passed": true,
+      "taskCatalogPreserved": true,
+      "targetProjectionRefreshes": 1,
+      "getTransportRoles": [
+        "seller",
+        "seller"
+      ],
+      "roleCommittedAfterFreshRead": true
+    },
+    {
+      "id": "roleplay-target-refresh-late-after-new-apply",
+      "passed": true,
+      "lateTargetGetSuperseded": true,
+      "roleNotCommitted": true,
+      "recordsUnchanged": true
+    },
+    {
+      "id": "roleplay-target-refresh-failed-does-not-switch",
+      "passed": true,
+      "roleNotCommitted": true,
+      "refreshWarning": true,
+      "postCount": 0
+    },
+    {
+      "id": "roleplay-switch-before-old-task-uses-current-seller-read",
+      "passed": true,
+      "oldBuyerPayloadNotApplied": true,
+      "currentProjectionReadRole": "seller",
+      "getCount": 2,
+      "recordsConverged": true
+    },
+    {
+      "id": "single-tool-seller-accepts-server-buyer",
+      "passed": true,
+      "serverRole": "buyer",
+      "workspacePerspective": "seller",
+      "legitimateResponseApplied": true
+    },
+    {
+      "id": "single-tool-open-case-publishes-workspace-role-before-commit",
+      "passed": true,
+      "synchronousViewRole": "buyer",
+      "committedWorkspaceRole": "buyer",
+      "sourceViewMatchesRenderedPerspective": true
+    }
+  ],
+  "passed": 17,
+  "failed": 0,
+  "limitations": [
+    "These are actual bounded page functions with modeled Promise completion and deferred setState queues,not an authenticated browser or React renderer.",
+    "No real server writes,provider calls,DB/CAS timing,paint or effect scheduling were executed.",
+    "Child mutation requests are modeled as calls to the actual rendered onConcurrentQuote callback;child-local tasks/list loading is not covered."
+  ]
+}

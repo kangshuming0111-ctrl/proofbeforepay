@@ -1,6 +1,7 @@
 import type {ProofQuote} from "./contracts.ts";
 import {createEvidenceExport,verifyEvidenceExport,EVIDENCE_EXPORT_SCHEMA,type EvidenceExport,type EvidenceVerification} from "./evidence-export.ts";
 import {createDeploymentSourcePlan,type DeploymentSourceSession} from "./deployment-source.ts";
+import {getModuleDependencyFindings} from "./module-dependencies.ts";
 import {validateDeliveryArtifactManifest,DELIVERY_ARTIFACT_LIMITS,type DeliveryArtifactManifest} from "./delivery-artifacts.ts";
 import {sourceVisibilityPlan,type SourceVisibilityReport} from "./source-visibility.ts";
 import {buildSupplementalEvidenceCatalog,validateSupplementalEvidenceObject,validateSupplementalDecision,type SupplementalEvidenceObject,type SupplementalEvidenceCatalog} from "./supplemental-evidence.ts";
@@ -10,13 +11,14 @@ import {validateEvidenceFollowup,replayFollowupVersion,evidenceFollowupHead,FOLL
  * typed supplemental objects without silently broadening the v1 verifier. */
 export const EVIDENCE_BUNDLE_SCHEMA="proofbeforepay-evidence-bundle-v2";
 export const EVIDENCE_BUNDLE_RULES="pbp-supplemental-chain-v1";
+export const EVIDENCE_BUNDLE_MODULE_RULES="pbp-supplemental-chain-v2";
 export const EVIDENCE_BUNDLE_BYTE_LIMIT=8*1024*1024;
 export const EVIDENCE_BUNDLE_OBJECT_LIMIT=440;
 export class EvidenceBundleBudgetError extends Error{constructor(){super("The evidence exceeds the bounded JSON or 8 MiB total export limit. No record was omitted.");this.name="EvidenceBundleBudgetError";}}
 type SupplementalDecision=NonNullable<NonNullable<ProofQuote["proof"]["delivery"]>["acceptanceEvidence"]>[number]["supplementalDecision"];
 export type EvidenceBundleAcceptance={snapshotId:string;snapshotSha256:string;decision:SupplementalDecision|null};
 export type EvidenceBundle={
- schema:typeof EVIDENCE_BUNDLE_SCHEMA;verificationRules:typeof EVIDENCE_BUNDLE_RULES;scope:"current-delivery-only";
+ schema:typeof EVIDENCE_BUNDLE_SCHEMA;verificationRules:typeof EVIDENCE_BUNDLE_RULES|typeof EVIDENCE_BUNDLE_MODULE_RULES;scope:"current-delivery-only";
  core:EvidenceExport;
  supplemental:{version:1;catalog:SupplementalEvidenceCatalog;objects:SupplementalEvidenceObject[];artifactManifests:DeliveryArtifactManifest[];acceptance:EvidenceBundleAcceptance[]};
  followups?:{version:1;scope:"task-records-and-referenced-reports-only";tasks:EvidenceFollowup[]};
@@ -56,6 +58,7 @@ const same=(a:unknown,b:unknown)=>canonical(a)===canonical(b);
 export async function evidenceBundleSha256(value:unknown){assertEvidenceBundleBudget(value);return Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",encoder.encode(canonical(value)))),b=>b.toString(16).padStart(2,"0")).join("");}
 const objectKey=(value:SupplementalEvidenceObject)=>`${value.ref.family}:${value.ref.id}:${value.ref.version}`;
 function taskObservations(task:EvidenceFollowup):FollowupObservation[]{return[task.source,...(task.proposal?[task.proposal]:[]),...task.events.flatMap(e=>e.observation?[e.observation]:[])];}
+const extendedRulesRequired=(objects:SupplementalEvidenceObject[],tasks:EvidenceFollowup[])=>objects.some(o=>o.ref.family==="deployment-source"&&(o.record as DeploymentSourceSession).plan.version===3)||tasks.some(t=>taskObservations(t).some(o=>o.context!==undefined));
 function optionalExact(value:unknown,required:string[],optional:string[]=[]){demand(value&&typeof value==="object"&&!Array.isArray(value),"Expected a plain object.");const row=value as Record<string,unknown>;demand(required.every(k=>Object.hasOwn(row,k))&&Object.keys(row).every(k=>required.includes(k)||optional.includes(k)),"Unsupported or incomplete evidence fields.");return row;}
 function contextHeads(context:unknown):FollowupHead[]{
  const row=optionalExact(context,["artifactManifest"],["followupHeads"]);
@@ -78,10 +81,10 @@ export async function createEvidenceBundle(quote:ProofQuote,input:{catalog:Suppl
  const tasks=(input.followups??[]).map(validateEvidenceFollowup);
  const requested=new Set([...input.catalog.rows.map(r=>canonical(r.ref)),...acceptance.flatMap(a=>a.decision?.entries.map(e=>canonical(e.ref))??[]),...tasks.flatMap(t=>taskObservations(t).map(o=>canonical(o.ref)))]);
  const objects=input.objects.filter(obj=>requested.has(canonical(obj.ref)));
- const manifests=new Map<string,DeliveryArtifactManifest>();for(const m of [...(input.artifactManifests??[]),...objects.flatMap(o=>o.ref.family==="deployment-source"&&(o.record as DeploymentSourceSession).plan.version===2?[(o.record as DeploymentSourceSession).plan].flatMap(p=>p.version===2?[p.artifactManifest]:[]):[])]){const prior=manifests.get(m.id);demand(!prior||same(prior,m),"Conflicting artifact manifest identity.");manifests.set(m.id,m);}
- const manifestRefs=[input.catalog.context.artifactManifest,...acceptance.map(a=>a.decision?.catalogContext.artifactManifest)].filter(Boolean);
- const artifactManifests=[...manifests.values()].filter(m=>manifestRefs.some(r=>r!.id===m.id&&r!.manifestDigest===m.manifestDigest)||objects.some(o=>o.ref.family==="deployment-source"&&(o.record as DeploymentSourceSession).plan.version===2&&((o.record as DeploymentSourceSession).plan as {artifactManifest:DeliveryArtifactManifest}).artifactManifest.id===m.id));
- const result:EvidenceBundle={schema:EVIDENCE_BUNDLE_SCHEMA,verificationRules:EVIDENCE_BUNDLE_RULES,scope:"current-delivery-only",core,supplemental:{version:1,catalog:structuredClone(input.catalog),objects:structuredClone(objects),artifactManifests:structuredClone(artifactManifests),acceptance},...(input.followups!==undefined?{followups:{version:1,scope:"task-records-and-referenced-reports-only",tasks:structuredClone(tasks)}}:{})};
+ const manifests=new Map<string,DeliveryArtifactManifest>();for(const m of [...(input.artifactManifests??[]),...objects.flatMap(o=>o.ref.family==="deployment-source"&&(o.record as DeploymentSourceSession).plan.version!==1?[(o.record as DeploymentSourceSession).plan].flatMap(p=>p.version!==1?[p.artifactManifest]:[]):[])]){const prior=manifests.get(m.id);demand(!prior||same(prior,m),"Conflicting artifact manifest identity.");manifests.set(m.id,m);}
+ const manifestRefs=[input.catalog.context.artifactManifest,...acceptance.map(a=>a.decision?.catalogContext.artifactManifest),...tasks.flatMap(t=>taskObservations(t).map(o=>o.context?.artifactManifest))].filter(Boolean);
+ const artifactManifests=[...manifests.values()].filter(m=>manifestRefs.some(r=>r!.id===m.id&&r!.manifestDigest===m.manifestDigest)||objects.some(o=>o.ref.family==="deployment-source"&&(o.record as DeploymentSourceSession).plan.version!==1&&((o.record as DeploymentSourceSession).plan as {artifactManifest:DeliveryArtifactManifest}).artifactManifest.id===m.id));
+ const result:EvidenceBundle={schema:EVIDENCE_BUNDLE_SCHEMA,verificationRules:extendedRulesRequired(objects,tasks)?EVIDENCE_BUNDLE_MODULE_RULES:EVIDENCE_BUNDLE_RULES,scope:"current-delivery-only",core,supplemental:{version:1,catalog:structuredClone(input.catalog),objects:structuredClone(objects),artifactManifests:structuredClone(artifactManifests),acceptance},...(input.followups!==undefined?{followups:{version:1,scope:"task-records-and-referenced-reports-only",tasks:structuredClone(tasks)}}:{})};
  assertEvidenceBundleBudget(result);
  const verification=await verifyEvidenceBundle(result);demand(verification.consistency==="consistent",`The unified evidence bundle is incomplete or inconsistent (${verification.checks.filter(c=>c.status==="inconsistent").map(c=>c.id).join(", ")}). No evidence was silently omitted.`);return result;
 }
@@ -107,11 +110,15 @@ export async function verifyEvidenceBundle(input:unknown):Promise<EvidenceVerifi
  const check=async(id:string,action:()=>unknown|Promise<unknown>,message:string)=>{try{await action();result.checks.push({id,status:"consistent",message});return true;}catch{result.consistency="inconsistent";result.checks.push({id,status:"inconsistent",message:`${id} could not be established from the supplied record.`});return false;}};
  if(!bounded){result.consistency="inconsistent";result.checks.push({id:"bounded-json",status:"inconsistent",message:"The unified input exceeds its bounded plain JSON limits. No records were truncated."});return result;}
  if(input&&typeof input==="object"&&(input as Record<string,unknown>).schema===EVIDENCE_EXPORT_SCHEMA)return verifyEvidenceExport(input);
- if(!input||typeof input!=="object"||(input as Record<string,unknown>).schema!==EVIDENCE_BUNDLE_SCHEMA||(input as Record<string,unknown>).verificationRules!==EVIDENCE_BUNDLE_RULES){result.consistency="unsupported";result.checks.push({id:"schema",status:"inconsistent",message:"Unsupported evidence bundle format or verification rules."});return result;}
+ if(!input||typeof input!=="object"||(input as Record<string,unknown>).schema!==EVIDENCE_BUNDLE_SCHEMA||!([EVIDENCE_BUNDLE_RULES,EVIDENCE_BUNDLE_MODULE_RULES]as unknown[]).includes((input as Record<string,unknown>).verificationRules)){result.consistency="unsupported";result.checks.push({id:"schema",status:"inconsistent",message:"Unsupported evidence bundle format or verification rules."});return result;}
  // Capture the already-checked plain data synchronously. Async digest work
  // must not revisit caller-owned objects that can change after this point.
  const bundle=structuredClone(input) as EvidenceBundle;
  if(!await check("bundle-structure",()=>{optionalExact(bundle,["schema","verificationRules","scope","core","supplemental"],["followups"]);demand(bundle.scope==="current-delivery-only","Unsupported scope.");exact(bundle.supplemental,["version","catalog","objects","artifactManifests","acceptance"]);demand(bundle.supplemental.version===1&&Array.isArray(bundle.supplemental.objects)&&bundle.supplemental.objects.length<=EVIDENCE_BUNDLE_OBJECT_LIMIT&&Array.isArray(bundle.supplemental.artifactManifests)&&bundle.supplemental.artifactManifests.length<=DELIVERY_ARTIFACT_LIMITS.history&&Array.isArray(bundle.supplemental.acceptance)&&bundle.supplemental.acceptance.length<=20,"Supplemental objects exceed their bound.");contextHeads(bundle.supplemental.catalog.context);if(bundle.followups){exact(bundle.followups,["version","scope","tasks"]);demand(bundle.followups.version===1&&bundle.followups.scope==="task-records-and-referenced-reports-only"&&Array.isArray(bundle.followups.tasks)&&bundle.followups.tasks.length<=FOLLOWUP_LIMIT,"Invalid follow-up extension.");}},"The unified wrapper retains an unchanged v1 core and bounded supplemental evidence."))return result;
+ if(!await check("module-observation-rules",()=>{
+  const extended=extendedRulesRequired(bundle.supplemental.objects,bundle.followups?.tasks??[]);
+  demand((bundle.verificationRules===EVIDENCE_BUNDLE_MODULE_RULES)===extended,"Module observations and contextual task bindings require their named rule revision; legacy rules cannot reinterpret them.");
+ },"The named rule revision explicitly distinguishes legacy records from bounded module observations and exact contextual task bindings."))return result;
  const coreReport=await verifyEvidenceExport(bundle.core);result.checks.push(...coreReport.checks);if(coreReport.consistency!=="consistent")result.consistency=coreReport.consistency;
  if(!coreReport.checks.some(c=>c.id==="structure"&&c.status==="consistent"))return result;
  const objects:SupplementalEvidenceObject[]=[],tasks:EvidenceFollowup[]=[];
@@ -123,37 +130,50 @@ export async function verifyEvidenceBundle(input:unknown):Promise<EvidenceVerifi
   for(const raw of bundle.supplemental.objects){const obj=await validateSupplementalEvidenceObject(raw);demand(same(raw,obj),"A record contains fields outside its public projection.");demand(obj.record.projectId===bundle.core.project.id&&(obj.ref.deliveryId===bundle.core.delivery.id&&obj.ref.deliveryDigest===bundle.core.fileDigest||taskRefs.some(ref=>same(ref,obj.ref))),"A supplemental object belongs to another project or unreferenced delivery.");const key=objectKey(obj);demand(!keys.has(key),"Duplicate supplemental object identity.");keys.add(key);objects.push(obj);}
  },"Supplemental objects pass their native validators and exact public payload hashes; participant identifiers are withheld.");
  if(!objectsValid)return result;
+ if(objects.some(o=>o.ref.family==="deployment-source"&&(o.record as DeploymentSourceSession).plan.version===3))await check("module-observations",()=>{
+  for(const object of objects)if(object.ref.family==="deployment-source"&&(object.record as DeploymentSourceSession).plan.version===3)getModuleDependencyFindings(object.record as DeploymentSourceSession);
+ },"Saved module observations are bound to exact file hashes, safe declared paths and bounded graph relationships. Original JS is absent, so the lexer, runtime loading and execution are not rerun.");
  await check("supplemental-bindings",async()=>{
   for(const obj of objects){
    if(obj.ref.deliveryId!==bundle.core.delivery.id||obj.ref.deliveryDigest!==bundle.core.fileDigest)continue;
    if(obj.ref.family==="source-visibility")await verifyVisibilityBinding(bundle.core,obj.record as SourceVisibilityReport);
    if(obj.ref.family==="deployment-source"){
     const p=(obj.record as DeploymentSourceSession).plan;
-    const replay=await createDeploymentSourcePlan({projectId:bundle.core.project.id,deliveryId:bundle.core.delivery.id,deliveryDigest:bundle.core.fileDigest,entryFile:p.entryFile,registration:p.registration,files:bundle.core.delivery.files!,...(p.version===2?{artifactManifest:p.artifactManifest}:{})});
+    const replay=await createDeploymentSourcePlan({projectId:bundle.core.project.id,deliveryId:bundle.core.delivery.id,deliveryDigest:bundle.core.fileDigest,entryFile:p.entryFile,registration:p.registration,files:bundle.core.delivery.files!,...(p.version!==1?{artifactManifest:p.artifactManifest}:{}),...(p.version===3?{analyzeModules:true}:{})});
     demand(same(replay,p),"The deployment byte plan differs from the exact files/artifact manifest.");
    }
   }
   const ids=new Set<string>();for(const raw of bundle.supplemental.artifactManifests){const m=await validateDeliveryArtifactManifest(raw);demand(m.projectId===bundle.core.project.id&&!ids.has(m.id),"A build-artifact manifest is foreign or duplicated.");ids.add(m.id);}
   const manifestRefs:{id:string;manifestDigest:string}[]=[];
-  const requireManifest=(ref:{id:string;manifestDigest:string}|null|undefined)=>{if(ref){demand(bundle.supplemental.artifactManifests.some(m=>m.id===ref.id&&m.manifestDigest===ref.manifestDigest),"A frozen artifact manifest is missing.");manifestRefs.push(ref);}};
-  requireManifest(bundle.supplemental.catalog.context.artifactManifest);for(const row of bundle.supplemental.acceptance)requireManifest(row.decision?.catalogContext.artifactManifest);for(const obj of objects){if(obj.ref.family==="deployment-source"){const p=(obj.record as DeploymentSourceSession).plan;if(p.version===2)requireManifest(p.artifactManifest);}}
+  const requireManifest=(ref:{id:string;manifestDigest:string}|null|undefined,binding={deliveryId:bundle.core.delivery.id,deliveryDigest:bundle.core.fileDigest},at?:string)=>{if(ref){demand(bundle.supplemental.artifactManifests.some(m=>m.id===ref.id&&m.manifestDigest===ref.manifestDigest&&m.deliveryId===binding.deliveryId&&m.deliveryDigest===binding.deliveryDigest&&(!at||Date.parse(m.createdAt)<=Date.parse(at))),"A frozen artifact manifest is missing or belongs to a different delivery.");manifestRefs.push(ref);}};
+  requireManifest(bundle.supplemental.catalog.context.artifactManifest);for(const row of bundle.supplemental.acceptance)requireManifest(row.decision?.catalogContext.artifactManifest);for(const obj of objects){if(obj.ref.family==="deployment-source"){const p=(obj.record as DeploymentSourceSession).plan;if(p.version!==1)requireManifest(p.artifactManifest,{deliveryId:obj.ref.deliveryId,deliveryDigest:obj.ref.deliveryDigest});}}
+  for(const task of tasks)for(const event of task.events){const observation=event.observation;if(observation)requireManifest(observation.context?.artifactManifest,{deliveryId:observation.ref.deliveryId,deliveryDigest:observation.ref.deliveryDigest},event.at);}
   demand(bundle.supplemental.artifactManifests.every(m=>manifestRefs.some(r=>r.id===m.id&&r.manifestDigest===m.manifestDigest)),"An unrelated artifact manifest was included.");
  },"Current-delivery source spans and deployment byte plans resolve against the exported files. Older task reports receive native-record checks; their earlier source files are not included or replayed.");
- await check("supplemental-catalog",async()=>{
+ const catalogValid=await check("supplemental-catalog",async()=>{
   const catalog=bundle.supplemental.catalog;
   const current=catalog.rows.map(row=>objects.find(obj=>same(obj.ref,row.ref)));demand(current.every(Boolean),"The current catalog has a dangling exact record reference.");
   const rebuilt=await buildSupplementalEvidenceCatalog(bundle.core.delivery.id,bundle.core.fileDigest,current as SupplementalEvidenceObject[],catalog.context);
   demand(same(rebuilt,catalog),"The current supplemental catalog does not match its exact objects.");
   const referenced=[...catalog.rows.map(r=>r.ref),...bundle.supplemental.acceptance.flatMap(a=>a.decision?.entries.map(e=>e.ref)??[]),...taskRefs];demand(objects.every(o=>referenced.some(r=>same(r,o.ref))),"An unreferenced supplemental object was included.");
  },"The current supplemental catalog is re-derived from the included exact records and its frozen artifact context.");
- await check("supplemental-acceptance",async()=>{
+ const acceptanceValid=await check("supplemental-acceptance",async()=>{
   const snapshots=bundle.core.delivery.acceptanceEvidence??[],rows=bundle.supplemental.acceptance;demand(rows.length===snapshots.length,"Every retained acceptance snapshot needs an explicit supplemental decision entry.");const ids=new Set<string>();
   for(const row of rows){exact(row,["snapshotId","snapshotSha256","decision"]);demand(!ids.has(row.snapshotId),"Duplicate acceptance decision.");ids.add(row.snapshotId);const snapshot=snapshots.find(s=>s.id===row.snapshotId);demand(snapshot&&row.snapshotSha256===await evidenceBundleSha256({...snapshot,...(row.decision?{supplementalDecision:row.decision}:{})}),"The supplemental decision no longer binds the exact acceptance snapshot.");
    if(row.decision){contextHeads(row.decision.catalogContext);const refs=row.decision.entries.map(e=>e.ref),retained=refs.map(ref=>objects.find(obj=>same(obj.ref,ref)));demand(retained.every(Boolean),"An exact frozen supplemental record is missing.");const catalog=await buildSupplementalEvidenceCatalog(bundle.core.delivery.id,bundle.core.fileDigest,retained as SupplementalEvidenceObject[],row.decision.catalogContext);validateSupplementalDecision(row.decision,catalog);}
   }
  },"Each retained buyer decision resolves to its exact frozen report versions and snapshot, including exclusions and acknowledged findings.");
  await check("followup-bindings",async()=>{
-  for(const t of tasks)for(const observation of taskObservations(t)){const object=objects.find(o=>same(o.ref,observation.ref));demand(object,"A repair/retest event has a dangling exact report reference.");const c=await buildSupplementalEvidenceCatalog(object.ref.deliveryId,object.ref.deliveryDigest,[object]);const row=c.rows[0],finding=row?.findings.find(f=>f.key===observation.finding.key);demand(row&&row.planKey===observation.planKey&&same(finding,observation.finding),"A repair/retest event changed the saved report plan or finding.");}
+  for(const t of tasks)for(const observation of taskObservations(t)){
+   const object=objects.find(o=>same(o.ref,observation.ref));demand(object,"A repair/retest event has a dangling exact report reference.");
+   const c=await buildSupplementalEvidenceCatalog(object.ref.deliveryId,object.ref.deliveryDigest,[object],observation.context??{artifactManifest:null});
+   // New tasks freeze the context that made a diagnostic true. Legacy tasks
+   // may use a native-rebuilt catalog already retained in this exact bundle;
+   // missing historical context is never invented from an unrelated manifest.
+   const retainedRows=observation.context!==undefined?[]:[...(catalogValid?bundle.supplemental.catalog.rows:[]),...(acceptanceValid?bundle.supplemental.acceptance.flatMap(a=>a.decision?.catalogRows??[]):[])];
+   const candidates=[...c.rows,...retainedRows.filter(r=>same(r.ref,observation.ref))];
+   demand(candidates.some(row=>row.planKey===observation.planKey&&same(row.findings.find(f=>f.key===observation.finding.key),observation.finding)),"A repair/retest event changed the saved report plan/finding, or lacks its required historical context.");
+  }
   const current=contextHeads(bundle.supplemental.catalog.context);demand(current.length===tasks.length,"The current task-head catalog is incomplete.");
   const contexts=[bundle.supplemental.catalog.context,...bundle.supplemental.acceptance.flatMap(a=>a.decision?[a.decision.catalogContext]:[])];
   for(const context of contexts)for(const head of contextHeads(context)){const task=tasks.find(t=>t.id===head.id);demand(task,"A frozen task head is missing its append-only events.");const replay=replayFollowupVersion(task,head.version);demand(same(await evidenceFollowupHead(replay),head),"A task head differs from the exact historical event version.");}

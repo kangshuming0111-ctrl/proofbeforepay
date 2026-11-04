@@ -3,6 +3,8 @@ import recordedV1 from "../../tests/fixtures/recorded-seller-staging/v1-evidence
 import recordedV2 from "../../tests/fixtures/recorded-seller-staging/v2-evidence.json";
 import {createEvidenceViewerController,runtimeEvidenceForViewer,type EvidenceViewerState,type EvidenceViewerError} from "./evidence-controller.ts";
 import type {EvidenceExport} from "../../lib/evidence-export.ts";
+import {getModuleDependencyFindings} from "../../lib/module-dependencies.ts";
+import type {DeploymentSourceSession} from "../../lib/deployment-source.ts";
 import type {RuntimeCheckReport} from "../../lib/runtime-checks.ts";
 import {runtimeStepName,runtimeReasonLabel} from "../../lib/runtime-feedback.ts";
 
@@ -15,6 +17,8 @@ const append=(parent:Node,...children:Node[])=>children.forEach(child=>parent.ap
 const controller=createEvidenceViewerController(next=>{state=next;selectedFile="";render();});
 const gates:Record<string,[string,string,string,string]>={
   "bundle-structure":["统一证据包范围","Unified bundle scope","原 v1 核心与新增报告均有明确上限；没有省略超限记录。","The unchanged v1 core and supplemental reports have explicit bounds; oversized records are not silently omitted."],
+  "module-observation-rules":["补充证据规则版本","Supplemental rule revision","明确区分旧记录与新版模块观察／返工上下文；不按新规则改写旧报告。","Distinguish legacy records from bounded module observations and contextual repair bindings without reinterpreting historical records."],
+  "module-observations":["已保存的有限模块关系","Retained bounded module relationships","重算保存的导入观察、清单及读取结果之间的关系；没有原始 JS，不重新解析或执行代码。","Recalculate relationships among retained import observations, manifests and readings. Original JS is absent; it is neither parsed again nor executed."],
   structure:["文件格式与范围","Format and scope","支持的当前交付格式，且结构在上限内。","Supported current-delivery format within structural limits."],
   "file-digest":["交付文件摘要","File-map digest","重新计算文件映射的 SHA-256。","Recompute SHA-256 for the exact file map."],
   requirements:["原始要求引用","Original requirement spans","核对原文范围与保留的字面引用。","Resolve retained literal spans in the original source."],
@@ -71,7 +75,7 @@ function gatePanel(){
   const list=node("ol");
   for(const [id,copy] of Object.entries(gates)){
     const check=checks.find(row=>row.id===id);
-    if(!check&&["journey-plan-source-mapping","model-evidence-explanation","model-archive-integrity","bundle-structure","supplemental-objects","supplemental-bindings","supplemental-catalog","supplemental-acceptance","followup-records","followup-bindings"].includes(id))continue;
+    if(!check&&["journey-plan-source-mapping","model-evidence-explanation","model-archive-integrity","bundle-structure","module-observation-rules","module-observations","supplemental-objects","supplemental-bindings","supplemental-catalog","supplemental-acceptance","followup-records","followup-bindings"].includes(id))continue;
     const outcome=check?.status??"not_checked",row=node("li",`ev-gate ${outcome}`),heading=node("div","ev-gate-heading");
     append(heading,node("h3","",tr(copy[0],copy[1])),node("span","ev-gate-status",outcome==="consistent"?tr("一致","Consistent"):outcome==="inconsistent"?tr("不一致","Inconsistent"):tr("未核对","Not checked")));
     append(row,heading,node("p","",tr(copy[2],copy[3])));
@@ -124,6 +128,7 @@ function limitsPanel(){
   const section=node("details","ev-limits");append(section,node("summary","",tr("一致究竟证明了什么？","What does consistency establish?")));
   const list=node("ul");for(const line of [
     tr("仅核对当前交付文件及其保留的报告、验收关联；更早交付版本不在同一个包内。","Only this delivery’s files, retained reports and acceptance references are checked; earlier deliveries are outside this package."),
+    tr("模块依赖只重算包内保存的有限观察关系；没有原始 JS 供重新解析，不验证运行时加载或执行。","Module diagnostics recalculate only the packaged bounded observations. Original JS is absent; parsing, runtime loading and execution are not repeated."),
     tr("没有可信签名或外部锚点。完全伪造但内部自洽的文件也可能通过。","There is no trusted signature or external anchor. A fully fabricated but internally coherent file can pass."),
     tr("不证明签发者、真实身份、实际 HTTP 或模型调用、网站全部合格、法律结论或付款。","This does not prove issuance, identity, actual HTTP or model execution, complete website correctness, a legal conclusion or payment."),
     tr("原始要求和源文件可能包含个人文字。本页不上传、不存储到浏览器持久空间，也不是自动匿名化工具。","Requirements and source files may contain personal text. This page does not upload them or persist them in browser storage, and is not an automatic anonymiser."),
@@ -141,6 +146,16 @@ function supplementalPanel(){
   const refs=node("dl","ev-refs");append(refs,labelledValue(tr("记录／版本","Record / version"),`${row.ref.id} / ${row.ref.version}`),labelledValue("SHA-256",row.ref.payloadSha256));append(item,refs);
   const findings=node("ul");for(const f of row.findings)append(findings,node("li","",`${f.outcome} · ${f.label}`));append(item,findings);
   const object=evidence.objects.find(o=>o.ref.payloadSha256===row.ref.payloadSha256&&o.ref.id===row.ref.id&&o.ref.family===row.ref.family&&o.ref.version===row.ref.version);
+  if(object?.ref.family==="deployment-source"&&(object.record as DeploymentSourceSession).plan.version===3){
+   const moduleDetails=node("details","ev-inventory");append(moduleDetails,node("summary","",tr("有限模块依赖观察","Bounded module observations")),node("p","ev-note",tr("这里只重算已保存的导入观察与声明清单的关系，没有原始 JS 可供重新解析，没有执行代码或跟随依赖发出请求。完整运行时加载仍未验证。","Only retained import observations and declared-file relationships are recalculated. Original JS is absent, no code is executed, and no dependency is fetched. Arbitrary runtime loading remains unverified.")));
+   if(state.phase==="ready"&&state.verification.checks.some(c=>c.id==="module-observations"&&c.status==="consistent")){
+    const modules=node("ul");for(const finding of getModuleDependencyFindings(object.record as DeploymentSourceSession)){
+     const module=node("li");append(module,node("strong","",finding.file),node("p","",tr(`声明范围关系：${finding.outcome}；直接引用 ${finding.references}，可达模块 ${finding.reachableModules}，漏声明 ${finding.missing}，未知 ${finding.unknown}。`,`Declared-scope relationships: ${finding.outcome}; ${finding.references} direct references, ${finding.reachableModules} reachable modules, ${finding.missing} missing declarations, ${finding.unknown} unknowns.`)));
+     const details=node("ul");for(const d of finding.details.slice(0,20))append(details,node("li","",`${d.outcome} · ${d.from}${d.target?` → ${d.target}`:""} · ${d.reason}${d.offset===undefined?"":` · offset ${d.offset}`}`));if(finding.details.length>20)append(module,node("p","ev-note",tr("这里只展示前20个诊断；核对使用完整有界记录。","Only the first 20 diagnostics are displayed; verification used the full bounded record.")));append(module,details);append(modules,module);
+    }append(moduleDetails,modules);
+   }else append(moduleDetails,node("p","ev-empty-note",tr("模块关系尚未核对一致。请先查看核对项目，不能把此记录当成验证通过。","Module relationships have not passed consistency checks. Inspect the check list before relying on this record.")));
+   append(item,moduleDetails);
+  }
   if(object){const detail=node("details"),text=JSON.stringify(object.record,null,2),limit=24000;append(detail,node("summary","",tr("查看保存的原生记录","Inspect retained native record")),node("pre","ev-source-text",text.length>limit?text.slice(0,limit)+tr("\n… 仅显示前 24,000 字符；核对使用完整对象。","\n… Display limited to 24,000 characters; the complete object was verified."):text));append(item,detail);}
   append(list,item);
  }

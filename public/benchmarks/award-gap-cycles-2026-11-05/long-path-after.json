@@ -1,0 +1,69 @@
+{
+  "schema": "pbp-long-path-contract-probe-v1",
+  "uploadMaxPathLength": 160,
+  "scope": "An exact same controlled provider answer differs only in a valid source filename. This is not a live AI score.",
+  "results": [
+    {
+      "file": "terms.html",
+      "pathLength": 10,
+      "segmentLengths": [
+        10
+      ],
+      "validUpload": true,
+      "localResponses": 1,
+      "externalRequests": 0,
+      "quoteUnchanged": true,
+      "accepted": true,
+      "statuses": [
+        "supported",
+        "supported"
+      ],
+      "citations": [
+        {
+          "file": "terms.html",
+          "start": 67,
+          "end": 150,
+          "excerpt": "<p>Cancellations made at least 48 hours before departure receive a full refund.</p>"
+        },
+        {
+          "file": "terms.html",
+          "start": 150,
+          "end": 206,
+          "excerpt": "<p>Visitor address: 47 Elm Parade, Carlton VIC 3053.</p>"
+        }
+      ]
+    },
+    {
+      "file": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/terms.html",
+      "pathLength": 132,
+      "segmentLengths": [
+        60,
+        60,
+        10
+      ],
+      "validUpload": true,
+      "localResponses": 1,
+      "externalRequests": 0,
+      "quoteUnchanged": true,
+      "accepted": true,
+      "statuses": [
+        "supported",
+        "supported"
+      ],
+      "citations": [
+        {
+          "file": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/terms.html",
+          "start": 67,
+          "end": 150,
+          "excerpt": "<p>Cancellations made at least 48 hours before departure receive a full refund.</p>"
+        },
+        {
+          "file": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/terms.html",
+          "start": 150,
+          "end": 206,
+          "excerpt": "<p>Visitor address: 47 Elm Parade, Carlton VIC 3053.</p>"
+        }
+      ]
+    }
+  ]
+}

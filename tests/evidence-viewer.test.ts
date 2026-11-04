@@ -13,6 +13,9 @@ import vm from "node:vm";
 import {modelFixture,completeModel} from "./model-check-fixture.ts";
 import {prepareModelRunStorage} from "../lib/model-report-archive.ts";
 import {createEvidenceExport} from "../lib/evidence-export.ts";
+import {createEvidenceBundle,verifyEvidenceBundle} from "../lib/evidence-bundle.ts";
+import {getModuleDependencyFindings} from "../lib/module-dependencies.ts";
+import {bundleFixture,acceptBundleQuote} from "./evidence-bundle-fixtures.ts";
 
 const recorded=async(version:1|2):Promise<EvidenceExport>=>JSON.parse(await readFile(new URL(`./fixtures/recorded-seller-staging/v${version}-evidence.json`,import.meta.url),"utf8"));
 const bytes=(value:unknown)=>new TextEncoder().encode(JSON.stringify(value)).buffer;
@@ -103,4 +106,23 @@ test("archive integrity has a named bilingual gate without an unknown warning, w
  const packet=await createEvidenceExport(quote),verification=await verifyEvidenceExport(packet);assert.equal(verification.consistency,"consistent");assert.ok(verification.checks.some(row=>row.id==="model-archive-integrity"&&row.status==="consistent"));
  const nodes=gateNodes(await renderGateChecks(verification.checks));assert.ok(nodes.some(node=>node.tag==="h3"&&node.text==="不可变模型报告档案"));assert.ok(!nodes.some(node=>node.text.includes("尚未命名")));assert.ok(nodes.some(node=>node.text.includes("SHA-256")));assert.ok(nodes.some(node=>node.text.includes("真实性")));
  const english=gateNodes(await renderGateChecks(verification.checks,"en"));assert.ok(english.some(node=>node.tag==="h3"&&node.text==="Immutable model report archive"));assert.ok(!english.some(node=>node.text.includes("not yet named")));
+});
+
+test("module rule and saved-relationship checks have bilingual gates and explicitly forbid a no-source lexer replay claim",async()=>{
+ const fixture=await bundleFixture({modules:{"app.mjs":"import './menu.mjs';","menu.mjs":"export default 1;"}}),bundle=await createEvidenceBundle(acceptBundleQuote(fixture.quote,fixture.catalog),{catalog:fixture.catalog,objects:fixture.objects,artifactManifests:[fixture.manifest!]}),verification=await verifyEvidenceBundle(bundle);
+ assert.equal(verification.consistency,"consistent");
+ const zh=gateNodes(await renderGateChecks(verification.checks));assert.ok(zh.some(n=>n.tag==="h3"&&n.text==="补充证据规则版本"));assert.ok(zh.some(n=>n.tag==="h3"&&n.text==="已保存的有限模块关系"));assert.ok(zh.some(n=>n.text.includes("没有原始 JS")));assert.ok(!zh.some(n=>n.text.includes("尚未命名")));
+ const en=gateNodes(await renderGateChecks(verification.checks,"en"));assert.ok(en.some(n=>n.text.includes("Original JS is absent")));assert.ok(!en.some(n=>n.text.includes("not yet named")));
+});
+
+test("actual supplemental renderer exposes bounded missing-module details and hides recalculated outcomes when that check failed",async()=>{
+ const fixture=await bundleFixture({modules:{"app.mjs":"import './missing.mjs';"}}),bundle=await createEvidenceBundle(acceptBundleQuote(fixture.quote,fixture.catalog),{catalog:fixture.catalog,objects:fixture.objects,artifactManifests:[fixture.manifest!]}),verification=await verifyEvidenceBundle(bundle);
+ const source=await readFile(new URL("../app/guest-lab/evidence-viewer.ts",import.meta.url),"utf8"),file=ts.createSourceFile("evidence-viewer.ts",source,ts.ScriptTarget.Latest,true,ts.ScriptKind.TS),renderer=file.statements.find(s=>ts.isFunctionDeclaration(s)&&s.name?.text==="supplementalPanel");assert.ok(renderer);
+ const script=ts.transpileModule(`${renderer.getText(file)}\nglobalThis.rendered=supplementalPanel();`,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.None}}).outputText;
+ const render=(checks:typeof verification.checks)=>{
+  const make=(tag:string,className="",text=""):GateNode=>({tag,className,text,children:[],setAttribute:()=>{}}),append=(p:GateNode,...nodes:GateNode[])=>p.children.push(...nodes),labelledValue=(label:string,value:string)=>{const n=make("div");append(n,make("dt","",label),make("dd","",value));return n;};
+  const context:{rendered?:GateNode;[key:string]:unknown}={state:{phase:"ready",supplemental:bundle.supplemental,verification:{checks}},tr:(zh:string)=>zh,node:make,append,labelledValue,getModuleDependencyFindings};vm.runInNewContext(script,context,{timeout:1000});return gateNodes(context.rendered!);
+ };
+ const good=render(verification.checks);assert.ok(good.some(n=>n.text==="有限模块依赖观察"));assert.ok(good.some(n=>n.text.includes("artifact_not_declared")&&n.text.includes("missing.mjs")));assert.ok(good.some(n=>n.text.includes("没有原始 JS 可供重新解析")));assert.ok(good.some(n=>n.text.includes("声明范围关系：mismatch")));
+ const bad=render(verification.checks.map(c=>c.id==="module-observations"?{...c,status:"inconsistent"as const}:c));assert.ok(bad.some(n=>n.text.includes("模块关系尚未核对一致")));assert.ok(!bad.some(n=>n.text.includes("声明范围关系：")));
 });

@@ -7,6 +7,7 @@ import { criterionDisplayTitle } from "@/lib/delivery-overview";
 import "../assessment.css";
 import { RiskReviewPanel } from "./RiskReviewPanel";
 import { AssessmentValidationPanel } from "./AssessmentValidationPanel";
+import { assessmentCriterionSource, buildAssessmentFeedbackDraft } from "./assessment-feedback";
 import type { RiskReviewInput } from "@/lib/risk-reviews";
 import { assessmentCoverageGroups, assessmentReviewSummary, assessmentRiskPresentation } from "@/lib/assessment-display";
 
@@ -70,19 +71,23 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
   function renderItem(item: ProofAssessment["items"][number], selected = false) {
     const canPrepareFeedback = !readOnly && !!onPrepareFeedback && item.status !== "supported";
     const insufficient = item.status === "insufficient_evidence";
+    const criterion = criteria.find(criterion => criterion.id === item.criterionId);
+    const lockedSource = assessmentCriterionSource(criterion, item.criterionId);
+    const draft = canPrepareFeedback ? buildAssessmentFeedbackDraft(criterion, item, language) : undefined;
     return <article className={`assessment-item${selected ? " assessment-item-selected" : ""}`} key={item.criterionId}>
       <div className="assessment-item-heading"><h4>{titleFor(item.criterionId)}</h4><span className={`assessment-status assessment-status-${item.status}`}>{statusLabel(item.status)}</span></div>
+      {lockedSource !== undefined ? <details className="assessment-locked-source">
+        <summary><Quote size={12} aria-hidden="true" />{tr("查看完整锁定原文", "Inspect complete locked wording")}<ChevronDown size={13} aria-hidden="true" /></summary>
+        <p>{tr("原样保留的验收要求；界面语言切换不会翻译或缩写这段原文。", "The agreed wording is preserved exactly. Changing interface language does not translate or shorten this source.")}</p>
+        <blockquote>{lockedSource}</blockquote>
+      </details> : <p className="assessment-source-unavailable">{tr("尚未取得此项的锁定原文，暂不能生成带要求的补证草稿。请重新载入当前交付后核对。", "This criterion’s locked wording is unavailable, so an evidence request cannot be prepared. Reload the current delivery and check again.")}</p>}
       <p className="assessment-explanation">{item.explanation}</p>
       <Citations citations={item.citations} language={language} />
       {item.ruleEvidenceIds.length > 0 && <p className="assessment-rule-refs">{tr("已关联此要求的规则证据，可与下方核查结果对照。", "Linked to this requirement’s rule evidence; compare it with the rule findings below.")}</p>}
-      {canPrepareFeedback && <div className="assessment-feedback-action no-print"><button type="button" className="assessment-feedback-button" disabled={busy} onClick={() => {
-        if (!report) return;
-        const introduction = insufficient
-          ? tr("证据不足（AI 建议，待买家核对）：请补充可复查的交付证据。\n", "Insufficient evidence (AI suggestion for buyer review): please provide verifiable delivery evidence.\n")
-          : tr("AI 修改建议（待买家核对）：\n", "AI change suggestion (for buyer review):\n");
-        const comment = `${introduction}${item.explanation}`.slice(0, 1000).replace(/[\uD800-\uDBFF]$/u, "");
-        onPrepareFeedback?.({ deliveryId: report.deliveryId, criterionId: item.criterionId, comment });
-      }}>{insufficient ? tr("请求补充证据", "Draft an evidence request") : tr("加入修改草稿", "Add to change draft")}</button><span>{tr("仅填入可编辑草稿，不会自动退回。", "Adds an editable draft without sending a change request.")}</span></div>}
+      {canPrepareFeedback && <div className="assessment-feedback-action no-print"><button type="button" className="assessment-feedback-button" disabled={busy || !draft} onClick={() => {
+        if (!report || !draft) return;
+        onPrepareFeedback?.({ deliveryId: report.deliveryId, criterionId: item.criterionId, comment: draft.comment });
+      }}>{insufficient ? tr("请求补充证据", "Draft an evidence request") : tr("加入修改草稿", "Add to change draft")}</button><span>{tr("仅填入可编辑草稿，不会自动退回。", "Adds an editable draft without sending a change request.")}</span>{draft && (draft.sourceExcerpted || draft.explanationExcerpted) && <p className="assessment-draft-excerpt-note">{tr("草稿上限为 1000 字符，超长部分会明确标为节选。请展开完整锁定原文核对后再编辑发送。", "The draft has a 1000-character limit. Shortened sections are labelled as excerpts. Inspect the complete locked wording before editing and sending.")}</p>}</div>}
     </article>;
   }
 

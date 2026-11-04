@@ -1,0 +1,53 @@
+{
+  "pageExpectedRoleCallbackExtractedAndExecuted": "(view,next) => next.proof.collaboration || next.proof.demoRoleplay ? view.role : \"buyer\"",
+  "schema": "pbp-independent-role-contract-probe-v1",
+  "createdAt": "2026-11-04T14:56:59.133Z",
+  "networkRequests": 0,
+  "browserRuns": 0,
+  "modelCalls": 0,
+  "productFilesChanged": false,
+  "actualServerResolverExecuted": true,
+  "sourceChain": [
+    "app/api/quotes/[id]/route.ts GET -> proofResponse(readProofCase)",
+    "lib/proof-store.ts proofActor -> resolveProofRole -> proofResponse(record.role)",
+    "lib/proof-demo.ts resolveProofRole owner nonroleplay always buyer;authenticated ownerroleplay may select;joined seller actual seller"
+  ],
+  "sourceHashes": {
+    "app/page.tsx": "624a1e7352ed6c1f3c0f938efa9cb991b88e47e5731503b1b40d671c4a6d3d2a",
+    "lib/quote-response-fence.ts": "fcf32cd9ee4749d25f4de059ad0a1c34078fa4aa4766f24630c8d1472b217921",
+    "lib/proof-demo.ts": "664408402f279efce51caceee65189345ad8c47c401ad34e9d292094ab3d0290",
+    "lib/proof-store.ts": "a6c671888f47a5221573f51a79ad04856fe3accb4d127ab5b31d9cac774d409c",
+    "app/api/quotes/[id]/route.ts": "b75de718cc6f6f6bd1b7b41dd3833f7b18e36fe480b28f69468c5cda594c2dc6"
+  },
+  "rows": [
+    {
+      "project": "single-owner-case",
+      "workspacePerspective": "seller",
+      "actualResolveProofRole": "buyer",
+      "actualFenceOutcome": "applied",
+      "applied": 1,
+      "expectedProductBehavior": "Accept legitimate server response while preserving appropriate UI perspective;view switch must never grant membership."
+    },
+    {
+      "project": "owner-roleplay-case",
+      "workspacePerspective": "seller",
+      "actualResolveProofRole": "seller",
+      "actualFenceOutcome": "applied",
+      "applied": 1,
+      "expectedProductBehavior": "Accept legitimate server response while preserving appropriate UI perspective;view switch must never grant membership."
+    },
+    {
+      "project": "shared-seller-case",
+      "workspacePerspective": "seller",
+      "actualResolveProofRole": "seller",
+      "actualFenceOutcome": "applied",
+      "applied": 1,
+      "expectedProductBehavior": "Accept legitimate server response while preserving appropriate UI perspective;view switch must never grant membership."
+    }
+  ],
+  "conclusion": "Single-owner noncollaborative seller UI legitimately receives rolebuyer and the actual page expectedRole callback now accepts it. Proper owner roleplay and joined shared seller still resolve to server seller. This tests source-derived server roles,not invented mismatched roles.",
+  "limitations": [
+    "Server role-resolution function and current client helper were executed,not authenticated HTTP/database routes.",
+    "Transport proofView stripping and real session membership enforcement were read from source,not bypassed or called."
+  ]
+}

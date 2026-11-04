@@ -1,0 +1,638 @@
+{
+  "deliveryId": "88a91feb-745a-4d2e-9963-a10a7d22df7f",
+  "deliveryDigest": "6a35e090bc9638028c2e8e92f1ebc083a0ef9a0ec40a06f02818e4e945998993",
+  "context": {
+    "artifactManifest": {
+      "id": "00ba7de5-73d6-463e-a009-34bd625c524f",
+      "manifestDigest": "ea0327cd542133295fdcffd66f3c51edaa9e87df8832198c91b61e49d491b011"
+    }
+  },
+  "objects": [
+    {
+      "ref": {
+        "family": "source-visibility",
+        "id": "visibility-88a91feb-745a-4d2e-9963-a10a7d22df7f",
+        "version": 1,
+        "payloadSha256": "349ecf4c6c6f4027f389f5749e8ad7e7fe796d9af862fff0b848dd89067b1754",
+        "deliveryId": "88a91feb-745a-4d2e-9963-a10a7d22df7f",
+        "deliveryDigest": "6a35e090bc9638028c2e8e92f1ebc083a0ef9a0ec40a06f02818e4e945998993"
+      },
+      "record": {
+        "id": "visibility-88a91feb-745a-4d2e-9963-a10a7d22df7f",
+        "projectId": "bundle-project",
+        "deliveryId": "88a91feb-745a-4d2e-9963-a10a7d22df7f",
+        "deliveryDigest": "6a35e090bc9638028c2e8e92f1ebc083a0ef9a0ec40a06f02818e4e945998993",
+        "assessmentId": "assessment-88a91feb-745a-4d2e-9963-a10a7d22df7f",
+        "method": "client-source-visibility-v1",
+        "reportedByRole": "seller",
+        "receivedAt": "2026-11-04T13:00:00.000Z",
+        "plan": {
+          "deliveryId": "88a91feb-745a-4d2e-9963-a10a7d22df7f",
+          "deliveryDigest": "6a35e090bc9638028c2e8e92f1ebc083a0ef9a0ec40a06f02818e4e945998993",
+          "assessmentId": "assessment-88a91feb-745a-4d2e-9963-a10a7d22df7f",
+          "citations": [
+            {
+              "id": "citation-1",
+              "citation": {
+                "file": "index.html",
+                "start": 66,
+                "end": 83,
+                "excerpt": "<p>Open 11–20</p>"
+              },
+              "references": [
+                "criterion:page-1"
+              ],
+              "target": {
+                "path": [
+                  0
+                ],
+                "tags": [
+                  "p"
+                ],
+                "textIndex": 0,
+                "value": "Open 11–20",
+                "sourceStart": 69,
+                "sourceEnd": 79
+              }
+            }
+          ],
+          "omittedCitations": 0,
+          "widths": [
+            375,
+            1280
+          ]
+        },
+        "readings": [
+          {
+            "citationId": "citation-1",
+            "viewportWidth": 375,
+            "state": "visible"
+          },
+          {
+            "citationId": "citation-1",
+            "viewportWidth": 1280,
+            "state": "visible"
+          }
+        ],
+        "summary": {
+          "visible": 2,
+          "hidden": 0,
+          "ambiguous": 0,
+          "unavailable": 0
+        }
+      }
+    },
+    {
+      "ref": {
+        "family": "deployment-source",
+        "id": "6e1cc50d-c568-44d4-b9c7-1fea39980510",
+        "version": 4,
+        "payloadSha256": "de01f2f34d4e3ef0bcb100ca60e8153c7c3106cebcbb4d764fa6183c5e854ad6",
+        "deliveryId": "88a91feb-745a-4d2e-9963-a10a7d22df7f",
+        "deliveryDigest": "6a35e090bc9638028c2e8e92f1ebc083a0ef9a0ec40a06f02818e4e945998993"
+      },
+      "record": {
+        "id": "6e1cc50d-c568-44d4-b9c7-1fea39980510",
+        "projectId": "bundle-project",
+        "deliveryId": "88a91feb-745a-4d2e-9963-a10a7d22df7f",
+        "deliveryDigest": "6a35e090bc9638028c2e8e92f1ebc083a0ef9a0ec40a06f02818e4e945998993",
+        "createdBy": "participant-withheld",
+        "createdAt": "2026-11-04T13:00:00.000Z",
+        "updatedAt": "2026-11-04T13:00:00.000Z",
+        "expiresAt": "2026-11-04T13:00:45.000Z",
+        "version": 4,
+        "status": "complete",
+        "plan": {
+          "version": 2,
+          "projectId": "bundle-project",
+          "deliveryId": "88a91feb-745a-4d2e-9963-a10a7d22df7f",
+          "deliveryDigest": "6a35e090bc9638028c2e8e92f1ebc083a0ef9a0ec40a06f02818e4e945998993",
+          "entryFile": "index.html",
+          "registration": {
+            "id": "fixture-staging",
+            "label": "Fictional approved stage",
+            "projectId": "bundle-project",
+            "registrationRevision": "fixture-1",
+            "protocol": "booking-lifecycle-http-v1",
+            "recipe": "booking-lifecycle-20-v1",
+            "frontendEntryUrl": "https://stage.example.org/site/index.html",
+            "backendBaseUrl": "https://stage.example.org/pbp/",
+            "deploymentRevision": "lifecycle-fixed-v1",
+            "frontendBundleDigest": "6a35e090bc9638028c2e8e92f1ebc083a0ef9a0ec40a06f02818e4e945998993",
+            "scenario": "fixed",
+            "expiresAt": "2030-01-01T00:00:00.000Z",
+            "testOnly": true,
+            "provenance": "operator-approved-declaration"
+          },
+          "files": [
+            {
+              "file": "app.mjs",
+              "bytes": 15,
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "url": "https://stage.example.org/site/app.mjs",
+              "kind": "javascript"
+            },
+            {
+              "file": "index.html",
+              "url": "https://stage.example.org/site/index.html",
+              "kind": "html",
+              "bytes": 99,
+              "sha256": "cb3f5c10597463b5fecb4b7b9a8cf4023caec0e13618f7656ad4db962f8177c7"
+            }
+          ],
+          "artifactManifest": {
+            "version": 1,
+            "id": "00ba7de5-73d6-463e-a009-34bd625c524f",
+            "projectId": "bundle-project",
+            "deliveryId": "88a91feb-745a-4d2e-9963-a10a7d22df7f",
+            "deliveryDigest": "6a35e090bc9638028c2e8e92f1ebc083a0ef9a0ec40a06f02818e4e945998993",
+            "createdAt": "2026-11-04T13:00:00.000Z",
+            "files": [
+              {
+                "file": "app.mjs",
+                "bytes": 15,
+                "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            ],
+            "manifestDigest": "ea0327cd542133295fdcffd66f3c51edaa9e87df8832198c91b61e49d491b011"
+          },
+          "scriptCoverage": [],
+          "planDigest": "84510b6459c12b76d9211ce0a8a048e4ce4ff4020cdcce38b3dfa51276126d6b"
+        },
+        "readings": [
+          {
+            "file": "app.mjs",
+            "outcome": "matched",
+            "at": "2026-11-04T13:00:00.000Z",
+            "httpStatus": 200,
+            "bytes": 15,
+            "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "file": "index.html",
+            "outcome": "matched",
+            "at": "2026-11-04T13:00:00.000Z",
+            "httpStatus": 200,
+            "bytes": 99,
+            "sha256": "cb3f5c10597463b5fecb4b7b9a8cf4023caec0e13618f7656ad4db962f8177c7"
+          }
+        ]
+      }
+    },
+    {
+      "ref": {
+        "family": "time-policy",
+        "id": "1b1fd299-0053-42f4-8d1b-362d036395b0",
+        "version": 3,
+        "payloadSha256": "3e93d96c5196949e230d5a959c17a3cfb90fe64df17e534ce853a54c9b69f427",
+        "deliveryId": "88a91feb-745a-4d2e-9963-a10a7d22df7f",
+        "deliveryDigest": "6a35e090bc9638028c2e8e92f1ebc083a0ef9a0ec40a06f02818e4e945998993"
+      },
+      "record": {
+        "id": "1b1fd299-0053-42f4-8d1b-362d036395b0",
+        "projectId": "bundle-project",
+        "deliveryId": "88a91feb-745a-4d2e-9963-a10a7d22df7f",
+        "deliveryDigest": "6a35e090bc9638028c2e8e92f1ebc083a0ef9a0ec40a06f02818e4e945998993",
+        "createdBy": "participant-withheld",
+        "createdAt": "2026-11-04T13:00:00.000Z",
+        "updatedAt": "2026-11-04T13:00:00.000Z",
+        "version": 3,
+        "status": "unknown",
+        "plan": {
+          "policy": {
+            "timezone": "Australia/Melbourne",
+            "weekdays": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "opens": "11:00",
+            "closes": "20:00",
+            "leadMinutes": 120,
+            "cancelMinutes": 1440
+          },
+          "testDate": "2027-01-15",
+          "gapLocal": "2027-10-03T02:30",
+          "foldLocal": "2027-04-04T02:30",
+          "sourceNote": "Additional test agreement: Melbourne local opening 11:00–20:00 daily, at least120minutes notice; cancellation at least1440minutes before start. Reject nonexistent and ambiguous local times.",
+          "provenance": "buyer-confirmed-supplemental-agreement"
+        },
+        "cases": [
+          {
+            "id": "open_before",
+            "label": "Opening minus1minute",
+            "operation": "create",
+            "localStart": "2027-01-15T10:59",
+            "now": "2027-01-14T20:59:00.000Z",
+            "expected": {
+              "allowed": false,
+              "code": "closed",
+              "utcCandidates": [
+                "2027-01-14T23:59:00.000Z"
+              ]
+            }
+          },
+          {
+            "id": "open_exact",
+            "label": "At opening",
+            "operation": "create",
+            "localStart": "2027-01-15T11:00",
+            "now": "2027-01-14T21:00:00.000Z",
+            "expected": {
+              "allowed": true,
+              "code": "allowed",
+              "utcCandidates": [
+                "2027-01-15T00:00:00.000Z"
+              ]
+            }
+          },
+          {
+            "id": "close_before",
+            "label": "Closing minus1minute",
+            "operation": "create",
+            "localStart": "2027-01-15T19:59",
+            "now": "2027-01-15T05:59:00.000Z",
+            "expected": {
+              "allowed": true,
+              "code": "allowed",
+              "utcCandidates": [
+                "2027-01-15T08:59:00.000Z"
+              ]
+            }
+          },
+          {
+            "id": "close_exact",
+            "label": "At closing",
+            "operation": "create",
+            "localStart": "2027-01-15T20:00",
+            "now": "2027-01-15T06:00:00.000Z",
+            "expected": {
+              "allowed": false,
+              "code": "closed",
+              "utcCandidates": [
+                "2027-01-15T09:00:00.000Z"
+              ]
+            }
+          },
+          {
+            "id": "lead_below",
+            "label": "Lead notice 119minutes",
+            "operation": "create",
+            "localStart": "2027-01-15T15:30",
+            "now": "2027-01-15T02:31:00.000Z",
+            "expected": {
+              "allowed": false,
+              "code": "lead_time",
+              "utcCandidates": [
+                "2027-01-15T04:30:00.000Z"
+              ]
+            }
+          },
+          {
+            "id": "lead_exact",
+            "label": "Lead notice 120minutes",
+            "operation": "create",
+            "localStart": "2027-01-15T15:30",
+            "now": "2027-01-15T02:30:00.000Z",
+            "expected": {
+              "allowed": true,
+              "code": "allowed",
+              "utcCandidates": [
+                "2027-01-15T04:30:00.000Z"
+              ]
+            }
+          },
+          {
+            "id": "lead_above",
+            "label": "Lead notice 121minutes",
+            "operation": "create",
+            "localStart": "2027-01-15T15:30",
+            "now": "2027-01-15T02:29:00.000Z",
+            "expected": {
+              "allowed": true,
+              "code": "allowed",
+              "utcCandidates": [
+                "2027-01-15T04:30:00.000Z"
+              ]
+            }
+          },
+          {
+            "id": "cancel_below",
+            "label": "Cancellation notice 1439minutes",
+            "operation": "cancel",
+            "localStart": "2027-01-15T15:30",
+            "now": "2027-01-14T04:31:00.000Z",
+            "expected": {
+              "allowed": false,
+              "code": "cancellation_deadline",
+              "utcCandidates": [
+                "2027-01-15T04:30:00.000Z"
+              ]
+            }
+          },
+          {
+            "id": "cancel_exact",
+            "label": "Cancellation notice 1440minutes",
+            "operation": "cancel",
+            "localStart": "2027-01-15T15:30",
+            "now": "2027-01-14T04:30:00.000Z",
+            "expected": {
+              "allowed": true,
+              "code": "allowed",
+              "utcCandidates": [
+                "2027-01-15T04:30:00.000Z"
+              ]
+            }
+          },
+          {
+            "id": "cancel_above",
+            "label": "Cancellation notice 1441minutes",
+            "operation": "cancel",
+            "localStart": "2027-01-15T15:30",
+            "now": "2027-01-14T04:29:00.000Z",
+            "expected": {
+              "allowed": true,
+              "code": "allowed",
+              "utcCandidates": [
+                "2027-01-15T04:30:00.000Z"
+              ]
+            }
+          },
+          {
+            "id": "dst_gap",
+            "label": "Nonexistent civil minute",
+            "operation": "create",
+            "localStart": "2027-10-03T02:30",
+            "now": "2027-01-14T21:00:00.000Z",
+            "expected": {
+              "allowed": false,
+              "code": "nonexistent_local_time",
+              "utcCandidates": []
+            }
+          },
+          {
+            "id": "dst_fold",
+            "label": "Ambiguous civil minute",
+            "operation": "create",
+            "localStart": "2027-04-04T02:30",
+            "now": "2027-04-03T12:30:00.000Z",
+            "expected": {
+              "allowed": false,
+              "code": "ambiguous_local_time",
+              "utcCandidates": [
+                "2027-04-03T15:30:00.000Z",
+                "2027-04-03T16:30:00.000Z"
+              ]
+            }
+          }
+        ],
+        "trace": [
+          {
+            "index": 0,
+            "method": "GET",
+            "path": "/pbp/time-policy/meta",
+            "state": "recorded",
+            "status": 200,
+            "body": {
+              "protocol": "withheld-invalid-value"
+            }
+          }
+        ],
+        "targetId": "fixture-staging",
+        "registration": {
+          "id": "fixture-staging",
+          "label": "Fictional approved stage",
+          "projectId": "bundle-project",
+          "registrationRevision": "fixture-1",
+          "protocol": "booking-lifecycle-http-v1",
+          "recipe": "booking-lifecycle-20-v1",
+          "frontendEntryUrl": "https://stage.example.org/site/index.html",
+          "backendBaseUrl": "https://stage.example.org/pbp/",
+          "deploymentRevision": "lifecycle-fixed-v1",
+          "frontendBundleDigest": "6a35e090bc9638028c2e8e92f1ebc083a0ef9a0ec40a06f02818e4e945998993",
+          "scenario": "fixed",
+          "expiresAt": "2030-01-01T00:00:00.000Z",
+          "testOnly": true,
+          "provenance": "operator-approved-declaration"
+        },
+        "startedBy": "participant-withheld",
+        "startedAt": "2026-11-04T13:00:00.000Z",
+        "expiresAt": "2026-11-04T13:01:00.000Z",
+        "results": [
+          {
+            "id": "open_before",
+            "outcome": "unknown",
+            "reason": "time_policy_metadata_not_matched"
+          },
+          {
+            "id": "open_exact",
+            "outcome": "unknown",
+            "reason": "time_policy_metadata_not_matched"
+          },
+          {
+            "id": "close_before",
+            "outcome": "unknown",
+            "reason": "time_policy_metadata_not_matched"
+          },
+          {
+            "id": "close_exact",
+            "outcome": "unknown",
+            "reason": "time_policy_metadata_not_matched"
+          },
+          {
+            "id": "lead_below",
+            "outcome": "unknown",
+            "reason": "time_policy_metadata_not_matched"
+          },
+          {
+            "id": "lead_exact",
+            "outcome": "unknown",
+            "reason": "time_policy_metadata_not_matched"
+          },
+          {
+            "id": "lead_above",
+            "outcome": "unknown",
+            "reason": "time_policy_metadata_not_matched"
+          },
+          {
+            "id": "cancel_below",
+            "outcome": "unknown",
+            "reason": "time_policy_metadata_not_matched"
+          },
+          {
+            "id": "cancel_exact",
+            "outcome": "unknown",
+            "reason": "time_policy_metadata_not_matched"
+          },
+          {
+            "id": "cancel_above",
+            "outcome": "unknown",
+            "reason": "time_policy_metadata_not_matched"
+          },
+          {
+            "id": "dst_gap",
+            "outcome": "unknown",
+            "reason": "time_policy_metadata_not_matched"
+          },
+          {
+            "id": "dst_fold",
+            "outcome": "unknown",
+            "reason": "time_policy_metadata_not_matched"
+          }
+        ],
+        "reason": "time_policy_metadata_not_matched"
+      }
+    }
+  ],
+  "catalog": {
+    "version": 1,
+    "deliveryId": "88a91feb-745a-4d2e-9963-a10a7d22df7f",
+    "deliveryDigest": "6a35e090bc9638028c2e8e92f1ebc083a0ef9a0ec40a06f02818e4e945998993",
+    "context": {
+      "artifactManifest": {
+        "id": "00ba7de5-73d6-463e-a009-34bd625c524f",
+        "manifestDigest": "ea0327cd542133295fdcffd66f3c51edaa9e87df8832198c91b61e49d491b011"
+      }
+    },
+    "rows": [
+      {
+        "ref": {
+          "family": "deployment-source",
+          "id": "6e1cc50d-c568-44d4-b9c7-1fea39980510",
+          "version": 4,
+          "payloadSha256": "de01f2f34d4e3ef0bcb100ca60e8153c7c3106cebcbb4d764fa6183c5e854ad6",
+          "deliveryId": "88a91feb-745a-4d2e-9963-a10a7d22df7f",
+          "deliveryDigest": "6a35e090bc9638028c2e8e92f1ebc083a0ef9a0ec40a06f02818e4e945998993"
+        },
+        "planKey": "a47f7e5d15525219fde404c538a9464edbafcb2884bb3cb9e9d84e0a07775d9a",
+        "status": "complete",
+        "findings": [
+          {
+            "key": "file:app.mjs",
+            "outcome": "supported",
+            "label": "app.mjs · matched"
+          },
+          {
+            "key": "file:index.html",
+            "outcome": "supported",
+            "label": "index.html · matched"
+          },
+          {
+            "key": "dependency_graph_unchecked",
+            "outcome": "unknown",
+            "label": "Direct HTML script references and listed bytes only; JS imports, dynamic chunks and complete dependency graph remain unchecked."
+          }
+        ],
+        "summary": "2 supported; 0 mismatch; 1 unknown",
+        "scope": "Platform HTTP byte comparison for the registered deployment and exact package; no backend attestation or selective-serving protection."
+      },
+      {
+        "ref": {
+          "family": "source-visibility",
+          "id": "visibility-88a91feb-745a-4d2e-9963-a10a7d22df7f",
+          "version": 1,
+          "payloadSha256": "349ecf4c6c6f4027f389f5749e8ad7e7fe796d9af862fff0b848dd89067b1754",
+          "deliveryId": "88a91feb-745a-4d2e-9963-a10a7d22df7f",
+          "deliveryDigest": "6a35e090bc9638028c2e8e92f1ebc083a0ef9a0ec40a06f02818e4e945998993"
+        },
+        "planKey": "3eb042e75d1466bef11c992152243f73aed0c1f6880e702d2d4ae539bc7f0295",
+        "status": "complete",
+        "findings": [
+          {
+            "key": "text:citation-1:2734bac92daddbda3015:375",
+            "outcome": "supported",
+            "label": "index.html · 375px · visible"
+          },
+          {
+            "key": "text:citation-1:2734bac92daddbda3015:1280",
+            "outcome": "supported",
+            "label": "index.html · 1280px · visible"
+          }
+        ],
+        "summary": "2 supported; 0 mismatch; 0 unknown",
+        "scope": "Client-reported visibility of exact saved source text at two widths; no independent deployed-site or backend attestation."
+      },
+      {
+        "ref": {
+          "family": "time-policy",
+          "id": "1b1fd299-0053-42f4-8d1b-362d036395b0",
+          "version": 3,
+          "payloadSha256": "3e93d96c5196949e230d5a959c17a3cfb90fe64df17e534ce853a54c9b69f427",
+          "deliveryId": "88a91feb-745a-4d2e-9963-a10a7d22df7f",
+          "deliveryDigest": "6a35e090bc9638028c2e8e92f1ebc083a0ef9a0ec40a06f02818e4e945998993"
+        },
+        "planKey": "ad0b7ce885471e7774dab5a3a8707695df05aaa0b0db624c65e960676b88d1b2",
+        "status": "unknown",
+        "findings": [
+          {
+            "key": "open_before",
+            "outcome": "unknown",
+            "label": "Opening minus1minute · unknown"
+          },
+          {
+            "key": "open_exact",
+            "outcome": "unknown",
+            "label": "At opening · unknown"
+          },
+          {
+            "key": "close_before",
+            "outcome": "unknown",
+            "label": "Closing minus1minute · unknown"
+          },
+          {
+            "key": "close_exact",
+            "outcome": "unknown",
+            "label": "At closing · unknown"
+          },
+          {
+            "key": "lead_below",
+            "outcome": "unknown",
+            "label": "Lead notice 119minutes · unknown"
+          },
+          {
+            "key": "lead_exact",
+            "outcome": "unknown",
+            "label": "Lead notice 120minutes · unknown"
+          },
+          {
+            "key": "lead_above",
+            "outcome": "unknown",
+            "label": "Lead notice 121minutes · unknown"
+          },
+          {
+            "key": "cancel_below",
+            "outcome": "unknown",
+            "label": "Cancellation notice 1439minutes · unknown"
+          },
+          {
+            "key": "cancel_exact",
+            "outcome": "unknown",
+            "label": "Cancellation notice 1440minutes · unknown"
+          },
+          {
+            "key": "cancel_above",
+            "outcome": "unknown",
+            "label": "Cancellation notice 1441minutes · unknown"
+          },
+          {
+            "key": "dst_gap",
+            "outcome": "unknown",
+            "label": "Nonexistent civil minute · unknown"
+          },
+          {
+            "key": "dst_fold",
+            "outcome": "unknown",
+            "label": "Ambiguous civil minute · unknown"
+          }
+        ],
+        "summary": "0 supported; 0 mismatch; 12 unknown",
+        "scope": "Buyer-confirmed supplemental time policy and bounded registered test adapter observations; not a complete business rule audit."
+      }
+    ],
+    "catalogDigest": "ccaf041df5f97638e13cedb8f2100840f0d6fbc4fee732ee5f4d0c04c95664a4"
+  }
+}

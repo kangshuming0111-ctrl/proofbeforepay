@@ -5,6 +5,7 @@ import { pathToFileURL } from "node:url";
 import type { ProofAssessment, ProofAssessmentCitation, ProofCriterion, ProofQuote } from "../lib/contracts.ts";
 import { assessDelivery } from "../lib/delivery-assessment.ts";
 import { createUploadedDelivery, parseStaticProject } from "../lib/static-project.ts";
+import { STATIC_RESOURCE_LIMITS } from "../lib/static-resources.ts";
 import { DEFAULT_DEEPSEEK_MODEL, type Fetcher, type ProviderEnv } from "../lib/providers.ts";
 
 type Status = "supported" | "changes_suggested" | "insufficient_evidence";
@@ -114,7 +115,7 @@ function rawResult(data: unknown, status: number, packet: Packet, criterionId: s
   let valid = citations !== null && citations.length <= 3;
   for (const value of citations ?? []) {
     const c = object(value);
-    if (!c || typeof c.file !== "string" || c.file.length > 120 || typeof c.excerpt !== "string" || !c.excerpt || c.excerpt.length > 500) { valid = false; continue; }
+    if (!c || typeof c.file !== "string" || c.file.length > STATIC_RESOURCE_LIMITS.maxPathLength || typeof c.excerpt !== "string" || !c.excerpt || c.excerpt.length > 500) { valid = false; continue; }
     safeCitations.push({ file: c.file, excerpt: c.excerpt });
     if (!Object.hasOwn(packet.files, c.file) || !packet.files[c.file].includes(c.excerpt)) valid = false;
   }

@@ -2,7 +2,7 @@ import type { ProofAssessment, ProofAssessmentCitation, ProofAssessmentItem, Pro
 import { DomainError } from "./domain.ts";
 import { DEFAULT_DEEPSEEK_MODEL, ProviderError, requestJson, type Fetcher, type ProviderEnv } from "./providers.ts";
 import { validateStaticFiles } from "./static-project.ts";
-import { decodeRasterDataUrl, staticFileKind } from "./static-resources.ts";
+import { decodeRasterDataUrl, staticFileKind, STATIC_RESOURCE_LIMITS } from "./static-resources.ts";
 import { assertCoverageForAcceptance, validateSavedCoverage } from "./requirement-coverage.ts";
 import { getBusinessCheckPlan } from "./business-checks.ts";
 
@@ -77,7 +77,7 @@ function citations(value: unknown, sent: Record<string, string>): ProofAssessmen
   if (!Array.isArray(value) || value.length > 3) throw failure();
   return value.map(entry => {
     const citation = record(entry); keys(citation, ["file", "excerpt"]);
-    const file = text(citation.file, 120), excerpt = text(citation.excerpt, 500);
+    const file = text(citation.file, STATIC_RESOURCE_LIMITS.maxPathLength), excerpt = text(citation.excerpt, 500);
     if (!Object.hasOwn(sent, file)) throw failure("citation");
     const start = sent[file].indexOf(excerpt);
     if (start < 0) throw failure("citation");

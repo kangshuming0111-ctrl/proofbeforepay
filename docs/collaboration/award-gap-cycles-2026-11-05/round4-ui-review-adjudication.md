@@ -1,0 +1,31 @@
+# Round 4 locked-source and editable-draft review
+
+Scope: `app/components/DeliveryAssessment.tsx`, `app/components/assessment-feedback.ts`, the additive styles in `app/assessment.css`, and `tests/assessment-feedback.test.ts`. This UI change does not alter model prompts, assessment schema or statuses, risk-review authority, the parent page's mutation flow, server behavior, acceptance or payment.
+
+## Same-dimension gap and implemented action
+
+The Green Room (IBM Bob 2026 Grand Prize) is the reference for clearly connecting user input and resulting interaction, as recorded with its official announcement in `round-4.md`. The concrete starting gap is narrower than a missing AI report or feedback feature: those already existed, but the safe generic explanation on a real third-round runtime requirement omitted its 24-hour, original-card and retained-record context.
+
+Every assessment item now offers the complete exact matching `criterion.source` in an initially collapsed plain-text area. Interface labels are bilingual; the source itself is neither translated nor shortened. React text escaping and `white-space: pre-wrap` retain the exact source, including potentially meaningful trailing clauses. A 3000-unit original remains fully available with an inner scroll area rather than a line clamp; print removes that height limit.
+
+The existing editable-draft action adds the exact locked source and the saved item explanation under separate labels. The explanation is explicitly unverified by execution; no raw provider response is an input. Missing, blank or mismatched locked source disables preparation. Insufficient evidence produces an evidence request; a change suggestion produces a change draft with a correct-or-explain next step, explicitly stating that an AI suggestion alone does not establish breach. The callback only prepares the existing draft and does not send or return work.
+
+## Length and Unicode policy
+
+The existing limit is **1000 UTF-16 code units** internally; user-facing English calls this a 1000-character limit. If the complete labelled source and saved explanation fit, both are retained exactly. Otherwise the helper reserves the longer section labels and the entire final action/limit notice first, starts with a 65/35 source/explanation allocation, and gives room unused by a short section to the other. Each shortened section is independently labelled as an excerpt. A shortened source explicitly asks the user to inspect the complete agreed wording; the UI repeats that direction before drafting. A prefix ending on a high surrogate is shortened by one unit so it never splits an astral character. This is visible, bounded preparation, not a silent replacement for the complete agreed source.
+
+## Independent review and decisions
+
+1. `outputs/award-gap-cycles-2026-11-05/round4-ui-review.json` is protocol-valid and remains as the first source-only consultation. Its two findings were independently assessed:
+   - **Rejected alleged P2 unused allocation.** The report both acknowledges and then denies the unconditional `sourceBudget += Math.min(...leftover...)` expression. It invents a conditional not present in the code, and claims that a 3000-unit source can fit in a 1000-unit comment. Independently, complete fitting text already returns before budget allocation. A retained executable counterexample exercises 450/550/650/750-unit sources with nonempty 1/14/50-unit explanations in both languages and proves every complete fitting pair is preserved. No production change followed this false trace.
+   - **Outside the validated input contract, not an established product defect:** non-string or blank saved explanations. The unchanged server validates nonblank string explanations of at most600 units before saving. Source-only review did not include that validator. The helper consumes the typed, saved explanation, and this change does not introduce a route for undefined/raw provider text. Defensive handling of arbitrary malformed report objects was not expanded into this bounded UI work.
+2. The parent independently identified a real semantic issue in the first helper: a change-suggestion button still generated an evidence-request heading. This was corrected with per-status introduction and next action in both languages and a specific behavior test, while preserving the source, unverified-explanation labels and length rules. The user-facing UTF-16 term was also removed at the parent's direction, without changing the internal limit.
+3. `outputs/award-gap-cycles-2026-11-05/round4-ui-final-review.json` is protocol-valid, completed and has **zero findings**. Its reviewer explicitly recalculated the fast path and unconditional leftover allocation and found no bounded defect. This is a source review only: it did not execute tests or verify browser behavior, and is not a claim of winning quality or complete application correctness.
+
+## Observed local verification and remaining gate
+
+- **11/11 new helper/SSR tests:** precise short requirement details; missing/blank/mismatched source; complete whitespace preservation; 3000-unit source with retained UI tail and visible draft excerpt; both sections shortened; varied emoji boundaries; exact1000/1001 limit; ignoring raw-provider extra fields; full escaped source in both interface languages; existing missing/busy/read-only/supported action boundaries; per-status intent; and complete fitting nonempty-explanation counterexamples.
+- **69/69 affected tests total**, running new tests with `assessment-display.test.ts` and `delivery-assessment.test.ts`.
+- TypeScript completed with zero diagnostics. Focused ESLint completed without errors or warnings. An initial test-only lint error for the local identifier `module` was fixed to `loadedModule` and the clean sequence rerun with fail-fast shell behavior.
+
+Actual browser inspection of the full source, prepared editable comment, length notice, language switching and absence of automatic submission remains the parent's release gate. The parent also owns the separate page response-order repair, full suite, deployment and the round's final champion comparison. This UI slice addresses precise requirement context and a usable draft; it does not close independent-user research, arbitrary backend validation or all overall award-quality gaps.

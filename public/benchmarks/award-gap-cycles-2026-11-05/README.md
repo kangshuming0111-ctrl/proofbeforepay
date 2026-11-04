@@ -1,0 +1,19 @@
+# Frozen synthetic source-assessment check, 2026-11-05 Melbourne
+
+Four newly authored synthetic multi-file projects, eight author-proposed references independently source-audited before the calls. No customer files, credentials, real payments or unfamiliar human user trials. Reference labels/rationales are stripped from the provider packet.
+
+`freeze.json` binds the exact corpus, complete requests, synthetic quotes and the 19-file implementation/import/lock snapshot. `live.json` retains all four complete provider replies and application results. `semantic-review.json` independently checks the freeze, exact excerpts and UTF-16 offsets, and every item, explanation, risk, suggestion and limitation. `source-audit.json` records pre-call reference review, including its historical-search exposure limitation. This is not a strict human blind trial.
+
+Observed main-status agreement: raw 8/8 and application 8/8. Whole-answer verdicts: 2 accepted, 2 qualified, 0 rejected. The qualifications include optional refund-page copy outside the agreed runtime requirement, the application's generic unknown explanation losing action detail, and the injection control's limited scope. An exact citation is not proof that its interpretation is right. These four projects do not replace any old corpus, failed attempt, reference ambiguity or qualified answer, and do not establish population accuracy or superiority to award winners.
+
+Four actual calls used the unchanged source-assessment prompt. Usage-derived peak cache-miss estimate USD 0.0052641, not a verified invoice or provider-enforced cap. Official Flash pricing was rechecked on 2026-11-05 Melbourne at https://api-docs.deepseek.com/quick_start/pricing/ .
+
+The paired `long-path-before.json`/`long-path-after.json` use the same controlled local response: a canonical 132-character path failed under the old 120-character citation gate and succeeds under the shared 160-character upload limit. Those are offline parser checks, not extra model calls. Exact member and excerpt checks remain strict.
+
+Reproduction uses the existing runner with `--corpus` pointing to `corpus.json`. New runs require new output paths and a new freeze if any bound implementation or request changes. Never copy credentials into these public files. The cycle's source/plan/review record is under `docs/collaboration/award-gap-cycles-2026-11-05/round-3.md`.
+
+## Round 4 response ordering evidence
+
+`concurrency-before.json` preserves the independently discovered role-switch regression. `concurrency-after.json`, `role-contract.json` and `concurrency-review.json` bind the final page/helper hashes and document 17 actual extracted page-function schedules, 3 actual server role resolver/page-policy cases and 12 helper schedules. These are deterministic Promise schedules with synthetic records and deferred state queues, not authenticated browser, real React concurrency or database CAS trials. Repository tests reproduce the intended boundaries using the actual functions. The final page/helper hashes are distinct from the earlier AI evaluation import snapshot; the source-assessment implementation and its exact 4-call freeze were not rewritten to claim better scores.
+
+`ui-evidence-bundle.json` is a redacted server-generated export of a separate, fictional owner-operated browser test project: four files, six assessed criteria, one buyer `needs_evidence` annotation and no acceptance references. The actual app made one additional model call for this project; it is not one of the four frozen benchmark projects and is not counted in their 8/8 denominator. `ui-evidence-verification.json` is the CLI replay. The public Lab19 browser also checked the same local file. Internal consistency does not establish real-world truth, an implemented refund backend, acceptance or payment. The buyer's precise evidence-request draft was checked without sending a formal return.

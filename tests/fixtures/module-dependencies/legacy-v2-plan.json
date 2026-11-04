@@ -1,0 +1,72 @@
+{
+  "version": 2,
+  "projectId": "6bd7332a-1828-4b62-898d-57cff62672ca",
+  "deliveryId": "d20e7431-66ad-41e2-90ea-39c07a8feddd",
+  "deliveryDigest": "015da628803ce72d81d23ea6888e70146a3f4dcd0c5cf166e778ea7756aa3937",
+  "entryFile": "index.html",
+  "registration": {
+    "id": "onboard-bb275256-3f64-4f8d-b7c9-42ed342d67df",
+    "label": "worker-d1-receipt-dto staging",
+    "projectId": "6bd7332a-1828-4b62-898d-57cff62672ca",
+    "registrationRevision": "approval-2",
+    "protocol": "booking-lifecycle-http-v1",
+    "recipe": "booking-lifecycle-20-v1",
+    "frontendEntryUrl": "https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/seller-adapter/fixed/index.html",
+    "backendBaseUrl": "https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/seller-reference/fixed/pbp/",
+    "deploymentRevision": "lifecycle-fixed-v1",
+    "bridgeRevision": "lifecycle-fixed-v1",
+    "frontendBundleDigest": "015da628803ce72d81d23ea6888e70146a3f4dcd0c5cf166e778ea7756aa3937",
+    "scenario": "fixed",
+    "expiresAt": "2026-11-11T11:33:00.000Z",
+    "testOnly": true,
+    "provenance": "operator-approved-declaration"
+  },
+  "files": [
+    {
+      "file": "adapter.css",
+      "url": "https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/seller-adapter/fixed/adapter.css",
+      "kind": "css",
+      "bytes": 1865,
+      "sha256": "3b8b9eb197bd8224c631f6bcbc27da9a4a27142305cc86bf2764344d0c3cb1f0"
+    },
+    {
+      "file": "app.mjs",
+      "bytes": 8206,
+      "sha256": "f49dbd5efdec017bf4e4cb96385abf9f76fc62d3d5e1a6b1f8fa53878a7b62f3",
+      "url": "https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/seller-adapter/fixed/app.mjs",
+      "kind": "javascript"
+    },
+    {
+      "file": "index.html",
+      "url": "https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/seller-adapter/fixed/index.html",
+      "kind": "html",
+      "bytes": 3604,
+      "sha256": "f99dd8def7916a5033a383fdca7f2ae12a49ad3ba07d4a5fd061753364d841a6"
+    }
+  ],
+  "artifactManifest": {
+    "version": 1,
+    "id": "744cc22f-eb34-4847-b06f-2c96ca7e1c93",
+    "projectId": "6bd7332a-1828-4b62-898d-57cff62672ca",
+    "deliveryId": "d20e7431-66ad-41e2-90ea-39c07a8feddd",
+    "deliveryDigest": "015da628803ce72d81d23ea6888e70146a3f4dcd0c5cf166e778ea7756aa3937",
+    "createdAt": "2026-11-04T12:38:13.983Z",
+    "files": [
+      {
+        "file": "app.mjs",
+        "bytes": 8206,
+        "sha256": "f49dbd5efdec017bf4e4cb96385abf9f76fc62d3d5e1a6b1f8fa53878a7b62f3"
+      }
+    ],
+    "manifestDigest": "4631918f70b70372284eedade643894208b1f66e8e55dbfcdbddbd51b0f44aad"
+  },
+  "scriptCoverage": [
+    {
+      "from": "index.html",
+      "reference": "./app.mjs",
+      "target": "app.mjs",
+      "state": "declared"
+    }
+  ],
+  "planDigest": "87fa74937f62e3fb418b69c1ec54ed9dd0df1107130aafb97c0aec5862538a59"
+}

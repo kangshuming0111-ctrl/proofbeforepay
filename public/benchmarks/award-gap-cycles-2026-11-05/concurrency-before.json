@@ -1,0 +1,124 @@
+{
+  "schema": "pbp-independent-page-response-fence-probe-v1",
+  "generatedAt": "2026-11-04T14:14:19.097Z",
+  "sourceSha256": "f2396ad8579cb7ef3d86bb16c69a1e34931fe5c42fd81f08a8594eed8d23dfe0",
+  "helperSha256": "350722d78a57ae65c52cf7f4e211d3eec584851f7e6feb1082fb584081df1d13",
+  "actualFunctionsExtracted": [
+    "publishQuoteResponseView",
+    "apply",
+    "onConcurrentQuote",
+    "refreshEvidenceCatalog",
+    "run",
+    "mutate",
+    "saveRiskReview",
+    "switchWorkspaceRole"
+  ],
+  "actualFenceInitializationExtracted": true,
+  "singleUseRefInstanceSourceVerified": true,
+  "productFilesChanged": false,
+  "browserRuns": 0,
+  "networkRequests": 0,
+  "modelCalls": 0,
+  "reactCommitDeferred": true,
+  "rows": [
+    {
+      "id": "risk-after-task-actual-handlers",
+      "passed": true,
+      "saved": true,
+      "postCount": 1,
+      "getCount": 1,
+      "recordsConverged": true,
+      "commitDeferred": true
+    },
+    {
+      "id": "task-after-risk-unchanged-catalog-actual-handlers",
+      "passed": true,
+      "oldTaskTicketRevision": 0,
+      "riskAppliedBeforeTask": true,
+      "getCount": 1,
+      "recordsConverged": true
+    },
+    {
+      "id": "post-saved-refresh-failed-actual-handler",
+      "passed": true,
+      "saved": true,
+      "postCount": 1,
+      "getCount": 1,
+      "savedAndRefreshWarning": true,
+      "noFalseWriteFailure": true
+    },
+    {
+      "id": "late-get-does-not-revert-actual-handler",
+      "passed": true,
+      "saved": true,
+      "lateGetSuperseded": true,
+      "recordsUnchanged": true
+    },
+    {
+      "id": "switch-project-before-commit-actual-apply",
+      "passed": true,
+      "saved": true,
+      "synchronousRefUpdate": true,
+      "reactStateNotCommittedAtResponse": true,
+      "staleNoticesSuppressed": true,
+      "getCount": 0
+    },
+    {
+      "id": "switch-delivery-before-commit-actual-apply",
+      "passed": true,
+      "saved": true,
+      "synchronousRefUpdate": true,
+      "reactStateNotCommittedAtResponse": true,
+      "staleNoticesSuppressed": true,
+      "getCount": 0
+    },
+    {
+      "id": "switch-role-before-commit-actual-handler",
+      "passed": true,
+      "synchronousRefUpdate": true,
+      "oldTaskIgnored": true,
+      "recordsUnchanged": true
+    },
+    {
+      "id": "ordinary-risk-save-actual-handler",
+      "passed": true,
+      "saved": true,
+      "postCount": 1,
+      "getCount": 0
+    },
+    {
+      "id": "legitimate-delivery-change-actual-mutate",
+      "passed": true,
+      "deliveryId": "edition-two",
+      "postCount": 1,
+      "getCount": 0
+    },
+    {
+      "id": "failed-risk-post-not-replayed-actual-handler",
+      "passed": true,
+      "saved": false,
+      "postCount": 1,
+      "getCount": 0
+    },
+    {
+      "id": "roleplay-legitimate-projection-actual-switch",
+      "passed": true,
+      "sellerProjectionRequested": true,
+      "finalPerspective": "seller",
+      "postCount": 0
+    },
+    {
+      "id": "roleplay-switch-get-after-task-response",
+      "passed": false,
+      "error": "Late seller projection GET overwrote saved task catalog with catalog-before; records=catalog-before\n+ actual - expected\n\n+ 'catalog-before'\n- 'catalog-with-task'\n           ^\n",
+      "stack": "AssertionError [ERR_ASSERTION]: Late seller projection GET overwrote saved task catalog with catalog-before; records=catalog-before\n+ actual - expected\n\n+ 'catalog-before'\n- 'catalog-with-task'\n           ^\n\n    at file:///Users/erickang/Documents/ChatGPT/deepseek/briefpay/outputs/award-gap-cycles-2026-11-05/round4-independent-page-probe.mjs:37:607\n    at async check (file:///Users/erickang/Documents/ChatGPT/deepseek/briefpay/outputs/award-gap-cycles-2026-11-05/round4-independent-page-probe.mjs:24:47)\n    at async file:///Users/erickang/Documents/ChatGPT/deepseek/briefpay/outputs/award-gap-cycles-2026-11-05/round4-independent-page-probe.mjs:37:1"
+    }
+  ],
+  "passed": 11,
+  "failed": 1,
+  "limitations": [
+    "These are actual bounded page functions with modeled Promise completion and deferred setState queues,not an authenticated browser or React renderer.",
+    "No real server writes,provider calls,DB/CAS timing,paint or effect scheduling were executed.",
+    "Child mutation requests are modeled as calls to the actual rendered onConcurrentQuote callback;child-local tasks/list loading is not covered."
+  ]
+}

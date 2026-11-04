@@ -13,7 +13,7 @@ export async function mutateEvidenceFollowup(record:ProofRecord,actor:ProofActor
  if(!d||q.proof.acceptedDeliveryId||q.proof.collaboration?.stage==="accepted"||q.proof.paymentOperation||["captured","voided","closed_unpaid"].includes(q.proof.paymentState))throw new DomainError("Repair tasks for this project are view-only after acceptance or closure.",409);
  const {catalog,guard}=await loadSupplementalEvidence(record),tasks=await loadEvidenceFollowups(record);
  if(input.catalogDigest!==catalog.catalogDigest)throw new DomainError("Reports or repair tasks changed. Refresh before continuing.",409);
- const observation=()=>{const row=catalog.rows.find(r=>supplementalRefKey(r.ref)===input.reportKey);if(!row||["planned","running"].includes(row.status))throw new DomainError("Select an exact, completed current-delivery report.",409);return followupObservation(row,text(input.findingKey));};
+ const observation=()=>{const row=catalog.rows.find(r=>supplementalRefKey(r.ref)===input.reportKey);if(!row||["planned","running"].includes(row.status))throw new DomainError("Select an exact, completed current-delivery report.",409);return followupObservation(row,text(input.findingKey),catalog.context);};
  const at=new Date().toISOString();let next;
  const membership="EXISTS (SELECT 1 FROM quotes WHERE id = ? AND version = ? AND (owner_id = ? OR seller_id = ?))",guardSQL=`${membership} AND (${guard.sql})`,bindings=[q.id,record.version,actor.id,actor.id,...guard.bindings];
  if(input.action==="request"){

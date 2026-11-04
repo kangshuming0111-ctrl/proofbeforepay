@@ -1,0 +1,95 @@
+{
+  "schema": "proofbeforepay-evidence-verification-v1",
+  "consistency": "consistent",
+  "checks": [
+    {
+      "id": "bundle-structure",
+      "status": "consistent",
+      "message": "The unified wrapper retains an unchanged v1 core and bounded supplemental evidence."
+    },
+    {
+      "id": "module-observation-rules",
+      "status": "consistent",
+      "message": "The named rule revision explicitly distinguishes legacy records from bounded module observations and exact contextual task bindings."
+    },
+    {
+      "id": "structure",
+      "status": "consistent",
+      "message": "The supported current-delivery envelope has a bounded structure."
+    },
+    {
+      "id": "file-digest",
+      "status": "consistent",
+      "message": "The file-map SHA-256 matches the exported files; this is not a trusted signature."
+    },
+    {
+      "id": "requirements",
+      "status": "consistent",
+      "message": "The supplied original requirement spans resolve within the exported source."
+    },
+    {
+      "id": "source-rule-replay",
+      "status": "consistent",
+      "message": "Saved findings/excerpts match deterministic source replay with the named verifier rules. Rendering and human checks are not replayed."
+    },
+    {
+      "id": "ai-source-citations",
+      "status": "consistent",
+      "message": "Included AI citations resolve to source and risk annotations reference their recorded delivery/report/risk; model judgment, human identity and provider execution are not proven."
+    },
+    {
+      "id": "reported-observation-consistency",
+      "status": "consistent",
+      "message": "Included client-report fields and derived outcomes are consistent with the locked plan; browser observations themselves are not independently proven."
+    },
+    {
+      "id": "runtime-bindings",
+      "status": "consistent",
+      "message": "Included HTTP reports bind to the supplied delivery, file digest, plan and frozen target. No HTTP execution or present approval is proven."
+    },
+    {
+      "id": "acceptance-references",
+      "status": "consistent",
+      "message": "Acceptance references resolve to their original retained snapshots, including historical reports; this does not prove identity, consent authenticity or payment."
+    },
+    {
+      "id": "followup-records",
+      "status": "consistent",
+      "message": "Repair/retest tasks are replayed from bounded append-only buyer/seller events; older delivery files are outside this package."
+    },
+    {
+      "id": "supplemental-objects",
+      "status": "consistent",
+      "message": "Supplemental objects pass their native validators and exact public payload hashes; participant identifiers are withheld."
+    },
+    {
+      "id": "supplemental-bindings",
+      "status": "consistent",
+      "message": "Current-delivery source spans and deployment byte plans resolve against the exported files. Older task reports receive native-record checks; their earlier source files are not included or replayed."
+    },
+    {
+      "id": "supplemental-catalog",
+      "status": "consistent",
+      "message": "The current supplemental catalog is re-derived from the included exact records and its frozen artifact context."
+    },
+    {
+      "id": "supplemental-acceptance",
+      "status": "consistent",
+      "message": "Each retained buyer decision resolves to its exact frozen report versions and snapshot, including exclusions and acknowledged findings."
+    },
+    {
+      "id": "followup-bindings",
+      "status": "consistent",
+      "message": "Every task source/retest finding resolves to its exact report, and current/frozen task heads replay from their original event versions. Older delivery files are not included."
+    }
+  ],
+  "limits": {
+    "scope": "current-delivery-only",
+    "authenticity": "not-proven",
+    "backendExecution": "not-proven",
+    "modelJudgment": "not-proven",
+    "payment": "not-proven",
+    "previousVersions": "not-included",
+    "networkRequests": 0
+  }
+}

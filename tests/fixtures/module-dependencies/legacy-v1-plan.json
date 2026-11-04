@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "projectId": "6bd7332a-1828-4b62-898d-57cff62672ca",
+  "deliveryId": "d20e7431-66ad-41e2-90ea-39c07a8feddd",
+  "deliveryDigest": "015da628803ce72d81d23ea6888e70146a3f4dcd0c5cf166e778ea7756aa3937",
+  "entryFile": "index.html",
+  "registration": {
+    "id": "onboard-bb275256-3f64-4f8d-b7c9-42ed342d67df",
+    "label": "worker-d1-receipt-dto staging",
+    "projectId": "6bd7332a-1828-4b62-898d-57cff62672ca",
+    "registrationRevision": "approval-2",
+    "protocol": "booking-lifecycle-http-v1",
+    "recipe": "booking-lifecycle-20-v1",
+    "frontendEntryUrl": "https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/seller-adapter/fixed/index.html",
+    "backendBaseUrl": "https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/seller-reference/fixed/pbp/",
+    "deploymentRevision": "lifecycle-fixed-v1",
+    "bridgeRevision": "lifecycle-fixed-v1",
+    "frontendBundleDigest": "015da628803ce72d81d23ea6888e70146a3f4dcd0c5cf166e778ea7756aa3937",
+    "scenario": "fixed",
+    "expiresAt": "2026-11-11T11:33:00.000Z",
+    "testOnly": true,
+    "provenance": "operator-approved-declaration"
+  },
+  "files": [
+    {
+      "file": "adapter.css",
+      "url": "https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/seller-adapter/fixed/adapter.css",
+      "kind": "css",
+      "bytes": 1865,
+      "sha256": "3b8b9eb197bd8224c631f6bcbc27da9a4a27142305cc86bf2764344d0c3cb1f0"
+    },
+    {
+      "file": "index.html",
+      "url": "https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/seller-adapter/fixed/index.html",
+      "kind": "html",
+      "bytes": 3604,
+      "sha256": "f99dd8def7916a5033a383fdca7f2ae12a49ad3ba07d4a5fd061753364d841a6"
+    }
+  ],
+  "planDigest": "d61e8a3cf1153a7a0b8571258e339d1601bbf57a322b08d3ba59133f42d2e6e2"
+}

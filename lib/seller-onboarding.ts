@@ -1,4 +1,4 @@
-import {parse, type DefaultTreeAdapterMap} from "parse5";
+import {readOnboardingDocument,onboardingElement,onboardingAttribute,onboardingParent,onboardingAncestor,type OnboardingNode,type OnboardingElement} from "./onboarding-document.ts";
 
 /** Offline preparation only. These declarations neither register a deployment
  * nor prove that native handlers, framework state or backend records work. */
@@ -59,20 +59,20 @@ export function validateSellerOnboardingConfig(value:unknown):SellerOnboardingCo
  const f=object(v.forms,Object.keys(GROUPS));for(const[group,keys]of Object.entries(GROUPS)){const row=object(f[group],keys);for(const key of keys)selector(row[key]);}selector(v.result);
  return structuredClone(value) as SellerOnboardingConfig;
 }
-type Node=DefaultTreeAdapterMap["node"];type Element=DefaultTreeAdapterMap["element"];
-function isElement(n:Node):n is Element{return"tagName"in n;}
-function attr(n:Element,name:string){return n.attrs.find(a=>a.name===name)?.value;}
-function parent(n:Node):Element|undefined{const p="parentNode"in n?n.parentNode:undefined;return p&&isElement(p)?p:undefined;}
+type Node=OnboardingNode;type Element=OnboardingElement;
+const isElement=onboardingElement;
+const attr=onboardingAttribute;
+const parent=onboardingParent;
 function matches(n:Element,p:Compound){return(!p.tag||n.tagName===p.tag)&&(!p.id||attr(n,"id")===p.id)&&p.classes.every(c=>(attr(n,"class")??"").split(/\s+/u).includes(c))&&p.attrs.every(a=>attr(n,a.name)!==undefined&&(a.value===undefined||attr(n,a.name)===a.value));}
 function matchChain(n:Element,s:Selector,index=s.parts.length-1):boolean{if(!matches(n,s.parts[index]))return false;if(!index)return true;let p=parent(n);if(s.relations[index-1]==="child")return!!p&&matchChain(p,s,index-1);while(p){if(matchChain(p,s,index-1))return true;p=parent(p);}return false;}
-function ancestry(n:Element,predicate:(e:Element)=>boolean){let p:Element|undefined=n;while(p){if(predicate(p))return true;p=parent(p);}return false;}
+const ancestry=onboardingAncestor;
+export function matchOnboardingSelector(nodes:OnboardingElement[],value:string){const selected=selector(value);return nodes.filter(node=>matchChain(node,selected));}
 function selectorValue(c:SellerOnboardingConfig,key:string){if(key==="result")return c.result;const[group,field]=key.split(".");return(c.forms[group as Group]as Record<string,string>)[field];}
 export function checkSellerOnboarding(value:unknown,html?:string):OnboardingReport{
  const report:OnboardingReport={schema:"pbp-seller-onboarding-check-v1",configurationValid:false,staticMarkupReady:false,checks:[],runtimeVerified:false,backendVerified:false};let c:SellerOnboardingConfig;
  try{c=validateSellerOnboardingConfig(value);report.configurationValid=true;report.checks.push({key:"configuration",status:"ok",code:"configuration_valid"});}catch(error){report.checks.push({key:"configuration",status:"issue",code:error instanceof Error?error.message:"configuration_invalid"});return report;}
  if(html===undefined){report.checks.push({key:"markup",status:"unknown",code:"html_not_supplied"});return report;}
- if(typeof html!=="string"||new TextEncoder().encode(html).byteLength>256*1024||html.includes("\0")){report.checks.push({key:"markup",status:"issue",code:"html_size_or_encoding"});return report;}
- const tree=parse(html),nodes:Element[]=[];function walk(n:Node){if(isElement(n))nodes.push(n);if("childNodes"in n)for(const child of n.childNodes)walk(child);}walk(tree);
+ const document=readOnboardingDocument(html);if(!document.ok){report.checks.push({key:"markup",status:"issue",code:document.code});return report;}const nodes=document.nodes;
  for(const key of ONBOARDING_SELECTOR_FIELDS){
   const found=nodes.filter(n=>matchChain(n,selector(selectorValue(c,key))));let code="selector_matches",status:OnboardingCheck["status"]="ok";
   if(found.length!==1){code=found.length?"selector_ambiguous":"selector_missing";status="issue";}

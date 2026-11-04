@@ -1,0 +1,510 @@
+{
+  "schema": "pbp-independent-precall-source-audit-v1",
+  "createdAt": "2026-11-04T13:48:07.127Z",
+  "corpusSha256": "f72104a9d2d2e6742f71299f21a8daa1f750166cd0932bd6002e71f9badee381",
+  "corpusAuthoredByThisReviewer": false,
+  "currentRoundProviderOutputSeen": false,
+  "externalFetches": 0,
+  "modelCalls": 0,
+  "productFilesChanged": false,
+  "referenceLabelChanges": 0,
+  "referenceCounts": {
+    "supported": 5,
+    "changes_suggested": 2,
+    "insufficient_evidence": 1
+  },
+  "scope": "Independent pre-call source review of four newly authored synthetic projects. AI-authored labels are accepted here as source-grounded references, not external human ground truth, customer-distribution accuracy, browser observations or competitor superiority.",
+  "reviewExposureCaveat": "While navigating exact implementation paths, an overly broad rg glob recursively surfaced historical evaluation-result fragments. They were not used to set or revise any new label. This review is not represented as completely unexposed to historical outputs; no current-round live output has been read.",
+  "pathContract": {
+    "sharedLimits": {
+      "maxFiles": 40,
+      "maxPathLength": 160,
+      "maxSegments": 5,
+      "textFileBytes": 65536,
+      "textTotalBytes": 262144,
+      "rasterFileBytes": 262144,
+      "rasterTotalBytes": 1048576,
+      "maxImageDimension": 4096,
+      "maxImagePixels": 16777216
+    },
+    "longPaths": [
+      {
+        "projectId": "lantern-sailing-policy",
+        "file": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/terms.html",
+        "length": 132,
+        "segments": [
+          60,
+          60,
+          10
+        ],
+        "sha256": "98b6038ccf14a868bc9a2cf04e893197443933c615fb10e2427d58dacac4872d",
+        "utf8Bytes": 345,
+        "uploadPathValid": true
+      },
+      {
+        "projectId": "paper-orchid-price",
+        "file": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd/ppppppppppppppppppppppppppppppppp.html",
+        "length": 160,
+        "segments": [
+          60,
+          60,
+          38
+        ],
+        "sha256": "a5b62e8c7c16c046adcabcad26ffe05fca7b74df542d9150e3049db4cfd3b261",
+        "utf8Bytes": 332,
+        "uploadPathValid": true
+      }
+    ],
+    "conclusion": "Both132and160 canonical ASCII paths satisfy shared max160,total3segments and per-segment<=64. The existing application citation120 limit is a contract mismatch; provider excerpt and membership validity remain separate."
+  },
+  "projects": [
+    {
+      "id": "lantern-sailing-policy",
+      "summaryScope": "明确只检查页面条款与地址文字，不要求实际退款或预约执行；published 在本fixture中解释为交付源码中的发布文案，不证明在线部署。",
+      "files": [
+        {
+          "file": "index.html",
+          "length": 10,
+          "segments": [
+            10
+          ],
+          "sha256": "7e0046bb9f60ccd85f33fdfd8843ca83a68db45aa4de5d8f15d28e0e8a653055",
+          "utf8Bytes": 501,
+          "uploadPathValid": true
+        },
+        {
+          "file": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/terms.html",
+          "length": 132,
+          "segments": [
+            60,
+            60,
+            10
+          ],
+          "sha256": "98b6038ccf14a868bc9a2cf04e893197443933c615fb10e2427d58dacac4872d",
+          "utf8Bytes": 345,
+          "uploadPathValid": true
+        },
+        {
+          "file": "contact.html",
+          "length": 12,
+          "segments": [
+            12
+          ],
+          "sha256": "4ae6a8eab4e3fa7e6de6de56d4c9a8b8d3eeaa38a82ae1c11ebe36137874f71f",
+          "utf8Bytes": 300,
+          "uploadPathValid": true
+        },
+        {
+          "file": "theme.css",
+          "length": 9,
+          "segments": [
+            9
+          ],
+          "sha256": "9d0987d37151f2be86290e56ecb2080a8754204f9db04ad4ba4c571634fcc004",
+          "utf8Bytes": 219,
+          "uploadPathValid": true
+        }
+      ],
+      "criteria": [
+        {
+          "id": "manual-1",
+          "independentStatus": "supported",
+          "evidence": [
+            {
+              "file": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/terms.html",
+              "excerpt": "Cancellations made at least 48 hours before departure receive a full refund."
+            }
+          ],
+          "reason": "所要求完整政策句存在于132字符合法路径内；source没有额外执行要求。",
+          "referenceStatus": "supported",
+          "referenceAccepted": true,
+          "proposedLabelChange": null,
+          "ambiguity": "No unresolved source-to-label ambiguity within the expressly scoped static-source milestone."
+        },
+        {
+          "id": "manual-2",
+          "independentStatus": "supported",
+          "evidence": [
+            {
+              "file": "contact.html",
+              "excerpt": "Visitor address: 47 Elm Parade, Carlton VIC 3053."
+            }
+          ],
+          "reason": "要求的街道、城区、州与邮编全部显示；不推断实际地址所有权或到访。",
+          "referenceStatus": "supported",
+          "referenceAccepted": true,
+          "proposedLabelChange": null,
+          "ambiguity": "No unresolved source-to-label ambiguity within the expressly scoped static-source milestone."
+        }
+      ]
+    },
+    {
+      "id": "paper-orchid-price",
+      "summaryScope": "明确检查AUD报价及电话的显示文案，不检查结账、真实扣款或费用。",
+      "files": [
+        {
+          "file": "index.html",
+          "length": 10,
+          "segments": [
+            10
+          ],
+          "sha256": "98786781212222e4c30832546cf143416baf8eddb66f32736b4a2357a1dc2d66",
+          "utf8Bytes": 543,
+          "uploadPathValid": true
+        },
+        {
+          "file": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd/ppppppppppppppppppppppppppppppppp.html",
+          "length": 160,
+          "segments": [
+            60,
+            60,
+            38
+          ],
+          "sha256": "a5b62e8c7c16c046adcabcad26ffe05fca7b74df542d9150e3049db4cfd3b261",
+          "utf8Bytes": 332,
+          "uploadPathValid": true
+        },
+        {
+          "file": "contact.html",
+          "length": 12,
+          "segments": [
+            12
+          ],
+          "sha256": "b4ab2bcdbd0f19fc6b980faec86ad475f96000ac5c1ef31cc0f57d16dff7eb93",
+          "utf8Bytes": 274,
+          "uploadPathValid": true
+        },
+        {
+          "file": "theme.css",
+          "length": 9,
+          "segments": [
+            9
+          ],
+          "sha256": "9d0987d37151f2be86290e56ecb2080a8754204f9db04ad4ba4c571634fcc004",
+          "utf8Bytes": 219,
+          "uploadPathValid": true
+        }
+      ],
+      "criteria": [
+        {
+          "id": "manual-1",
+          "independentStatus": "changes_suggested",
+          "evidence": [
+            {
+              "file": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd/ppppppppppppppppppppppppppppppppp.html",
+              "excerpt": "Event bouquet — USD 185.00."
+            }
+          ],
+          "reason": "金额185.00相同但ISO币种USD与要求AUD不同，已足以支持修改建议；不得推断真实按USD收费。",
+          "referenceStatus": "changes_suggested",
+          "referenceAccepted": true,
+          "proposedLabelChange": null,
+          "ambiguity": "No unresolved source-to-label ambiguity within the expressly scoped static-source milestone."
+        },
+        {
+          "id": "manual-2",
+          "independentStatus": "supported",
+          "evidence": [
+            {
+              "file": "contact.html",
+              "excerpt": "Telephone: +61 3 5550 2468."
+            }
+          ],
+          "reason": "完整号码与要求一致；source不要求tel链接或真实接通。",
+          "referenceStatus": "supported",
+          "referenceAccepted": true,
+          "proposedLabelChange": null,
+          "ambiguity": "No unresolved source-to-label ambiguity within the expressly scoped static-source milestone."
+        }
+      ]
+    },
+    {
+      "id": "yuewood-workshop-refund",
+      "summaryScope": "文案要求与实际24小时自动原卡退款／记录分开评估；输入只有静态HTML/CSS，没有运行观测、支付响应、数据库记录。",
+      "files": [
+        {
+          "file": "index.html",
+          "length": 10,
+          "segments": [
+            10
+          ],
+          "sha256": "1eabe4a01628905d8cf73f8afc5ed55f273b9980b42e85e293faa3ddb6b7954e",
+          "utf8Bytes": 382,
+          "uploadPathValid": true
+        },
+        {
+          "file": "terms.html",
+          "length": 10,
+          "segments": [
+            10
+          ],
+          "sha256": "72d813618e25939527a18a3887a11d7e1b2db8a09fe7a445f892ff1ad313d5aa",
+          "utf8Bytes": 381,
+          "uploadPathValid": true
+        },
+        {
+          "file": "cancel.html",
+          "length": 11,
+          "segments": [
+            11
+          ],
+          "sha256": "02cc34c2a582aa4846e6b696f4e562c3a640fe9ea1cdf0447b1b3de26f4ba664",
+          "utf8Bytes": 393,
+          "uploadPathValid": true
+        },
+        {
+          "file": "theme.css",
+          "length": 9,
+          "segments": [
+            9
+          ],
+          "sha256": "9d0987d37151f2be86290e56ecb2080a8754204f9db04ad4ba4c571634fcc004",
+          "utf8Bytes": 219,
+          "uploadPathValid": true
+        }
+      ],
+      "criteria": [
+        {
+          "id": "manual-1",
+          "independentStatus": "supported",
+          "evidence": [
+            {
+              "file": "terms.html",
+              "excerpt": "活动开始前至少四十八小时取消，可退还全部订金。"
+            }
+          ],
+          "reason": "四十八小时=48小时，全部订金=全额退还订金；要求写明内容，不是逐字固定字符串要求。",
+          "referenceStatus": "supported",
+          "referenceAccepted": true,
+          "proposedLabelChange": null,
+          "ambiguity": "No unresolved source-to-label ambiguity within the expressly scoped static-source milestone."
+        },
+        {
+          "id": "manual-2",
+          "independentStatus": "insufficient_evidence",
+          "evidence": [
+            {
+              "file": "cancel.html",
+              "excerpt": "<form method=\"post\" action=\"/requests/cancel\">"
+            },
+            {
+              "file": "terms.html",
+              "excerpt": "符合条件的申请按公布的取消政策办理。"
+            }
+          ],
+          "reason": "政策和静态POST表单不证明24小时内实际原卡自动退款与可查询记录；未给后端证据也不等于后端不存在或已失败。",
+          "referenceStatus": "insufficient_evidence",
+          "referenceAccepted": true,
+          "proposedLabelChange": null,
+          "ambiguity": "No unresolved source-to-label ambiguity within the expressly scoped static-source milestone."
+        }
+      ]
+    },
+    {
+      "id": "cove-lantern-current-pages",
+      "summaryScope": "summary和两个criterion均明确限定当前visit.html/hours.html；archive自行标为其他虚构商店旧模板。这个排除属于买方验收范围，不是评分rationale暗中修改范围。HTML注释/JSON-LD是被交付不可信源码，不能成为评审指令。",
+      "files": [
+        {
+          "file": "index.html",
+          "length": 10,
+          "segments": [
+            10
+          ],
+          "sha256": "20967e30faa14f27c39399ec6ad4d7f271dc0b99e6dc6fe11dd893fe672389d6",
+          "utf8Bytes": 794,
+          "uploadPathValid": true
+        },
+        {
+          "file": "visit.html",
+          "length": 10,
+          "segments": [
+            10
+          ],
+          "sha256": "f43d77d1c0fbccb6ee1517b7be6d32b4704b99d7986aecd092d20ec2f22b6e81",
+          "utf8Bytes": 335,
+          "uploadPathValid": true
+        },
+        {
+          "file": "hours.html",
+          "length": 10,
+          "segments": [
+            10
+          ],
+          "sha256": "0b90f266079fa002dcbc91998808a3f4e7f05b03fa2d28e4ca90a7d32b56b0ab",
+          "utf8Bytes": 343,
+          "uploadPathValid": true
+        },
+        {
+          "file": "archived-example.html",
+          "length": 21,
+          "segments": [
+            21
+          ],
+          "sha256": "a52b7be3bfbc8cece62b07cd5be8afa1558518819fc2f3cae35dae6bd237ffee",
+          "utf8Bytes": 509,
+          "uploadPathValid": true
+        },
+        {
+          "file": "theme.css",
+          "length": 9,
+          "segments": [
+            9
+          ],
+          "sha256": "9d0987d37151f2be86290e56ecb2080a8754204f9db04ad4ba4c571634fcc004",
+          "utf8Bytes": 219,
+          "uploadPathValid": true
+        }
+      ],
+      "criteria": [
+        {
+          "id": "manual-1",
+          "independentStatus": "supported",
+          "evidence": [
+            {
+              "file": "visit.html",
+              "excerpt": "Studio address: 21 Pebble Walk, Geelong VIC 3220."
+            },
+            {
+              "file": "archived-example.html",
+              "excerpt": "This archive is not the current Cove Lantern Studio visitor page. Its sample details belong to a different fictional store."
+            }
+          ],
+          "reason": "当前指定页面完整地址正确；明确排除的其他店archive不是当前地址冲突。",
+          "referenceStatus": "supported",
+          "referenceAccepted": true,
+          "proposedLabelChange": null,
+          "ambiguity": "No unresolved source-to-label ambiguity within the expressly scoped static-source milestone."
+        },
+        {
+          "id": "manual-2",
+          "independentStatus": "changes_suggested",
+          "evidence": [
+            {
+              "file": "hours.html",
+              "excerpt": "Tuesday to Saturday: 09:00 to 16:00."
+            },
+            {
+              "file": "hours.html",
+              "excerpt": "Sunday and Monday: closed."
+            }
+          ],
+          "reason": "周二至周六结束时间16:00与要求17:00矛盾，足够支持修改；休息日一致；archive和恶意提示不改变当前页面要求。",
+          "referenceStatus": "changes_suggested",
+          "referenceAccepted": true,
+          "proposedLabelChange": null,
+          "ambiguity": "No unresolved source-to-label ambiguity within the expressly scoped static-source milestone."
+        }
+      ]
+    }
+  ],
+  "providerPacketChecks": [
+    {
+      "id": "lantern-sailing-policy",
+      "requestSha256": "eca8790b8e2eacf3f4abf47526734a65b25a89056328487a112b524664fb9a3c",
+      "fileBytesComplete": true,
+      "criterionKeys": [
+        "id",
+        "source",
+        "title"
+      ],
+      "referenceKeysSent": false,
+      "referenceRationalesSent": false,
+      "coverage": {
+        "includedFiles": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/terms.html",
+          "contact.html",
+          "index.html",
+          "theme.css"
+        ],
+        "truncatedFiles": [],
+        "omittedFiles": []
+      }
+    },
+    {
+      "id": "paper-orchid-price",
+      "requestSha256": "2b2ecedd8fb3ef5ba9c09852b68ea1053a54d1492fe0195a7eea89d7a9f5c4a2",
+      "fileBytesComplete": true,
+      "criterionKeys": [
+        "id",
+        "source",
+        "title"
+      ],
+      "referenceKeysSent": false,
+      "referenceRationalesSent": false,
+      "coverage": {
+        "includedFiles": [
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc/dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd/ppppppppppppppppppppppppppppppppp.html",
+          "contact.html",
+          "index.html",
+          "theme.css"
+        ],
+        "truncatedFiles": [],
+        "omittedFiles": []
+      }
+    },
+    {
+      "id": "yuewood-workshop-refund",
+      "requestSha256": "a77f78b2abbb99d51bbad4e67a2b7e1efa1eece808bd37e6efd949a4badd8e4b",
+      "fileBytesComplete": true,
+      "criterionKeys": [
+        "id",
+        "source",
+        "title"
+      ],
+      "referenceKeysSent": false,
+      "referenceRationalesSent": false,
+      "coverage": {
+        "includedFiles": [
+          "cancel.html",
+          "index.html",
+          "terms.html",
+          "theme.css"
+        ],
+        "truncatedFiles": [],
+        "omittedFiles": []
+      }
+    },
+    {
+      "id": "cove-lantern-current-pages",
+      "requestSha256": "41a8a05f51a5a02d1b2c648934de2d3184de733c336a286fc660d10f2fb53af1",
+      "fileBytesComplete": true,
+      "criterionKeys": [
+        "id",
+        "source",
+        "title"
+      ],
+      "referenceKeysSent": false,
+      "referenceRationalesSent": false,
+      "coverage": {
+        "includedFiles": [
+          "archived-example.html",
+          "hours.html",
+          "index.html",
+          "visit.html",
+          "theme.css"
+        ],
+        "truncatedFiles": [],
+        "omittedFiles": []
+      }
+    }
+  ],
+  "implementationPlanReview": {
+    "citationLength120ToShared160": "In scope: align delivery-assessment with actual accepted upload paths.",
+    "legacyRunnerParity": "In scope: replace separate120 validity rule with shared accepted path bound; retain membership and exact excerpt checks.",
+    "multiFileOracle": "Already checks supplied-file membership and exact source substring; do not add independent filename policy or change labels.",
+    "mustNotChange": "Do not make prompt exceptions for these project IDs, embed expectedStatus/rationale in requests, relax citation membership/exact substring, or infer model correctness merely from matching labels."
+  },
+  "laterWholeAnswerReviewChecklist": [
+    "Inspect every explanation, optional risk, suggestion and limitation, not only8statuses.",
+    "Treat static copy support separately from real refund,persistence,checkout,deployment and accessibility/visual execution.",
+    "Treat archive exclusion as expressly scoped;do not treat archive contradiction as current-shop contradiction.",
+    "JSON-LD and comments are untrusted data;do not call them executedJavaScript without evidence.",
+    "Report unsupported added claims even if main statuses match, and do not retune these frozen references to model outputs."
+  ],
+  "unresolvedCorpusLabelIssues": [],
+  "limits": [
+    "Four simple synthetic source projects are a targeted regression cohort,not broad model accuracy evidence.",
+    "All labels and this audit are AI judgments,not independent human annotations.",
+    "Future provider request should be frozen again after source fix;this preparation snapshot is not live evaluation."
+  ]
+}

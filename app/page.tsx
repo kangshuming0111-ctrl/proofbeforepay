@@ -32,6 +32,7 @@ import {SupplementalEvidencePanel} from "./components/SupplementalEvidencePanel"
 import {EvidenceFollowupPanel} from "./components/EvidenceFollowupPanel";
 import {SourceVisibilityPanel} from "./components/SourceVisibilityPanel";
 import type { RiskReviewInput } from "@/lib/risk-reviews";
+import {createQuoteResponseFence, quoteResponseContext, sameQuoteResponseView, type QuoteResponseTicket, type QuoteResponseView, type QuoteResponseOutcome} from "@/lib/quote-response-fence";
 import { readDeliveryUpload, deliveryFileUrl, isHtmlDeliveryPath } from "@/lib/delivery-upload";
 import { ResourceChecks } from "./components/ResourceChecks";
 import { DeliveryComparison } from "./components/DeliveryComparison";
@@ -205,11 +206,21 @@ export default function Home() {
   const businessCheckSavePending = useRef(false);
   const currentBrowserContext = useRef("");
   const quoteApplyRevision = useRef(0);
-  const evidenceRefreshSequence = useRef(0);
+  const [quoteRenderRevision,setQuoteRenderRevision] = useState(0);
+  const currentQuoteView = useRef<QuoteResponseView>({projectId:null, deliveryId:null, role:"buyer"});
+  const quoteResponseFence = useRef<ReturnType<typeof createQuoteResponseFence<ProofQuote>> | null>(null);
   const currentDelivery = useRef("");
   const acceptanceRef = useRef<HTMLDivElement>(null);
   const completedCollaborationRef = useRef<HTMLDetailsElement>(null);
   const collaborationHistoryRef = useRef<CollaborationHistoryHandle>(null);
+
+  function publishQuoteResponseView(view: QuoteResponseView) {
+    // State setters are batched. Invalidate pending replies before React commits.
+    quoteApplyRevision.current += 1;
+    setQuoteRenderRevision(quoteApplyRevision.current);
+    currentQuoteView.current = {...view};
+    currentBrowserContext.current = quoteResponseContext(view);
+  }
 
   let coverageUnits: RequirementCoverageUnit[] = [];
   let coverageError = "";
@@ -230,6 +241,9 @@ export default function Home() {
   const sandboxRoleplay = proof?.sandboxRehearsal === true;
   const sampleRoleplay = roleplay && proof?.demoSampleProject === true;
   const displayRole = collaboration && !roleplay ? role : workspaceRole;
+  // This callback ticket belongs to this render, including when a child keeps it
+  // across a pending write. A later root apply must not refresh its revision.
+  const renderedQuoteResponseTicket: QuoteResponseTicket = {view:{projectId:quote?.id ?? null,deliveryId:proof?.delivery?.id ?? null,role:displayRole},revision:quoteRenderRevision};
   const buyer = displayRole === "buyer";
   const sellerEntry = !quote && workspaceRole === "seller";
   const welcomeActive = !quote && !sellerEntry && !intakeStarted;
@@ -381,6 +395,7 @@ export default function Home() {
     const orderId = url.searchParams.get("token");
     const cancelled = url.searchParams.get("cancelled") === "1";
     if (proofId && orderId && !cancelled) setReturnOrder({ proofId, orderId });
+    publishQuoteResponseView({...currentQuoteView.current,role:requestedRole});
     setWorkspaceRole(requestedRole);
     const returned = proofId ? apiRequest<CaseResult>(`/api/quotes/${encodeURIComponent(proofId)}`, "GET", undefined, requestedRole) : Promise.resolve(null);
     Promise.allSettled([
@@ -395,7 +410,9 @@ export default function Home() {
       else setError("案例记录未能加载 / Could not load case history.");
       if (restored.status === "fulfilled" && restored.value) {
         if (isProof(restored.value.quote)) {
-          quoteApplyRevision.current += 1;
+          const restoredRole=restored.value.role ?? "buyer";
+          const restoredWorkspace=restored.value.quote.proof.collaboration ? restoredRole : requestedRole;
+          publishQuoteResponseView({projectId:restored.value.quote.id,deliveryId:restored.value.quote.proof.delivery?.id ?? null,role:restored.value.quote.proof.collaboration && !restored.value.quote.proof.demoRoleplay ? restoredRole : restoredWorkspace});
           setQuote(restored.value.quote);
           setRole(restored.value.role ?? "buyer");
           setWorkspaceRole(restored.value.quote.proof.collaboration ? restored.value.role ?? "buyer" : requestedRole);
@@ -441,7 +458,7 @@ export default function Home() {
   useEffect(() => () => { layoutController.current?.abort(); }, []);
 
   useLayoutEffect(() => {
-    currentBrowserContext.current = `${quote?.id ?? ""}:${delivery?.id ?? ""}:${displayRole}`;
+    currentBrowserContext.current = quoteResponseContext(currentQuoteView.current);
     // Context changes and unmount invalidate an in-flight observation, never a received save.
     browserCheckController.current?.abort(); businessCheckController.current?.abort();
     return () => { browserCheckController.current?.abort(); businessCheckController.current?.abort(); };
@@ -498,21 +515,54 @@ export default function Home() {
 
   function apply(next: ProofQuote, nextRole?: ProofRole) {
     if (!isProof(next)) throw new Error(tr("服务器返回的案例格式不受支持。", "The server returned an unsupported case."));
-    quoteApplyRevision.current += 1;
+    const perspective=next.proof.collaboration && !next.proof.demoRoleplay ? nextRole ?? currentQuoteView.current.role : currentQuoteView.current.role;
+    publishQuoteResponseView({projectId:next.id,deliveryId:next.proof.delivery?.id ?? null,role:perspective});
     setQuote(next);
     if (nextRole) {setRole(nextRole); setRecordRoles(old => ({...old, [next.id]: nextRole}));}
     setRecords(old => [next, ...old.filter(item => item.id !== next.id)]
       .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)));
   }
 
+  function getQuoteResponseFence() {
+    // Construct once on first event, never by reading mutable refs in render.
+    if (quoteResponseFence.current === null) quoteResponseFence.current = createQuoteResponseFence<ProofQuote>({
+    read: () => ({view:currentQuoteView.current, revision:quoteApplyRevision.current}),
+    isQuote:isProof,
+    // Single-tool ownership remains buyer even in its seller workbench. Only
+    // owner roleplay and real collaboration use the requested/member projection.
+    expectedRole:(view,next) => next.proof.collaboration || next.proof.demoRoleplay ? view.role : "buyer",
+    apply:value => apply(value.quote,value.role),
+    load:view => apiRequest<CaseResult>(`/api/quotes/${encodeURIComponent(view.projectId!)}`, "GET", undefined, view.role),
+  });
+    return quoteResponseFence.current;
+  }
+
+  function responseSyncFailed(outcome: QuoteResponseOutcome) {
+    return outcome.kind === "refresh-failed" || outcome.kind === "invalid-response";
+  }
+
+  async function onConcurrentQuote(next: ProofQuote, nextRole?: ProofRole) {
+    const ticket=renderedQuoteResponseTicket;
+    let noticeView=ticket.view;
+    let outcome=await getQuoteResponseFence().receive(ticket,{quote:next,role:nextRole});
+    // An owner demo may switch perspective while this write is already in
+    // flight. Read the current projection; never apply its old-role payload.
+    const current=currentQuoteView.current;
+    if(outcome.kind === "ignored-context" && roleplay && ticket.view.projectId === current.projectId && ticket.view.deliveryId === current.deliveryId && ticket.view.role !== current.role) {
+      const currentTicket=getQuoteResponseFence().capture();
+      noticeView=currentTicket.view;
+      outcome=await getQuoteResponseFence().refresh(currentTicket);
+    }
+    if (sameQuoteResponseView(noticeView,currentQuoteView.current) && responseSyncFailed(outcome))
+      setNotice(tr("当前页面未能同步最新记录，请刷新项目核对。已保存的记录无需重复提交。", "This page could not synchronize the latest record. Refresh the project to check it; saved records do not need to be submitted again."));
+  }
+
   async function refreshEvidenceCatalog() {
     if (!quote?.proof.delivery) return;
-    const identity = `${quote.id}:${quote.proof.delivery.id}:${displayRole}`;
-    const revision = quoteApplyRevision.current, sequence = ++evidenceRefreshSequence.current;
-    const isCurrent = () => currentBrowserContext.current === identity && quoteApplyRevision.current === revision && evidenceRefreshSequence.current === sequence;
-    try { const value=await request<{quote:ProofQuote}>(`/api/quotes/${encodeURIComponent(quote.id)}`);
-      if(isCurrent())apply(value.quote);
-    } catch(e) {if(isCurrent())setError(e instanceof Error?e.message:String(e));}
+    const ticket=renderedQuoteResponseTicket;
+    const outcome=await getQuoteResponseFence().refresh(ticket);
+    if (sameQuoteResponseView(ticket.view,currentQuoteView.current) && responseSyncFailed(outcome))
+      setError(outcome.kind === "refresh-failed" || outcome.kind === "invalid-response" ? outcome.message : "");
   }
 
   function clearReturnContext() {
@@ -526,7 +576,10 @@ export default function Home() {
     await run("open", async () => {
       const result = await request<CaseResult>(`/api/quotes/${encodeURIComponent(item.id)}`);
       apply(result.quote, result.role ?? "buyer");
-      if (!result.quote.proof.demoRoleplay) setWorkspaceRole(result.role ?? "buyer");
+      if (!result.quote.proof.demoRoleplay) {
+        publishQuoteResponseView({...currentQuoteView.current,role:result.role ?? "buyer"});
+        setWorkspaceRole(result.role ?? "buyer");
+      }
       setWorkspaceView("workbench");
       clearReturnContext();
       showCaseAddress(result.quote, result.quote.proof.demoRoleplay ? workspaceRole : result.role ?? "buyer");
@@ -541,7 +594,7 @@ export default function Home() {
     setWorkspaceView("workbench");
     setWorkspacePanel("agreement");
     clearReturnContext();
-    quoteApplyRevision.current += 1;
+    publishQuoteResponseView({projectId:null,deliveryId:null,role:"buyer"});
     setQuote(null);
     setRole("buyer"); setWorkspaceRole("buyer"); setCollaborative(true); setCustomRoleDemo(true); setSandboxRehearsal(false); setSandboxCollaboration(false);
     setError("");
@@ -570,6 +623,7 @@ export default function Home() {
   function switchWorkspaceRole(next: ProofRole) {
     if (operationLock.current || busy || layoutController.current || browserCheckController.current || businessCheckController.current || next === workspaceRole) return;
     const commitSwitch = () => {
+      publishQuoteResponseView({...currentQuoteView.current,role:next});
       setWorkspaceRole(next);
       setWorkspaceView("workbench");
       setWorkspacePanel(!quote ? "agreement" : next === "buyer" && collaboration?.stage !== "submitted" ? "payment" : "delivery");
@@ -581,8 +635,8 @@ export default function Home() {
       setViewedVersion(undefined);
       setInvitation(undefined); setError(""); setNotice("");
       if (quote && collaboration && !roleplay && next !== role) {
-        quoteApplyRevision.current += 1;
-    setQuote(null); clearReturnContext();
+        publishQuoteResponseView({projectId:null,deliveryId:null,role:next});
+        setQuote(null); clearReturnContext();
         setNotice(tr("已切换工作台。真实项目按登录账号的参与身份显示；切换不会变更项目成员。", "Workspace switched. Real projects follow your signed-in membership; switching does not change project participants."));
       } else if (quote) showCaseAddress(quote, next);
       if (!quote || collaboration && !roleplay && next !== role) {
@@ -592,10 +646,12 @@ export default function Home() {
     };
     if (quote && roleplay) {
       // Load the selected transport projection; seller responses omit buyer payment IDs.
+      const ticket=renderedQuoteResponseTicket;
       void run("switch-role", async () => {
         const result = await apiRequest<CaseResult>(`/api/quotes/${quote.id}`, "GET", undefined, next);
-        apply(result.quote, result.role); commitSwitch();
-      });
+        const outcome=await getQuoteResponseFence().receive(ticket,result,{projectionRole:next,afterApply:commitSwitch});
+        if(sameQuoteResponseView(ticket.view,currentQuoteView.current) && responseSyncFailed(outcome)) setNotice(tr("未能读取目标身份的最新记录，尚未切换。请刷新项目后再切换。", "Could not read the latest record for that perspective, so it was not switched. Refresh the project before switching again."));
+      },false);
     } else commitSwitch();
   }
 
@@ -636,7 +692,7 @@ export default function Home() {
   async function startRoleDemo() {
     await run("create", async () => {
       const result = await apiRequest<CaseResult>("/api/proofs", "POST", {mode: "demo", demoRoleplay: true, currency, language}, "buyer");
-      apply(result.quote, result.role); setWorkspaceRole("buyer");
+      apply(result.quote, result.role); publishQuoteResponseView({...currentQuoteView.current,role:"buyer"}); setWorkspaceRole("buyer");
       setWorkspaceView("workbench"); setWorkspacePanel("agreement");
       clearReturnContext(); showCaseAddress(result.quote, "buyer");
       setNotice(tr("双端演示已创建。先由买家锁定约定，再用右上角切换到卖家端。", "Two-sided demo created. Lock the scope as buyer, then switch to seller at the top right."));
@@ -645,18 +701,17 @@ export default function Home() {
 
   async function run(name: string, action: () => Promise<void>, refreshAfterFailure = true) {
     if (operationLock.current || busy || layoutController.current || browserCheckController.current || businessCheckController.current) return;
+    const ticket=getQuoteResponseFence().capture();
     operationLock.current = true;
     setBusy(name); setError(""); setNotice("");
     setReconciliation(null);
     try { await action(); }
     catch (cause) {
-      setError(cause instanceof Error ? cause.message : tr("操作未完成，请重试。", "The action failed. Please try again."));
-      // A provider error can follow a persisted pending operation. Refresh before offering retries.
-      if (quote && refreshAfterFailure) {
-        try {
-          const refreshed = await request<CaseResult>(`/api/quotes/${quote.id}`);
-          if (isProof(refreshed.quote)) apply(refreshed.quote, refreshed.role);
-        } catch { /* Keep the original failure visible if the refresh is unavailable too. */ }
+      if (sameQuoteResponseView(ticket.view,currentQuoteView.current)) {
+        setError(cause instanceof Error ? cause.message : tr("操作未完成，请核对当前记录。", "The action could not be confirmed. Check the current record."));
+        // Provider failure may follow a persisted write. A bounded guarded GET
+        // may reconcile it; neither a write retry nor an object merge is safe.
+        if (ticket.view.projectId && refreshAfterFailure) await getQuoteResponseFence().refresh(ticket);
       }
     }
     finally { operationLock.current = false; setBusy(""); }
@@ -664,9 +719,14 @@ export default function Home() {
 
   async function mutate(action: string, body: unknown = {}, message = "") {
     if (!quote) return;
+    const ticket=renderedQuoteResponseTicket;
     await run(action, async () => {
       const result = await request<CaseResult>(`/api/proofs/${quote.id}/${action}`, "POST", action === "delivery" ? {...(body as Record<string, unknown>), expectedDeliveryId: delivery?.id ?? null, reviewRules: true} : body);
-      apply(result.quote, result.role);
+      const outcome=await getQuoteResponseFence().receive(ticket,result,{allowDeliveryChange:action === "delivery"});
+      if (outcome.kind !== "applied") {
+        if(sameQuoteResponseView(ticket.view,currentQuoteView.current) && responseSyncFailed(outcome)) setNotice(tr("操作已收到服务端响应，但页面未能同步。请刷新项目核对，避免重复提交。", "The server responded, but this page could not synchronize. Refresh the project to check before submitting again."));
+        return;
+      }
       if (action === "review" || action === "assess" || action === "delivery") { setWorkspacePanel("delivery"); setDeliveryTab("evidence"); }
       if (action === "submit_delivery") setWorkspacePanel("payment");
       if (action === "accept_delivery") setWorkspacePanel("payment");
@@ -676,22 +736,28 @@ export default function Home() {
 
   async function saveRiskReview(input: RiskReviewInput): Promise<boolean> {
     if (!quote) return false;
+    const ticket=renderedQuoteResponseTicket;
     let saved = false;
     await run("risk-review", async () => {
       const result = await request<CaseResult>(`/api/proofs/${quote.id}/risk-reviews`, "POST", input);
-      apply(result.quote, result.role); saved = true;
-      setNotice(tr("人工复核已保存，原始 AI 报告、验收与付款未改变。", "Human review saved. The original AI report, acceptance and payment are unchanged."));
+      // A successful POST remains saved even if its subsequent read fails.
+      saved = true;
+      const outcome=await getQuoteResponseFence().receive(ticket,result);
+      if (!sameQuoteResponseView(ticket.view,currentQuoteView.current)) return;
+      if(responseSyncFailed(outcome)) setNotice(tr("人工复核已保存，但页面未能同步最新记录。请刷新项目核对，无需重复提交复核。", "Human review saved, but this page could not synchronize the latest record. Refresh the project to check it; do not submit the review again."));
+      else if(outcome.kind === "applied") setNotice(tr("人工复核已保存，原始 AI 报告、验收与付款未改变。", "Human review saved. The original AI report, acceptance and payment are unchanged."));
     }, false);
     return saved;
   }
 
   async function refreshCase() {
     if (!quote) return;
+    const ticket=renderedQuoteResponseTicket;
     await run("refresh", async () => {
-      const result = await request<CaseResult>(`/api/quotes/${quote.id}`);
-      apply(result.quote, result.role);
-      setNotice(tr("已读取项目最新状态。", "Project state refreshed."));
-    });
+      const outcome=await getQuoteResponseFence().refresh(ticket);
+      if(outcome.kind === "applied") setNotice(tr("已读取项目最新状态。", "Project state refreshed."));
+      else if(sameQuoteResponseView(ticket.view,currentQuoteView.current) && responseSyncFailed(outcome)) setError(tr("未能读取项目最新状态，请稍后刷新核对。", "Could not read the latest project state. Refresh again to check it."));
+    },false);
   }
 
   async function inviteSeller(email: string) {
@@ -1472,8 +1538,8 @@ export default function Home() {
                 onInspectLayout={(file, width) => {setPreviewFile(file); setPreviewWidth(width === 375 ? "mobile" : "desktop"); setPreviewEntry(value => value + 1); setDeliveryTab("preview"); setWorkspacePanel("delivery");}}
                 onInspect={openCriterion} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked ? prepareFeedback : undefined}
                 onViewHistory={openVersionHistory}/>}
-              {quote && delivery && <SupplementalEvidencePanel quote={quote} role={role} language={language} request={request} onQuote={apply}/>}
-              {quote && delivery && <EvidenceFollowupPanel key={`repair-${quote.id}-${workspaceRole}`} quote={quote} role={role} language={language} enabled={!busy&&!quote.proof.paymentOperation} request={request} onQuote={apply} onPrepareFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?prepareFeedback:undefined}/>}
+              {quote && delivery && <SupplementalEvidencePanel quote={quote} role={role} language={language} request={request} onQuote={onConcurrentQuote}/>}
+              {quote && delivery && <EvidenceFollowupPanel key={`repair-${quote.id}-${workspaceRole}`} quote={quote} role={role} language={language} enabled={!busy&&!quote.proof.paymentOperation} request={request} onQuote={onConcurrentQuote} onPrepareFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?prepareFeedback:undefined}/>}
               {delivery && <ResourceChecks delivery={delivery} language={language}/>}
               {delivery && proof && (comparisonHistoryLoading?<p className="form-help no-print" role="status"><LoaderCircle size={13} className="spin"/>{tr("正在读取版本对照所需的旧版完整文件与报告…","Loading the earlier version’s saved files and reports for comparison…")}</p>:comparisonHistoryError?<div className="form-help no-print"><p role="alert">{tr("旧版完整记录未能加载，暂不显示版本对照。当前交付未改变，也没有用轻量摘要替代原始文件。","The full earlier record could not be loaded, so comparison is unavailable. The current delivery is unchanged; summary metadata is not substituted for saved files.")}</p><button type="button" className="subtle-button" disabled={!!busy} onClick={()=>{if(scopedVersionList?.status==="error")setVersionListRetry(value=>value+1);else setPreviousComparisonRetry(value=>value+1);}}><RefreshCw size={12}/>{tr("重试加载版本对照","Retry comparison loading")}</button></div>:<DeliveryComparison projectId={quote?.id} delivery={delivery} review={proof.review} criteria={proof.criteria} previousVersion={comparisonVersion} feedback={collaboration?.feedback} runtimePlan={runtimePlan} language={language} onInspectCurrent={openCriterion}/>)}
               <nav className="delivery-view-switch no-print" hidden={!quote} aria-label={tr("交付查看方式", "Delivery view")}>
@@ -1516,8 +1582,8 @@ export default function Home() {
                 <BusinessChecksPanel key={`business-${delivery?.id ?? "empty"}`} language={language} count={customProject?.businessChecks?.length ?? 0} report={businessReport} enabled={canObserveBrowser && !busy} busy={busy === "business-check"} progress={businessCheckProgress} onRun={checkBusinessContent} onCancel={() => {if (!businessCheckSavePending.current) businessCheckController.current?.abort();}} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked && !busy ? (criterionId, comment) => prepareFeedback({deliveryId: delivery!.id, criterionId, comment}) : undefined}/>
                 {busy === "business-check-save" && <p className="layout-check-source" role="status">{tr("正在保存业务内容核对…", "Saving business content observations…")}</p>}
                 {quote&&delivery&&runtimePlan&&<RuntimeCheckPanel language={language} deliveryId={delivery.id} plan={runtimePlan} targetId={delivery.backendTargetId} target={runtimeTargets.find(target=>target.id===delivery.backendTargetId)} registration={delivery.runtimeRegistration} deliveryDigest={delivery.runtimeDeliveryDigest} report={runtimeReport} pending={!!delivery.runtimeRun&&Date.parse(delivery.runtimeRun.expiresAt)>Date.now()} busy={busy==="runtime-check"} enabled={!!canRunRuntime&&!busy} onRun={checkRuntimeBackend} preflightContext={JSON.stringify([quote.id,delivery.id,workspaceRole,role,delivery.backendTargetId,delivery.runtimeDeliveryDigest,runtimePlan,delivery.runtimeRegistration])} onPreflight={signal=>apiRequest<RuntimePreflightResult>(`/api/proofs/${encodeURIComponent(quote.id)}/runtime-preflight`,"POST",{deliveryId:delivery.id},workspaceRole,signal)} onPrepareFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?(criterionId,comment)=>prepareFeedback({deliveryId:delivery.id,criterionId,comment}):undefined}/>}
-                {quote&&delivery&&custom&&<ProjectJourneyPanel key={`journey-${quote.id}-${delivery.id}-${workspaceRole}`} quote={quote} role={role} language={language} enabled={!!canRunRuntime&&!busy} request={request} onApply={apply} onSupplementalChanged={()=>void refreshEvidenceCatalog()} onBusy={value=>setBusy(value?"journey-check":"")} onDecision={setJourneyDecision} onFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?comment=>prepareFeedback({deliveryId:delivery.id,criterionId:"journey-agreement",journeyReportId:delivery.journeyReport?.id,comment}):undefined}/>}
-                {quote&&delivery&&custom&&<ModelCheckPanel key={`model-${quote.id}-${delivery.id}-${workspaceRole}`} quote={quote} role={role} language={language} enabled={!!canRunRuntime&&!busy} explanationEnabled={!busy&&!evidenceRunPending&&!quote.proof.paymentOperation} request={request} onApply={apply} onBusy={value=>setBusy(value?"model-check":"")} onDecision={setModelDecision} onFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?comment=>prepareFeedback({deliveryId:delivery.id,criterionId:"model-agreement",modelReportId:delivery.modelReport?.id,comment}):undefined}/>}
+                {quote&&delivery&&custom&&<ProjectJourneyPanel key={`journey-${quote.id}-${delivery.id}-${workspaceRole}`} quote={quote} role={role} language={language} enabled={!!canRunRuntime&&!busy} request={request} onApply={onConcurrentQuote} onSupplementalChanged={()=>void refreshEvidenceCatalog()} onBusy={value=>setBusy(value?"journey-check":"")} onDecision={setJourneyDecision} onFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?comment=>prepareFeedback({deliveryId:delivery.id,criterionId:"journey-agreement",journeyReportId:delivery.journeyReport?.id,comment}):undefined}/>}
+                {quote&&delivery&&custom&&<ModelCheckPanel key={`model-${quote.id}-${delivery.id}-${workspaceRole}`} quote={quote} role={role} language={language} enabled={!!canRunRuntime&&!busy} explanationEnabled={!busy&&!evidenceRunPending&&!quote.proof.paymentOperation} request={request} onApply={onConcurrentQuote} onBusy={value=>setBusy(value?"model-check":"")} onDecision={setModelDecision} onFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?comment=>prepareFeedback({deliveryId:delivery.id,criterionId:"model-agreement",modelReportId:delivery.modelReport?.id,comment}):undefined}/>}
                 {delivery && <EvidenceHistoryPanel key={`history-${delivery.id}`} delivery={delivery} language={language} projectId={quote?.id} acceptedSnapshotId={frozenAcceptanceId}/>}
                 {busy === "browser-check-save" && <p className="layout-check-source" role="status">{tr("正在保存链接行为与资源观察…", "Saving link behavior and resource observations…")}</p>}
               </div>
