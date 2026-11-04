@@ -1,0 +1,25 @@
+{
+  "round": 3,
+  "scope": "Independent transfer-competition-v1 finite model, D1 session and atomic quote lease, supplemental report UI",
+  "competitorPrinciple": "PHAROS style deterministic rule evidence before explanation; meaningful independent business experiment rather than extra success counters",
+  "specSHA256": "a6a11c5923d1ffa5fd2ff9ab0b4e845a1ee9f3cdc3e42487befea793dc839a18",
+  "legacySpecUnchanged": true,
+  "DeepSeek": [
+    "round3-api-review.json:2 rejected findings; overlap linearization and durable pre-I/O intent independently verified",
+    "round3-adjudication-review.json.invalid.json:invalid envelope retained, suggested first-error observability improvement accepted; alleged promise queue reordering rejected",
+    "round3-final-review.json:valid,0 findings"
+  ],
+  "independentReview": "round-3-independent-review.json",
+  "verification": {
+    "domain": "8/8",
+    "native": "2 tests, each seeds0,4,17; actual independent Python HTTP and SQLite fixed target8/one200one409 vs mutant8+p/two200; loser and untouched Z checked",
+    "API": "Both owned isolated runs passed; actual D1 restart retains unknown write; no POST retries; exact acceptance A unchanged; every financial/admission/replacement action blocked during lease",
+    "UI": "Bilingual table compares original and actual X/Y/Z, explicit pending status, no legacy acceptance backfill; browser verification deferred to final combined release",
+    "fullSuite": "843/843"
+  },
+  "limits": [
+    "This second finite family does not execute arbitrary contract rules, opening-hour/timezone policies or arbitrary seller frontend flows",
+    "Local controlled native fault barrier is not an independently recruited seller or production provenance proof",
+    "Reports are supplemental, no automatic acceptance or payment"
+  ]
+}

@@ -96,7 +96,11 @@ def validate_intent(value, verb, key):
     if verb != "withdraw" and (not isinstance(value["slot"], str) or value["slot"] not in SESSION_CODES):
         raise Problem(400, "synthetic_validation_failed")
     prefix = f"pbp-{run}-lifecycle-"
-    if not isinstance(key, str) or not key.startswith(prefix) or key[len(prefix):] not in SUFFIXES[verb]:
+    competition_prefix = f"pbp-{run}-transfer-competition-"
+    competition_suffixes = {"enrol": {"source-x", "source-y", "target-z"}, "transfer": {"move-x", "move-y"}}
+    legacy_key = isinstance(key, str) and key.startswith(prefix) and key[len(prefix):] in SUFFIXES[verb]
+    competition_key = isinstance(key, str) and key.startswith(competition_prefix) and key[len(competition_prefix):] in competition_suffixes.get(verb, set())
+    if not legacy_key and not competition_key:
         raise Problem(400, "synthetic_validation_failed")
     return run
 
@@ -170,6 +174,7 @@ def execute_command(database, profile, revision, verb, ref, value, key):
 
 
 class WorkshopServer(ThreadingHTTPServer):
+    browser_mode = "normal"
     daemon_threads = True
 
 
@@ -251,7 +256,8 @@ class Handler(BaseHTTPRequestHandler):
             if self.command != "GET":
                 raise Problem(405, "method_not_allowed")
             if path == "/config.mjs":
-                config = {"backendBasePath": "/pbp/", "frontendRevision": "florist-workshop-browser-v1", "allowedParentOrigins": self.server.parents,
+                config = {"backendBasePath": "/pbp/", "frontendRevision": "florist-workshop-browser-v1" if self.server.browser_mode == "normal" else "florist-workshop-browser-no-save-v1", "allowedParentOrigins": self.server.parents,
+                          "browserMode": self.server.browser_mode,
                           "nativeRevision": self.server.native_revision, "bridgeRevision": self.server.revision}
                 return self.respond("export const workshopConfig=" + json.dumps(config) + ";\n", kind="text/javascript; charset=utf-8")
             name = "workshop.html" if path == "/" else path[1:]
@@ -261,7 +267,8 @@ class Handler(BaseHTTPRequestHandler):
                 raise Problem(405, "method_not_allowed")
             return self.respond({"protocol": "booking-lifecycle-http-v1", "revision": self.server.revision,
                                  "nativeRevision": self.server.native_revision, "nativeSchemaRevision": SCHEMA_REVISION,
-                                 "maxPartySize": 6, "maxGuestsPerSlot": 8, "syntheticOnly": True, "deploymentAttestation": False})
+                                 "maxPartySize": 6, "maxGuestsPerSlot": 8, "syntheticOnly": True, "deploymentAttestation": False,
+                                 "supportedModels": ["release-vs-transfer-v1", "transfer-competition-v1"]})
         match = re.fullmatch(r"/pbp/bookings/(enr_[a-f0-9]{32})(?:/(cancel|move))?", path)
         if self.command == "POST" and (path == "/pbp/bookings" or match and match[2]):
             action = "enrol" if path == "/pbp/bookings" else {"cancel": "withdraw", "move": "transfer"}[match[2]]
@@ -321,6 +328,7 @@ def configured_origin(value):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", choices=("fixed", "move-loss"), required=True)
+    parser.add_argument("--browser-mode", choices=("normal", "no-save"), default="normal", help="Developer-only startup UI fault: no-save displays success without sending a booking request.")
     parser.add_argument("--db", type=Path, required=True)
     parser.add_argument("--host", choices=("127.0.0.1", "0.0.0.0"), default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8765)
@@ -333,6 +341,7 @@ def main():
     initialize(args.db, args.profile)
     server = WorkshopServer((args.host, args.port), Handler)
     server.database, server.profile = str(args.db.resolve()), args.profile
+    server.browser_mode = args.browser_mode
     server.origin = args.public_origin or f"http://127.0.0.1:{server.server_address[1]}"
     server.revision = f"lifecycle-{args.profile}-v1"
     server.native_revision = f"florist-workshop-python-{args.profile}-v1"

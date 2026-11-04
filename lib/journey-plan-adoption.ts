@@ -43,7 +43,7 @@ function mutable(quote: ProofQuote, role: ProofRole): ProofDelivery {
   if (role !== "buyer") throw new DomainError("Only the buyer may generate or adopt journey-plan suggestions.", 403);
   const delivery = current(quote);
   if (quote.status !== "approved" || quote.proof.paymentOperation || ["captured", "voided", "closed_unpaid"].includes(quote.proof.paymentState)
-    || quote.proof.collaboration?.stage === "accepted" || quote.proof.acceptedDeliveryId || delivery.runtimeRun || delivery.journeyRun || delivery.journeyPlan) reject("This delivery is no longer open for journey-plan suggestions or adoption.");
+    || quote.proof.collaboration?.stage === "accepted" || quote.proof.acceptedDeliveryId || delivery.runtimeRun || delivery.journeyRun || delivery.transferCompetitionRun || delivery.journeyPlan) reject("This delivery is no longer open for journey-plan suggestions or adoption.");
   return delivery;
 }
 function canonical(value: unknown): unknown {

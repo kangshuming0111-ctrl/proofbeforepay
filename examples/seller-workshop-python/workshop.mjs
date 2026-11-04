@@ -46,6 +46,16 @@ async function submit(actionId,fields,body,path,key){
  if(waiter)waiter.started=true;
  let observation,failure;lock(true);$("booking-result").textContent="Sending your workshop request…";
  try{
+  // Deliberately broken, startup-only developer profile. The native database
+  // handler is unchanged. An independent browser witness should contradict
+  // this visible success using the still-empty merchant and occupancy reads.
+  // No request/query parameter can activate this profile on a normal server.
+  if(config.browserMode==="no-save"&&fields.operation==="create"){
+   const message=`Saved. Your booking is active, for ${body.partySize} people at ${body.slot.slice(11,16)}.`;
+   observation={ui:{actionId,status:"success",message,fields},requests:[]};
+   $("booking-result").textContent=message;$("booking-result").dataset.status="success";
+   $("request-details").textContent=JSON.stringify(observation,null,2);return;
+  }
   const trace=await post(path,body,key),success=trace.status>=200&&trace.status<300&&!trace.error,unknown=trace.status===504||trace.status===undefined||!!trace.error;
   if(success)remember(trace.response);
   if(fields.operation==="create")pending=unknown?{body:structuredClone(body),key}:undefined;

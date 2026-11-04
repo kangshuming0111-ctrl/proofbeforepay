@@ -86,7 +86,7 @@ export type RuntimeDecision={reportId:string;exceptionReason?:string;acknowledge
 export function validateRuntimeDecision(quote:ProofQuote,value:unknown):RuntimeDecision|undefined {
   const plan=savedRuntimePlan(quote); if(!plan)return;
   const delivery=quote.proof.delivery,report=delivery?.runtimeReport;
-  if(delivery?.runtimeRun) throw new DomainError("Wait for the pending backend run before accepting.",409);
+  if(delivery?.runtimeRun||delivery?.transferCompetitionRun) throw new DomainError("Wait for the pending backend run before accepting.",409);
   if(!report || report.deliveryId!==delivery?.id || JSON.stringify(report.plan)!==JSON.stringify(plan) || report.target.id!==delivery.backendTargetId) throw new DomainError("Run the agreed backend checks on this delivery first.",409);
   const target=deliveryRuntimeTarget(delivery);
   if(delivery.runtimeRegistration&&delivery.runtimeRegistration.projectId!==quote.id)throw new DomainError("The backend registration belongs to another project.",409);

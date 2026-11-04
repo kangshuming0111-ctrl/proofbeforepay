@@ -1,0 +1,39 @@
+{
+  "round": 5,
+  "scope": "Immutable model vault, truthful capacity preflight, restart/replacement and offline archival evidence",
+  "competitorPrinciple": "Evidence-linked receipts and scoped authority from Agent Receipt; a direct reviewable outcome from CrawlerPal; finite deterministic checks before AI explanation from PHAROS",
+  "implementation": "round-5-model-vault-implementation.json",
+  "limits": {
+    "inlineReports": 4,
+    "archiveReports": 16,
+    "totalReportsUpperBound": 20,
+    "historyBytes": 262144,
+    "hydratedDeliveryBytes": 2097152,
+    "exportBytes": 4194304
+  },
+  "verification": {
+    "archiveUnits": "8/8",
+    "independentBoundaryReview": "20/21,256KiB and2MiB real valid-file envelopes,7 export tamper variants,0 external calls",
+    "D1": "Fresh0000..0006, concurrency200/409, exactA, conflict-object rollback, failedCAS noorphan, real restart and sixth run; separately true submit-return-replacement with old-version scopedhydrate. Fixedmetadata503 only, no successful backend/payments claimed.",
+    "UI": "Provider-free owned browser displayed6total/4inline/2archive, actual byte reservations and5earlier reports; initialAI24/22 and separatefollowup8/8 visible. Actual UI downloaded six-report JSON; offline verification consistent including archivehash gate.",
+    "fullSuite": "878/878",
+    "typecheck": "passed"
+  },
+  "reviewAdjudication": {
+    "DeepSeekFlash": "Full-packet response invalid envelope and sole P1 explicitly self-refuted/unreproducible; no change based on it.",
+    "DeepSeekV4Pro": "Valid response with4P3 concerns. Surrogate concern rejected because payload is generated JSON.stringify UTF8; missingfiles already gives capacityreason; close uses strict journeyKeys; runID verified after scoped SQL read. No concrete storage defect in these claims.",
+    "ThinkingReview": "Final high-effort request timed out; no endorsement or known total usage claimed.",
+    "IndependentCodex": "FreshD1 and dynamic boundary/export/historical-path checks found no new blocker.",
+    "RootAccepted": "Add missing-technical-plan capacityreason; preserve legacy8gates by adding archive gate only when archive fields exist; separate GET read failure wording from POST commit ambiguity. Diagnosis+AIexplanation15tests passed, rawmodeldefinition unchanged."
+  },
+  "publicSyntheticFixtureCompatibility": {
+    "scope": "Additive finite second-family names/nativeRevision metadata only; no oldSQL policy or oracle changes",
+    "tests": "12/12 lifecycle tests, including all5actual competition writes through nativeSQL and zero-DB invalid/cross-action names",
+    "DeepSeek": "Two findings rejected: actual accepted names are exercised by24request runner and a broadened-prefix mutant would fail existing400assertion; original4profile regression already exercises oldnames. Added explicit zero-datastore negatives as useful hardening, not false production bug."
+  },
+  "remaining": [
+    "Unsigned payload hashes are internal integrity, not third-party execution/provenance signatures",
+    "20 reports is an upper bound; large valid files can exhaust bytes earlier",
+    "No independent external seller/novice user study or arbitrary frontend/policy execution is claimed"
+  ]
+}

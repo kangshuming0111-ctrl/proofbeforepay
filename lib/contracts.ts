@@ -97,9 +97,12 @@ export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"
   journeyHistory?: import("./project-journey").ProjectJourneyReport[];
   journeyRun?: import("./project-journey").ProjectJourneyRun;
   journeyEvidenceReservation?: {runId?:string;reportBytes:number;acceptanceBytes:number};
+  transferCompetitionRun?: import("./transfer-competition").TransferLease;
   modelRun?: import("./model-check-actions").ModelCheckRun;
   modelReport?: import("./model-checks").ModelCheckReport;
   modelHistory?: import("./model-checks").ModelCheckReport[];
+  modelArchiveRefs?: import("./model-report-archive").ModelArchiveRef[];
+  modelArchive?: import("./model-report-archive").ModelArchiveObject[];
   modelExplanation?: import("./model-evidence-explanation").ModelEvidenceExplanation;
   modelEvidenceReservation?: {runId?:string;reportBytes:number;acceptanceBytes:number};
   backendTargetId?: string;

@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const quotes = sqliteTable("quotes", {
   id: text("id").primaryKey(),
@@ -19,9 +19,51 @@ export const proofVersions = sqliteTable("proof_versions", {
   archivedAt: text("archived_at").notNull(),
 });
 
+/** Exact immutable model report bytes; participant reads use scoped manifests. */
+export const modelReportObjects = sqliteTable("model_report_objects", {
+  id:text("id").primaryKey(),quoteId:text("quote_id").notNull(),deliveryId:text("delivery_id").notNull(),
+  reportId:text("report_id").notNull(),runId:text("run_id").notNull(),payload:text("payload").notNull(),
+  payloadSha256:text("payload_sha256").notNull(),payloadBytes:integer("payload_bytes").notNull(),createdAt:text("created_at").notNull(),
+},table=>[index("model_report_quote_delivery_idx").on(table.quoteId,table.deliveryId)]);
+
 export const requirementDrafts = sqliteTable("requirement_drafts", {
   id: text("id").primaryKey(),
   ownerId: text("owner_id").notNull(),
   payload: text("payload").notNull(),
   createdAt: text("created_at").notNull(),
 });
+
+/** Staging applications are operational metadata, never acceptance evidence. */
+export const sellerIntegrationRequests = sqliteTable("seller_integration_requests", {
+  id: text("id").primaryKey(),
+  quoteId: text("quote_id").notNull(),
+  deliveryId: text("delivery_id").notNull(),
+  deliveryDigest: text("delivery_digest").notNull(),
+  submittedBy: text("submitted_by").notNull(),
+  payload: text("payload").notNull(),
+  version: integer("version").notNull(),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+}, table => [index("seller_integration_quote_idx").on(table.quoteId, table.createdAt)]);
+
+/** Operator-recorded page observations and HTTP corroboration, never consent. */
+export const browserWitnessSessions = sqliteTable("browser_witness_sessions", {
+  id: text("id").primaryKey(),
+  quoteId: text("quote_id").notNull(),
+  deliveryId: text("delivery_id").notNull(),
+  deliveryDigest: text("delivery_digest").notNull(),
+  startedBy: text("started_by").notNull(),
+  payload: text("payload").notNull(),
+  version: integer("version").notNull(),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+}, table => [index("browser_witness_quote_idx").on(table.quoteId, table.createdAt)]);
+
+/** Full supplemental traces live outside the immutable acceptance envelope. */
+export const transferCompetitionSessions = sqliteTable("transfer_competition_sessions", {
+  id: text("id").primaryKey(), quoteId: text("quote_id").notNull(),
+  deliveryId: text("delivery_id").notNull(), deliveryDigest: text("delivery_digest").notNull(),
+  startedBy: text("started_by").notNull(), status: text("status").notNull(),
+  payload: text("payload").notNull(), version: integer("version").notNull(),
+  createdAt: text("created_at").notNull(), updatedAt: text("updated_at").notNull(),
+},table=>[index("transfer_competition_quote_idx").on(table.quoteId,table.createdAt)]);

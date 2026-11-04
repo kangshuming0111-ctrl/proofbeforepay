@@ -1,0 +1,171 @@
+{
+  "schema": "proofbeforepay-frozen-project-corpus-v1",
+  "cohort": "classifier-development-followup-2026-11-04",
+  "scope": "Four development follow-up projects after observing the original twelve-project cohort: two exact original counterexamples and two newly authored runtime boundary controls. This is repair validation, not new unseen evaluation. The original cohort and original implementation snapshot remain unchanged.",
+  "referenceMethod": "Source-derived reference labels reviewed before follow-up model execution; labels and rationales are not provider inputs. AI independent adjudication is not a human study.",
+  "projects": [
+    {
+      "id": "cross-page-conflicting-copy",
+      "stratum": "mismatch",
+      "language": "en",
+      "title": "Fictional Lantern Museum",
+      "summary": "Lantern Museum needs a website describing its admission price and Saturday opening time.",
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Fictional Lantern Museum</title><link rel=\"stylesheet\" href=\"style.css\"></head><body><header><a href=\"index.html\">Home</a></header><main><h1>Lantern Museum</h1><p>Admission: AUD 12.</p><p>Saturday opens at 10:00.</p><a href=\"faq.html\">FAQ</a></main></body></html>",
+        "faq.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Fictional Lantern Museum</title><link rel=\"stylesheet\" href=\"style.css\"></head><body><header><a href=\"index.html\">Home</a></header><main><h1>Visitor FAQ</h1><p>Admission costs AUD 9.</p><p>On Saturday we open at 11:00.</p></main></body></html>",
+        "style.css": "body{font-family:system-ui;margin:1.5rem;line-height:1.6}main{max-width:65rem}label{display:block}img{max-width:100%;height:auto}"
+      },
+      "criteria": [
+        {
+          "id": "manual-1",
+          "title": "Consistent admission price",
+          "source": "Every page must consistently state an admission price of AUD 12.",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "Home is correct but FAQ givesAUD9, so the all-pages condition fails.",
+            "relevantFiles": [
+              "index.html",
+              "faq.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "manual-2",
+          "title": "Consistent Saturday hours",
+          "source": "Every page must consistently state that Saturday opening time is 10:00.",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "FAQ says11:00 while the home page says10:00.",
+            "relevantFiles": [
+              "index.html",
+              "faq.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "tour-refund-copy-equivalent",
+      "stratum": "clean",
+      "language": "en",
+      "title": "Fictional Fern Walks",
+      "summary": "Fern Walks needs a website describing its cancellation policy and meeting point.",
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Fictional Fern Walks</title><link rel=\"stylesheet\" href=\"style.css\"></head><body><header><a href=\"index.html\">Home</a></header><main><h1>Fern Walks</h1><p>Meet at the north gate of Fern Reserve.</p><a href=\"policy.html\">Policy</a></main></body></html>",
+        "policy.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Fictional Fern Walks</title><link rel=\"stylesheet\" href=\"style.css\"></head><body><header><a href=\"index.html\">Home</a></header><main><h1>Cancellation notice</h1><p>Cancel forty-eight hours or more before departure and your whole fee is returned.</p></main></body></html>",
+        "style.css": "body{font-family:system-ui;margin:1.5rem;line-height:1.6}main{max-width:65rem}label{display:block}img{max-width:100%;height:auto}"
+      },
+      "criteria": [
+        {
+          "id": "manual-1",
+          "title": "Cancellation policy copy",
+          "source": "The page copy must say cancellations made at least 48 hours before departure receive a full refund.",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "Forty-eight hours or more means at least 48 hours; whole fee returned means a full refund. No exact phrase was required.",
+            "relevantFiles": [
+              "policy.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "manual-2",
+          "title": "Meeting point copy",
+          "source": "The page copy must name the north gate of Fern Reserve as the meeting point.",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "Home copy gives that meeting point exactly.",
+            "relevantFiles": [
+              "index.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "refund-operation-boundary-followup",
+      "stratum": "boundary",
+      "language": "en",
+      "title": "Fictional Acacia Walks",
+      "summary": "Acacia Walks needs a website for cancellation requests and refunds to the original payment method.",
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Acacia Walks</title><link rel=\"stylesheet\" href=\"style.css\"></head><body><main><h1>Acacia Walks</h1><p>Cancel at least 48 hours before departure for a full refund.</p><a href=\"refund.html\">Cancellation request</a></main></body></html>",
+        "refund.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Acacia cancellation</title><link rel=\"stylesheet\" href=\"style.css\"></head><body><main><h1>Cancellation request</h1><form action=\"/api/refunds\" method=\"post\"><label>Reference<input name=\"reference\" required></label><button type=\"submit\">Request refund</button></form><p>Your refund will be sent to your original payment method.</p></main></body></html>",
+        "style.css": "body{font-family:system-ui;margin:1.5rem;line-height:1.6}main{max-width:65rem}label{display:block}"
+      },
+      "criteria": [
+        {
+          "id": "manual-1",
+          "title": "Actual refund receipt",
+          "source": "After a cancellation request is submitted, the payment service must actually refund the full payment to the original card and the customer must receive the money.",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "A form and promised outcome do not establish execution of the payment API, refund settlement or receipt.",
+            "relevantFiles": [
+              "refund.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "manual-2",
+          "title": "Failed refund state preservation",
+          "source": "If the payment provider declines the refund, the database must preserve the original reservation and record the refund failure.",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "No backend, database or failed-provider interaction was executed; source copy does not prove conditional state preservation.",
+            "relevantFiles": [
+              "refund.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "mixed-copy-runtime-boundary-followup",
+      "stratum": "boundary",
+      "language": "en",
+      "title": "Fictional Birch Walks",
+      "summary": "Birch Walks needs cancellation information, Saturday hours and an online reservation service.",
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Birch Walks</title><link rel=\"stylesheet\" href=\"style.css\"></head><body><main><h1>Birch Walks</h1><p>Cancellations made at least 48 hours before departure receive a full refund.</p><p>Saturday opening time is 10:00.</p><a href=\"reserve.html\">Reserve a place</a></main></body></html>",
+        "reserve.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Birch reservation</title><link rel=\"stylesheet\" href=\"style.css\"></head><body><main><h1>Reservation request</h1><p>Saturday opening time is 10:00.</p><form action=\"/api/reservations\" method=\"post\"><label>Party size<input name=\"partySize\" type=\"number\" min=\"1\" max=\"6\" required></label><button type=\"submit\">Reserve</button></form></main></body></html>",
+        "style.css": "body{font-family:system-ui;margin:1.5rem;line-height:1.6}main{max-width:65rem}label{display:block}"
+      },
+      "criteria": [
+        {
+          "id": "manual-1",
+          "title": "Cancellation copy and actual payment",
+          "source": "The page copy must say cancellations made at least 48 hours before departure receive a full refund, and the payment service must complete that refund to the original card.",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "The first clause is policy copy but the entire requirement also requires an actual financial operation; matching text does not establish its execution.",
+            "relevantFiles": [
+              "index.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "manual-2",
+          "title": "Saturday copy and concurrent reservations",
+          "source": "Every page must consistently state that Saturday opening time is 10:00, and concurrent reservations must never overbook the departure.",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "The Saturday text is consistent, but no concurrent request or backend transaction ran; mixed runtime requirements stay unverified.",
+            "relevantFiles": [
+              "index.html",
+              "reserve.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    }
+  ]
+}

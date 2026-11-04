@@ -3,6 +3,8 @@ import {DomainError} from "./domain.ts";
 import {journeyKeys, journeyObject, savedProjectJourneyPlan, sameJourneyRegistration, validateJourneyRegistration, type JourneyRegistrationSnapshot} from "./project-journey.ts";
 import {MODEL_HISTORY_LIMIT, MODEL_REPORT_BYTES, MODEL_SPEC_DIGEST, modelCheckReportFromTrace, validateStoredModelCheckReport, type ModelCheckReport, type ModelHttpObservation} from "./model-checks.ts";
 import {assertQuoteEvidenceBudget, finishModelEvidenceReservation, reserveModelEvidence} from "./evidence-budget.ts";
+import {inlineModelReportsFor, modelReportsFor, MODEL_TOTAL_REPORT_LIMIT} from "./model-report-archive.ts";
+export {modelReportsFor} from "./model-report-archive.ts";
 
 export type ModelCheckRun = {id:string;deliveryId:string;deliveryDigest:string;journeyPlanDigest:string;modelSpecDigest:string;seed:number;registration:JourneyRegistrationSnapshot;startedAt:string;expiresAt:string;startedByRole:ProofRole;trace:ModelHttpObservation[]};
 export type ModelDecision = {reportId:string;acknowledgeServerCheck:true;exceptionReason?:string};
@@ -12,27 +14,14 @@ function member(role:ProofRole){if(role!=="buyer"&&role!=="seller")throw new Dom
 function current(quote:ProofQuote,id:unknown){const delivery=quote.proof.delivery;if(!delivery||delivery.variant!=="upload"||!delivery.files||id!==delivery.id)conflict("Model checks require the exact current uploaded delivery.");return delivery;}
 function mutable(quote:ProofQuote){if(quote.status!=="approved"||quote.proof.paymentOperation||["captured","voided","closed_unpaid"].includes(quote.proof.paymentState))conflict("This project is not open for new model checks.");}
 
-export function modelReportsFor(delivery:ProofDelivery):ModelCheckReport[]{
-  if(delivery.modelHistory!==undefined&&!Array.isArray(delivery.modelHistory))conflict("The saved model history is invalid.");
-  const result:ModelCheckReport[]=[];
-  for(const report of [...(delivery.modelHistory??[]),...(delivery.modelReport?[delivery.modelReport]:[])]){
-    if(!report||!report.id||report.deliveryId!==delivery.id)conflict("The saved model report belongs to another delivery.");
-    const prior=result.find(item=>item.id===report.id);if(prior&&JSON.stringify(prior)!==JSON.stringify(report))conflict("A saved model report identifier cannot be rewritten.");
-    if(result.some(item=>item.runId===report.runId&&item.id!==report.id))conflict("A model run cannot have multiple completed report identities.");
-    if(!prior)result.push(report);
-  }
-  if(result.length>MODEL_HISTORY_LIMIT)conflict("Model report history is full. Existing evidence was retained.");
-  return structuredClone(result);
-}
-
 export function beginModelCheckRun(quote:ProofQuote,role:ProofRole,input:Record<string,unknown>,digest:string,registration:JourneyRegistrationSnapshot,now=Date.now()):ProofQuote{
   member(role);journeyKeys(input,["action","deliveryId","previousReportId","targetId","seed","confirm"]);mutable(quote);const delivery=current(quote,input.deliveryId),plan=savedProjectJourneyPlan(quote),pin=validateJourneyRegistration(registration);
   if(input.action!=="run"||input.confirm!==true||!plan)throw new DomainError("Confirm the fixed technical agreement and explicitly authorize this server-direct synthetic model check.",409);
-  if(delivery.runtimeRun||delivery.journeyRun||delivery.modelRun)conflict("Finish the pending evidence run before starting model checks.");
+  if(delivery.runtimeRun||delivery.journeyRun||delivery.modelRun||delivery.transferCompetitionRun)conflict("Finish the pending evidence run before starting model checks.");
   if(input.previousReportId!==(delivery.modelReport?.id??null))conflict("The current model report changed. Refresh before running again.");
   if(!Number.isInteger(input.seed)||Number(input.seed)<0||Number(input.seed)>0xffffffff)throw new DomainError("Model checks need an unsigned 32-bit integer seed.");
   if(!Number.isFinite(now)||!/^[a-f0-9]{64}$/u.test(digest)||pin.projectId!==quote.id||pin.id!==input.targetId||pin.frontendBundleDigest!==digest||Date.parse(pin.expiresAt)<=now)conflict("The approved model target does not match this exact uploaded delivery or approval window.");
-  if(modelReportsFor(delivery).length>=MODEL_HISTORY_LIMIT)conflict("This delivery has reached four model reports. Prior evidence was retained.");
+  if(modelReportsFor(delivery).length>=MODEL_TOTAL_REPORT_LIMIT||inlineModelReportsFor(delivery).length>=MODEL_HISTORY_LIMIT)conflict("Prepare retained model storage before another run; existing evidence was retained.");
   const next=structuredClone(quote),id=crypto.randomUUID();next.proof.delivery!.modelRun={id,deliveryId:delivery.id,deliveryDigest:digest,journeyPlanDigest:plan.planDigest,modelSpecDigest:MODEL_SPEC_DIGEST,seed:Number(input.seed),registration:pin,startedAt:new Date(now).toISOString(),expiresAt:new Date(now+30_000).toISOString(),startedByRole:role,trace:[]};
   return reserveModelEvidence(next,id);
 }
@@ -62,7 +51,7 @@ export function finishModelCheckRun(quote:ProofQuote,runId:string,value:ModelChe
   const run=runFor(quote,runId),report=validateStoredModelCheckReport(value,{deliveryId:run.deliveryId,deliveryDigest:run.deliveryDigest,journeyPlanDigest:run.journeyPlanDigest,projectId:quote.id});
   if(report.runId!==run.id||report.seed!==run.seed||report.startedAt!==run.startedAt||!sameJourneyRegistration(report.registration,run.registration)||!extendsTrace(run.trace,report.trace))conflict("The final model report does not match its reserved run and saved checkpoints.");
   const delivery=quote.proof.delivery!;if(modelReportsFor(delivery).some(row=>row.id===report.id||row.runId===report.runId))conflict("A model run cannot complete twice or replace an existing report.");
-  const next=structuredClone(quote);next.proof.delivery!.modelHistory=[...modelReportsFor(delivery),report];next.proof.delivery!.modelReport=report;delete next.proof.delivery!.modelRun;
+  const next=structuredClone(quote);next.proof.delivery!.modelHistory=[...inlineModelReportsFor(delivery),report];next.proof.delivery!.modelReport=report;delete next.proof.delivery!.modelRun;
   return finishModelEvidenceReservation(next,runId,report);
 }
 
@@ -80,7 +69,7 @@ function reportForQuote(quote:ProofQuote,report:ModelCheckReport):ModelCheckRepo
 export function validateModelDecision(quote:ProofQuote,value:unknown):ModelDecision|undefined{
   const delivery=quote.proof.delivery,report=delivery?.modelReport;
   if(!report){if(value!==undefined)throw new DomainError("There is no current model report to acknowledge.");return;}
-  if(delivery?.modelRun)conflict("Finish the pending model check before accepting its evidence.");
+  if(delivery?.modelRun||delivery?.transferCompetitionRun)conflict("Finish the pending model check before accepting its evidence.");
   reportForQuote(quote,report);
   return validateModelReportDecision(report,value);
 }

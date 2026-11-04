@@ -1,5 +1,6 @@
 import type { ProofAcceptanceEvidence, ProofDelivery, ProofQuote } from "./contracts.ts";
 import { DomainError } from "./domain.ts";
+import {inlineModelReportsFor,modelArchiveRefs,modelReportsFor} from "./model-report-archive.ts";
 
 export const EVIDENCE_HISTORY_BYTE_LIMIT = 256 * 1024;
 export const DELIVERY_EVIDENCE_BYTE_LIMIT = 2 * 1024 * 1024;
@@ -39,7 +40,8 @@ function histories(delivery: ProofDelivery) {
   return {
     runtime: retained(delivery, delivery.runtimeHistory, delivery.runtimeReport),
     journey: retained(delivery, delivery.journeyHistory, delivery.journeyReport),
-    model: retained(delivery, delivery.modelHistory, delivery.modelReport),
+    model: inlineModelReportsFor(delivery),
+    modelArchiveRefs:modelArchiveRefs(delivery),
     business: retained(delivery, delivery.businessCheckHistory, delivery.businessChecks),
     browser: retained(delivery, delivery.browserCheckHistory, delivery.browserChecks),
     layout: retained(delivery, delivery.layoutHistory, delivery.layoutReport),
@@ -88,7 +90,7 @@ export function evidenceHistoryBytes(delivery: ProofDelivery): number { return b
 /** Room for one actual current acceptance, with bounded worst-case identifiers,
  * exception explanations and all protocol acknowledgements. The copied source,
  * assessment and reviews are measured verbatim rather than guessed by a ratio. */
-export function acceptanceSnapshotReservationBytes(quote: ProofQuote): number {
+export function acceptanceSnapshotReservationBytes(quote: ProofQuote, modelExpected = false): number {
   const delivery = quote.proof.delivery;
   if (!delivery) throw new DomainError("An evidence reservation needs the current delivery.", 409);
   const assessment = delivery.assessment;
@@ -105,7 +107,7 @@ export function acceptanceSnapshotReservationBytes(quote: ProofQuote): number {
       journeyExceptionReason: EXCEPTION_RESERVE, journeyAcknowledgedSteps: Array.from({length:20}, () => ID_RESERVE),
       journeyClientObservationAcknowledged: true as const,
     } : {}),
-    ...(delivery.modelReport||delivery.modelRun?{
+    ...(modelExpected||delivery.modelReport||delivery.modelRun?{
       modelReportId:reference(delivery.modelReport?.id??delivery.modelRun?.id),modelSpecDigest:"a".repeat(64),modelDeliveryDigest:"a".repeat(64),
       modelDecision:{reportId:reference(delivery.modelReport?.id??delivery.modelRun?.id),acknowledgeServerCheck:true as const,exceptionReason:EXCEPTION_RESERVE},
     }:{}),
@@ -131,6 +133,7 @@ function check(delivery: ProofDelivery, acceptanceBytes?: number): void {
   const reportReserve = (saved?.reportBytes ?? 0) + (journey?.reportBytes ?? 0)+(model?.reportBytes??0);
   const acceptanceReserve = Math.max(acceptanceBytes ?? 0, saved?.acceptanceBytes ?? 0, journey?.acceptanceBytes ?? 0,model?.acceptanceBytes??0);
   const retainedHistory = histories(delivery);
+  modelReportsFor(delivery);
   if(retainedHistory.model.length>4||retainedHistory.model.some(report=>bytes(report)>MODEL_REPORT_RESERVATION_BYTES))throw new DomainError("Model reports exceed their four-record or 32 KiB bounds.",409);
   if (bytes(retainedHistory) + reportReserve + acceptanceReserve > EVIDENCE_HISTORY_BYTE_LIMIT) full();
   // A runtime report is also stored in the latest slot. Materialize legacy
@@ -138,6 +141,18 @@ function check(delivery: ProofDelivery, acceptanceBytes?: number): void {
   const normalized = {...delivery, runtimeHistory: retainedHistory.runtime, journeyHistory: retainedHistory.journey, modelHistory:retainedHistory.model,businessCheckHistory: retainedHistory.business,
     browserCheckHistory: retainedHistory.browser, layoutHistory: retainedHistory.layout, acceptanceEvidence: retainedHistory.acceptance};
   if (bytes(normalized) + 2 * reportReserve + acceptanceReserve > DELIVERY_EVIDENCE_BYTE_LIMIT) full();
+}
+
+/** The same reservation arithmetic as check(), without creating a run lease.
+ * It measures the hydrated envelope separately from the small persisted window. */
+export function modelEvidenceBudgetProjection(quote:ProofQuote){
+  const delivery=quote.proof.delivery;if(!delivery)throw new DomainError("Model storage needs a saved delivery.",409);
+  const retainedHistory=histories(delivery),saved=reservation(delivery),journey=journeyReservation(delivery),model=modelReservation(delivery);
+  const acceptanceBytes=Math.max(needsAcceptanceSnapshot(quote)?acceptanceSnapshotReservationBytes(quote,true):0,saved?.acceptanceBytes??0,journey?.acceptanceBytes??0,model?.acceptanceBytes??0);
+  const reportBytes=MODEL_REPORT_RESERVATION_BYTES+(saved?.reportBytes??0)+(journey?.reportBytes??0)+(model?.reportBytes??0);
+  const normalized={...delivery,runtimeHistory:retainedHistory.runtime,journeyHistory:retainedHistory.journey,modelHistory:retainedHistory.model,businessCheckHistory:retainedHistory.business,browserCheckHistory:retainedHistory.browser,layoutHistory:retainedHistory.layout,acceptanceEvidence:retainedHistory.acceptance};
+  const inlineEvidenceBytes=bytes(retainedHistory),hydratedDeliveryBytes=bytes(normalized);
+  return{inlineEvidenceBytes,hydratedDeliveryBytes,acceptanceBytes,projectedInlineEvidenceBytes:inlineEvidenceBytes+reportBytes+acceptanceBytes,projectedHydratedDeliveryBytes:hydratedDeliveryBytes+2*reportBytes+acceptanceBytes,acceptanceRoom:!needsAcceptanceSnapshot(quote)||(delivery.acceptanceEvidence?.length??0)<MAX_ACCEPTANCES};
 }
 
 /** Every observation writer uses this even when a run lease has expired. Only
@@ -161,7 +176,7 @@ export function assertQuoteEvidenceBudget(quote: ProofQuote): void {
 export function reserveRuntimeEvidence(quote: ProofQuote, runId: string): ProofQuote {
   const delivery = quote.proof.delivery;
   if (!delivery || delivery.runtimeRun?.id !== runId) throw new DomainError("Reserve evidence only for the saved backend run identity.", 409);
-  if (delivery.journeyRun||delivery.modelRun) throw new DomainError("Finish the current journey or model run before another backend test.", 409);
+  if (delivery.journeyRun||delivery.modelRun||delivery.transferCompetitionRun) throw new DomainError("Finish the current journey or model run before another backend test.", 409);
   if (needsAcceptanceSnapshot(quote) && (delivery.acceptanceEvidence?.length ?? 0) >= MAX_ACCEPTANCES) full();
   const next = structuredClone(quote);
   next.proof.delivery!.evidenceReservation = {runtimeRunId: runId, reportBytes: runtimeReportReservationBytes(quote),
@@ -193,7 +208,7 @@ export function consumeAcceptanceReservation(delivery: ProofDelivery): ProofDeli
   const saved = reservation(delivery);
   const journey = journeyReservation(delivery);
   const model=modelReservation(delivery);
-  if (saved?.reportBytes || delivery.runtimeRun || journey?.reportBytes || delivery.journeyRun||model?.reportBytes||delivery.modelRun) throw new DomainError("Finish the pending evidence run before accepting its evidence.", 409);
+  if (saved?.reportBytes || delivery.runtimeRun || journey?.reportBytes || delivery.journeyRun||model?.reportBytes||delivery.modelRun||delivery.transferCompetitionRun) throw new DomainError("Finish the pending evidence run before accepting its evidence.", 409);
   const next = structuredClone(delivery);
   delete next.evidenceReservation;
   delete next.journeyEvidenceReservation;
@@ -205,7 +220,7 @@ export function consumeAcceptanceReservation(delivery: ProofDelivery): ProofDeli
 /** Reserve before persisting the run ticket, which precedes any seller write. */
 export function reserveJourneyEvidence(quote: ProofQuote, runId: string): ProofQuote {
   const delivery = quote.proof.delivery;
-  if (!delivery || delivery.journeyRun?.id !== runId || delivery.runtimeRun||delivery.modelRun) throw new DomainError("Reserve evidence only for the current exclusive journey run.", 409);
+  if (!delivery || delivery.journeyRun?.id !== runId || delivery.runtimeRun||delivery.modelRun||delivery.transferCompetitionRun) throw new DomainError("Reserve evidence only for the current exclusive journey run.", 409);
   if (needsAcceptanceSnapshot(quote) && (delivery.acceptanceEvidence?.length ?? 0) >= MAX_ACCEPTANCES) full();
   const next = structuredClone(quote);
   next.proof.delivery!.journeyEvidenceReservation = {runId, reportBytes: JOURNEY_REPORT_RESERVATION_BYTES,
@@ -227,7 +242,7 @@ export function finishJourneyEvidenceReservation(quote: ProofQuote, runId: strin
 }
 
 export function reserveModelEvidence(quote:ProofQuote,runId:string):ProofQuote{
-  const delivery=quote.proof.delivery;if(!delivery||delivery.modelRun?.id!==runId||delivery.runtimeRun||delivery.journeyRun)throw new DomainError("Reserve evidence only for the current exclusive model run.",409);
+  const delivery=quote.proof.delivery;if(!delivery||delivery.modelRun?.id!==runId||delivery.runtimeRun||delivery.journeyRun||delivery.transferCompetitionRun)throw new DomainError("Reserve evidence only for the current exclusive model run.",409);
   if(needsAcceptanceSnapshot(quote)&&(delivery.acceptanceEvidence?.length??0)>=MAX_ACCEPTANCES)full();
   const next=structuredClone(quote);next.proof.delivery!.modelEvidenceReservation={runId,reportBytes:MODEL_REPORT_RESERVATION_BYTES,acceptanceBytes:needsAcceptanceSnapshot(quote)?acceptanceSnapshotReservationBytes(quote):0};assertQuoteEvidenceBudget(next);return next;
 }

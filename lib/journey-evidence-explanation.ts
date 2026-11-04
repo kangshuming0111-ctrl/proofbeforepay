@@ -89,7 +89,7 @@ export async function journeyEvidenceContext(quote: ProofQuote, role: ProofRole,
   if (input.confirm !== true) throw new DomainError("Confirm sending the saved, compact journey evidence to AI.");
   if (input.language !== undefined && input.language !== "zh" && input.language !== "en") throw new DomainError("Language must be zh or en.");
   const {delivery, report, evaluated, binding} = await boundReport(quote);
-  if (delivery.journeyRun) throw new DomainError("Finish the pending journey before explaining its saved evidence.", 409);
+  if (delivery.journeyRun||delivery.transferCompetitionRun) throw new DomainError("Finish the pending journey before explaining its saved evidence.", 409);
   if (input.deliveryId !== binding.deliveryId || input.reportId !== binding.reportId || input.previousExplanationId !== (delivery.journeyExplanation?.id ?? null)) throw new DomainError("The delivery, journey report or explanation changed. Refresh before requesting AI.", 409);
   const aliases = new Map<string, string>();
   const alias = (value: unknown) => {if (typeof value !== "string" || !/^[A-Za-z0-9][A-Za-z0-9_-]{0,99}$/u.test(value)) return "missing_or_invalid"; if (!aliases.has(value)) aliases.set(value, `receipt-${aliases.size + 1}`); return aliases.get(value)!;};

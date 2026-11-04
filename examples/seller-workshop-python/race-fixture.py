@@ -22,12 +22,20 @@ lock = threading.Lock()
 
 def execute_with_overlap(database, profile, revision, verb, ref, value, key):
     native.validate_intent(value, verb, key)
-    if verb not in ("withdraw", "transfer"):
+    competing = variant in ("competing-fixed", "competing-overbook")
+    if verb not in ("withdraw", "transfer") or competing and verb != "transfer":
         return original_execute(database, profile, revision, verb, ref, value, key)
     db = native.connect(database)
     try:
         row = db.execute("SELECT * FROM enrolments WHERE enrolment_ref=? AND exercise_id=?", (ref, value["testRunId"])).fetchone()
         replay = db.execute("SELECT command_ref FROM command_log WHERE command_ref=?", (key,)).fetchone()
+        if competing and row and not replay:
+            target = native.SESSION_CODES.get(value.get("slot"))
+            occupied = db.execute("SELECT COALESCE(SUM(seat_count),0) FROM enrolments WHERE exercise_id=? AND session_code=? AND enrolment_state='confirmed' AND enrolment_ref!=?", (value["testRunId"], target, ref)).fetchone()[0]
+            # This pre-check is deliberately outside the eventual update lock.
+            # The fixed fixture still has its SQL trigger; the mutant does not.
+            if occupied + row["seat_count"] > 8:
+                raise native.Problem(409, "slot_capacity_exceeded")
     finally:
         db.close()
     if not row or row["enrolment_state"] != "confirmed" or replay:
@@ -35,9 +43,9 @@ def execute_with_overlap(database, profile, revision, verb, ref, value, key):
     entry = {"verb": verb, "ref": ref, "run": value["testRunId"], "session": row["session_code"],
              "target": native.SESSION_CODES.get(value.get("slot")), "paired": False, "event": threading.Event()}
     with lock:
-        peer = next((item for item in waiting if item["run"] == entry["run"] and item["ref"] != ref
-                     and item["verb"] != verb and not item["paired"]
-                     and (item["session"] == entry["target"] if verb == "transfer" else entry["session"] == item["target"])), None)
+        peer = next((item for item in waiting if item["run"] == entry["run"] and item["ref"] != ref and not item["paired"]
+                     and ((item["verb"] == "transfer" and verb == "transfer" and item["target"] == entry["target"])
+                          if competing else (item["verb"] != verb and (item["session"] == entry["target"] if verb == "transfer" else entry["session"] == item["target"])))), None)
         waiting.append(entry)
         if peer:
             peer["paired"] = entry["paired"] = True
@@ -65,7 +73,7 @@ def execute_with_overlap(database, profile, revision, verb, ref, value, key):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--variant", choices=("fixed", "overlap-loss"), required=True)
+    parser.add_argument("--variant", choices=("fixed", "overlap-loss", "competing-fixed", "competing-overbook"), required=True)
     parser.add_argument("--db", type=Path, required=True)
     parser.add_argument("--port", type=int, default=0)
     args = parser.parse_args()
@@ -74,6 +82,14 @@ if __name__ == "__main__":
     variant = args.variant
     args.db.parent.mkdir(parents=True, exist_ok=True)
     native.initialize(args.db, "fixed")
+    if variant == "competing-overbook":
+        # Only this disposable, startup-selected mutant lacks the update guard.
+        # Actual SQL then exposes two admitted moves exceeding native capacity.
+        db = native.connect(args.db)
+        try:
+            db.execute("DROP TRIGGER workshop_update_capacity")
+        finally:
+            db.close()
     native.execute_command = execute_with_overlap
     server = native.WorkshopServer(("127.0.0.1", args.port), native.Handler)
     server.database, server.profile = str(args.db.resolve()), "fixed"

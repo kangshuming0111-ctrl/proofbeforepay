@@ -7,6 +7,7 @@ import { assertDeliveryEvidenceBudget, consumeAcceptanceReservation } from "./ev
 import {savedProjectJourneyPlan, projectJourneyReportsFor, validateProjectJourneyDecision, evaluateStoredProjectJourneyReport} from "./project-journey.ts";
 import {sameRuntimeRegistration} from "./runtime-registration.ts";
 import {assertModelAcceptanceReference, modelReportsFor, validateModelDecision, validateModelReportDecision} from "./model-check-actions.ts";
+import {inlineModelReportsFor} from "./model-report-archive.ts";
 export { EVIDENCE_HISTORY_BYTE_LIMIT } from "./evidence-budget.ts";
 
 export const OBSERVATION_HISTORY_LIMIT = 100;
@@ -143,7 +144,7 @@ export function withAcceptanceEvidence(delivery: ProofDelivery, snapshot: ProofA
   next.layoutHistory = layoutReportsFor(delivery);
   if(runtime) next.runtimeHistory=runtimeReportsFor(delivery);
   if(journey) next.journeyHistory=projectJourneyReportsFor(delivery);
-  if(model)next.modelHistory=modelReportsFor(delivery);
+  if(model)next.modelHistory=inlineModelReportsFor(delivery);
   if (snapshot.businessReportId && !next.businessCheckHistory.some(report => report.id === snapshot.businessReportId)
     || snapshot.browserReportId && !next.browserCheckHistory.some(report => report.id === snapshot.browserReportId)
     || snapshot.layoutReportId && !next.layoutHistory.some(report => report.id === snapshot.layoutReportId)) throw new DomainError("Acceptance observations must be retained before they can be referenced.", 409);

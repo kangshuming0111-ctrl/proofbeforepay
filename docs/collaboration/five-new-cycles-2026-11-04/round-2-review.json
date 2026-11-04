@@ -1,0 +1,42 @@
+{
+  "round": 2,
+  "scope": "Independent operator-recorded browser witness reconciled with server metadata, merchant records, receipt and occupancy; supplemental only",
+  "competitorPrinciple": "Direct reproducible evidence and contradiction-led explanations; no frontend success claim substitutes for native persistence.",
+  "reviewArtifacts": [
+    "outputs/five-new-cycles-2026-11-04/round2-api-review-retry.json",
+    "outputs/five-new-cycles-2026-11-04/round2-fixed-review.json",
+    "outputs/five-new-cycles-2026-11-04/round2-jpeg-review.json"
+  ],
+  "adjudication": [
+    {
+      "finding": "weak PNG structural validation",
+      "decision": "accepted in narrower form",
+      "change": "Reuse full raster decoder with CRC/chunk checks; malformed IHDR length, CRC and truncation are rejected; MIME must match PNG/JPEG bytes."
+    },
+    {
+      "finding": "rejected page can nevertheless have a real persisted booking",
+      "decision": "accepted",
+      "change": "Exact matching receipt, merchant and occupancy now produce rejected_page_with_saved_booking mismatch."
+    },
+    {
+      "finding": "changed plan can persist old result",
+      "decision": "rejected",
+      "reason": "Current exact delivery/plan/registration checked before each finite read and again before save."
+    },
+    {
+      "finding": "complete self-consistent record replacement can rehash",
+      "decision": "rejected as unsupported authenticity expectation",
+      "reason": "Hashes establish integrity consistency, not signing. Normal API is immutable CAS; scope explicitly says no browser/deployment attestation."
+    }
+  ],
+  "verification": {
+    "focusedTests": "8/8",
+    "API": "5 isolated fresh-D1 groups passed; quote bytes unchanged, revocation blocks reads, explicit closure has no I/O",
+    "fullSuite": "832/832",
+    "realBrowser": "Actual developer-operated native no-save page displayed success, 3 server reads returned200, independent native SQLite had0 rows. Report mismatch. Earlier incomplete sessions remain unknown. See round2-real-browser-record.json and round2-qa-transport.json for local transport boundaries."
+  },
+  "remaining": [
+    "Manual operator-recorded observations, not autonomous browser execution or signed evidence",
+    "Local synthetic fixture, not third-party hosted seller test or novice-user study"
+  ]
+}

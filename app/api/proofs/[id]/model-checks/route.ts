@@ -6,12 +6,16 @@ import {availableJourneyTargets, assertSeparateJourneyOrigin, resolveJourneyTarg
 import {MODEL_DEFINITION, evaluateModelCheckReport} from "@/lib/model-checks";
 import {executeModelCheckRun} from "@/lib/model-check-runner";
 import {beginModelCheckRun, recordModelCheckCheckpoint, finishModelCheckRun, closeExpiredModelCheckRun} from "@/lib/model-check-actions";
+import {modelReportsFor,prepareModelRunStorage} from "@/lib/model-report-archive";
+import {modelStorageCapacity} from "@/lib/model-storage-capacity";
 
+import {projectJourneyRegistrations} from "@/lib/server-integration-targets";
 export const dynamic = "force-dynamic";
 async function modelView(record: ProofRecord) {
   const delivery = record.quote.proof.delivery, digest = delivery?.files ? await runtimeDeliveryDigest(delivery.files) : undefined;
-  return {definition: MODEL_DEFINITION, targets: digest ? availableJourneyTargets(record.quote, digest) : [], run: delivery?.modelRun ?? null,
-    report: delivery?.modelReport ?? null, evaluation: delivery?.modelReport ? evaluateModelCheckReport(delivery.modelReport) : null};
+  return {definition: MODEL_DEFINITION, targets: digest ? availableJourneyTargets(record.quote, digest, await projectJourneyRegistrations(record.quote)) : [], run: delivery?.modelRun ?? null,
+    report: delivery?.modelReport ?? null, evaluation: delivery?.modelReport ? evaluateModelCheckReport(delivery.modelReport) : null,
+    history:delivery?modelReportsFor(delivery):[],capacity:await modelStorageCapacity(record.quote)};
 }
 export async function GET(request: Request, context: {params: Promise<{id: string}>}) {
   return handle(async () => {
@@ -31,16 +35,17 @@ export async function POST(request: Request, context: {params: Promise<{id: stri
       return json({...proofResponse(record), model: await modelView(record)});
     }
     if (input.action !== "run") throw new HttpError(400, "Choose run or explicitly close an expired model check.");
-    const digest = await runtimeDeliveryDigest(record.quote.proof.delivery?.files), registration = resolveJourneyTarget(record.quote, input.targetId, digest);
+    const digest = await runtimeDeliveryDigest(record.quote.proof.delivery?.files), registration = resolveJourneyTarget(record.quote, input.targetId, digest, await projectJourneyRegistrations(record.quote));
     assertSeparateJourneyOrigin(registration, new URL(request.url).origin);
     // Persist the unique lease and evidence reservation before the runner can
     // attempt even its first GET. There is deliberately no write-resume path.
-    await saveProofCase(record, beginModelCheckRun(record.quote, record.role, input, digest, registration));
+    const prepared=await prepareModelRunStorage(record.quote);
+    await saveProofCase(record, beginModelCheckRun(prepared, record.role, input, digest, registration));
     const run = record.quote.proof.delivery!.modelRun!;
     async function current() {
       const fresh = await readProofCase(id, actor), delivery = fresh.quote.proof.delivery;
       if (!delivery || delivery.id !== run.deliveryId || delivery.modelRun?.id !== run.id || await runtimeDeliveryDigest(delivery.files) !== run.deliveryDigest) throw new HttpError(409, "The model-check lease or delivery changed while checks were running.");
-      const approved = resolveJourneyTarget(fresh.quote, run.registration.id, run.deliveryDigest);
+      const approved = resolveJourneyTarget(fresh.quote, run.registration.id, run.deliveryDigest, await projectJourneyRegistrations(fresh.quote));
       if (!sameJourneyRegistration(run.registration, approved)) throw new HttpError(409, "The model-check target approval changed. No further checks were issued.");
       return fresh;
     }

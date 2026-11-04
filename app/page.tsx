@@ -779,6 +779,10 @@ export default function Home() {
     setWorkspaceView("workbench");setWorkspacePanel("delivery");setDeliveryTab("layout");
     window.requestAnimationFrame(()=>{const panel=workspaceRef.current?.querySelector<HTMLDetailsElement>("#model-checks");if(panel){panel.open=true;panel.scrollIntoView({block:"nearest",behavior:"smooth"});}});
   }
+  function openTransferChecks() {
+    setWorkspaceView("workbench");setWorkspacePanel("delivery");setDeliveryTab("layout");
+    window.requestAnimationFrame(()=>{const parent=workspaceRef.current?.querySelector<HTMLDetailsElement>("#project-journey"),panel=workspaceRef.current?.querySelector<HTMLDetailsElement>("#transfer-competition");if(parent)parent.open=true;if(panel){panel.open=true;panel.scrollIntoView({block:"nearest",behavior:"smooth"});}});
+  }
   function fillBackendExample() {
     fillNoodleBusinessExample();
     setProjectTitle(tr("面馆网站与预约后端验收","Noodle website and booking backend acceptance"));
@@ -814,6 +818,7 @@ export default function Home() {
     if (!buyer && collaboration?.stage === "submitted") return {
       label: roleplay ? tr("切换买家审核", "Review as buyer") : tr("查看买家反馈", "View buyer feedback"), help: tr("此版本已提交，等待买家决定。", "This version is submitted and awaits the buyer."), action: () => roleplay ? switchWorkspaceRole("buyer") : focusPanel("payment"),
     };
+    if (delivery?.transferCompetitionRun) return {label:tr("查看或关闭未完成的改期竞争检查","Inspect the unfinished transfer competition"),help:tr("本轮正在检查两笔改期争抢空位；完成或明确关闭后才能继续验收。","Two transfers are competing for the remaining places. Finish or explicitly close this run before accepting."),action:openTransferChecks};
     if (delivery?.modelRun) return {label:tr("查看或关闭未完成的并发检查","Inspect the unfinished concurrent check"),help:tr("本次检查尚未结束，旧报告不能代替本次结果。","This run is unfinished; an earlier report cannot stand in for it."),action:openModelChecks};
     if (!deliveryUnlocked) return {label: tr("查看项目状态", "View project state"), help: tr("请先处理约定或付款状态。", "Resolve the agreement or payment state first."), action: () => focusPanel("payment")};
     if (!delivery) return {label: tr("前往上传交付文件", "Open delivery upload"), help: tr("保存时会同时完成规则核查。", "Saving also runs the rule checks."), action: () => focusPanel("delivery", "#deliveryFiles")};

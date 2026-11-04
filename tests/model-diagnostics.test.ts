@@ -62,3 +62,9 @@ test("many independent mismatches retain bounded alias displays and a fresh-rete
  assert.equal(d.outcome,"violated");assert.ok(d.findings.length>8);assert.equal(packet.findings.length,8);assert.ok(packet.omittedFindingCount>0);assert.ok(new TextEncoder().encode(JSON.stringify(packet)).byteLength<=16*1024);assert.doesNotMatch(JSON.stringify(packet),/private-booking-reference|private-seller-error/);
  for(const language of["zh","en"]as const){const draft=modelDiagnosticFeedback(changed,language);assert.ok(draft.length<=1000);assert.match(draft,/新命名空间|fresh namespace/);}
 });
+
+
+test("read failures do not imply an unknown write, while failed POST intents retain commit ambiguity",async()=>{
+ const r=await report(),meta=r.trace.find(row=>row.operationId==='meta')!;const onlyRead=modelCheckReportFromTrace(base(r),[{...structuredClone(meta),status:503,body:{code:'unavailable'}}],r.finishedAt);const readDiagnosis=diagnoseModelReport(onlyRead);assert.equal(readDiagnosis.coverage.syntheticWrites,0);assert.match(readDiagnosis.findings[0].actual.en,/read returned HTTP503|read returned HTTP 503/);assert.doesNotMatch(readDiagnosis.findings[0].actual.en,/write|commit/);assert.match(readDiagnosis.findings[0].actual.zh,/读取请求/);
+ const trace=structuredClone(r.trace),write=trace.find(row=>row.operationId==='transfer_x')!;write.status=504;write.body={code:'response_unknown'};const writeDiagnosis=diagnoseModelReport(modelCheckReportFromTrace(base(r),trace,r.finishedAt));const finding=writeDiagnosis.findings.find(row=>row.id==='observation_unavailable_transfer_x')!;assert.match(finding.actual.en,/write returned HTTP 504/);assert.match(finding.actual.en,/whether it committed/);assert.equal(writeDiagnosis.outcome,'inconclusive');
+});

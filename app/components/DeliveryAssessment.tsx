@@ -6,6 +6,7 @@ import type { Language, ProofAssessment, ProofAssessmentCitation, ProofCriterion
 import { criterionDisplayTitle } from "@/lib/delivery-overview";
 import "../assessment.css";
 import { RiskReviewPanel } from "./RiskReviewPanel";
+import { AssessmentBenchmarkPanel } from "./AssessmentBenchmarkPanel";
 import type { RiskReviewInput } from "@/lib/risk-reviews";
 import { assessmentCoverageGroups, assessmentReviewSummary } from "@/lib/assessment-display";
 
@@ -94,6 +95,7 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
 
     <div className="assessment-body" aria-labelledby={`${id}-heading`}>
       <p className="assessment-purpose">{tr("逐条比较已确认的要求与卖家源码；与规则检查、浏览器测量分开记录。请结合引用原文核对每条建议。", "Compares confirmed requirements with the seller's source files. Recorded separately from rule checks and browser measurements. Check each suggestion against the quoted source.")}</p>
+      {!readOnly&&<AssessmentBenchmarkPanel language={language}/>}
 
       {!report ? <>
         {readOnly ? <p className="assessment-empty">{tr("此交付快照没有保存 AI 内容评估。", "No AI delivery assessment was saved with this delivery snapshot.")}</p> : <>

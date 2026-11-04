@@ -16,6 +16,16 @@ Compare each requirement displays the unchanged agreed clause, version-matched o
 
 A separate optional release-vs-transfer model experiment issues at most five synthetic writes and 24 requests against a registered staging backend. An independent finite-state oracle checks cancellation/transfer results, receipts, merchant records and three occupancies against both real-time-consistent serial orders. Seeds vary party size and slot permutation; they do not generate arbitrary workflows or prove broad concurrency safety. Unknown writes are never automatically replayed. Saved reports and exact acceptance acknowledgements survive refresh and remain tied to their original file digest. See docs/collaboration/four-cycles-2026-11-03/round-4.md for measured evidence and limits.
 
+## Current functional additions — 4 November 2026
+
+Persisted seller integration requests, reasoned operator review/revocation and linked resubmissions bind a disposable target to one exact upload. A separate manual browser witness compares what an operator actually observed with server receipt/merchant/occupancy reads; it is not autonomous seller-frontend execution.
+
+The separate transfer-competition-v1 family checks two reservations competing for the last places, the losing original and an untouched third reservation. It has its own finite definition and does not change the older release-versus-transfer oracle. Actual Python/SQLite fixed and deliberately faulty fixtures are runnable in the source tests.
+
+The AI panel includes dated, fully retained synthetic evaluation data: initial twelve projects/twenty-four criteria raw24/24 versus application22/24, with nine whole answers accepted and three qualified by an independent AI reviewer. Two actual application-classification errors were fixed; the separate four-project/eight-criterion development follow-up achieved raw8/8 and application8/8. This is not real-customer accuracy or human usability research. Complete raw answers, extra risks/limitations, references and frozen source are in public/benchmarks/five-cycles-2026-11-04/. Viewing these records never calls a model.
+
+Repeated original-model runs retain up to four inline and sixteen immutable D1 archive reports, subject to unchanged byte/acceptance budgets. The server shows actual capacity before a run. An accepted A remains the exact consent basis after supplements; missing, modified or foreign archives fail closed. Replacements preserve scoped historical-version hydration and offline exports check the complete archive mapping and SHA. See docs/collaboration/five-new-cycles-2026-11-04/ for the five rounds and measured boundaries.
+
 ## Clean local setup
 
 On macOS or a POSIX environment, with Node.js 22.13+ and npm installed (Node.js 24 recommended), run one command from this checkout:

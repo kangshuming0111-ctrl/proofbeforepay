@@ -17,11 +17,12 @@ import {createBusinessCheckReport} from "./business-checks.ts";
 import {createLayoutReport} from "./layout-report.ts";
 import {assertModelAcceptanceReference,modelReportsFor} from "./model-check-actions.ts";
 import {MODEL_SPEC_DIGEST,modelCheckReportFromTrace,validateStoredModelCheckReport} from "./model-checks.ts";
+import {validateModelArchive} from "./model-report-archive.ts";
 
 export const EVIDENCE_EXPORT_SCHEMA = "proofbeforepay-evidence-export-v1";
 export const EVIDENCE_EXPORT_RULES = "pbp-static-source-v2";
 export const EVIDENCE_EXPORT_BYTE_LIMIT = 4 * 1024 * 1024;
-const DELIVERY_KEYS = ["id","variant","sequence","label","submittedAt","files","evidence","resources","layoutReport","layoutHistory","browserChecks","browserCheckHistory","businessChecks","businessCheckHistory","assessment","riskReviews","acceptanceEvidence","backendTargetId","runtimeDeliveryDigest","runtimeRegistration","runtimeReport","runtimeHistory","runtimeRun","journeyPlan","journeyReport","journeyHistory","journeyPlanSuggestions","journeyPlanAdoption","journeyExplanation","modelRun","modelReport","modelHistory","modelExplanation"] as const;
+const DELIVERY_KEYS = ["id","variant","sequence","label","submittedAt","files","evidence","resources","layoutReport","layoutHistory","browserChecks","browserCheckHistory","businessChecks","businessCheckHistory","assessment","riskReviews","acceptanceEvidence","backendTargetId","runtimeDeliveryDigest","runtimeRegistration","runtimeReport","runtimeHistory","runtimeRun","journeyPlan","journeyReport","journeyHistory","journeyPlanSuggestions","journeyPlanAdoption","journeyExplanation","modelRun","modelReport","modelHistory","modelArchiveRefs","modelArchive","modelExplanation"] as const;
 const SNAPSHOT_KEYS = ["id","deliveryId","at","browserReportId","layoutReportId","assessmentId","businessReportId","businessExceptionReason","runtimeReportId","runtimeExceptionReason","runtimeAcknowledgedSteps","runtimeDeliveryDigest","runtimeTargetId","runtimeRegistration","journeyReportId","journeyDeliveryDigest","journeyPlanDigest","journeyRegistration","journeyExceptionReason","journeyAcknowledgedSteps","journeyClientObservationAcknowledged","modelReportId","modelSpecDigest","modelDeliveryDigest","modelDecision","criteria","evidence","manualChecks","review","assessment","riskReviews"];
 type AcceptanceReference = {kind:"delivery-acceptance"|"capture-consent";deliveryId:string;evidenceSnapshotId:string|null};
 export type EvidenceExport = {
@@ -132,6 +133,7 @@ export async function createEvidenceExport(quote:ProofQuote):Promise<EvidenceExp
   boundedJson(quote);
   requireValue(quote.workflow==="proof-v1"&&quote.proof?.delivery,"A current proof delivery is required.");
   const delivery=structuredClone(pick(quote.proof.delivery,DELIVERY_KEYS)) as ProofDelivery;
+  await validateModelArchive(delivery,quote.id);
   const requirements=quote.proof.requirements;
   const acceptanceReferences:AcceptanceReference[]=[];
   const acceptance=quote.proof.collaboration?.acceptance;
@@ -226,6 +228,7 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
     structure=true;
   },"The supported current-delivery envelope has a bounded structure.");
   if(!structure)return result;
+  if(bundle.delivery.modelArchiveRefs!==undefined||bundle.delivery.modelArchive!==undefined)await check("model-archive-integrity",()=>validateModelArchive(bundle.delivery,bundle.project.id),"Archived model report payloads match their exact SHA-256 bytes and a complete project/delivery/report manifest; this is internal consistency, not an execution signature.");
   await check("file-digest",async()=>{requireValue(await runtimeDeliveryDigest(bundle.delivery.files)===bundle.fileDigest,"File digest mismatch.");if(bundle.delivery.runtimeDeliveryDigest!==undefined)requireValue(bundle.delivery.runtimeDeliveryDigest===bundle.fileDigest,"Runtime digest mismatch.");},"The file-map SHA-256 matches the exported files; this is not a trusted signature.");
   await check("requirements",()=>{
     const {spec,requirements}=bundle.project;

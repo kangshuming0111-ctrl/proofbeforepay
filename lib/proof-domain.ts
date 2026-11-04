@@ -45,7 +45,7 @@ function validateAcceptanceFacts(quote: ProofQuote, input: Record<string, unknow
 /** New client capture requests must bind either their current first-acceptance
  * view or the exact previously frozen acceptance, never a later supplement. */
 export function validateAcceptance(quote: ProofQuote, input: Record<string, unknown>) {
-  if(quote.proof.delivery?.modelRun)throw new DomainError("Finish the pending model run before confirming payment.",409);
+  if(quote.proof.delivery?.modelRun||quote.proof.delivery?.transferCompetitionRun)throw new DomainError("Finish the pending model run before confirming payment.",409);
   const required = validateAcceptanceFacts(quote, input);
   if (quote.proof.collaboration || quote.proof.acceptedEvidenceSnapshotId || quote.proof.paymentOperation === "capture") {
     assertAcceptedSnapshotConsent(quote, input.acceptedEvidenceSnapshotId);

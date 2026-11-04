@@ -1,0 +1,6 @@
+import {proofActor,readProofCase} from "@/lib/proof-store";
+import {body,handle,HttpError,json} from "@/lib/server";
+import {decideIntegrationRequest,integrationRequestsView,submitIntegrationRequest} from "@/lib/seller-integration-store";
+export const dynamic="force-dynamic";
+export async function GET(request:Request,context:{params:Promise<{id:string}>}){return handle(async()=>{const actor=proofActor(request);if(!actor.authenticated)throw new HttpError(401,"Sign in to inspect staging applications.");const{id}=await context.params,record=await readProofCase(id,actor);return json(await integrationRequestsView(record,actor));});}
+export async function POST(request:Request,context:{params:Promise<{id:string}>}){return handle(async()=>{const actor=proofActor(request,true);if(!actor.authenticated)throw new HttpError(401,"Sign in to submit or review staging applications.");const{id}=await context.params,input=await body(request,20*1024),record=await readProofCase(id,actor);if(input.action==="submit")await submitIntegrationRequest(record,actor,input);else if(input.action==="review")await decideIntegrationRequest(record,actor,input);else throw new HttpError(400,"Choose submit or review for a staging application.");const fresh=await readProofCase(id,actor);return json(await integrationRequestsView(fresh,actor),input.action==="submit"?201:200);});}

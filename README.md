@@ -370,3 +370,40 @@ Optional checks now bind literal visible copy or menu item/currency/price to an 
 ## One acceptance plan through AI, buyer and seller (2026-11-02)
 
 The buyer can explicitly request grounded AI business-check proposals, individually adopt/edit them and confirm the resulting plan. Seller invitation previews show the same precise values; source AI assessment receives that validated locked plan. Business revision comparison now presents agreed values and each version's actual recorded excerpts. See [the implementation, actual-model failures/retests, verification and remaining award-evidence gaps](docs/PLAN-COHERENCE-2026-11-02.md). No model suggestion accepts work or changes the project fee or payment.
+
+## Persistent seller staging applications (4 November 2026)
+
+For an uploaded delivery, open Browser checks → Seller integration applications.
+The authenticated seller checks an explicit synthetic-data manifest and submits it
+to the project. Requests and decision histories survive refresh in a separate D1
+table. A returned or declined manifest is corrected through a new linked request;
+the original bytes and decision remain retained.
+
+Set `PBP_OPERATOR_IDS` in the server runtime to a comma-separated list of the
+existing operator account IDs. A configured operator must additionally be the
+project's actual buyer/owner to review that project's application. The browser
+role switch and manifest never confer this authority. The default unconfigured
+state grants no review permission. Do not put account IDs or runtime configuration
+in public source examples.
+
+An approval derives its exact project, upload digest and declared addresses from
+the saved manifest, has a bounded expiry, and becomes available to the current
+journey/model runner. Revocation disables subsequent requests while retained
+reports keep the original target declaration. Approval is a scoped test
+declaration, not an ownership, DNS, deployment or database attestation; submitting
+or approving does not run tests, accept work or pay. Apply migration
+`0003_seller_integration_requests.sql` after the existing migrations.
+
+## Five functional revision cycles — 4 November 2026
+
+The seller can submit a persisted integration manifest for the exact uploaded delivery, receive a reasoned operator decision, and submit a linked revision. Only a configured operator who is also the project buyer can approve or revoke a scoped synthetic target. This is a declaration of test scope, not deployed-source attestation. Contract assistance remains optional.
+
+An operator-recorded browser witness is now reconciled with metadata, receipts, merchant records and occupancy. The developer-operated no-save counterexample displayed success while independent SQLite contained no booking; the saved result records that contradiction. This is a manual browser observation with server reconciliation, not autonomous execution of arbitrary seller frontends.
+
+Two separate finite concurrency families are available: the original release-versus-transfer model and the new `transfer-competition-v1` model. The latter makes two reservations compete for the last places, preserves the losing reservation and checks an untouched third reservation. Each model uses at most five synthetic writes and 24 HTTP requests. The independent Python/SQLite fixture exposes real overbooking in its startup-selected mutant; the public synthetic lifecycle service also explicitly supports the second family's bounded command names. Neither proves general concurrency safety.
+
+The delivery AI panel discloses a frozen twelve-project, twenty-four-criterion synthetic evaluation. Initial raw statuses agreed with 24 references; application policy agreed with 22. Full-answer independent AI review accepted 9 answers and qualified 3, including two genuine application errors. The singular opening-time and explicit refund-policy copy errors were repaired with separate financial-action negative controls. A separately frozen four-project/eight-criterion development follow-up agreed on 8 raw and 8 application outcomes. Original results remain unchanged. Source, complete outputs, exact citations, semantic judgments and both implementation snapshots are under `public/benchmarks/five-cycles-2026-11-04/`; viewing the panel makes no provider call. This is not real-customer accuracy or human research.
+
+For repeated original-model checks, an immutable D1 vault retains older reports rather than enlarging the inline window: up to 4 inline + 16 archived, with actual preflight capacity and acceptance reservations. The unchanged 256 KiB evidence history, 2 MiB hydrated delivery and 4 MiB export bounds can stop a large delivery earlier. A saved acceptance A remains tied to its original exact report; supplements do not backfill acceptance or payment. Missing, changed or foreign archive objects stop protected reads/actions. Replacements keep authorized historical-version access. Offline export verifies complete reference/object mapping and exact payload SHA, as unsigned internal consistency.
+
+The new eight archive unit tests, independent fresh-D1/restart/CAS/replacement harness, and final combined 878-test suite passed. The archive API harness used controlled metadata 503 responses with zero target writes or provider calls; its persistence results are separate from the real model evaluation and native concurrency executions. Read `docs/collaboration/five-new-cycles-2026-11-04/` for each cycle's independent review and limits. On the macOS development environment, `node tests/run-model-archive-local.mjs` reproduces the isolated D1 archive workflow; the ordinary account-free local demo remains `node scripts/judge-demo.mjs`. Production publication and public-source commit are recorded separately from a local test pass.

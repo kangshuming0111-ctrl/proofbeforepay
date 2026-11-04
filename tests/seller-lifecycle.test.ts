@@ -5,6 +5,9 @@ import {readFileSync,mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import path from 'node:path';
 import {Worker} from 'node:worker_threads';
+import {executeTransferRun} from '../lib/transfer-competition-runner.ts';
+import {TRANSFER_SPEC_DIGEST,generateTransferPlan,TRANSFER_SLOTS,type TransferBase} from '../lib/transfer-competition.ts';
+import {PROJECT_JOURNEY_PLAN_DIGEST} from '../lib/project-journey.ts';
 import {handleLifecycleRequest} from '../examples/seller-lifecycle-staging/worker/lifecycle-service.mjs';
 
 const schema=readFileSync(new URL('../examples/seller-lifecycle-staging/migrations/0001_lifecycle.sql',import.meta.url),'utf8');
@@ -26,7 +29,7 @@ const occupancy=async(f:ReturnType<typeof fixture>,slot:keyof typeof slots)=>{co
 async function coreFlow(profile:string){
  const f=fixture(profile);
  try{
-  const meta=await json(await f.get('meta'));assert.deepEqual(meta,{protocol:'booking-lifecycle-http-v1',revision:`lifecycle-${profile}-v1`,maxPartySize:6,maxGuestsPerSlot:8,syntheticOnly:true,deploymentAttestation:false});
+  const meta=await json(await f.get('meta'));assert.deepEqual(meta,{protocol:'booking-lifecycle-http-v1',revision:`lifecycle-${profile}-v1`,nativeRevision:`lifecycle-${profile}-v1`,maxPartySize:6,maxGuestsPerSlot:8,syntheticOnly:true,deploymentAttestation:false,supportedModels:['release-vs-transfer-v1','transfer-competition-v1']});
   const first=await row(await f.create(5,slots.a,'cancel-create'),201);assert.equal(first.status,'active');assert.equal((await occupancy(f,'a')).guestCount,5);
   assert.equal((await row(await f.command(first.id,'cancel','cancel-first'),200)).status,'cancelled');assert.equal((await occupancy(f,'a')).guestCount,0);
   const five=await row(await f.create(5,slots.a,'cancel-five'),201),three=await row(await f.create(3,slots.a,'cancel-three'),201);assert.equal((await occupancy(f,'a')).guestCount,8);
@@ -123,4 +126,25 @@ test('lifecycle concurrent same-key creation across independent connections comm
  const data={module:new URL('../examples/seller-lifecycle-staging/worker/lifecycle-service.mjs',import.meta.url).href,file,url:`${origin}/pbp/bookings`,key:f.key('cancel-create'),body:{...f.marker,customer:'PBP synthetic',email:'pbp-test@example.invalid',slot:slots.a,partySize:5}};
  const launch=()=>new Promise<{status:number;body:Row}>( (resolve,reject)=>{const w=new Worker(workerCode,{eval:true,workerData:data});w.once('message',m=>m.error?reject(new Error(m.error)):resolve(m));w.once('error',reject);});
  try{const pair=await Promise.all([launch(),launch()]);assert.deepEqual(pair.map(r=>r.status).sort(),[200,201]);assert.equal(pair[0].body.id,pair[1].body.id);assert.equal(f.sqlite.prepare('SELECT COUNT(*) n FROM seller_lifecycle_operations').get()!.n,1);assert.equal(f.sqlite.prepare('SELECT COUNT(*) n FROM seller_lifecycle_bookings').get()!.n,1);}finally{f.sqlite.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+// Actual native SQL mutations with the production disposable handler. This is
+// a controlled protocol fixture, not a browser or independent seller claim.
+test('hosted lifecycle protocol explicitly supports competing transfers and its SQL retains the capacity loser',async()=>{
+ const f=fixture();try{for(const seed of[0,4,17]){
+  const id=crypto.randomUUID(),base:TransferBase={id,projectId:'hosted-transfer-project',deliveryId:'hosted-transfer-delivery',deliveryDigest:'d'.repeat(64),journeyPlanDigest:PROJECT_JOURNEY_PLAN_DIGEST,modelSpecDigest:TRANSFER_SPEC_DIGEST,seed,startedAt:new Date().toISOString(),expiresAt:new Date(Date.now()+30000).toISOString(),registration:{id:'hosted-transfer-target',label:'Controlled native lifecycle SQL',projectId:'hosted-transfer-project',registrationRevision:'hosted-transfer-reg-v1',protocol:'booking-lifecycle-http-v1',recipe:'booking-lifecycle-20-v1',frontendEntryUrl:origin+'/index.html',backendBaseUrl:origin+'/pbp/',deploymentRevision:'lifecycle-fixed-v1',bridgeRevision:'lifecycle-fixed-v1',frontendBundleDigest:'d'.repeat(64),scenario:'fixed',expiresAt:new Date(Date.now()+60000).toISOString(),testOnly:true,provenance:'operator-approved-declaration'}};
+  const report=await executeTransferRun(base,{fetch:async(url,init)=>handleLifecycleRequest(new Request(url,init),f.env)});assert.equal(report.result.outcome,'compatible',JSON.stringify(report.result));assert.equal(report.trace.length,24);assert.equal(report.trace.filter(r=>r.method==='POST').length,5);
+  const plan=generateTransferPlan(seed),rows=f.sqlite.prepare('SELECT * FROM seller_lifecycle_bookings WHERE test_run_id=? ORDER BY id').all(id),target=rows.filter(r=>r.slot===TRANSFER_SLOTS[plan.target]);assert.equal(rows.length,3);assert.equal(rows.filter(r=>r.status==='active').length,3);assert.equal(target.reduce((sum,r)=>sum+Number(r.party_size),0),8);assert.equal(rows.filter(r=>r.slot===TRANSFER_SLOTS[plan.source]||r.slot===TRANSFER_SLOTS[plan.spare]).length,1);
+  assert.deepEqual(report.trace.filter(r=>r.operationId==='transfer_x'||r.operationId==='transfer_y').map(r=>r.status).sort(),[200,409]);
+ }
+ const unknown=crypto.randomUUID(),request=new Request(origin+'/pbp/bookings',{method:'POST',headers:{'Content-Type':'application/json',Origin:origin,'Idempotency-Key':`pbp-${unknown}-transfer-competition-anything`},body:JSON.stringify({testRunId:unknown,marker:`PBP-${unknown}`,customer:'PBP synthetic',email:'pbp-test@example.invalid',slot:slots.a,partySize:2})});const before=f.sqlite.prepare('SELECT count(*) n FROM seller_lifecycle_bookings').get()!.n;assert.equal((await handleLifecycleRequest(request,f.env)).status,400);assert.equal(f.sqlite.prepare('SELECT count(*) n FROM seller_lifecycle_bookings').get()!.n,before);
+ }finally{f.sqlite.close();}
+});
+
+test('competition command names are finite and action-specific before any datastore access',async()=>{
+ let accesses=0;const env={LIFECYCLE_PROFILE:'fixed',DB:{prepare(){accesses++;throw new Error('unexpected storage');}}},id=crypto.randomUUID(),booking=crypto.randomUUID(),marker={testRunId:id,marker:`PBP-${id}`};
+ for(const [action,suffix]of[['create','source-extra'],['create','move-x'],['move','move-z'],['move','source-x'],['cancel','cancel-first']]as const){
+  const body=action==='create'?{...marker,customer:'PBP synthetic',email:'pbp-test@example.invalid',slot:slots.a,partySize:2}:action==='move'?{...marker,slot:slots.a}:marker;
+  const response=await handleLifecycleRequest(new Request(origin+'/pbp/'+(action==='create'?'bookings':`bookings/${booking}/${action}`),{method:'POST',headers:{'Content-Type':'application/json',Origin:origin,'Idempotency-Key':`pbp-${id}-transfer-competition-${suffix}`},body:JSON.stringify(body)}),env);assert.equal(response.status,400,`${action}/${suffix}`);
+ }assert.equal(accesses,0);
 });

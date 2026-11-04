@@ -5,6 +5,10 @@ const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 const PROFILES=new Set(['fixed','cancel-credit','move-loss','retry-duplicate']);
 const SLOTS={a:'2099-01-01T10:00:00Z',b:'2099-01-01T11:00:00Z',c:'2099-01-01T12:00:00Z'};
 const SUFFIXES={create:new Set(['cancel-create','cancel-five','cancel-three','cancel-extra','source-create','loss-create']),cancel:new Set(['cancel-first','cancel-repeat']),move:new Set(['move-full','move-free'])};
+// Additive synthetic command names for the separately defined competition
+// experiment. Native SQL admission and ordinary command semantics are shared;
+// no expected checker outcome is imported or manufactured.
+const COMPETING_SUFFIXES={create:new Set(['source-x','source-y','target-z']),cancel:new Set(),move:new Set(['move-x','move-y'])};
 const TTL=3600_000,MAX_BODY=4096;
 class InputError extends Error{constructor(status,code){super(code);this.status=status;this.code=code;}}
 const reply=(body,status=200,extra={})=>Response.json(body,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer',...extra}});
@@ -31,7 +35,8 @@ function input(value,action,key){
   if(action==='create'&&(value.customer!=='PBP synthetic'||value.email!=='pbp-test@example.invalid'))throw new InputError(400,'synthetic_validation_failed');
   if(action!=='cancel'&&!Object.values(SLOTS).includes(value.slot))throw new InputError(400,'synthetic_validation_failed');
   if(action==='create'&&(!Number.isInteger(value.partySize)||value.partySize<1||value.partySize>6))throw new InputError(422,'party_size_invalid');
-  const prefix=`pbp-${id}-lifecycle-`;if(typeof key!=='string'||!key.startsWith(prefix)||!SUFFIXES[action].has(key.slice(prefix.length)))throw new InputError(400,'synthetic_validation_failed');
+  const prefix=`pbp-${id}-lifecycle-`,competingPrefix=`pbp-${id}-transfer-competition-`;
+  if(typeof key!=='string'||!(key.startsWith(prefix)&&SUFFIXES[action].has(key.slice(prefix.length))||key.startsWith(competingPrefix)&&COMPETING_SUFFIXES[action].has(key.slice(competingPrefix.length))))throw new InputError(400,'synthetic_validation_failed');
   return value;
 }
 function receipt(row){return{id:row.id,testRunId:row.test_run_id,marker:`PBP-${row.test_run_id}`,customer:'PBP synthetic',email:'pbp-test@example.invalid',slot:row.slot,partySize:row.party_size,status:row.status,revision:row.revision,idempotencyKey:row.idempotency_key};}
@@ -63,7 +68,7 @@ export async function handleLifecycleRequest(request,env){
       if(request.method!=='GET')return reply({code:'method_not_allowed'},405,{Allow:'GET'});
       // Schema existence is observed rather than silently created on a request.
       await first(config,'SELECT id FROM seller_lifecycle_bookings LIMIT 1');
-      return reply({protocol:'booking-lifecycle-http-v1',revision:config.revision,maxPartySize:6,maxGuestsPerSlot:8,syntheticOnly:true,deploymentAttestation:false});
+      return reply({protocol:'booking-lifecycle-http-v1',revision:config.revision,nativeRevision:config.revision,maxPartySize:6,maxGuestsPerSlot:8,syntheticOnly:true,deploymentAttestation:false,supportedModels:['release-vs-transfer-v1','transfer-competition-v1']});
     }
     const occupancy=/^\/pbp\/occupancy\/([a-f0-9-]{36})\/(a|b|c)$/u.exec(url.pathname);
     const merchant=/^\/pbp\/merchant\/([a-f0-9-]{36})$/u.exec(url.pathname);

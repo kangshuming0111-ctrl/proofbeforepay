@@ -8,6 +8,8 @@ import { joinSeller, snapshotVersion } from "./proof-workflow";
 import { isSandboxCollaboration, resolveProofRole } from "./proof-demo";
 import { HttpError, owner } from "./server";
 import { assertQuoteEvidenceBudget } from "./evidence-budget";
+import {dehydrateModelDelivery,dehydrateModelQuote} from "./model-report-archive";
+import {hydrateModelDelivery,newModelArchiveStatements} from "./model-report-store";
 
 export type ProofActor = {id: string; email: string; authenticated: boolean; requestedDemoRole?: ProofRole};
 export type ProofRecord = {
@@ -36,7 +38,9 @@ function fromRow(row: typeof quotes.$inferSelect, actor: ProofActor): ProofRecor
 export async function readProofCase(id: string, actor: ProofActor): Promise<ProofRecord> {
   const [row] = await getDb().select().from(quotes).where(and(eq(quotes.id, id), or(eq(quotes.ownerId, actor.id), eq(quotes.sellerId, actor.id)))).limit(1);
   if (!row) throw new HttpError(404, "Project not found.");
-  return fromRow(row, actor);
+  const record=fromRow(row, actor);
+  if(record.quote.proof.delivery)record.quote.proof.delivery=await hydrateModelDelivery(env.DB as D1Database,id,record.quote.proof.delivery);
+  return record;
 }
 
 /** Transport-only projection. Seller views do not expose buyer approval links or provider identifiers. */
@@ -57,7 +61,7 @@ export function proofResponse(record: ProofRecord, quote = record.quote) {
 export async function listProofCases(actor: ProofActor) {
   const rows = await getDb().select({
     id: quotes.id, ownerId: quotes.ownerId, sellerId: quotes.sellerId,
-    payload: sql<string>`json_remove(${quotes.payload}, '$.proof.delivery.files', '$.proof.delivery.assessment', '$.proof.delivery.browserCheckHistory', '$.proof.delivery.businessCheckHistory', '$.proof.delivery.layoutHistory', '$.proof.delivery.acceptanceEvidence', '$.proof.delivery.runtimeHistory', '$.proof.delivery.runtimeRun', '$.proof.delivery.journeyRun', '$.proof.delivery.journeyReport', '$.proof.delivery.journeyHistory', '$.proof.delivery.journeyPlanSuggestions', '$.proof.delivery.journeyPlanAdoption', '$.proof.delivery.journeyExplanation', '$.proof.delivery.modelExplanation', '$.proof.delivery.modelRun', '$.proof.delivery.modelReport', '$.proof.delivery.modelHistory', '$.proof.delivery.modelEvidenceReservation', '$.proof.requirements.sourceText')`,
+    payload: sql<string>`json_remove(${quotes.payload}, '$.proof.delivery.files', '$.proof.delivery.assessment', '$.proof.delivery.browserCheckHistory', '$.proof.delivery.businessCheckHistory', '$.proof.delivery.layoutHistory', '$.proof.delivery.acceptanceEvidence', '$.proof.delivery.runtimeHistory', '$.proof.delivery.runtimeRun', '$.proof.delivery.journeyRun', '$.proof.delivery.journeyReport', '$.proof.delivery.journeyHistory', '$.proof.delivery.journeyPlanSuggestions', '$.proof.delivery.journeyPlanAdoption', '$.proof.delivery.journeyExplanation', '$.proof.delivery.modelExplanation', '$.proof.delivery.modelRun', '$.proof.delivery.transferCompetitionRun', '$.proof.delivery.modelReport', '$.proof.delivery.modelHistory', '$.proof.delivery.modelArchive', '$.proof.delivery.modelEvidenceReservation', '$.proof.requirements.sourceText')`,
   }).from(quotes).where(and(or(eq(quotes.ownerId, actor.id), eq(quotes.sellerId, actor.id)), sql`json_extract(${quotes.payload}, '$.workflow') = 'proof-v1'`)).orderBy(desc(quotes.updatedAt)).limit(50);
   const result: ProofQuote[] = [];
   const roles: Record<string, ProofRole> = {};
@@ -81,29 +85,31 @@ export async function saveProofCase(record: ProofRecord, next: ProofQuote, optio
   const db = env.DB as D1Database;
   const at = new Date().toISOString();
   const statements: D1PreparedStatement[] = [];
+  const payload=JSON.stringify(dehydrateModelQuote(next));
   if (options.archive && record.quote.proof.delivery) {
     const count = await getDb().select({count: sql<number>`count(*)`}).from(proofVersions).where(eq(proofVersions.quoteId, next.id));
     if (count[0]?.count >= 49) throw new HttpError(409, "This project has reached 50 delivery versions. Start a new project to continue.");
-    const snapshot = snapshotVersion(record.quote, at);
-    statements.push(db.prepare("INSERT INTO proof_versions (id, quote_id, payload, archived_at) SELECT ?, ?, ?, ? WHERE EXISTS (SELECT 1 FROM quotes WHERE id = ? AND owner_id = ? AND version = ?)")
-      .bind(`${next.id}:${snapshot.delivery.id}`, next.id, JSON.stringify(snapshot), at, next.id, record.buyerId, record.version));
+    const snapshot = snapshotVersion(record.quote, at);snapshot.delivery=dehydrateModelDelivery(snapshot.delivery);
+    statements.push(db.prepare("INSERT INTO proof_versions (id, quote_id, payload, archived_at) SELECT ?, ?, ?, ? WHERE EXISTS (SELECT 1 FROM quotes WHERE id = ? AND owner_id = ? AND version = ? AND payload = ?)")
+      .bind(`${next.id}:${snapshot.delivery.id}`, next.id, JSON.stringify(snapshot), at, next.id, record.buyerId, record.version+1,payload));
   }
   const invitation = options.invitation === undefined
     ? {hash: record.invitationHash, email: record.invitationEmail, expiresAt: record.invitationExpiresAt}
     : options.invitation === null ? {hash: null, email: null, expiresAt: null} : options.invitation;
   const claimGuard = options.claimInvitation ? " AND seller_id IS NULL AND invitation_hash = ? AND invitation_email = ? AND julianday(invitation_expires_at) > julianday('now')" : "";
-  const bindings: unknown[] = [JSON.stringify(next), at, options.sellerId ?? record.sellerId, invitation.hash, invitation.email, invitation.expiresAt, next.id, record.buyerId, record.version];
+  const bindings: unknown[] = [payload, at, options.sellerId ?? record.sellerId, invitation.hash, invitation.email, invitation.expiresAt, next.id, record.buyerId, record.version];
   if (options.claimInvitation) bindings.push(record.invitationHash, record.invitationEmail);
-  statements.push(db.prepare("UPDATE quotes SET payload = ?, version = version + 1, updated_at = ?, seller_id = ?, invitation_hash = ?, invitation_email = ?, invitation_expires_at = ? WHERE id = ? AND owner_id = ? AND version = ?" + claimGuard).bind(...bindings));
+  statements.unshift(db.prepare("UPDATE quotes SET payload = ?, version = version + 1, updated_at = ?, seller_id = ?, invitation_hash = ?, invitation_email = ?, invitation_expires_at = ? WHERE id = ? AND owner_id = ? AND version = ?" + claimGuard).bind(...bindings));
+  statements.push(...await newModelArchiveStatements(db,next.id,next.proof.delivery,record.quote.proof.delivery,{ownerId:record.buyerId,version:record.version+1,payload},at));
   const results = await db.batch(statements);
-  if (!results[results.length - 1].meta.changes) throw new HttpError(409, "This project changed in another request. Reload it and try again.");
+  if (!results[0].meta.changes) throw new HttpError(409, "This project changed in another request. Reload it and try again.");
   record.quote = next; record.version += 1;
   record.sellerId = options.sellerId ?? record.sellerId;
   record.invitationHash = invitation.hash; record.invitationEmail = invitation.email; record.invitationExpiresAt = invitation.expiresAt;
 }
 
 export async function listProofVersions(record: ProofRecord): Promise<ProofDeliveryVersion[]> {
-  const rows = await getDb().select({payload: sql<string>`json_remove(${proofVersions.payload}, '$.delivery.files', '$.delivery.browserCheckHistory', '$.delivery.businessCheckHistory', '$.delivery.layoutHistory', '$.delivery.acceptanceEvidence', '$.delivery.runtimeHistory', '$.delivery.runtimeRun', '$.delivery.journeyRun', '$.delivery.journeyReport', '$.delivery.journeyHistory', '$.delivery.journeyPlanSuggestions', '$.delivery.journeyPlanAdoption', '$.delivery.journeyExplanation', '$.delivery.modelExplanation', '$.delivery.modelRun', '$.delivery.modelReport', '$.delivery.modelHistory', '$.delivery.modelEvidenceReservation')`}).from(proofVersions)
+  const rows = await getDb().select({payload: sql<string>`json_remove(${proofVersions.payload}, '$.delivery.files', '$.delivery.browserCheckHistory', '$.delivery.businessCheckHistory', '$.delivery.layoutHistory', '$.delivery.acceptanceEvidence', '$.delivery.runtimeHistory', '$.delivery.runtimeRun', '$.delivery.journeyRun', '$.delivery.journeyReport', '$.delivery.journeyHistory', '$.delivery.journeyPlanSuggestions', '$.delivery.journeyPlanAdoption', '$.delivery.journeyExplanation', '$.delivery.modelExplanation', '$.delivery.modelRun', '$.delivery.transferCompetitionRun', '$.delivery.modelReport', '$.delivery.modelHistory', '$.delivery.modelArchive', '$.delivery.modelEvidenceReservation')`}).from(proofVersions)
     .where(eq(proofVersions.quoteId, record.quote.id)).orderBy(desc(proofVersions.archivedAt)).limit(50);
   const list = rows.map(row => JSON.parse(row.payload) as ProofDeliveryVersion);
   if (record.quote.proof.delivery) {
@@ -117,8 +123,10 @@ export async function listProofVersions(record: ProofRecord): Promise<ProofDeliv
     delete current.delivery.runtimeRun;
     delete current.delivery.journeyRun;
     delete current.delivery.modelRun;
+    delete current.delivery.transferCompetitionRun;
     delete current.delivery.modelReport;
     delete current.delivery.modelHistory;
+    delete current.delivery.modelArchive;
     delete current.delivery.modelEvidenceReservation;
     delete current.delivery.journeyReport;
     delete current.delivery.journeyHistory;
@@ -135,7 +143,8 @@ export async function readProofVersion(record: ProofRecord, deliveryId: string):
   if (record.quote.proof.delivery?.id === deliveryId) return {...snapshotVersion(record.quote), isCurrent: true};
   const [row] = await getDb().select().from(proofVersions).where(and(eq(proofVersions.id, `${record.quote.id}:${deliveryId}`), eq(proofVersions.quoteId, record.quote.id))).limit(1);
   if (!row) throw new HttpError(404, "Delivery version not found.");
-  return JSON.parse(row.payload) as ProofDeliveryVersion;
+  const snapshot=JSON.parse(row.payload) as ProofDeliveryVersion;
+  snapshot.delivery=await hydrateModelDelivery(env.DB as D1Database,record.quote.id,snapshot.delivery);return snapshot;
 }
 
 async function tokenHash(token: unknown) {

@@ -1,0 +1,29 @@
+{
+  "round": 1,
+  "scope": "Persisted seller integration submissions and configured operator review, exact-upload target approval/revocation",
+  "competitorPrinciple": "CrawlerPal: direct user action to persisted permissioned result; PHAROS: declared scope and inspectable evidence, without copying competitor code.",
+  "reviewer": "DeepSeek API source review; Harness initial attempt failed; first API response failed schema; bounded retry was valid",
+  "reviewArtifact": "outputs/five-new-cycles-2026-11-04/round1-api-review-retry.json",
+  "decisions": [
+    {
+      "finding": 1,
+      "decision": "rejected",
+      "reason": "The alleged race needs needs_changes/rejected to transition to approved. These states are terminal: reviewIntegrationRequest accepts only requested->decision or approved->rejected. A resubmittable parent cannot change to a non-resubmittable state. Existing terminal-state tests cover this invariant. Seller submission is intentionally independent of operator configuration."
+    },
+    {
+      "finding": 2,
+      "decision": "rejected",
+      "reason": "The reviewer itself says history<=8 validates consistently and reproduction N/A; actual state transitions allow at most requested->approved->rejected (3 events). No off-by-one failure exists. Summary claims4 defects though only2 findings, so it is not a correctness certificate."
+    }
+  ],
+  "verification": {
+    "domainAndMigrationTests": "7/7 passed; old migrations preserved",
+    "API": "6 isolated fresh-D1 groups passed; real DB persistence and races, outbound blocked, no actual external seller claim",
+    "UI": "Owned provider-free dev browser: seller submits, refresh retains request, configured operator requests changes with reason; exact saved status visible. One synthetic owner roleplays, not independent external seller.",
+    "fullSuite": "824/824 passed"
+  },
+  "remaining": [
+    "Operator approval declares a scoped synthetic test target; it does not attest deployed source or guarantee honest remote readbacks.",
+    "No independent human seller has completed onboarding in this cycle."
+  ]
+}

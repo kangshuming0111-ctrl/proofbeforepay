@@ -41,7 +41,7 @@ export async function modelEvidenceContext(quote:ProofQuote,role:ProofRole,value
  if(input.confirm!==true)throw new DomainError("Confirm sending this report's compact diagnostic facts to AI.");
  if(input.language!==undefined&&input.language!=="zh"&&input.language!=="en")throw new DomainError("Language must be zh or en.");
  const {delivery,packet,binding}=await packetFor(quote);
- if(delivery.modelRun||delivery.journeyRun||delivery.runtimeRun)throw new DomainError("Finish the pending evidence run before explaining saved model evidence.",409);
+ if(delivery.modelRun||delivery.journeyRun||delivery.runtimeRun||delivery.transferCompetitionRun)throw new DomainError("Finish the pending evidence run before explaining saved model evidence.",409);
  if(input.deliveryId!==binding.deliveryId||input.reportId!==binding.reportId||input.previousExplanationId!==(delivery.modelExplanation?.id??null))throw new DomainError("The delivery, model report or explanation changed. Refresh before requesting AI.",409);
  assertModelExplanationCapacity(quote);
  return{language:input.language as Language|undefined??quote.language,binding,previousExplanationId:input.previousExplanationId as string|null,evidence:packet};

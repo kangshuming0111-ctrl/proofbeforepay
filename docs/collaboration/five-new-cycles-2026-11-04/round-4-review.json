@@ -1,0 +1,62 @@
+{
+  "round": 4,
+  "scope": "Prospective multi-project source evaluation, complete-answer review, literal-content classifier repairs and product-visible dated capability record",
+  "competitorPrinciple": "Inspectable evidence and declared authority from PHAROS/Agent Receipt; dated measured inputs and raw outputs, not a self-awarded accuracy badge",
+  "initial": {
+    "corpusSHA256": "b621f732e8d8330154358e41b2cb9886450babeefb8e3cdc0b0b22aab5580d7b",
+    "freezeSHA256": "54ec0ac3ff1bf61bce55b0df9bf421d43f642ed7e89035861a4aa19d55270d13",
+    "projects": 12,
+    "criteria": 24,
+    "calls": 12,
+    "rawAgreement": 24,
+    "applicationAgreement": 22,
+    "semanticWholeAnswers": {
+      "accepted": 9,
+      "qualified": 3,
+      "rejected": 0,
+      "uncertain": 0
+    },
+    "usageDerivedPeakEstimateUSD": 0.0127227,
+    "labelsNeverSent": true,
+    "originalResultsPreserved": true
+  },
+  "actualBugsFixed": [
+    "Singular opening time literal content had been incorrectly forced unknown",
+    "Explicit cancellation/full-refund page copy had been incorrectly forced unknown on receive",
+    "Mixed copy plus actual issue/process/settle/disburse/automatic refund could preserve erroneous supported advice; added finite financial-action veto with English/Chinese negative controls"
+  ],
+  "developmentFollowup": {
+    "projects": 4,
+    "criteria": 8,
+    "calls": 4,
+    "freezeSHA256": "bea42b869adeda0d4dbb68b5bc5d5f2bf658ad07d663bcb01fadeabf337a393d",
+    "rawAgreement": 8,
+    "applicationAgreement": 8,
+    "semanticWholeAnswers": {
+      "accepted": 4,
+      "qualified": 0,
+      "rejected": 0,
+      "uncertain": 0
+    },
+    "usageDerivedPeakEstimateUSD": 0.0043494,
+    "scope": "Development repair validation after observing initial errors, not new unseen validation or an update to initial22/24"
+  },
+  "DeepSeekAdjudication": {
+    "runnerFindings": "Unknown-usage overspend and missing raw risks rejected: loop terminates and all arrays retained. Accounting/output count disclosure adopted. Partial optional UI fields not a reachable complete-record defect. Final runner opinion retains explicitly non-reachable/future-refactor claims, not treated as bugs.",
+    "rootReviewAccepted": "Bounded UTF8 response stream and all-attempt-path preflight added with tests",
+    "classifierDiscussion": "First response invalid/misdiagnosed receive cause; retained raw, narrowed fix independently. Final fixed-classifier and final finite financial-control reviews valid with0findings."
+  },
+  "verification": {
+    "evaluationTests": "15 new +15 historical =30/30",
+    "affectedAssessmentAndEvaluation": "66/66 after final finite-action controls",
+    "types": "passed",
+    "initialFullSuite": "858/858 before classifier fixes; final combined release rechecks all"
+  },
+  "remaining": [
+    "Finite literal/action vocabulary, not a complete natural-language capability classifier",
+    "Small synthetic projects share a shell and do not prove real customer/cross-framework performance",
+    "One initial image-risk title required qualification; exact citations do not prove image pixels or visual usability",
+    "Independent AI source-and-answer review, not recruited human research",
+    "All usage estimates are not invoices; broader review-call costs are not included in cohort-only figures"
+  ]
+}

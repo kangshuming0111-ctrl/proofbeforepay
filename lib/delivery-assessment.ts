@@ -87,7 +87,7 @@ function citations(value: unknown, sent: Record<string, string>): ProofAssessmen
 
 // A literal-content allowance is deliberately narrower than the set of things
 // a model might infer from source. Unknown manual requirements stay unverified.
-const SOURCE_CONTENT = /营业(?:时间|时段)|营业日|开放时间|菜单|菜品|价格|价目|标价|地址|电话|联系方式|店名|商店名称|餐厅名称|公司名称|企业名称|文案|文字内容|文本内容|\b(?:(?:opening|business)[ -](?:hours|times)|hours\s+of\s+operation|menu|dishes|prices?|pricing|price\s+list|address|phone(?:\s+number)?|telephone|contact\s+(?:number|details)|(?:business|shop|store|restaurant|company|brand)\s+name|copy|copywriting|(?:page|website|text)\s+content)\b/iu;
+const SOURCE_CONTENT = /营业(?:时间|时段)|营业日|开放时间|菜单|菜品|价格|价目|标价|地址|电话|联系方式|店名|商店名称|餐厅名称|公司名称|企业名称|文案|文字内容|文本内容|\b(?:(?:opening|business)[ -](?:hours|times?)|hours\s+of\s+operation|menu|dishes|prices?|pricing|price\s+list|address|phone(?:\s+number)?|telephone|contact\s+(?:number|details)|(?:business|shop|store|restaurant|company|brand)\s+name|copy|copywriting|(?:page|website|text)\s+content)\b/iu;
 const OBSERVATION_REQUIRED = /手机|移动端|响应式|视觉|美观|好看|易用|用户体验|交互|表单|提交|按钮|点击|导航|功能|后台|数据库|预约|预订|登录|注册|搜索|支付|购物车|发送|收件|保存|储存|加载|性能|实时|动态|权限|身份验证|运行|配色|排版|布局|样式|风格|审美|品牌(?:形象|调性|设计)|符合[^。；\n]*品牌|\b(?:responsive|mobile|visual|aesthetic|beautiful|attractive|subjective|user[- ]experience|usability|interactive|interactivity|interaction|forms?|submi(?:t|ts|tted|tting|ssion|ssions)|end[- ]to[- ]end|click(?:able|s|ing)?|navigation|nav\s+interactivity|function(?:al|ality)?|works?|working|backend|database|bookings?|reservations?|log[- ]?in|sign[- ]?up|search(?:able|ing|es)?|payment|checkout|cart|send(?:s|ing)?|receiv(?:e[ds]?|ing)|persist(?:s|ed|ing|ence)?|sav(?:e[ds]?|ing)|load(?:s|ed|ing)?|hover|toggle|animate|animation|accordion|filter|sort|upload|download|performance|real[- ]time|dynamic|authentication|authori[sz]ation|colou?rs?|layout|styling|styles?|design|looks?|feel|modern|elegant|professional|accessibility|accessible|branding|brand(?!\s+name))\b/iu;
 const BOOKING_TERMS = /预约|预订|\b(?:bookings?|reservations?)\b/giu;
 // Only an explicit wording instruction can scope these otherwise operational
@@ -114,10 +114,29 @@ function isExplicitBookingPolicyCopy(criterion: ProofCriterion): boolean {
     && !OBSERVATION_REQUIRED.test(`${titleWithoutBooking}\n${sourceWithoutBooking}`);
 }
 
+// A narrow wording-only allowance for cancellation eligibility. Here "receive"
+// describes what the page must say, not an observed refund. The complete body
+// must match: adding payment execution, another runtime clause or unfamiliar
+// wording cannot inherit this exemption. The model still has to ground its
+// verdict in exact citations; this classifier does not establish the policy.
+const REFUND_POLICY_COPY = /^cancellations?\s+(?:made\s+)?at\s+least\s+[1-9]\d{0,3}\s+(?:hours?|days?)\s+before\s+departure\s+receive\s+a\s+full\s+refund$/iu;
+// Explicit money-moving actions take precedence even if another clause says
+// "copy". This is deliberately an action vocabulary, not a blanket ban on the
+// words refund/退款 in ordinary policy text. It is a conservative boundary,
+// not a complete natural-language parser or a financial execution check.
+const FINANCIAL_ACTION = /\b(?:(?:issu(?:e[sd]?|ing)|process(?:es|ed|ing)?|execut(?:e[sd]?|ing)|initiat(?:e[sd]?|ing)|trigger(?:s|ed|ing)?|settl(?:e[sd]?|ing)|disburs(?:e[sd]?|ing))\s+(?:(?:a|an|the|full|partial|automatic|real|actual|successful|customer|payment)\s+){0,4}refunds?|refund(?:s|ed|ing)?\s+(?:the|an?|original|customer'?s?)\s+(?:card|payment|money|funds|account)|(?:actually|automatically|successfully)\s+(?:(?:issue|process|execute|initiate|trigger|settle|disburse|complete|perform|make)\s+)?(?:(?:a|an|the|full|partial|real|actual)\s+){0,4}(?:refunds?|charges?|captures?|payments?)|refunds?\s+(?:are\s+|must\s+be\s+)?(?:issued|processed|executed|initiated|triggered|settled|disbursed)\s+(?:actually|automatically|successfully))\b|(?:实际|自动|真实)(?:地)?(?:进行|发起|执行|处理|完成)?(?:退款|扣款|支付)|(?:发起|执行|处理|完成)(?:实际|自动|真实)?(?:退款|扣款|支付)/iu;
+function isExplicitRefundPolicyCopy(criterion: ProofCriterion): boolean {
+  const directive = POLICY_COPY_DIRECTIVE.exec(criterion.source.trim());
+  if (!directive || OBSERVATION_REQUIRED.test(criterion.title)) return false;
+  const body = criterion.source.trim().slice(directive[0].length).trim().replace(/^[：:\s"'“‘]+/u, "").replace(/[。.!?！？"'”’\s]+$/u, "");
+  return REFUND_POLICY_COPY.test(body);
+}
+
 /** Hard observation exclusions still win inside a policy-copy requirement. */
 function needsObservation(criterion: ProofCriterion): boolean {
-  const policyCopy = isExplicitBookingPolicyCopy(criterion);
-  return criterion.id === "mobile" || (!policyCopy && OBSERVATION_REQUIRED.test(`${criterion.title}\n${criterion.source}`))
+  const policyCopy = isExplicitBookingPolicyCopy(criterion) || isExplicitRefundPolicyCopy(criterion);
+  return criterion.id === "mobile" || FINANCIAL_ACTION.test(`${criterion.title}\n${criterion.source}`)
+    || (!policyCopy && OBSERVATION_REQUIRED.test(`${criterion.title}\n${criterion.source}`))
     || (/^(?:manual|coverage)-/u.test(criterion.id) && !policyCopy && !SOURCE_CONTENT.test(criterion.source));
 }
 

@@ -10,7 +10,7 @@ function member(role:ProofRole){if(role!=="buyer"&&role!=="seller")throw new Dom
 function current(quote:ProofQuote,input:Record<string,unknown>){const delivery=quote.proof.delivery;if(!delivery||delivery.variant!=="upload"||!delivery.files||input.deliveryId!==delivery.id)throw new DomainError("Journey checks need the exact current custom delivery.",409);return delivery;}
 export function confirmProjectJourneyPlan(quote:ProofQuote,role:ProofRole,input:Record<string,unknown>,at=new Date().toISOString()):ProofQuote{
  if(role!=="buyer")throw new DomainError("Only the buyer may confirm the additional technical agreement.",403);journeyKeys(input,["action","deliveryId","confirm"]);mutable(quote);const delivery=current(quote,input);
- if(input.confirm!==true)throw new DomainError("Explicitly confirm the optional technical journey agreement.");if(delivery.runtimeRun||delivery.journeyRun||delivery.modelRun)throw new DomainError("Finish the pending checks before confirming an additional agreement.",409);
+ if(input.confirm!==true)throw new DomainError("Explicitly confirm the optional technical journey agreement.");if(delivery.runtimeRun||delivery.journeyRun||delivery.modelRun||delivery.transferCompetitionRun)throw new DomainError("Finish the pending checks before confirming an additional agreement.",409);
  if(delivery.journeyPlan)return structuredClone(quote);const next=structuredClone(quote),plan=newProjectJourneyPlan(at);next.proof.delivery!.journeyPlan=plan;
  // Manual confirmation adopts the disclosed technical recipe only. It must
  // not borrow a source mapping merely because AI advice happens to be saved.
@@ -19,7 +19,7 @@ export function confirmProjectJourneyPlan(quote:ProofQuote,role:ProofRole,input:
 export function beginProjectJourneyRun(quote:ProofQuote,role:ProofRole,input:Record<string,unknown>,digest:string,registration:JourneyRegistrationSnapshot,now=Date.now()):ProofQuote{
  member(role);journeyKeys(input,["action","deliveryId","previousReportId","targetId","confirm"]);mutable(quote,true);const delivery=current(quote,input),plan=savedProjectJourneyPlan(quote),pin=validateJourneyRegistration(registration);
  if(!plan||input.confirm!==true)throw new DomainError("Confirm the optional journey agreement and authorize fictional browser writes.",409);
- if(delivery.runtimeRun||delivery.journeyRun||delivery.modelRun)throw new DomainError("A backend or journey run is already pending. Finish or close it first.",409);
+ if(delivery.runtimeRun||delivery.journeyRun||delivery.modelRun||delivery.transferCompetitionRun)throw new DomainError("A backend or journey run is already pending. Finish or close it first.",409);
  if(input.previousReportId!==(delivery.journeyReport?.id??null))throw new DomainError("The journey report changed. Refresh before starting.",409);
  if(pin.id!==input.targetId||pin.projectId!==quote.id||pin.frontendBundleDigest!==digest||Date.parse(pin.expiresAt)<=now)throw new DomainError("The approved journey deployment does not match this current upload.",409);
  if(projectJourneyReportsFor(delivery).length>=PROJECT_JOURNEY_HISTORY_LIMIT)throw new DomainError("Journey history is full; prior reports were retained.",409);

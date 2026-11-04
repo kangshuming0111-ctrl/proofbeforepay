@@ -6,6 +6,15 @@ the JavaScript/D1 seller reference. The same fixed M6/C8 lifecycle wire protocol
 is a small adapter over those actual native records. It imports no checker,
 expected verdict, provider, application account or payment code.
 
+For an independent browser-witness counterexample, start the fixed native
+backend with the additional `--browser-mode no-save` flag and a separate
+disposable database. The native form then displays success without issuing its
+booking POST. Merchant and occupancy readbacks remain empty. This deliberately
+broken, startup-only UI profile tests whether independently observed screen
+claims are corroborated by native state. It is never selected by a query or API
+request, and it is not evidence of an actual customer's incident. The default
+`--browser-mode normal` retains the original working form.
+
 ## Start and stop
 
 From the repository root, run these commands in two terminals. Each profile must
@@ -154,3 +163,11 @@ is adapter/HTTP/checker coverage, **not a browser observation**. A separate CUA
 form exercise is needed to claim actual browser use. Client bridge records are
 cooperative declarations, not independent browser/database attestation, proof
 of deployed source, real account authentication, delivery acceptance or payment.
+
+### Independent competing-transfer experiment
+
+The optional `transfer-competition-v1` model is separate from the older release-versus-transfer model. Metadata explicitly advertises both supported families. In the new family, X and Y each hold p places in two different sessions, Z holds 8−p places in a third session, and X/Y concurrently try to move into that target. The legal result is one successful move, one capacity rejection, an intact losing source reservation and an unchanged Z reservation.
+
+`race-fixture.py --variant competing-fixed --db /tmp/pbp-competing-fixed.sqlite --port 0` retains the actual native update-capacity SQL trigger. The disposable startup-selected `competing-overbook` variant removes that update trigger and uses a controlled overlap barrier after a non-atomic pre-check. Two real SQL updates then exceed capacity. It is a deliberate synthetic counterexample; the ordinary server and insert guard remain unchanged. No request or query can activate this fault.
+
+The new checker performs at most five synthetic writes and 24 requests, compares receipts, merchant rows and all three occupancies with both real-time-consistent legal orders, and never automatically retries an unknown write. `tests/transfer-competition-native.test.ts` checks seeds 0, 4 and 17 against actual HTTP and SQLite state. These local fixtures demonstrate a bounded race, not general concurrency safety or deployed-source attestation.

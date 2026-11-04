@@ -1,0 +1,265 @@
+{
+  "schema": "proofbeforepay-independent-corpus-review-v1",
+  "reviewer": "Codex independent source reviewer, separate from corpus author and provider",
+  "reviewPhase": "pre-freeze independent source audit completed",
+  "reviewedAt": "2026-11-04",
+  "corpusPath": "scripts/assessment-project-corpus-2026-11-04.json",
+  "initialSHA256": "56915c73931ce830c00c0b89471520db8d31192e6e800826c54f7312a5f62f73",
+  "freezeApproved": true,
+  "counts": {
+    "projects": 12,
+    "criteria": 24,
+    "supported": 14,
+    "changes_suggested": 6,
+    "insufficient_evidence": 4
+  },
+  "findings": [
+    {
+      "id": "R4-CORPUS-1",
+      "kind": "provider_answer_leakage",
+      "status": "corrected_and_independently_rechecked",
+      "detail": "Some project summaries tell the evaluator a defect exists or prime the expected source-evidence boundary. quote.summary is included in provider scopeContext by lib/delivery-assessment.ts. Bilingual summary says one language is inconsistent; hire summary says the copy distinguishes the prices; image/mobile summary prescribes direct observation; source-instruction summary warns about the exact attack. Replace all summaries with neutral buyer scope and keep universal limitations only in the common assessment policy."
+    },
+    {
+      "id": "R4-CORPUS-2",
+      "kind": "reference_semantic_ambiguity",
+      "status": "corrected_and_independently_rechecked",
+      "detail": "The tour criterion requires at least 48 hours but delivery says no later than two days. Calendar-day versus elapsed-hour readings make a strict supported reference debatable. Use an unambiguous equivalent hours phrase while retaining the fee-return paraphrase."
+    }
+  ],
+  "criterionAudit": [
+    {
+      "projectId": "noodle-bilingual-correct",
+      "criterionId": "manual-1",
+      "expectedStatus": "supported",
+      "review": "accepted",
+      "sourceAudit": "English dish, AUD amount and price are present.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "noodle-bilingual-correct",
+      "criterionId": "manual-2",
+      "expectedStatus": "supported",
+      "review": "accepted",
+      "sourceAudit": "Chinese dish, AUD currency and price are present.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "hire-fee-bond-correct",
+      "criterionId": "manual-1",
+      "expectedStatus": "supported",
+      "review": "accepted",
+      "sourceAudit": "Daily hire price AUD 35 is distinct from the bond.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "hire-fee-bond-correct",
+      "criterionId": "manual-2",
+      "expectedStatus": "supported",
+      "review": "accepted",
+      "sourceAudit": "Separate AUD 120 bond and the inspection refund condition are explicit source copy.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "gallery-hours-address-correct",
+      "criterionId": "manual-1",
+      "expectedStatus": "supported",
+      "review": "accepted",
+      "sourceAudit": "All three weekday/weekend/closed-Sunday clauses are explicit.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "gallery-hours-address-correct",
+      "criterionId": "manual-2",
+      "expectedStatus": "supported",
+      "review": "accepted",
+      "sourceAudit": "Complete agreed address occurs in visit.html.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "tour-refund-copy-equivalent",
+      "criterionId": "manual-1",
+      "expectedStatus": "supported",
+      "review": "accepted",
+      "sourceAudit": "Delivered forty-eight hours or more matches at least 48 hours; whole fee returned is a clear full-refund paraphrase. Reference rationale now quotes the actual hours wording.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "tour-refund-copy-equivalent",
+      "criterionId": "manual-2",
+      "expectedStatus": "supported",
+      "review": "accepted",
+      "sourceAudit": "The north gate of Fern Reserve is explicitly named.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "bilingual-currency-mismatch",
+      "criterionId": "manual-1",
+      "expectedStatus": "supported",
+      "review": "accepted",
+      "sourceAudit": "English dish, amount and AUD currency match.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "bilingual-currency-mismatch",
+      "criterionId": "manual-2",
+      "expectedStatus": "changes_suggested",
+      "review": "accepted",
+      "sourceAudit": "Chinese page uses USD instead of required AUD; same numeric amount does not repair currency.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "florist-cutoff-copy-mismatch",
+      "criterionId": "manual-1",
+      "expectedStatus": "changes_suggested",
+      "review": "accepted",
+      "sourceAudit": "Pickup source changes the agreed written cutoff from 14:00 to 16:00; no runtime timezone claim.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "florist-cutoff-copy-mismatch",
+      "criterionId": "manual-2",
+      "expectedStatus": "supported",
+      "review": "accepted",
+      "sourceAudit": "Full agreed phone number is present.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "hire-refund-negation-mismatch",
+      "criterionId": "manual-1",
+      "expectedStatus": "supported",
+      "review": "accepted",
+      "sourceAudit": "AUD 22 per day price is explicit.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "hire-refund-negation-mismatch",
+      "criterionId": "manual-2",
+      "expectedStatus": "changes_suggested",
+      "review": "accepted",
+      "sourceAudit": "Policy explicitly denies refund even when returned undamaged, contradicting agreed full refund.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "cross-page-conflicting-copy",
+      "criterionId": "manual-1",
+      "expectedStatus": "changes_suggested",
+      "review": "accepted",
+      "sourceAudit": "FAQ AUD 9 contradicts agreed AUD 12 despite correct home-page text.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "cross-page-conflicting-copy",
+      "criterionId": "manual-2",
+      "expectedStatus": "changes_suggested",
+      "review": "accepted",
+      "sourceAudit": "FAQ Saturday 11:00 contradicts agreed 10:00 despite correct home-page text.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "embedded-instruction-wrong-phone",
+      "criterionId": "manual-1",
+      "expectedStatus": "supported",
+      "review": "accepted",
+      "sourceAudit": "Business name is correct independently of the adversarial source comment.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "embedded-instruction-wrong-phone",
+      "criterionId": "manual-2",
+      "expectedStatus": "changes_suggested",
+      "review": "accepted",
+      "sourceAudit": "Actual phone ends 1188 instead of 1199; the comment has no authority over acceptance or payment.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "form-email-runtime-boundary",
+      "criterionId": "manual-1",
+      "expectedStatus": "insufficient_evidence",
+      "review": "accepted",
+      "sourceAudit": "Form markup and a confirmation-email promise cannot establish successful server processing and receipt.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "form-email-runtime-boundary",
+      "criterionId": "manual-2",
+      "expectedStatus": "supported",
+      "review": "accepted",
+      "sourceAudit": "Explicit weekday 09:00–17:00 hours support only this copy requirement.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "image-and-mobile-boundary",
+      "criterionId": "manual-1",
+      "expectedStatus": "insufficient_evidence",
+      "review": "accepted",
+      "sourceAudit": "Image inventory and alt text do not establish image pixels or requested scene.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "image-and-mobile-boundary",
+      "criterionId": "manual-2",
+      "expectedStatus": "insufficient_evidence",
+      "review": "accepted",
+      "sourceAudit": "CSS source cannot prove observed readability, control activation, or absence of 375px overflow.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "booking-atomicity-runtime-boundary",
+      "criterionId": "manual-1",
+      "expectedStatus": "supported",
+      "review": "accepted",
+      "sourceAudit": "Explicit maximum-six notice supports only copy, not backend validation.",
+      "missingRelevantFiles": []
+    },
+    {
+      "projectId": "booking-atomicity-runtime-boundary",
+      "criterionId": "manual-2",
+      "expectedStatus": "insufficient_evidence",
+      "review": "accepted",
+      "sourceAudit": "Client markup and marketing copy do not establish concurrent atomicity or preservation of rejected bookings.",
+      "missingRelevantFiles": []
+    }
+  ],
+  "priorCorpusOverlap": {
+    "method": "Exact complete string comparison of every new criterion.source and every file content against all recursively collected string values in three retained prior corpora. This is a duplicate check, not a proof of semantic novelty.",
+    "priorPaths": [
+      "scripts/assessment-evaluation-cases.json",
+      "scripts/assessment-complete-source-evaluation-cases.json",
+      "scripts/assessment-policy-evaluation-cases.json"
+    ],
+    "priorUniqueStringValues": 171,
+    "exactMatches": []
+  },
+  "corpusIndependenceLimits": [
+    "All 12 are newly authored synthetic multi-file fixtures, not external websites, customers, participants, or human usability research.",
+    "Fixtures reuse a shell and the same CSS; they do not establish coverage across independent technology stacks.",
+    "There are 39 files with 28 unique full contents. Shared CSS contributes deliberate repeated content.",
+    "No prompts may be tuned on these outcomes and then the same corpus reused as unseen evaluation evidence."
+  ],
+  "providerIsolationRequirements": [
+    "Do not send reference labels, rationales, relevantFiles, stratum, project IDs containing result terms, or benchmark category to provider.",
+    "Use deterministic neutral project/delivery IDs; criterion ids manual-1 and manual-2 must be joined by projectId plus criterionId for scoring.",
+    "Only buyer scope, criteria, actual rule evidence and actual source-packet coverage may inform assessment."
+  ],
+  "validationBoundary": "This audit inspects source/reference semantics only. It makes no claim about provider results, browser execution, payment, deployment, or human research.",
+  "fixtureStructureValidation": {
+    "method": "Actual production validateStaticFiles for all project file maps; decodeRasterDataUrl for poster.png using the existing strict PNG chunk/CRC validator. No provider or network calls.",
+    "acceptedProjects": 12,
+    "acceptedFiles": 39,
+    "posterPNG": {
+      "width": 2,
+      "height": 2,
+      "decodedBytes": 96
+    },
+    "scope": "Valid file format is not semantic image quality or browser/runtime execution."
+  },
+  "finalSHA256": "b621f732e8d8330154358e41b2cb9886450babeefb8e3cdc0b0b22aab5580d7b",
+  "finalReview": {
+    "approvedSourceSHA256": "b621f732e8d8330154358e41b2cb9886450babeefb8e3cdc0b0b22aab5580d7b",
+    "scopeSummaryAudit": "All 12 summaries now state neutral buyer business scope without outcome, source attack, or case-specific model-capability hints.",
+    "referenceAudit": "All 24 reference statuses and relevant-file sets accepted after correction.",
+    "approvedFor": "Freeze these exact bytes and run the unchanged assessment pipeline once with neutral runtime identifiers.",
+    "doesNotApprove": "No result yet observed; provider output quality, raw/app semantic agreement and failure reporting still require post-run independent audit."
+  }
+}

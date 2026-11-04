@@ -49,7 +49,7 @@ function collaboration(quote: ProofQuote) {
 
 /** Freeze deliverables while a payment is pending, terminal, or past its acceptance window. */
 function requireUnlockedDelivery(quote: ProofQuote, approved = true) {
-  if (quote.proof.delivery?.runtimeRun || quote.proof.delivery?.journeyRun||quote.proof.delivery?.modelRun) conflict("Finish the pending backend run before changing delivery, acceptance or payment.");
+  if (quote.proof.delivery?.runtimeRun || quote.proof.delivery?.journeyRun||quote.proof.delivery?.modelRun||quote.proof.delivery?.transferCompetitionRun) conflict("Finish the pending backend run before changing delivery, acceptance or payment.");
   if (approved && quote.status !== "approved") conflict("Approve the exact scope before changing the delivery workflow.");
   if (quote.status === "paid" || ["captured", "voided", "closed_unpaid"].includes(quote.proof.paymentState)) conflict("This payment outcome has closed the delivery workflow.");
   if (quote.proof.paymentOperation) conflict("Finish the pending payment operation before changing the delivery workflow.");
@@ -242,8 +242,11 @@ export function prepareReplacement(quote: ProofQuote, newDelivery: ProofDelivery
   delete next.proof.delivery.journeyHistory;
   delete next.proof.delivery.journeyEvidenceReservation;
   delete next.proof.delivery.modelRun;
+  delete next.proof.delivery.transferCompetitionRun;
   delete next.proof.delivery.modelReport;
   delete next.proof.delivery.modelHistory;
+  delete next.proof.delivery.modelArchiveRefs;
+  delete next.proof.delivery.modelArchive;
   delete next.proof.delivery.modelEvidenceReservation;
   delete next.proof.delivery.evidenceReservation;
   next.proof.review = undefined;

@@ -4,7 +4,7 @@ import {assertAcceptedEvidenceReference} from "./acceptance-evidence.ts";
 
 /** Shared with the payment controls. An unfinished observation lease never
  * becomes permission to authorize/capture, even after an earlier acceptance. */
-export function hasPendingEvidenceRun(quote:ProofQuote):boolean{return !!(quote.proof.delivery?.runtimeRun||quote.proof.delivery?.journeyRun||quote.proof.delivery?.modelRun);}
+export function hasPendingEvidenceRun(quote:ProofQuote):boolean{return !!(quote.proof.delivery?.runtimeRun||quote.proof.delivery?.journeyRun||quote.proof.delivery?.modelRun||quote.proof.delivery?.transferCompetitionRun);}
 export function hasFrozenCaptureEvidence(quote:ProofQuote):boolean{
  const delivery=quote.proof.delivery,id=quote.proof.acceptedEvidenceSnapshotId??quote.proof.collaboration?.acceptance?.evidenceSnapshotId;
  if(!id||!delivery?.acceptanceEvidence?.some(row=>row.id===id&&row.deliveryId===delivery.id))return false;

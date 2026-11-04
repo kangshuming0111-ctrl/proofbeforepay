@@ -1,0 +1,77 @@
+{
+  "schema": "proofbeforepay-independent-review-v1",
+  "date": "2026-11-04",
+  "reviewer": "Independent Codex sub-agent; not an external human reviewer",
+  "scope": "Read-only source audit and controlled in-memory counterexamples for round3; no source changes, no new native/browser/provider/payment execution",
+  "sourceHashes": {
+    "lib/transfer-competition.ts": "3dd6ef807ed4cb60af07e7a15044c0481f8ba525308efff820297acd46785172",
+    "lib/transfer-competition-runner.ts": "7722ef88bbc13b3fb4bada71307a7ae847e43a3803084b7fc28ab82495d5bb59",
+    "lib/transfer-competition-actions.ts": "d6e49d851a7bf1b7906b3e7a1bb17f59b7a57cdc45b44d041e0c30e83b5afa7f",
+    "lib/transfer-competition-store.ts": "16940cac1bda1ebe59ae97f7ca25c1a5ceeca7f5aef8f8ca9b0045c12368adb8",
+    "app/api/proofs/[id]/transfer-competition/route.ts": "7989a37fc93e95fe80e7def445f2d3ca8df74d3a3b9c188542b54cbe1b1ab350",
+    "lib/proof-readiness.ts": "6df520a36eb617e30315f1391beb20a8fcaf38a48704797ae4eeeba195ce3ab8",
+    "lib/proof-workflow.ts": "e329ac304811a44872eca431aedfe05daca0449f9ad9f55009498db604dd45c8",
+    "lib/evidence-budget.ts": "8119b9c8233394bbd6707c9bf45d31e4981ebcf89d32c03509a22f8c8ef326a7"
+  },
+  "deepseekReview": "outputs/five-new-cycles-2026-11-04/round3-api-review.json",
+  "adjudication": [
+    {
+      "finding": "F1 real-time precedence / explicit serialization witness",
+      "decision": "rejected",
+      "evidence": [
+        "lib/transfer-competition.ts:81 binds c to transfer_y and m to transfer_x; the review reproduction substitutes the opposite variable.",
+        "Lines89-90 exclude a candidate exactly when the opposite operation completed before its invocation. Overlap permits either serial order that matches all responses and final native records. Requiring a separate serialization witness would reject valid linearizable overlapping histories."
+      ],
+      "executedCounterexamples": {
+        "input": "Actual retained native fixed report, first evidence row; only the four transfer invocation/completion ordinals were changed. No HTTP was reissued.",
+        "source": "outputs/five-new-cycles-2026-11-04/native-transfer/competing-fixed.json",
+        "fullyOverlappingWinnerX": "compatible; x_then_y",
+        "winnerXCompletedBeforeLoserYInvoked": "compatible; x_then_y",
+        "loserYCompletedBeforeWinnerXInvokedButXStillWins": "violated; no legal real-time-consistent serial order"
+      }
+    },
+    {
+      "finding": "F2 claim empty lease permits POST before durable intent",
+      "decision": "rejected",
+      "evidence": [
+        "lib/transfer-competition-runner.ts:38 pushes its pending observation and :39 awaits the serialized checkpoint before :45 can call fetch.",
+        "checkpoint() chains every snapshot through checkpointQueue and propagates any error while aborting active controllers. The D1 store callback performs a version CAS guarded by the current quote lease.",
+        "An empty claimed lease interrupted before the first checkpoint has issued no I/O; explicit expired closure records unknown and never resumes POSTs. That is a retained incomplete operation, not an orphaned untracked write."
+      ],
+      "executedCounterexamples": {
+        "firstCheckpointThrows": "executeTransferRun rejects;0 fetch calls",
+        "firstPOSTIntentCheckpointThrows": "executeTransferRun rejects; only preceding5GET fetch calls,0POST",
+        "everyCheckpointDelayed1ms": "24fetch calls;5POST;48checkpoints; each fetch asserted its own retained pending method/path/key intent before returning a controlled response; compatible result"
+      }
+    }
+  ],
+  "atomicSQLAudit": {
+    "sourceSha256": "16940cac1bda1ebe59ae97f7ca25c1a5ceeca7f5aef8f8ca9b0045c12368adb8",
+    "method": "Copied actual claim/insert/save/clear SQL from transfer-competition-store.ts, substituted quoteGuard literal, ran it transactionally in native in-memory Python SQLite with current migrations. No source or project database was written.",
+    "passedCases": [
+      "claim commits one row plus matching quote lease",
+      "stale claim changes neither row nor lease",
+      "duplicate session primary-key insert error rolls back preceding quote lease update",
+      "finish commits immutable report and clears matching lease together",
+      "stale finish changes neither report nor lease",
+      "forced quote-clear SQL error rolls back preceding session-finish update"
+    ],
+    "limits": "Tests support SQLite transaction and SQL predicate reasoning. They are not a separate hosted D1 integration run."
+  },
+  "admissionAndCompletionAudit": {
+    "result": "No confirmed blocking defect in the reviewed paths.",
+    "evidence": [
+      "Claim quote update and session insert share one D1 batch. A zero quote CAS prevents the guarded insert; an insertion constraint exception rolls back the update.",
+      "Checkpoint and finish re-read actual current files, saved plan, membership, full registration and payment state. Old run identities cannot clear a different current lease.",
+      "Replacement, acceptance, checkout, authorization, capture, return, submit and void routes/workflow reject a pending transferCompetitionRun.",
+      "Runtime, journey and legacy model admissions include the new lease, with shared readiness and acceptance/payment guards. Legacy definition/digest is preserved.",
+      "Completed competing-transfer reports remain supplemental separate-table evidence, not automatic contract acceptance or payment permission."
+    ]
+  },
+  "limitations": [
+    "Source audit and constructed counterexamples do not prove every interleaving or crash point.",
+    "Transformed retained report experiments are not new native execution.",
+    "Controlled fetch responses are not a real browser or independently deployed seller.",
+    "No competitor implementation was executed by this review; no award probability or full product superiority is inferred."
+  ]
+}

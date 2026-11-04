@@ -1,0 +1,132 @@
+{
+  "schema": "proofbeforepay-round5-model-vault-implementation-v1",
+  "status": "core-ready-for-root-integration",
+  "date": "2026-11-04",
+  "author": "Codex five_rounds_independent_design",
+  "behavior": [
+    "Up to four inline immutable reports and sixteen exact-payload archive references, with twenty a count upper bound rather than guaranteed capacity.",
+    "Prepare hashes and moves the oldest non-current report in a cloned quote; durable objects are inserted only with the consented quote lease CAS in the same D1 batch.",
+    "Quote CAS is first; archive/version inserts are guarded by exact new quote payload, owner and version. Inconsistent existing immutable objects force a NOT NULL constraint failure and transaction rollback.",
+    "Authorized reads hydrate exact project/delivery/report objects and validate metadata, byte lengths, exact SHA-256, original technical plan and actual uploaded-file digest. Missing, tampered and foreign objects fail closed.",
+    "Same-delivery writes retain every prior report and archive reference unchanged. New uploaded delivery clears references; old archived version can retain them.",
+    "Quotes/proof_versions and competing-transfer direct writers strip hydrated raw objects. Lightweight version/list projections also strip them.",
+    "Acceptance and final model completion append only the inline window, keeping frozen acceptance A bound to its original retained report.",
+    "GET model-checks exposes validated complete history and measured capacity; projected report/acceptance bytes use the same budget rules as actual lease admission.",
+    "Offline export includes manifest and exact archived payloads, verifies bijection/SHA/identity, and preserves the legacy gate list for envelopes without archive fields."
+  ],
+  "unchangedLimits": {
+    "inlineSharedHistoryBytes": 262144,
+    "hydratedDeliveryEnvelopeBytes": 2097152,
+    "evidenceExportBytes": 4194304,
+    "modelReportBytes": 32768,
+    "inlineReports": 4,
+    "archivedReports": 16,
+    "totalReportsUpperBound": 20
+  },
+  "focusedVerification": {
+    "newArchiveTests": {
+      "passed": 8,
+      "path": "tests/model-report-archive.test.ts",
+      "coverage": [
+        "Legacy latest-only A; fifth report archival preserving exact A bytes and acceptance.",
+        "Twenty reports retained; twenty-first preflight rejection without mutation.",
+        "Missing/extra/duplicate/foreign/self-consistent foreign hashes/file-map changes rejected.",
+        "Offline export complete archive and frozen A; omitted/corrupt manifest variants inconsistent.",
+        "Replacement clears current references and old snapshot retains A.",
+        "Archived version unknown write checkpoint closes once without changing accepted evidence.",
+        "Missing original technical agreement disables capacity before any model report exists.",
+        "Valid one-MiB raster package plus bounded padded HTTP observations exhausts hydrated capacity below twenty and actual begin rejects consistently."
+      ]
+    },
+    "retainedRelatedTests": {
+      "passed": 35,
+      "paths": [
+        "tests/model-check-actions.test.ts",
+        "tests/evidence-budget.test.ts",
+        "tests/evidence-export.test.ts"
+      ]
+    },
+    "typecheck": "passed after core and unit additions",
+    "gitDiffCheck": "passed"
+  },
+  "externalVerificationBoundary": "Independent sibling reported both fresh isolated D1/API suites passing. First: concurrent fifth-run admission, forced zero-row CAS, immutable collision rollback, restart/hydration, missing/tamper/foreign rejection and frozen-A preservation. Additional historical path: a separate unaccepted five-report project was submitted, returned by buyer, and replaced by seller; quotes/proof_versions exclude raw objects, both participants hydrate five old reports with exact hashes, outsider is rejected, deleting an old object blocks old-version/asset reads while the new current delivery stays readable, and restoration preserves exact bytes. Root owns integration logs, full regression, UI, DeepSeek adjudication, build and any publication.",
+  "limitations": [
+    "Archive hashes provide internal exact-byte consistency, not trusted browser or execution attestation.",
+    "The vault is for the existing release-vs-transfer-v1 report family; the original model definition/digest is unchanged.",
+    "No production payment, provider calls, deployment or Devpost submission was performed by this implementation agent."
+  ],
+  "files": [
+    {
+      "path": "lib/model-report-archive.ts",
+      "sha256": "bbd8f826875af4811975d7de48952b0eddce97fcd91af199e7e5c2858e650906"
+    },
+    {
+      "path": "lib/model-report-store.ts",
+      "sha256": "0723f1bbb65d7756d529327a39af4112e6a4d438c7575cac8ba28f603b55ba6f"
+    },
+    {
+      "path": "lib/model-storage-capacity.ts",
+      "sha256": "f3228569e2dce55ff2e6ec855e4751bf5b6c55e26a71c2a11258a7fbf4aa4813"
+    },
+    {
+      "path": "lib/model-check-actions.ts",
+      "sha256": "29c1fc750e6e27a598cee9928e2a65065ce3fc72fae9c2669af580ca79c0b53e"
+    },
+    {
+      "path": "lib/evidence-budget.ts",
+      "sha256": "cac70b81ad68db05fe9bb071cf00d5fbce51beedab77f4f494446694c848e4e5"
+    },
+    {
+      "path": "lib/acceptance-evidence.ts",
+      "sha256": "c039057b876b378d04fdcf3d8ec980878cfbc83d36a761da611b9d0ea6a24e46"
+    },
+    {
+      "path": "lib/proof-store.ts",
+      "sha256": "28773a24cf1ca7086edaec9e622960b02727703d368af4ecd26697b81f85fe89"
+    },
+    {
+      "path": "lib/transfer-competition-store.ts",
+      "sha256": "636e90512d778f1884c0695f53eaaff7537379b59c915cd13fdd35fb049a2d41"
+    },
+    {
+      "path": "lib/proof-workflow.ts",
+      "sha256": "296fb1201da7b3193d9b721b64b2ab7c8c8f6161c45171cb3bf6eee305e8d165"
+    },
+    {
+      "path": "lib/evidence-export.ts",
+      "sha256": "321de75fd392c03fe77d1ce98dfaf081164b504b5c38ea30198ad2d9f243b42a"
+    },
+    {
+      "path": "lib/contracts.ts",
+      "sha256": "282a9f99ccc75e3e8f1605eb6b35a1b2dc46b10ea329c6839f0c1d88ba4f00df"
+    },
+    {
+      "path": "app/api/proofs/[id]/model-checks/route.ts",
+      "sha256": "fe72369b2000036e3df6c9388543a6a3ff4ce4ddd60291e68153dc22aa977bd2"
+    },
+    {
+      "path": "db/schema.ts",
+      "sha256": "b931f391de2aa3144ce79197c9b7758e50db987f644023799baa8ced294c8337"
+    },
+    {
+      "path": "drizzle/0006_model_report_objects.sql",
+      "sha256": "0b9f95f6ff8bbfa74895e98c431c95913c5e939a0f0c71e16f938dd9119d766a"
+    },
+    {
+      "path": "drizzle/meta/0006_snapshot.json",
+      "sha256": "57ca25a4bda65c48e1529d0f95445ace0119a2c8eeeca0bdf16a1792abaf9219"
+    },
+    {
+      "path": "drizzle/meta/_journal.json",
+      "sha256": "7747ce432a54b7c69b95366d489ee3f0629df7810dcd922aee7b752e33ab5a8e"
+    },
+    {
+      "path": "tests/model-report-archive.test.ts",
+      "sha256": "c50cc5817547d024bda5b6e728c7396f5c218516fa0a43b4f56bd51d52b9c0b3"
+    }
+  ],
+  "independentAPILogs": [
+    "outputs/five-new-cycles-2026-11-04/round5-archive-api.log",
+    "outputs/five-new-cycles-2026-11-04/round5-archive-api-history.log"
+  ]
+}

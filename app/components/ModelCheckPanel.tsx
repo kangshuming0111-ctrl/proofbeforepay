@@ -8,24 +8,32 @@ import {useModelDiagnosis} from "./useModelDiagnosis";
 import {ModelDiagnosticDetails} from "./ModelDiagnosticDetails";
 import {modelDiagnosticFeedback,modelDiagnosisExplanationPacket} from "@/lib/model-diagnostics";
 import {modelEvidenceBinding,validateModelEvidenceExplanation,type ModelEvidenceExplanation} from "@/lib/model-evidence-explanation";
+import type {ModelStorageCapacity} from "@/lib/model-report-archive";
+import "../model-storage.css";
 
 type Target={id:string;label:string};
-type State={targets:Target[];run:ModelCheckRun|null;report:ModelCheckReport|null;evaluation:ModelCheckEvaluation|null};
+type State={targets:Target[];run:ModelCheckRun|null;report:ModelCheckReport|null;evaluation:ModelCheckEvaluation|null;history:ModelCheckReport[];capacity:ModelStorageCapacity};
 type Request=<T>(path:string,method?:string,data?:unknown)=>Promise<T>;
 
 /** A bounded server experiment, deliberately separate from the20-step browser journey. */
 export function ModelCheckPanel({quote,role,language,enabled,explanationEnabled,request,onApply,onBusy,onDecision,onFeedback}:{quote:ProofQuote;role:ProofRole;language:Language;enabled:boolean;explanationEnabled?:boolean;request:Request;onApply:(quote:ProofQuote,role:ProofRole)=>void;onBusy:(busy:boolean)=>void;onDecision:(decision:ModelDecision|undefined)=>void;onFeedback?:(comment:string)=>void}){
  const delivery=quote.proof.delivery!,tr=(zh:string,en:string)=>language==="zh"?zh:en;
  const path=`/api/proofs/${encodeURIComponent(quote.id)}/model-checks`;
- const [state,setState]=useState<State>(),[target,setTarget]=useState(""),[seed,setSeed]=useState("42"),[consent,setConsent]=useState(false),[error,setError]=useState(""),[running,setRunning]=useState(false),[closing,setClosing]=useState(false);
+ const contextKey=`${quote.id}:${delivery.id}:${role}`;
+ const evidenceRevision=JSON.stringify([quote.status,quote.proof.paymentState,quote.proof.paymentOperation??null,delivery.modelReport?.id,delivery.modelRun?.id,delivery.modelExplanation?.id,delivery.runtimeReport?.id,delivery.runtimeRun?.id,delivery.journeyReport?.id,delivery.journeyRun?.id,delivery.assessment?.id,delivery.riskReviews?.length,delivery.layoutReport?.id,delivery.browserChecks?.id,delivery.businessChecks?.id,delivery.journeyExplanation?.id,delivery.journeyPlan?.planDigest,delivery.transferCompetitionRun?.id,delivery.acceptanceEvidence?.length,delivery.layoutHistory?.length,delivery.browserCheckHistory?.length,delivery.businessCheckHistory?.length]);
+ const stateKey=`${contextKey}:${evidenceRevision}`;
+ const [saved,setSaved]=useState<{key:string;value:State}>(),[target,setTarget]=useState(""),[seed,setSeed]=useState("42"),[consent,setConsent]=useState(false),[error,setError]=useState(""),[running,setRunning]=useState(false),[closing,setClosing]=useState(false);
  const [ackReport,setAckReport]=useState<string>(),[reason,setReason]=useState(""),[explanationConsentReport,setExplanationConsentReport]=useState<string>();
- const alive=useRef(true);
+ const alive=useRef(true),currentContext=useRef(stateKey),operation=useRef(false);currentContext.current=stateKey;
+ const state=saved?.key===stateKey?saved.value:undefined;
+ const setState=(value:State)=>setSaved({key:stateKey,value});
  const report=delivery.modelReport;
- let earlierReports:ModelCheckReport[]=[],historyInvalid=false;
- try{earlierReports=modelReportsFor(delivery).filter(item=>item.id!==report?.id);for(const item of earlierReports)validateStoredModelCheckReport(item,{deliveryId:delivery.id,journeyPlanDigest:delivery.journeyPlan?.planDigest,projectId:quote.id});}catch{earlierReports=[];historyInvalid=true;}
  const model=useModelDiagnosis(delivery,{projectId:quote.id,acceptedSnapshotId:quote.proof.collaboration?.acceptance?.evidenceSnapshotId??quote.proof.acceptedEvidenceSnapshotId,accepted:quote.proof.collaboration?.stage==="accepted"});
  const diagnosis=model.state==="ready"?model.diagnosis:undefined;
  const evaluation:ModelCheckEvaluation|undefined=diagnosis&&report?report.result:undefined;
+ let earlierReports:ModelCheckReport[]=[],historyInvalid=false;
+ try{if(diagnosis){const retained=state?.history??modelReportsFor(delivery);earlierReports=retained.filter(item=>item.id!==report?.id);for(const item of earlierReports)validateStoredModelCheckReport(item,{deliveryId:delivery.id,deliveryDigest:diagnosis.deliveryDigest,journeyPlanDigest:delivery.journeyPlan?.planDigest,projectId:quote.id});}}catch{earlierReports=[];historyInvalid=true;}
+
  let explanation:ModelEvidenceExplanation|undefined;
  try{if(diagnosis&&report&&delivery.modelExplanation)explanation=validateModelEvidenceExplanation(delivery.modelExplanation,modelEvidenceBinding(modelDiagnosisExplanationPacket(report,{deliveryId:delivery.id,deliveryDigest:diagnosis.deliveryDigest,journeyPlanDigest:diagnosis.journeyPlanDigest,projectId:quote.id})));}catch{/* Stale explanations never become this report's explanation. */}
  const exception=!!evaluation&&evaluation.outcome!=="compatible";
@@ -33,13 +41,13 @@ export function ModelCheckPanel({quote,role,language,enabled,explanationEnabled,
  const seedNumber=Number(seed),validSeed=/^\d{1,10}$/u.test(seed)&&Number.isInteger(seedNumber)&&seedNumber>=0&&seedNumber<=0xffffffff;
  const parameters=validSeed?generateModelTrace(seedNumber):undefined;
  const closed=quote.status!=="approved"||["captured","voided","closed_unpaid"].includes(quote.proof.paymentState)||!!quote.proof.paymentOperation;
- useEffect(()=>{alive.current=true;let active=true;request<State>(path).then(value=>{if(active){setState(value);setTarget(old=>value.targets.some(t=>t.id===old)?old:value.targets[0]?.id??"");}}).catch(cause=>{if(active)setError(cause instanceof Error?cause.message:String(cause));});return()=>{active=false;alive.current=false;};},[path,delivery.id,role]);
+ useEffect(()=>{alive.current=true;let active=true;setSaved(undefined);setConsent(false);request<State>(path).then(value=>{if(active&&currentContext.current===stateKey){setState(value);setTarget(old=>value.targets.some(t=>t.id===old)?old:value.targets[0]?.id??"");}}).catch(cause=>{if(active&&currentContext.current===stateKey)setError(cause instanceof Error?cause.message:String(cause));});return()=>{active=false;alive.current=false;};},[path,contextKey,evidenceRevision]);
  useEffect(()=>{setAckReport(undefined);setReason("");setExplanationConsentReport(undefined);},[report?.id,delivery.id]);
  useEffect(()=>{onDecision(report&&evaluation&&ackReport===report.id&&(!exception||reason.trim().length>=10)?{reportId:report.id,acknowledgeServerCheck:true,...(exception?{exceptionReason:reason.trim()}: {})}:undefined);},[report?.id,evaluation?.outcome,ackReport,reason,exception]);
- async function refresh(){const [next,current]=await Promise.all([request<State>(path),request<{quote:ProofQuote;role:ProofRole}>(`/api/quotes/${encodeURIComponent(quote.id)}`)]);if(alive.current){setState(next);onApply(current.quote,current.role);}}
- async function post(input:Record<string,unknown>){const result=await request<{quote:ProofQuote;role:ProofRole;model:State}>(path,"POST",{deliveryId:delivery.id,...input});if(alive.current){setState(result.model);onApply(result.quote,result.role);}}
- async function run(){if(!validSeed||!consent||!target||lease||running||!enabled)return;setRunning(true);setConsent(false);setError("");onBusy(true);try{await post({action:"run",previousReportId:report?.id??null,targetId:target,seed:seedNumber,confirm:true});}catch(cause){if(alive.current)setError(cause instanceof Error?cause.message:String(cause));try{await refresh();}catch{/* The persisted lease still blocks finance server-side. No request is replayed. */}}finally{if(alive.current)setRunning(false);onBusy(false);}}
- async function close(){if(!lease||running||closing)return;setClosing(true);setError("");onBusy(true);try{await post({action:"close",runId:lease.id});}catch(cause){if(alive.current)setError(cause instanceof Error?cause.message:String(cause));}finally{if(alive.current)setClosing(false);onBusy(false);}}
+ async function refresh(){const [next,current]=await Promise.all([request<State>(path),request<{quote:ProofQuote;role:ProofRole}>(`/api/quotes/${encodeURIComponent(quote.id)}`)]);if(alive.current&&currentContext.current===stateKey){setState(next);onApply(current.quote,current.role);}}
+ async function post(input:Record<string,unknown>){const result=await request<{quote:ProofQuote;role:ProofRole;model:State}>(path,"POST",{deliveryId:delivery.id,...input});if(alive.current&&currentContext.current===stateKey){setState(result.model);onApply(result.quote,result.role);}}
+ async function run(){if(operation.current||!state?.capacity.canRun||!validSeed||!consent||!target||lease||running||!enabled)return;operation.current=true;setRunning(true);setConsent(false);setError("");onBusy(true);try{await post({action:"run",previousReportId:report?.id??null,targetId:target,seed:seedNumber,confirm:true});}catch(cause){if(alive.current)setError(cause instanceof Error?cause.message:String(cause));try{await refresh();}catch{/* The persisted lease still blocks finance server-side. No request is replayed. */}}finally{operation.current=false;if(alive.current)setRunning(false);onBusy(false);}}
+ async function close(){if(operation.current||!lease||running||closing)return;operation.current=true;setClosing(true);setError("");onBusy(true);try{await post({action:"close",runId:lease.id});}catch(cause){if(alive.current)setError(cause instanceof Error?cause.message:String(cause));try{await refresh();}catch{/* Read current state only; an uncertain close is never replayed. */}}finally{operation.current=false;if(alive.current)setClosing(false);onBusy(false);}}
  const outcomeLabel=(value:ModelCheckEvaluation["outcome"])=>value==="compatible"?tr("符合一种合法执行顺序","Matches a legal execution order"):value==="violated"?tr("结果违反状态模型","State-model violation"):tr("证据不足，未确定","Insufficient evidence — inconclusive");
  const orderLabel=(value:string)=>value==="cancel_then_move"?tr("先取消，再改期：改期成功，原单仍在且移至目标时段。","Cancel then move: the move succeeds and preserves the booking in the target slot."):tr("先改期，再取消：目标原先已满，改期拒绝，原单保留在原时段。","Move then cancel: the full target rejects the move and the original booking remains in its source slot.");
  function feedback(){if(!report||!diagnosis||!onFeedback)return;onFeedback(modelDiagnosticFeedback(report,language,{deliveryId:delivery.id,deliveryDigest:diagnosis.deliveryDigest,journeyPlanDigest:diagnosis.journeyPlanDigest,projectId:quote.id}));}
@@ -55,7 +63,8 @@ export function ModelCheckPanel({quote,role,language,enabled,explanationEnabled,
    <label>{tr("已登记的合成测试站","Registered synthetic staging target")}<select value={target} disabled={!enabled||running||!!lease||closed} onChange={e=>{setTarget(e.target.value);setConsent(false);}}>{!state?.targets.length&&<option value="">{tr("没有匹配当前文件的登记站点","No target registered for this upload")}</option>}{state?.targets.map(t=><option key={t.id} value={t.id}>{t.label}</option>)}</select></label>
    <label>{tr("可复现的输入种子","Reproducible input seed")}<input inputMode="numeric" value={seed} maxLength={10} disabled={!enabled||running||!!lease||closed} onChange={e=>{setSeed(e.target.value);setConsent(false);}}/></label>
    {parameters&&<p>{tr(`本轮人数 p=${parameters.p}；源时段 ${parameters.source}，目标 ${parameters.target}，备用 ${parameters.spare}。每轮使用新命名空间，种子不复用旧记录。`,`Party p=${parameters.p}; source ${parameters.source}, target ${parameters.target}, spare ${parameters.spare}. Each run uses a fresh namespace; a repeated seed does not reuse records.`)}</p>}
-   {!lease&&!closed&&<><label><input type="checkbox" checked={consent} disabled={!enabled||running||!target||!validSeed} onChange={e=>setConsent(e.target.checked)}/>{tr("允许最多 5 次虚构预约写入；不会接受交付或付款。未知写入不会自动重试。","Allow at most 5 synthetic booking writes. This does not accept work or pay. Unknown writes are never automatically retried.")}</label><button className="button primary" disabled={!enabled||running||!target||!validSeed||!consent} onClick={run}>{tr("运行并发状态检验","Run concurrent state check")}</button></>}
+   <ModelStorageSummary capacity={state?.capacity} language={language} onRefresh={()=>{void refresh().catch(cause=>setError(cause instanceof Error?cause.message:String(cause)));}} disabled={running||closing}/>
+   {!lease&&!closed&&<><label><input type="checkbox" checked={consent} disabled={!enabled||running||!target||!validSeed||!state?.capacity.canRun} onChange={e=>setConsent(e.target.checked)}/>{tr("允许最多 5 次虚构预约写入；不会接受交付或付款。未知写入不会自动重试。","Allow at most 5 synthetic booking writes. This does not accept work or pay. Unknown writes are never automatically retried.")}</label><button className="button primary" disabled={!enabled||running||!target||!validSeed||!consent||!state?.capacity.canRun} onClick={run}>{tr("运行并发状态检验","Run concurrent state check")}</button></>}
    {(running||lease)&&<div role="status"><p>{tr("运行已保存，正在记录服务器观测。其他检查与付款暂时锁定。","The saved run is collecting server observations. Other checks and payment are temporarily locked.")}</p>{lease&&<p>{tr("已保存观测：","Retained observations: ")}{lease.trace.length}/24 · {tr("最迟关闭时间：","Close after: ")}{lease.expiresAt}</p>}{!running&&lease&&<button className="subtle-button" disabled={closing} onClick={close}>{tr("尝试关闭过期运行，保留未知结果","Try closing expired run and retain unknown outcomes")}</button>}</div>}
   </>}
   {report&&evaluation&&diagnosis&&<>
@@ -68,7 +77,30 @@ export function ModelCheckPanel({quote,role,language,enabled,explanationEnabled,
    {onFeedback&&exception&&<button className="subtle-button" onClick={feedback}>{tr("把并发问题带入修改意见","Prepare change request from this check")}</button>}
    {role==="buyer"&&<fieldset disabled={!enabled||!!lease}><legend>{tr("本报告的独立验收决定","Separate acceptance decision for this report")}</legend><label><input type="checkbox" checked={ackReport===report.id} onChange={e=>setAckReport(e.target.checked?report.id:undefined)}/>{tr("我已核查本报告，理解它只反映登记测试接口及本轮输入。","I reviewed this report and understand it covers only the registered test endpoints and this run’s inputs.")}</label>{exception&&<textarea value={reason} minLength={10} maxLength={500} rows={3} aria-label={tr("并发检验例外原因","Concurrent check exception reason")} placeholder={tr("建议先要求修复；如仍接受，说明原因（10–500 字符）。","Request repairs first, or explain why you accept these exceptions (10–500 characters).")} onChange={e=>setReason(e.target.value)}/>}</fieldset>}
   </>}
-  {historyInvalid&&<p className="journey-warning">{tr("此前实验的保存记录无法校验，本组历史已隐藏；没有用当前报告替代。","Earlier experiment records could not be validated. This history set is withheld; the current report was not substituted.")}</p>}
-  {!!earlierReports.length&&<details><summary>{tr("本版本保留的此前实验","Earlier experiments retained for this delivery")} · {earlierReports.length}</summary><ul>{earlierReports.map(item=><li key={item.id}>{item.finishedAt} · {tr("种子","Seed")} {item.seed} · {outcomeLabel(item.result.outcome)} <code>{item.id}</code></li>)}</ul><p>{tr("历史记录不会覆盖当前验收引用；可在离线证据包中核对原始观测。","History does not replace the report referenced by acceptance. Raw observations are included in the offline evidence export.")}</p></details>}
+  {historyInvalid&&<p className="journey-warning">{tr("此前实验或归档记录无法校验，本组历史已隐藏；没有用当前报告替代。","Earlier experiments or archives could not be validated. This history set is withheld; the current report was not substituted.")}</p>}
+  {!!earlierReports.length&&<details><summary>{tr("本版本保留的此前实验","Earlier experiments retained for this delivery")} · {earlierReports.length}</summary><ul>{earlierReports.map(item=><li key={item.id}>{item.finishedAt} · {tr("种子","Seed")} {item.seed} · {outcomeLabel(item.result.outcome)} <code>{item.id}</code></li>)}</ul><p>{tr("历史与独立归档会继续保留原验收引用；离线证据包包含经关联校验后的原始观测。","History and independent archives preserve the original acceptance references. The offline export includes raw observations after binding validation.")}</p></details>}
  </details>;
+}
+
+function ModelStorageSummary({capacity,language,onRefresh,disabled}:{capacity?:ModelStorageCapacity;language:Language;onRefresh:()=>void;disabled:boolean}){
+ const tr=(zh:string,en:string)=>language==="zh"?zh:en;
+ const bytes=(value:number)=>Number.isSafeInteger(value)&&value>=0?`${(value/1024).toFixed(1)} KiB (${value.toLocaleString("en")} B)`:"—";
+ return <section className="model-storage-summary" aria-label={tr("取消与改期实验的保存容量","Storage for cancellation-versus-transfer experiments")}>
+  <div className="model-storage-heading"><strong>{tr("本项实验的保存容量","Storage for this experiment")}</strong><button className="text-button" disabled={disabled} onClick={onRefresh}>{tr("刷新容量","Refresh capacity")}</button></div>
+  {!capacity?<p role="status">{tr("容量状态尚未取得，暂不能开始新一轮。","Capacity has not been loaded; a new run cannot start yet.")}</p>:<>
+   <p className="model-storage-counts">{tr("已保存 ","Retained ")}<strong>{capacity.saved.totalReports} / {capacity.limits.totalReports}</strong>{tr(" 份本项报告"," reports for this experiment")} · {tr("交付内 ","Inline ")}{capacity.saved.inlineReports} / {capacity.limits.inlineReports} · {tr("独立归档 ","Archived ")}{capacity.saved.archivedReports} / {capacity.limits.archivedReports}</p>
+   <p className={capacity.canRun?"model-storage-ready":"model-storage-blocked"}>{capacity.canRun?tr("服务器容量预检允许准备下一轮；目标、授权及当前状态仍需核对。","Server capacity preflight permits preparing another run; target, consent and current state must still be checked."):tr("服务器预检暂不允许开始新一轮。","Server preflight does not currently permit another run.")}</p>
+   {!!capacity.reasons.length&&<ul className="model-storage-reasons">{capacity.reasons.map((reason,index)=><li key={index}>{reason}</li>)}</ul>}
+   <details><summary>{tr("查看字节预算与本轮预留","Inspect byte budgets and next-run reservations")}</summary><dl>
+    <div><dt>{tr("交付内证据已用 / 上限","Inline evidence used / limit")}</dt><dd>{bytes(capacity.saved.inlineEvidenceBytes)} / {bytes(capacity.limits.inlineEvidenceBytes)}</dd></div>
+    <div><dt>{tr("独立归档有效载荷","Archived report payload")}</dt><dd>{bytes(capacity.saved.archivedPayloadBytes)}</dd></div>
+    <div><dt>{tr("完整读取后交付大小 / 上限","Hydrated delivery size / limit")}</dt><dd>{bytes(capacity.saved.hydratedDeliveryBytes)} / {bytes(capacity.limits.hydratedDeliveryBytes)}</dd></div>
+    <div><dt>{tr("下一轮报告预留","Next report reservation")}</dt><dd>{bytes(capacity.next.reportReservationBytes)}</dd></div>
+    <div><dt>{tr("验收证据预留","Acceptance evidence reservation")}</dt><dd>{bytes(capacity.next.acceptanceReservationBytes)}</dd></div>
+    <div><dt>{tr("下一轮预计交付内证据","Projected inline evidence next run")}</dt><dd>{bytes(capacity.next.projectedInlineEvidenceBytes)}</dd></div>
+    <div><dt>{tr("下一轮预计完整读取大小","Projected hydrated delivery next run")}</dt><dd>{bytes(capacity.next.projectedHydratedDeliveryBytes)}</dd></div>
+   </dl>{capacity.next.archiveMoves>0&&<p>{tr(`下一轮开始前，服务器计划将 ${capacity.next.archiveMoves} 份旧报告移入只读归档，保留其摘要和原验收引用。`,`Before the next run, the server plans to move ${capacity.next.archiveMoves} older report${capacity.next.archiveMoves===1?"":"s"} into read-only archives while retaining digests and original acceptance references.`)}</p>}</details>
+   <p className="model-storage-note">{tr("上限只针对取消与改期这一类实验，不代表全部检测都能运行同样次数。大文件或其他证据可能先耗尽字节预算；界面预检后，服务器开始前仍会重新核对。","These limits apply to this cancellation-versus-transfer family, not every check. Large files or other evidence may exhaust byte budgets earlier; the server rechecks before a run starts.")}</p>
+  </>}
+ </section>;
 }

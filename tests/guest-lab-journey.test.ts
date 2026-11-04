@@ -85,7 +85,7 @@ test("bundled guest Worker supports the fixed20-milestone HTTP stand-in with rea
  assert.equal(result.requests.length,39);assert.equal(result.requests.filter(r=>r.method==="POST").length,11);assert.equal(result.requests.filter(r=>r.method==="GET").length,28);
  const retries=result.requests.filter(r=>r.headers["idempotency-key"]===result.c.key("loss-create"));assert.equal(retries.length,2);assert.equal(retries[0].body,retries[1].body);assert.equal(saved.filter(r=>r.idempotency_key===result.c.key("loss-create")).length,1);
  for(const request of result.requests){assert.ok(request.path.startsWith("/journey-api/fixed/pbp/"));assert.equal(request.headers.authorization,undefined);assert.equal(request.headers.cookie,undefined);}
- assert.deepEqual(Object.keys(result.input.metadata as object).sort(),["protocol","revision","maxPartySize","maxGuestsPerSlot","syntheticOnly","deploymentAttestation"].sort());
+ assert.deepEqual(Object.keys(result.input.metadata as object).sort(),["protocol","revision","nativeRevision","maxPartySize","maxGuestsPerSlot","syntheticOnly","deploymentAttestation","supportedModels"].sort());
  assert.equal(result.report.scope.authenticatedRoles,false);assert.equal(result.report.scope.privateDeliveryLinked,false);assert.equal(result.report.scope.payment,false);
 });
 test("controlled cancellation, failed-move and retry defects produce actual persisted counterexamples and never a clean report",async()=>{

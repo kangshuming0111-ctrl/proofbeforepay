@@ -260,6 +260,101 @@ test("clear literal opening-hours and other text-content requirements still perm
   }
 });
 
+test("singular opening-time copy preserves supported and cross-page-conflict advice with exact source citations", async () => {
+  const first = "<p>Saturday opens at 10:00.</p>", other = "<p>On Saturday we open at 11:00.</p>";
+  const quote = agreement({ "index.html": source.replace("</body>", `${first}</body>`), "faq.html": source.replace("</body>", `${other}</body>`) });
+  const criterion = quote.proof.criteria.find(c => c.id === "manual-1")!;
+  criterion.title = "Consistent Saturday hours"; criterion.source = "Every page must consistently state that Saturday opening time is 10:00.";
+  for (const status of ["supported", "changes_suggested", "insufficient_evidence"] as const) {
+    const output = proposal(quote), item = output.items.find(i => i.criterionId === criterion.id)!;
+    item.status = status; item.explanation = "Home states 10:00; FAQ states 11:00. These are source quotations, not browser observations.";
+    item.citations = [{ file: "index.html", excerpt: first }, { file: "faq.html", excerpt: other }];
+    const before = structuredClone(quote), result = await assessDelivery(quote, env, mock(output).fetcher), observed = result.items.find(i => i.criterionId === criterion.id)!;
+    assert.equal(observed.status, status); assert.deepEqual(observed.citations.map(c => c.file), ["index.html", "faq.html"]);
+    for (const c of observed.citations) assert.equal(quote.proof.delivery!.files![c.file].slice(c.start, c.end), c.excerpt);
+    assert.deepEqual(quote, before);
+  }
+});
+
+test("explicit cancellation-policy copy preserves a grounded model verdict without claiming an executed refund", async () => {
+  const policy = "Cancel forty-eight hours or more before departure and your whole fee is returned.";
+  const quote = agreement({ "index.html": source.replace("</body>", `<p>${policy}</p></body>`) }), criterion = quote.proof.criteria.find(c => c.id === "manual-1")!;
+  criterion.title = "Cancellation policy copy";
+  criterion.source = "The page copy must say cancellations made at least 48 hours before departure receive a full refund.";
+  for (const status of ["supported", "changes_suggested", "insufficient_evidence"] as const) {
+    const output = proposal(quote), item = output.items.find(i => i.criterionId === criterion.id)!;
+    item.status = status; item.explanation = "The page says the whole fee is returned at least forty-eight hours before departure.";
+    item.citations = [{ file: "index.html", excerpt: policy }];
+    const before = structuredClone(quote), result = await assessDelivery(quote, env, mock(output).fetcher);
+    assert.equal(result.items.find(i => i.criterionId === criterion.id)!.status, status);
+    assert.deepEqual(quote, before); assert.match(result.limitations.join(" "), /no acceptance, authorization or payment is automatic/u);
+  }
+});
+
+test("financial action clauses cannot inherit source-copy support even without the receive keyword", async () => {
+  for (const requirement of [
+    "The page copy must describe the policy and issue full refunds automatically.",
+    "The page copy must describe the policy and process refunds automatically.",
+    "The page copy must describe the policy and refund the card.",
+    "The page copy must describe the policy and automatically refund the full amount.",
+    "The page copy must describe the policy and refunds must be processed automatically.",
+    "The page copy must describe the policy and settle full refunds automatically.",
+    "The page copy must describe the policy and disburse refunds automatically.",
+    "页面文案需要说明取消政策，并实际退款。", "页面文案需要说明取消政策，并自动退款。", "页面文案需要说明取消政策，并真实扣款。",
+  ]) for (const status of ["supported", "changes_suggested"] as const) {
+    const quote = agreement(), criterion = quote.proof.criteria.find(c => c.id === "manual-1")!; criterion.title = "Policy and financial action"; criterion.source = requirement;
+    const output = proposal(quote); output.items.find(i => i.criterionId === criterion.id)!.status = status;
+    const result = await assessDelivery(quote, env, mock(output).fetcher);
+    assert.equal(result.items.find(i => i.criterionId === criterion.id)!.status, "insufficient_evidence", requirement);
+  }
+});
+
+test("financial runtime veto does not ban refund nouns in explicit policy copy", async () => {
+  for (const [requirement, excerpt] of [
+    ["The page copy must state that full refunds are available for eligible cancellations.", "<p>Full refunds are available for eligible cancellations.</p>"],
+    ["页面文案需写明：符合条件的取消可全额退款。", "<p>符合条件的取消可全额退款。</p>"],
+  ]) {
+    const quote = agreement({ "index.html": source.replace("</body>", `${excerpt}</body>`) }), criterion = quote.proof.criteria.find(c => c.id === "manual-1")!;
+    criterion.title = "Cancellation policy copy"; criterion.source = requirement;
+    const output = proposal(quote), item = output.items.find(i => i.criterionId === criterion.id)!;
+    item.status = "supported"; item.citations = [{ file: "index.html", excerpt }];
+    const result = await assessDelivery(quote, env, mock(output).fetcher);
+    assert.equal(result.items.find(i => i.criterionId === criterion.id)!.status, "supported", requirement);
+  }
+});
+
+test("settlement and disbursement actions remain runtime across bounded active and passive verb forms", async () => {
+  for (const clause of [
+    "settle full refunds automatically", "the service settles full refunds automatically", "the service has settled full refunds automatically", "the service is settling full refunds automatically",
+    "disburse refunds automatically", "the service disburses refunds automatically", "the service has disbursed refunds automatically", "the service is disbursing refunds automatically",
+    "refunds must be settled automatically", "refunds must be disbursed automatically", "automatically settle full refunds", "automatically disburse full refunds",
+  ]) {
+    const quote = agreement(), criterion = quote.proof.criteria.find(c => c.id === "manual-1")!;
+    criterion.title = "Policy and financial action"; criterion.source = `The page copy must describe the policy and ${clause}.`;
+    const output = proposal(quote); output.items.find(i => i.criterionId === criterion.id)!.status = "supported";
+    const result = await assessDelivery(quote, env, mock(output).fetcher);
+    assert.equal(result.items.find(i => i.criterionId === criterion.id)!.status, "insufficient_evidence", clause);
+  }
+});
+
+test("refund-copy exemptions cannot hide runtime titles, mixed payment execution or concurrent reservations", async () => {
+  const policy = "The page copy must say cancellations made at least 48 hours before departure receive a full refund";
+  for (const [title, requirement] of [
+    ["Actual payment functionality", `${policy}.`],
+    ["Cancellation policy copy", `${policy}, and the payment service must complete that refund to the original card.`],
+    ["Cancellation policy copy", `${policy}, and the database must preserve the original reservation after a failed refund.`],
+    ["Cancellation policy copy", `${policy}, and the form must submit successfully.`],
+    ["Reservation correctness", "Every page must consistently state that Saturday opening time is 10:00, and concurrent reservations must never overbook the departure."],
+    ["Refund receipt", "Cancellations made at least 48 hours before departure receive a full refund."],
+  ]) {
+    const quote = agreement(), criterion = quote.proof.criteria.find(c => c.id === "manual-1")!;
+    criterion.title = title; criterion.source = requirement;
+    const output = proposal(quote); output.items.find(i => i.criterionId === criterion.id)!.status = "supported";
+    const result = await assessDelivery(quote, env, mock(output).fetcher);
+    assert.equal(result.items.find(i => i.criterionId === criterion.id)!.status, "insufficient_evidence", requirement);
+  }
+});
+
 test("explicit Chinese and English booking-policy copy preserves the cited model verdict without claiming booking works", async () => {
   const policy = "<p>所有咨询须提前预约，不接受临时到店。</p><p>Consultations require advance booking. Reservations must be arranged in advance; walk-ins are not accepted.</p>";
   for (const [title, requirement, language] of [

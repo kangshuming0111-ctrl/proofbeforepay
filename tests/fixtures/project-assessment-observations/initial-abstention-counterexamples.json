@@ -1,0 +1,114 @@
+{
+  "schema": "recorded-synthetic-assessment-counterexamples-v1",
+  "freezeSha256": "54ec0ac3ff1bf61bce55b0df9bf421d43f642ed7e89035861a4aa19d55270d13",
+  "scope": "Actual raw/app items from initial12call synthetic cohort; no credentials/customers/runtimeexecution",
+  "cases": [
+    {
+      "project": "cross-page-conflicting-copy",
+      "criterion": {
+        "id": "manual-2",
+        "title": "Consistent Saturday hours",
+        "source": "Every page must consistently state that Saturday opening time is 10:00.",
+        "reference": {
+          "expectedStatus": "changes_suggested",
+          "rationale": "FAQ says11:00 while the home page says10:00.",
+          "relevantFiles": [
+            "index.html",
+            "faq.html"
+          ],
+          "requiresSemanticReview": true
+        }
+      },
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Fictional Lantern Museum</title><link rel=\"stylesheet\" href=\"style.css\"></head><body><header><a href=\"index.html\">Home</a></header><main><h1>Lantern Museum</h1><p>Admission: AUD 12.</p><p>Saturday opens at 10:00.</p><a href=\"faq.html\">FAQ</a></main></body></html>",
+        "faq.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Fictional Lantern Museum</title><link rel=\"stylesheet\" href=\"style.css\"></head><body><header><a href=\"index.html\">Home</a></header><main><h1>Visitor FAQ</h1><p>Admission costs AUD 9.</p><p>On Saturday we open at 11:00.</p></main></body></html>",
+        "style.css": "body{font-family:system-ui;margin:1.5rem;line-height:1.6}main{max-width:65rem}label{display:block}img{max-width:100%;height:auto}"
+      },
+      "rawItem": {
+        "criterionId": "manual-2",
+        "status": "changes_suggested",
+        "explanation": "index.html states Saturday 10:00 but faq.html instead states Saturday 11:00, so pages are inconsistent.",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "Saturday opens at 10:00."
+          },
+          {
+            "file": "faq.html",
+            "excerpt": "On Saturday we open at 11:00."
+          }
+        ]
+      },
+      "applicationItem": {
+        "criterionId": "manual-2",
+        "status": "insufficient_evidence",
+        "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 254,
+            "end": 278,
+            "excerpt": "Saturday opens at 10:00."
+          },
+          {
+            "file": "faq.html",
+            "start": 255,
+            "end": 284,
+            "excerpt": "On Saturday we open at 11:00."
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-2"
+        ]
+      }
+    },
+    {
+      "project": "tour-refund-copy-equivalent",
+      "criterion": {
+        "id": "manual-1",
+        "title": "Cancellation policy copy",
+        "source": "The page copy must say cancellations made at least 48 hours before departure receive a full refund.",
+        "reference": {
+          "expectedStatus": "supported",
+          "rationale": "Forty-eight hours or more means at least 48 hours; whole fee returned means a full refund. No exact phrase was required.",
+          "relevantFiles": [
+            "policy.html"
+          ],
+          "requiresSemanticReview": true
+        }
+      },
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Fictional Fern Walks</title><link rel=\"stylesheet\" href=\"style.css\"></head><body><header><a href=\"index.html\">Home</a></header><main><h1>Fern Walks</h1><p>Meet at the north gate of Fern Reserve.</p><a href=\"policy.html\">Policy</a></main></body></html>",
+        "policy.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Fictional Fern Walks</title><link rel=\"stylesheet\" href=\"style.css\"></head><body><header><a href=\"index.html\">Home</a></header><main><h1>Cancellation notice</h1><p>Cancel forty-eight hours or more before departure and your whole fee is returned.</p></main></body></html>",
+        "style.css": "body{font-family:system-ui;margin:1.5rem;line-height:1.6}main{max-width:65rem}label{display:block}img{max-width:100%;height:auto}"
+      },
+      "rawItem": {
+        "criterionId": "manual-1",
+        "status": "supported",
+        "explanation": "policy.html says cancelling at least 48 hours before departure returns the whole fee, matching the required refund meaning.",
+        "citations": [
+          {
+            "file": "policy.html",
+            "excerpt": "Cancel forty-eight hours or more before departure and your whole fee is returned."
+          }
+        ]
+      },
+      "applicationItem": {
+        "criterionId": "manual-1",
+        "status": "insufficient_evidence",
+        "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+        "citations": [
+          {
+            "file": "policy.html",
+            "start": 230,
+            "end": 311,
+            "excerpt": "Cancel forty-eight hours or more before departure and your whole fee is returned."
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-1"
+        ]
+      }
+    }
+  ]
+}
