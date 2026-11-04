@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T09:28:15.251Z",
+  "generatedAt": "2026-11-04T09:42:59.875Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -438,8 +438,8 @@
     },
     {
       "file": "app/components/TimePolicyPanel.tsx",
-      "bytes": 13431,
-      "sha256": "a1be7878db1330b81bc853736be1e11947cf9e8d05cad0999b4410f767393efd"
+      "bytes": 15332,
+      "sha256": "2e3ddf0808f98e01f1a877f36efcbb1bdbb216599b5808a0b712cc0ca98f38e2"
     },
     {
       "file": "app/components/TransferCompetitionPanel.tsx",
@@ -1247,14 +1247,24 @@
       "sha256": "aba6f0b0551f95db20efb340c56f7df3cfe798f0a2be4cfe3340650c94c04711"
     },
     {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/final-time-display-review.json",
+      "bytes": 4276,
+      "sha256": "f333ade041077b8a468a3696eba1195a16658e150277f5bea13781bf7a6bf656"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/final-time-display-review.json.raw.json",
+      "bytes": 4019,
+      "sha256": "47b6b7e5ccf7587f3cae2a210de9448266cc2e05821ba7d7902b2d7318669e8b"
+    },
+    {
       "file": "docs/collaboration/gap-closure-cycles-2026-11-04/full-regression-semantic-review.json",
       "bytes": 242962,
       "sha256": "7be9aeb7c0025e29515755c4681d4c2962f445f36c5af4dda7fb9da7551c222e"
     },
     {
       "file": "docs/collaboration/gap-closure-cycles-2026-11-04/review-adjudication.md",
-      "bytes": 7970,
-      "sha256": "18d42f5a2884d5a156f56e19368484e1c2d8bb2a8e47ac55aaee0b782f4ddee9"
+      "bytes": 9236,
+      "sha256": "21c5d4c4eb136e76489419b3a1037329313b8c04258a163d6caf7d58153cf124"
     },
     {
       "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-1-operator-final-review.json",

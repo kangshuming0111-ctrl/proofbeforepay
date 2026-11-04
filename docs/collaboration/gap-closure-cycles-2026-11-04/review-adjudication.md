@@ -45,3 +45,10 @@ Independent full-answer review identified real semantic overclaims in earlier an
 ## Integrated validation boundary
 
 The full workspace suite passed913/913 before metadata packaging; the final affected assessment-record suite passed13/13 after all frozen-source/counter packaging, with fresh typecheck. Complete frozen evaluator source is packaged only after matching each pre-recorded SHA256, including exact historical implementation variants; failed batches remain downloadable. Public source export, final deployment and UI readback are verified separately in the final release ledger.
+
+
+## Final localized time-panel readback
+
+Actual hosted CUA created a new fictional demo project, saved seller HTML/CSS, switched to buyer, previewed and explicitly saved a supplemental plan, then refreshed and read it back. Native D1 primary metadata independently confirmed the session/delivery/digest association. The native tool truncates the JSON payload, so only primary metadata is claimed from that tool; full policy/cases were observed through the refreshed authenticated UI. No target was approved, no backend run was initiated and no acceptance or payment occurred.
+
+An observed display issue (English probe names in Chinese UI) was repaired without changing saved labels, notes or traces. New draft defaults are locale-aware; edited defaults are guarded and preview/consent are invalidated on changes. Fresh typecheck passed. Final DeepSeek review supplied three suggestions, independently rejected: F1 overlooks the literal early return when sourceNoteEdited.current is true; F2 overlooks change(next) clearing preview for every edited control; F3 explicitly describes the required preservation of saved sourceNote. No speculative rework or broader locale mutation was introduced. Runtime UI readback after the final publication is recorded separately.
