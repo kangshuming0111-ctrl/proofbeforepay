@@ -47,6 +47,12 @@ export async function validateDeploymentSourceSession(value:unknown):Promise<Dep
   if(r.outcome==="unreadable"){if(typeof r.reason!=="string"||!REASONS.includes(r.reason)||r.bytes!==undefined||r.sha256!==undefined)throw new DomainError("Invalid unreadable deployment observation.",409);}else if(r.httpStatus!==200||!Number.isSafeInteger(r.bytes)||Number(r.bytes)<0||Number(r.bytes)>(expected.kind==="html"||expected.kind==="css"?STATIC_RESOURCE_LIMITS.textFileBytes:STATIC_RESOURCE_LIMITS.rasterFileBytes)||typeof r.sha256!=="string"||!HASH.test(r.sha256)||r.reason!==undefined||(r.outcome==="matched")!==(r.bytes===expected.bytes&&r.sha256===expected.sha256))throw new DomainError("Deployment byte result differs from its retained hashes.",409);return r as unknown as DeploymentSourceReading;});
  if((s.status!=="running"&&readings.length!==plan.files.length)||(s.status==="complete"&&readings.some(r=>r.outcome==="unreadable"))||(s.status==="unknown"&&!readings.some(r=>r.outcome==="unreadable")))throw new DomainError("Deployment source final status differs from its observations.",409);return structuredClone({...s,plan,readings})as DeploymentSourceSession;
 }
+/** A view-only stale flag must not enter the immutable session schema. Validate
+ * the remaining record before offering an offline-readable download. */
+export async function deploymentSourceExport(value:DeploymentSourceSession&{stale?:boolean}){
+ const {stale:_,...saved}=value;const session=await validateDeploymentSourceSession(saved);
+ return{evidenceType:"platform-http-file-bytes"as const,limits:{backendAttestation:false,selectiveServingProtection:false,acceptance:false,payment:false},session};
+}
 export async function readDeploymentSourceFile(file:DeploymentSourceFile,options:{fetch?:(url:string,init:RequestInit)=>Promise<Response>;timeoutMs?:number;now?:()=>number}={}):Promise<DeploymentSourceReading>{
  const now=options.now??Date.now,controller=new AbortController(),deadline=Math.max(1,Math.min(6000,options.timeoutMs??6000));let timer:ReturnType<typeof setTimeout>|undefined,httpStatus:number|undefined;
  const finish=(outcome:DeploymentSourceReading["outcome"],extra:Partial<DeploymentSourceReading>={}):DeploymentSourceReading=>({file:file.file,outcome,at:new Date(now()).toISOString(),...(httpStatus?{httpStatus}:{}),...extra});

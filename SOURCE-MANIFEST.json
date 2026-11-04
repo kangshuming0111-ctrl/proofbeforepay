@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T11:32:10.144Z",
+  "generatedAt": "2026-11-04T11:39:33.634Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -333,8 +333,8 @@
     },
     {
       "file": "app/components/DeploymentSourcePanel.tsx",
-      "bytes": 8617,
-      "sha256": "2ec68c8968d3bf3532bf6acf7cbd5a3c29ff82572ae24e384a21fb8ff484f426"
+      "bytes": 8817,
+      "sha256": "f9eda4ff1d0b3116e4cba96814ce3f8c53a1521f887f92475571ea001fd62bc6"
     },
     {
       "file": "app/components/EvidenceDownloads.tsx",
@@ -503,8 +503,8 @@
     },
     {
       "file": "app/deployment-source.css",
-      "bytes": 1477,
-      "sha256": "64d7b71bf336002e368420ee37b2b12cf21a5173d295438f2f6974b95e73007a"
+      "bytes": 1464,
+      "sha256": "34a715ca238a7039225ff10472e1484c49601f8a038ffe1f9b488084dacc296d"
     },
     {
       "file": "app/evidence-history.css",
@@ -693,8 +693,8 @@
     },
     {
       "file": "app/source-visibility.css",
-      "bytes": 2345,
-      "sha256": "8323eeca9364985756eb280513001159d871ea1c806533aaccb0e6870385f1b4"
+      "bytes": 2293,
+      "sha256": "399a7d1c82edf5316dfa8c97464772c468d7147d2163f9cb19cc76119e436ef1"
     },
     {
       "file": "app/time-policy.css",
@@ -1108,8 +1108,8 @@
     },
     {
       "file": "docs/GAP-CLOSURE-NEXT-2026-11-04.md",
-      "bytes": 5818,
-      "sha256": "c4993098c5b50e7d347dbcb4d613e815587e64f602ef3979e24fcf6107868e5a"
+      "bytes": 6165,
+      "sha256": "fa00904909b9192f0fb344febf4393ed4982c5404c79e97baa1a2fbee0abd7e9"
     },
     {
       "file": "docs/IMPLEMENTATION-2026-11-02.md",
@@ -1423,8 +1423,13 @@
     },
     {
       "file": "docs/collaboration/gap-closure-next-2026-11-04/deployment-adjudication.md",
-      "bytes": 3717,
-      "sha256": "eda76b7f98c54f49d0b3b3e618ef42cc5f0a49e4226fa9edd9694128f7be8757"
+      "bytes": 4351,
+      "sha256": "a59e293dc68d4cd87eded81b3558d907ae81d9e4fdbd5560e316f00b55a1d121"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-next-2026-11-04/deployment-export-review.json",
+      "bytes": 4637,
+      "sha256": "c257ae32ba7d128b213cf0582a509b550f67a98f50ec3f231dbea1b16379cbf9"
     },
     {
       "file": "docs/collaboration/gap-closure-next-2026-11-04/deployment-review-1.json",
@@ -2008,8 +2013,8 @@
     },
     {
       "file": "lib/deployment-source.ts",
-      "bytes": 14102,
-      "sha256": "3fc6640ea9423f7bc107120383649500e5fb90eb226f8b225c84b717c5c3bc66"
+      "bytes": 14608,
+      "sha256": "cc9469f67a71f42734a977ad294ae06aad95db67c95eb520a54fa7f252ebf0c9"
     },
     {
       "file": "lib/domain.ts",
@@ -3118,8 +3123,8 @@
     },
     {
       "file": "tests/deployment-source.test.ts",
-      "bytes": 7579,
-      "sha256": "8a8fa8d9152771b7d47a3433afcc69f873addd5236f7573e56748f0f148d3e65"
+      "bytes": 8907,
+      "sha256": "fbaf53a383693009b59c1e9350656fefe729c248de0d2c972f12aa08d85121d4"
     },
     {
       "file": "tests/domain.test.ts",

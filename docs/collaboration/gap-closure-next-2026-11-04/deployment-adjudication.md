@@ -23,3 +23,7 @@ A separate Codex review reproduced an internal-validator coercion issue: single-
 The history-count reservation enhancement passed a second valid DeepSeek review with no findings and three actual fresh-D1 API groups, including simultaneous buyer/seller200/409, duplicate replay, explicit fresh repeat, revocation, replacement and unchanged quote/payment. Its outbound transport was blocked and retained unreadable results; this is not hosted file-read evidence.
 
 A third valid, narrowly scoped DeepSeek review of the strict enum repair returned no findings. No further broad review was requested after counterexamples and checks passed.
+
+## Hosted export round-trip and readability
+
+Actual main-site2/2 matching GET results persisted in D1. Downloading exposed the view-only stale flag inside the exported session, which the strict immutable-session validator correctly rejected. Fixed the export to remove only stale and validate the remaining record before download. A new current/historical JSON round-trip rejects unknown fields and forged hashes. The narrow DeepSeek review passed with no findings. Separately, screenshot inspection found helper text using the theme's pale muted background token; the two new evidence panels now use an explicit legible foreground.

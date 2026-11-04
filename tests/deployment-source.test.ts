@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {createServer} from "node:http";
-import {createDeploymentSourcePlan,readDeploymentSourceFile,validateDeploymentSourcePlan,validateDeploymentSourceSession,type DeploymentSourceSession} from "../lib/deployment-source.ts";
+import {createDeploymentSourcePlan,readDeploymentSourceFile,validateDeploymentSourcePlan,validateDeploymentSourceSession,deploymentSourceExport,type DeploymentSourceSession} from "../lib/deployment-source.ts";
 import type {JourneyRegistrationSnapshot} from "../lib/project-journey.ts";
 const registration:JourneyRegistrationSnapshot={id:"seller-stage",label:"Approved test stage",projectId:"project-1",registrationRevision:"operator-2",protocol:"booking-lifecycle-http-v1",recipe:"booking-lifecycle-20-v1",frontendEntryUrl:"https://stage.example.org/site/workshop.html",backendBaseUrl:"https://stage.example.org/pbp/",deploymentRevision:"native-4",bridgeRevision:"lifecycle-fixed-v1",frontendBundleDigest:"a".repeat(64),scenario:"fixed",expiresAt:"2030-01-01T00:00:00.000Z",testOnly:true,provenance:"operator-approved-declaration"};
 const files={"index.html":"<!doctype html><html><head><link rel=stylesheet href=style.css></head><body>Open 11–20</body></html>","style.css":"body{color:#123}"};
@@ -42,4 +42,11 @@ test("persisted result derivation refuses altered plan, invented match, omitted 
 test("actual finite HTTP transport returns one matching and one independently changed static asset",async()=>{
  const p=await plan(),seen:string[]=[];const server=createServer((req,res)=>{seen.push(req.url!);res.setHeader("content-type",req.url?.endsWith(".css")?"text/css":"text/html");res.end(req.url?.endsWith(".css")?"body{color:red}":files["index.html"]);});await new Promise<void>(resolve=>server.listen(0,"127.0.0.1",resolve));
  try{const address=server.address() as {port:number};const transport=async(url:string,init:RequestInit)=>{const allowed=p.files.find(f=>f.url===url);assert.ok(allowed);const r=await fetch(`http://127.0.0.1:${address.port}${new URL(url).pathname}`,init);return new Response(r.body,{headers:r.headers,status:r.status});};const a=await readDeploymentSourceFile(p.files[0],{fetch:transport}),b=await readDeploymentSourceFile(p.files[1],{fetch:transport});assert.equal(a.outcome,"matched");assert.equal(b.outcome,"mismatch");assert.deepEqual(seen,["/site/workshop.html","/site/style.css"]);}finally{await new Promise<void>((resolve,reject)=>server.close(e=>e?reject(e):resolve()));}
+});
+
+test("download round-trip strips only the view flag and strictly validates historical byte evidence",async()=>{
+ const p=await plan(),at="2026-11-04T10:00:00.000Z",readings=await Promise.all(p.files.map(f=>readDeploymentSourceFile(f,{now:()=>Date.parse(at),fetch:async()=>new Response(files[f.file as keyof typeof files],{headers:{"content-type":f.kind==="html"?"text/html":"text/css"}})})));
+ const s:DeploymentSourceSession={id:crypto.randomUUID(),projectId:p.projectId,deliveryId:p.deliveryId,deliveryDigest:p.deliveryDigest,createdBy:"buyer-1",createdAt:at,updatedAt:at,expiresAt:"2026-11-04T10:00:30.000Z",version:4,status:"complete",plan:p,readings};
+ for(const stale of [false,true]){await assert.rejects(validateDeploymentSourceSession({...s,stale}));const exported=await deploymentSourceExport({...s,stale}),roundTrip=JSON.parse(JSON.stringify(exported));assert.equal(Object.hasOwn(roundTrip.session,"stale"),false);assert.deepEqual(await validateDeploymentSourceSession(roundTrip.session),s);assert.equal(roundTrip.limits.backendAttestation,false);}
+ await assert.rejects(deploymentSourceExport({...s,stale:true,unexpected:"not removed"}as any));const forged=structuredClone(s);forged.readings[0].sha256="b".repeat(64);await assert.rejects(deploymentSourceExport({...forged,stale:false}));
 });
