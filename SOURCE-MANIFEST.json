@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T11:24:01.938Z",
+  "generatedAt": "2026-11-04T11:32:10.144Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -638,8 +638,8 @@
     },
     {
       "file": "app/page.tsx",
-      "bytes": 188107,
-      "sha256": "656c8c98d07aa4203442bd911bab1b68758d72f1db0d276db1d1037332ff0e22"
+      "bytes": 188095,
+      "sha256": "3dc9ca1349e2bb27d370b7d7fe714925a215270033ee88163b455800d2fea1bc"
     },
     {
       "file": "app/project-journey.css",
@@ -1108,8 +1108,8 @@
     },
     {
       "file": "docs/GAP-CLOSURE-NEXT-2026-11-04.md",
-      "bytes": 5643,
-      "sha256": "d886c14ff8e742baf96cbb46f666fc0364c260d562fe979f4fe811ceab04dbd2"
+      "bytes": 5818,
+      "sha256": "c4993098c5b50e7d347dbcb4d613e815587e64f602ef3979e24fcf6107868e5a"
     },
     {
       "file": "docs/IMPLEMENTATION-2026-11-02.md",
@@ -1505,6 +1505,16 @@
       "file": "docs/collaboration/gap-closure-next-2026-11-04/visibility-deepseek-review-04.json",
       "bytes": 8829,
       "sha256": "9226320c6f173644f31115e02d18f07636879aa0a32738ee9f85c4b49322f45b"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-next-2026-11-04/visibility-mount-adjudication.md",
+      "bytes": 578,
+      "sha256": "c92e4f127be5c2eab33a662cfdc4ae57f756cff7cc7199565d250eee874552b7"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-next-2026-11-04/visibility-mount-review.json",
+      "bytes": 7482,
+      "sha256": "4c4b448d6a7a521a3384d8b71ebb3dc05f2d423d8015ae1d7c61b40573ec4d93"
     },
     {
       "file": "docs/fixtures/assessment-transfer-2026-11-04/README.md",
