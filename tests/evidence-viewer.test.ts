@@ -7,6 +7,11 @@ import {createEvidenceViewerController,runtimeEvidenceForViewer,type EvidenceInp
 import {EVIDENCE_EXPORT_BYTE_LIMIT,verifyEvidenceExport,type EvidenceExport} from "../lib/evidence-export.ts";
 import {runtimeDeliveryDigest} from "../lib/runtime-project.ts";
 import {buildGuestLab} from "../scripts/build-guest-lab.mjs";
+import ts from "typescript";
+import vm from "node:vm";
+import {modelFixture,completeModel} from "./model-check-fixture.ts";
+import {prepareModelRunStorage} from "../lib/model-report-archive.ts";
+import {createEvidenceExport} from "../lib/evidence-export.ts";
 
 const recorded=async(version:1|2):Promise<EvidenceExport>=>JSON.parse(await readFile(new URL(`./fixtures/recorded-seller-staging/v${version}-evidence.json`,import.meta.url),"utf8"));
 const bytes=(value:unknown)=>new TextEncoder().encode(JSON.stringify(value)).buffer;
@@ -74,4 +79,27 @@ test("guest multi-entry build emits a script-isolated local verifier at verify.h
   const output=join(dir,"build");await buildGuestLab(output);
   const viewer=await readFile(join(output,"verify.html"),"utf8"),lab=await readFile(join(output,"index.html"),"utf8"),manifest=JSON.parse(await readFile(join(output,"guest-build.json"),"utf8"));
   assert.match(viewer,/connect-src 'none'/);assert.match(viewer,/object-src 'none'/);assert.match(viewer,/type="module"/);assert.ok(!viewer.includes("evidence-viewer.ts"));assert.match(lab,/id="app"/);assert.ok(manifest.files.some((row:{file:string})=>row.file==="verify.html"));assert.ok(manifest.files.some((row:{file:string})=>row.file==="index.html"));
+});
+
+
+type GateNode={tag:string;className:string;text:string;children:GateNode[];setAttribute:(name:string,value:string)=>void};
+/** Exercise the actual gate renderer against verifier output. This is a DOM
+ * unit double, not a browser interaction or execution-attestation claim. */
+async function renderGateChecks(checks:Awaited<ReturnType<typeof verifyEvidenceExport>>["checks"],language:"zh"|"en"="zh"){
+ const source=await readFile(new URL("../app/guest-lab/evidence-viewer.ts",import.meta.url),"utf8"),file=ts.createSourceFile("evidence-viewer.ts",source,ts.ScriptTarget.Latest,true,ts.ScriptKind.TS);
+ const declaration=file.statements.find(statement=>ts.isVariableStatement(statement)&&statement.declarationList.declarations.some(item=>ts.isIdentifier(item.name)&&item.name.text==="gates"));
+ const renderer=file.statements.find(statement=>ts.isFunctionDeclaration(statement)&&statement.name?.text==="gatePanel");assert.ok(declaration);assert.ok(renderer);
+ const script=ts.transpileModule(`${declaration.getText(file)}\n${renderer.getText(file)}\nglobalThis.rendered=gatePanel();`,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.None}}).outputText;
+ const context:{rendered?:GateNode;[key:string]:unknown}={state:{phase:"ready",verification:{checks}},tr:(zh:string,en:string)=>language==="zh"?zh:en,node:(tag:string,className="",text=""):GateNode=>({tag,className,text,children:[],setAttribute:()=>{}}),append:(parent:GateNode,...children:GateNode[])=>{parent.children.push(...children);}};
+ vm.runInNewContext(script,context,{timeout:1000});assert.ok(context.rendered);return context.rendered;
+}
+function gateNodes(node:GateNode):GateNode[]{return[node,...node.children.flatMap(gateNodes)];}
+
+test("archive integrity has a named bilingual gate without an unknown warning, while legacy exports keep only eight gates",async()=>{
+ const legacy=await verifyEvidenceExport(await recorded(1)),legacyNodes=gateNodes(await renderGateChecks(legacy.checks));
+ assert.equal(legacyNodes.filter(node=>node.tag==="h3").length,8);assert.ok(!legacyNodes.some(node=>node.text.includes("不可变模型报告档案")));assert.ok(!legacyNodes.some(node=>node.text.includes("尚未命名")));
+ const fixture=await modelFixture();let quote=fixture.quote;for(let seed=0;seed<6;seed++)quote=completeModel(await prepareModelRunStorage(quote),fixture.digest,fixture.registration,seed);
+ const packet=await createEvidenceExport(quote),verification=await verifyEvidenceExport(packet);assert.equal(verification.consistency,"consistent");assert.ok(verification.checks.some(row=>row.id==="model-archive-integrity"&&row.status==="consistent"));
+ const nodes=gateNodes(await renderGateChecks(verification.checks));assert.ok(nodes.some(node=>node.tag==="h3"&&node.text==="不可变模型报告档案"));assert.ok(!nodes.some(node=>node.text.includes("尚未命名")));assert.ok(nodes.some(node=>node.text.includes("SHA-256")));assert.ok(nodes.some(node=>node.text.includes("真实性")));
+ const english=gateNodes(await renderGateChecks(verification.checks,"en"));assert.ok(english.some(node=>node.tag==="h3"&&node.text==="Immutable model report archive"));assert.ok(!english.some(node=>node.text.includes("not yet named")));
 });

@@ -16,8 +16,10 @@
     "independentBoundaryReview": "20/21,256KiB and2MiB real valid-file envelopes,7 export tamper variants,0 external calls",
     "D1": "Fresh0000..0006, concurrency200/409, exactA, conflict-object rollback, failedCAS noorphan, real restart and sixth run; separately true submit-return-replacement with old-version scopedhydrate. Fixedmetadata503 only, no successful backend/payments claimed.",
     "UI": "Provider-free owned browser displayed6total/4inline/2archive, actual byte reservations and5earlier reports; initialAI24/22 and separatefollowup8/8 visible. Actual UI downloaded six-report JSON; offline verification consistent including archivehash gate.",
-    "fullSuite": "878/878",
-    "typecheck": "passed"
+    "fullSuite": "880/880 after final optional-gate UI and recorded hosted-evidence regression",
+    "typecheck": "passed",
+    "hostedTransfer": "24 actual HTTPS requests/5synthetic writes; x200,y409; separate Sites nativeD1 read returned all3active rows, target8, loser original6 preserved, Zunchanged. Recorded fixture preserved with explicitTTL/non-customer scope.",
+    "publicViewer": "Actual UI six-report bundle consistent; final missingarchive gate label reproduced RED then named bilingually and optional; legacy8gates retained. Final viewer DeepSeek review valid0findings."
   },
   "reviewAdjudication": {
     "DeepSeekFlash": "Full-packet response invalid envelope and sole P1 explicitly self-refuted/unreproducible; no change based on it.",

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T06:17:59.250Z",
+  "generatedAt": "2026-11-04T06:28:27.980Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -38,8 +38,8 @@
     },
     {
       "file": "README.md",
-      "bytes": 88091,
-      "sha256": "1ef48c19f625604cc77776d405b05be73c2aaacaa9b65397440248738cf6e245"
+      "bytes": 88537,
+      "sha256": "1831ae1ed628aaf6a2b916b7723e36732434046e0a10d375e03d368a29c0aa50"
     },
     {
       "file": "app/api/business-check-suggestions/route.ts",
@@ -478,8 +478,8 @@
     },
     {
       "file": "app/guest-lab/evidence-viewer.ts",
-      "bytes": 20820,
-      "sha256": "f58eb56bc6a242a76273a581affa5c03a028628812540d9a8ffd0f50133b4c22"
+      "bytes": 21215,
+      "sha256": "47728fc72d90672a5abde37dd1a46b6d0449e53a9628b33234498f5d5fc432c5"
     },
     {
       "file": "app/guest-lab/index.html",
@@ -1138,8 +1138,8 @@
     },
     {
       "file": "docs/collaboration/five-new-cycles-2026-11-04/round-5-review.json",
-      "bytes": 3220,
-      "sha256": "a85e78d17660c7028f05974de93592360310fd25c134830dd0fcab1945db645c"
+      "bytes": 3751,
+      "sha256": "a3f9415533986b611b58ba6bd3695fb28d25fb6ecbff818eecbdf0d7f9a83af7"
     },
     {
       "file": "docs/collaboration/four-cycles-2026-11-03/round-1.md",
@@ -2433,8 +2433,8 @@
     },
     {
       "file": "tests/evidence-viewer.test.ts",
-      "bytes": 7615,
-      "sha256": "864d3618d73acbc896e6782c39d692dd9e38991689d9559dd539b382e8d11f04"
+      "bytes": 11097,
+      "sha256": "e222d72e21bbe69cc35d6bfd7954c48acb8276cac914a2685fbb734d4f3a7ce0"
     },
     {
       "file": "tests/first-use-trial.test.ts",
@@ -2625,6 +2625,26 @@
       "file": "tests/fixtures/recorded-seller-staging/v2-evidence.json",
       "bytes": 42122,
       "sha256": "91f0d6b64f69694821635bef8b87dc5fdc79286b26f5ad796c5cfc789bfc67a4"
+    },
+    {
+      "file": "tests/fixtures/recorded-transfer-competition/README.md",
+      "bytes": 1478,
+      "sha256": "0b255e548ea4ae52ecebf81995fa7006804624045264407eb2cae598ca794e4c"
+    },
+    {
+      "file": "tests/fixtures/recorded-transfer-competition/declared-files.json",
+      "bytes": 296,
+      "sha256": "2ca19df6a8fb757da711197e3c3b08d606d82a67ec4ad3ff93a3cbb2631f519c"
+    },
+    {
+      "file": "tests/fixtures/recorded-transfer-competition/evidence.json",
+      "bytes": 23482,
+      "sha256": "9db383ca630a8af1877fe8f067901f08efe8a79545ae3bde4e787530819687ca"
+    },
+    {
+      "file": "tests/fixtures/recorded-transfer-competition/native-db-read.json",
+      "bytes": 2469,
+      "sha256": "423cc73b0d5814be9f1d05213772355a0ef3b37542efa74be32f0822c49fb85b"
     },
     {
       "file": "tests/fixtures/seller-staging-hosted/0002_seller_reference_staging.sql",
@@ -2910,6 +2930,11 @@
       "file": "tests/recorded-capacity-evidence.test.ts",
       "bytes": 4729,
       "sha256": "13d29bdfbcb203d1153604ea19d3edae33d68ddcd6f5561ca231ed1abd64df2b"
+    },
+    {
+      "file": "tests/recorded-transfer-competition.test.ts",
+      "bytes": 2234,
+      "sha256": "112a990bda4f561b4e3eb2f4a8e9088c9bddc5b4ffe8564ddc4747c1953e1725"
     },
     {
       "file": "tests/rehearsal-api-smoke.py",

@@ -1,0 +1,7 @@
+# Recorded controlled transfer competition
+
+Actual developer-operated server-direct HTTPS observation of the public synthetic lab, recorded 4 November 2026. The lab source at execution was c0d5d24387b71e5e7c8558cf338374c2d40b61fa (v13). This is not an independently recruited seller, browser run, main customer case, deployed-source attestation, acceptance or payment. The declared file map is a fictional source declaration and does not prove which source built the separate service.
+
+Seed 4 (p=6) issued 24 requests including five synthetic writes in a fresh namespace. X moved successfully, Y was rejected with HTTP 409 and retained its original six-person reservation, Z stayed unchanged and the target held eight guests. A separate Sites read-only native D1 table read returned all three actual rows with no omitted page. Native staging rows have a one-hour TTL; these JSON files preserve the observed result, not permanent remote availability.
+
+The standalone evidence format is separate from the current-delivery evidence bundle accepted by the public browser viewer. The pure verifyTransferExport helper validates its retained definition, bindings and derived outcome without making requests; tests/recorded-transfer-competition.test.ts demonstrates this and cross-checks the native rows. Hash consistency is not a signature or execution attestation. Run the focused test with Node 24: node --experimental-strip-types --test tests/recorded-transfer-competition.test.ts.

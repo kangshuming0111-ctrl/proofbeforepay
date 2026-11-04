@@ -1,0 +1,646 @@
+{
+  "schema": "proofbeforepay-transfer-competition-evidence-v1",
+  "definition": {
+    "family": "transfer-competition-v1",
+    "protocol": "booking-lifecycle-http-v1",
+    "seed": "uint32-lcg1664525-1013904223-fisher-yates-v1",
+    "partyRange": [
+      2,
+      6
+    ],
+    "capacity": 8,
+    "slots": {
+      "a": "2099-01-01T10:00:00Z",
+      "b": "2099-01-01T11:00:00Z",
+      "c": "2099-01-01T12:00:00Z"
+    },
+    "setup": [
+      "X:S:p",
+      "Y:U:p",
+      "Z:T:8-p"
+    ],
+    "concurrent": [
+      "move:X:T",
+      "move:Y:T"
+    ],
+    "orders": [
+      "x_then_y",
+      "y_then_x"
+    ],
+    "realTime": "completion ordinal before invocation ordinal imposes precedence",
+    "maxWrites": 5,
+    "maxRequests": 24,
+    "totalTimeoutMs": 20000,
+    "observer": "server-direct-http"
+  },
+  "report": {
+    "id": "89428dfd-e578-47ad-a316-5681b8210696",
+    "runId": "408ce88c-40cd-499a-a641-28753c827861",
+    "projectId": "controlled-lab-transfer-smoke",
+    "deliveryId": "controlled-lab-declaration",
+    "deliveryDigest": "81d5ca7bd832fa3577079ec99609d799ed85c8fc74ec7afbcd734d6634072885",
+    "journeyPlanDigest": "5a16c65b1a0ea00b0583f1629c8aa6917fb736f667aa0e5216a60ac20f7ff189",
+    "modelSpecDigest": "a6a11c5923d1ffa5fd2ff9ab0b4e845a1ee9f3cdc3e42487befea793dc839a18",
+    "family": "transfer-competition-v1",
+    "seed": 4,
+    "registration": {
+      "id": "public-lab-controlled-transfer",
+      "label": "Developer-operated public synthetic lifecycle reference",
+      "projectId": "controlled-lab-transfer-smoke",
+      "registrationRevision": "controlled-transfer-smoke-v1",
+      "protocol": "booking-lifecycle-http-v1",
+      "recipe": "booking-lifecycle-20-v1",
+      "frontendEntryUrl": "https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/seller-reference/fixed/index.html",
+      "backendBaseUrl": "https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/journey-api/fixed/pbp/",
+      "deploymentRevision": "lifecycle-fixed-v1",
+      "bridgeRevision": "lifecycle-fixed-v1",
+      "frontendBundleDigest": "81d5ca7bd832fa3577079ec99609d799ed85c8fc74ec7afbcd734d6634072885",
+      "scenario": "fixed",
+      "expiresAt": "2026-11-04T06:22:52.715Z",
+      "testOnly": true,
+      "provenance": "operator-approved-declaration"
+    },
+    "startedAt": "2026-11-04T06:21:52.714Z",
+    "finishedAt": "2026-11-04T06:22:00.610Z",
+    "trace": [
+      {
+        "operationId": "meta",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/meta",
+        "invokedOrdinal": 1,
+        "completedOrdinal": 2,
+        "status": 200,
+        "body": {
+          "protocol": "booking-lifecycle-http-v1",
+          "revision": "lifecycle-fixed-v1",
+          "nativeRevision": "lifecycle-fixed-v1",
+          "maxPartySize": 6,
+          "maxGuestsPerSlot": 8,
+          "syntheticOnly": true,
+          "deploymentAttestation": false,
+          "supportedModels": [
+            "release-vs-transfer-v1",
+            "transfer-competition-v1"
+          ]
+        }
+      },
+      {
+        "operationId": "empty_merchant",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/merchant/408ce88c-40cd-499a-a641-28753c827861",
+        "invokedOrdinal": 3,
+        "completedOrdinal": 4,
+        "status": 200,
+        "body": {
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "revision": "lifecycle-fixed-v1",
+          "bookings": []
+        }
+      },
+      {
+        "operationId": "empty_a",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/occupancy/408ce88c-40cd-499a-a641-28753c827861/a",
+        "invokedOrdinal": 5,
+        "completedOrdinal": 6,
+        "status": 200,
+        "body": {
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "slot": "2099-01-01T10:00:00Z",
+          "revision": "lifecycle-fixed-v1",
+          "guestCount": 0,
+          "bookingIds": []
+        }
+      },
+      {
+        "operationId": "empty_b",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/occupancy/408ce88c-40cd-499a-a641-28753c827861/b",
+        "invokedOrdinal": 7,
+        "completedOrdinal": 8,
+        "status": 200,
+        "body": {
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "slot": "2099-01-01T11:00:00Z",
+          "revision": "lifecycle-fixed-v1",
+          "guestCount": 0,
+          "bookingIds": []
+        }
+      },
+      {
+        "operationId": "empty_c",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/occupancy/408ce88c-40cd-499a-a641-28753c827861/c",
+        "invokedOrdinal": 9,
+        "completedOrdinal": 10,
+        "status": 200,
+        "body": {
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "slot": "2099-01-01T12:00:00Z",
+          "revision": "lifecycle-fixed-v1",
+          "guestCount": 0,
+          "bookingIds": []
+        }
+      },
+      {
+        "operationId": "create_x",
+        "method": "POST",
+        "path": "/journey-api/fixed/pbp/bookings",
+        "invokedOrdinal": 11,
+        "completedOrdinal": 12,
+        "request": {
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+          "customer": "PBP synthetic",
+          "email": "pbp-test@example.invalid",
+          "slot": "2099-01-01T11:00:00Z",
+          "partySize": 6
+        },
+        "key": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-source-x",
+        "status": 201,
+        "body": {
+          "id": "66bf106d-0251-4f93-b95d-96d0779ee299",
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+          "customer": "PBP synthetic",
+          "email": "pbp-test@example.invalid",
+          "slot": "2099-01-01T11:00:00Z",
+          "partySize": 6,
+          "status": "active",
+          "revision": "lifecycle-fixed-v1",
+          "idempotencyKey": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-source-x"
+        }
+      },
+      {
+        "operationId": "create_y",
+        "method": "POST",
+        "path": "/journey-api/fixed/pbp/bookings",
+        "invokedOrdinal": 13,
+        "completedOrdinal": 14,
+        "request": {
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+          "customer": "PBP synthetic",
+          "email": "pbp-test@example.invalid",
+          "slot": "2099-01-01T10:00:00Z",
+          "partySize": 6
+        },
+        "key": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-source-y",
+        "status": 201,
+        "body": {
+          "id": "194f0824-166b-4a09-987c-0e0f7a393019",
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+          "customer": "PBP synthetic",
+          "email": "pbp-test@example.invalid",
+          "slot": "2099-01-01T10:00:00Z",
+          "partySize": 6,
+          "status": "active",
+          "revision": "lifecycle-fixed-v1",
+          "idempotencyKey": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-source-y"
+        }
+      },
+      {
+        "operationId": "create_z",
+        "method": "POST",
+        "path": "/journey-api/fixed/pbp/bookings",
+        "invokedOrdinal": 15,
+        "completedOrdinal": 16,
+        "request": {
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+          "customer": "PBP synthetic",
+          "email": "pbp-test@example.invalid",
+          "slot": "2099-01-01T12:00:00Z",
+          "partySize": 2
+        },
+        "key": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-target-z",
+        "status": 201,
+        "body": {
+          "id": "754f8396-0fe8-4f09-bf7c-d9ea579ba0ba",
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+          "customer": "PBP synthetic",
+          "email": "pbp-test@example.invalid",
+          "slot": "2099-01-01T12:00:00Z",
+          "partySize": 2,
+          "status": "active",
+          "revision": "lifecycle-fixed-v1",
+          "idempotencyKey": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-target-z"
+        }
+      },
+      {
+        "operationId": "seeded_merchant",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/merchant/408ce88c-40cd-499a-a641-28753c827861",
+        "invokedOrdinal": 17,
+        "completedOrdinal": 18,
+        "status": 200,
+        "body": {
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "revision": "lifecycle-fixed-v1",
+          "bookings": [
+            {
+              "id": "66bf106d-0251-4f93-b95d-96d0779ee299",
+              "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+              "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+              "customer": "PBP synthetic",
+              "email": "pbp-test@example.invalid",
+              "slot": "2099-01-01T11:00:00Z",
+              "partySize": 6,
+              "status": "active",
+              "revision": "lifecycle-fixed-v1",
+              "idempotencyKey": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-source-x"
+            },
+            {
+              "id": "194f0824-166b-4a09-987c-0e0f7a393019",
+              "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+              "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+              "customer": "PBP synthetic",
+              "email": "pbp-test@example.invalid",
+              "slot": "2099-01-01T10:00:00Z",
+              "partySize": 6,
+              "status": "active",
+              "revision": "lifecycle-fixed-v1",
+              "idempotencyKey": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-source-y"
+            },
+            {
+              "id": "754f8396-0fe8-4f09-bf7c-d9ea579ba0ba",
+              "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+              "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+              "customer": "PBP synthetic",
+              "email": "pbp-test@example.invalid",
+              "slot": "2099-01-01T12:00:00Z",
+              "partySize": 2,
+              "status": "active",
+              "revision": "lifecycle-fixed-v1",
+              "idempotencyKey": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-target-z"
+            }
+          ]
+        }
+      },
+      {
+        "operationId": "seeded_a",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/occupancy/408ce88c-40cd-499a-a641-28753c827861/a",
+        "invokedOrdinal": 19,
+        "completedOrdinal": 20,
+        "status": 200,
+        "body": {
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "slot": "2099-01-01T10:00:00Z",
+          "revision": "lifecycle-fixed-v1",
+          "guestCount": 6,
+          "bookingIds": [
+            "194f0824-166b-4a09-987c-0e0f7a393019"
+          ]
+        }
+      },
+      {
+        "operationId": "seeded_b",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/occupancy/408ce88c-40cd-499a-a641-28753c827861/b",
+        "invokedOrdinal": 21,
+        "completedOrdinal": 22,
+        "status": 200,
+        "body": {
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "slot": "2099-01-01T11:00:00Z",
+          "revision": "lifecycle-fixed-v1",
+          "guestCount": 6,
+          "bookingIds": [
+            "66bf106d-0251-4f93-b95d-96d0779ee299"
+          ]
+        }
+      },
+      {
+        "operationId": "seeded_c",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/occupancy/408ce88c-40cd-499a-a641-28753c827861/c",
+        "invokedOrdinal": 23,
+        "completedOrdinal": 24,
+        "status": 200,
+        "body": {
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "slot": "2099-01-01T12:00:00Z",
+          "revision": "lifecycle-fixed-v1",
+          "guestCount": 2,
+          "bookingIds": [
+            "754f8396-0fe8-4f09-bf7c-d9ea579ba0ba"
+          ]
+        }
+      },
+      {
+        "operationId": "seeded_x",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/bookings/66bf106d-0251-4f93-b95d-96d0779ee299",
+        "invokedOrdinal": 25,
+        "completedOrdinal": 26,
+        "status": 200,
+        "body": {
+          "id": "66bf106d-0251-4f93-b95d-96d0779ee299",
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+          "customer": "PBP synthetic",
+          "email": "pbp-test@example.invalid",
+          "slot": "2099-01-01T11:00:00Z",
+          "partySize": 6,
+          "status": "active",
+          "revision": "lifecycle-fixed-v1",
+          "idempotencyKey": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-source-x"
+        }
+      },
+      {
+        "operationId": "seeded_y",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/bookings/194f0824-166b-4a09-987c-0e0f7a393019",
+        "invokedOrdinal": 27,
+        "completedOrdinal": 28,
+        "status": 200,
+        "body": {
+          "id": "194f0824-166b-4a09-987c-0e0f7a393019",
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+          "customer": "PBP synthetic",
+          "email": "pbp-test@example.invalid",
+          "slot": "2099-01-01T10:00:00Z",
+          "partySize": 6,
+          "status": "active",
+          "revision": "lifecycle-fixed-v1",
+          "idempotencyKey": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-source-y"
+        }
+      },
+      {
+        "operationId": "seeded_z",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/bookings/754f8396-0fe8-4f09-bf7c-d9ea579ba0ba",
+        "invokedOrdinal": 29,
+        "completedOrdinal": 30,
+        "status": 200,
+        "body": {
+          "id": "754f8396-0fe8-4f09-bf7c-d9ea579ba0ba",
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+          "customer": "PBP synthetic",
+          "email": "pbp-test@example.invalid",
+          "slot": "2099-01-01T12:00:00Z",
+          "partySize": 2,
+          "status": "active",
+          "revision": "lifecycle-fixed-v1",
+          "idempotencyKey": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-target-z"
+        }
+      },
+      {
+        "operationId": "transfer_x",
+        "method": "POST",
+        "path": "/journey-api/fixed/pbp/bookings/66bf106d-0251-4f93-b95d-96d0779ee299/move",
+        "invokedOrdinal": 31,
+        "completedOrdinal": 34,
+        "request": {
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+          "slot": "2099-01-01T12:00:00Z"
+        },
+        "key": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-move-x",
+        "status": 200,
+        "body": {
+          "id": "66bf106d-0251-4f93-b95d-96d0779ee299",
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+          "customer": "PBP synthetic",
+          "email": "pbp-test@example.invalid",
+          "slot": "2099-01-01T12:00:00Z",
+          "partySize": 6,
+          "status": "active",
+          "revision": "lifecycle-fixed-v1",
+          "idempotencyKey": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-source-x"
+        }
+      },
+      {
+        "operationId": "transfer_y",
+        "method": "POST",
+        "path": "/journey-api/fixed/pbp/bookings/194f0824-166b-4a09-987c-0e0f7a393019/move",
+        "invokedOrdinal": 32,
+        "completedOrdinal": 33,
+        "request": {
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+          "slot": "2099-01-01T12:00:00Z"
+        },
+        "key": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-move-y",
+        "status": 409,
+        "body": {
+          "code": "slot_capacity_exceeded"
+        }
+      },
+      {
+        "operationId": "final_merchant",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/merchant/408ce88c-40cd-499a-a641-28753c827861",
+        "invokedOrdinal": 35,
+        "completedOrdinal": 36,
+        "status": 200,
+        "body": {
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "revision": "lifecycle-fixed-v1",
+          "bookings": [
+            {
+              "id": "66bf106d-0251-4f93-b95d-96d0779ee299",
+              "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+              "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+              "customer": "PBP synthetic",
+              "email": "pbp-test@example.invalid",
+              "slot": "2099-01-01T12:00:00Z",
+              "partySize": 6,
+              "status": "active",
+              "revision": "lifecycle-fixed-v1",
+              "idempotencyKey": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-source-x"
+            },
+            {
+              "id": "194f0824-166b-4a09-987c-0e0f7a393019",
+              "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+              "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+              "customer": "PBP synthetic",
+              "email": "pbp-test@example.invalid",
+              "slot": "2099-01-01T10:00:00Z",
+              "partySize": 6,
+              "status": "active",
+              "revision": "lifecycle-fixed-v1",
+              "idempotencyKey": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-source-y"
+            },
+            {
+              "id": "754f8396-0fe8-4f09-bf7c-d9ea579ba0ba",
+              "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+              "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+              "customer": "PBP synthetic",
+              "email": "pbp-test@example.invalid",
+              "slot": "2099-01-01T12:00:00Z",
+              "partySize": 2,
+              "status": "active",
+              "revision": "lifecycle-fixed-v1",
+              "idempotencyKey": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-target-z"
+            }
+          ]
+        }
+      },
+      {
+        "operationId": "final_a",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/occupancy/408ce88c-40cd-499a-a641-28753c827861/a",
+        "invokedOrdinal": 37,
+        "completedOrdinal": 38,
+        "status": 200,
+        "body": {
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "slot": "2099-01-01T10:00:00Z",
+          "revision": "lifecycle-fixed-v1",
+          "guestCount": 6,
+          "bookingIds": [
+            "194f0824-166b-4a09-987c-0e0f7a393019"
+          ]
+        }
+      },
+      {
+        "operationId": "final_b",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/occupancy/408ce88c-40cd-499a-a641-28753c827861/b",
+        "invokedOrdinal": 39,
+        "completedOrdinal": 40,
+        "status": 200,
+        "body": {
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "slot": "2099-01-01T11:00:00Z",
+          "revision": "lifecycle-fixed-v1",
+          "guestCount": 0,
+          "bookingIds": []
+        }
+      },
+      {
+        "operationId": "final_c",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/occupancy/408ce88c-40cd-499a-a641-28753c827861/c",
+        "invokedOrdinal": 41,
+        "completedOrdinal": 42,
+        "status": 200,
+        "body": {
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "slot": "2099-01-01T12:00:00Z",
+          "revision": "lifecycle-fixed-v1",
+          "guestCount": 8,
+          "bookingIds": [
+            "66bf106d-0251-4f93-b95d-96d0779ee299",
+            "754f8396-0fe8-4f09-bf7c-d9ea579ba0ba"
+          ]
+        }
+      },
+      {
+        "operationId": "final_x",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/bookings/66bf106d-0251-4f93-b95d-96d0779ee299",
+        "invokedOrdinal": 43,
+        "completedOrdinal": 44,
+        "status": 200,
+        "body": {
+          "id": "66bf106d-0251-4f93-b95d-96d0779ee299",
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+          "customer": "PBP synthetic",
+          "email": "pbp-test@example.invalid",
+          "slot": "2099-01-01T12:00:00Z",
+          "partySize": 6,
+          "status": "active",
+          "revision": "lifecycle-fixed-v1",
+          "idempotencyKey": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-source-x"
+        }
+      },
+      {
+        "operationId": "final_y",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/bookings/194f0824-166b-4a09-987c-0e0f7a393019",
+        "invokedOrdinal": 45,
+        "completedOrdinal": 46,
+        "status": 200,
+        "body": {
+          "id": "194f0824-166b-4a09-987c-0e0f7a393019",
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+          "customer": "PBP synthetic",
+          "email": "pbp-test@example.invalid",
+          "slot": "2099-01-01T10:00:00Z",
+          "partySize": 6,
+          "status": "active",
+          "revision": "lifecycle-fixed-v1",
+          "idempotencyKey": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-source-y"
+        }
+      },
+      {
+        "operationId": "final_z",
+        "method": "GET",
+        "path": "/journey-api/fixed/pbp/bookings/754f8396-0fe8-4f09-bf7c-d9ea579ba0ba",
+        "invokedOrdinal": 47,
+        "completedOrdinal": 48,
+        "status": 200,
+        "body": {
+          "id": "754f8396-0fe8-4f09-bf7c-d9ea579ba0ba",
+          "testRunId": "408ce88c-40cd-499a-a641-28753c827861",
+          "marker": "PBP-408ce88c-40cd-499a-a641-28753c827861",
+          "customer": "PBP synthetic",
+          "email": "pbp-test@example.invalid",
+          "slot": "2099-01-01T12:00:00Z",
+          "partySize": 2,
+          "status": "active",
+          "revision": "lifecycle-fixed-v1",
+          "idempotencyKey": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-target-z"
+        }
+      }
+    ],
+    "result": {
+      "outcome": "compatible",
+      "reason": "one_real_time_consistent_serial_order_matches",
+      "compatibleOrders": [
+        "x_then_y"
+      ]
+    },
+    "scope": {
+      "supplemental": true,
+      "observer": "server-direct-http",
+      "browserAttestation": false,
+      "syntheticOnly": true,
+      "deploymentAttestation": false,
+      "acceptance": false,
+      "payment": false
+    }
+  },
+  "summary": {
+    "family": "transfer-competition-v1",
+    "seed": 4,
+    "p": 6,
+    "source": "b",
+    "target": "c",
+    "spare": "a",
+    "outcome": "compatible",
+    "expectedTargetGuests": 8,
+    "targetGuestCount": 8,
+    "moveStatuses": {
+      "x": 200,
+      "y": 409
+    },
+    "originals": {
+      "x": "moved",
+      "y": "preserved"
+    },
+    "otherBookingUnchanged": true,
+    "compatibleOrders": [
+      "x_then_y"
+    ]
+  },
+  "scope": {
+    "supplemental": true,
+    "observer": "server-direct-http",
+    "browserAttestation": false,
+    "syntheticOnly": true,
+    "deploymentAttestation": false,
+    "acceptance": false,
+    "payment": false
+  }
+}

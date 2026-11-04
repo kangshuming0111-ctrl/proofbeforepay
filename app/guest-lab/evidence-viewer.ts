@@ -22,6 +22,7 @@ const gates:Record<string,[string,string,string,string]>={
   "reported-observation-consistency":["已报告的浏览器读数","Reported browser observations","按提供的读数重算结果；未运行浏览器。","Recalculate supplied readings; no browser is run."],
   "runtime-bindings":["接口报告关联","HTTP report bindings","核对本版、计划、摘要及冻结目标。","Check delivery, plan, digest and frozen target bindings."],
   "journey-plan-source-mapping":["业务计划原文关联","Journey plan source mapping","核对计划建议保留的原文来源与关联；不验证模型判断。","Check retained source spans and bindings for plan suggestions, not model judgment."],
+  "model-archive-integrity":["不可变模型报告档案","Immutable model report archive","核对原始有效载荷的精确 SHA-256、项目／交付／报告身份及清单与档案一一对应；不证明真实性。","Check exact payload SHA-256, project/delivery/report identity and a complete one-to-one manifest/archive mapping; authenticity is not proven."],
   "model-evidence-explanation":["并发报告 AI 解释关联","Concurrent-report AI explanation","核对解释与指定报告、诊断项的关联；不验证解释结论。","Check explanation bindings to the exact report and diagnostic findings, not its conclusions."],
   "acceptance-references":["验收快照关联","Acceptance snapshot references","核对原快照、报告与明确例外。","Check retained snapshots, reports and explicit exceptions."],
 };
@@ -63,7 +64,7 @@ function gatePanel(){
   const list=node("ol");
   for(const [id,copy] of Object.entries(gates)){
     const check=checks.find(row=>row.id===id);
-    if(!check&&["journey-plan-source-mapping","model-evidence-explanation"].includes(id))continue;
+    if(!check&&["journey-plan-source-mapping","model-evidence-explanation","model-archive-integrity"].includes(id))continue;
     const outcome=check?.status??"not_checked",row=node("li",`ev-gate ${outcome}`),heading=node("div","ev-gate-heading");
     append(heading,node("h3","",tr(copy[0],copy[1])),node("span","ev-gate-status",outcome==="consistent"?tr("一致","Consistent"):outcome==="inconsistent"?tr("不一致","Inconsistent"):tr("未核对","Not checked")));
     append(row,heading,node("p","",tr(copy[2],copy[3])));

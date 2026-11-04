@@ -1,0 +1,58 @@
+{
+  "schema": "developer-operated-native-d1-corroboration-v1",
+  "runId": "408ce88c-40cd-499a-a641-28753c827861",
+  "source": "Sites read_database_overview then bounded read_database_table_rows of live public lab DB;3rows, no nextpage",
+  "scope": "Independent operator DB read for this controlled synthetic namespace. Not a third-party seller, browser execution, indefinite durability, acceptance or payment.",
+  "rows": [
+    {
+      "id": "194f0824-166b-4a09-987c-0e0f7a393019",
+      "namespace": "lifecycle-fixed-v1:408ce88c-40cd-499a-a641-28753c827861",
+      "profile": "fixed",
+      "test_run_id": "408ce88c-40cd-499a-a641-28753c827861",
+      "revision": "lifecycle-fixed-v1",
+      "idempotency_key": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-source-y",
+      "slot": "2099-01-01T10:00:00Z",
+      "party_size": 6,
+      "status": "active",
+      "created_at": "2026-11-04T06:21:57.949Z",
+      "updated_at": "2026-11-04T06:21:57.949Z",
+      "expires_at": "2026-11-04T07:21:57.949Z"
+    },
+    {
+      "id": "66bf106d-0251-4f93-b95d-96d0779ee299",
+      "namespace": "lifecycle-fixed-v1:408ce88c-40cd-499a-a641-28753c827861",
+      "profile": "fixed",
+      "test_run_id": "408ce88c-40cd-499a-a641-28753c827861",
+      "revision": "lifecycle-fixed-v1",
+      "idempotency_key": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-source-x",
+      "slot": "2099-01-01T12:00:00Z",
+      "party_size": 6,
+      "status": "active",
+      "created_at": "2026-11-04T06:21:57.559Z",
+      "updated_at": "2026-11-04T06:21:59.775Z",
+      "expires_at": "2026-11-04T07:21:57.559Z"
+    },
+    {
+      "id": "754f8396-0fe8-4f09-bf7c-d9ea579ba0ba",
+      "namespace": "lifecycle-fixed-v1:408ce88c-40cd-499a-a641-28753c827861",
+      "profile": "fixed",
+      "test_run_id": "408ce88c-40cd-499a-a641-28753c827861",
+      "revision": "lifecycle-fixed-v1",
+      "idempotency_key": "pbp-408ce88c-40cd-499a-a641-28753c827861-transfer-competition-target-z",
+      "slot": "2099-01-01T12:00:00Z",
+      "party_size": 2,
+      "status": "active",
+      "created_at": "2026-11-04T06:21:58.217Z",
+      "updated_at": "2026-11-04T06:21:58.217Z",
+      "expires_at": "2026-11-04T07:21:58.217Z"
+    }
+  ],
+  "facts": {
+    "nativeRows": 3,
+    "activeRows": 3,
+    "targetGuests": 8,
+    "losingSourceGuests": 6,
+    "allNativeRowsRead": true
+  },
+  "expires": "Native staging records have a one-hour TTL; this file preserves the observed result."
+}
