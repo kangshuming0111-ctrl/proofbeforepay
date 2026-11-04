@@ -3,13 +3,14 @@ import {DomainError} from "./domain.ts";
 import {checkJourneyIntegrationManifest,type JourneyIntegrationManifest} from "./journey-integration-preflight.ts";
 import {validateJourneyRegistration,type JourneyRegistrationSnapshot} from "./project-journey.ts";
 import type {JourneyScenario} from "./journey-checks.ts";
+import {validateIntegrationDelegation,type IntegrationDelegation,assertAssignedIntegrationOperator} from "./integration-delegation.ts";
 import {runtimeDeliveryDigest} from "./runtime-project.ts";
 
 export const INTEGRATION_REQUEST_LIMIT=8;
 export const INTEGRATION_HISTORY_LIMIT=8;
 export type IntegrationStatus="requested"|"needs_changes"|"rejected"|"approved";
 export type IntegrationEvent={revision:number;status:IntegrationStatus;at:string;actorId:string;actorRole:"seller"|"operator";reason?:string};
-export type SellerIntegrationRequest={id:string;projectId:string;deliveryId:string;deliveryDigest:string;manifest:JourneyIntegrationManifest;manifestDigest:string;status:IntegrationStatus;revision:number;submittedAt:string;updatedAt:string;submittedBy:string;previousRequestId?:string;history:IntegrationEvent[];registration?:JourneyRegistrationSnapshot};
+export type SellerIntegrationRequest={id:string;projectId:string;deliveryId:string;deliveryDigest:string;manifest:JourneyIntegrationManifest;manifestDigest:string;status:IntegrationStatus;revision:number;submittedAt:string;updatedAt:string;submittedBy:string;previousRequestId?:string;history:IntegrationEvent[];registration?:JourneyRegistrationSnapshot;delegation?:IntegrationDelegation};
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u;
 const HASH=/^[a-f0-9]{64}$/u;
 const STATUSES:IntegrationStatus[]=["requested","needs_changes","rejected","approved"];
@@ -39,7 +40,7 @@ export async function newIntegrationRequest(quote:ProofQuote,role:ProofRole,acto
  if(role!=="seller")throw new DomainError("Only this project's seller can submit a staging integration.",403);
  const input=object(value,["action","deliveryId","manifest","previousRequestId"],["action","deliveryId","manifest"]);if(input.action!=="submit")throw new DomainError("Choose submit for a new integration request.");
  const binding=await integrationDelivery(quote,input.deliveryId),parsed=await integrationManifest(input.manifest),at=new Date(now).toISOString();text(actorId,"Seller identity");
- if(input.previousRequestId!==undefined&&(!previous||previous.id!==input.previousRequestId||previous.projectId!==quote.id||!["needs_changes","rejected"].includes(previous.status)))throw new DomainError("Resubmit only against a retained request that needs changes or was rejected.",409);
+ if(input.previousRequestId!==undefined&&(!previous||previous.id!==input.previousRequestId||previous.projectId!==quote.id||!["needs_changes","rejected"].includes(previous.status)&&previous.delegation?.active!==false))throw new DomainError("Resubmit only against a retained request that needs changes or was rejected.",409);
  const id=crypto.randomUUID();return{id,projectId:quote.id,...binding,...parsed,status:"requested",revision:1,submittedAt:at,updatedAt:at,submittedBy:actorId,...(previous?{previousRequestId:previous.id}:{}),history:[{revision:1,status:"requested",at,actorId,actorRole:"seller"}]};
 }
 function approvedRegistration(request:SellerIntegrationRequest,approval:Record<string,unknown>,now:number):JourneyRegistrationSnapshot{
@@ -48,6 +49,16 @@ function approvedRegistration(request:SellerIntegrationRequest,approval:Record<s
 }
 export async function reviewIntegrationRequest(quote:ProofQuote,request:SellerIntegrationRequest,actorId:string,buyerId:string,role:ProofRole,operatorIds:readonly string[],value:unknown,now=Date.now()):Promise<SellerIntegrationRequest>{
  if(!canReviewIntegration(actorId,buyerId,role,operatorIds))throw new DomainError("Only a configured operator who owns this project can review staging requests.",403);
+ return applyIntegrationDecision(quote,request,actorId,value,now);
+}
+export async function reviewAssignedIntegrationRequest(quote:ProofQuote,request:SellerIntegrationRequest,actorId:string,buyerId:string,sellerId:string|null,operatorIds:readonly string[],value:unknown,now=Date.now()):Promise<SellerIntegrationRequest>{
+ assertAssignedIntegrationOperator(request,actorId,buyerId,sellerId,operatorIds);
+ const envelope=object(value,["action","requestId","expectedRevision","expectedDelegationRevision","status","reason","approval"],["action","requestId","expectedRevision","expectedDelegationRevision","status","reason"]);
+ if(envelope.expectedDelegationRevision!==request.delegation!.revision)throw new DomainError("Review access changed. Refresh the assigned application.",409);
+ const {expectedDelegationRevision:_,...input}=envelope;
+ return applyIntegrationDecision(quote,request,actorId,input,now);
+}
+async function applyIntegrationDecision(quote:ProofQuote,request:SellerIntegrationRequest,actorId:string,value:unknown,now:number):Promise<SellerIntegrationRequest>{
  const input=object(value,["action","requestId","expectedRevision","status","reason","approval"],["action","requestId","expectedRevision","status","reason"]);
  if(input.action!=="review"||input.requestId!==request.id||input.expectedRevision!==request.revision)throw new DomainError("The integration request changed. Refresh before reviewing.",409);
  if(!["needs_changes","rejected","approved"].includes(String(input.status))||request.status!=="requested"&&!(request.status==="approved"&&input.status==="rejected"))throw new DomainError("This integration decision is final; submit a new corrected manifest when requested.",409);
@@ -61,7 +72,7 @@ export async function reviewIntegrationRequest(quote:ProofQuote,request:SellerIn
  return{...next,...(registration?{registration}:{})};
 }
 export async function validateIntegrationRequest(value:unknown):Promise<SellerIntegrationRequest>{
- const x=object(value,["id","projectId","deliveryId","deliveryDigest","manifest","manifestDigest","status","revision","submittedAt","updatedAt","submittedBy","previousRequestId","history","registration"],["id","projectId","deliveryId","deliveryDigest","manifest","manifestDigest","status","revision","submittedAt","updatedAt","submittedBy","history"]);
+ const x=object(value,["id","projectId","deliveryId","deliveryDigest","manifest","manifestDigest","status","revision","submittedAt","updatedAt","submittedBy","previousRequestId","history","registration","delegation"],["id","projectId","deliveryId","deliveryDigest","manifest","manifestDigest","status","revision","submittedAt","updatedAt","submittedBy","history"]);
  if(typeof x.id!=="string"||!UUID.test(x.id)||typeof x.deliveryDigest!=="string"||!HASH.test(x.deliveryDigest)||!STATUSES.includes(x.status as IntegrationStatus)||!Number.isInteger(x.revision)||Number(x.revision)<1||Number(x.revision)>INTEGRATION_HISTORY_LIMIT)throw new DomainError("Saved integration identity is invalid.",409);
  text(x.projectId,"Project ID");text(x.deliveryId,"Delivery ID");text(x.submittedBy,"Seller identity");stamp(x.submittedAt);stamp(x.updatedAt);if(x.previousRequestId!==undefined&&(typeof x.previousRequestId!=="string"||!UUID.test(x.previousRequestId)))throw new DomainError("Saved integration predecessor is invalid.",409);
  const parsed=await integrationManifest(x.manifest);if(parsed.manifestDigest!==x.manifestDigest)throw new DomainError("Saved integration manifest digest changed.",409);
@@ -69,5 +80,6 @@ export async function validateIntegrationRequest(value:unknown):Promise<SellerIn
  let previousTime=0;for(let i=0;i<x.history.length;i++){const e=object(x.history[i],["revision","status","at","actorId","actorRole","reason"],["revision","status","at","actorId","actorRole"]),time=Date.parse(stamp(e.at));text(e.actorId,"Decision identity");if(e.revision!==i+1||time<previousTime||i===0&&(e.status!=="requested"||e.actorRole!=="seller"||e.actorId!==x.submittedBy||e.at!==x.submittedAt||e.reason!==undefined)||i>0&&(e.actorRole!=="operator"||!["needs_changes","rejected","approved"].includes(String(e.status)))||i>1&&((x.history[i-1]as IntegrationEvent).status!=="approved"||e.status!=="rejected"))throw new DomainError("Saved integration decision sequence changed.",409);if(i>0)text(e.reason,"Decision reason",10,500);previousTime=time;}
  const last=x.history.at(-1)as IntegrationEvent;if(last.status!==x.status||last.at!==x.updatedAt)throw new DomainError("Saved integration current state differs from its history.",409);
  if(x.registration!==undefined){const registration=validateJourneyRegistration(x.registration),approved=x.history.find(e=>(e as IntegrationEvent).status==="approved")as IntegrationEvent|undefined;if(registration.id!==`onboard-${x.id}`||registration.projectId!==x.projectId||registration.frontendBundleDigest!==x.deliveryDigest||registration.frontendEntryUrl!==parsed.manifest.deployment.frontendEntryUrl||registration.backendBaseUrl!==parsed.manifest.deployment.backendBaseUrl||registration.deploymentRevision!==parsed.manifest.native.deploymentRevision||registration.bridgeRevision!==parsed.manifest.bridge.revision||!approved||registration.registrationRevision!==`approval-${approved.revision}`||Date.parse(registration.expiresAt)<=Date.parse(approved.at)||Date.parse(registration.expiresAt)>Date.parse(approved.at)+30*24*60*60*1000)throw new DomainError("Saved approved target differs from the reviewed manifest.",409);}else if(x.status==="approved"||x.history.some(e=>(e as IntegrationEvent).status==="approved"))throw new DomainError("Approved integration has no retained registration.",409);
+ if(x.delegation!==undefined)validateIntegrationDelegation(x.delegation,x.submittedAt as string,x.submittedBy as string);
  return structuredClone(x)as SellerIntegrationRequest;
 }

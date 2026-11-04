@@ -42,6 +42,17 @@ test("judge export preserves explicit TypeScript module sources needed by clean-
   }
 });
 
+test("template licences are copied byte-for-byte without admitting other TXT or similarly named notes", async t => {
+  const {root,base}=await fixture(t),directory=path.join(root,"docs/fixtures/assessment-transfer-2026-11-04");
+  await mkdir(directory,{recursive:true});
+  for(const name of["bootstrap","florist","html5up"])await writeFile(path.join(directory,`${name}-LICENSE.txt`),`Synthetic ${name} licence bytes.\n`);
+  for(const name of["personal-notes.txt","private-LICENSE.txt","bootstrap-LICENSE.txt.bak"])await writeFile(path.join(directory,name),"not authorised by the source allowlist\n");
+  const result=await buildJudgePack(root,path.join(base,"export")),manifest=JSON.parse(await readFile(result.manifest,"utf8"));
+  const copied=manifest.files.map(item=>item.file).filter(name=>name.endsWith(".txt"));
+  assert.deepEqual(copied,["bootstrap","florist","html5up"].map(name=>`docs/fixtures/assessment-transfer-2026-11-04/${name}-LICENSE.txt`));
+  for(const file of copied)assert.deepEqual(await readFile(path.join(result.sourceDirectory,file)),await readFile(path.join(root,file)));
+});
+
 test("judge export refuses a source symlink instead of following it outside the source tree", async t => {
   const { root, base } = await fixture(t);
   await writeFile(path.join(base, "outside.ts"), "synthetic external file");

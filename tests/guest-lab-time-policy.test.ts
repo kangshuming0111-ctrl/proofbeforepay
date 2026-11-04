@@ -1,0 +1,37 @@
+import assert from "node:assert/strict";
+import test,{before,after} from "node:test";
+import {DatabaseSync} from "node:sqlite";
+import {readFileSync,mkdtempSync,rmSync} from "node:fs";
+import {createServer,type Server} from "node:http";
+import {createRequire} from "node:module";
+import {tmpdir} from "node:os";
+import path from "node:path";
+import {fileURLToPath,pathToFileURL} from "node:url";
+import {validateTimeSession,type TimePolicySession} from "../lib/time-policy.ts";
+const source=fileURLToPath(new URL("../",import.meta.url)),declaredOrigin="https://time-guest.example.org",wireFetch=globalThis.fetch;
+let scratch:string,db:DatabaseSync,server:Server,origin:string;
+const requests:{path:string;method:string;headers:Record<string,string|string[]|undefined>;body?:Record<string,unknown>}[]=[];
+before(async()=>{
+ scratch=mkdtempSync(path.join(tmpdir(),"pbp-time-policy-http-"));const require=createRequire(import.meta.url),esbuild=createRequire(require.resolve("wrangler/package.json"))("esbuild"),outfile=path.join(scratch,"worker.mjs");
+ await esbuild.build({entryPoints:[path.join(source,"app/guest-lab/server.ts")],bundle:true,platform:"node",format:"esm",target:"node22",outfile,logLevel:"silent",plugins:[{name:"empty-assets",setup(build:{onResolve:(o:unknown,c:()=>unknown)=>void;onLoad:(o:unknown,c:()=>unknown)=>void}){build.onResolve({filter:/^pbp-guest-assets$/},()=>({path:"assets",namespace:"assets"}));build.onLoad({filter:/.*/,namespace:"assets"},()=>({contents:"export default {}",loader:"js"}));}}]});
+ const worker=(await import(pathToFileURL(outfile).href)).default as{fetch(r:Request,e:Record<string,unknown>):Promise<Response>};db=new DatabaseSync(":memory:");db.exec(readFileSync(path.join(source,"tests/fixtures/seller-staging-hosted/0007_time_policy.sql"),"utf8"));
+ const binding={prepare(sql:string){const stmt=db.prepare(sql);return{bind(...args:(string|number|null)[]){return{async first(){return stmt.get(...args)??null;},async run(){return{meta:{changes:Number(stmt.run(...args).changes)}};}};}};}};
+ server=createServer(async(req,res)=>{try{const parts:Uint8Array[]=[];for await(const p of req)parts.push(p);const headers=new Headers();for(const[k,v]of Object.entries(req.headers))if(v!==undefined)headers.set(k,Array.isArray(v)?v.join(","):v);const bytes=Buffer.concat(parts);requests.push({path:req.url!,method:req.method!,headers:req.headers,...(bytes.length?{body:JSON.parse(bytes.toString())}:{})});const response=await worker.fetch(new Request(`${declaredOrigin}${req.url}`,{method:req.method,headers,...(bytes.length?{body:bytes}:{})}),{DB:binding});res.statusCode=response.status;response.headers.forEach((v,k)=>res.setHeader(k,v));res.end(Buffer.from(await response.arrayBuffer()));}catch{res.statusCode=500;res.end("Local synthetic Worker failed");}});
+ await new Promise<void>(resolve=>server.listen(0,"127.0.0.1",resolve));const address=server.address();if(!address||typeof address==="string")throw new Error("Owned test listener unavailable");origin=`http://127.0.0.1:${address.port}`;
+ // Test-only transport mapping: the production declaration stays HTTPS while
+ // the observed native service traffic uses this owned loopback HTTP listener.
+ // No production URL validator, TLS setting or arbitrary-host access is changed.
+ globalThis.fetch=async(input,init)=>{const url=new URL(typeof input==="string"||input instanceof URL?input:input.url);if(url.origin!==declaredOrigin)return wireFetch(input,init);const response=await wireFetch(`${origin}${url.pathname}`,init);return new Response(response.body,{status:response.status,headers:response.headers});};
+});
+after(async()=>{globalThis.fetch=wireFetch;if(server){server.closeIdleConnections();await new Promise<void>(resolve=>server.close(()=>resolve()));}db?.close();if(scratch)rmSync(scratch,{recursive:true,force:true});});
+function post(input:unknown,withOrigin=true){return wireFetch(`${origin}/api/time-policy-lab`,{method:"POST",headers:{"Content-Type":"application/json",...(withOrigin?{Origin:declaredOrigin}:{})},body:JSON.stringify(input)});}
+test("public time experiment actually sends31owned HTTP requests into independent native SQLite for each controlled policy",async context=>{
+ for(const[profile,mismatches,rows]of [["fixed",[],7],["cancel-credit",["lead_below"],8],["move-loss",["dst_gap","dst_fold"],9]]as const){const offset=requests.length,response=await post({profile,consent:true});assert.equal(response.status,200);const report=await response.json()as{profile:string;requestCount:number;postCount:number;scope:Record<string,unknown>;session:TimePolicySession};const s=validateTimeSession(report.session);assert.equal(report.profile,profile);assert.equal(s.status,"complete");assert.deepEqual(s.results!.filter(r=>r.outcome==="mismatch").map(r=>r.id),mismatches);assert.equal(s.results!.filter(r=>r.outcome==="unknown").length,0);assert.equal(report.requestCount,31);assert.equal(report.postCount,15);assert.equal(report.scope.acceptance,false);assert.equal(report.scope.deploymentAttestation,false);assert.equal(report.scope.refreshClearsReport,true);
+  const backend=requests.slice(offset).filter(r=>r.path.includes("/pbp/time-policy/"));assert.equal(backend.length,31);assert.equal(backend.filter(r=>r.method==="POST").length,15);for(const row of backend){assert.ok(row.path.startsWith(`/seller-reference/${profile}/pbp/time-policy/`));assert.equal(row.headers.authorization,undefined);assert.equal(row.headers.cookie,undefined);assert.equal(row.headers.origin,undefined);if(row.body){assert.equal("expected"in row.body,false);assert.equal("policy"in row.body,false);}}
+  const native=db.prepare("SELECT case_id,status,instant,local_start FROM lab_time_policy_receipts WHERE run_id = ? ORDER BY case_id").all(s.id);assert.equal(native.length,rows);assert.equal(native.filter(r=>r.status==="cancelled").length,2);assert.equal(native.some(r=>r.case_id==="lead_below"),profile==="cancel-credit");assert.equal(native.some(r=>r.case_id==="dst_gap"),profile==="move-loss");
+  const tampered=structuredClone(s);tampered.results![0].outcome="mismatch";assert.throws(()=>validateTimeSession(tampered));context.diagnostic(JSON.stringify({profile,requests:backend.length,posts:15,nativeRows:native.length,mismatches,scope:"bundled public route + explicit HTTPS-to-owned-loopback mapping + actual HTTP and independent SQLite; not hosted or browser evidence"}));
+ }
+});
+test("public time API rejects absent consent, caller targets/policies, unsupported profiles and cross-origin before any backend request",async()=>{
+ const before=requests.length,count=db.prepare("SELECT count(*) n FROM lab_time_policy_receipts").get()!.n;for(const value of [{profile:"fixed",consent:false},{profile:"fixed",consent:true,url:"https://caller.example"},{profile:"fixed",consent:true,policy:{}},{profile:"retry-duplicate",consent:true},{profile:"fixed"}])assert.equal((await post(value)).status,400);assert.equal((await post({profile:"fixed",consent:true},false)).status,403);assert.equal((await wireFetch(`${origin}/api/time-policy-lab`)).status,405);assert.equal(db.prepare("SELECT count(*) n FROM lab_time_policy_receipts").get()!.n,count);assert.equal(requests.slice(before).filter(r=>r.path.includes("/pbp/time-policy/")).length,0);
+});

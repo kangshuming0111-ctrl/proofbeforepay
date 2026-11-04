@@ -7,8 +7,11 @@ import { spawnSync } from "node:child_process";
 // Build a local reviewable export. This never reads runtime credentials, publishes
 // a repository, changes Site access, starts a provider call or installs packages.
 const ROOT_FILES = ["README.md", "LICENSE", "AGENTS.md", "package.json", "pnpm-lock.yaml", "pnpm-workspace.yaml", "tsconfig.json", "next.config.ts", "vite.config.ts", "postcss.config.mjs", "eslint.config.mjs", "drizzle.config.ts", "cloudflare-env.d.ts", "components.json", ".gitignore", ".agents/skills/proofbeforepay-delivery/SKILL.md", ".agents/skills/proofbeforepay-delivery/references/code-map.md"];
-const SOURCE_DIRS = ["app", "lib", "db", "drizzle", "components", "hooks", "worker", "vendor", "public", "scripts", "tests", "docs", "examples/seller-staging", "examples/seller-capacity-staging", "examples/seller-lifecycle-staging", "examples/seller-workshop-python"];
+const SOURCE_DIRS = ["app", "lib", "db", "drizzle", "components", "hooks", "worker", "vendor", "public", "scripts", "tests", "docs", "examples/seller-staging", "examples/seller-capacity-staging", "examples/seller-lifecycle-staging", "examples/seller-workshop-python", "examples/seller-dom-staging", "examples/seller-time-policy-staging"];
 const EXTENSIONS = new Set([".html", ".ts", ".tsx", ".mts", ".cts", ".js", ".mjs", ".cjs", ".css", ".json", ".sql", ".md", ".yaml", ".yml", ".svg", ".py", ".sh", ".csv", ".LICENSE"]);
+// Exact attribution files for the three licensed evaluator-template sources.
+// Do not broaden this to arbitrary TXT documents or owner notes.
+const LICENSE_TEXT_FILES = new Set(["bootstrap", "florist", "html5up"].map(name => `docs/fixtures/assessment-transfer-2026-11-04/${name}-LICENSE.txt`));
 const DENIED_PART = /^(?:\.git|node_modules|dist|\.next|\.wrangler|\.sites-runtime|outputs|work|\.codex|__pycache__|\.env(?:\..*)?|\.dev\.vars(?:\..*)?|credentials?|cookies?|secrets?|private[-_]?keys?|auth[-_]?state|storage[-_]?state)$/iu;
 const SECRET_LIKE = /\bBearer\s+[A-Za-z0-9._~+/=-]{24,}|\bsk-[A-Za-z0-9_-]{24,}|-----BEGIN [A-Z ]*PRIVATE KEY-----/u;
 
@@ -41,7 +44,7 @@ export async function collectPublicSource(root) {
       const name = `${relative}/${entry.name}`;
       if (entry.isSymbolicLink()) throw new Error(`Symlink source rejected: ${name}`);
       if (entry.isDirectory()) await walk(name);
-      else if (entry.isFile() && EXTENSIONS.has(path.extname(entry.name))) names.push(name);
+      else if (entry.isFile() && (EXTENSIONS.has(path.extname(entry.name)) || LICENSE_TEXT_FILES.has(name))) names.push(name);
     }
   }
   for (const directory of SOURCE_DIRS) {
@@ -110,6 +113,10 @@ The separate /journeys.html experiment adds twenty browser-lifecycle checkpoints
 Check connection reads only target metadata before consenting to booking writes; it is not an acceptance report. The separate public lab's /verify.html checks a selected local evidence JSON in browser memory without uploads, providers or reissuing historical requests. Internally consistent unsigned evidence does not establish authenticity, actual execution or payment. The native capacity source and offline CLI are included in this package. You can select tests/fixtures/recorded-capacity-v3/evidence.json in the browser verifier, or pass it to the CLI. Its companion README identifies the actual developer-operated test origin and limits; it is a recorded fictional example, not a new request or independent human study.
 
 The isolated no-key helper intentionally disables live providers. In a separate manual checkout with your own DeepSeek key, the explicit AI business-check suggestion action can propose two typed prices and phone copy directly from the original requirements. Each must be adopted/edited and confirmed. The public scripts/evaluation-results/2026-11-02-business-suggestion-baseline.json and followup.json preserve actual synthetic model outputs; reading those files is recorded evidence, not a new live request. An invited seller sees the same locked business plan before joining, and source assessment receives that validated plan without browser-report blocks.
+
+## Additional functional checks (4 November 2026)
+
+Read docs/GAP-CLOSURE-2026-11-04.md for the scoped independent operator queue, supplemental time policies, existing-form DOM adapter and recorded regression/transfer results. The public https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/time-policy.html experiment compares corrected, advance-notice-defective and DST-defective native services using actual synthetic requests and independent readback. Private project time policies are saved separately against exact uploads. Seller cooperation is required for dynamic forms; no arbitrary-site or deployment attestation is claimed. Full original failures and independent AI whole-answer reviews remain retained.
 
 ## Optional providers
 

@@ -1,0 +1,409 @@
+{
+  "schema": "proofbeforepay-transfer-corpus-provenance-v1",
+  "corpusFile": "scripts/assessment-transfer-corpus-2026-11-04.json",
+  "corpusSha256": "8dd598e44e8e94da8d9889454bfbd8d8355bddd938751852a58641ca7917427f",
+  "templateFamilies": [
+    {
+      "id": "bootstrap",
+      "source": "https://github.com/StartBootstrap/startbootstrap-business-casual",
+      "author": "Start Bootstrap LLC",
+      "license": "MIT",
+      "revision": "b6f928934386a54e08c2e7f40ebd9e4d7510bba4",
+      "licenseCopy": "bootstrap-LICENSE.txt",
+      "priorFamilyExposure": "Used in previous file/resource validation; not a held-out template family"
+    },
+    {
+      "id": "html5up",
+      "source": "https://html5up.net/strongly-typed",
+      "author": "AJ / HTML5 UP",
+      "license": "CC BY 3.0",
+      "revision": "official ZIP SHA recorded in source manifest",
+      "licenseCopy": "html5up-LICENSE.txt",
+      "priorFamilyExposure": "Used in previous file/resource validation; not a held-out template family"
+    },
+    {
+      "id": "florist",
+      "source": "https://github.com/8bsite/florist-website-template",
+      "author": "8B",
+      "license": "MIT",
+      "revision": "e4e077893418f6efc43a4a9e9f18ca5c0c209bcf",
+      "licenseCopy": "florist-LICENSE.txt",
+      "priorFamilyExposure": "Used in previous file/resource validation; not a held-out template family"
+    }
+  ],
+  "upstreamAdaptedInputs": [
+    {
+      "file": "outputs/four-improvements-2026-11-02/licensed-fixtures/8b-florist/adapted/assets/css/main.css",
+      "sha256": "9108b8243b66954c21b0f115b34b44ba85887dfbbb635af70ef5688d63f1e3e6",
+      "bytes": 58383,
+      "family": "florist"
+    },
+    {
+      "file": "outputs/four-improvements-2026-11-02/licensed-fixtures/8b-florist/adapted/assets/css/offline.css",
+      "sha256": "48e040e317b1314f0bfefe162882fe3a1bcfd10b701a69e1322597084bd572e8",
+      "bytes": 364,
+      "family": "florist"
+    },
+    {
+      "file": "outputs/four-improvements-2026-11-02/licensed-fixtures/8b-florist/adapted/index.html",
+      "sha256": "932845c5de634eea239f684de1e3dae9136e267f86d894f34552dfde8d3124c1",
+      "bytes": 39943,
+      "family": "florist"
+    },
+    {
+      "file": "outputs/four-improvements-2026-11-02/licensed-fixtures/html5up-strongly-typed/adapted/assets/css/main.css",
+      "sha256": "e1b2ebabd3c94fed59dbaec4511093e338378cd3c0e7fc7e425488a05bb6c360",
+      "bytes": 44067,
+      "family": "html5up"
+    },
+    {
+      "file": "outputs/four-improvements-2026-11-02/licensed-fixtures/html5up-strongly-typed/adapted/assets/css/offline.css",
+      "sha256": "4097998705bfe3d6d62fea677ddc02cd0b84b6ed4612a40f0192e3554fef5db3",
+      "bytes": 242,
+      "family": "html5up"
+    },
+    {
+      "file": "outputs/four-improvements-2026-11-02/licensed-fixtures/html5up-strongly-typed/adapted/index.html",
+      "sha256": "7cb15b8a50091e922b6c2ac15c4e954f63c75b3eba71d376aa8f1b563efeb51d",
+      "bytes": 14413,
+      "family": "html5up"
+    },
+    {
+      "file": "outputs/four-improvements-2026-11-02/licensed-fixtures/html5up-strongly-typed/adapted/no-sidebar.html",
+      "sha256": "ff4d8249989db1d3e563b7cf35490604cf9370d05d6454cdbbd77fd4dee3c9ce",
+      "bytes": 10188,
+      "family": "html5up"
+    },
+    {
+      "file": "outputs/four-improvements-2026-11-02/licensed-fixtures/startbootstrap-business-casual/adapted/assets/css/offline.css",
+      "sha256": "9ed9c8d0955ca52647d53d19d125252a5eebda1f96b52a56a82ad5078fdca319",
+      "bytes": 322,
+      "family": "bootstrap"
+    },
+    {
+      "file": "outputs/four-improvements-2026-11-02/licensed-fixtures/startbootstrap-business-casual/adapted/assets/css/theme-01.css",
+      "sha256": "1c0b3b65777393c583d449ebc79b9ebd000b01d0b5225abba030659eff3ef9ac",
+      "bytes": 52043,
+      "family": "bootstrap"
+    },
+    {
+      "file": "outputs/four-improvements-2026-11-02/licensed-fixtures/startbootstrap-business-casual/adapted/assets/css/theme-02.css",
+      "sha256": "0490d9390f34e6479923b3327ff08efe542006e063c15c07320c27792e0fd23c",
+      "bytes": 52277,
+      "family": "bootstrap"
+    },
+    {
+      "file": "outputs/four-improvements-2026-11-02/licensed-fixtures/startbootstrap-business-casual/adapted/assets/css/theme-03.css",
+      "sha256": "5d9fc1a62ae7c387928daa6c06f1ea4bddf675a9239ab99262228f256aec7ee2",
+      "bytes": 52069,
+      "family": "bootstrap"
+    },
+    {
+      "file": "outputs/four-improvements-2026-11-02/licensed-fixtures/startbootstrap-business-casual/adapted/assets/css/theme-04.css",
+      "sha256": "5596681385d9e51f309c662a3395106e9c73c4ef6d27024f97ef5399acfe3142",
+      "bytes": 56128,
+      "family": "bootstrap"
+    },
+    {
+      "file": "outputs/four-improvements-2026-11-02/licensed-fixtures/startbootstrap-business-casual/adapted/assets/css/theme-05.css",
+      "sha256": "945e42a69b15fe4a88b8de8b7452b7e82bf18a5ca5c3f6a08e55bafebaf212a4",
+      "bytes": 4344,
+      "family": "bootstrap"
+    },
+    {
+      "file": "outputs/four-improvements-2026-11-02/licensed-fixtures/startbootstrap-business-casual/adapted/index.html",
+      "sha256": "6734be786ad1e9ebb01b191ff60904062b206e88dd41543b671e38a2d3cda5d3",
+      "bytes": 5104,
+      "family": "bootstrap"
+    },
+    {
+      "file": "outputs/four-improvements-2026-11-02/licensed-fixtures/startbootstrap-business-casual/adapted/store.html",
+      "sha256": "9cbff71eb422cebd17363e175a40e7e255324ecf1c3c8f1a3629db1a36cf04a3",
+      "bytes": 7794,
+      "family": "bootstrap"
+    }
+  ],
+  "projects": [
+    {
+      "id": "meridian-service-pages",
+      "family": "bootstrap",
+      "files": [
+        {
+          "file": "index.html",
+          "bytes": 3104,
+          "sha256": "ea5a57de22de901b292a518ed40619c933f200dd352c5d5fd720b1bc60415b3d"
+        },
+        {
+          "file": "store.html",
+          "bytes": 3122,
+          "sha256": "1bd7c9751ee5c56a72f2eae5ff3019797e0da841f61a1c146e42500a749eb84e"
+        },
+        {
+          "file": "assets/css/offline.css",
+          "bytes": 322,
+          "sha256": "9ed9c8d0955ca52647d53d19d125252a5eebda1f96b52a56a82ad5078fdca319"
+        },
+        {
+          "file": "assets/css/theme-01.css",
+          "bytes": 52043,
+          "sha256": "1c0b3b65777393c583d449ebc79b9ebd000b01d0b5225abba030659eff3ef9ac"
+        },
+        {
+          "file": "assets/css/theme-02.css",
+          "bytes": 52277,
+          "sha256": "0490d9390f34e6479923b3327ff08efe542006e063c15c07320c27792e0fd23c"
+        },
+        {
+          "file": "assets/css/theme-03.css",
+          "bytes": 52069,
+          "sha256": "5d9fc1a62ae7c387928daa6c06f1ea4bddf675a9239ab99262228f256aec7ee2"
+        },
+        {
+          "file": "assets/css/theme-04.css",
+          "bytes": 56128,
+          "sha256": "5596681385d9e51f309c662a3395106e9c73c4ef6d27024f97ef5399acfe3142"
+        },
+        {
+          "file": "assets/css/theme-05.css",
+          "bytes": 4319,
+          "sha256": "b56b0c844897f5a69d99571b815bca60d839285ba792afc30fc187efb681c264"
+        }
+      ]
+    },
+    {
+      "id": "harbour-visitor-pages",
+      "family": "bootstrap",
+      "files": [
+        {
+          "file": "index.html",
+          "bytes": 3072,
+          "sha256": "44a5c4a1f0c57f3d1ecf6b2157a440edbdc8360b3e9a9a0de585cdc7cc36936d"
+        },
+        {
+          "file": "store.html",
+          "bytes": 3067,
+          "sha256": "27398ce45b48bc2f7faed448181ac287059481e21fdcfcc26d2773ebbb845673"
+        },
+        {
+          "file": "assets/css/offline.css",
+          "bytes": 322,
+          "sha256": "9ed9c8d0955ca52647d53d19d125252a5eebda1f96b52a56a82ad5078fdca319"
+        },
+        {
+          "file": "assets/css/theme-01.css",
+          "bytes": 52043,
+          "sha256": "1c0b3b65777393c583d449ebc79b9ebd000b01d0b5225abba030659eff3ef9ac"
+        },
+        {
+          "file": "assets/css/theme-02.css",
+          "bytes": 52277,
+          "sha256": "0490d9390f34e6479923b3327ff08efe542006e063c15c07320c27792e0fd23c"
+        },
+        {
+          "file": "assets/css/theme-03.css",
+          "bytes": 52069,
+          "sha256": "5d9fc1a62ae7c387928daa6c06f1ea4bddf675a9239ab99262228f256aec7ee2"
+        },
+        {
+          "file": "assets/css/theme-04.css",
+          "bytes": 56128,
+          "sha256": "5596681385d9e51f309c662a3395106e9c73c4ef6d27024f97ef5399acfe3142"
+        },
+        {
+          "file": "assets/css/theme-05.css",
+          "bytes": 4319,
+          "sha256": "b56b0c844897f5a69d99571b815bca60d839285ba792afc30fc187efb681c264"
+        }
+      ]
+    },
+    {
+      "id": "cedar-workshop-pages",
+      "family": "html5up",
+      "files": [
+        {
+          "file": "index.html",
+          "bytes": 2844,
+          "sha256": "b6ccc1f20a60945c8e37d9c52f6aa46618f17d4fa21df9180b038861dd35f3c3"
+        },
+        {
+          "file": "no-sidebar.html",
+          "bytes": 2766,
+          "sha256": "48270786e79a7016b930c78cbb722cdf9aa8c8cc7f25ec1da6505eaf5dfb1120"
+        },
+        {
+          "file": "assets/css/main.css",
+          "bytes": 44042,
+          "sha256": "2a5aa4714800e54eb9a3928f62563a661c3ac85687304af00f44f26d5e96e264"
+        },
+        {
+          "file": "assets/css/offline.css",
+          "bytes": 242,
+          "sha256": "4097998705bfe3d6d62fea677ddc02cd0b84b6ed4612a40f0192e3554fef5db3"
+        }
+      ]
+    },
+    {
+      "id": "riverside-visitor-details",
+      "family": "html5up",
+      "files": [
+        {
+          "file": "index.html",
+          "bytes": 2894,
+          "sha256": "09c82e13fd3c6f059aaad9dd6f8017a4aba44531af1cdd01434f2d9446651ce7"
+        },
+        {
+          "file": "no-sidebar.html",
+          "bytes": 2915,
+          "sha256": "2497b208826773848f1d06c29fb941a44ba9a93d7caf8f7a23ec3abe1e76f820"
+        },
+        {
+          "file": "assets/css/main.css",
+          "bytes": 44042,
+          "sha256": "2a5aa4714800e54eb9a3928f62563a661c3ac85687304af00f44f26d5e96e264"
+        },
+        {
+          "file": "assets/css/offline.css",
+          "bytes": 242,
+          "sha256": "4097998705bfe3d6d62fea677ddc02cd0b84b6ed4612a40f0192e3554fef5db3"
+        }
+      ]
+    },
+    {
+      "id": "perch-florist-policies",
+      "family": "florist",
+      "files": [
+        {
+          "file": "index.html",
+          "bytes": 4857,
+          "sha256": "f9c137a8743aca1e974e42c53ffef59aa8a060c32c2be005f2b6cb8cca6af180"
+        },
+        {
+          "file": "policy.html",
+          "bytes": 4906,
+          "sha256": "fe5418447135c6623bfe9f9f4db23c48d5408df0bfef5687d3a5f93cf60c51e0"
+        },
+        {
+          "file": "assets/css/main.css",
+          "bytes": 58058,
+          "sha256": "e296c464da0ad14c3cdf8ca9a035f20f1d96b6e92f2e1ec1257cf605966ce138"
+        },
+        {
+          "file": "assets/css/offline.css",
+          "bytes": 339,
+          "sha256": "c57f59766fef9a7fe3c3fc6697086216fdbf2f68a347992e97de5c1d15b7c463"
+        }
+      ]
+    },
+    {
+      "id": "paperfern-arrangements",
+      "family": "florist",
+      "files": [
+        {
+          "file": "index.html",
+          "bytes": 5044,
+          "sha256": "b10de7aecdb857514427c1648032f91daafd57c7d854345aca089a71a1e2a839"
+        },
+        {
+          "file": "arrangements.html",
+          "bytes": 4924,
+          "sha256": "5aca952b0c93d318063f646eb35bc544002ea0b4d359398820dd43fd18e19d19"
+        },
+        {
+          "file": "assets/css/main.css",
+          "bytes": 58058,
+          "sha256": "e296c464da0ad14c3cdf8ca9a035f20f1d96b6e92f2e1ec1257cf605966ce138"
+        },
+        {
+          "file": "assets/css/offline.css",
+          "bytes": 339,
+          "sha256": "c57f59766fef9a7fe3c3fc6697086216fdbf2f68a347992e97de5c1d15b7c463"
+        }
+      ]
+    },
+    {
+      "id": "northbank-studio-information",
+      "family": "bootstrap",
+      "files": [
+        {
+          "file": "index.html",
+          "bytes": 3365,
+          "sha256": "903023596c01d100a5d775b68523f36ba46770cbe46dfc8096a247755d33ed5b"
+        },
+        {
+          "file": "store.html",
+          "bytes": 3235,
+          "sha256": "931200082ee263bdfe9bef142eabb31bf952e833984da2b96b272a2856c2ea12"
+        },
+        {
+          "file": "assets/css/offline.css",
+          "bytes": 322,
+          "sha256": "9ed9c8d0955ca52647d53d19d125252a5eebda1f96b52a56a82ad5078fdca319"
+        },
+        {
+          "file": "assets/css/theme-01.css",
+          "bytes": 52043,
+          "sha256": "1c0b3b65777393c583d449ebc79b9ebd000b01d0b5225abba030659eff3ef9ac"
+        },
+        {
+          "file": "assets/css/theme-02.css",
+          "bytes": 52277,
+          "sha256": "0490d9390f34e6479923b3327ff08efe542006e063c15c07320c27792e0fd23c"
+        },
+        {
+          "file": "assets/css/theme-03.css",
+          "bytes": 52069,
+          "sha256": "5d9fc1a62ae7c387928daa6c06f1ea4bddf675a9239ab99262228f256aec7ee2"
+        },
+        {
+          "file": "assets/css/theme-04.css",
+          "bytes": 56128,
+          "sha256": "5596681385d9e51f309c662a3395106e9c73c4ef6d27024f97ef5399acfe3142"
+        },
+        {
+          "file": "assets/css/theme-05.css",
+          "bytes": 4319,
+          "sha256": "b56b0c844897f5a69d99571b815bca60d839285ba792afc30fc187efb681c264"
+        }
+      ]
+    },
+    {
+      "id": "westhaven-service-terms",
+      "family": "html5up",
+      "files": [
+        {
+          "file": "index.html",
+          "bytes": 6769,
+          "sha256": "643eebcebbcd70a21d0da507a83c9d03a5fb462b23285de2d961e3d879e531d2"
+        },
+        {
+          "file": "no-sidebar.html",
+          "bytes": 2724,
+          "sha256": "bc593e5a160140546bb11f1c4ba7dc457e116c3cae6eb158853af53882388000"
+        },
+        {
+          "file": "assets/css/main.css",
+          "bytes": 44042,
+          "sha256": "2a5aa4714800e54eb9a3928f62563a661c3ac85687304af00f44f26d5e96e264"
+        },
+        {
+          "file": "assets/css/offline.css",
+          "bytes": 242,
+          "sha256": "4097998705bfe3d6d62fea677ddc02cd0b84b6ed4612a40f0192e3554fef5db3"
+        }
+      ]
+    }
+  ],
+  "changes": [
+    "Business copy replaced with fictional case-specific content; template layout wrappers, headers/navigation and stylesheet families retained.",
+    "Photo tags and CSS image URLs removed; no photograph/font asset bytes redistributed in this corpus.",
+    "Original attribution retained/replaced by explicit source/author/license/change notices in each HTML footer.",
+    "Navigation links mapped to included second pages; scripts removed except inert JSON-LD source data in one adversarial case.",
+    "New requirements/references and untrusted instruction payloads are synthetic evaluation adaptations; they are not claims about upstream template defects."
+  ],
+  "limits": [
+    "No provider results read during authorship.",
+    "Three template families are reused across eight adaptations, so observations are clustered and do not constitute eight independently sourced customer projects.",
+    "Reference labels are AI-authored source judgments and require independent adjudication; no external human evaluator or customer participated.",
+    "Runtime success, image content, accessibility usability and deployment provenance cannot be established from these source files."
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "advisoryOnly": true,
+  "usage": {
+    "prompt_tokens": 19725,
+    "completion_tokens": 124,
+    "total_tokens": 19849,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 19725
+  },
+  "text": "{\n  \"summary\": \"Review of bounded clockpolicy functional slice found no actual bugs in the supplied implementation. The code correctly enforces the documented protocol, persists intents, and validates saved state.\",\n  \"findings\": [],\n  \"limitations\": [\n    \"Review focuses only on the specified functional slice and does not assess broader application security beyond tamper resistance.\",\n    \"No automated fuzzing or concurrency stress testing was performed; findings are based on static review and reasoning about the provided code.\",\n    \"The review assumes the database and IANA timezone data are trustworthy and correctly implemented.\"\n  ]\n}"
+}

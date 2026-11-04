@@ -1,0 +1,49 @@
+{
+  "reviewer": "DeepSeek API",
+  "model": "deepseek-v4-pro",
+  "completed": true,
+  "reportValid": true,
+  "advisoryOnly": true,
+  "elapsedMs": 6507,
+  "usage": {
+    "prompt_tokens": 13335,
+    "completion_tokens": 232,
+    "total_tokens": 13567,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 13335
+  },
+  "sources": [
+    {
+      "file": "public/sdk/seller-dom-adapter.mjs",
+      "lines": 111,
+      "sha256": "f9706fc00ed91c7fa27b0b7c8e87fe5f69e82cd14450d0dac9603e3092029b9e"
+    },
+    {
+      "file": "examples/seller-dom-staging/app.mjs",
+      "lines": 50,
+      "sha256": "6c1bbf7a3d9d3358e48fd03d31502c8f048afa1a8a572b78f83c84cebdf61078"
+    },
+    {
+      "file": "lib/seller-journey-bridge.ts",
+      "lines": 82,
+      "sha256": "b25115c7330d1ca7076436c4b759c28091ce108ddbd7947886c9045ce0ed2fbc"
+    },
+    {
+      "file": "tests/seller-dom-adapter.test.ts",
+      "lines": 83,
+      "sha256": "af71d86dbe772f364b314e0b7c9ccf0b8e243efab277b84f2ae6225abce230d3"
+    }
+  ],
+  "report": {
+    "summary": "Review of seller DOM adapter, staging app, bridge validation, and tests revealed no reproducible defects under the documented cooperative staging model. Configuration validation is strict, execution sequencing prevents races, completion identity and DOM binding are enforced, and journal validation rejects non-synthetic or oversized data. Minor limitations exist around cooperative trust boundaries but are outside the stated threat model.",
+    "findings": [],
+    "limitations": [
+      "The adapter trusts the observe() callback to report the actual native submission outcome; a malicious or buggy native completion handler could fabricate a journal that passes validation, but this remains cooperative client evidence by design.",
+      "The DOM adapter verifies control state and DOM result binding but cannot ensure the surrounding page does not attach additional event handlers that alter form values after the adapter's click; such races must be prevented by the seller's native code.",
+      "Validation in the bridge (seller-journey-bridge.ts) does not re-check the requestOperation field inside the action for response_loss_retry, relying on the DOM executor's earlier parsing; the executor's command() function handles this correctly."
+    ]
+  }
+}

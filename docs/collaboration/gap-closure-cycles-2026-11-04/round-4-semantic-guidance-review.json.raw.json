@@ -1,0 +1,14 @@
+{
+  "advisoryOnly": true,
+  "usage": {
+    "prompt_tokens": 11489,
+    "completion_tokens": 154,
+    "total_tokens": 11643,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 11489
+  },
+  "text": "{\n  \"summary\": \"No reproducible defects found in the reviewed changes. The implementation consistently validates source-grounded citations, preserves operational requirements as insufficient evidence, and guards against laundering runtime or financial actions into source-only support.\",\n  \"findings\": [],\n  \"limitations\": [\n    \"The AI model output is not executed here; the review is based on the provided source and test code only.\",\n    \"The supplied corpus JSON is not included, so the exact content of referenced projects (e.g., 'cedar-workshop-pages', 'perch-florist-policies') is unverified, though the tests exercise the relevant logic.\",\n    \"No runtime or external integration is tested; only the logic in the supplied files is assessed.\"\n  ]\n}"
+}

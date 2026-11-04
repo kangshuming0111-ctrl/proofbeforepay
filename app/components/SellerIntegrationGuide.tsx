@@ -7,7 +7,7 @@ import type {IntegrationStatus,SellerIntegrationRequest} from "@/lib/seller-inte
 
 type Request=<T>(path:string,method?:string,body?:unknown)=>Promise<T>;
 type Application=SellerIntegrationRequest&{stale:boolean;expired:boolean};
-type View={requests:Application[];currentDeliveryId:string|null;currentDeliveryDigest:string|null;canSubmit:boolean;canReview:boolean;requestLimit:number};
+type View={requests:Application[];currentDeliveryId:string|null;currentDeliveryDigest:string|null;canSubmit:boolean;canReview:boolean;canDelegate:boolean;reviewers:{key:string;label:string}[];requestLimit:number};
 type Props={language:Language;projectId:string;deliveryId:string;role:ProofRole;enabled:boolean;request:Request;onChanged?:()=>void|Promise<void>};
 const stamp=(value:string)=>value.slice(0,19).replace("T"," ")+" UTC";
 const initialText=()=>JSON.stringify(JOURNEY_INTEGRATION_TEMPLATE,null,2);
@@ -59,10 +59,12 @@ export function SellerIntegrationGuide({language,projectId,deliveryId,role,enabl
     {item.registration&&<p>{tr("批准窗口截止：","Approval expires: ")}{stamp(item.registration.expiresAt)} · {tr("登记修订：","Registration revision: ")}{item.registration.registrationRevision}</p>}
     <ol className="integration-events">{item.history.map(event=><li key={event.revision}><strong>{status(event.status)}</strong> · {stamp(event.at)}{event.reason&&<p>{event.reason}</p>}</li>)}</ol>
     <details><summary>{tr("查看已提交的清单","Inspect submitted manifest")}</summary><pre>{JSON.stringify(item.manifest,null,2)}</pre></details>
-    {role==="seller"&&["needs_changes","rejected"].includes(item.status)&&view.canSubmit&&<button className="subtle-button" disabled={!enabled||busy} onClick={()=>edit(item)}>{tr("载入修改并重新申请","Revise and resubmit")}</button>}
+    {view.canDelegate&&<ReviewSharing item={item} hasOtherPending={view.requests.some(row=>row.id!==item.id&&row.status==="requested"&&row.delegation?.active!==false&&row.deliveryId===item.deliveryId&&row.deliveryDigest===item.deliveryDigest)} reviewers={view.reviewers} language={language} disabled={!enabled||busy} onSubmit={post}/>}
+    {item.delegation&&!item.delegation.active&&<p className="journey-warning">{tr("买家已撤回审核访问；此申请的登记不能用于新的测试，历史记录保留。","The buyer withdrew review access. This application cannot authorize new tests; history remains retained.")}</p>}
+    {role==="seller"&&(["needs_changes","rejected"].includes(item.status)||item.delegation?.active===false)&&view.canSubmit&&<button className="subtle-button" disabled={!enabled||busy} onClick={()=>edit(item)}>{tr("载入修改并重新申请","Revise and resubmit")}</button>}
     {view.canReview&&(item.status==="requested"||item.status==="approved")&&<OperatorDecision item={item} language={language} disabled={!enabled||busy} onSubmit={post}/>}
    </details>)}
-   {role!=="seller"&&!view.canReview&&<p className="integration-muted">{tr("你可以查看申请进度。只有该项目已配置的运营审核人能作出登记决定。","You can inspect application progress. Only the configured operator for this project can decide registration.")}</p>}
+   {role!=="seller"&&!view.canReview&&<p className="integration-muted">{tr("你可以选择平台审核人并授权其查看这份测试站清单。授权后，对方在独立审核队列处理；你仍单独决定验收和付款。","Choose a platform reviewer and explicitly share this staging application. They review it in a separate queue; acceptance and payment remain your decisions.")}</p>}
    {role==="seller"&&<details className="integration-editor" open={!view.requests.length||!!previousId}><summary>{previousId?tr("修改后重新申请","Submit a revised application"):tr("准备新的接入申请","Prepare an application")}</summary>
     <p>{tr("准备只含虚构数据的独立测试部署，填写原生字段映射和地址。清单应说明你有权进行测试；不填写密码、API key 或真实客户资料。","Prepare a separate synthetic-data staging deployment and fill in native mappings and addresses. Describe an authorized test target; exclude passwords, API keys and real customer data.")}</p>
     {previousId&&<p>{tr("原申请：","Previous application: ")}<code>{previousId}</code></p>}
@@ -74,10 +76,23 @@ export function SellerIntegrationGuide({language,projectId,deliveryId,role,enabl
     <p><small>{tr("检查清单只在浏览器内解析；点击提交后才保存到本项目。提交和批准均不会访问测试站、证明部署源码、运行业务测试、验收或付款。","Checking parses the manifest locally; Submit explicitly saves it to this project. Submission and approval do not fetch the target, attest deployed source, run business tests, accept work or pay.")}</small></p>
    </details>}
   </>}
+  <p className="integration-muted"><a href="/operator">{tr("平台审核工作台","Platform review workspace")}</a> · {tr("审核人只能看到买家明确授权的测试站清单；不能查看合同、源码、金额或操作验收和付款。","Reviewers see only buyer-shared staging applications, with no contract, source, price, acceptance or payment access.")}</p>
  </details>;
 }
 
-function OperatorDecision({item,language,disabled,onSubmit}:{item:Application;language:Language;disabled:boolean;onSubmit:(input:Record<string,unknown>)=>Promise<void>}){
+function ReviewSharing({item,hasOtherPending,reviewers,language,disabled,onSubmit}:{item:Application;hasOtherPending:boolean;reviewers:{key:string;label:string}[];language:Language;disabled:boolean;onSubmit:(input:Record<string,unknown>)=>Promise<void>}){
+ const tr=(zh:string,en:string)=>language==="zh"?zh:en;const[key,setKey]=useState(reviewers[0]?.key??""),[confirmed,setConfirmed]=useState(false);
+ const active=item.delegation?.active;
+ return <details className="integration-review"><summary>{active?tr("已交给平台审核／撤回访问","Shared for platform review / withdraw access"):tr("请平台审核这份申请","Request platform review")}</summary>
+  {active?<p>{tr("指定审核人可在独立队列查看此申请，买卖双方可刷新本页查看决定。撤回后对方不再能读取或审核，此登记也不能用于新的测试；历史决定不删除。","The assigned reviewer can inspect this application in a separate queue. Refresh here for their decision. Withdrawal removes reviewer access and future testing admission; earlier decisions remain retained.")}</p>:<><p>{tr("仅分享本申请的测试站地址、字段映射、交付与清单摘要及审核记录。不会分享合同、交付源码、客户身份、金额或支付资料。审核人不能接受交付或付款。","Share only this application's staging URLs, field mappings, delivery/manifest digests and review history. Contracts, source files, client identity, price and payment details stay private. The reviewer cannot accept work or pay.")}</p><label className="integration-text-label">{tr("指定平台审核人","Assigned platform reviewer")}<select value={key} disabled={disabled||!reviewers.length} onChange={e=>{setKey(e.target.value);setConfirmed(false);}}>{reviewers.map((row,index)=><option key={row.key} value={row.key}>{tr(`平台审核人 ${index+1}`,row.label)}</option>)}</select></label>{!reviewers.length&&<p className="journey-warning">{tr("当前没有可用的独立审核人。请联系网站运营方配置审核账号；卖家不能自审。","No independent reviewer is configured. Contact the site operator to configure a reviewer account; the seller cannot self-approve.")}</p>}</>}
+  <label><input type="checkbox" checked={confirmed} disabled={disabled} onChange={e=>setConfirmed(e.target.checked)}/>{active?tr("确认撤回审核访问及后续测试许可。","Withdraw reviewer access and future testing admission."):tr("确认将上述有限资料分享给所选审核人。","Share the limited metadata above with this reviewer.")}</label>
+  <button className={active?"subtle-button":"button primary"} disabled={disabled||!confirmed||!active&&(!key||item.status!=="requested"||item.stale||hasOtherPending||(item.delegation?.events.length??0)>=8)} onClick={()=>void onSubmit({action:active?"revoke-review":"grant-review",requestId:item.id,expectedRevision:item.revision,expectedDelegationRevision:item.delegation?.revision??0,reviewerKey:active?null:key,confirm:true})}>{active?tr("撤回审核访问","Withdraw review access"):tr("交给所选平台审核人","Share with assigned reviewer")}</button>
+  {!active&&(hasOtherPending||(item.delegation?.events.length??0)>=8)&&<p>{tr("请使用卖家的新申请继续审核；同一交付只允许一份有效待审申请。旧审核访问记录保留。","Continue with the seller’s new application. Only one active pending application is allowed per delivery; earlier access history remains retained.")}</p>}
+  {!active&&item.status!=="requested"&&<p>{tr("只有待审申请可交给审核人。请卖家按当前交付重新申请。","Only pending applications can be shared. Ask the seller to submit a new application for the current delivery.")}</p>}
+ </details>;
+}
+
+export function OperatorDecision({item,language,disabled,onSubmit}:{item:Pick<Application,"id"|"revision"|"status"|"registration"|"manifest"|"stale">;language:Language;disabled:boolean;onSubmit:(input:Record<string,unknown>)=>Promise<void>}){
  const tr=(zh:string,en:string)=>language==="zh"?zh:en;
  const [reason,setReason]=useState(""),[label,setLabel]=useState(item.registration?.label??`${item.manifest.native.stack} staging`),[scenario,setScenario]=useState<JourneyScenario>(item.registration?.scenario??"fixed"),[expires,setExpires]=useState(()=>new Date(Date.now()+7*24*60*60*1000).toISOString().slice(0,16)),[confirm,setConfirm]=useState(false);
  function decide(status:"needs_changes"|"rejected"|"approved"){

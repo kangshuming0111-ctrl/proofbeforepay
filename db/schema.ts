@@ -67,3 +67,10 @@ export const transferCompetitionSessions = sqliteTable("transfer_competition_ses
   payload: text("payload").notNull(), version: integer("version").notNull(),
   createdAt: text("created_at").notNull(), updatedAt: text("updated_at").notNull(),
 },table=>[index("transfer_competition_quote_idx").on(table.quoteId,table.createdAt)]);
+
+/** Buyer-confirmed supplemental clock policy and bounded synthetic observations. */
+export const timePolicySessions = sqliteTable("time_policy_sessions", {
+  id:text("id").primaryKey(),quoteId:text("quote_id").notNull(),deliveryId:text("delivery_id").notNull(),
+  deliveryDigest:text("delivery_digest").notNull(),payload:text("payload").notNull(),version:integer("version").notNull(),
+  createdAt:text("created_at").notNull(),updatedAt:text("updated_at").notNull(),
+},table=>[index("time_policy_quote_idx").on(table.quoteId,table.createdAt)]);

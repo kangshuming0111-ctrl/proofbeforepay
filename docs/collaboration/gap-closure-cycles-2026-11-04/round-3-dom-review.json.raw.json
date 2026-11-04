@@ -1,0 +1,14 @@
+{
+  "advisoryOnly": true,
+  "usage": {
+    "prompt_tokens": 13335,
+    "completion_tokens": 232,
+    "total_tokens": 13567,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 13335
+  },
+  "text": "{\n  \"summary\": \"Review of seller DOM adapter, staging app, bridge validation, and tests revealed no reproducible defects under the documented cooperative staging model. Configuration validation is strict, execution sequencing prevents races, completion identity and DOM binding are enforced, and journal validation rejects non-synthetic or oversized data. Minor limitations exist around cooperative trust boundaries but are outside the stated threat model.\",\n  \"findings\": [],\n  \"limitations\": [\n    \"The adapter trusts the observe() callback to report the actual native submission outcome; a malicious or buggy native completion handler could fabricate a journal that passes validation, but this remains cooperative client evidence by design.\",\n    \"The DOM adapter verifies control state and DOM result binding but cannot ensure the surrounding page does not attach additional event handlers that alter form values after the adapter's click; such races must be prevented by the seller's native code.\",\n    \"Validation in the bridge (seller-journey-bridge.ts) does not re-check the requestOperation field inside the action for response_loss_retry, relying on the DOM executor's earlier parsing; the executor's command() function handles this correctly.\"\n  ]\n}"
+}

@@ -13,6 +13,8 @@ import "../project-journey.css";
 import {SellerIntegrationGuide} from "./SellerIntegrationGuide";
 import {BrowserWitnessPanel} from "./BrowserWitnessPanel";
 import {TransferCompetitionPanel} from "./TransferCompetitionPanel";
+import {SellerDomAdapterGuide} from "./SellerDomAdapterGuide";
+import {TimePolicyPanel} from "./TimePolicyPanel";
 
 type State={plan:ProjectJourneyPlan|null;agreement:string;targets:{id:string;label:string;registrationRevision:string;expiresAt:string}[];run:ProjectJourneyRun|null;report:ProjectJourneyReport|null;evaluation:ProjectJourneyEvaluation|null};
 type Result={quote:ProofQuote;role:ProofRole;journey:State};
@@ -71,6 +73,8 @@ export function ProjectJourneyPanel({quote,role,language,enabled,request,onApply
   <details><summary>{tr("检验范围和双方约定","Coverage and technical agreement")}</summary><p>{tr("预约人数上限 6、时段容量 8；取消只释放一次容量；重复取消无副作用；失败改期保留原单；成功改期原子更新；模拟提交后 504，先查询再原键重试；最后核对商家账目与容量。这是单独采纳的技术约定，不冒充原始合同条款。","Party limit 6 and slot capacity 8; one-time capacity release on cancellation; harmless repeat cancellation; failed move preserves the booking; atomic successful move; a controlled post-commit 504, independent lookup, then original-key retry; final merchant/occupancy reconciliation. This is a separately adopted technical agreement, not an inferred contract clause.")}</p><p>{tr("仅用随机编号和虚构资料。浏览器记录由客户端提供；服务器读取的是卖家接口，二者一致也不证明数据库诚实、线上源码来源或整站没有缺陷。测试不代表接受交付，也不触发付款。","Uses random identifiers and fictional data only. Browser observations are client supplied; the server reads seller endpoints. Agreement does not prove database honesty, deployed-source provenance or absence of all bugs. Testing neither accepts delivery nor triggers payment.")}</p></details>
   <SellerIntegrationGuide language={language} projectId={quote.id} deliveryId={delivery.id} role={role} enabled={enabled&&!running&&!state?.run} request={request} onChanged={async()=>{const value=await request<State>(path);if(alive.current){setState(value);setTarget(old=>value.targets.some(t=>t.id===old)?old:value.targets[0]?.id??"");setConsent(false);}}}/>
   <BrowserWitnessPanel projectId={quote.id} deliveryId={delivery.id} role={role} language={language} enabled={enabled&&!running&&!state?.run} request={request}/>
+  <SellerDomAdapterGuide language={language}/>
+  <TimePolicyPanel projectId={quote.id} deliveryId={delivery.id} role={role} language={language} enabled={enabled&&!running&&!state?.run} request={request}/>
   <TransferCompetitionPanel quote={quote} role={role} language={language} enabled={enabled&&!running&&!state?.run} request={request} onApply={onApply} onBusy={onBusy} onOutcome={setTransferOutcome}/>
   {error&&<p className="journey-warning" role="alert">{error}</p>}
   {!delivery.journeyPlan&&role==="buyer"&&<><label><input type="checkbox" checked={consent} disabled={!enabled} onChange={e=>setConsent(e.target.checked)}/>{tr("我明确采纳上述可选技术检查约定。","I explicitly adopt the optional technical agreement above.")}</label><button className="button primary" disabled={!enabled||!consent} onClick={adopt}>{tr("为本版本确认检查约定","Confirm agreement for this delivery")}</button></>}

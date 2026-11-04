@@ -1,0 +1,39 @@
+{
+  "reviewer": "DeepSeek API",
+  "model": "deepseek-v4-pro",
+  "completed": true,
+  "reportValid": true,
+  "advisoryOnly": true,
+  "elapsedMs": 5672,
+  "usage": {
+    "prompt_tokens": 11489,
+    "completion_tokens": 154,
+    "total_tokens": 11643,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 11489
+  },
+  "sources": [
+    {
+      "file": "lib/delivery-assessment.ts",
+      "lines": 299,
+      "sha256": "1bec983e9bf5dcc48f68531828ba357992da2e83395fde8629039798154712a8"
+    },
+    {
+      "file": "tests/assessment-transfer-regression.test.ts",
+      "lines": 36,
+      "sha256": "9d14c3cc087687ccdd78c9f23e2e9a8b06cb2162aff558fe6ce2ec87e4193611"
+    }
+  ],
+  "report": {
+    "summary": "No reproducible defects found in the reviewed changes. The implementation consistently validates source-grounded citations, preserves operational requirements as insufficient evidence, and guards against laundering runtime or financial actions into source-only support.",
+    "findings": [],
+    "limitations": [
+      "The AI model output is not executed here; the review is based on the provided source and test code only.",
+      "The supplied corpus JSON is not included, so the exact content of referenced projects (e.g., 'cedar-workshop-pages', 'perch-florist-policies') is unverified, though the tests exercise the relevant logic.",
+      "No runtime or external integration is tested; only the logic in the supplied files is assessed."
+    ]
+  }
+}

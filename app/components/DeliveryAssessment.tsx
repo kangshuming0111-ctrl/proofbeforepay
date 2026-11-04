@@ -6,9 +6,9 @@ import type { Language, ProofAssessment, ProofAssessmentCitation, ProofCriterion
 import { criterionDisplayTitle } from "@/lib/delivery-overview";
 import "../assessment.css";
 import { RiskReviewPanel } from "./RiskReviewPanel";
-import { AssessmentBenchmarkPanel } from "./AssessmentBenchmarkPanel";
+import { AssessmentValidationPanel } from "./AssessmentValidationPanel";
 import type { RiskReviewInput } from "@/lib/risk-reviews";
-import { assessmentCoverageGroups, assessmentReviewSummary } from "@/lib/assessment-display";
+import { assessmentCoverageGroups, assessmentReviewSummary, assessmentRiskPresentation } from "@/lib/assessment-display";
 
 export type DeliveryAssessmentProps = {
   report?: ProofAssessment;
@@ -95,7 +95,7 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
 
     <div className="assessment-body" aria-labelledby={`${id}-heading`}>
       <p className="assessment-purpose">{tr("逐条比较已确认的要求与卖家源码；与规则检查、浏览器测量分开记录。请结合引用原文核对每条建议。", "Compares confirmed requirements with the seller's source files. Recorded separately from rule checks and browser measurements. Check each suggestion against the quoted source.")}</p>
-      {!readOnly&&<AssessmentBenchmarkPanel language={language}/>}
+      {!readOnly&&<AssessmentValidationPanel language={language}/>}
 
       {!report ? <>
         {readOnly ? <p className="assessment-empty">{tr("此交付快照没有保存 AI 内容评估。", "No AI delivery assessment was saved with this delivery snapshot.")}</p> : <>
@@ -114,7 +114,7 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
           {selectedItem ? renderItem(selectedItem, true) : <p className="assessment-empty">{selectedCriterionId ? tr("此报告没有当前所选标准的建议，不能据此视为通过。", "This report has no suggestion for the selected criterion; it cannot be treated as a pass.") : tr("此报告没有逐项建议。", "This report has no criterion suggestions.")}</p>}
           {otherItems.length > 0 && <details className="assessment-other-items"><summary>{tr(`查看其余 ${otherItems.length} 条要求`, `Inspect the other ${otherItems.length} criteria`)}<ChevronDown size={13} aria-hidden="true" /></summary><div>{otherItems.map(item => renderItem(item))}</div></details>}
         </div>
-        <details className="assessment-risks"><summary><TriangleAlert size={13} aria-hidden="true" />{tr(`源码中的潜在问题（${report.risks.length}）`, `Potential source issues (${report.risks.length})`)}<ChevronDown size={13} aria-hidden="true" /></summary>
+        <details className="assessment-risks"><summary><TriangleAlert size={13} aria-hidden="true" />{tr(`待核查的 AI 线索（${report.risks.length}）`, `AI indications to review (${report.risks.length})`)}<ChevronDown size={13} aria-hidden="true" /></summary>
           <div className="assessment-risk-body">{report.risks.length ? <><p className="assessment-risk-notice">{tr("源码线索尚未运行验证，需要复现后确认。", "Source-level indications have not been verified by execution. Reproduce them before drawing a conclusion.")}</p>
             {reviewSummary && <section className="assessment-review-summary" aria-label={tr("潜在线索的人工复核概览", "Human review summary for potential issues")}>
               <strong>{tr(`共 ${reviewSummary.total} 条线索，${reviewSummary.unreviewed} 条尚无人工记录`, `Potential issues: ${reviewSummary.total}; without any human record: ${reviewSummary.unreviewed}`)}</strong>
@@ -122,7 +122,14 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
               {!!reviewSummary.differingPositions && <p className="assessment-review-difference" role="status">{tr(`双方在 ${reviewSummary.differingPositions} 条线索上的最新意见不同，请核对各自理由。`, `Issues with differing participant positions: ${reviewSummary.differingPositions}. Inspect both reasons.`)}</p>}
               <small>{tr("汇总记录双方意见，不认定问题已解决，也不改变原始 AI 报告或验收。", "This summarizes participant positions. It does not establish resolution, change the original AI report or decide acceptance.")}</small>
             </section>}
-            {report.risks.slice(0, 5).map((risk, index) => <article className="assessment-risk" key={`${risk.title}-${index}`}><h4>{risk.title}</h4><p>{risk.explanation}</p><p className="assessment-risk-suggestion">{tr("建议核对：", "Suggested check: ")}{risk.suggestion}</p><Citations citations={risk.citations} language={language} /><RiskReviewPanel key={`${report.deliveryId}-${report.id}-${index}-${actorRole ?? ""}`} deliveryId={report.deliveryId} assessmentId={report.id} riskIndex={index} reviews={riskReviews} role={actorRole} language={language} busy={busy} readOnly={readOnly} onSave={onSaveRiskReview}/></article>)}{report.risks.length > 5 && <p className="assessment-risk-notice">{tr("此处展示前 5 项；完整报告保留在交付记录中。", "Showing the first 5 issues; the full report remains in the delivery record.")}</p>}</> : <p className="assessment-empty">{tr("此报告没有列出潜在问题，不代表网站没有缺陷。", "This report lists no potential issues. This does not establish that the website is free of defects.")}</p>}</div>
+            {report.risks.slice(0, 5).map((risk, index) => {
+              const reading = assessmentRiskPresentation(report, risk, language);
+              return <article className="assessment-risk" key={`${risk.title}-${index}`} data-evidence-kind={reading.kind}>
+                <span className="assessment-risk-basis">{reading.label}</span><h4>{reading.title}</h4><p className="assessment-risk-notice">{reading.explanation}</p>
+                {reading.kind === "image_evidence_gap" ? <details className="assessment-original-risk"><summary>{tr("查看原始模型措辞", "Inspect original model wording")}</summary><strong>{risk.title}</strong><p>{risk.explanation}</p><p>{risk.suggestion}</p></details> : <p>{risk.explanation}</p>}
+                <p className="assessment-risk-suggestion">{tr("下一步核对：", "Next check: ")}{reading.nextStep}</p><Citations citations={risk.citations} language={language} /><RiskReviewPanel key={`${report.deliveryId}-${report.id}-${index}-${actorRole ?? ""}`} deliveryId={report.deliveryId} assessmentId={report.id} riskIndex={index} reviews={riskReviews} role={actorRole} language={language} busy={busy} readOnly={readOnly} onSave={onSaveRiskReview}/>
+              </article>;
+            })}{report.risks.length > 5 && <p className="assessment-risk-notice">{tr("此处展示前 5 项；完整报告保留在交付记录中。", "Showing the first 5 issues; the full report remains in the delivery record.")}</p>}</> : <p className="assessment-empty">{tr("此报告没有列出潜在问题，不代表网站没有缺陷。", "This report lists no potential issues. This does not establish that the website is free of defects.")}</p>}</div>
         </details>
         <details className="assessment-coverage"><summary>{tr("分析范围与局限", "Coverage and limitations")}<ChevronDown size={13} aria-hidden="true" /></summary><div className="assessment-coverage-body">
           <dl>{([

@@ -1,0 +1,59 @@
+{
+  "reviewer": "DeepSeek API",
+  "model": "deepseek-v4-pro",
+  "completed": true,
+  "reportValid": true,
+  "advisoryOnly": true,
+  "elapsedMs": 3703,
+  "usage": {
+    "prompt_tokens": 19725,
+    "completion_tokens": 124,
+    "total_tokens": 19849,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 19725
+  },
+  "sources": [
+    {
+      "file": "lib/time-policy.ts",
+      "lines": 116,
+      "sha256": "d3ac8205afdb5bd89d235518eedfc10d7cc8eeada40f1c78c7c9e7220d224d96"
+    },
+    {
+      "file": "lib/time-policy-runner.ts",
+      "lines": 48,
+      "sha256": "ce6d2299839da04349e0d56c665e60bb4a0ed6e98f9aca9813127963b1f94447"
+    },
+    {
+      "file": "lib/time-policy-store.ts",
+      "lines": 40,
+      "sha256": "6782d8207afb439760d88027ddce02af2dcb1c75b49368c8aaf89f9cb07dc480"
+    },
+    {
+      "file": "app/api/proofs/[id]/time-policy/route.ts",
+      "lines": 7,
+      "sha256": "f7da3a6ac67bf9ec43c18161c94f8f53466bb64c1ac6a642cf3780f218be901e"
+    },
+    {
+      "file": "examples/seller-time-policy-staging/worker/time-policy-service.mjs",
+      "lines": 42,
+      "sha256": "dc7a4a7525ca40e5f27d5c59196d1e505779e9bfba2f1bbe01ef81c044806138"
+    },
+    {
+      "file": "tests/time-policy.test.ts",
+      "lines": 72,
+      "sha256": "5d92072ab0b9c0f1bd30837a8497c2181c473e15cd463142cfc18a2fc59c6657"
+    }
+  ],
+  "report": {
+    "summary": "Review of bounded clockpolicy functional slice found no actual bugs in the supplied implementation. The code correctly enforces the documented protocol, persists intents, and validates saved state.",
+    "findings": [],
+    "limitations": [
+      "Review focuses only on the specified functional slice and does not assess broader application security beyond tamper resistance.",
+      "No automated fuzzing or concurrency stress testing was performed; findings are based on static review and reasoning about the provided code.",
+      "The review assumes the database and IANA timezone data are trustworthy and correctly implemented."
+    ]
+  }
+}

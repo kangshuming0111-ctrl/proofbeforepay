@@ -8,6 +8,8 @@ import type {RuntimeCheckPlan} from "../../lib/runtime-checks.ts";
 import {handleSellerBookingRequest} from "../../examples/seller-staging/worker/booking-service.mjs";
 import {handleCapacityRequest} from "../../examples/seller-capacity-staging/worker/capacity-service.mjs";
 import {handleLifecycleRequest} from "../../examples/seller-lifecycle-staging/worker/lifecycle-service.mjs";
+import {handleTimePolicyRequest} from "../../examples/seller-time-policy-staging/worker/time-policy-service.mjs";
+import {runTimePolicyLab} from "../../lib/time-policy-lab.ts";
 const headers={"Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer"};
 function json(value:unknown,status=200){return Response.json(value,{status,headers});}
 async function body(request:Request){
@@ -20,8 +22,16 @@ async function body(request:Request){
 }
 export default {async fetch(request:Request,env:{DB?:D1Database;LAB_ALLOW_LOOPBACK?:string} & Record<string,unknown>):Promise<Response>{
   const url=new URL(request.url);
-  if(url.pathname.startsWith("/seller-reference/")){
-    const route=/^\/seller-reference\/(fixed|cancel-credit|move-loss|retry-duplicate)\/(pbp\/.*|index\.html|seller\.css|seller\.mjs|bridge\.mjs|config\.mjs|runtime-config\.mjs)$/u.exec(url.pathname);
+  const timePolicy=await handleTimePolicyRequest(request,env);if(timePolicy)return timePolicy;
+  if(url.pathname==="/api/time-policy-lab"){
+    if(request.method!=="POST")return json({error:"POST required"},405);
+    if(request.headers.get("origin")!==url.origin)return json({error:"Same-origin request required"},403);
+    let input;try{input=await body(request);}catch{return json({error:"Send bounded JSON test consent"},400);}
+    if(!input||typeof input!=="object"||Array.isArray(input)||Object.keys(input).some(k=>!["profile","consent"].includes(k))||input.consent!==true||!["fixed","cancel-credit","move-loss"].includes(input.profile))return json({error:"Choose a controlled profile and explicitly consent to synthetic writes"},400);
+    try{return json(await runTimePolicyLab(url.origin,input.profile));}catch{return json({error:"The controlled time-policy experiment could not complete; no request is automatically replayed."},503);}
+  }
+  if(url.pathname.startsWith("/seller-reference/")||url.pathname.startsWith("/seller-adapter/")){
+    const route=/^\/(?:seller-reference|seller-adapter)\/(fixed|cancel-credit|move-loss|retry-duplicate)\/(pbp\/.*|index\.html|seller\.css|seller\.mjs|bridge\.mjs|config\.mjs|runtime-config\.mjs|adapter\.css|app\.mjs|seller-dom-adapter\.mjs)$/u.exec(url.pathname);
     if(!route)return json({code:"not_found"},404);
     if(route[2].startsWith("pbp/")){
       if(url.search||url.hash)return json({code:"not_found"},404);

@@ -50,6 +50,13 @@
       "when": 1793750403000,
       "tag": "0006_model_report_objects",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1793752000000,
+      "tag": "0008_time_policy_sessions",
+      "breakpoints": true
     }
   ]
 }

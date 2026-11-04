@@ -1,0 +1,14 @@
+{
+  "advisoryOnly": true,
+  "usage": {
+    "prompt_tokens": 11374,
+    "completion_tokens": 337,
+    "total_tokens": 11711,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 11374
+  },
+  "text": "{\n  \"summary\": \"Focused review of the public time-policy lab slice: no reproducible functional defects found in the exact supplied implementation that would violate the stated task constraints. The supplied server entry, lab runner, client page, and tests implement POST-only same-origin controlled profile endpoints; they enforce JSON body size/keys/consent, target allowlists, runtime guard/expiry, independent SQLite readback, and report shape/counters. Each profile issues exactly 31 HTTP requests with 15 POSTs, and the client validates the returned scope/counters. The implementation's remaining limitations are documented in the scope object and UI verbiage (e.g., unsigned export, server-memory-then-browser-download) and do not represent defects when tested against the published assertions.\",\n  \"findings\": [],\n  \"limitations\": [\n    \"The exported JSON report (client download) is unsigned; consistency for external use relies on the same-origin transport and the in-page checks, not a cryptographic signature.\",\n    \"The lab is intentionally a finite synthetic experiment: results are scoped to 'this finite fixture run' and the report is stored in server memory then browser download; refresh clears the page report.\",\n    \"The deployed static fixture hash binds a declared fixture identity, not the actual served bytes or external derivation; this is documented in TIME_LAB_SCOPE and inline comments.\",\n    \"The server does not demonstrate a durable audit log for the lab runs; regardless, the supplied tests confirm each run writes and reads native SQLite receipts for the considered cases and the lab does not present its ephemeral intents as persisted leases.\"\n  ]\n}"
+}

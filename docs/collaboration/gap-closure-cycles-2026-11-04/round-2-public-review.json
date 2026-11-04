@@ -1,0 +1,50 @@
+{
+  "reviewer": "DeepSeek API",
+  "model": "deepseek-v4-pro",
+  "completed": true,
+  "reportValid": true,
+  "advisoryOnly": true,
+  "elapsedMs": 9437,
+  "usage": {
+    "prompt_tokens": 11374,
+    "completion_tokens": 337,
+    "total_tokens": 11711,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 11374
+  },
+  "sources": [
+    {
+      "file": "lib/time-policy-lab.ts",
+      "lines": 18,
+      "sha256": "f8fe541072630438eb0c8550e9bb2b8ed38446255c97853f0c3efdb277ded20b"
+    },
+    {
+      "file": "app/guest-lab/time-policy-entry.ts",
+      "lines": 22,
+      "sha256": "9fa99aa9eb18a5377cfb1e81ebd26e1e71cc96b66debbeaea28a331e33e5ff43"
+    },
+    {
+      "file": "app/guest-lab/server.ts",
+      "lines": 133,
+      "sha256": "77fb5b6370bee43b4921c4cb956386ba8246ddaab6ff53318bfc1795eeea33b8"
+    },
+    {
+      "file": "tests/guest-lab-time-policy.test.ts",
+      "lines": 38,
+      "sha256": "66ac617185649bf5ae3e99f375b9edfecc0556b06900d3ec5927912f6479136f"
+    }
+  ],
+  "report": {
+    "summary": "Focused review of the public time-policy lab slice: no reproducible functional defects found in the exact supplied implementation that would violate the stated task constraints. The supplied server entry, lab runner, client page, and tests implement POST-only same-origin controlled profile endpoints; they enforce JSON body size/keys/consent, target allowlists, runtime guard/expiry, independent SQLite readback, and report shape/counters. Each profile issues exactly 31 HTTP requests with 15 POSTs, and the client validates the returned scope/counters. The implementation's remaining limitations are documented in the scope object and UI verbiage (e.g., unsigned export, server-memory-then-browser-download) and do not represent defects when tested against the published assertions.",
+    "findings": [],
+    "limitations": [
+      "The exported JSON report (client download) is unsigned; consistency for external use relies on the same-origin transport and the in-page checks, not a cryptographic signature.",
+      "The lab is intentionally a finite synthetic experiment: results are scoped to 'this finite fixture run' and the report is stored in server memory then browser download; refresh clears the page report.",
+      "The deployed static fixture hash binds a declared fixture identity, not the actual served bytes or external derivation; this is documented in TIME_LAB_SCOPE and inline comments.",
+      "The server does not demonstrate a durable audit log for the lab runs; regardless, the supplied tests confirm each run writes and reads native SQLite receipts for the considered cases and the lab does not present its ephemeral intents as persisted leases."
+    ]
+  }
+}

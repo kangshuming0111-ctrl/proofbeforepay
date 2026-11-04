@@ -1,0 +1,14 @@
+{
+  "advisoryOnly": true,
+  "usage": {
+    "prompt_tokens": 20159,
+    "completion_tokens": 94,
+    "total_tokens": 20253,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 20159
+  },
+  "text": "{\n  \"summary\": \"Focused final review found no reproducible blocking defects in the delegation/auth+CAS logic for the stated scenarios.\",\n  \"findings\": [],\n  \"limitations\": [\n    \"Review restricted to supplied files; no full project or runtime environment access.\",\n    \"Static analysis only; untrusted data flows not exhaustively traced.\",\n    \"Assumes documented existing behavior and constraints are correct.\",\n    \"No dynamic testing beyond provided scenarios.\"\n  ]\n}"
+}

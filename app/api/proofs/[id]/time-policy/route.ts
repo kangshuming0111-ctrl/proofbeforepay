@@ -1,0 +1,6 @@
+import {proofActor,readProofCase} from "@/lib/proof-store";
+import {body,handle,HttpError,json} from "@/lib/server";
+import {timePolicyView,saveTimePlan,runTimePlan,closeTimePlan} from "@/lib/time-policy-store";
+export const dynamic="force-dynamic";
+export async function GET(request:Request,context:{params:Promise<{id:string}>}){return handle(async()=>{const actor=proofActor(request);if(!actor.authenticated)throw new HttpError(401,"Sign in to inspect supplemental time policies.");const{id}=await context.params,record=await readProofCase(id,actor);return json(await timePolicyView(record));});}
+export async function POST(request:Request,context:{params:Promise<{id:string}>}){return handle(async()=>{const actor=proofActor(request,true);if(!actor.authenticated)throw new HttpError(401,"Sign in to save or run supplemental time policies.");const{id}=await context.params,input=await body(request,8192),record=await readProofCase(id,actor);const session=input.action==="save"?await saveTimePlan(record,actor,input):input.action==="run"?await runTimePlan(record,actor,input):input.action==="close"?await closeTimePlan(record,actor,input):undefined;if(!session)throw new HttpError(400,"Choose save,run or close.");return json({...await timePolicyView(await readProofCase(id,actor)),session},input.action==="save"?201:200);});}

@@ -1,0 +1,14 @@
+{
+  "advisoryOnly": true,
+  "usage": {
+    "prompt_tokens": 10796,
+    "completion_tokens": 168,
+    "total_tokens": 10964,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 10796
+  },
+  "text": "{\n  \"summary\": \"Focused review of the cloneJson cycle repair and new tests in seller-dom-adapter.mjs. The ancestor-path cycle check correctly permits acyclic aliasing (e.g., requests[0].response also used as receipt) while rejecting true cycles. Node/depth/byte budgets continue to count the expanded JSON representation. New tests cover the sharing scenario and true cycle rejection. No reproducible defects found in the repaired logic or tests.\",\n  \"findings\": [],\n  \"limitations\": [\n    \"Review limited to supplied source and tests; no runtime environment or external dependencies were available.\",\n    \"The review is based on static analysis of the provided code; dynamic behavior in a real DOM environment may differ.\",\n    \"Potential interactions with other parts of the system outside the supplied files are not considered.\"\n  ]\n}"
+}

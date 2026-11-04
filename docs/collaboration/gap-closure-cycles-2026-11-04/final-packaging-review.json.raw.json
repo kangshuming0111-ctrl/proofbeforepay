@@ -1,0 +1,14 @@
+{
+  "advisoryOnly": true,
+  "usage": {
+    "prompt_tokens": 9349,
+    "completion_tokens": 153,
+    "total_tokens": 9502,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 9349
+  },
+  "text": "{\n  \"summary\": \"The packaging repair correctly admits only the three exact template LICENSE.txt files via the new allowlist entry, while preserving existing path, symlink, secret, and UTF-8 checks. Tests cover byte-for-byte copying, exclusion of other TXT and similarly named files, and the new example directories are included in SOURCE_DIRS. No reproducible defects within the reviewed boundary.\",\n  \"findings\": [],\n  \"limitations\": [\n    \"Review scope is limited to the focused boundary and new example directories; no full application audit was performed.\",\n    \"The effectiveness of the denial of service protections was not assessed outside the explicitly listed checks.\",\n    \"No external evaluation of additional operating system behavior or tar compatibility was performed.\"\n  ]\n}"
+}

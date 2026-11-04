@@ -1,0 +1,175 @@
+{
+  "schema": "proofbeforepay-assessment-validation-summary-v1",
+  "scope": "Recorded synthetic development validation; not current delivery, independent customer or human usability evidence.",
+  "rows": [
+    {
+      "kind": "known-regression",
+      "nameZh": "修复后完整回归",
+      "nameEn": "Complete regression after repair",
+      "projects": 12,
+      "criteria": 24,
+      "raw": 24,
+      "application": 24,
+      "falsePass": 0,
+      "unresolvedDefects": 0,
+      "output": "full-regression.json",
+      "freezeSha256": "52445b5921b4b3104d16c0199a6840f8bba141ed522f344c7f73423c388edfce",
+      "rejectedReports": 0
+    },
+    {
+      "kind": "known-regression",
+      "nameZh": "相同语料重复运行",
+      "nameEn": "Repeat run on the same corpus",
+      "projects": 12,
+      "criteria": 24,
+      "raw": 24,
+      "application": 24,
+      "falsePass": 0,
+      "unresolvedDefects": 0,
+      "output": "repeat-regression.json",
+      "freezeSha256": "52445b5921b4b3104d16c0199a6840f8bba141ed522f344c7f73423c388edfce",
+      "rejectedReports": 0
+    },
+    {
+      "kind": "transfer-initial",
+      "nameZh": "初始跨模板实测",
+      "nameEn": "Initial transfer experiment",
+      "projects": 8,
+      "criteria": 16,
+      "raw": 16,
+      "application": 13,
+      "falsePass": 0,
+      "unresolvedDefects": 0,
+      "rejectedReports": 1,
+      "output": "transfer-live.json",
+      "freezeSha256": "3bd0a175adfa09e521d37a9d135c3c814941ea38ce99d87680379c95cbd942dc"
+    },
+    {
+      "kind": "transfer-initial",
+      "nameZh": "相同迁移案例重复运行",
+      "nameEn": "Repeat on the same transfer cases",
+      "projects": 8,
+      "criteria": 16,
+      "raw": 15,
+      "application": 14,
+      "falsePass": 0,
+      "unresolvedDefects": 0,
+      "rejectedReports": 0,
+      "output": "transfer-repeat-live.json",
+      "freezeSha256": "3bd0a175adfa09e521d37a9d135c3c814941ea38ce99d87680379c95cbd942dc"
+    },
+    {
+      "kind": "transfer-development",
+      "nameZh": "文字分类修正后回归",
+      "nameEn": "Regression after text-classification repair",
+      "projects": 8,
+      "criteria": 16,
+      "raw": 15,
+      "application": 16,
+      "falsePass": 0,
+      "unresolvedDefects": 0,
+      "rejectedReports": 0,
+      "output": "transfer-repair-live.json",
+      "freezeSha256": "386a31c32cb53e65261319ede581f39cc22f3b073f22697dc8ab949e49469105"
+    },
+    {
+      "kind": "known-development",
+      "nameZh": "文字分类修正后的原语料",
+      "nameEn": "Original corpus after classification repair",
+      "projects": 12,
+      "criteria": 24,
+      "raw": 24,
+      "application": 24,
+      "falsePass": 0,
+      "unresolvedDefects": 0,
+      "rejectedReports": 0,
+      "output": "original-final-live.json",
+      "freezeSha256": "2b9f292b16de547423aba15e51a1a4982eb4dda7dbd415dfbb93cbb56eb3ad22"
+    },
+    {
+      "kind": "transfer-current",
+      "nameZh": "当前版本：迁移案例回归",
+      "nameEn": "Current version: transfer regression",
+      "projects": 8,
+      "criteria": 16,
+      "raw": 14,
+      "application": 15,
+      "falsePass": 0,
+      "unresolvedDefects": 0,
+      "rejectedReports": 0,
+      "output": "transfer-semantic-live.json",
+      "freezeSha256": "8e197261e217d9522aab60208a55810723e8e3985ffd150d89f22a55fc1973d9"
+    },
+    {
+      "kind": "known-current",
+      "nameZh": "当前版本：原语料回归",
+      "nameEn": "Current version: original regression",
+      "projects": 12,
+      "criteria": 24,
+      "raw": 24,
+      "application": 24,
+      "falsePass": 0,
+      "unresolvedDefects": 0,
+      "rejectedReports": 0,
+      "output": "original-semantic-live.json",
+      "freezeSha256": "ab2ef975fe7d17128cc545f113995a36581133a0fd158ee9e3ba2f55e48631a7"
+    }
+  ],
+  "semantic": {
+    "known": {
+      "answers": 24,
+      "accepted": 23,
+      "qualified": 1,
+      "rejected": 0,
+      "file": "regression-semantic-review.json"
+    },
+    "transfer-initial": {
+      "answers": 16,
+      "accepted": 8,
+      "qualified": 7,
+      "rejected": 1,
+      "file": "transfer-initial-semantic-review.json"
+    },
+    "current": {
+      "answers": 20,
+      "accepted": 18,
+      "qualified": 2,
+      "rejected": 0,
+      "file": "final-semantic-review.json"
+    }
+  },
+  "limitationsZh": [
+    "每个阶段的批次分开保留；中间修复回归不伪装成新盲测。当前版本原语料24/24，迁移案例15/16。",
+    "迁移初始两轮分别为13/16及14/16，含一次虚构引文被整份拒收；该失败记录没有被覆盖。",
+    "当前迁移有一项参考范围歧义：正文营业时间符合，隐藏菜单残留旧时间。保留原参考及15/16统计，不事后改成满分。",
+    "当前20份完整回答的独立AI审查为18接受、2附条件。另一项是对退款审核流程的风险措辞过强；不代表实际退款失败。",
+    "独立AI审查不等于独立真人或客户研究。8个改造项目来自3个已知开源模板家族，并非8位真实客户。",
+    "所有模型风险仍需核查；规则、实际运行观测、AI建议和买家决定分别记录。"
+  ],
+  "limitationsEn": [
+    "Stages remain separate; intermediate repair runs are not new blinded validation. Current version: original24/24, transfer15/16.",
+    "Initial transfer runs scored13/16 and14/16. One invented quotation caused the whole answer to be refused; that failure remains retained.",
+    "One final transfer reference has scope ambiguity: correct body hours coexist with stale hidden-menu hours. The original label and15/16 remain unchanged.",
+    "Independent AI review of20 current complete answers accepted18 and qualified2. The other qualification concerns an overstated refund-review-process risk, not observed refund failure.",
+    "AI source review is not a human/customer study. Eight adapted cases use three known licensed template families, not eight customers.",
+    "Model risks still require verification. Rules, actual observations, AI advice and buyer decisions remain distinct."
+  ],
+  "artifacts": [
+    "regression-freeze.json",
+    "regression-corpus.json",
+    "transfer-corpus.json",
+    "transfer-reference-review.json",
+    "transfer-provenance.json",
+    "regression-freeze-source.json",
+    "transfer-freeze.json",
+    "transfer-freeze-source.json",
+    "transfer-repair-freeze.json",
+    "transfer-repair-freeze-source.json",
+    "original-classifier-freeze.json",
+    "original-classifier-freeze-source.json",
+    "transfer-current-freeze.json",
+    "transfer-current-freeze-source.json",
+    "original-current-freeze.json",
+    "original-current-freeze-source.json"
+  ]
+}

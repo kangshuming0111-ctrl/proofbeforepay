@@ -56,6 +56,10 @@ Check connection reads only target metadata before consenting to booking writes;
 
 The isolated no-key helper intentionally disables live providers. In a separate manual checkout with your own DeepSeek key, the explicit AI business-check suggestion action can propose two typed prices and phone copy directly from the original requirements. Each must be adopted/edited and confirmed. The public scripts/evaluation-results/2026-11-02-business-suggestion-baseline.json and followup.json preserve actual synthetic model outputs; reading those files is recorded evidence, not a new live request. An invited seller sees the same locked business plan before joining, and source assessment receives that validated plan without browser-report blocks.
 
+## Additional functional checks (4 November 2026)
+
+Read docs/GAP-CLOSURE-2026-11-04.md for the scoped independent operator queue, supplemental time policies, existing-form DOM adapter and recorded regression/transfer results. The public https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/time-policy.html experiment compares corrected, advance-notice-defective and DST-defective native services using actual synthetic requests and independent readback. Private project time policies are saved separately against exact uploads. Seller cooperation is required for dynamic forms; no arbitrary-site or deployment attestation is claimed. Full original failures and independent AI whole-answer reviews remain retained.
+
 ## Optional providers
 
 No secrets are included. The isolated judge command always disables external providers. Keep its temporary copy provider-free. To configure your own DeepSeek API and PayPal Sandbox REST app separately, stop that demo, return to the original public checkout, follow the README's manual local-development setup and copy this checkout's generated placeholder `.env.example` to the Git-ignored `.dev.vars`. Restart after configuring. AI assessment is an explicit action that sends requirements and bounded saved source to the configured model and may cost money. A rule review is not a model call. Never use production PayPal credentials or real money for this prototype.

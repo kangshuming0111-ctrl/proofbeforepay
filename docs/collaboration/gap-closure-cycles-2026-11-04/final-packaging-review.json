@@ -1,0 +1,39 @@
+{
+  "reviewer": "DeepSeek API",
+  "model": "deepseek-v4-pro",
+  "completed": true,
+  "reportValid": true,
+  "advisoryOnly": true,
+  "elapsedMs": 4435,
+  "usage": {
+    "prompt_tokens": 9349,
+    "completion_tokens": 153,
+    "total_tokens": 9502,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 9349
+  },
+  "sources": [
+    {
+      "file": "scripts/build-judge-pack.mjs",
+      "lines": 193,
+      "sha256": "eefaf3a8d949247b73997869bd8a31b6b5999792287d88325b89e704394a568c"
+    },
+    {
+      "file": "tests/judge-pack.test.mjs",
+      "lines": 94,
+      "sha256": "1f183f9be92e4605d316e76594acf1403c42a6c8c36c389099313dbb04e6f89f"
+    }
+  ],
+  "report": {
+    "summary": "The packaging repair correctly admits only the three exact template LICENSE.txt files via the new allowlist entry, while preserving existing path, symlink, secret, and UTF-8 checks. Tests cover byte-for-byte copying, exclusion of other TXT and similarly named files, and the new example directories are included in SOURCE_DIRS. No reproducible defects within the reviewed boundary.",
+    "findings": [],
+    "limitations": [
+      "Review scope is limited to the focused boundary and new example directories; no full application audit was performed.",
+      "The effectiveness of the denial of service protections was not assessed outside the explicitly listed checks.",
+      "No external evaluation of additional operating system behavior or tar compatibility was performed."
+    ]
+  }
+}

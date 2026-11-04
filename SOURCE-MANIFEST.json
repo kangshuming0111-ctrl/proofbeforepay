@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T06:28:27.980Z",
+  "generatedAt": "2026-11-04T09:28:15.251Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -38,8 +38,8 @@
     },
     {
       "file": "README.md",
-      "bytes": 88537,
-      "sha256": "1831ae1ed628aaf6a2b916b7723e36732434046e0a10d375e03d368a29c0aa50"
+      "bytes": 89061,
+      "sha256": "d080cdb38d5b9b4a829692c9e9da164d22526d50c9966fe5fb85376f323766a7"
     },
     {
       "file": "app/api/business-check-suggestions/route.ts",
@@ -50,6 +50,16 @@
       "file": "app/api/config/route.ts",
       "bytes": 344,
       "sha256": "c80d7f8bb521c20ed541737c2f9f05b27dcd48073a0d27e271afa35085ef9ac7"
+    },
+    {
+      "file": "app/api/operator/integrations/[id]/route.ts",
+      "bytes": 573,
+      "sha256": "68170188d60a8444265c7ebbfe1b6ff24f4be1cb5403229be84ac4afc4402f1c"
+    },
+    {
+      "file": "app/api/operator/integrations/route.ts",
+      "bytes": 387,
+      "sha256": "fcd663dd6700ad2f75d31e6ed33c659eb33d982681876f36484f980a808908e1"
     },
     {
       "file": "app/api/proof-invitations/[action]/route.ts",
@@ -78,8 +88,8 @@
     },
     {
       "file": "app/api/proofs/[id]/integration-requests/route.ts",
-      "bytes": 1361,
-      "sha256": "a3cd453200f4ffbd970553225272fbb4af0796aa352dc7db7f76de075f954baa"
+      "bytes": 1540,
+      "sha256": "da7178eec7bf99b2ad2b5c35ac45fc3114dcf9a82151e509e7ee96895e49338b"
     },
     {
       "file": "app/api/proofs/[id]/journey-checks/route.ts",
@@ -135,6 +145,11 @@
       "file": "app/api/proofs/[id]/runtime-targets/route.ts",
       "bytes": 481,
       "sha256": "00bd2b7f2df869e6629dd6f255f05c7f82f9f9abe2579affad0b3219c6735508"
+    },
+    {
+      "file": "app/api/proofs/[id]/time-policy/route.ts",
+      "bytes": 1329,
+      "sha256": "f7da3a6ac67bf9ec43c18161c94f8f53466bb64c1ac6a642cf3780f218be901e"
     },
     {
       "file": "app/api/proofs/[id]/transfer-competition/route.ts",
@@ -193,8 +208,8 @@
     },
     {
       "file": "app/assessment.css",
-      "bytes": 9001,
-      "sha256": "860af5595c5f956d53806c6d2ee79aa406f34c6e231c9106481922e8a3d4e0e5"
+      "bytes": 9357,
+      "sha256": "e9a21dfe92bf3b3f95cc5d14e1071c2d3f33f51a1d1237378da53cdc8fd7d42b"
     },
     {
       "file": "app/browser-check.css",
@@ -247,6 +262,11 @@
       "sha256": "f47374f6746d4fb93dea940bc51a31aeae3a3317ca8ad2fb76a8fb1708c70562"
     },
     {
+      "file": "app/components/AssessmentValidationPanel.tsx",
+      "bytes": 4704,
+      "sha256": "1885d445797fad18d91db34176b64cea4f88608555fe4af840d418358956b454"
+    },
+    {
       "file": "app/components/AuthorizationStart.tsx",
       "bytes": 1179,
       "sha256": "56f30f93eba74fe8a7ebdd8daa2ad9223e7b61291e7b7de5288a094bc83f6b1b"
@@ -288,8 +308,8 @@
     },
     {
       "file": "app/components/DeliveryAssessment.tsx",
-      "bytes": 15311,
-      "sha256": "92a778a153208660e25c7221322d21fd2a4beceb0eabbeac4776fb22e7a81d11"
+      "bytes": 15952,
+      "sha256": "36b2069e746ea96a633854bb7add4f7d6437f1f8fa0eea6efbef0c0d42adafd4"
     },
     {
       "file": "app/components/DeliveryComparison.tsx",
@@ -348,8 +368,8 @@
     },
     {
       "file": "app/components/ProjectJourneyPanel.tsx",
-      "bytes": 24304,
-      "sha256": "09bfab226a72f68dc0d1001cc1435d29b7c9aee72857bad1a7de4a27c164e7e0"
+      "bytes": 24623,
+      "sha256": "b3766bea3dbcf04dcd5c1cffc1e35ce5b8833fd4aced67982a2896612c164df0"
     },
     {
       "file": "app/components/ProofReadinessPanel.tsx",
@@ -407,9 +427,19 @@
       "sha256": "1c97c0f4f3cbe13723238ae0b5b2461528dcf5a1d85291d5d9b3317e056b2f6e"
     },
     {
+      "file": "app/components/SellerDomAdapterGuide.tsx",
+      "bytes": 3095,
+      "sha256": "1bd1f695810f6703f9d6b86185fe2f8a2b574a053135128412d82ef5a1d86f16"
+    },
+    {
       "file": "app/components/SellerIntegrationGuide.tsx",
-      "bytes": 16216,
-      "sha256": "a383cd98360737f0dcc4411fd15c91b8c81ab00032385c123517f9b4b52884dd"
+      "bytes": 21255,
+      "sha256": "0883dcb57ea579554619098456b988fa72d4e9b756e0833c948e5b8ded10697d"
+    },
+    {
+      "file": "app/components/TimePolicyPanel.tsx",
+      "bytes": 13431,
+      "sha256": "a1be7878db1330b81bc853736be1e11947cf9e8d05cad0999b4410f767393efd"
     },
     {
       "file": "app/components/TransferCompetitionPanel.tsx",
@@ -463,8 +493,8 @@
     },
     {
       "file": "app/guest-lab/entry.ts",
-      "bytes": 66051,
-      "sha256": "795bcca88e8a55eec0b29d3dd1aaffae46009d9da7f04ef6b7d9423fc0d7aa6e"
+      "bytes": 66260,
+      "sha256": "b25507ddde015e009690ded6bcf536efcd5dceb22ac22ffbfe0bd13a039f8161"
     },
     {
       "file": "app/guest-lab/evidence-controller.ts",
@@ -513,13 +543,28 @@
     },
     {
       "file": "app/guest-lab/server.ts",
-      "bytes": 13307,
-      "sha256": "4986186a14ee8b0cc708c4fd907326c99f4401de4cb2ca609d5cbd67c2c1b81c"
+      "bytes": 14541,
+      "sha256": "77fb5b6370bee43b4921c4cb956386ba8246ddaab6ff53318bfc1795eeea33b8"
     },
     {
       "file": "app/guest-lab/style.css",
       "bytes": 9586,
       "sha256": "bae7eae95b7a51aeac1634c0aaa2fb091de2e37e952087bc5a55f282b7c2a07a"
+    },
+    {
+      "file": "app/guest-lab/time-policy-entry.ts",
+      "bytes": 10304,
+      "sha256": "809db869275bf71a33068b94ad256f3b0a34c57d9386f107b4a53a6d4922a4b1"
+    },
+    {
+      "file": "app/guest-lab/time-policy.css",
+      "bytes": 2025,
+      "sha256": "5058b885179cb9d502771acb94f7a46104f01384501adc9a90a008f319729d59"
+    },
+    {
+      "file": "app/guest-lab/time-policy.html",
+      "bytes": 285,
+      "sha256": "c8badc3e1d5d76e53ac131ce598f578a76a8a0e8473f7168b0e884eea04ba214"
     },
     {
       "file": "app/guest-lab/verify.html",
@@ -550,6 +595,16 @@
       "file": "app/model-storage.css",
       "bytes": 1161,
       "sha256": "01d1e2f5903da1bdfff4f0b88bab2d76a35880d35ba5c78cc9410bc082561fe6"
+    },
+    {
+      "file": "app/operator/operator.css",
+      "bytes": 1948,
+      "sha256": "2e32162e12445da8730fc010617aac939383614091e0a161d7a2650bfacacf88"
+    },
+    {
+      "file": "app/operator/page.tsx",
+      "bytes": 6718,
+      "sha256": "a05a9b73aec383779c9f90c05427a7d86106e716fcdf3ac6c46281b599c54623"
     },
     {
       "file": "app/page.tsx",
@@ -605,6 +660,11 @@
       "file": "app/smooth-flow.css",
       "bytes": 3325,
       "sha256": "de4a993d9909833f575b5fd88592d1f89e8a9c6bd91545307020ad22982ccb43"
+    },
+    {
+      "file": "app/time-policy.css",
+      "bytes": 2059,
+      "sha256": "277774120c65be2e7e558ba386aaf5492a28e141a2aeb97f31feff12ed8ba6f4"
     },
     {
       "file": "app/transfer-competition.css",
@@ -943,8 +1003,8 @@
     },
     {
       "file": "db/schema.ts",
-      "bytes": 3463,
-      "sha256": "b931f391de2aa3144ce79197c9b7758e50db987f644023799baa8ced294c8337"
+      "bytes": 4009,
+      "sha256": "5340f0ef5b06070e4eb0c1329aee1e2ce6d22e64808c9a0f52424acf320c5bb8"
     },
     {
       "file": "docs/BOOKING-HTTP-VERIFICATION.md",
@@ -1000,6 +1060,11 @@
       "file": "docs/FUNCTIONAL-VERIFICATION-2026-11-02.md",
       "bytes": 18043,
       "sha256": "ee972fd86224dbad8263fa066ea4bc8eedc777bae62aefa9a50ea6d8682970fc"
+    },
+    {
+      "file": "docs/GAP-CLOSURE-2026-11-04.md",
+      "bytes": 5802,
+      "sha256": "50de38b33651697586caf8f73be83f7801df1b411bf08b97b2b261324a4a3d72"
     },
     {
       "file": "docs/IMPLEMENTATION-2026-11-02.md",
@@ -1167,6 +1232,161 @@
       "sha256": "bae5e6e0cd3341eb89671a279ca96ba40c27d4ba31d35f23eb3f90161b3090df"
     },
     {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/final-packaging-review.json",
+      "bytes": 1545,
+      "sha256": "83e50b099a47495e12fce8a91516d01171bbac271990640852fa4a6d96a4ff0a"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/final-packaging-review.json.raw.json",
+      "bytes": 1087,
+      "sha256": "ba1915b8cfadb91978f9d8308ef228d8e5dfe9a7277df824f483623f14f2a6bc"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/final-semantic-review.json",
+      "bytes": 260768,
+      "sha256": "aba6f0b0551f95db20efb340c56f7df3cfe798f0a2be4cfe3340650c94c04711"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/full-regression-semantic-review.json",
+      "bytes": 242962,
+      "sha256": "7be9aeb7c0025e29515755c4681d4c2962f445f36c5af4dda7fb9da7551c222e"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/review-adjudication.md",
+      "bytes": 7970,
+      "sha256": "18d42f5a2884d5a156f56e19368484e1c2d8bb2a8e47ac55aaee0b782f4ddee9"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-1-operator-final-review.json",
+      "bytes": 1900,
+      "sha256": "97d34a6122381295128fd0ff7cfdc341e87d57237432b819e1c1930515b32cc4"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-1-operator-final-review.json.raw.json",
+      "bytes": 773,
+      "sha256": "e91a7860c073e801d5686769509837ae2384831e916b94f58092184580b0784b"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-1-operator-review.json.raw.json",
+      "bytes": 8758,
+      "sha256": "9ec9fdc4ce50d7b576fa8d9116e863c2ab60d98485425df773f8aab51d415b0a"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-2-public-review.json",
+      "bytes": 2770,
+      "sha256": "0ff0cbc75607518e1849bfda43ee19f94e8d9503cfd7e3de8f847b90e05b4a02"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-2-public-review.json.raw.json",
+      "bytes": 1986,
+      "sha256": "020b386f9a0802a26086bdf86b435e38541cdb2557509848ecb1678e804da619"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-2-time-review.json",
+      "bytes": 2081,
+      "sha256": "46c2422ad9a6853b6a25073650eb04a07ab6e1fb7c566a0c94b754630b215d54"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-2-time-review.json.raw.json",
+      "bytes": 947,
+      "sha256": "891b3f73d1bea0af2109573f6cb4f71cd80a3328665905ffa5806d7fb17d6dcc"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-3-dom-followup.json",
+      "bytes": 1776,
+      "sha256": "4912cb22abb28862e3d141ff516e892aef517c553f73347a541a685af28fdb8e"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-3-dom-followup.json.raw.json",
+      "bytes": 1138,
+      "sha256": "03643ded5df5282aa694dada258385609f6c12d30208a8e8d190df6c322693f0"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-3-dom-review.json",
+      "bytes": 2360,
+      "sha256": "0cb1dd123ced4230de42777ab2eab7fdc2720ad0e3f31f08d1eca98053543b2b"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-3-dom-review.json.raw.json",
+      "bytes": 1561,
+      "sha256": "76ccbe9d5e8a32cea8d9126a24570d8bacfd516f4c55499acc696d39dbad144a"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-4-report-followup.json.invalid.json",
+      "bytes": 3741,
+      "sha256": "2b0df7c6b38982dce63a7e590b60e97314469468fc5b7524b98adaa8ab74c299"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-4-report-followup.json.raw.json",
+      "bytes": 3588,
+      "sha256": "f87b8009168b3a954144b253279ad217cf9bd88c2a973482774bdff846afb5cb"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-4-report-review.json",
+      "bytes": 4618,
+      "sha256": "74279c9991ca540f93ac78689150943df250914a9c3872dce7ff204941dd712f"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-4-report-review.json.raw.json",
+      "bytes": 3667,
+      "sha256": "6400adb0f01b67b14fb667d510628bd94be978495c76628ef8e5827ec1c14d10"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-4-semantic-guidance-review.json",
+      "bytes": 1531,
+      "sha256": "ae024d3d63ff6753f34c5e44f036e264c531c27e1c3c9c24e3c33e26f46f0310"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-4-semantic-guidance-review.json.raw.json",
+      "bytes": 1056,
+      "sha256": "d05bb5cbed9098f9f770f74fd12656a06facf1d52bb098870ed1faee4b87d61a"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-4-transfer-classifier-review.json",
+      "bytes": 3593,
+      "sha256": "e616e6dd7742e6b668aee4f17756cf1834d9d0834a84dbc90b9d3241c366e929"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/round-4-transfer-classifier-review.json.raw.json",
+      "bytes": 2986,
+      "sha256": "0f8fe75fe696bea1c7d3565df05beac3d11a8008712a1b3ad9e0c300ac60ae62"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/transfer-initial-semantic-review.json",
+      "bytes": 251980,
+      "sha256": "eaf5fca4d0383a275cd4e33215d1f9f7932259b0651010eefe861510ff47b4e5"
+    },
+    {
+      "file": "docs/collaboration/gap-closure-cycles-2026-11-04/transfer-reference-review.json",
+      "bytes": 23377,
+      "sha256": "fe4735d6a75bcdcc52e8c5677897c0c3f3e68c866a602dfd959d37ae05d0ea8d"
+    },
+    {
+      "file": "docs/fixtures/assessment-transfer-2026-11-04/README.md",
+      "bytes": 4844,
+      "sha256": "7113bdedf9c559a29f560902fa0eea7a49d1c6e74be1d82ecd8b24b13f8b3908"
+    },
+    {
+      "file": "docs/fixtures/assessment-transfer-2026-11-04/bootstrap-LICENSE.txt",
+      "bytes": 1091,
+      "sha256": "e8b857747301fcd4c885b3216544b18bbf60328aec2c34da614787346cf40282"
+    },
+    {
+      "file": "docs/fixtures/assessment-transfer-2026-11-04/florist-LICENSE.txt",
+      "bytes": 1076,
+      "sha256": "bf6dc1ef87d6f84fe3962bf6a46179cd9bbeb4c713a6caf024add08be792578b"
+    },
+    {
+      "file": "docs/fixtures/assessment-transfer-2026-11-04/html5up-LICENSE.txt",
+      "bytes": 17128,
+      "sha256": "d7b98629668e4968281c7083336bc292ae55e2ca3a5469072b9657dd2c1a634e"
+    },
+    {
+      "file": "docs/fixtures/assessment-transfer-2026-11-04/provenance.json",
+      "bytes": 15132,
+      "sha256": "10bf62d26931f9ac1d703f5366499e2f9609bab471150e3d87d733ca896e6758"
+    },
+    {
       "file": "drizzle.config.ts",
       "bytes": 148,
       "sha256": "af081f7384aaeb0082cf422e29f139d137ca2f6a57c69b2c37b9fb1f8479867b"
@@ -1207,6 +1427,11 @@
       "sha256": "0b9f95f6ff8bbfa74895e98c431c95913c5e939a0f0c71e16f938dd9119d766a"
     },
     {
+      "file": "drizzle/0008_time_policy_sessions.sql",
+      "bytes": 401,
+      "sha256": "c39ec469b829a22963171f4696b1cce1405a3869f854674c05595007f072c961"
+    },
+    {
       "file": "drizzle/meta/0000_snapshot.json",
       "bytes": 1431,
       "sha256": "0ca99cbe2399d2c65550a5a2a23c16c497df59d8226fe1ca7a55ba419bf7f4b8"
@@ -1243,8 +1468,8 @@
     },
     {
       "file": "drizzle/meta/_journal.json",
-      "bytes": 1093,
-      "sha256": "7747ce432a54b7c69b95366d489ee3f0629df7810dcd922aee7b752e33ab5a8e"
+      "bytes": 1241,
+      "sha256": "110d8c82b891125644c37ecb7c82cac7f037f70114b3dca38661a6638785923e"
     },
     {
       "file": "eslint.config.mjs",
@@ -1280,6 +1505,31 @@
       "file": "examples/seller-capacity-staging/wrangler.example.json",
       "bytes": 732,
       "sha256": "5767034f9fc7547a586cac8491b560fda16a709947594abb029ff95d89b34b6d"
+    },
+    {
+      "file": "examples/seller-dom-staging/README.md",
+      "bytes": 4346,
+      "sha256": "66fc7cffa4016242b101851738dbbd3c98eb3de77412d12cc8997d4dd148706b"
+    },
+    {
+      "file": "examples/seller-dom-staging/adapter.css",
+      "bytes": 1865,
+      "sha256": "3b8b9eb197bd8224c631f6bcbc27da9a4a27142305cc86bf2764344d0c3cb1f0"
+    },
+    {
+      "file": "examples/seller-dom-staging/app.mjs",
+      "bytes": 8206,
+      "sha256": "f49dbd5efdec017bf4e4cb96385abf9f76fc62d3d5e1a6b1f8fa53878a7b62f3"
+    },
+    {
+      "file": "examples/seller-dom-staging/config.mjs",
+      "bytes": 408,
+      "sha256": "9383a0ddefbdf10a3386e810c7f9a7c7d7598cd1295aa5699d666360ae503a73"
+    },
+    {
+      "file": "examples/seller-dom-staging/index.html",
+      "bytes": 3604,
+      "sha256": "f99dd8def7916a5033a383fdca7f2ae12a49ad3ba07d4a5fd061753364d841a6"
     },
     {
       "file": "examples/seller-lifecycle-staging/README.md",
@@ -1362,6 +1612,16 @@
       "sha256": "cdd82f971b9ff8bff5b8d7cc11e5288fdc369334fcc14b42377eb7fba4dce0c7"
     },
     {
+      "file": "examples/seller-time-policy-staging/worker/time-policy-service.d.mts",
+      "bytes": 238,
+      "sha256": "2eb323547892a90b7fb4fc1e6aa4c043c0cb8a6ba1aea8f0b847df9a8a25bee6"
+    },
+    {
+      "file": "examples/seller-time-policy-staging/worker/time-policy-service.mjs",
+      "bytes": 8043,
+      "sha256": "dc7a4a7525ca40e5f27d5c59196d1e505779e9bfba2f1bbe01ef81c044806138"
+    },
+    {
       "file": "examples/seller-workshop-python/README.md",
       "bytes": 10819,
       "sha256": "3a32e574a2675f262f2adee3c810d70e2fdbfd94a2e0816923cffaf8e75461e2"
@@ -1428,8 +1688,8 @@
     },
     {
       "file": "lib/assessment-display.ts",
-      "bytes": 1982,
-      "sha256": "4468c6574c7f761730b28deca5dd2850947d4eedf975daac48e869221448ae3e"
+      "bytes": 4745,
+      "sha256": "57b6f7aaf0622e0a13c6b33a284de60ac2b62fe144ddfc79d4b32e250af8cc3a"
     },
     {
       "file": "lib/booking-capacity.ts",
@@ -1528,8 +1788,8 @@
     },
     {
       "file": "lib/delivery-assessment.ts",
-      "bytes": 34692,
-      "sha256": "a9ad0ba10ac6e655507bd23c54ca19dd90b83e4b8f3165150c3f76261d9d4ef5"
+      "bytes": 36528,
+      "sha256": "1bec983e9bf5dcc48f68531828ba357992da2e83395fde8629039798154712a8"
     },
     {
       "file": "lib/delivery-comparison.ts",
@@ -1580,6 +1840,16 @@
       "file": "lib/html-source-inspection.ts",
       "bytes": 7809,
       "sha256": "b4571de85500b74f724aee51f46fa9ab2a5c67d4e8cb16ac0a8bb73419834687"
+    },
+    {
+      "file": "lib/integration-delegation.ts",
+      "bytes": 5766,
+      "sha256": "bfec1c71947d3ff0035397e566ee0015cdd7c254656328f31e6d55f8d9a20f32"
+    },
+    {
+      "file": "lib/integration-operator-store.ts",
+      "bytes": 5710,
+      "sha256": "3df212662b60ee552be98bfb7ed88c1c8420f24ddd2efc78c3717a2283e786f2"
     },
     {
       "file": "lib/journey-checks.ts",
@@ -1838,13 +2108,13 @@
     },
     {
       "file": "lib/seller-integration-store.ts",
-      "bytes": 5873,
-      "sha256": "1a7d6130710f461ed9ba9bfd9f0973d5cb22363501a29868a4765f2bcf46a451"
+      "bytes": 8316,
+      "sha256": "af447b1d4a381662259f63dadaa24b9640aabc51580dfdc495bd4747de65d1ec"
     },
     {
       "file": "lib/seller-integration.ts",
-      "bytes": 12614,
-      "sha256": "ece0abf257eedfd5d9db29f4b27ee4ded35cc4df1f3053b3683db70115e615a6"
+      "bytes": 14028,
+      "sha256": "61253908ee8f35a3963948d8d3c77fd5110921bf1be4b3ff65804e4c1fbcff75"
     },
     {
       "file": "lib/seller-journey-bridge.ts",
@@ -1895,6 +2165,26 @@
       "file": "lib/static-resources.ts",
       "bytes": 11020,
       "sha256": "4fe957338889300bb524045b36b160acdfae685a3304bc377fbf4aed1187b445"
+    },
+    {
+      "file": "lib/time-policy-lab.ts",
+      "bytes": 3305,
+      "sha256": "f8fe541072630438eb0c8550e9bb2b8ed38446255c97853f0c3efdb277ded20b"
+    },
+    {
+      "file": "lib/time-policy-runner.ts",
+      "bytes": 8213,
+      "sha256": "ce6d2299839da04349e0d56c665e60bb4a0ed6e98f9aca9813127963b1f94447"
+    },
+    {
+      "file": "lib/time-policy-store.ts",
+      "bytes": 9372,
+      "sha256": "6782d8207afb439760d88027ddce02af2dcb1c75b49368c8aaf89f9cb07dc480"
+    },
+    {
+      "file": "lib/time-policy.ts",
+      "bytes": 20926,
+      "sha256": "d3ac8205afdb5bd89d235518eedfc10d7cc8eeada40f1c78c7c9e7220d224d96"
     },
     {
       "file": "lib/transfer-competition-actions.ts",
@@ -2002,9 +2292,159 @@
       "sha256": "4995e647fab05b7c8e3884b5aefcf71edb74529feb98cf7311f3227644d8f1ee"
     },
     {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/final-semantic-review.json",
+      "bytes": 260768,
+      "sha256": "aba6f0b0551f95db20efb340c56f7df3cfe798f0a2be4cfe3340650c94c04711"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/full-regression.json",
+      "bytes": 385204,
+      "sha256": "3047a73561aed7c3641300c67adfd371d454f794aa104eeab5635a742bf14dd4"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/original-classifier-freeze-source.json",
+      "bytes": 654171,
+      "sha256": "3f057be31a521f74cdcb662178d71d43bfde5c498db741967602ee6ba18536b3"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/original-classifier-freeze.json",
+      "bytes": 180288,
+      "sha256": "c3a2750839ac6ffd0e5dc0edd10c05951f3fb64b7794b02e43ce2bee08ad06d4"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/original-current-freeze-source.json",
+      "bytes": 655057,
+      "sha256": "2b15af335595c10e4758e1c053be24ac970463fbdacad6556d7191f475d5ffa1"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/original-current-freeze.json",
+      "bytes": 190595,
+      "sha256": "607018d25eced3f4d433fc362d1d730f5edd6c0bb98fd200f6faaa3a216a431f"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/original-final-live.json",
+      "bytes": 403738,
+      "sha256": "588b1b325d6d40d009e3fba34a7ab7e229430c55cbae8f2084f9a4d87a950596"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/original-semantic-live.json",
+      "bytes": 400279,
+      "sha256": "483da1ea8e0de632ec5110836f10641cef13657b3d39a43c6ed0a463d998ba81"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/regression-corpus.json",
+      "bytes": 27853,
+      "sha256": "b621f732e8d8330154358e41b2cb9886450babeefb8e3cdc0b0b22aab5580d7b"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/regression-freeze-source.json",
+      "bytes": 653557,
+      "sha256": "119aa2f18443e05f717c1df85e24a09cf0761cbed44f88262c6af3c4d7f2f1df"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/regression-freeze.json",
+      "bytes": 180288,
+      "sha256": "f1a45d9b420fa59e7bcc9c8073ae3cfe2cef339121917786ce3134316aa86428"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/regression-semantic-review.json",
+      "bytes": 242962,
+      "sha256": "7be9aeb7c0025e29515755c4681d4c2962f445f36c5af4dda7fb9da7551c222e"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/repeat-regression.json",
+      "bytes": 391280,
+      "sha256": "696c60f54ed74544757ecf9ea6a4976a3fc686c1f178d40811d2d8ce9b10c60e"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/summary.json",
+      "bytes": 6663,
+      "sha256": "b400bbab8099db404855e4a0cb0138f9dbf461e30e4c4fd228ff02d94759e976"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/transfer-corpus.json",
+      "bytes": 1013751,
+      "sha256": "8dd598e44e8e94da8d9889454bfbd8d8355bddd938751852a58641ca7917427f"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/transfer-current-freeze-source.json",
+      "bytes": 655057,
+      "sha256": "007bbd9b143c536b58d2e948822e99b5409eb48887ec4703d5fd925e9f959e6c"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/transfer-current-freeze.json",
+      "bytes": 1249274,
+      "sha256": "c61be1249d89f08785c5416458de1ec246214564003db11d2fd88385ee6f1f03"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/transfer-freeze-source.json",
+      "bytes": 653557,
+      "sha256": "46f74d9cb405872b4b3f3ba90d13558130a4f941cd92aa2f0ed1aab5269f2df3"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/transfer-freeze.json",
+      "bytes": 1242368,
+      "sha256": "82b1dbdb14b2b520c94f9bfb7e08cde6e6176e74f18925a91563172da6a59f75"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/transfer-initial-semantic-review.json",
+      "bytes": 251980,
+      "sha256": "eaf5fca4d0383a275cd4e33215d1f9f7932259b0651010eefe861510ff47b4e5"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/transfer-live.json",
+      "bytes": 1433017,
+      "sha256": "460e8620dfe172f02637f05ddda4dfb49e5a52f0a6b217fd7b4e9e4561a26ce5"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/transfer-provenance.json",
+      "bytes": 15132,
+      "sha256": "10bf62d26931f9ac1d703f5366499e2f9609bab471150e3d87d733ca896e6758"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/transfer-reference-review.json",
+      "bytes": 23377,
+      "sha256": "fe4735d6a75bcdcc52e8c5677897c0c3f3e68c866a602dfd959d37ae05d0ea8d"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/transfer-repair-freeze-source.json",
+      "bytes": 654171,
+      "sha256": "7d428b4b0a33580c58c2db1662f598b33c273134c5abeb03fa02bbc99f09b593"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/transfer-repair-freeze.json",
+      "bytes": 1242368,
+      "sha256": "8181704c8593e61b2cf9ee748e309377925a0dad0128334a24036284afeb67c8"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/transfer-repair-live.json",
+      "bytes": 1437574,
+      "sha256": "504ae9fdfa67ae8db4b9df23e00f18a8da696ba84a49a4bb5e7c222267bd386a"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/transfer-repeat-live.json",
+      "bytes": 1436090,
+      "sha256": "4be16491dfafd4c9e30b366402caf0984a9a00caba0072972530be612c6555e4"
+    },
+    {
+      "file": "public/benchmarks/gap-closure-cycles-2026-11-04/transfer-semantic-live.json",
+      "bytes": 1442618,
+      "sha256": "8a23ba3e714f44376cf5c9a034e8eb31c5ea8f2c600fe995a6ab362e0d7e9223"
+    },
+    {
       "file": "public/favicon.svg",
       "bytes": 358,
       "sha256": "04b98060a2a150f0b6242e88057864aacfcc98c4160d42df5802cd9c5d50ae77"
+    },
+    {
+      "file": "public/sdk/seller-dom-adapter.d.mts",
+      "bytes": 995,
+      "sha256": "fb3ea603565b626a39d5b5cdcccb51e654ab536950dd1f1ae9d69fc2865611b7"
+    },
+    {
+      "file": "public/sdk/seller-dom-adapter.mjs",
+      "bytes": 12005,
+      "sha256": "42be34dd51c79b1ea1df75724335093eb61d6cdfa8ad5ec63758b8e481f02143"
     },
     {
       "file": "scripts/README-deepseek-review.md",
@@ -2037,14 +2477,19 @@
       "sha256": "b621f732e8d8330154358e41b2cb9886450babeefb8e3cdc0b0b22aab5580d7b"
     },
     {
+      "file": "scripts/assessment-transfer-corpus-2026-11-04.json",
+      "bytes": 1013751,
+      "sha256": "8dd598e44e8e94da8d9889454bfbd8d8355bddd938751852a58641ca7917427f"
+    },
+    {
       "file": "scripts/build-guest-lab.mjs",
-      "bytes": 3036,
-      "sha256": "402b425e85c3b97bcab72605204bc91faea433e02b1ddfafa1876ad916b419ec"
+      "bytes": 4400,
+      "sha256": "b4374dd845d6bb171ee38883a8185cd666a98eac6f33ecb45a1728ee6b05ee9b"
     },
     {
       "file": "scripts/build-judge-pack.mjs",
-      "bytes": 26944,
-      "sha256": "5dc29dc78b6660c0e9dc4d2ab51bf8c4c9571806153607d9f07a4905e6f1ae95"
+      "bytes": 28072,
+      "sha256": "eefaf3a8d949247b73997869bd8a31b6b5999792287d88325b89e704394a568c"
     },
     {
       "file": "scripts/build-showcase.mjs",
@@ -2278,13 +2723,23 @@
     },
     {
       "file": "tests/assessment-display.test.ts",
-      "bytes": 3398,
-      "sha256": "eb9801a24a9bbc878f7e40c27e0da101b981f19a0966a80766f5833170c0b416"
+      "bytes": 6808,
+      "sha256": "38a9a8ad636b38065c4399ecc14411da95b12222907d6654c140d134e60f4ff1"
     },
     {
       "file": "tests/assessment-evaluation.test.ts",
       "bytes": 12946,
       "sha256": "05fc8f7fe8ba55e04e275d114d285594ebadf3df73ad19156c0455438767c813"
+    },
+    {
+      "file": "tests/assessment-transfer-regression.test.ts",
+      "bytes": 3328,
+      "sha256": "9d14c3cc087687ccdd78c9f23e2e9a8b06cb2162aff558fe6ce2ec87e4193611"
+    },
+    {
+      "file": "tests/assessment-validation-record.test.ts",
+      "bytes": 2242,
+      "sha256": "83b3471d955aca80cb5f8103fa2a7d17a4a9afb76ffdb11d4d55e6e4e41bbdba"
     },
     {
       "file": "tests/booking-capacity.test.ts",
@@ -2672,9 +3127,14 @@
       "sha256": "afe9aa2ced6f1cefb60fef33c71e91771566d0673ad5e691fb493cc11ea76467"
     },
     {
+      "file": "tests/fixtures/seller-staging-hosted/0007_time_policy.sql",
+      "bytes": 517,
+      "sha256": "645d01833dcc27b097e3d017018cccb0c6c6aa798c73161be19caeb87e84999c"
+    },
+    {
       "file": "tests/fixtures/seller-staging-hosted/meta/_journal.json",
-      "bytes": 798,
-      "sha256": "960eaf92f8ef1c4317df27f8257f01219c25e7045b50a6a8f91b508888f497ff"
+      "bytes": 937,
+      "sha256": "80b4a26ec481684e4533bd6a2d40f3fdd3b043e8f29dcf5c0b1e69eae99964f3"
     },
     {
       "file": "tests/guest-capacity-mount.test.ts",
@@ -2697,9 +3157,19 @@
       "sha256": "329ba0beec00c515e5d286fc610bb888d8e212959cc39d80ce7afa0ae15af156"
     },
     {
+      "file": "tests/guest-lab-time-policy.test.ts",
+      "bytes": 7245,
+      "sha256": "66ac617185649bf5ae3e99f375b9edfecc0556b06900d3ec5927912f6479136f"
+    },
+    {
       "file": "tests/html-source-inspection.test.ts",
       "bytes": 7630,
       "sha256": "a01c08cef48abec18f692105ec9fc7de31eefd3fc70cc1db50b583898bf9a002"
+    },
+    {
+      "file": "tests/integration-delegation.test.ts",
+      "bytes": 7736,
+      "sha256": "c32b685bfffd7a31f703a3815e37b1b347bc52e85d19dd175951a3fadadcae35"
     },
     {
       "file": "tests/journey-acceptance-export.test.ts",
@@ -2748,8 +3218,8 @@
     },
     {
       "file": "tests/judge-pack.test.mjs",
-      "bytes": 4916,
-      "sha256": "70db327a4b2b9a5f1dfa331d454b4aa716423205e5d4f529a0b825a114ec4ef8"
+      "bytes": 6016,
+      "sha256": "1f183f9be92e4605d316e76594acf1403c42a6c8c36c389099313dbb04e6f89f"
     },
     {
       "file": "tests/layout-api-smoke.py",
@@ -2968,8 +3438,8 @@
     },
     {
       "file": "tests/run-collaborative-sandbox-local.mjs",
-      "bytes": 10637,
-      "sha256": "5f59b9e9fffbd9ad8d7016f2064ef1ef675f3dc138b0d824b018b8e15738f10d"
+      "bytes": 10759,
+      "sha256": "6997bba25af21525bbd6d03ee04217330c172793f290137e37d036ac6069e269"
     },
     {
       "file": "tests/run-model-archive-local.mjs",
@@ -3122,14 +3592,19 @@
       "sha256": "42f1fa72deee20b9aa8434d608e633bce1c0faac9b11b78b8233fd930795db42"
     },
     {
+      "file": "tests/seller-dom-adapter.test.ts",
+      "bytes": 12493,
+      "sha256": "0bdf9b300ea036303299b0c4f5be2d2a4d192b6d831db15356e04df1540e1a80"
+    },
+    {
       "file": "tests/seller-frontend-completion.test.ts",
       "bytes": 9821,
       "sha256": "7d0c4924d136ea8e3d5cbb4394b401c9cde9a9193370b3e6cb4079344b4dc54d"
     },
     {
       "file": "tests/seller-integration-api-smoke.py",
-      "bytes": 11550,
-      "sha256": "fcda0a6c2fc1f78d30a6e24395b6610bf92dc7e34b34a6256187cd5bfbce7b57"
+      "bytes": 21310,
+      "sha256": "2aea84ff135067cb2274381076735e2ecbae69e6d13dd53166870a2b1e93ab4f"
     },
     {
       "file": "tests/seller-integration-migration.test.ts",
@@ -3207,6 +3682,16 @@
       "sha256": "e88b1f63788bf924457d76f89a8d976fbddcfff8030910912397e7c6e5ad243e"
     },
     {
+      "file": "tests/time-policy-api-smoke.py",
+      "bytes": 6618,
+      "sha256": "dad0b570a7561af5f72ce8db2d84a00fce45dc7b424f932dc27903509ec6a7dc"
+    },
+    {
+      "file": "tests/time-policy.test.ts",
+      "bytes": 12361,
+      "sha256": "5d92072ab0b9c0f1bd30837a8497c2181c473e15cd463142cfc18a2fc59c6657"
+    },
+    {
       "file": "tests/transfer-competition-api-smoke.py",
       "bytes": 12336,
       "sha256": "3f28981b85d71d006138f0026bef742d1e37a159844b841dbda77930699e1769"
@@ -3273,8 +3758,8 @@
     },
     {
       "file": "JUDGE-README.md",
-      "bytes": 18120,
-      "sha256": "34a860f1c6ad590e35732ee6d4e3ccc92ac86a02ea893b0b07a0728e1cb6050f"
+      "bytes": 18847,
+      "sha256": "f6667698bc80e365fd4ef842516e3f70a448cd2c928cec33cfbe93def26d65d9"
     },
     {
       "file": "DEMO-SCRIPT.md",

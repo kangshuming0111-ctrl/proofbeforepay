@@ -88,6 +88,11 @@ function citations(value: unknown, sent: Record<string, string>): ProofAssessmen
 // A literal-content allowance is deliberately narrower than the set of things
 // a model might infer from source. Unknown manual requirements stay unverified.
 const SOURCE_CONTENT = /营业(?:时间|时段)|营业日|开放时间|菜单|菜品|价格|价目|标价|地址|电话|联系方式|店名|商店名称|餐厅名称|公司名称|企业名称|文案|文字内容|文本内容|\b(?:(?:opening|business)[ -](?:hours|times?)|hours\s+of\s+operation|menu|dishes|prices?|pricing|price\s+list|address|phone(?:\s+number)?|telephone|contact\s+(?:number|details)|(?:business|shop|store|restaurant|company|brand)\s+name|copy|copywriting|(?:page|website|text)\s+content)\b/iu;
+// Explicit wording directives can name their subject without using the literal
+// token "content" or "营业时间". These only identify text-content evidence;
+// observation and financial-action vetoes below still take precedence.
+const PUBLISHED_POLICY_TEXT = /\b(?:published|page|website|cancellation)\s+policy\s+(?:text|copy|wording)\b/iu;
+const DISPLAYED_BUSINESS_HOURS = /(?:应|须|必须|需要|需)(?:显示|注明|写明|列出)[^。；\n]{0,120}(?:营业|休息|开门|关门)/u;
 const OBSERVATION_REQUIRED = /手机|移动端|响应式|视觉|美观|好看|易用|用户体验|交互|表单|提交|按钮|点击|导航|功能|后台|数据库|预约|预订|登录|注册|搜索|支付|购物车|发送|收件|保存|储存|加载|性能|实时|动态|权限|身份验证|运行|配色|排版|布局|样式|风格|审美|品牌(?:形象|调性|设计)|符合[^。；\n]*品牌|\b(?:responsive|mobile|visual|aesthetic|beautiful|attractive|subjective|user[- ]experience|usability|interactive|interactivity|interaction|forms?|submi(?:t|ts|tted|tting|ssion|ssions)|end[- ]to[- ]end|click(?:able|s|ing)?|navigation|nav\s+interactivity|function(?:al|ality)?|works?|working|backend|database|bookings?|reservations?|log[- ]?in|sign[- ]?up|search(?:able|ing|es)?|payment|checkout|cart|send(?:s|ing)?|receiv(?:e[ds]?|ing)|persist(?:s|ed|ing|ence)?|sav(?:e[ds]?|ing)|load(?:s|ed|ing)?|hover|toggle|animate|animation|accordion|filter|sort|upload|download|performance|real[- ]time|dynamic|authentication|authori[sz]ation|colou?rs?|layout|styling|styles?|design|looks?|feel|modern|elegant|professional|accessibility|accessible|branding|brand(?!\s+name))\b/iu;
 const BOOKING_TERMS = /预约|预订|\b(?:bookings?|reservations?)\b/giu;
 // Only an explicit wording instruction can scope these otherwise operational
@@ -137,7 +142,8 @@ function needsObservation(criterion: ProofCriterion): boolean {
   const policyCopy = isExplicitBookingPolicyCopy(criterion) || isExplicitRefundPolicyCopy(criterion);
   return criterion.id === "mobile" || FINANCIAL_ACTION.test(`${criterion.title}\n${criterion.source}`)
     || (!policyCopy && OBSERVATION_REQUIRED.test(`${criterion.title}\n${criterion.source}`))
-    || (/^(?:manual|coverage)-/u.test(criterion.id) && !policyCopy && !SOURCE_CONTENT.test(criterion.source));
+    || (/^(?:manual|coverage)-/u.test(criterion.id) && !policyCopy && !SOURCE_CONTENT.test(criterion.source)
+      && !PUBLISHED_POLICY_TEXT.test(criterion.source) && !DISPLAYED_BUSINESS_HOURS.test(criterion.source));
 }
 
 function usage(value: unknown, outputTokenLimit: number, promptTokenUpperEstimate: number): ProofAssessment["usage"] {
@@ -216,6 +222,9 @@ export async function assessDelivery(quote: ProofQuote, env: ProviderEnv, fetche
         "For manual-* and coverage-* criteria, only explicit literal text-content requirements (opening hours, menu, prices, address, phone, business name, copy) can be supported by source. Unknown manual requirements default to insufficient_evidence. Runtime, interaction or subjective claims take precedence even in mixed requirements that also mention literal content.",
         "Use insufficient_evidence for mobile usability, rendered appearance, subjective design quality, script execution, form submission, clicks/navigation interactivity, end-to-end behavior, backend persistence, email receipt, branding/colour/layout or other behavior needing a running browser/backend or human judgement. Source code that describes a feature is not evidence that it works.",
         "Risks must describe a concrete potential defect supported by cited source within the agreed scope. Do not put analysis limitations, omitted image pixels, unperformed runtime checks, or the absence of an unrequired/excluded feature into risks; put capability and coverage limits in limitations. Do not invent a form backend, email delivery, online ordering or an appointment-booking system from a local link/anchor requirement or appointment-only policy COPY. Those requirements do not promise a working reservation service. Return an empty risks array when no concrete in-scope source issue is evidenced.",
+        "Keep each risk title as precise as its explanation. Generic alt text does not show what an image depicts: never title an unseen image as a possible subject mismatch. Missing pixel evidence belongs in limitations, not a visual defect. A quoted string validates its presence only; never promote a source indication into an observed runtime defect.",
+        "A form action of '#' resolves against the current document; it does not prove that submissions go nowhere or that no server handler exists. A submit button alone does not establish the form action. Without runtime evidence, describe required persistence, email or refunds as unverified capabilities in limitations. Do not reframe an explicit operational requirement as ambiguous scope or ask to replace it with a text promise merely because source review cannot test it.",
+        "For a CSS-based concern, check whether the quoted selector actually applies to the delivered controls. Cite both the relevant element/class and CSS when the inference needs that relationship. A style rule alone does not establish its use, actual focus visibility, contrast or a measured accessibility defect. Keep optional maintenance suggestions separate from alleged delivery defects.",
         "Never claim a vulnerability is exploitable, a website is safe, or testing/comprehensive security review occurred. Do not claim screenshots, browser actions, backend access or runtime checks. A risk quotation validates only that the quoted source exists, not that an inference about implementation, absence or project scope is correct.",
         "Do not decide or recommend acceptance or payment, change the agreement, set a price, or make legal conclusions. The buyer alone gives final acceptance.",
         `Write human-facing text in ${quote.language === "zh" ? "Simplified Chinese" : "English"}.`,
