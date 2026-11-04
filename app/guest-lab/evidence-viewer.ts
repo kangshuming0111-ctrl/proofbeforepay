@@ -7,13 +7,14 @@ import type {RuntimeCheckReport} from "../../lib/runtime-checks.ts";
 import {runtimeStepName,runtimeReasonLabel} from "../../lib/runtime-feedback.ts";
 
 type Language="zh"|"en";
-let language:Language="zh",state:EvidenceViewerState={phase:"empty"},selectedFile="",detailTab:"gates"|"runtime"|"source"="gates";
+let language:Language="zh",state:EvidenceViewerState={phase:"empty"},selectedFile="",detailTab:"gates"|"runtime"|"source"|"supplemental"="gates";
 const root=document.querySelector<HTMLDivElement>("#evidence-app")!;
 const tr=(zh:string,en:string)=>language==="zh"?zh:en;
 const node=<T extends keyof HTMLElementTagNameMap>(tag:T,className="",text?:string)=>{const item=document.createElement(tag);item.className=className;if(text!==undefined)item.textContent=text;return item;};
 const append=(parent:Node,...children:Node[])=>children.forEach(child=>parent.appendChild(child));
 const controller=createEvidenceViewerController(next=>{state=next;selectedFile="";render();});
 const gates:Record<string,[string,string,string,string]>={
+  "bundle-structure":["统一证据包范围","Unified bundle scope","原 v1 核心与新增报告均有明确上限；没有省略超限记录。","The unchanged v1 core and supplemental reports have explicit bounds; oversized records are not silently omitted."],
   structure:["文件格式与范围","Format and scope","支持的当前交付格式，且结构在上限内。","Supported current-delivery format within structural limits."],
   "file-digest":["交付文件摘要","File-map digest","重新计算文件映射的 SHA-256。","Recompute SHA-256 for the exact file map."],
   requirements:["原始要求引用","Original requirement spans","核对原文范围与保留的字面引用。","Resolve retained literal spans in the original source."],
@@ -25,9 +26,15 @@ const gates:Record<string,[string,string,string,string]>={
   "model-archive-integrity":["不可变模型报告档案","Immutable model report archive","核对原始有效载荷的精确 SHA-256、项目／交付／报告身份及清单与档案一一对应；不证明真实性。","Check exact payload SHA-256, project/delivery/report identity and a complete one-to-one manifest/archive mapping; authenticity is not proven."],
   "model-evidence-explanation":["并发报告 AI 解释关联","Concurrent-report AI explanation","核对解释与指定报告、诊断项的关联；不验证解释结论。","Check explanation bindings to the exact report and diagnostic findings, not its conclusions."],
   "acceptance-references":["验收快照关联","Acceptance snapshot references","核对原快照、报告与明确例外。","Check retained snapshots, reports and explicit exceptions."],
+  "supplemental-objects":["补充报告对象与摘要","Supplemental objects and digests","重跑可见性、部署字节、时间规则记录的原生校验，并核对脱敏对象的精确摘要。","Replay native visibility, deployment-byte and time-policy record validators and verify exact public-object digests."],
+  "supplemental-bindings":["补充报告与本版文件","Supplemental delivery bindings","核对本版源码节点、部署清单及原始读数的派生结果；不发出网络请求。","Resolve source nodes, deployment manifests and derived results for this delivery without issuing requests."],
+  "supplemental-catalog":["当前完整报告清单","Current complete report catalog","由精确记录重新生成完整清单与摘要。","Rebuild the complete current catalog and its digest from exact records."],
+  "supplemental-acceptance":["补充证据冻结验收链","Frozen supplemental acceptance chain","逐一核对当时纳入或排除的精确版本、例外确认和验收快照。","Resolve exact included/excluded historical versions, acknowledged exceptions and acceptance snapshots."],
+  "followup-records":["返工与重测事件回放","Repair and retest event replay","从买卖双方追加事件重建任务状态；不自动认定返工完成。","Rebuild task state from append-only buyer/seller events; repair completion is not inferred."],
+  "followup-bindings":["同一规则重测与旧验收状态","Same-rule retests and frozen task heads","核对各次任务引用的精确报告、诊断项、规则摘要及当时任务版本。旧交付源码未包含。","Resolve exact report findings, plan digests and task versions, including frozen historical heads. Earlier source files are not included."],
 };
 const errors:Record<EvidenceViewerError,[string,string]>={
-  too_large:["请选择不超过 4 MiB 的单个 JSON 文件。","Choose one JSON file no larger than 4 MiB."],
+  too_large:["请选择不超过 8 MiB 的单个 JSON 文件。","Choose one JSON file no larger than 8 MiB."],
   invalid_utf8:["文件不是有效 UTF-8。请重新导出 JSON 后选择。","This file is not valid UTF-8. Export the JSON again and retry."],
   invalid_json:["文件不是完整 JSON。请选择下载的证据包。","This is not complete JSON. Choose the downloaded evidence export."],
   read_failed:["未能读取本地文件。请重新选择；没有上传文件。","The local file could not be read. Select it again; nothing was uploaded."],
@@ -47,7 +54,7 @@ function inputPanel(){
   label.htmlFor="evidence-file";
   const input=node("input","ev-file-input");input.id="evidence-file";input.type="file";input.accept=".json,application/json";input.dataset.evFocus="local-file";
   input.addEventListener("change",()=>{const file=input.files?.[0];if(file){detailTab="gates";void controller.openFile(file);}});
-  append(side,label,input,node("p","ev-note",tr("单个 UTF-8 JSON，最多 4 MiB。只在本页内存读取；刷新或清除后不保留。","One UTF-8 JSON, up to 4 MiB. Read in this page’s memory; cleared on reset or refresh.")));
+  append(side,label,input,node("p","ev-note",tr("单个 UTF-8 JSON，最多 8 MiB。兼容原 v1 和统一 v2 证据包。只在本页内存读取；刷新或清除后不保留。","One UTF-8 JSON, up to 8 MiB. Supports legacy v1 and unified v2 evidence. Read in this page’s memory; cleared on reset or refresh.")));
   const sampleGroup=node("div","ev-samples");append(sampleGroup,node("h2","",tr("先核对一份已记录的样例","Try a recorded example")));
   const sample=(version:1|2)=>{
     const b=button(tr(`记录的 v${version}`,`Recorded v${version}`),()=>{detailTab="gates";return controller.openRecorded(version===1?recordedV1:recordedV2,`ProofBeforePay-recorded-v${version}.json`);},"ev-sample");
@@ -64,7 +71,7 @@ function gatePanel(){
   const list=node("ol");
   for(const [id,copy] of Object.entries(gates)){
     const check=checks.find(row=>row.id===id);
-    if(!check&&["journey-plan-source-mapping","model-evidence-explanation","model-archive-integrity"].includes(id))continue;
+    if(!check&&["journey-plan-source-mapping","model-evidence-explanation","model-archive-integrity","bundle-structure","supplemental-objects","supplemental-bindings","supplemental-catalog","supplemental-acceptance","followup-records","followup-bindings"].includes(id))continue;
     const outcome=check?.status??"not_checked",row=node("li",`ev-gate ${outcome}`),heading=node("div","ev-gate-heading");
     append(heading,node("h3","",tr(copy[0],copy[1])),node("span","ev-gate-status",outcome==="consistent"?tr("一致","Consistent"):outcome==="inconsistent"?tr("不一致","Inconsistent"):tr("未核对","Not checked")));
     append(row,heading,node("p","",tr(copy[2],copy[3])));
@@ -123,6 +130,29 @@ function limitsPanel(){
   ])append(list,node("li","",line));append(section,list);return section;
 }
 
+function supplementalPanel(){
+ const section=node("section","ev-runtime"),evidence=state.phase==="ready"?state.supplemental:undefined;
+ if(!evidence){append(section,node("p","ev-empty-note",tr("此文件没有完成对象与清单核对的统一补充证据。原 v1 包仍可核对其已有证据范围。","This file has no unified supplemental evidence with checked objects and catalog. Legacy v1 files retain their original verification scope.")));return section;}
+ append(section,node("p","ev-callout",tr("以下为包内精确记录与买家的冻结选择。没有重新运行浏览器、网站或时间接口；不代表自动验收。","These are exact packaged records and frozen buyer selections. Browser, deployment and time endpoints were not rerun; this is not automatic acceptance.")));
+ const families:Record<string,string>={"source-visibility":tr("源码文本可见性","Source-text visibility"),"deployment-source":tr("部署文件字节","Deployment file bytes"),"time-policy":tr("时间与日历规则","Time and calendar policy")};
+ const list=node("ol","ev-runtime-steps");
+ for(const row of evidence.catalog.rows){
+  const item=node("li","ev-runtime-step"),head=node("div","ev-gate-heading");append(head,node("h3","",families[row.ref.family]??row.ref.family),node("span","ev-step-state",row.status));append(item,head,node("p","",row.summary),node("p","ev-note",row.scope));
+  const refs=node("dl","ev-refs");append(refs,labelledValue(tr("记录／版本","Record / version"),`${row.ref.id} / ${row.ref.version}`),labelledValue("SHA-256",row.ref.payloadSha256));append(item,refs);
+  const findings=node("ul");for(const f of row.findings)append(findings,node("li","",`${f.outcome} · ${f.label}`));append(item,findings);
+  const object=evidence.objects.find(o=>o.ref.payloadSha256===row.ref.payloadSha256&&o.ref.id===row.ref.id&&o.ref.family===row.ref.family&&o.ref.version===row.ref.version);
+  if(object){const detail=node("details"),text=JSON.stringify(object.record,null,2),limit=24000;append(detail,node("summary","",tr("查看保存的原生记录","Inspect retained native record")),node("pre","ev-source-text",text.length>limit?text.slice(0,limit)+tr("\n… 仅显示前 24,000 字符；核对使用完整对象。","\n… Display limited to 24,000 characters; the complete object was verified."):text));append(item,detail);}
+  append(list,item);
+ }
+ if(!evidence.catalog.rows.length)append(section,node("p","ev-empty-note",tr("此交付尚未保存补充检测报告。","No supplemental check reports are retained for this delivery.")));append(section,list);
+ const accepts=node("details","ev-inventory");append(accepts,node("summary","",tr(`冻结验收选择 · ${evidence.acceptance.length} 份快照`,`Frozen acceptance selections · ${evidence.acceptance.length} snapshots`)));
+ for(const item of evidence.acceptance){append(accepts,node("h3","",item.snapshotId));if(!item.decision){append(accepts,node("p","ev-note",tr("旧快照没有补充证据选择；没有用新报告补写。","This legacy snapshot has no supplemental selection; newer reports were not substituted.")));continue;}const entries=node("ul");for(const e of item.decision.entries)append(entries,node("li","",`${families[e.ref.family]} · ${e.ref.id} / ${e.ref.version} · ${e.disposition}${e.reason?` · ${e.reason}`:""}`));append(accepts,entries);}
+ append(section,accepts,node("p","ev-note",tr(`${evidence.objects.length} 份精确补充对象；${evidence.artifactManifests.length} 份 JavaScript 字节清单。清单仅保留哈希，不包含或执行 JavaScript。`,`${evidence.objects.length} exact supplemental objects; ${evidence.artifactManifests.length} JavaScript byte manifests. Manifests retain hashes without embedding or executing JavaScript.`)));
+ const tasks=state.phase==="ready"?state.followups?.tasks:undefined;
+ if(tasks?.length){const history=node("details","ev-inventory");append(history,node("summary","",tr(`返工与重测事件 · ${tasks.length} 项任务`,`Repair and retest history · ${tasks.length} tasks`)),node("p","ev-note",tr("旧交付仅保留被任务引用的原生报告；没有旧源文件，不能重新核对其源码节点或字节。","Earlier deliveries contribute only native reports referenced by tasks. Their source files are absent, so their source-node and byte bindings cannot be replayed.")));for(const task of tasks){append(history,node("h3","",`${task.id} · v${task.version} · ${task.status}`));const events=node("ol");for(const event of task.events)append(events,node("li","",`${event.version} · ${event.actorRole} · ${event.action} · ${event.note}${event.resolution?` · ${event.resolution}`:""}`));append(history,events);}append(section,history);}
+ return section;
+}
+
 function recordedOutcome(report:RuntimeCheckReport,historical=false){
   const counts=report.summary,result=node("div",`ev-outcome${counts.issues||counts.unavailable?" issue":""}`);
   append(result,node("strong","",historical?tr(`较早记录：${counts.observed}/${counts.steps} 步有预期观测`,`Earlier recorded run: ${counts.observed}/${counts.steps} expected observations`):tr(`记录的接口结果：${counts.observed}/${counts.steps} 步有预期观测`,`Recorded HTTP result: ${counts.observed}/${counts.steps} expected observations`)),node("span","",tr(`${counts.issues} 项不符，${counts.unavailable} 项未确定。这里只核对保存记录，没有实测服务。`,`${counts.issues} mismatched, ${counts.unavailable} unavailable. The stored record is checked; the service is not tested now.`)));
@@ -152,8 +182,8 @@ function render(){
     if(runtime.state==="recorded")append(summary,recordedOutcome(runtime.report));
   }
   append(results,summary);
-  const tabs=node("nav","ev-tabs");tabs.setAttribute("aria-label",tr("核对视图","Check views"));for(const [key,zh,en] of [["gates","核对项目","Evidence checks"],["runtime","接口记录","HTTP evidence"],["source","查看原文","Retained source"]] as const){const b=button(tr(zh,en),()=>{detailTab=key;render();},detailTab===key?"active":"");b.setAttribute("aria-pressed",String(detailTab===key));append(tabs,b);}append(results,tabs);
-  const pane=node("div","ev-detail-pane"),packet=state.phase==="ready"?state.packet:undefined;append(pane,detailTab==="gates"?gatePanel():detailTab==="runtime"?runtimePanel(packet):sourcePanel(packet));append(results,pane,limitsPanel());
+  const tabs=node("nav","ev-tabs");tabs.setAttribute("aria-label",tr("核对视图","Check views"));for(const [key,zh,en] of [["gates","核对项目","Evidence checks"],["runtime","接口记录","HTTP evidence"],["supplemental","补充证据","Supplemental"],["source","查看原文","Retained source"]] as const){const b=button(tr(zh,en),()=>{detailTab=key;render();},detailTab===key?"active":"");b.setAttribute("aria-pressed",String(detailTab===key));append(tabs,b);}append(results,tabs);
+  const pane=node("div","ev-detail-pane"),packet=state.phase==="ready"?state.packet:undefined;append(pane,detailTab==="gates"?gatePanel():detailTab==="runtime"?runtimePanel(packet):detailTab==="supplemental"?supplementalPanel():sourcePanel(packet));append(results,pane,limitsPanel());
   append(workbench,inputPanel(),results);append(main,intro,privacy,workbench);append(root,header,main);
   if(focused)[...root.querySelectorAll<HTMLElement>("[data-ev-focus]")].find(item=>item.dataset.evFocus===focused)?.focus({preventScroll:true});
 }

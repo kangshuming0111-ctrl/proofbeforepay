@@ -8,6 +8,7 @@ import {savedProjectJourneyPlan, projectJourneyReportsFor, validateProjectJourne
 import {sameRuntimeRegistration} from "./runtime-registration.ts";
 import {assertModelAcceptanceReference, modelReportsFor, validateModelDecision, validateModelReportDecision} from "./model-check-actions.ts";
 import {inlineModelReportsFor} from "./model-report-archive.ts";
+import {currentSupplementalDecision,validateSupplementalDecision,supplementalCanonical,supplementalCatalogRequiresDecision} from "./supplemental-evidence.ts";
 export { EVIDENCE_HISTORY_BYTE_LIMIT } from "./evidence-budget.ts";
 
 export const OBSERVATION_HISTORY_LIMIT = 100;
@@ -83,8 +84,10 @@ export function createAcceptanceEvidence(quote: ProofQuote, manualChecks: string
   const browser = delivery.browserChecks;
   const layout = delivery.layoutReport;
   const assessment = delivery.assessment;
+  const supplementalDecision=currentSupplementalDecision(quote);
   if (browser && browser.deliveryId !== delivery.id || layout && layout.deliveryId !== delivery.id || assessment && assessment.deliveryId !== delivery.id) throw new DomainError("Acceptance evidence contains a report from a different delivery.", 409);
   return structuredClone({id: crypto.randomUUID(), deliveryId: delivery.id, at,
+    ...(supplementalDecision?{supplementalDecision}:{}),
     businessReportId: decision?.reportId ?? null, ...(decision?.exceptionReason ? {businessExceptionReason: decision.exceptionReason} : {}),
     ...(runtimeDecision && runtime ? {runtimeReportId:runtimeDecision.reportId,runtimeDeliveryDigest:runtime.deliveryDigest,runtimeTargetId:runtime.target.id,...(runtime.target.registration?{runtimeRegistration:runtime.target.registration}:{}),...(runtimeDecision.exceptionReason?{runtimeExceptionReason:runtimeDecision.exceptionReason,runtimeAcknowledgedSteps:runtimeDecision.acknowledgedSteps}:{})} : {}),
     ...(journeyDecision && journey ? {journeyReportId:journey.id, journeyDeliveryDigest:journey.deliveryDigest,
@@ -101,6 +104,10 @@ export function createAcceptanceEvidence(quote: ProofQuote, manualChecks: string
 
 export function withAcceptanceEvidence(delivery: ProofDelivery, snapshot: ProofAcceptanceEvidence): ProofDelivery {
   if (snapshot.deliveryId !== delivery.id) throw new DomainError("Acceptance evidence must use this delivery.", 409);
+  if(delivery.supplementalCatalog&&supplementalCatalogRequiresDecision(delivery.supplementalCatalog)){
+    const decision=validateSupplementalDecision(snapshot.supplementalDecision,delivery.supplementalCatalog);
+    if(supplementalCanonical(decision)!==supplementalCanonical(delivery.supplementalDecision))throw new DomainError("Acceptance must freeze the buyer's exact reviewed supplemental selection.",409);
+  }else if(snapshot.supplementalDecision)throw new DomainError("Supplemental acceptance needs the current server-rederived catalog.",409);
   const humanChecks = [...new Set(delivery.evidence.filter(item => item.finding === "needs_human").map(item => item.criterionId))];
   const currentReviews = (delivery.riskReviews ?? []).filter(item => item.deliveryId === delivery.id && item.assessmentId === delivery.assessment?.id);
   const business = delivery.businessChecks;

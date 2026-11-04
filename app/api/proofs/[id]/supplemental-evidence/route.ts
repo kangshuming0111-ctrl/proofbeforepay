@@ -1,0 +1,6 @@
+import {proofActor,readProofCase,saveProofCase,proofResponse} from "@/lib/proof-store";
+import {supplementalDecisionQuote} from "@/lib/supplemental-evidence-store";
+import {body,handle,HttpError,json} from "@/lib/server";
+export const dynamic="force-dynamic";
+export async function GET(request:Request,context:{params:Promise<{id:string}>}){return handle(async()=>{const actor=proofActor(request);if(!actor.authenticated)throw new HttpError(401,"Sign in to inspect supplemental acceptance evidence.");const{id}=await context.params,record=await readProofCase(id,actor);return json({catalog:record.quote.proof.delivery?.supplementalCatalog,decision:record.quote.proof.delivery?.supplementalDecision});});}
+export async function POST(request:Request,context:{params:Promise<{id:string}>}){return handle(async()=>{const actor=proofActor(request,true);if(!actor.authenticated)throw new HttpError(401,"Sign in to choose supplemental acceptance evidence.");const{id}=await context.params,record=await readProofCase(id,actor),next=supplementalDecisionQuote(record,actor,await body(request,100000));await saveProofCase(record,next,{supplementalGuard:record.supplementalGuard});return json(proofResponse(record));});}

@@ -1,4 +1,5 @@
-import {EVIDENCE_EXPORT_BYTE_LIMIT, verifyEvidenceExport, type EvidenceExport, type EvidenceVerification} from "../../lib/evidence-export.ts";
+import {type EvidenceExport,type EvidenceVerification} from "../../lib/evidence-export.ts";
+import {EVIDENCE_BUNDLE_BYTE_LIMIT,EVIDENCE_BUNDLE_SCHEMA,verifyEvidenceBundle,type EvidenceBundle} from "../../lib/evidence-bundle.ts";
 import type {RuntimeCheckReport} from "../../lib/runtime-checks.ts";
 
 export type EvidenceInput = {name?:string;size:number;arrayBuffer:()=>Promise<ArrayBuffer>};
@@ -7,7 +8,7 @@ export type EvidenceViewerState =
   | {phase:"empty"}
   | {phase:"checking";label:string;recorded:boolean}
   | {phase:"error";label:string;recorded:boolean;error:EvidenceViewerError}
-  | {phase:"ready";label:string;recorded:boolean;verification:EvidenceVerification;packet?:EvidenceExport};
+  | {phase:"ready";label:string;recorded:boolean;verification:EvidenceVerification;packet?:EvidenceExport;supplemental?:EvidenceBundle["supplemental"];followups?:EvidenceBundle["followups"]};
 export type RuntimeViewerEvidence={state:"unavailable"}|{state:"missing"}|{state:"pending";previousReport?:RuntimeCheckReport}|{state:"recorded";report:RuntimeCheckReport};
 
 /** A retained older report must not stand in for an unfinished run. */
@@ -24,7 +25,7 @@ const labelFor=(value:string)=>value.replace(/[\u0000-\u001f\u007f]/gu,"").slice
 /** Parse bounded bytes as data. This never fetches, evaluates source, opens a
  * URL, reads environment configuration or sends a selected file anywhere. */
 export function parseEvidenceBytes(bytes:ArrayBuffer):unknown {
-  if(bytes.byteLength>EVIDENCE_EXPORT_BYTE_LIMIT)throw new InputError("too_large");
+  if(bytes.byteLength>EVIDENCE_BUNDLE_BYTE_LIMIT)throw new InputError("too_large");
   let text:string;
   try{text=new TextDecoder("utf-8",{fatal:true}).decode(bytes);}catch{throw new InputError("invalid_utf8");}
   try{return JSON.parse(text);}catch{throw new InputError("invalid_json");}
@@ -33,14 +34,15 @@ export function parseEvidenceBytes(bytes:ArrayBuffer):unknown {
 /** Only a structurally checked envelope is exposed to the text-only view. A
  * failed gate remains visible; it never becomes an acceptance or payment. */
 function checkedPacket(value:unknown,report:EvidenceVerification):EvidenceExport|undefined {
-  return report.checks.some(row=>row.id==="structure"&&row.status==="consistent")?value as EvidenceExport:undefined;
+  if(!report.checks.some(row=>row.id==="structure"&&row.status==="consistent"))return undefined;
+  return(value as {schema?:unknown}).schema===EVIDENCE_BUNDLE_SCHEMA?(value as EvidenceBundle).core:value as EvidenceExport;
 }
 
 /** Latest selection wins across file reads and async digests. Reset revokes
  * every in-flight result, including a late failure from an earlier input. */
 export function createEvidenceViewerController(
   onChange:(state:EvidenceViewerState)=>void=()=>{},
-  verifier:(value:unknown)=>Promise<EvidenceVerification>=verifyEvidenceExport,
+  verifier:(value:unknown)=>Promise<EvidenceVerification>=verifyEvidenceBundle,
 ) {
   let generation=0,state:EvidenceViewerState={phase:"empty"};
   const publish=(next:EvidenceViewerState)=>{state=next;onChange(next);};
@@ -52,7 +54,9 @@ export function createEvidenceViewerController(
       const verification=await verifier(value);
       if(context.token!==generation)return;
       const packet=checkedPacket(value,verification);
-      publish({phase:"ready",label:context.label,recorded:context.recorded,verification,...(packet?{packet}:{})});
+      const supplemental=(value as {schema?:unknown})?.schema===EVIDENCE_BUNDLE_SCHEMA&&verification.checks.some(row=>row.id==="supplemental-catalog"&&row.status==="consistent")&&(verification.checks.some(row=>row.id==="supplemental-objects"&&row.status==="consistent"))?(value as EvidenceBundle).supplemental:undefined;
+      const followups=supplemental&&verification.checks.some(row=>row.id==="followup-bindings"&&row.status==="consistent")?(value as EvidenceBundle).followups:undefined;
+      publish({phase:"ready",label:context.label,recorded:context.recorded,verification,...(packet?{packet}:{}),...(supplemental?{supplemental}:{}),...(followups?{followups}:{})});
     }catch{failed(context,"verification_failed");}
   }
   return {
@@ -60,7 +64,7 @@ export function createEvidenceViewerController(
     reset(){generation++;publish({phase:"empty"});},
     async openFile(file:EvidenceInput){
       const context=begin(file.name??"evidence.json",false);
-      if(!Number.isSafeInteger(file.size)||file.size<0||file.size>EVIDENCE_EXPORT_BYTE_LIMIT){failed(context,"too_large");return;}
+      if(!Number.isSafeInteger(file.size)||file.size<0||file.size>EVIDENCE_BUNDLE_BYTE_LIMIT){failed(context,"too_large");return;}
       try{const bytes=await file.arrayBuffer();if(context.token!==generation)return;await check(parseEvidenceBytes(bytes),context);}
       catch(error){failed(context,error instanceof InputError?error.code:"read_failed");}
     },

@@ -10,11 +10,15 @@ import { HttpError, owner } from "./server";
 import { assertQuoteEvidenceBudget } from "./evidence-budget";
 import {dehydrateModelDelivery,dehydrateModelQuote} from "./model-report-archive";
 import {hydrateModelDelivery,newModelArchiveStatements} from "./model-report-store";
+import {loadSupplementalEvidence,newSupplementalArchiveStatements,type SupplementalEvidenceGuard} from "./supplemental-evidence-store";
+import type {SupplementalEvidenceObject} from "./supplemental-evidence";
 
 export type ProofActor = {id: string; email: string; authenticated: boolean; requestedDemoRole?: ProofRole};
 export type ProofRecord = {
   quote: ProofQuote; version: number; buyerId: string; sellerId: string | null; role: ProofRole;
   invitationHash: string | null; invitationEmail: string | null; invitationExpiresAt: string | null;
+  supplementalGuard?:SupplementalEvidenceGuard;
+  supplementalObjects?:SupplementalEvidenceObject[];
 };
 
 export function proofActor(request: Request, mutation = false): ProofActor {
@@ -40,6 +44,7 @@ export async function readProofCase(id: string, actor: ProofActor): Promise<Proo
   if (!row) throw new HttpError(404, "Project not found.");
   const record=fromRow(row, actor);
   if(record.quote.proof.delivery)record.quote.proof.delivery=await hydrateModelDelivery(env.DB as D1Database,id,record.quote.proof.delivery);
+  if(record.quote.proof.delivery){const supplemental=await loadSupplementalEvidence(record);record.quote.proof.delivery.supplementalCatalog=supplemental.catalog;record.supplementalGuard=supplemental.guard;record.supplementalObjects=supplemental.objects;}
   return record;
 }
 
@@ -76,7 +81,7 @@ export async function listProofCases(actor: ProofActor) {
   return {quotes: result, roles};
 }
 
-type SaveOptions = {archive?: boolean; invitation?: {hash: string; email: string; expiresAt: string} | null; sellerId?: string; claimInvitation?: boolean};
+type SaveOptions = {archive?: boolean; invitation?: {hash: string; email: string; expiresAt: string} | null; sellerId?: string; claimInvitation?: boolean;supplementalGuard?:SupplementalEvidenceGuard};
 
 /** One D1 transaction archives the prior snapshot and performs the quote-version CAS. */
 export async function saveProofCase(record: ProofRecord, next: ProofQuote, options: SaveOptions = {}) {
@@ -85,11 +90,12 @@ export async function saveProofCase(record: ProofRecord, next: ProofQuote, optio
   const db = env.DB as D1Database;
   const at = new Date().toISOString();
   const statements: D1PreparedStatement[] = [];
-  const payload=JSON.stringify(dehydrateModelQuote(next));
+  const storedNext=dehydrateModelQuote(next);if(storedNext.proof.delivery)delete storedNext.proof.delivery.supplementalCatalog;
+  const payload=JSON.stringify(storedNext);
   if (options.archive && record.quote.proof.delivery) {
     const count = await getDb().select({count: sql<number>`count(*)`}).from(proofVersions).where(eq(proofVersions.quoteId, next.id));
     if (count[0]?.count >= 49) throw new HttpError(409, "This project has reached 50 delivery versions. Start a new project to continue.");
-    const snapshot = snapshotVersion(record.quote, at);snapshot.delivery=dehydrateModelDelivery(snapshot.delivery);
+    const snapshot = snapshotVersion(record.quote, at);snapshot.delivery=dehydrateModelDelivery(snapshot.delivery);delete snapshot.delivery.supplementalCatalog;
     statements.push(db.prepare("INSERT INTO proof_versions (id, quote_id, payload, archived_at) SELECT ?, ?, ?, ? WHERE EXISTS (SELECT 1 FROM quotes WHERE id = ? AND owner_id = ? AND version = ? AND payload = ?)")
       .bind(`${next.id}:${snapshot.delivery.id}`, next.id, JSON.stringify(snapshot), at, next.id, record.buyerId, record.version+1,payload));
   }
@@ -99,7 +105,12 @@ export async function saveProofCase(record: ProofRecord, next: ProofQuote, optio
   const claimGuard = options.claimInvitation ? " AND seller_id IS NULL AND invitation_hash = ? AND invitation_email = ? AND julianday(invitation_expires_at) > julianday('now')" : "";
   const bindings: unknown[] = [payload, at, options.sellerId ?? record.sellerId, invitation.hash, invitation.email, invitation.expiresAt, next.id, record.buyerId, record.version];
   if (options.claimInvitation) bindings.push(record.invitationHash, record.invitationEmail);
-  statements.unshift(db.prepare("UPDATE quotes SET payload = ?, version = version + 1, updated_at = ?, seller_id = ?, invitation_hash = ?, invitation_email = ?, invitation_expires_at = ? WHERE id = ? AND owner_id = ? AND version = ?" + claimGuard).bind(...bindings));
+  const oldSnapshots=new Set((record.quote.proof.delivery?.acceptanceEvidence??[]).map(s=>s.id));
+  const newlyFrozen=(next.proof.delivery?.acceptanceEvidence??[]).filter(s=>!oldSnapshots.has(s.id));
+  const supplementalGuard=options.supplementalGuard??(newlyFrozen.length?record.supplementalGuard:undefined);
+  const supplementalSQL=supplementalGuard?` AND (${supplementalGuard.sql})`:"";if(supplementalGuard)bindings.push(...supplementalGuard.bindings);
+  statements.unshift(db.prepare("UPDATE quotes SET payload = ?, version = version + 1, updated_at = ?, seller_id = ?, invitation_hash = ?, invitation_email = ?, invitation_expires_at = ? WHERE id = ? AND owner_id = ? AND version = ?" + claimGuard+supplementalSQL).bind(...bindings));
+  if(newlyFrozen.some(s=>s.supplementalDecision))statements.push(...await newSupplementalArchiveStatements(record,newlyFrozen,{ownerId:record.buyerId,version:record.version+1,payload},at));
   statements.push(...await newModelArchiveStatements(db,next.id,next.proof.delivery,record.quote.proof.delivery,{ownerId:record.buyerId,version:record.version+1,payload},at));
   const results = await db.batch(statements);
   if (!results[0].meta.changes) throw new HttpError(409, "This project changed in another request. Reload it and try again.");

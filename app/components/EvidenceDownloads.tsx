@@ -3,15 +3,17 @@
 import {useRef} from "react";
 import {ArrowDownToLine,ShieldCheck} from "lucide-react";
 import type {Language,ProofQuote} from "@/lib/contracts";
-import {createEvidenceExport} from "@/lib/evidence-export";
+import {verifyEvidenceBundle} from "@/lib/evidence-bundle";
 
-export function EvidenceDownloads({quote,language,busy,onExport,onRaw}:{quote:ProofQuote|null;language:Language;busy:boolean;onExport:(task:()=>Promise<void>)=>Promise<void>;onRaw:()=>void}){
+export function EvidenceDownloads({quote,language,busy,onExport,onRaw,request}:{quote:ProofQuote|null;language:Language;busy:boolean;onExport:(task:()=>Promise<void>)=>Promise<void>;onRaw:()=>void;request:(path:string)=>Promise<unknown>}){
   const menu=useRef<HTMLDetailsElement>(null),tr=(zh:string,en:string)=>language==="zh"?zh:en;
   async function download(){
     if(!quote||busy)return;
     const selected=quote;
     await onExport(async()=>{
-      const envelope=await createEvidenceExport(selected);
+      const envelope=await request(`/api/proofs/${selected.id}/evidence-bundle`);
+      const verification=await verifyEvidenceBundle(envelope);
+      if(verification.consistency!=="consistent")throw new Error(tr("证据在下载时未能完整核对，请刷新后重试。没有省略失败的报告。","The complete evidence could not be checked during download. Refresh and retry; failed reports were not omitted."));
       const url=URL.createObjectURL(new Blob([JSON.stringify(envelope)],{type:"application/json"}));
       try{const anchor=document.createElement("a");anchor.href=url;anchor.download=`${selected.reference}-verifiable-evidence.json`;anchor.click();}
       finally{URL.revokeObjectURL(url);}
@@ -22,7 +24,7 @@ export function EvidenceDownloads({quote,language,busy,onExport,onRaw}:{quote:Pr
     <summary aria-label={tr("导出交付证据","Export delivery evidence")}><ArrowDownToLine size={15}/><span>{tr("导出","Export")}</span></summary>
     <div className="evidence-download-menu">
       <button type="button" disabled={!quote?.proof.delivery?.files||busy} onClick={download}><ShieldCheck size={15}/>{tr("下载可离线核对的证据包","Download offline-checkable evidence")}</button>
-      <p>{tr("包含原始要求、当前交付文件和证据关联；不导出账户成员与付款记录字段。离线工具可核对一致性，不能证明签发真实性、实际调用或付款。","Includes original requirements, current files and evidence references, omitting account-member and payment-record fields. The offline tool checks consistency, not authentic issuance, actual execution or payment.")}</p>
+      <p>{tr("由服务器整理原始要求、当前交付文件、可见性／部署字节／时间规则报告，以及冻结验收引用；总计最多 8 MiB，超限会报错。成员身份和付款记录字段不进入此包。离线核对不证明真实性、实际调用或付款。","The server assembles original requirements, current files, visibility/deployment-byte/time-policy reports and frozen acceptance references. Maximum 8 MiB; oversized exports fail explicitly. Member identities and payment-record fields are omitted. Offline consistency does not prove authenticity, execution or payment.")}</p>
       <button type="button" disabled={!quote||busy} onClick={()=>{if(menu.current)menu.current.open=false;onRaw();}}>{tr("下载原始项目记录 JSON","Download raw project record JSON")}</button>
       <p>{tr("保留原有项目和付款状态字段；这是原始记录，未按离线证据格式核对。","Retains the original project and payment-state fields. This raw record is not checked against the offline evidence format.")}</p>
     </div>

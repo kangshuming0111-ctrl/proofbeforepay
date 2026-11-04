@@ -28,6 +28,8 @@ import { CollaborationPanel, type CollaborationHistoryHandle, type FeedbackSugge
 import { VersionViewer } from "./components/VersionViewer";
 import { RequirementsIntake } from "./components/RequirementsIntake";
 import { DeliveryAssessment } from "./components/DeliveryAssessment";
+import {SupplementalEvidencePanel} from "./components/SupplementalEvidencePanel";
+import {EvidenceFollowupPanel} from "./components/EvidenceFollowupPanel";
 import {SourceVisibilityPanel} from "./components/SourceVisibilityPanel";
 import type { RiskReviewInput } from "@/lib/risk-reviews";
 import { readDeliveryUpload, deliveryFileUrl, isHtmlDeliveryPath } from "@/lib/delivery-upload";
@@ -202,6 +204,8 @@ export default function Home() {
   const businessCheckController = useRef<AbortController | null>(null);
   const businessCheckSavePending = useRef(false);
   const currentBrowserContext = useRef("");
+  const quoteApplyRevision = useRef(0);
+  const evidenceRefreshSequence = useRef(0);
   const currentDelivery = useRef("");
   const acceptanceRef = useRef<HTMLDivElement>(null);
   const completedCollaborationRef = useRef<HTMLDetailsElement>(null);
@@ -391,6 +395,7 @@ export default function Home() {
       else setError("案例记录未能加载 / Could not load case history.");
       if (restored.status === "fulfilled" && restored.value) {
         if (isProof(restored.value.quote)) {
+          quoteApplyRevision.current += 1;
           setQuote(restored.value.quote);
           setRole(restored.value.role ?? "buyer");
           setWorkspaceRole(restored.value.quote.proof.collaboration ? restored.value.role ?? "buyer" : requestedRole);
@@ -493,10 +498,21 @@ export default function Home() {
 
   function apply(next: ProofQuote, nextRole?: ProofRole) {
     if (!isProof(next)) throw new Error(tr("服务器返回的案例格式不受支持。", "The server returned an unsupported case."));
+    quoteApplyRevision.current += 1;
     setQuote(next);
     if (nextRole) {setRole(nextRole); setRecordRoles(old => ({...old, [next.id]: nextRole}));}
     setRecords(old => [next, ...old.filter(item => item.id !== next.id)]
       .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)));
+  }
+
+  async function refreshEvidenceCatalog() {
+    if (!quote?.proof.delivery) return;
+    const identity = `${quote.id}:${quote.proof.delivery.id}:${displayRole}`;
+    const revision = quoteApplyRevision.current, sequence = ++evidenceRefreshSequence.current;
+    const isCurrent = () => currentBrowserContext.current === identity && quoteApplyRevision.current === revision && evidenceRefreshSequence.current === sequence;
+    try { const value=await request<{quote:ProofQuote}>(`/api/quotes/${encodeURIComponent(quote.id)}`);
+      if(isCurrent())apply(value.quote);
+    } catch(e) {if(isCurrent())setError(e instanceof Error?e.message:String(e));}
   }
 
   function clearReturnContext() {
@@ -525,6 +541,7 @@ export default function Home() {
     setWorkspaceView("workbench");
     setWorkspacePanel("agreement");
     clearReturnContext();
+    quoteApplyRevision.current += 1;
     setQuote(null);
     setRole("buyer"); setWorkspaceRole("buyer"); setCollaborative(true); setCustomRoleDemo(true); setSandboxRehearsal(false); setSandboxCollaboration(false);
     setError("");
@@ -564,7 +581,8 @@ export default function Home() {
       setViewedVersion(undefined);
       setInvitation(undefined); setError(""); setNotice("");
       if (quote && collaboration && !roleplay && next !== role) {
-        setQuote(null); clearReturnContext();
+        quoteApplyRevision.current += 1;
+    setQuote(null); clearReturnContext();
         setNotice(tr("已切换工作台。真实项目按登录账号的参与身份显示；切换不会变更项目成员。", "Workspace switched. Real projects follow your signed-in membership; switching does not change project participants."));
       } else if (quote) showCaseAddress(quote, next);
       if (!quote || collaboration && !roleplay && next !== role) {
@@ -1401,7 +1419,7 @@ export default function Home() {
             <div className="scope-note"><ShieldCheck size={18} /><p>{tr("付款由买家确认，模型不会自动放款。", "The buyer confirms payment; the model never releases funds.")}</p></div>
           </aside>
           <section className="evidence-panel" aria-label={tr("交付验收工作台", "Delivery acceptance workspace")}>
-            <div className="evidence-heading"><div><span className="section-kicker">02 / PROOF BEFORE PAYMENT</span><h2>{tr("让交付拿出证据", "Let the work show its proof")}</h2></div><div className="document-actions no-print"><EvidenceDownloads quote={quote} language={language} busy={!!busy} onRaw={exportRecord} onExport={task=>run("evidence-export",async()=>{await task();setNotice(tr("证据包已下载，可离线核对当前文件、引用与报告关联；不等于真实性、网站全部合格或付款证明。","Evidence downloaded for offline file, citation and report-reference checks. This does not prove authenticity, full website correctness or payment."));})}/><button className="subtle-button" disabled={!quote || !!busy} onClick={() => window.print()}><FileText size={14} />{tr("打印 / PDF", "Print / PDF")}</button></div></div>
+            <div className="evidence-heading"><div><span className="section-kicker">02 / PROOF BEFORE PAYMENT</span><h2>{tr("让交付拿出证据", "Let the work show its proof")}</h2></div><div className="document-actions no-print"><EvidenceDownloads request={request} quote={quote} language={language} busy={!!busy} onRaw={exportRecord} onExport={task=>run("evidence-export",async()=>{await task();setNotice(tr("证据包已下载，可离线核对当前文件、引用与报告关联；不等于真实性、网站全部合格或付款证明。","Evidence downloaded for offline file, citation and report-reference checks. This does not prove authenticity, full website correctness or payment."));})}/><button className="subtle-button" disabled={!quote || !!busy} onClick={() => window.print()}><FileText size={14} />{tr("打印 / PDF", "Print / PDF")}</button></div></div>
 
             <div className={`delivery-workspace ${delivery ? "has-delivery" : ""} ${customView ? "is-custom" : ""}`}>
               <div className="delivery-topline"><div><span className="section-kicker">{sampleRoleplay ? "DEMO DELIVERY" : customView ? "YOUR DELIVERY FILES" : "CONTROLLED EXAMPLES"}</span><h3>{tr("交付版本", "Delivery versions")}</h3></div><span className="fixture-label"><Code2 size={12} />{sampleRoleplay ? tr("演示交付", "DEMO DELIVERY") : customView ? tr("你的交付文件", "YOUR FILES") : tr("内置样例", "EXAMPLE FILES")}</span></div>
@@ -1454,6 +1472,8 @@ export default function Home() {
                 onInspectLayout={(file, width) => {setPreviewFile(file); setPreviewWidth(width === 375 ? "mobile" : "desktop"); setPreviewEntry(value => value + 1); setDeliveryTab("preview"); setWorkspacePanel("delivery");}}
                 onInspect={openCriterion} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked ? prepareFeedback : undefined}
                 onViewHistory={openVersionHistory}/>}
+              {quote && delivery && <SupplementalEvidencePanel quote={quote} role={role} language={language} request={request} onQuote={apply}/>}
+              {quote && delivery && <EvidenceFollowupPanel key={`repair-${quote.id}-${workspaceRole}`} quote={quote} role={role} language={language} enabled={!busy&&!quote.proof.paymentOperation} request={request} onQuote={apply} onPrepareFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?prepareFeedback:undefined}/>}
               {delivery && <ResourceChecks delivery={delivery} language={language}/>}
               {delivery && proof && (comparisonHistoryLoading?<p className="form-help no-print" role="status"><LoaderCircle size={13} className="spin"/>{tr("正在读取版本对照所需的旧版完整文件与报告…","Loading the earlier version’s saved files and reports for comparison…")}</p>:comparisonHistoryError?<div className="form-help no-print"><p role="alert">{tr("旧版完整记录未能加载，暂不显示版本对照。当前交付未改变，也没有用轻量摘要替代原始文件。","The full earlier record could not be loaded, so comparison is unavailable. The current delivery is unchanged; summary metadata is not substituted for saved files.")}</p><button type="button" className="subtle-button" disabled={!!busy} onClick={()=>{if(scopedVersionList?.status==="error")setVersionListRetry(value=>value+1);else setPreviousComparisonRetry(value=>value+1);}}><RefreshCw size={12}/>{tr("重试加载版本对照","Retry comparison loading")}</button></div>:<DeliveryComparison projectId={quote?.id} delivery={delivery} review={proof.review} criteria={proof.criteria} previousVersion={comparisonVersion} feedback={collaboration?.feedback} runtimePlan={runtimePlan} language={language} onInspectCurrent={openCriterion}/>)}
               <nav className="delivery-view-switch no-print" hidden={!quote} aria-label={tr("交付查看方式", "Delivery view")}>
@@ -1496,7 +1516,7 @@ export default function Home() {
                 <BusinessChecksPanel key={`business-${delivery?.id ?? "empty"}`} language={language} count={customProject?.businessChecks?.length ?? 0} report={businessReport} enabled={canObserveBrowser && !busy} busy={busy === "business-check"} progress={businessCheckProgress} onRun={checkBusinessContent} onCancel={() => {if (!businessCheckSavePending.current) businessCheckController.current?.abort();}} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked && !busy ? (criterionId, comment) => prepareFeedback({deliveryId: delivery!.id, criterionId, comment}) : undefined}/>
                 {busy === "business-check-save" && <p className="layout-check-source" role="status">{tr("正在保存业务内容核对…", "Saving business content observations…")}</p>}
                 {quote&&delivery&&runtimePlan&&<RuntimeCheckPanel language={language} deliveryId={delivery.id} plan={runtimePlan} targetId={delivery.backendTargetId} target={runtimeTargets.find(target=>target.id===delivery.backendTargetId)} registration={delivery.runtimeRegistration} deliveryDigest={delivery.runtimeDeliveryDigest} report={runtimeReport} pending={!!delivery.runtimeRun&&Date.parse(delivery.runtimeRun.expiresAt)>Date.now()} busy={busy==="runtime-check"} enabled={!!canRunRuntime&&!busy} onRun={checkRuntimeBackend} preflightContext={JSON.stringify([quote.id,delivery.id,workspaceRole,role,delivery.backendTargetId,delivery.runtimeDeliveryDigest,runtimePlan,delivery.runtimeRegistration])} onPreflight={signal=>apiRequest<RuntimePreflightResult>(`/api/proofs/${encodeURIComponent(quote.id)}/runtime-preflight`,"POST",{deliveryId:delivery.id},workspaceRole,signal)} onPrepareFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?(criterionId,comment)=>prepareFeedback({deliveryId:delivery.id,criterionId,comment}):undefined}/>}
-                {quote&&delivery&&custom&&<ProjectJourneyPanel key={`journey-${quote.id}-${delivery.id}-${workspaceRole}`} quote={quote} role={role} language={language} enabled={!!canRunRuntime&&!busy} request={request} onApply={apply} onBusy={value=>setBusy(value?"journey-check":"")} onDecision={setJourneyDecision} onFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?comment=>prepareFeedback({deliveryId:delivery.id,criterionId:"journey-agreement",journeyReportId:delivery.journeyReport?.id,comment}):undefined}/>}
+                {quote&&delivery&&custom&&<ProjectJourneyPanel key={`journey-${quote.id}-${delivery.id}-${workspaceRole}`} quote={quote} role={role} language={language} enabled={!!canRunRuntime&&!busy} request={request} onApply={apply} onSupplementalChanged={()=>void refreshEvidenceCatalog()} onBusy={value=>setBusy(value?"journey-check":"")} onDecision={setJourneyDecision} onFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?comment=>prepareFeedback({deliveryId:delivery.id,criterionId:"journey-agreement",journeyReportId:delivery.journeyReport?.id,comment}):undefined}/>}
                 {quote&&delivery&&custom&&<ModelCheckPanel key={`model-${quote.id}-${delivery.id}-${workspaceRole}`} quote={quote} role={role} language={language} enabled={!!canRunRuntime&&!busy} explanationEnabled={!busy&&!evidenceRunPending&&!quote.proof.paymentOperation} request={request} onApply={apply} onBusy={value=>setBusy(value?"model-check":"")} onDecision={setModelDecision} onFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?comment=>prepareFeedback({deliveryId:delivery.id,criterionId:"model-agreement",modelReportId:delivery.modelReport?.id,comment}):undefined}/>}
                 {delivery && <EvidenceHistoryPanel key={`history-${delivery.id}`} delivery={delivery} language={language} projectId={quote?.id} acceptedSnapshotId={frozenAcceptanceId}/>}
                 {busy === "browser-check-save" && <p className="layout-check-source" role="status">{tr("正在保存链接行为与资源观察…", "Saving link behavior and resource observations…")}</p>}
@@ -1516,7 +1536,7 @@ export default function Home() {
                 {proof?.criteria.map((criterion, index) => <button key={criterion.id} aria-pressed={criterionIndex === index} className={criterionIndex === index ? "active" : ""} onClick={() => setCriterionIndex(index)}><span>0{index + 1}</span><strong>{criterionDisplayTitle(criterion, language)}</strong><small>{findingLabel(findingFor(criterion))}</small></button>)}
               </nav>}
               {delivery && proof && <DeliveryAssessment report={delivery.assessment?.deliveryId === delivery.id ? delivery.assessment : undefined} riskReviews={delivery.riskReviews} actorRole={displayRole} onSaveRiskReview={saveRiskReview} criteria={proof.criteria} language={language} selectedCriterionId={proof.criteria[criterionIndex]?.id} configured={config?.aiMode === "live"} enabled={!!canCheckDelivery && reviewCurrent && !!delivery.files && !busy} busy={busy === "assess"} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked && !busy ? prepareFeedback : undefined} onRun={() => mutate("assess", {deliveryId: delivery.id, confirm: true}, tr("已保存当前版本的 AI 评估。建议与规则证据独立，最终仍由买家验收。", "AI assessment saved for this version. Advice remains separate from rule evidence; the buyer decides acceptance."))} />}
-              {quote && delivery && <SourceVisibilityPanel quote={quote} role={role} language={language} enabled={!busy} request={request}/>}
+              {quote && delivery && <SourceVisibilityPanel quote={quote} role={role} language={language} enabled={!busy} request={request} onChanged={()=>void refreshEvidenceCatalog()}/>}
               {delivery && <div className="criteria-evidence-list">
                 {proof?.criteria.map((criterion, index) => {
                   const finding = findingFor(criterion);

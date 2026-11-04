@@ -133,6 +133,6 @@ export function validateStoredVisibilityReport(value:unknown):SourceVisibilityRe
   }
   else if(!["non_html_source","non_body_text","partial_or_multiple_nodes","repeated_text","source_complexity"].includes(c.unsupported as string))throw new DomainError("Saved unsupported citation reason is invalid.",503);
  }
- const readings=validateVisibilityReadings(p as unknown as SourceVisibilityPlan,r.readings);if(JSON.stringify(r.summary)!==JSON.stringify(visibilitySummary(readings)))throw new DomainError("Saved source-visibility counts disagree with retained readings.",503);
+ const readings=validateVisibilityReadings(p as unknown as SourceVisibilityPlan,r.readings),summary=object(r.summary,["visible","hidden","ambiguous","unavailable"]),expectedSummary=visibilitySummary(readings);if((Object.keys(expectedSummary)as (keyof typeof expectedSummary)[]).some(key=>summary[key]!==expectedSummary[key]))throw new DomainError("Saved source-visibility counts disagree with retained readings.",503);
  return structuredClone(r)as unknown as SourceVisibilityReport;
 }

@@ -3,24 +3,24 @@ import {open,lstat} from "node:fs/promises";
 import {constants} from "node:fs";
 import {pathToFileURL} from "node:url";
 import {resolve} from "node:path";
-import {verifyEvidenceExport,EVIDENCE_EXPORT_BYTE_LIMIT} from "../lib/evidence-export.ts";
+import {verifyEvidenceBundle,EVIDENCE_BUNDLE_BYTE_LIMIT} from "../lib/evidence-bundle.ts";
 
 /** Bounded regular-file input only. No source execution, credentials, environment
  * configuration or network access are needed by this command. */
 export async function readEvidenceFile(filename){
   const before=await lstat(filename);
-  if(before.isSymbolicLink()||!before.isFile()||before.size>EVIDENCE_EXPORT_BYTE_LIMIT)throw new Error("Use a regular, non-symlink evidence JSON file within the byte limit.");
+  if(before.isSymbolicLink()||!before.isFile()||before.size>EVIDENCE_BUNDLE_BYTE_LIMIT)throw new Error("Use a regular, non-symlink evidence JSON file within the byte limit.");
   const file=await open(filename,constants.O_RDONLY|constants.O_NOFOLLOW);
   try{
     const current=await file.stat();
     if(!current.isFile()||current.dev!==before.dev||current.ino!==before.ino)throw new Error("The evidence file changed while opening.");
-    const bytes=Buffer.alloc(EVIDENCE_EXPORT_BYTE_LIMIT+1);let offset=0;
+    const bytes=Buffer.alloc(EVIDENCE_BUNDLE_BYTE_LIMIT+1);let offset=0;
     while(offset<bytes.length){const {bytesRead}=await file.read(bytes,offset,bytes.length-offset,offset);if(!bytesRead)break;offset+=bytesRead;}
-    if(offset>EVIDENCE_EXPORT_BYTE_LIMIT)throw new Error("The evidence file exceeds the byte limit.");
+    if(offset>EVIDENCE_BUNDLE_BYTE_LIMIT)throw new Error("The evidence file exceeds the byte limit.");
     return JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(bytes.subarray(0,offset)));
   }finally{await file.close();}
 }
-export async function verifyEvidenceFile(filename){return verifyEvidenceExport(await readEvidenceFile(filename));}
+export async function verifyEvidenceFile(filename){return verifyEvidenceBundle(await readEvidenceFile(filename));}
 
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
   const args=process.argv.slice(2);

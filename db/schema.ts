@@ -88,3 +88,12 @@ export const deploymentSourceSessions=sqliteTable("deployment_source_sessions",{
  deliveryDigest:text("delivery_digest").notNull(),startedBy:text("started_by").notNull(),payload:text("payload").notNull(),
  version:integer("version").notNull(),createdAt:text("created_at").notNull(),updatedAt:text("updated_at").notNull(),
 },table=>[index("deployment_source_quote_idx").on(table.quoteId,table.createdAt)]);
+
+/** Opaque seller-declared build artifact hashes; code is never executed. */
+export const deliveryArtifactManifests=sqliteTable("delivery_artifact_manifests",{
+ id:text("id").primaryKey(),quoteId:text("quote_id").notNull(),deliveryId:text("delivery_id").notNull(),
+ deliveryDigest:text("delivery_digest").notNull(),createdBy:text("created_by").notNull(),payload:text("payload").notNull(),createdAt:text("created_at").notNull(),
+},table=>[index("delivery_artifact_quote_idx").on(table.quoteId,table.createdAt)]);
+
+/** Exact-report repair requests and append-only buyer/seller retest history. */
+export const evidenceFollowups=sqliteTable("evidence_followups",{id:text("id").primaryKey(),quoteId:text("quote_id").notNull(),sourceDeliveryId:text("source_delivery_id").notNull(),version:integer("version").notNull(),payload:text("payload").notNull(),createdAt:text("created_at").notNull(),updatedAt:text("updated_at").notNull()},table=>[index("evidence_followups_project").on(table.quoteId,table.createdAt)]);

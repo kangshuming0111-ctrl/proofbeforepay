@@ -1,0 +1,24 @@
+# Linked repair and retest review — 2026-11-04
+
+The implemented actor chain is buyer request → seller replacement delivery and exact report proposal → buyer confirmation or explicit exception → optional reopen. These task actions do not submit, accept, authorize or pay for delivery. A separate button prepares the existing editable return form only when the task refers to a real agreed criterion and the current submitted delivery. Technical supplements are labelled separately rather than inventing a contract source.
+
+Each task retains a bounded append-only event history. The buyer's evidence selection freezes the exact task head (ID, version and canonical public payload hash). Every open or proposed task requires a separate reason if the buyer elects to accept delivery with that issue unresolved. The unified bundle includes exact report objects referenced throughout the history. Historical source files are outside its current-delivery file scope.
+
+## Advisory review and independent decisions
+
+- `plan-discussion.json`: DeepSeek supported a complete catalog, atomic freshness checks, separate include/exclude decisions, exact references and manual scope-change decisions. This was a design discussion, not a runtime test.
+- `followup-review-1.json`, P2 replay-prefix claim: rejected. `replayFollowupVersion` intentionally reconstructs a historical prefix; the current-state validator compares the entire reconstructed state, including event array, with the supplied value. Changing only the final version to 1 while retaining later events fails. A dedicated executed counterexample was added.
+- `followup-review-1.json`, P2 report-key claim: rejected. `supplementalRefKey` includes family, ID, version and payload SHA-256. The server resolves that complete key in the current server-derived catalog. The isolated API test rejects old-delivery references and stale task versions.
+- `followup-review-2.json`: invalid report schema, retained as an advisory transcript and not counted as a completed valid review. Its prose withdrew the previous two claims. Its hypothetical old-catalog claim conflicts with the current-delivery filtering in the supplied catalog builder; the API counterexample rejects the old report. No safety conclusion depends on this invalid response.
+- Independent cross-review found an actual late-response UI issue. A pending mutation in an unmounted or changed project/role could call the parent's `apply`. Fixed with a project/delivery/role/catalog context fence, cleanup invalidation, and pending-state reset. Server mutations can still finish; obsolete UI callbacks are discarded.
+- Independent cross-review found an actual post-acceptance UI issue. Collaboration acceptance can exist before `acceptedDeliveryId` is populated. The panel now also locks and hides creation when `collaboration.stage === "accepted"`, consistent with the server.
+- Independent capacity review found a potential D1 parameter overflow when independent report and task guards were composed at retained maximum size. Task guards now use four bound parameters with `json_each`, including full saved payload equality. Supplemental guards use the same bounded-set strategy. Native SQLite tests exercise concurrent inserts, changed versions and same-version payload corruption.
+- `followup-review-final.json`: valid completed targeted static review; no remaining reproducible finding in its bounded packet. DeepSeek explicitly did not execute tests, a browser, SQLite or the server routes. Its test-runner uncertainty is resolved separately by the actual Node test run and the fresh Worker/D1 API runs, not by reviewer confidence.
+
+- Live v60 browser testing found the parent catalog refresh URL was wired to missing `GET /api/proofs/:id`, despite the metadata mutation succeeding. Corrected to the existing `GET /api/quotes/:id` route; the extracted-function regression now checks that actual route contract. This browser-discovered failure was not hidden behind the passing isolated API tests.
+
+## Executed verification
+
+`tests/evidence-followup.test.ts` exercises roles, exact retest binding, scope changes, unknown outcomes, event tampering, reopen, historical replay, text/history limits, and the actual native SQLite head predicate. `tests/evidence-followup-api-smoke.py` uses an owned, independently built Worker with fresh D1 and deliberately blocked outbound HTTP. It exercises true server membership, CSRF, stale catalog/task CAS, concurrent requests, terminal-report requirements, seller proposals, explicit buyer exceptions, acceptance consent invalidation, frozen heads, server-owned export and omission of private actor fields.
+
+Synthetic gateway identities are fixture inputs. These runs do not prove two independent human sign-ins, real website browser execution, real model calls, a payment-provider transaction, outside usability, or competition success.

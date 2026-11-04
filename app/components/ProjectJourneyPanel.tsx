@@ -14,13 +14,14 @@ import {SellerIntegrationGuide} from "./SellerIntegrationGuide";
 import {BrowserWitnessPanel} from "./BrowserWitnessPanel";
 import {TransferCompetitionPanel} from "./TransferCompetitionPanel";
 import {SellerDomAdapterGuide} from "./SellerDomAdapterGuide";
+import {DeliveryArtifactsPanel} from "./DeliveryArtifactsPanel";
 import {DeploymentSourcePanel} from "./DeploymentSourcePanel";
 import {TimePolicyPanel} from "./TimePolicyPanel";
 
 type State={plan:ProjectJourneyPlan|null;agreement:string;targets:{id:string;label:string;registrationRevision:string;expiresAt:string}[];run:ProjectJourneyRun|null;report:ProjectJourneyReport|null;evaluation:ProjectJourneyEvaluation|null};
 type Result={quote:ProofQuote;role:ProofRole;journey:State};
 type Request=<T>(path:string,method?:string,body?:unknown)=>Promise<T>;
-export function ProjectJourneyPanel({quote,role,language,enabled,request,onApply,onBusy,onDecision,onFeedback}:{quote:ProofQuote;role:ProofRole;language:Language;enabled:boolean;request:Request;onApply:(quote:ProofQuote,role:ProofRole)=>void;onBusy:(busy:boolean)=>void;onDecision:(decision:ProjectJourneyDecision|undefined)=>void;onFeedback?:(comment:string)=>void}){
+export function ProjectJourneyPanel({quote,role,language,enabled,request,onApply,onSupplementalChanged,onBusy,onDecision,onFeedback}:{quote:ProofQuote;role:ProofRole;language:Language;enabled:boolean;request:Request;onApply:(quote:ProofQuote,role:ProofRole)=>void;onSupplementalChanged?:()=>void;onBusy:(busy:boolean)=>void;onDecision:(decision:ProjectJourneyDecision|undefined)=>void;onFeedback?:(comment:string)=>void}){
  const tr=(zh:string,en:string)=>language==="zh"?zh:en,delivery=quote.proof.delivery!;
  const [transferOutcome,setTransferOutcome]=useState<"compatible"|"violated"|"inconclusive"|"pending">();
  const path=`/api/proofs/${encodeURIComponent(quote.id)}/journey-checks`;
@@ -75,8 +76,9 @@ export function ProjectJourneyPanel({quote,role,language,enabled,request,onApply
   <SellerIntegrationGuide language={language} projectId={quote.id} deliveryId={delivery.id} role={role} enabled={enabled&&!running&&!state?.run} request={request} onChanged={async()=>{const value=await request<State>(path);if(alive.current){setState(value);setTarget(old=>value.targets.some(t=>t.id===old)?old:value.targets[0]?.id??"");setConsent(false);}}}/>
   <BrowserWitnessPanel projectId={quote.id} deliveryId={delivery.id} role={role} language={language} enabled={enabled&&!running&&!state?.run} request={request}/>
   <SellerDomAdapterGuide language={language}/>
-  <DeploymentSourcePanel quote={quote} language={language} enabled={enabled} request={request}/>
-  <TimePolicyPanel projectId={quote.id} deliveryId={delivery.id} role={role} language={language} enabled={enabled&&!running&&!state?.run} request={request}/>
+  <DeliveryArtifactsPanel quote={quote} role={role} language={language} enabled={enabled} request={request} onChanged={onSupplementalChanged}/>
+  <DeploymentSourcePanel quote={quote} language={language} enabled={enabled} request={request} onChanged={onSupplementalChanged}/>
+  <TimePolicyPanel projectId={quote.id} deliveryId={delivery.id} role={role} language={language} enabled={enabled&&!running&&!state?.run} request={request} onChanged={onSupplementalChanged}/>
   <TransferCompetitionPanel quote={quote} role={role} language={language} enabled={enabled&&!running&&!state?.run} request={request} onApply={onApply} onBusy={onBusy} onOutcome={setTransferOutcome}/>
   {error&&<p className="journey-warning" role="alert">{error}</p>}
   {!delivery.journeyPlan&&role==="buyer"&&<><label><input type="checkbox" checked={consent} disabled={!enabled} onChange={e=>setConsent(e.target.checked)}/>{tr("我明确采纳上述可选技术检查约定。","I explicitly adopt the optional technical agreement above.")}</label><button className="button primary" disabled={!enabled||!consent} onClick={adopt}>{tr("为本版本确认检查约定","Confirm agreement for this delivery")}</button></>}

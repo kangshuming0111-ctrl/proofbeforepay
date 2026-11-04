@@ -71,6 +71,27 @@
       "when": 1793797201000,
       "tag": "0010_deployment_source_sessions",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1793804400000,
+      "tag": "0011_delivery_artifact_manifests",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1793804401000,
+      "tag": "0012_evidence_followups",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1793804402000,
+      "tag": "0013_supplemental_evidence_objects",
+      "breakpoints": true
     }
   ]
 }

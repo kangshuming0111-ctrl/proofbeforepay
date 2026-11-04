@@ -2,6 +2,7 @@
 No browser/model execution, gateway authentication or external I/O is claimed.
 SQL seeding is performed by the isolated runner, never a deployable test route.
 """
+import copy
 import argparse
 import importlib.util
 import json
@@ -41,13 +42,20 @@ def verify(api,path):
  assert sorted(r[0]for r in responses)==[201,409],responses
  retained=api.ok(buyer,endpoint)["reports"][0];assert retained["summary"]=={"visible":2,"hidden":2,"ambiguous":0,"unavailable":0};assert retained["reportedByRole"]=="buyer" and not retained["stale"]
  saved=api.ok(seller,endpoint,{**payload,"previousReportId":retained["id"]},role="buyer")["report"];assert saved["reportedByRole"]=="seller";history=api.ok(buyer,endpoint)["reports"];assert len(history)==2 and history[1]==retained
- api.reject(buyer,endpoint,{**payload,"previousReportId":retained["id"]},codes=(409,));assert chain.quote_of(api.ok(buyer,context["quotePath"]),"buyer")==before
+ api.reject(buyer,endpoint,{**payload,"previousReportId":retained["id"]},codes=(409,));assert persisted_quote(chain.quote_of(api.ok(buyer,context["quotePath"]),"buyer"))==persisted_quote(before)
  api.checked("One concurrent CAS winner appends immutable supplemental evidence; actual seller role is retained despite buyer role header; stale history cannot overwrite, quote and money remain exactly unchanged")
  replacement=chain.quote_of(api.ok(seller,project+"/delivery",{"files":{"index.html":HTML.replace("New hours 11–20","New hours 12–21")},"expectedDeliveryId":context["deliveryId"],"reviewRules":True}),"seller")
  assert replacement["proof"]["delivery"]["id"]!=context["deliveryId"];history=api.ok(seller,endpoint);assert history.get("plan")is None and len(history["reports"])==2 and all(r["stale"]for r in history["reports"])
  api.reject(seller,endpoint,{**payload,"previousReportId":saved["id"]},codes=(409,));assert not replacement["proof"].get("acceptedDeliveryId")
  api.checked("Delivery replacement clears current AI/visibility plan while preserving old reports as stale history; old observations cannot become a new version’s evidence")
  print(json.dumps({"groups":len(api.checks),"checked":api.checks,"syntheticModelAndReadings":True,"browserOperated":False,"outboundFetch":"blocked","money":"unchanged","deployment":"none"},indent=2))
+def persisted_quote(value):
+ # supplementalCatalog is rederived from independent tables on reads; it is
+ # intentionally updated while the persisted quote and money stay unchanged.
+ result=copy.deepcopy(value)
+ result.get("proof",{}).get("delivery",{}).pop("supplementalCatalog",None)
+ return result
+
 def main():
  parser=argparse.ArgumentParser();parser.add_argument("--url",required=True);modes=parser.add_mutually_exclusive_group(required=True);modes.add_argument("--emit-fixture",type=Path);modes.add_argument("--verify-fixture",type=Path);args=parser.parse_args();api=roles.LocalAPI(args.url);assert api.ok(None,"/api/__synthetic_sandbox_test_mode")["outboundFetch"]=="blocked"
  if args.emit_fixture:emit(api,args.emit_fixture)

@@ -6,7 +6,7 @@ import {runSourceVisibility} from "@/lib/source-visibility-probe";
 import "../source-visibility.css";
 type Request=<T>(path:string,method?:string,body?:unknown)=>Promise<T>;
 type View={plan?:SourceVisibilityPlan;reports:(SourceVisibilityReport&{stale:boolean})[];reportLimit:number};
-export function SourceVisibilityPanel({quote,role,language,enabled=true,request}:{quote:ProofQuote;role:ProofRole;language:Language;enabled?:boolean;request:Request}){
+export function SourceVisibilityPanel({quote,role,language,enabled=true,request,onChanged}:{quote:ProofQuote;role:ProofRole;language:Language;enabled?:boolean;request:Request;onChanged?:()=>void}){
  const zh=language==="zh",tr=(a:string,b:string)=>zh?a:b,delivery=quote.proof.delivery,path=`/api/proofs/${encodeURIComponent(quote.id)}/source-visibility`,identity=`${quote.id}:${delivery?.id??""}:${delivery?.assessment?.id??""}:${role}`;
  const [view,setView]=useState<View>(),[error,setError]=useState(""),[notice,setNotice]=useState(""),[busy,setBusy]=useState(false),[progress,setProgress]=useState({done:0,total:0});
  const epoch=useRef(0),lock=useRef(false),activeRun=useRef<AbortController|null>(null),current=useRef(identity);current.current=identity;
@@ -19,7 +19,7 @@ export function SourceVisibilityPanel({quote,role,language,enabled=true,request}
    const readings=await runSourceVisibility(quote,plan,controller.signal,(done,total)=>{if(token===epoch.current)setProgress({done,total});});
    if(controller.signal.aborted||token!==epoch.current||current.current!==identity)return;
    const previous=view.reports.find(r=>!r.stale)?.id??null,result=await request<View>(path,"POST",{deliveryId:plan.deliveryId,assessmentId:plan.assessmentId,previousReportId:previous,readings});
-   if(token===epoch.current&&current.current===identity){setView(result);setNotice(tr("页面观察已另行保存，原 AI 报告、人工意见、验收和付款均未改变。","Page observations saved separately. The original AI report, participant reviews, acceptance and payment remain unchanged."));}
+   if(token===epoch.current&&current.current===identity){setView(result);onChanged?.();setNotice(tr("页面观察已另行保存，原 AI 报告、人工意见、验收和付款均未改变。","Page observations saved separately. The original AI report, participant reviews, acceptance and payment remain unchanged."));}
   }catch(e){if(token===epoch.current)setError(controller.signal.aborted?tr("观察已取消，没有保存部分结果。","Observation cancelled. No partial results were saved."):e instanceof Error?e.message:String(e));}
   finally{if(token===epoch.current){activeRun.current=null;lock.current=false;setBusy(false);}}
  }

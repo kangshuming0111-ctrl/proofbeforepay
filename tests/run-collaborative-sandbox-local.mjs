@@ -11,7 +11,7 @@ import { buildJudgePack } from "../scripts/build-judge-pack.mjs";
 
 const repo = fileURLToPath(new URL("../", import.meta.url));
 const args = process.argv.slice(2);
-if (args.length && (args.length !== 2 || args[0] !== "--suite" || !["collaborative-sandbox", "browser-checks", "chain-coverage", "business-checks", "runtime-checks", "static-resources", "layout", "seller-integration", "browser-witness", "time-policy", "source-visibility", "deployment-source"].includes(args[1]))) {
+if (args.length && (args.length !== 2 || args[0] !== "--suite" || !["collaborative-sandbox", "browser-checks", "chain-coverage", "business-checks", "runtime-checks", "static-resources", "layout", "seller-integration", "browser-witness", "time-policy", "source-visibility", "deployment-source", "supplemental-evidence", "evidence-followup"].includes(args[1]))) {
   throw new Error("Use no arguments or --suite collaborative-sandbox|browser-checks|chain-coverage|business-checks|runtime-checks|static-resources|layout|seller-integration|browser-witness.");
 }
 const suite = args[1] ?? "collaborative-sandbox";
@@ -81,7 +81,7 @@ const server = path.join(source, "dist/server");
 const config = JSON.parse(await readFile(path.join(server, "wrangler.json"), "utf8"));
 config.main = "synthetic-entry.mjs";
 config.name = "pbp-synthetic-sandbox-local";
-config.vars = {PAYPAL_CLIENT_ID: "pbp-local-synthetic-merchant", PAYPAL_CLIENT_SECRET: "pbp-local-synthetic-secret", DEEPSEEK_API_KEY: "", ...(["seller-integration","browser-witness","time-policy","deployment-source"].includes(suite) ? {PBP_OPERATOR_IDS: "integration-operator-buyer,integration-unassigned-operator"} : {})};
+config.vars = {PAYPAL_CLIENT_ID: "pbp-local-synthetic-merchant", PAYPAL_CLIENT_SECRET: "pbp-local-synthetic-secret", DEEPSEEK_API_KEY: "", ...(["seller-integration","browser-witness","time-policy","deployment-source","evidence-followup"].includes(suite) ? {PBP_OPERATOR_IDS: "integration-operator-buyer,integration-unassigned-operator"} : {})};
 await writeFile(path.join(server, "wrangler.synthetic.json"), JSON.stringify(config));
 await writeFile(path.join(server, "synthetic-provider.mjs"), await readFile(path.join(source, "tests/sandbox-provider-worker.mjs")));
 if(suite === "browser-witness") await writeFile(path.join(server,"witness-provider.mjs"),(await readFile(path.join(source,"tests/browser-witness-provider-worker.mjs"),"utf8")).replace('"./sandbox-provider-worker.mjs"','"./synthetic-provider.mjs"'));
@@ -125,7 +125,7 @@ try {
     if (stableReads < 5) await new Promise(resolve => setTimeout(resolve, 100));
   }
   if (stableReads < 5) throw new Error("Isolated application/D1 did not pass stable read-only readiness.");
-  const suiteScript = suite === "deployment-source" ? "tests/deployment-source-api-smoke.py" : suite === "source-visibility" ? "tests/source-visibility-api-smoke.py" : suite === "time-policy" ? "tests/time-policy-api-smoke.py" : suite === "browser-witness" ? "tests/browser-witness-api-smoke.py" : suite === "seller-integration" ? "tests/seller-integration-api-smoke.py" : suite === "static-resources" ? "tests/static-resources-api-smoke.py" : suite === "layout" ? "tests/layout-api-smoke.py" : suite === "runtime-checks" ? "tests/runtime-api-smoke.py" : suite === "browser-checks" ? "tests/browser-checks-api-smoke.py" : suite === "chain-coverage" ? "tests/chain-coverage-api-smoke.py" : suite === "business-checks" ? "tests/business-checks-api-smoke.py" : "tests/collaborative-sandbox-api-smoke.py";
+  const suiteScript = suite === "evidence-followup" ? "tests/evidence-followup-api-smoke.py" : suite === "supplemental-evidence" ? "tests/supplemental-evidence-api-smoke.py" : suite === "deployment-source" ? "tests/deployment-source-api-smoke.py" : suite === "source-visibility" ? "tests/source-visibility-api-smoke.py" : suite === "time-policy" ? "tests/time-policy-api-smoke.py" : suite === "browser-witness" ? "tests/browser-witness-api-smoke.py" : suite === "seller-integration" ? "tests/seller-integration-api-smoke.py" : suite === "static-resources" ? "tests/static-resources-api-smoke.py" : suite === "layout" ? "tests/layout-api-smoke.py" : suite === "runtime-checks" ? "tests/runtime-api-smoke.py" : suite === "browser-checks" ? "tests/browser-checks-api-smoke.py" : suite === "chain-coverage" ? "tests/chain-coverage-api-smoke.py" : suite === "business-checks" ? "tests/business-checks-api-smoke.py" : "tests/collaborative-sandbox-api-smoke.py";
   if(suite === "source-visibility"){
     const fixturePath=path.join(temp,"source-visibility-fixture.sql"),seed=spawnSync("/usr/bin/python3",[suiteScript,"--url",origin,"--emit-fixture",fixturePath],{cwd:source,env:cleanEnv,encoding:"utf8",maxBuffer:2*1024*1024});
     await writeFile(path.join(temp,"fixture-seed.log"),`${seed.stdout??""}\n${seed.stderr??""}`);if(seed.status!==0)throw new Error(`Synthetic source-visibility fixture setup failed; inspect ${path.join(temp,"fixture-seed.log")}`);

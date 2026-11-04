@@ -112,6 +112,9 @@ export type ProofDelivery = { id: string; variant: "flawed" | "fixed" | "upload"
   runtimeHistory?: import("./runtime-checks").RuntimeCheckReport[];
   runtimeRun?: {id:string;deliveryId:string;deliveryDigest:string;targetId:string;startedAt:string;expiresAt:string};
   evidenceReservation?: {runtimeRunId?:string;reportBytes:number;acceptanceBytes:number};
+  /** Server-derived transport view; never stored as the authoritative report. */
+  supplementalCatalog?: import("./supplemental-evidence").SupplementalEvidenceCatalog;
+  supplementalDecision?: import("./supplemental-evidence").SupplementalEvidenceDecision;
 };
 export type ProofReview = { deliveryId: string; reviewedAt: string; mode: "demo" | "live"; summary: string };
 export type ProofRole = "buyer" | "seller";
@@ -119,6 +122,7 @@ export type ProofSubmission = { deliveryId: string; note: string; at: string };
 export type ProofFeedback = { id: string; deliveryId: string; criterionId: string; comment: string; at: string; journeyReportId?: string; modelReportId?: string };
 export type ProofAcceptanceEvidence = {
   id: string; deliveryId: string; at: string;
+  supplementalDecision?: import("./supplemental-evidence").SupplementalEvidenceDecision;
   browserReportId: string | null; layoutReportId: string | null; assessmentId: string | null;
   businessReportId?: string | null; businessExceptionReason?: string;
   runtimeReportId?: string | null; runtimeExceptionReason?: string; runtimeAcknowledgedSteps?: string[]; runtimeDeliveryDigest?: string; runtimeTargetId?: string;

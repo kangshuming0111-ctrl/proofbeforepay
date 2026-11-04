@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T11:39:33.634Z",
+  "generatedAt": "2026-11-04T12:41:35.338Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -87,9 +87,24 @@
       "sha256": "4d66b34ea990ea2c8d9668cd05109208d23bf6a23458f4d5e5d00d66065bea28"
     },
     {
+      "file": "app/api/proofs/[id]/delivery-artifacts/route.ts",
+      "bytes": 1059,
+      "sha256": "e4393bca5990c533e92b35970c7a2ca78f0b7cc4e585ed4cd757e16f16af0429"
+    },
+    {
       "file": "app/api/proofs/[id]/deployment-source/route.ts",
       "bytes": 1268,
       "sha256": "9519b2f04323af6c2abebe1f1777062a4c9fb7bb8f3425fa3cff549d18a25016"
+    },
+    {
+      "file": "app/api/proofs/[id]/evidence-bundle/route.ts",
+      "bytes": 578,
+      "sha256": "e9959a72a94a8d2e430c9c3768c6996bcadee040bc215f5d68ae2896c8e1c295"
+    },
+    {
+      "file": "app/api/proofs/[id]/evidence-followups/route.ts",
+      "bytes": 1124,
+      "sha256": "20a3548483d7199b1fb90610a8d954bb3d48ac483f509eea72ff3cfaa852e1b3"
     },
     {
       "file": "app/api/proofs/[id]/integration-requests/route.ts",
@@ -155,6 +170,11 @@
       "file": "app/api/proofs/[id]/source-visibility/route.ts",
       "bytes": 1048,
       "sha256": "0a008a86e0cba8b8278b6eef0d9869c50425559a5d4c36c254cad1e9484e5b5c"
+    },
+    {
+      "file": "app/api/proofs/[id]/supplemental-evidence/route.ts",
+      "bytes": 1209,
+      "sha256": "269616ce75403c1534afa955fc0592d5bad205fb174c261034b1bcecc6157989"
     },
     {
       "file": "app/api/proofs/[id]/time-policy/route.ts",
@@ -317,6 +337,11 @@
       "sha256": "a6c521c27722406650b29b056189a1f08fe332ea0a3c234ad4b9fca083581058"
     },
     {
+      "file": "app/components/DeliveryArtifactsPanel.tsx",
+      "bytes": 8822,
+      "sha256": "acc06c039e21e26b496dc0d6317b57ddbb9bcd659f0bc00a36e6645294dc2416"
+    },
+    {
       "file": "app/components/DeliveryAssessment.tsx",
       "bytes": 15952,
       "sha256": "36b2069e746ea96a633854bb7add4f7d6437f1f8fa0eea6efbef0c0d42adafd4"
@@ -328,18 +353,23 @@
     },
     {
       "file": "app/components/DeliveryOverview.tsx",
-      "bytes": 18004,
-      "sha256": "3571fac586adb1c149d01597adcd86ff6297eedf71e307d61337ce23007c2bce"
+      "bytes": 19568,
+      "sha256": "4bc8a281c76a272547233c94a4453a8035a0c87a7edde7d0ba07fc938b6ffb38"
     },
     {
       "file": "app/components/DeploymentSourcePanel.tsx",
-      "bytes": 8817,
-      "sha256": "f9eda4ff1d0b3116e4cba96814ce3f8c53a1521f887f92475571ea001fd62bc6"
+      "bytes": 10785,
+      "sha256": "7975ed6d3af3fc58e5fa1ff665eecfaa1582f16b260dc023dd1f9fb4af975c18"
     },
     {
       "file": "app/components/EvidenceDownloads.tsx",
-      "bytes": 2390,
-      "sha256": "57528de2dfa5c8ade129bf66b8252ce8e4c9d8cf2fb9859f932c2a92f7c2f482"
+      "bytes": 2995,
+      "sha256": "5c579e916705deb86daffcc5a891723657b465e5cba366322b36b4e8764331f2"
+    },
+    {
+      "file": "app/components/EvidenceFollowupPanel.tsx",
+      "bytes": 10560,
+      "sha256": "30f760a95dde3f3155ba0ba33fbbce74f6f8314b26146c8cfe06168d23ca2c6e"
     },
     {
       "file": "app/components/EvidenceHistoryPanel.tsx",
@@ -383,8 +413,8 @@
     },
     {
       "file": "app/components/ProjectJourneyPanel.tsx",
-      "bytes": 24783,
-      "sha256": "10bf35be285f881195dd14aeb7b65db91c4cb7c79de7b768c26e50438698237e"
+      "bytes": 25114,
+      "sha256": "969cc037ce2e501ece1e4d7cddd1e50f430cdd1ca8869678194c2b80c305fd90"
     },
     {
       "file": "app/components/ProofReadinessPanel.tsx",
@@ -453,13 +483,18 @@
     },
     {
       "file": "app/components/SourceVisibilityPanel.tsx",
-      "bytes": 11787,
-      "sha256": "b60b709c5d42d2d5f908bcc7f7bbcc2f29969795839ea93d4bcd7a9bf438973e"
+      "bytes": 11831,
+      "sha256": "47177ccb581f566bdb62db80112b9d02544616fcc78bc57382ca0354b677c526"
+    },
+    {
+      "file": "app/components/SupplementalEvidencePanel.tsx",
+      "bytes": 7739,
+      "sha256": "4d2608aedba1d81f9edc3486c081886cde405c0c627aa56b547f556ce4ed114f"
     },
     {
       "file": "app/components/TimePolicyPanel.tsx",
-      "bytes": 18985,
-      "sha256": "ee06417950fcb1cbbd60ec215c917e3cc585729f36dbcba3b275042859e715a0"
+      "bytes": 19043,
+      "sha256": "eebdeaf41a56210cf4980579e22fd9fb15755945cc5ebb9cc6b367638b248d1d"
     },
     {
       "file": "app/components/TransferCompetitionPanel.tsx",
@@ -492,6 +527,11 @@
       "sha256": "18ffd442bfc7a5bf5e66e888b45a86a986f1b76c0de542013a583a3ff17126b6"
     },
     {
+      "file": "app/delivery-artifacts.css",
+      "bytes": 1160,
+      "sha256": "2cc0d04d1d19e1e38b10bc73141ca4b418e8286e5924b07cb7ed739d35e3e682"
+    },
+    {
       "file": "app/delivery-comparison.css",
       "bytes": 5617,
       "sha256": "ac6056b4e3a50676f785b5f1a48ba475556ed7c7509e5f292b333024da10ef80"
@@ -505,6 +545,11 @@
       "file": "app/deployment-source.css",
       "bytes": 1464,
       "sha256": "34a715ca238a7039225ff10472e1484c49601f8a038ffe1f9b488084dacc296d"
+    },
+    {
+      "file": "app/evidence-followups.css",
+      "bytes": 1250,
+      "sha256": "87d063a5bfed04eb889cb1f61aca1ac436d8dd092fd0113f86bced6b7b17159d"
     },
     {
       "file": "app/evidence-history.css",
@@ -528,8 +573,8 @@
     },
     {
       "file": "app/guest-lab/evidence-controller.ts",
-      "bytes": 4764,
-      "sha256": "1a6ad48009d2cf684ea5c6eb22702ddc63f05582d1ab733d64f099fa63e74f76"
+      "bytes": 5596,
+      "sha256": "62de983109fd294de8305857098595a79c09f92fb533ad98da7bf6e665a4bfd5"
     },
     {
       "file": "app/guest-lab/evidence-viewer.css",
@@ -538,8 +583,8 @@
     },
     {
       "file": "app/guest-lab/evidence-viewer.ts",
-      "bytes": 21215,
-      "sha256": "47728fc72d90672a5abde37dd1a46b6d0449e53a9628b33234498f5d5fc432c5"
+      "bytes": 28323,
+      "sha256": "933718c59ff627a00c3f30f3a89cba4f30d5b0829705f855efe939c3374bc90f"
     },
     {
       "file": "app/guest-lab/index.html",
@@ -638,8 +683,8 @@
     },
     {
       "file": "app/page.tsx",
-      "bytes": 188095,
-      "sha256": "3dc9ca1349e2bb27d370b7d7fe714925a215270033ee88163b455800d2fea1bc"
+      "bytes": 189738,
+      "sha256": "94de0f9701d776a1bb66cdefbdba56e25171fb59626b753ab6737f90cc6ee28d"
     },
     {
       "file": "app/project-journey.css",
@@ -695,6 +740,11 @@
       "file": "app/source-visibility.css",
       "bytes": 2293,
       "sha256": "399a7d1c82edf5316dfa8c97464772c468d7147d2163f9cb19cc76119e436ef1"
+    },
+    {
+      "file": "app/supplemental-evidence.css",
+      "bytes": 1126,
+      "sha256": "a64ebb99330e05cc7ef2d4d73050ae87f180f530cee7e72c8a25d0f445b2c2d0"
     },
     {
       "file": "app/time-policy.css",
@@ -1038,8 +1088,8 @@
     },
     {
       "file": "db/schema.ts",
-      "bytes": 5121,
-      "sha256": "5373afc61021d90248b688a5832ff33ec48d583548912d7847d882a684374696"
+      "bytes": 6128,
+      "sha256": "bb8ff4fb33fca0b37f586581d8821bba59a61ed3a624c9f803b98529d3aa2fec"
     },
     {
       "file": "docs/AI-SOURCE-VISIBILITY.md",
@@ -1067,6 +1117,11 @@
       "sha256": "58175875861a3fe33689f38fc53d6023fbc5ce7d8f5a2dfdc2fade6fef2aafed"
     },
     {
+      "file": "docs/DELIVERY-ARTIFACTS.md",
+      "bytes": 4084,
+      "sha256": "6571bbdc8af0d1c26d6bd88a27220d56c326642c86c685667fa7c04f3044798c"
+    },
+    {
       "file": "docs/DELIVERY-COVERAGE-2026-11-02.md",
       "bytes": 10239,
       "sha256": "57317a8c8735b79bfea36075ac37e5c755533ba9885547a252ebe5f7b589a032"
@@ -1085,6 +1140,11 @@
       "file": "docs/EVALUATION-2026-11-02.md",
       "bytes": 16048,
       "sha256": "0169bcec87cef7602972b0acf2c83db66bb3601392229a97aac1b35497f50c5a"
+    },
+    {
+      "file": "docs/EVIDENCE-CHAIN-CYCLES-2026-11-04.md",
+      "bytes": 6108,
+      "sha256": "251e1ed9413de38fe424c7c7f9717f0669fb9457bba8d1679ac980fcf11fd67c"
     },
     {
       "file": "docs/FIRST-USE-TEST-2026-11-02.md",
@@ -1205,6 +1265,26 @@
       "file": "docs/collaboration/diagnosis-cycle-2026-11-04/review-adjudication.md",
       "bytes": 12367,
       "sha256": "0b8378c6d367d2897c213f593c0c74d0021062a4d2f9aed8740e2d3e4fc58ab5"
+    },
+    {
+      "file": "docs/collaboration/evidence-chain-cycles-2026-11-04/acceptance-adjudication.md",
+      "bytes": 8453,
+      "sha256": "9b0126a0f56193669ac13cbc311606e58fa4abb310da9439eb071823d86c77b7"
+    },
+    {
+      "file": "docs/collaboration/evidence-chain-cycles-2026-11-04/artifacts-adjudication.md",
+      "bytes": 7999,
+      "sha256": "6a2ea4d1fbb196e471d57f96138d144ff119e5bfe90d299bef88f1ea7e578096"
+    },
+    {
+      "file": "docs/collaboration/evidence-chain-cycles-2026-11-04/export-adjudication.md",
+      "bytes": 9594,
+      "sha256": "fadd77513ddd3da0f9f46bc16350d46564b2d0d56148d8b4d42ac2ae771b02dc"
+    },
+    {
+      "file": "docs/collaboration/evidence-chain-cycles-2026-11-04/followup-adjudication.md",
+      "bytes": 4890,
+      "sha256": "8c49fb32e87be5bebe7cd283e218c528ae2ece07e93eefa39bfc68044807f542"
     },
     {
       "file": "docs/collaboration/five-new-cycles-2026-11-04/round-1-review.json",
@@ -1602,6 +1682,21 @@
       "sha256": "80cf19f6deb64b6eb64f4c00d85db581f8a7d703e6f61ad22757e5367abc1ffc"
     },
     {
+      "file": "drizzle/0011_delivery_artifact_manifests.sql",
+      "bytes": 384,
+      "sha256": "4e773ecb21eb7fad6b9831402372d23bec9eda58376caada2cf21806554da334"
+    },
+    {
+      "file": "drizzle/0012_evidence_followups.sql",
+      "bytes": 356,
+      "sha256": "3428904f5a3393d31e5a8149b9d5cef0aa17f22d13a9fc80fdfb0a8ce2b5c1dc"
+    },
+    {
+      "file": "drizzle/0013_supplemental_evidence_objects.sql",
+      "bytes": 567,
+      "sha256": "021158a5fdbd7c838476bd72b3412b42cb1e0b79a208cfe2176abaa30a411eda"
+    },
+    {
       "file": "drizzle/meta/0000_snapshot.json",
       "bytes": 1431,
       "sha256": "0ca99cbe2399d2c65550a5a2a23c16c497df59d8226fe1ca7a55ba419bf7f4b8"
@@ -1638,8 +1733,8 @@
     },
     {
       "file": "drizzle/meta/_journal.json",
-      "bytes": 1548,
-      "sha256": "1c29b32597d063d3cd8d2e698ceb96678232dcb775a2af0dd71e11932497340e"
+      "bytes": 2009,
+      "sha256": "5adeb64cdfa1893b979be3782b03214c40344aa15a5aa5f903cc912173a5dfeb"
     },
     {
       "file": "eslint.config.mjs",
@@ -1868,13 +1963,13 @@
     },
     {
       "file": "lib/acceptance-basis.ts",
-      "bytes": 5855,
-      "sha256": "38913a24526a37925ef098490ad10b8a3de72e0901feedc2bc53a69ada756448"
+      "bytes": 6223,
+      "sha256": "2bbc784acd48d8974828121de0b2d0b6b4951374c575143202d9eabafb784690"
     },
     {
       "file": "lib/acceptance-evidence.ts",
-      "bytes": 18636,
-      "sha256": "c039057b876b378d04fdcf3d8ec980878cfbc83d36a761da611b9d0ea6a24e46"
+      "bytes": 19466,
+      "sha256": "6c17a2a654cddfbcae10078e918c09e09a3092f105d94088d0393ebe6074eea8"
     },
     {
       "file": "lib/assessment-benchmark.ts",
@@ -1978,8 +2073,18 @@
     },
     {
       "file": "lib/contracts.ts",
-      "bytes": 14012,
-      "sha256": "282a9f99ccc75e3e8f1605eb6b35a1b2dc46b10ea329c6839f0c1d88ba4f00df"
+      "bytes": 14359,
+      "sha256": "ce9c109df285f82073dd5cb26cfe77e67c59b93f728f04a456db8e708bcc1965"
+    },
+    {
+      "file": "lib/delivery-artifacts-store.ts",
+      "bytes": 4792,
+      "sha256": "cabe342ce5995dbdb9b8782f224aad5e13d2ee9a086bb0027eb9356fe4db9a37"
+    },
+    {
+      "file": "lib/delivery-artifacts.ts",
+      "bytes": 8868,
+      "sha256": "7071cf50803dccd24633e20914703781000e06b0e278188dc1815e63ad9920e7"
     },
     {
       "file": "lib/delivery-assessment.ts",
@@ -2008,13 +2113,13 @@
     },
     {
       "file": "lib/deployment-source-store.ts",
-      "bytes": 8522,
-      "sha256": "0112fdb9618488cea96cabbfe94f99102a06fab5dcab6c02335e60aeb68fabb0"
+      "bytes": 10231,
+      "sha256": "8d798c8d0e240da4228d886d5496607ab531e1fbee511969388c68069a313fb3"
     },
     {
       "file": "lib/deployment-source.ts",
-      "bytes": 14608,
-      "sha256": "cc9469f67a71f42734a977ad294ae06aad95db67c95eb520a54fa7f252ebf0c9"
+      "bytes": 18627,
+      "sha256": "38ee87850a704ce258417b91d0a44394930caf091c6430dcbeb2928459df2fa4"
     },
     {
       "file": "lib/domain.ts",
@@ -2027,9 +2132,39 @@
       "sha256": "cac70b81ad68db05fe9bb071cf00d5fbce51beedab77f4f494446694c848e4e5"
     },
     {
+      "file": "lib/evidence-bundle-store.ts",
+      "bytes": 2543,
+      "sha256": "07e5bd111f102101d9e996349b8a26a0b1ab6b2ec2319ac935f26d223525031b"
+    },
+    {
+      "file": "lib/evidence-bundle.ts",
+      "bytes": 22969,
+      "sha256": "85f06a58511da7e9a3c82936862517e11dd54620e62dd39fd418d3aab9c2571a"
+    },
+    {
       "file": "lib/evidence-export.ts",
       "bytes": 43774,
       "sha256": "321de75fd392c03fe77d1ce98dfaf081164b504b5c38ea30198ad2d9f243b42a"
+    },
+    {
+      "file": "lib/evidence-followup-sql.ts",
+      "bytes": 825,
+      "sha256": "122cfccb5e93074796f2b4cf038418d9979e8daa587b15ee82db6f607502db6d"
+    },
+    {
+      "file": "lib/evidence-followup-storage.ts",
+      "bytes": 1756,
+      "sha256": "ba53e56a0064fa6470ca86fc83e5c3ca94c9fb7ea97a18a3c959b7eec99ae418"
+    },
+    {
+      "file": "lib/evidence-followup-store.ts",
+      "bytes": 4967,
+      "sha256": "b19b43e352cd366c8c145057f57d4533a40ee5f87cd295d5cf86dc38ead580b5"
+    },
+    {
+      "file": "lib/evidence-followup.ts",
+      "bytes": 7460,
+      "sha256": "8b93b99074100848af61152629aff503818cc8c15fed5e118140003b48476afb"
     },
     {
       "file": "lib/first-use-trial.ts",
@@ -2203,8 +2338,8 @@
     },
     {
       "file": "lib/proof-store.ts",
-      "bytes": 14711,
-      "sha256": "28773a24cf1ca7086edaec9e622960b02727703d368af4ecd26697b81f85fe89"
+      "bytes": 16141,
+      "sha256": "a6c671888f47a5221573f51a79ad04856fe3accb4d127ab5b31d9cac774d409c"
     },
     {
       "file": "lib/proof-workflow.ts",
@@ -2383,8 +2518,8 @@
     },
     {
       "file": "lib/source-visibility.ts",
-      "bytes": 15421,
-      "sha256": "af264008c73bcc81be361e8578a75feb77e073f8dbb12df79ff4abd87f4f59aa"
+      "bytes": 15579,
+      "sha256": "418e34ab24e51777661828d55edd9206ba3f4d6fb2eb9053e8adee7af7073f21"
     },
     {
       "file": "lib/static-project.ts",
@@ -2395,6 +2530,21 @@
       "file": "lib/static-resources.ts",
       "bytes": 11020,
       "sha256": "4fe957338889300bb524045b36b160acdfae685a3304bc377fbf4aed1187b445"
+    },
+    {
+      "file": "lib/supplemental-evidence-sql.ts",
+      "bytes": 1722,
+      "sha256": "286d12f7071705ecdb09e3be9e783f99cb2b2bda88ad023d7b8ef9534471bef2"
+    },
+    {
+      "file": "lib/supplemental-evidence-store.ts",
+      "bytes": 8548,
+      "sha256": "02a20b31db6fd3d8f6e8c79ee6af9efc263e7bf24a51c465db675028d4df2f05"
+    },
+    {
+      "file": "lib/supplemental-evidence.ts",
+      "bytes": 18367,
+      "sha256": "b8320b26685947f067dee95b88fc7542ac46ed30dfc24caecdb9de743a85012b"
     },
     {
       "file": "lib/time-policy-lab.ts",
@@ -2413,8 +2563,8 @@
     },
     {
       "file": "lib/time-policy.ts",
-      "bytes": 25770,
-      "sha256": "bb0bd67f297d35e1051283671447f41ba31443a5ce03200edf4c44852b2d2b8b"
+      "bytes": 26243,
+      "sha256": "9ee00e5ae6e67978818831857217b59c01b5fc9ced93dcbc00400038eb290501"
     },
     {
       "file": "lib/transfer-competition-actions.ts",
@@ -2914,7 +3064,7 @@
     {
       "file": "scripts/verify-evidence-export.mjs",
       "bytes": 2308,
-      "sha256": "9f4830d94fe67c99b4e44adb36edba686438bf8077032ce6e0f8a27ac5f6d176"
+      "sha256": "87e2f1a6b7f2019ff8301f437ab7097f966d67630ac9504eb807d1f0613c1018"
     },
     {
       "file": "scripts/vite/connector-preview-plugin.mjs",
@@ -3092,6 +3242,11 @@
       "sha256": "2b4291ba14cc17ba2ced53fe1fe3c76dc13f66e2b50def248ac190afc7ac734b"
     },
     {
+      "file": "tests/delivery-artifacts.test.ts",
+      "bytes": 4814,
+      "sha256": "eed0ab19f06490a720baa98606d4ddd063763a473c995be33ae082cb334ef00d"
+    },
+    {
       "file": "tests/delivery-assessment.test.ts",
       "bytes": 63311,
       "sha256": "a662c57dba89aa4dbf913a0ebf8c11debfbe028ac261f1495a4091c1b4d9502d"
@@ -3117,9 +3272,14 @@
       "sha256": "6efc413c00ceee9428a4e5cc68113c593e1522003ac93ec09646f2e4fc547d87"
     },
     {
+      "file": "tests/deployment-artifacts.test.ts",
+      "bytes": 6183,
+      "sha256": "7947b2bda29f21e472ceabdf1fab79cfdbc6ca58f41592e1bd672d4e968ea706"
+    },
+    {
       "file": "tests/deployment-source-api-smoke.py",
-      "bytes": 5529,
-      "sha256": "89e8e022cc08dd161425c4ec46ca1bb00953415346b9dfe8a9f11fd1c5bd2ce3"
+      "bytes": 12439,
+      "sha256": "e2c2ef59b89356407e8190dc4cba3c31c6ec14c12718d03a43d07f941a7f8a59"
     },
     {
       "file": "tests/deployment-source.test.ts",
@@ -3137,14 +3297,39 @@
       "sha256": "1191cb4b38bf4bb2cbad2466f641d3be804e9cabf2dc2b7ef9629decef84fa1d"
     },
     {
+      "file": "tests/evidence-bundle-fixtures.ts",
+      "bytes": 7151,
+      "sha256": "b57cf8823fa5ce2cdaf2f26690e0e925548a6a03243c856b856953bb64074f8c"
+    },
+    {
+      "file": "tests/evidence-bundle.test.ts",
+      "bytes": 13111,
+      "sha256": "15aa9626798647277629ffc531232cf6bb4e634f70d071b6f8f9ec66845798bf"
+    },
+    {
+      "file": "tests/evidence-catalog-refresh.test.ts",
+      "bytes": 6305,
+      "sha256": "9456730d053dd2ec73e91153fc181a2a4c9a81c1cc5c6151bfa11ce370b734c3"
+    },
+    {
       "file": "tests/evidence-export.test.ts",
       "bytes": 28616,
       "sha256": "9352bd649b64fa115fb34670ae246da1c8f68e351261f3cc2612faf82be28698"
     },
     {
+      "file": "tests/evidence-followup-api-smoke.py",
+      "bytes": 8729,
+      "sha256": "99b4dfd6a1957b4ce46b58c0d07cb55b1d4757c6ad16709f9e69da771ae7b521"
+    },
+    {
+      "file": "tests/evidence-followup.test.ts",
+      "bytes": 6749,
+      "sha256": "c4397830e786139585fc48de948516b3c29cfd4253e7a7f899a9844252e7feb7"
+    },
+    {
       "file": "tests/evidence-viewer.test.ts",
-      "bytes": 11097,
-      "sha256": "e222d72e21bbe69cc35d6bfd7954c48acb8276cac914a2685fbb734d4f3a7ce0"
+      "bytes": 11170,
+      "sha256": "4dbefa4bb3ceecb9cd47643328a7f64a7bbb6e6b1ef0d5e62ff2edba033221ce"
     },
     {
       "file": "tests/first-use-trial.test.ts",
@@ -3698,8 +3883,8 @@
     },
     {
       "file": "tests/run-collaborative-sandbox-local.mjs",
-      "bytes": 11775,
-      "sha256": "45654aa569271f68c18ce20dabd8c5a0e5d3b5b9676a12b9b2e59e280220dd45"
+      "bytes": 11995,
+      "sha256": "55e3e4198e5de5201ec13a01d64891f891a9a2a5ae189153eb325a7fb214ae5d"
     },
     {
       "file": "tests/run-model-archive-local.mjs",
@@ -3933,8 +4118,8 @@
     },
     {
       "file": "tests/source-visibility-api-smoke.py",
-      "bytes": 7657,
-      "sha256": "8cc9ea6319df4b93f0a5720d2b7cb0e6f9b2a855aadcc0b43af8438707863792"
+      "bytes": 8004,
+      "sha256": "357006e7e15a5c974a904126b97f135236dc69f026c06d7609d4a0ee5dfd4c75"
     },
     {
       "file": "tests/source-visibility-browser-fixture.mjs",
@@ -3962,9 +4147,19 @@
       "sha256": "e88b1f63788bf924457d76f89a8d976fbddcfff8030910912397e7c6e5ad243e"
     },
     {
+      "file": "tests/supplemental-evidence-api-smoke.py",
+      "bytes": 7120,
+      "sha256": "69529eb01ee693279aecdb370c306f715e5111aaef1d26be8205f16d50445905"
+    },
+    {
+      "file": "tests/supplemental-evidence.test.ts",
+      "bytes": 23614,
+      "sha256": "dc8f7b1d4012db02d0edd04ec33f6c66aad04465a27b1ea23f176eedb28cad95"
+    },
+    {
       "file": "tests/time-policy-api-smoke.py",
-      "bytes": 8315,
-      "sha256": "901772a348ad2f3a00d8eba9cdae8540db766718891bbd348d766b064249de72"
+      "bytes": 8701,
+      "sha256": "dbfd8e37b21167c26fa30c16ff34b0f7895b28dfbdf0505cd3e357d34a0c4ab9"
     },
     {
       "file": "tests/time-policy.test.ts",
