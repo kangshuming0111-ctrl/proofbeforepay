@@ -1,0 +1,69 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/source-visibility-probe.ts",
+      "bytes": 6830,
+      "lines": 88,
+      "sha256": "a65f78d5a6aa0754746ac9a0f8a6282114b2362d64b9067d3edb1007c1a3255e"
+    },
+    {
+      "file": "tests/source-visibility-browser-fixture.mjs",
+      "bytes": 6622,
+      "lines": 35,
+      "sha256": "22819420eb050587befd64bf537a63bd210e4b546ebff9a2b9ef2df6c7d9d28c"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Scoped re-review of the repaired clipping logic in observeCitationText (lib/source-visibility-probe.ts:37-54) plus the fixture claims. The intersection of viewport and every non-visible-overflow ancestor client box is now applied (lines 40-50), empty/zero-area clips yield unavailable (line 53 guard), transformed clipping ancestors return unavailable (line 46), and non-visible outcomes use the single 'not_visually_determined' reason (line 54) rather than a hidden state. The reported CUA counts are consistent with the fixture geometry. I found no remaining concrete false-classification trace in the reviewed code for the described 7 visible / 5 hidden / 4 unavailable scenario. Residual issues are minor soundness gaps in clipping detection and are recorded as one low-severity note only where they could still produce a visible/hidden answer rather than unavailable.\",\"findings\":[{\"severity\":\"P3\",\"file\":\"lib/source-visibility-probe.ts\",\"line\":42,\"title\":\"Clipping detection relies on computed overflowX/overflowY strings only, so some real clipping ancestors are treated as unclipped\",\"evidence\":\"Line 42 sets clipX/clipY only when style.overflowX/overflowY !== \\\"visible\\\". Containers that clip without a non-visible overflow value are skipped by line 43 `continue`. Line 40 still uses the viewport, so a fully overflown text can be classified visible. This is the same class of inner-overflow clipping as the accepted finding, but a narrower trigger.\",\"reproduction\":\"UNEXECUTED static trace: root/body with overflow clip is not modeled since the loop stops at body but body itself is included; html-level `overflow:hidden` is never examined because the loop terminates at body. Text pushed below the document by a body with computed `overflow: visible` (scrollHeight larger than viewport, browser root scroller) whose text rect lies outside the visible root scroller but inside the viewport bounds is reported visible. Example: body{height:3000px} with a p translated by transform on itself (not a clipping ancestor) at y=1500 while viewport is 800px tall and scrolled to 0 — range rect after scrollTo top-offset lands inside viewport coordinates so this case is handled; the unhandled case is clipping contributed only by the root element (html), whose overflow is not a candidate clipping box in this loop.\",\"suggestion\":\"After the ancestor loop, also intersect with the document root's client box: const rootStyle=win.getComputedStyle(doc.documentElement); if(rootStyle.overflowX!==\\\"visible\\\"||rootStyle.overflowY!==\\\"visible\\\"){...} or, simpler, always intersect top/bottom with (0, doc.documentElement.clientHeight) minus the root's scroll offset unless the probe already guarantees no root-level scroll.\"}],\"limitations\":[\"No files were executed and no browser/CUA run was performed by this reviewer; the stated latest CUA results (7 visible, 5 hidden, 4 unavailable) are taken as reported evidence, not re-verified.\",\"Snapshot internals (lib/saved-page-observation.ts: snapshot, Unavailable, bounded, verifyStyles, frame.contentWindow), source-visibility.ts plan/report validation, and storage/report API behavior were not supplied and are not reviewed.\",\"Inert elements, accessibility tree, overlay/pointer hit-testing, and live-site behavior are explicitly out of scope; the probe intentionally treats inert text as visually present.\",\"Dynamic layout changes between verifyStyles and observeCitationText, nested scrollers whose scroll position is nonzero (the probe only scrolls the top window), and CSS `clip`/`clip-path`/`mask` on non-transformed ancestors were not exercised and are not asserted to be correct.\",\"The P3 finding is a static reasoning trace only and was not reproduced in a browser.\"]}",
+  "report": {
+    "summary": "Scoped re-review of the repaired clipping logic in observeCitationText (lib/source-visibility-probe.ts:37-54) plus the fixture claims. The intersection of viewport and every non-visible-overflow ancestor client box is now applied (lines 40-50), empty/zero-area clips yield unavailable (line 53 guard), transformed clipping ancestors return unavailable (line 46), and non-visible outcomes use the single 'not_visually_determined' reason (line 54) rather than a hidden state. The reported CUA counts are consistent with the fixture geometry. I found no remaining concrete false-classification trace in the reviewed code for the described 7 visible / 5 hidden / 4 unavailable scenario. Residual issues are minor soundness gaps in clipping detection and are recorded as one low-severity note only where they could still produce a visible/hidden answer rather than unavailable.",
+    "findings": [
+      {
+        "severity": "P3",
+        "file": "lib/source-visibility-probe.ts",
+        "line": 42,
+        "title": "Clipping detection relies on computed overflowX/overflowY strings only, so some real clipping ancestors are treated as unclipped",
+        "evidence": "Line 42 sets clipX/clipY only when style.overflowX/overflowY !== \"visible\". Containers that clip without a non-visible overflow value are skipped by line 43 `continue`. Line 40 still uses the viewport, so a fully overflown text can be classified visible. This is the same class of inner-overflow clipping as the accepted finding, but a narrower trigger.",
+        "reproduction": "UNEXECUTED static trace: root/body with overflow clip is not modeled since the loop stops at body but body itself is included; html-level `overflow:hidden` is never examined because the loop terminates at body. Text pushed below the document by a body with computed `overflow: visible` (scrollHeight larger than viewport, browser root scroller) whose text rect lies outside the visible root scroller but inside the viewport bounds is reported visible. Example: body{height:3000px} with a p translated by transform on itself (not a clipping ancestor) at y=1500 while viewport is 800px tall and scrolled to 0 — range rect after scrollTo top-offset lands inside viewport coordinates so this case is handled; the unhandled case is clipping contributed only by the root element (html), whose overflow is not a candidate clipping box in this loop.",
+        "suggestion": "After the ancestor loop, also intersect with the document root's client box: const rootStyle=win.getComputedStyle(doc.documentElement); if(rootStyle.overflowX!==\"visible\"||rootStyle.overflowY!==\"visible\"){...} or, simpler, always intersect top/bottom with (0, doc.documentElement.clientHeight) minus the root's scroll offset unless the probe already guarantees no root-level scroll."
+      }
+    ],
+    "limitations": [
+      "No files were executed and no browser/CUA run was performed by this reviewer; the stated latest CUA results (7 visible, 5 hidden, 4 unavailable) are taken as reported evidence, not re-verified.",
+      "Snapshot internals (lib/saved-page-observation.ts: snapshot, Unavailable, bounded, verifyStyles, frame.contentWindow), source-visibility.ts plan/report validation, and storage/report API behavior were not supplied and are not reviewed.",
+      "Inert elements, accessibility tree, overlay/pointer hit-testing, and live-site behavior are explicitly out of scope; the probe intentionally treats inert text as visually present.",
+      "Dynamic layout changes between verifyStyles and observeCitationText, nested scrollers whose scroll position is nonzero (the probe only scrolls the top window), and CSS `clip`/`clip-path`/`mask` on non-transformed ancestors were not exercised and are not asserted to be correct.",
+      "The P3 finding is a static reasoning trace only and was not reproduced in a browser."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

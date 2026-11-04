@@ -1,0 +1,57 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/seller-integration.ts",
+      "bytes": 14028,
+      "lines": 85,
+      "sha256": "61253908ee8f35a3963948d8d3c77fd5110921bf1be4b3ff65804e4c1fbcff75"
+    },
+    {
+      "file": "lib/server-journey-targets.ts",
+      "bytes": 8421,
+      "lines": 53,
+      "sha256": "d474c3bc3c8c8183dbae5b18ac7c1c349d9794e56a54279747ee551eed14fee1"
+    },
+    {
+      "file": "lib/journey-integration-preflight.ts",
+      "bytes": 20260,
+      "lines": 166,
+      "sha256": "b627cb227c050238eca35b042d5bcc34b4f7854929dda0dee560f521c6c96d10"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"静态评审受控 staging 准入/读取方案：当前三名文件的实现只校验声明，尚无任何平台侧独立读取 frontendEntryUrl 静态 HTML/CSS 并核对 UTF-8 字节 SHA 的代码，因此“读取时有限文件一致”这一证据仍需新实现，并应单独出具报告。关键真实漏洞：frontendBundleDigest 实际绑定的是上传交付压缩包摘要而非部署文件摘要（preflight 明确 limits.deploymentVerified:false），审批式声明会被当成部署证明；resolveJourneyTarget/availableJourneyTargets 只按项目+摘要回显条目；方案本身无法抵御选择性服务、构建产物与源码不一致；重定向、超限、过期需以受限 fetch 和流式上限实现。四轮优先级建议：休业日期（availability 正确性，服务服务器自行核对）P1、跨午夜 P1（同属时段/预订正确性）、源码引用可见性 P2、降低 selectors 门槛 P3（不得以放宽配置换可见性）。所有结论均为未执行的静态推理。\",\"findings\":[{\"severity\":\"P1\",\"file\":\"lib/seller-integration.ts\",\"line\":48,\"title\":\"部署摘要绑定的是上传包摘要，不是被审批读取的已部署字节\",\"evidence\":\"approvedRegistration 将 frontendBundleDigest 设为 request.deliveryDigest；该值来自第 38 行 integrationDelivery 的 runtimeDeliveryDigest(delivery.files)，即上传交付文件集合摘要。第 82 行校验 registration.frontendBundleDigest===x.deliveryDigest 同样只比对上传摘要。方案要求的“平台独立读取已审批 frontendEntryUrl 与有限相对路径并按 UTF-8 字节 SHA 核对部署内容”在审批和存档中没有对应字段；journey-integration-preflight.ts 第 20/138 行也明确 deploymentVerified:false、不验证已部署版本。结果是：审批通过只能证明卖家上传了某个包，不能证明 frontendEntryUrl 在读取时可取到的 HTML/CSS 字节与任何被审批内容一致。\",\"reproduction\":\"推理轨迹（未执行）：卖家上传 zip 得到 digest D，申请单与 registration.frontendBundleDigest=D；运营商审批；随后卖家把 staging 主机上 workshop.html 替换为另一版本。resolveJourneyTarget（server-journey-targets.ts 第 14 行）仍按 D 返回条目且无任何读取，现有代码无法发现差异；即便未来新增读取，若报告仍只回写 D 而非被读文件的字节摘要，差异同样被掩盖。\",\"suggestion\":\"在 approval 中新增由 operator 批准的文件清单（entry HTML 及相对 CSS 路径、数量/字节上限），审批时由平台 GET 每个路径计算 UTF-8 字节 SHA-256，写入独立的 staticReadReport（含每文件 digest、总字节、读取时间、deliveryId/deliveryDigest/registrationRevision），并与 deliveryDigest、manifestDigest、registrationRevision 共同作为绑定；读取时逐字节比对报告中的 SHA，任一不一致即不可用。不要复用或改写 deliveryDigest 的语义。\"},{\"severity\":\"P2\",\"file\":\"lib/server-journey-targets.ts\",\"line\":17,\"title\":\"可用目标列表未绑定当前 delivery/digest 来源，前端注入/替换点无审批身份约束\",\"evidence\":\"availableJourneyTargets 仅按 r.projectId===quote.id、r.frontendBundleDigest===digest、未过期过滤，并返回 id/label/registrationRevision/expiresAt；resolveJourneyTarget（第 14 行）只检查 targetId 与 digest。registration 不携带 manifestDigest、请求 ID 或任何来源调用者身份，因此任何持有合法 UUID 与当前摘要的调用者都能枚举、选择和引用别的卖家/会话写入的审批条目；registrationRevision 由 registration.id 派生而 id 为 `onboard-${request.id}`（seller-integration.ts 第 48 行），其中 request.id 来自客户端提交时生成的 randomUUID，并不构成运营商批准的稳定身份。\",\"reproduction\":\"推理轨迹（未执行）：卖家 A 的项目 P 经审批得到 targetId T（digest D）。卖家 B 以同一项目 P 的当前 delivery（digest 恰为 D 的情况，例如 B 上传了相同文件集合或复用了会话）调用 resolveJourneyTarget(quoteP, T, D)，第 14 行只做 id+project+digest 比对即返回 A 的 registration；未过期、digest 相同，故通过。若未来报告按 registrationRevision 查表，A 的注册也可能被 B 的读取复用。\",\"suggestion\":\"registration 及读取报告中加入 manifestDigest 与 approval 请求 ID，并在报告/run 处记录发起调用的 seller 与 quote 版本；读取时同时比对 registrationRevision、deliveryId、deliveryDigest、manifestDigest。resolve/available 的 digest 应由服务端从 quote 当前 delivery 重新计算，不接受调用方传入。\"},{\"severity\":\"P2\",\"file\":\"lib/server-journey-targets.ts\",\"line\":39,\"title\":\"待实现的读取须以受限 fetch 实现，redirect:\\\"manual\\\" 本身不足以保证不跟随\",\"evidence\":\"现有后端读取第 39 行用 `/^\\\\/` 类基址校验，第 43 行用 redirect:\\\"manual\\\" 后检查 3xx/opaqueredirect/redirected/response.url。方案所述的 frontendEntryUrl 静态读取目前不存在对应代码；若按浏览器默认 redirect:\\\"follow\\\" 或仅依赖 redirect:\\\"manual\\\" 而不检查上述信号，3xx 与 meta refresh/HTML 跳转都会被接受，导致读取的不是已审批字节。同时第 25 行显式 content-length 检查在缺少该头时 Number(undefined)>16384 为 false，绕过唯一显式长度闸门，仅靠 16 KiB 流式计数兜底。\",\"reproduction\":\"推理轨迹（未执行）：frontendEntryUrl 返回 302 指向 https://evil.example/x.html；若读取端点使用默认 follow，最终取到的是未审批内容且 response.url 已变；使用 manual 但只检查 status<300 之外的逻辑时，同样可能把跳转体/空体当作 HTML 摘要。另：宿主返回 chunked 无 content-length 的 1 MiB HTML，第 25 行不拒绝，需依赖第 28 行 count 上限才拦截。\",\"suggestion\":\"读取器使用 redirect:\\\"error\\\"（运行时支持时）或 manual 并同时校验 status∈[2xx] 且 <300、!response.redirected、response.url===批准 URL；为每文件设独立字节上限并在流式读取中累计断言；拒绝非 text/html、text/css 内容类型；对 HTML 做 meta refresh/script 位置检测不构成执行证明，只记录不执行。\"},{\"severity\":\"P3\",\"file\":\"lib/server-journey-targets.ts\",\"line\":51,\"title\":\"读取失败被压缩为单一 unavailableReason，未来静态一致性失败需可区分的保存结果\",\"evidence\":\"第 51 行把 redirect/mismatch/size/timeout 等错误映射为有限字符串并写入 result.unavailableReason，属于观测，不改变准入状态；而方案要求“保存独立报告”。若静态字节不一致复用该单字段并在 catch 中被吞掉，UI 只能显示 server_read_unavailable，无法区分“读取失败”和“字节不一致”两种不同证据强度，也可能让调用方以为只是暂时不可用。\",\"reproduction\":\"推理轨迹（未执行）：部署 HTML 被替换后 SHA 不符；如果实现把该错误纳入第 51 行白名单并返回 unavailableReason，调用方看到与超时相同的结果，无法据此判定版本已失效，也不会触发“提交新版本”。\",\"suggestion\":\"为静态读取新增独立结果对象（每文件 status: matched|mismatch|unreadable，并附 error code），mismatch 不作为网络错误吞掉，明确写为“字节与已审批报告不一致，需卖家重新提交”；报告持久化后只读展示。\"},{\"severity\":\"P1\",\"file\":\"lib/journey-integration-preflight.ts\",\"line\":128,\"title\":\"frontendEntryUrl 仅约束为 HTML 文件，未约束其引用的相对资源范围\",\"evidence\":\"第 128 行对 frontend 仅要求路径匹配 `*.html`，第 124 行禁止 `\\\\ % ? #` 与点段，第 134 行要求前后端同 origin；但没有任何字段声明该 HTML 会引用哪些相对 CSS（或是否内联），也没有对 `<script src>`、外链等的约束。方案“有限相对 HTML/CSS 路径”需要显式的已审批路径清单，而当前 manifest 无此能力，运营商无从知道“有限”的边界，读取实现只能自行决定，易扩张到任意同源路径。\",\"reproduction\":\"推理轨迹（未执行）：卖家批准 `/workshop.html` 后，在该文件中引用 `../../pbp/admin` 或 200 个 CSS；若读取器按文档内联资源递归抓取，将越过“有限路径”边界并在同源后台上发起读取；若只读 entry 单文件，则 CSS 不同步变化时一致性结论失真。\",\"suggestion\":\"manifest v1 增加可选且经审批的相对资源清单（仅 `^\\\\.{0}\\\\/?[A-Za-z0-9_~/-]+\\\\.css$` 类路径，数量与总字节上限），读取器只读取审批清单内的路径，不解析文档递归抓取；文件不存在或清单外引用仅作为警告，不读取。\"},{\"severity\":\"P2\",\"file\":\"lib/seller-integration.ts\",\"line\":70,\"title\":\"审批→驳回的撤销分支保留 registration 但状态为 rejected，读取端可能继续用旧快照\",\"evidence\":\"第 64 行允许 approved→rejected，第 70 行将 status 设为 rejected，第 72 行仅在 registration 存在时覆盖，不删除 registration；第 71 行注释称保留 approved 声明作为历史证据，但注册列表（PBP_JOURNEY_TARGETS）与 resolveJourneyTarget 第 14 行并不检查请求当前 status，只检查条目未过期与 digest。于是已撤销的审批在注册表层面仍可能可用，且新读取代码若只按 registrationRevision 取条目，不会看到撤销。\",\"reproduction\":\"推理轨迹（未执行）：请求 R 审批通过并写入目标 T；运营商随后以 needs_changes 以外路径驳回（第 64 行允许 approved→rejected），请求 status=rejected，registration 仍存在；若 T 仍留在注册表，resolveJourneyTarget 因未过期+D 匹配返回 T，读取阶段照常进行。\",\"suggestion\":\"注册表条目或读取报告加入 status 或 revokedAt 快照；读取前通过请求存储校验该 registrationRevision 对应的请求当前为 approved 且无后续撤销；撤销时更新或移除注册表条目并在报告中标明 invalidated。不要把“历史证据保留在请求中”等同于“注册表中继续可用”。\"},{\"severity\":\"P3\",\"file\":\"lib/seller-integration.ts\",\"line\":80,\"title\":\"历史序列允许 approved 之后任何 rejected，但不要求撤销原因或后续新请求关系\",\"evidence\":\"第 80 行校验 i>1 时必须前一条为 approved 且当前为 rejected，第 64 行也只允许 approved→rejected；但未校验撤销事件与 registration 的关联（例如哪个 registrationRevision 被撤销），也未要求撤销后 previousRequestId 链可追溯。方案要求与 registrationRevision 绑定保存独立报告，撤销后报告与新请求的对应关系在此缺失。\",\"reproduction\":\"推理轨迹（未执行）：R 经 approved-2 后在 revision 3 被 rejected；卖家提交的新请求携带 previousRequestId=R，但新报告若仍引用 onboarding R 的旧 registrationRevision，历史无法显示“旧报告已失效”的因果。\",\"suggestion\":\"在撤销事件 reason 或新增字段中记录被撤销的 registrationRevision，并在 validateIntegrationRequest 中断言其与首个 approved 事件的 revision 对应；新请求的报告引用新 registrationRevision 且 previousRequestId 链完整。\"}],\"limitations\":[\"仅基于给出的四个文件进行静态阅读，未读取 runtime-project.ts、project-journey.ts、journey-checks.ts、integration-delegation.ts 等被导入模块；runtimeDeliveryDigest 的实际计算口径、sameJourneyRegistration 的字段范围、注册表写入路径均未核实。\",\"源码包中不存在任何读取 frontendEntryUrl 静态文件的实现，方案主体属于待实现设计；本评审对其反例均为推理，不代表现有运行行为。\",\"未执行任何测试、类型检查、构建或网络请求；所有 reproduction 均未执行。\",\"未检查部署运行时（Cloudflare Workers）对 redirect:\\\"manual\\\"/\\\"error\\\"、AbortSignal、流式读取的真实支持，第 43 行注释所述兼容性无法在此验证。\",\"无法判断 selectors、源码引用、跨午夜/休业日期相关代码是否存在于其他文件，因此四轮优先级仅基于产品边界与所列代码推断。\"],\"suggestions\":[]}",
+  "report": null,
+  "reportValid": false,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": false,
+  "errors": [
+    "invalid_report_schema"
+  ]
+}

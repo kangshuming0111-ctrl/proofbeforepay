@@ -26,6 +26,8 @@ The AI panel includes dated, fully retained synthetic evaluation data: initial t
 
 Repeated original-model runs retain up to four inline and sixteen immutable D1 archive reports, subject to unchanged byte/acceptance budgets. The server shows actual capacity before a run. An accepted A remains the exact consent basis after supplements; missing, modified or foreign archives fail closed. Replacements preserve scoped historical-version hydration and offline exports check the complete archive mapping and SHA. See docs/collaboration/five-new-cycles-2026-11-04/ for the five rounds and measured boundaries.
 
+The next four functional cycles add a step-by-step seller DOM setup with local preflight, separate375/1280px source-citation layout observations, platform HTTP raw-byte comparisons with an approved staging deployment, and explicit calendar-v2 overnight/closed-date cases. Read docs/GAP-CLOSURE-NEXT-2026-11-04.md for exact test and trust limits. Generated templates are unverified, browser layout is participant-reported, and HTTP hashes are not signed build provenance. Existing acceptance/payment records and time-policy-v1 history remain separate.
+
 ## Clean local setup
 
 On macOS or a POSIX environment, with Node.js 22.13+ and npm installed (Node.js 24 recommended), run one command from this checkout:

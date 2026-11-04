@@ -14,6 +14,7 @@ import {SellerIntegrationGuide} from "./SellerIntegrationGuide";
 import {BrowserWitnessPanel} from "./BrowserWitnessPanel";
 import {TransferCompetitionPanel} from "./TransferCompetitionPanel";
 import {SellerDomAdapterGuide} from "./SellerDomAdapterGuide";
+import {DeploymentSourcePanel} from "./DeploymentSourcePanel";
 import {TimePolicyPanel} from "./TimePolicyPanel";
 
 type State={plan:ProjectJourneyPlan|null;agreement:string;targets:{id:string;label:string;registrationRevision:string;expiresAt:string}[];run:ProjectJourneyRun|null;report:ProjectJourneyReport|null;evaluation:ProjectJourneyEvaluation|null};
@@ -74,6 +75,7 @@ export function ProjectJourneyPanel({quote,role,language,enabled,request,onApply
   <SellerIntegrationGuide language={language} projectId={quote.id} deliveryId={delivery.id} role={role} enabled={enabled&&!running&&!state?.run} request={request} onChanged={async()=>{const value=await request<State>(path);if(alive.current){setState(value);setTarget(old=>value.targets.some(t=>t.id===old)?old:value.targets[0]?.id??"");setConsent(false);}}}/>
   <BrowserWitnessPanel projectId={quote.id} deliveryId={delivery.id} role={role} language={language} enabled={enabled&&!running&&!state?.run} request={request}/>
   <SellerDomAdapterGuide language={language}/>
+  <DeploymentSourcePanel quote={quote} language={language} enabled={enabled} request={request}/>
   <TimePolicyPanel projectId={quote.id} deliveryId={delivery.id} role={role} language={language} enabled={enabled&&!running&&!state?.run} request={request}/>
   <TransferCompetitionPanel quote={quote} role={role} language={language} enabled={enabled&&!running&&!state?.run} request={request} onApply={onApply} onBusy={onBusy} onOutcome={setTransferOutcome}/>
   {error&&<p className="journey-warning" role="alert">{error}</p>}

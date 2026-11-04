@@ -1,0 +1,102 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/source-visibility.ts",
+      "bytes": 14587,
+      "lines": 133,
+      "sha256": "78ab082d8ef555de5f81f7314498220a01decbd2d0e7fbf4cc48ae64a623791c"
+    },
+    {
+      "file": "lib/source-visibility-probe.ts",
+      "bytes": 5616,
+      "lines": 72,
+      "sha256": "b8ea663ccd622c209190af9d4ad64f848fb0ac831946fffe1f386efbfdfc1d30"
+    },
+    {
+      "file": "lib/source-visibility-store.ts",
+      "bytes": 3304,
+      "lines": 28,
+      "sha256": "473e40c67188de304b791e1eb37cb5672c1d9126695835e624841c015f47bf07"
+    },
+    {
+      "file": "lib/source-visibility-sql.ts",
+      "bytes": 667,
+      "lines": 3,
+      "sha256": "f14132669fd0c0d73a97d39bbbe114eb9c36ae03ee25a70c354b81b5d13fb546"
+    },
+    {
+      "file": "app/api/proofs/[id]/source-visibility/route.ts",
+      "bytes": 1048,
+      "lines": 6,
+      "sha256": "0a008a86e0cba8b8278b6eef0d9869c50425559a5d4c36c254cad1e9484e5b5c"
+    },
+    {
+      "file": "app/components/SourceVisibilityPanel.tsx",
+      "bytes": 11787,
+      "lines": 50,
+      "sha256": "b60b709c5d42d2d5f908bcc7f7bbcc2f29969795839ea93d4bcd7a9bf438973e"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Reviewed the six packet files for hidden/visible claim accuracy, target location, plan/report integrity, prior-report CAS, concurrency, and UI abort handling. I found two concrete defects. First, the plan treats a text node as a valid target when its whitespace-normalised text matches the citation excerpt. However, the citation can include parts of an adjacent element. The element is concatenated into the same parse5 text node. As a result, text that is actually hidden can be reported as hidden, the wrong span is observed, or the span is reported unavailable. Second, the history CAS query checks that the latest report for the same deliveryId and assessmentId is equal to previousReportId. When the browser sends null, that check passes with no latest report, even if other reports exist for the same delivery and assessment. The browser therefore selects the prior report only from non-stale reports (line 21 of the panel). A report for an earlier assessment with the same IDs, meaning changed content, is still 'current'. It is never selected, so the CAS is bypassed. Concurrent appends are also allowed. Storage-level validation, the 409 errors for plan drift, the whitelist object guard, URL construction, and the absence of any acceptance or payment write are otherwise consistent in the packet.\",\"findings\":[{\"severity\":\"P2\",\"file\":\"lib/source-visibility.ts\",\"line\":82,\"title\":\"Exact citation can resolve to a text node only partly covered by the citation, producing false hidden/visible readings\",\"evidence\":\"Line 82 accepts any text node whose node.start >= start and node.end <= end, but does not require node.start === start and node.end === end. Lines 83-85 then require only normalised equality between the node value and the excerpt (line 84). So source `<li style=\\\"display:none\\\">Secret <span>x</span></li>` produces one parse5 text node with value \\\"Secret x\\\". A citation of exactly \\\"Secret x</li>\\\" (offsets covering the full text plus the closing tag) normalises to \\\"Secret x</li>\\\" !== \\\"Secret x\\\". But the source string `<li style=\\\"display:none\\\">Secret ` (offsets from `<` of the li through the trailing space) has excerpt normalised to \\\"<li style=\\\"display:none\\\">Secret\\\". This also does not equal \\\"Secret x\\\". The unsafe value is the citation excerpt containing the span markup, e.g. `Secret <span>x</span>`, whose start is the text offset and end is after `</span>`. That excerpt normalises to \\\"Secret <span>x</span>\\\", which differs from the node value \\\"Secret x\\\", so line 82 plus 84 would reject it. The real acceptance case comes from partial node coverage combined with normalisation of markup-free excerpts: a citation whose start/end lie inside the text node (e.g. start at \\\"Secret\\\", end right after \\\"Secret \\\") with excerpt \\\"Secret\\\" yields exact.length===1 and normalised equality against the whole node \\\"Secret x\\\" is false. The acceptance depends on normalisation collapsing markup and text together, which is not shown by the excerpt matching at line 71. What is shown: line 82 admits nodes wider than the citation, and nothing verifies that the DOM node corresponds exactly to the quoted span. Whether a participant can construct an accepting citation depends on normalisation collisions in parse5's value (e.g. `<b>` boundaries are not in text node values, so they cannot create one). This requires runtime confirmation. What is established: validateStoredVisibilityReport (line 127) only checks end-start === excerpt.length and does not require the target value to equal the excerpt, so a stored plan can legitimately pair a 1-character citation with a 1000-character target value. observeCitationText (line 7 of the probe) then observes the whole node, not the cited span. The reason label \\\"display_none\\\" on line 29 of the probe is attributed to the citation even when only unquoted sibling text inside the same node is hidden.\",\"reproduction\":\"Unexecuted reasoning trace: (a) Any citation whose offsets are a sub-range of one text node but whose excerpt, after normalisation, equals the node value is accepted. Line 82 allows this because the node is contained in the citation. If the quoted part renders in a visible parent but the node's other text (inside a hidden `display:none` child element) is merged into the same layout/inline formatting context, the probe reports the whole node and can produce a hidden claim for text the participant did not quote. (b) Conversely, a valid quote that is a strict sub-span never matches (line 84), so the citation is silently dropped as repeated_text or non_body_text rather than observed. (c) On storage, line 127 accepts target.value independently of citation.excerpt, so a report row can present target.value as the observed text even when it is not the cited excerpt. Check with a synthetic HTML file and a citation of a substring of a multi-markup paragraph to confirm the exact normalisation collision before accepting (a).\",\"suggestion\":\"In sourceNodes/sourceVisibilityPlan, require node.start === citation.start && node.end === citation.end for the single exact node. Alternatively, store the citation's own excerpt as the target value and locate it only when it is the sole full node. In validateStoredVisibilityReport, require normalized(target.value) === normalized(citation.excerpt) for stored targets.\"},{\"severity\":\"P2\",\"file\":\"lib/source-visibility-sql.ts\",\"line\":3,\"title\":\"Previous-report CAS passes when client sends null, so concurrent appends under one assessment are not prevented\",\"evidence\":\"The insert guard `COALESCE((SELECT id ... WHERE delivery_id=? AND assessment_id=? ORDER BY rowid DESC LIMIT 1),'') = ?` with previousReportId \\\"\\\" (line 25 of source-visibility-store.ts binds `previousReportId??\\\"\\\"`) succeeds whenever no report exists for the current deliveryId+assessmentId. That holds even when other reports exist for the project. The UI computes `previous=view.reports.find(r=>!r.stale)?.id??null` (line 21 of SourceVisibilityPanel.tsx). The stale flag (line 20 of source-visibility-store.ts) compares only deliveryId, deliveryDigest and assessmentId. If the assessment ID is reused while content changes (same digest? no, digest changes), deliveryDigest is part of the report itself, so a changed-digest assessment produces a different deliveryDigest and a stale flag. So the stale mismatch only arises if digest is equal. The direct case that bypasses the guard is simply an empty history: two browser tabs both load the view with no reports, both send previousReportId null, and both inserts satisfy the `=''` condition. The comment on lines 1-2 claims 'Two concurrent requests with one prior ID cannot both append', but with null there is no prior ID and both append. Also, a client can send previousReportId null deliberately while non-matching reports exist.\",\"reproduction\":\"Unexecuted trace: tab A and tab B both GET the view with zero reports, so `previous` is null. Each runs observations and POSTs with previousReportId:null. Both INSERTs satisfy `(latest current report) = ''` because no current report exists, and both rows are inserted. The view then contains two reports roughly at the same time. With a deliberately sent null while the current assessment already has reports, the guard also accepts and appends a third, breaking the single-successor lineage the comment asserts. This contradicts the stated concurrency invariant, though it does not alter acceptance or payment.\",\"suggestion\":\"Treat null as a CAS on absence: when the client reports no previous ID, require that no report exists for that project/delivery/assessment at all. Alternatively, always pass the actual latest report ID for the delivery and assessment (stale or not) and compare exactly. Then reject the insert if any row exists and previousReportId is null.\"}],\"limitations\":[\"Read-only review of the supplied packet only; no files were executed, no tests or type checks were run, and no runtime reproduction was performed.\",\"saved-page-observation.ts (snapshot, Unavailable, cancelled, bounded, verifyStyles, assertCurrent), contracts.ts, proof-store.ts, server.ts, CSS and the SQL schema were not supplied, so how verifyStyles/assertCurrent behave, how proofActor/readProofCase derive role and version, how body() parses input, and whether the browser timeout maps to an 'unavailable' reason are unverified.\",\"The first finding's acceptance path through parse5 text-node normalisation with inline markup was not confirmed at runtime; treat it as needing verification.\",\"The second finding's impact is limited to duplicated or non-linear report history because reports have no effect on acceptance or payment in the supplied code.\",\"CSS of the observed page and cross-node/repeated-source text remain manual checks by design and were not evaluated.\"]}",
+  "report": {
+    "summary": "Reviewed the six packet files for hidden/visible claim accuracy, target location, plan/report integrity, prior-report CAS, concurrency, and UI abort handling. I found two concrete defects. First, the plan treats a text node as a valid target when its whitespace-normalised text matches the citation excerpt. However, the citation can include parts of an adjacent element. The element is concatenated into the same parse5 text node. As a result, text that is actually hidden can be reported as hidden, the wrong span is observed, or the span is reported unavailable. Second, the history CAS query checks that the latest report for the same deliveryId and assessmentId is equal to previousReportId. When the browser sends null, that check passes with no latest report, even if other reports exist for the same delivery and assessment. The browser therefore selects the prior report only from non-stale reports (line 21 of the panel). A report for an earlier assessment with the same IDs, meaning changed content, is still 'current'. It is never selected, so the CAS is bypassed. Concurrent appends are also allowed. Storage-level validation, the 409 errors for plan drift, the whitelist object guard, URL construction, and the absence of any acceptance or payment write are otherwise consistent in the packet.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "lib/source-visibility.ts",
+        "line": 82,
+        "title": "Exact citation can resolve to a text node only partly covered by the citation, producing false hidden/visible readings",
+        "evidence": "Line 82 accepts any text node whose node.start >= start and node.end <= end, but does not require node.start === start and node.end === end. Lines 83-85 then require only normalised equality between the node value and the excerpt (line 84). So source `<li style=\"display:none\">Secret <span>x</span></li>` produces one parse5 text node with value \"Secret x\". A citation of exactly \"Secret x</li>\" (offsets covering the full text plus the closing tag) normalises to \"Secret x</li>\" !== \"Secret x\". But the source string `<li style=\"display:none\">Secret ` (offsets from `<` of the li through the trailing space) has excerpt normalised to \"<li style=\"display:none\">Secret\". This also does not equal \"Secret x\". The unsafe value is the citation excerpt containing the span markup, e.g. `Secret <span>x</span>`, whose start is the text offset and end is after `</span>`. That excerpt normalises to \"Secret <span>x</span>\", which differs from the node value \"Secret x\", so line 82 plus 84 would reject it. The real acceptance case comes from partial node coverage combined with normalisation of markup-free excerpts: a citation whose start/end lie inside the text node (e.g. start at \"Secret\", end right after \"Secret \") with excerpt \"Secret\" yields exact.length===1 and normalised equality against the whole node \"Secret x\" is false. The acceptance depends on normalisation collapsing markup and text together, which is not shown by the excerpt matching at line 71. What is shown: line 82 admits nodes wider than the citation, and nothing verifies that the DOM node corresponds exactly to the quoted span. Whether a participant can construct an accepting citation depends on normalisation collisions in parse5's value (e.g. `<b>` boundaries are not in text node values, so they cannot create one). This requires runtime confirmation. What is established: validateStoredVisibilityReport (line 127) only checks end-start === excerpt.length and does not require the target value to equal the excerpt, so a stored plan can legitimately pair a 1-character citation with a 1000-character target value. observeCitationText (line 7 of the probe) then observes the whole node, not the cited span. The reason label \"display_none\" on line 29 of the probe is attributed to the citation even when only unquoted sibling text inside the same node is hidden.",
+        "reproduction": "Unexecuted reasoning trace: (a) Any citation whose offsets are a sub-range of one text node but whose excerpt, after normalisation, equals the node value is accepted. Line 82 allows this because the node is contained in the citation. If the quoted part renders in a visible parent but the node's other text (inside a hidden `display:none` child element) is merged into the same layout/inline formatting context, the probe reports the whole node and can produce a hidden claim for text the participant did not quote. (b) Conversely, a valid quote that is a strict sub-span never matches (line 84), so the citation is silently dropped as repeated_text or non_body_text rather than observed. (c) On storage, line 127 accepts target.value independently of citation.excerpt, so a report row can present target.value as the observed text even when it is not the cited excerpt. Check with a synthetic HTML file and a citation of a substring of a multi-markup paragraph to confirm the exact normalisation collision before accepting (a).",
+        "suggestion": "In sourceNodes/sourceVisibilityPlan, require node.start === citation.start && node.end === citation.end for the single exact node. Alternatively, store the citation's own excerpt as the target value and locate it only when it is the sole full node. In validateStoredVisibilityReport, require normalized(target.value) === normalized(citation.excerpt) for stored targets."
+      },
+      {
+        "severity": "P2",
+        "file": "lib/source-visibility-sql.ts",
+        "line": 3,
+        "title": "Previous-report CAS passes when client sends null, so concurrent appends under one assessment are not prevented",
+        "evidence": "The insert guard `COALESCE((SELECT id ... WHERE delivery_id=? AND assessment_id=? ORDER BY rowid DESC LIMIT 1),'') = ?` with previousReportId \"\" (line 25 of source-visibility-store.ts binds `previousReportId??\"\"`) succeeds whenever no report exists for the current deliveryId+assessmentId. That holds even when other reports exist for the project. The UI computes `previous=view.reports.find(r=>!r.stale)?.id??null` (line 21 of SourceVisibilityPanel.tsx). The stale flag (line 20 of source-visibility-store.ts) compares only deliveryId, deliveryDigest and assessmentId. If the assessment ID is reused while content changes (same digest? no, digest changes), deliveryDigest is part of the report itself, so a changed-digest assessment produces a different deliveryDigest and a stale flag. So the stale mismatch only arises if digest is equal. The direct case that bypasses the guard is simply an empty history: two browser tabs both load the view with no reports, both send previousReportId null, and both inserts satisfy the `=''` condition. The comment on lines 1-2 claims 'Two concurrent requests with one prior ID cannot both append', but with null there is no prior ID and both append. Also, a client can send previousReportId null deliberately while non-matching reports exist.",
+        "reproduction": "Unexecuted trace: tab A and tab B both GET the view with zero reports, so `previous` is null. Each runs observations and POSTs with previousReportId:null. Both INSERTs satisfy `(latest current report) = ''` because no current report exists, and both rows are inserted. The view then contains two reports roughly at the same time. With a deliberately sent null while the current assessment already has reports, the guard also accepts and appends a third, breaking the single-successor lineage the comment asserts. This contradicts the stated concurrency invariant, though it does not alter acceptance or payment.",
+        "suggestion": "Treat null as a CAS on absence: when the client reports no previous ID, require that no report exists for that project/delivery/assessment at all. Alternatively, always pass the actual latest report ID for the delivery and assessment (stale or not) and compare exactly. Then reject the insert if any row exists and previousReportId is null."
+      }
+    ],
+    "limitations": [
+      "Read-only review of the supplied packet only; no files were executed, no tests or type checks were run, and no runtime reproduction was performed.",
+      "saved-page-observation.ts (snapshot, Unavailable, cancelled, bounded, verifyStyles, assertCurrent), contracts.ts, proof-store.ts, server.ts, CSS and the SQL schema were not supplied, so how verifyStyles/assertCurrent behave, how proofActor/readProofCase derive role and version, how body() parses input, and whether the browser timeout maps to an 'unavailable' reason are unverified.",
+      "The first finding's acceptance path through parse5 text-node normalisation with inline markup was not confirmed at runtime; treat it as needing verification.",
+      "The second finding's impact is limited to duplicated or non-linear report history because reports have no effect on acceptance or payment in the supplied code.",
+      "CSS of the observed page and cross-node/repeated-source text remain manual checks by design and were not evaluated."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

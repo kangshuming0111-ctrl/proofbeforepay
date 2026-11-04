@@ -7,7 +7,7 @@ import { spawnSync } from "node:child_process";
 // Build a local reviewable export. This never reads runtime credentials, publishes
 // a repository, changes Site access, starts a provider call or installs packages.
 const ROOT_FILES = ["README.md", "LICENSE", "AGENTS.md", "package.json", "pnpm-lock.yaml", "pnpm-workspace.yaml", "tsconfig.json", "next.config.ts", "vite.config.ts", "postcss.config.mjs", "eslint.config.mjs", "drizzle.config.ts", "cloudflare-env.d.ts", "components.json", ".gitignore", ".agents/skills/proofbeforepay-delivery/SKILL.md", ".agents/skills/proofbeforepay-delivery/references/code-map.md"];
-const SOURCE_DIRS = ["app", "lib", "db", "drizzle", "components", "hooks", "worker", "vendor", "public", "scripts", "tests", "docs", "examples/seller-staging", "examples/seller-capacity-staging", "examples/seller-lifecycle-staging", "examples/seller-workshop-python", "examples/seller-dom-staging", "examples/seller-time-policy-staging"];
+const SOURCE_DIRS = ["app", "lib", "db", "drizzle", "components", "hooks", "worker", "vendor", "public", "scripts", "tests", "docs", "examples/seller-staging", "examples/seller-capacity-staging", "examples/seller-lifecycle-staging", "examples/seller-workshop-python", "examples/seller-dom-staging", "examples/seller-time-policy-staging", "examples/seller-onboarding"];
 const EXTENSIONS = new Set([".html", ".ts", ".tsx", ".mts", ".cts", ".js", ".mjs", ".cjs", ".css", ".json", ".sql", ".md", ".yaml", ".yml", ".svg", ".py", ".sh", ".csv", ".LICENSE"]);
 // Exact attribution files for the three licensed evaluator-template sources.
 // Do not broaden this to arbitrary TXT documents or owner notes.
@@ -83,6 +83,8 @@ The separate transfer-competition-v1 family checks two reservations competing fo
 The AI panel includes dated, fully retained synthetic evaluation data: initial twelve projects/twenty-four criteria raw24/24 versus application22/24, with nine whole answers accepted and three qualified by an independent AI reviewer. Two actual application-classification errors were fixed; the separate four-project/eight-criterion development follow-up achieved raw8/8 and application8/8. This is not real-customer accuracy or human usability research. Complete raw answers, extra risks/limitations, references and frozen source are in public/benchmarks/five-cycles-2026-11-04/. Viewing these records never calls a model.
 
 Repeated original-model runs retain up to four inline and sixteen immutable D1 archive reports, subject to unchanged byte/acceptance budgets. The server shows actual capacity before a run. An accepted A remains the exact consent basis after supplements; missing, modified or foreign archives fail closed. Replacements preserve scoped historical-version hydration and offline exports check the complete archive mapping and SHA. See docs/collaboration/five-new-cycles-2026-11-04/ for the five rounds and measured boundaries.
+
+The next four functional cycles add a step-by-step seller DOM setup with local preflight, separate375/1280px source-citation layout observations, platform HTTP raw-byte comparisons with an approved staging deployment, and explicit calendar-v2 overnight/closed-date cases. Read docs/GAP-CLOSURE-NEXT-2026-11-04.md for exact test and trust limits. Generated templates are unverified, browser layout is participant-reported, and HTTP hashes are not signed build provenance. Existing acceptance/payment records and time-policy-v1 history remain separate.
 
 ## Clean local setup
 

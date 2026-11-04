@@ -1,0 +1,87 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/time-policy.ts",
+      "bytes": 25256,
+      "lines": 136,
+      "sha256": "b11aa727683ba66957b8088b4aeeb06690b46b18884248edf229d6d456cf91b6"
+    },
+    {
+      "file": "lib/time-policy-runner.ts",
+      "bytes": 8385,
+      "lines": 47,
+      "sha256": "4a6fe0e7d8fbd00230041bba485468f59054167f8e920cdabdacccdffad6f550"
+    },
+    {
+      "file": "examples/seller-time-policy-staging/worker/time-policy-service.mjs",
+      "bytes": 9395,
+      "lines": 54,
+      "sha256": "538dd98e9af7cf500a04de8c7e7c6f73620010717e53bcd1bc6d3be14ffd7a31"
+    },
+    {
+      "file": "app/components/TimePolicyPanel.tsx",
+      "bytes": 18985,
+      "lines": 52,
+      "sha256": "ee06417950fcb1cbbd60ec215c917e3cc585729f36dbcba3b275042859e715a0"
+    },
+    {
+      "file": "tests/time-policy.test.ts",
+      "bytes": 20238,
+      "lines": 111,
+      "sha256": "0faa9287d628005b58203e7d1e25f95b7160a4502bc8d9bd3e1182962cf25265"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"I reviewed the v2 overnight/closed-date extension and v1 backward compatibility statically, across lib/time-policy.ts, lib/time-policy-runner.ts, the fixed and defective native fixture, the panel and the tests. The core v2 rules look sound in most respects: the weekday belongs to the opening date (line 62), closed civil dates win (line 66), the resolved local start is checked before weekday or closure logic (line 58), v1 validation is unchanged (line 41) and the v1 plan digest is unchanged. Allowances and paths agree between the oracle and fixture: closed local dates win before the weekday check, and cancel requests never require a closed-date allowance. Budgets are 50/24 for v2 and 40/18 for v1 (17 cases => 41 requests / 20 posts). I found one actionable defect. The browser-side readback check is looser than the stored-evidence evaluation, so a fabricated booking id in a successful response can be certified as a user-visible pass.\",\"findings\":[{\"severity\":\"P2\",\"file\":\"lib/time-policy-runner.ts\",\"line\":27,\"title\":\"Run-time readback check accepts any ID-shaped string, so it is looser than the stored-evidence evaluation\",\"evidence\":\"The live `bodyRecord` in lib/time-policy-runner.ts:27 checks the id with `/^[a-f0-9-]{36}$/u.test(value.id)`. It only checks the shape (36 hex/dash characters), not the UUID format. The replay/storage evaluator in lib/time-policy.ts:100 uses `UUID.test(value.id)`, the strict `8-4-4-4-12` regex from line 88. An id like `--------------------` (36 dashes) is all hex-valid for the loose regex ([a-f0-9-] allows '-'), but it is not a UUID. With v2 cases (runner line 33, read path `cases/${id}/${caseId}`), a synthetic backend or adapter could return 201 with `id:\\\"------------------------------------\\\"`. The live readback GET for that id returns the same fake record. In runner.ts:34 the case is marked `observed` with reason `response_and_independent_readback_match` and pushed into `results`, and the panel (TimePolicyPanel.tsx:45/47) then shows “观测支持 / Observed” for those cases. On persistence, `evaluateTimeTrace` (time-policy.ts:108) sees `UUID.test(...)===false`, records `mismatch` for the same case, and `validateTimeSession` (time-policy.ts:133) rejects the saved session because its conclusions differ from the evidence. The live result shown to the buyer therefore differs from what the evidence supports. The same divergence also exists for the cancellation path (runner line 40/41 versus time-policy.ts:113 and line 100), so v1 of this path is also affected.\",\"reproduction\":\"Static trace, not executed. In executeTimePolicy (lib/time-policy-runner.ts) with a v1 or v2 session whose plan matches meta: metadata matches at line 29. For a create case with expected.allowed=true, a stub `options.fetch` responds to POST `bookings` with 201 and body {testRunId:session.id, caseId, marker:`PBP-${session.id}`, localStart, status:\\\"active\\\", id:\\\"------------------------------------\\\"}. It responds to GET `cases/<run>/<case>` with the same body. limited() parses both, and runner line 34 gives good=true because the loose regex passes and the echoed id matches. results push `observed`. Passing the same trace to evaluateTimeTrace makes bodyRecord fail at time-policy.ts:100 (UUID test), which yields `mismatch`, and validateTimeSession rejects the session with “Saved time-policy conclusions differ from their ordered HTTP evidence.” Tests at tests/time-policy.test.ts:100-108 do not cover this because the native fixture always returns crypto.randomUUID().\",\"suggestion\":\"Use the same strict id check in lib/time-policy-runner.ts:27 as in lib/time-policy.ts:100, for example an exported shared helper that validates `/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u`, or delegate the runner's good/mismatch decision to evaluateTimeTrace's bodyRecord logic, so the live classification cannot differ from the stored-evidence replay.\"}],\"limitations\":[\"Static review only. No tests, typecheck, build, browser or runtime were executed. The reproduction is a reasoning trace over the supplied code.\",\"Only the supplied packet was reviewed: lib/time-policy.ts, lib/time-policy-runner.ts, examples/seller-time-policy-staging/worker/time-policy-service.mjs, app/components/TimePolicyPanel.tsx, tests/time-policy.test.ts and the skill file. The API route that saves runs, D1 storage, the registration validator, the migration files, fixtures and the CSS were not supplied.\",\"Not reviewed: the API route callers and session-id generation. Server-derived role and authorization were not checked beyond what the runner and validator show. The panel's fetch wrapper, the layout/CSS, and the UI accessibility beyond the supplied markup were also not reviewed.\",\"The overnight and closed-date rules were checked against the described agreement with supplied date literals. Wider timezone and DST behavior outside those literals, and the Intl/ICU behavior of the host, were not verified.\",\"The behavior of Defect profiles (calendar-weekday-defect, calendar-holiday-defect, cancel-credit, move-loss) and the exact counts in the tests were not executed, only inferred from the code.\"]}",
+  "report": {
+    "summary": "I reviewed the v2 overnight/closed-date extension and v1 backward compatibility statically, across lib/time-policy.ts, lib/time-policy-runner.ts, the fixed and defective native fixture, the panel and the tests. The core v2 rules look sound in most respects: the weekday belongs to the opening date (line 62), closed civil dates win (line 66), the resolved local start is checked before weekday or closure logic (line 58), v1 validation is unchanged (line 41) and the v1 plan digest is unchanged. Allowances and paths agree between the oracle and fixture: closed local dates win before the weekday check, and cancel requests never require a closed-date allowance. Budgets are 50/24 for v2 and 40/18 for v1 (17 cases => 41 requests / 20 posts). I found one actionable defect. The browser-side readback check is looser than the stored-evidence evaluation, so a fabricated booking id in a successful response can be certified as a user-visible pass.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "lib/time-policy-runner.ts",
+        "line": 27,
+        "title": "Run-time readback check accepts any ID-shaped string, so it is looser than the stored-evidence evaluation",
+        "evidence": "The live `bodyRecord` in lib/time-policy-runner.ts:27 checks the id with `/^[a-f0-9-]{36}$/u.test(value.id)`. It only checks the shape (36 hex/dash characters), not the UUID format. The replay/storage evaluator in lib/time-policy.ts:100 uses `UUID.test(value.id)`, the strict `8-4-4-4-12` regex from line 88. An id like `--------------------` (36 dashes) is all hex-valid for the loose regex ([a-f0-9-] allows '-'), but it is not a UUID. With v2 cases (runner line 33, read path `cases/${id}/${caseId}`), a synthetic backend or adapter could return 201 with `id:\"------------------------------------\"`. The live readback GET for that id returns the same fake record. In runner.ts:34 the case is marked `observed` with reason `response_and_independent_readback_match` and pushed into `results`, and the panel (TimePolicyPanel.tsx:45/47) then shows “观测支持 / Observed” for those cases. On persistence, `evaluateTimeTrace` (time-policy.ts:108) sees `UUID.test(...)===false`, records `mismatch` for the same case, and `validateTimeSession` (time-policy.ts:133) rejects the saved session because its conclusions differ from the evidence. The live result shown to the buyer therefore differs from what the evidence supports. The same divergence also exists for the cancellation path (runner line 40/41 versus time-policy.ts:113 and line 100), so v1 of this path is also affected.",
+        "reproduction": "Static trace, not executed. In executeTimePolicy (lib/time-policy-runner.ts) with a v1 or v2 session whose plan matches meta: metadata matches at line 29. For a create case with expected.allowed=true, a stub `options.fetch` responds to POST `bookings` with 201 and body {testRunId:session.id, caseId, marker:`PBP-${session.id}`, localStart, status:\"active\", id:\"------------------------------------\"}. It responds to GET `cases/<run>/<case>` with the same body. limited() parses both, and runner line 34 gives good=true because the loose regex passes and the echoed id matches. results push `observed`. Passing the same trace to evaluateTimeTrace makes bodyRecord fail at time-policy.ts:100 (UUID test), which yields `mismatch`, and validateTimeSession rejects the session with “Saved time-policy conclusions differ from their ordered HTTP evidence.” Tests at tests/time-policy.test.ts:100-108 do not cover this because the native fixture always returns crypto.randomUUID().",
+        "suggestion": "Use the same strict id check in lib/time-policy-runner.ts:27 as in lib/time-policy.ts:100, for example an exported shared helper that validates `/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u`, or delegate the runner's good/mismatch decision to evaluateTimeTrace's bodyRecord logic, so the live classification cannot differ from the stored-evidence replay."
+      }
+    ],
+    "limitations": [
+      "Static review only. No tests, typecheck, build, browser or runtime were executed. The reproduction is a reasoning trace over the supplied code.",
+      "Only the supplied packet was reviewed: lib/time-policy.ts, lib/time-policy-runner.ts, examples/seller-time-policy-staging/worker/time-policy-service.mjs, app/components/TimePolicyPanel.tsx, tests/time-policy.test.ts and the skill file. The API route that saves runs, D1 storage, the registration validator, the migration files, fixtures and the CSS were not supplied.",
+      "Not reviewed: the API route callers and session-id generation. Server-derived role and authorization were not checked beyond what the runner and validator show. The panel's fetch wrapper, the layout/CSS, and the UI accessibility beyond the supplied markup were also not reviewed.",
+      "The overnight and closed-date rules were checked against the described agreement with supplied date literals. Wider timezone and DST behavior outside those literals, and the Intl/ICU behavior of the host, were not verified.",
+      "The behavior of Defect profiles (calendar-weekday-defect, calendar-holiday-defect, cancel-credit, move-loss) and the exact counts in the tests were not executed, only inferred from the code."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

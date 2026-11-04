@@ -1,0 +1,30 @@
+{
+  "schema": "pbp-seller-onboarding-v1",
+  "protocol": "booking-lifecycle-http-v1",
+  "parentOrigin": "https://briefpay-kang-lab.blueheron8.chatgpt.site",
+  "backendBasePath": "/pbp/",
+  "frontendRevision": "my-staging-v1",
+  "forms": {
+    "create": {
+      "partySize": "[name=guests]",
+      "slot": "[name=arrival]",
+      "requestOperation": "[name=create-purpose]",
+      "submit": "[data-booking-form] button[type=submit]"
+    },
+    "cancel": {
+      "bookingId": "[name=saved-reservation]",
+      "requestOperation": "[name=cancel-purpose]",
+      "submit": "[data-cancel-form] button[type=submit]"
+    },
+    "move": {
+      "bookingId": "[name=saved-reservation]",
+      "slot": "[name=new-arrival]",
+      "requestOperation": "[name=move-purpose]",
+      "submit": "[data-move-form] button[type=submit]"
+    },
+    "retry": {
+      "submit": "#retry"
+    }
+  },
+  "result": "#reservation-update"
+}

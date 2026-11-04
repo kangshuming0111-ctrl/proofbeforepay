@@ -1,0 +1,51 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/time-policy.ts",
+      "bytes": 25256,
+      "lines": 136,
+      "sha256": "b11aa727683ba66957b8088b4aeeb06690b46b18884248edf229d6d456cf91b6"
+    },
+    {
+      "file": "lib/time-policy-runner.ts",
+      "bytes": 8385,
+      "lines": 47,
+      "sha256": "4a6fe0e7d8fbd00230041bba485468f59054167f8e920cdabdacccdffad6f550"
+    },
+    {
+      "file": "examples/seller-time-policy-staging/worker/time-policy-service.mjs",
+      "bytes": 9395,
+      "lines": 54,
+      "sha256": "538dd98e9af7cf500a04de8c7e7c6f73620010717e53bcd1bc6d3be14ffd7a31"
+    },
+    {
+      "file": "app/components/TimePolicyPanel.tsx",
+      "bytes": 18985,
+      "lines": 52,
+      "sha256": "ee06417950fcb1cbbd60ec215c917e3cc585729f36dbcba3b275042859e715a0"
+    },
+    {
+      "file": "tests/time-policy.test.ts",
+      "bytes": 20238,
+      "lines": 111,
+      "sha256": "0faa9287d628005b58203e7d1e25f95b7160a4502bc8d9bd3e1182962cf25265"
+    }
+  ],
+  "skills": [],
+  "toolEvents": [],
+  "finalAssistantText": "",
+  "report": null,
+  "reportValid": false,
+  "waitReturned": false,
+  "turnCompleted": false,
+  "completed": false,
+  "errors": [
+    "unallowed_tool_call",
+    "wait_not_returned",
+    "turn_not_completed",
+    "missing_final_assistant_text"
+  ]
+}

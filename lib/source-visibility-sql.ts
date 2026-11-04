@@ -1,0 +1,3 @@
+/** Immutable append ordered by SQLite insertion identity, not a wall clock or
+ * random UUID. Two concurrent requests with one prior ID cannot both append. */
+export const SOURCE_VISIBILITY_INSERT = `INSERT INTO source_visibility_reports (id,quote_id,delivery_id,delivery_digest,assessment_id,payload,created_at) SELECT ?,?,?,?,?,?,? WHERE EXISTS (SELECT 1 FROM quotes WHERE id = ? AND version = ? AND (owner_id = ? OR seller_id = ?)) AND (SELECT count(*) FROM source_visibility_reports WHERE quote_id = ?) < ? AND COALESCE((SELECT id FROM source_visibility_reports WHERE quote_id = ? AND delivery_id = ? AND assessment_id = ? ORDER BY rowid DESC LIMIT 1),'') = ?`;

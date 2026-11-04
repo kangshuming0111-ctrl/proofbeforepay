@@ -27,7 +27,7 @@ export default {async fetch(request:Request,env:{DB?:D1Database;LAB_ALLOW_LOOPBA
     if(request.method!=="POST")return json({error:"POST required"},405);
     if(request.headers.get("origin")!==url.origin)return json({error:"Same-origin request required"},403);
     let input;try{input=await body(request);}catch{return json({error:"Send bounded JSON test consent"},400);}
-    if(!input||typeof input!=="object"||Array.isArray(input)||Object.keys(input).some(k=>!["profile","consent"].includes(k))||input.consent!==true||!["fixed","cancel-credit","move-loss"].includes(input.profile))return json({error:"Choose a controlled profile and explicitly consent to synthetic writes"},400);
+    if(!input||typeof input!=="object"||Array.isArray(input)||Object.keys(input).some(k=>!["profile","consent"].includes(k))||input.consent!==true||!["fixed","cancel-credit","move-loss","calendar-fixed","calendar-weekday-defect","calendar-holiday-defect"].includes(input.profile))return json({error:"Choose a controlled profile and explicitly consent to synthetic writes"},400);
     try{return json(await runTimePolicyLab(url.origin,input.profile));}catch{return json({error:"The controlled time-policy experiment could not complete; no request is automatically replayed."},503);}
   }
   if(url.pathname.startsWith("/seller-reference/")||url.pathname.startsWith("/seller-adapter/")){

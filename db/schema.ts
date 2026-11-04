@@ -74,3 +74,17 @@ export const timePolicySessions = sqliteTable("time_policy_sessions", {
   deliveryDigest:text("delivery_digest").notNull(),payload:text("payload").notNull(),version:integer("version").notNull(),
   createdAt:text("created_at").notNull(),updatedAt:text("updated_at").notNull(),
 },table=>[index("time_policy_quote_idx").on(table.quoteId,table.createdAt)]);
+
+/** Participant-reported static citation observations never alter acceptance. */
+export const sourceVisibilityReports = sqliteTable("source_visibility_reports", {
+ id:text("id").primaryKey(),quoteId:text("quote_id").notNull(),deliveryId:text("delivery_id").notNull(),
+ deliveryDigest:text("delivery_digest").notNull(),assessmentId:text("assessment_id").notNull(),
+ payload:text("payload").notNull(),createdAt:text("created_at").notNull(),
+},table=>[index("source_visibility_quote_idx").on(table.quoteId,table.createdAt)]);
+
+/** Platform GET byte comparisons, separate from acceptance and payment. */
+export const deploymentSourceSessions=sqliteTable("deployment_source_sessions",{
+ id:text("id").primaryKey(),quoteId:text("quote_id").notNull(),deliveryId:text("delivery_id").notNull(),
+ deliveryDigest:text("delivery_digest").notNull(),startedBy:text("started_by").notNull(),payload:text("payload").notNull(),
+ version:integer("version").notNull(),createdAt:text("created_at").notNull(),updatedAt:text("updated_at").notNull(),
+},table=>[index("deployment_source_quote_idx").on(table.quoteId,table.createdAt)]);

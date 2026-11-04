@@ -29,6 +29,9 @@ export async function buildGuestLab(output=path.join(ROOT,"outputs","guest-lab")
     await copyFile(path.join(ROOT,"public","sdk","seller-dom-adapter.mjs"),path.join(destination,"seller-dom-adapter.mjs"));
     await writeFile(path.join(destination,"config.mjs"),`import {allowLoopbackParent} from "./runtime-config.mjs";\nexport const config=Object.freeze({allowedParentOrigins:["https://briefpay-kang-lab.blueheron8.chatgpt.site"],allowLoopbackParent,backendBasePath:"/seller-reference/${profile}/pbp/",frontendRevision:"seller-dom-${profile}-v1"});\n`,{flag:"wx"});
   }
+  // Finite public source-matching fixture; preserve the exact uploaded bytes.
+  const sourceDemo=path.join(output,"deployment-source-demo");await mkdir(sourceDemo,{recursive:true});
+  for(const name of ["index.html","style.css"])await copyFile(path.join(ROOT,"public","deployment-source-demo",name),path.join(sourceDemo,name));
   const files=[];async function walk(folder){for(const entry of await readdir(folder,{withFileTypes:true})){const f=path.join(folder,entry.name);if(entry.isSymbolicLink())throw new Error("Guest output cannot contain symlinks.");if(entry.isDirectory())await walk(f);else if(entry.isFile()){const bytes=await readFile(f);files.push({file:path.relative(output,f).split(path.sep).join("/"),bytes:bytes.length,sha256:createHash("sha256").update(bytes).digest("hex")});}}}
   await walk(output);await writeFile(path.join(output,"guest-build.json"),JSON.stringify({schema:"guest-lab-build-v1",scope:"Isolated static guest frontend only; no main application identity, projects, D1 or provider secrets. Optional same-origin controlled HTTP lab must be supplied separately.",files},null,2)+"\n",{flag:"wx"});
   return {output,entry:path.join(output,"index.html"),files:files.length+1,method:"static-guest-frontend-v1"};

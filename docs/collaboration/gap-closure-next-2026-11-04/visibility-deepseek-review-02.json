@@ -1,0 +1,87 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/source-visibility.ts",
+      "bytes": 15421,
+      "lines": 138,
+      "sha256": "af264008c73bcc81be361e8578a75feb77e073f8dbb12df79ff4abd87f4f59aa"
+    },
+    {
+      "file": "lib/source-visibility-probe.ts",
+      "bytes": 5616,
+      "lines": 72,
+      "sha256": "b8ea663ccd622c209190af9d4ad64f848fb0ac831946fffe1f386efbfdfc1d30"
+    },
+    {
+      "file": "lib/source-visibility-store.ts",
+      "bytes": 3304,
+      "lines": 28,
+      "sha256": "473e40c67188de304b791e1eb37cb5672c1d9126695835e624841c015f47bf07"
+    },
+    {
+      "file": "lib/source-visibility-sql.ts",
+      "bytes": 667,
+      "lines": 3,
+      "sha256": "f14132669fd0c0d73a97d39bbbe114eb9c36ae03ee25a70c354b81b5d13fb546"
+    },
+    {
+      "file": "tests/source-visibility.test.ts",
+      "bytes": 9850,
+      "lines": 80,
+      "sha256": "d70d2f5efdc311f28ed2fbcc3b718d0ae6415a00c4630cb01e410538d99eed90"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Read-only, source-only re-review of the supplied packet, with no tools other than skill and no files read or executed. I agree with the corrections the request makes. The node.start>=citation.start and node.end<=citation.end containment test is the right direction. The native-SQLite test uses a real SQLite file, two threads and the real migration, and it correctly admits one of two competing, previously-current inserts. Its ORDER BY rowid makes the CAS based on the latest report real. Below is one concrete remaining defect: historical reports are not fully re-validated against the source, so an inexact or unsupported citation can be resubmitted and saved as a 'visible' report for text that does not really exist. The other boundaries I checked hold: partial citation is unavailable, CSS/script/inert/multi-node/repeated text stays unsupported, and client reports are never treated as acceptance or attestation.\",\"findings\":[{\"severity\":\"P3\",\"file\":\"lib/source-visibility.ts\",\"line\":128,\"title\":\"Stored validation does not check a target against the source itself, so an inexact old plan can be resubmitted and saved as an observed report\",\"evidence\":\"saveSourceVisibility re-runs sourceVisibilityPlan(quote) and validates the fresh plan's readings (createSourceVisibilityReport, lines 109-115). But previousReportId is checked only as a string (line 111), and SOURCE_VISIBILITY_INSERT's CAS compares only id, delivery_id and assessment_id (source-visibility-sql.ts line 3). The stored relay checks only the latest report is the immediate predecessor. It never requires reports[0] to be non-stale. validateStoredVisibilityReport (lines 125-136) checks that a target's sourceStart/sourceEnd fall inside the citation and that the excerpt slice at those offsets parses to exactly one matching text node (lines 130-132). It does not check that the citation's start/end/excerpt matches any current source. So a plan written under an older, looser containment rule stays replayable. Under that rule, a citation with loose bounds and a target node inside it passed. It still passes line 130 because sourceStart/sourceEnd sit inside the loose citation, and it still passes line 132 because the excerpt slice at that offset decodes to t.value.\",\"reproduction\":\"This is a reasoning trace, not an execution. 1. The assessment cites start=0..N for <p>New hours <b>11-20</b></p>, with excerpt equal to that slice, and a stored plan target {value:'11-20', path,tags [p,b], sourceStart,sourceEnd on '11-20'}. 2. file source:index.html, start:S, end:E, excerpt:'New hours <b>11-20</b>' passes line 71. parse5 reports <b>'s text node start>0 and ends before E, so line 82 stays conservative and this citation goes to partial_or_multiple_nodes. 3. The persisted payload from the old plan still passes every check in validateStoredVisibilityReport, including lines 130-132. 4. The user submits a new observation with previousReportId=<that id> and four identical entries {citationId:c.id, viewportWidth:375, state:'visible'} in the shape of test line 41. validateVisibilityReadings (line 102) sees citation.target from the persisted plan and accepts. Line 111 accepts the string. The INSERT matches the predecessor and returns changes=1. 5. Result: a saved report says 'visible' for a citation that the current plan marks unavailable. The report is separately flagged stale (store line 20; stamps differ) but is still retained and shown as an observation.\",\"suggestion\":\"Make observation history replay-safe: when previousReportId is set, require the stored predecessor report to match the plan found now. That means !stale, or identical deliveryDigest, assessmentId and citations with targets, comparing against sourceVisibilityPlan(record.quote). Otherwise throw a 409 asking for a fresh observation. Optionally, also make the INSERT's predecessor check key on the current delivery/assessment only: add AND (SELECT count(*) FROM source_visibility_reports WHERE quote_id=? AND (delivery_id<>? OR assessment_id<>?))=0, or encode the stale rule in TypeScript.\"}],\"limitations\":[\"Source-only static review: no files were read, nothing was executed, and the supplied tests were not run. The native-SQLite concurrency outcome is inferred from the test's own assertions (executor map over two threads against one file, rowcount checks), not observed.\",\"The packet covers source-visibility.ts, source-visibility-probe.ts, source-visibility-store.ts, source-visibility-sql.ts, tests/source-visibility.test.ts and the skill. It does not include the caller of validateStoredVisibilityReport for historical rows, the drizzle/0009 migration's constraints, or the API route that enforces record.version drift failure. The severity therefore assumes no separate version-drift check between a client fetching the plan and saving.\",\"Legacy-plan premises are unverified: I assume the older loose containment rule allowed the target node to lie strictly inside a spanning citation. If historical plans were re-validated or migrated on load, the suggested check would find the problem already handled.\",\"Not tested: multi-width snapshot failures, style-verification counts, and worker snapshot behavior (saved-page-observation.ts) are outside the packet. They were not assessed beyond reading the probe code.\",\"Accessibility of any UI that renders these reports was not reviewed, because no UI source was supplied. This review does not cover acceptance, payment or attestation behavior; by inspection the report carries no acceptance or payment fields (tests lines 48-52) and the view's scope declares acceptance:false, payment:false and deploymentAttestation:false (store line 20).\"]}",
+  "report": {
+    "summary": "Read-only, source-only re-review of the supplied packet, with no tools other than skill and no files read or executed. I agree with the corrections the request makes. The node.start>=citation.start and node.end<=citation.end containment test is the right direction. The native-SQLite test uses a real SQLite file, two threads and the real migration, and it correctly admits one of two competing, previously-current inserts. Its ORDER BY rowid makes the CAS based on the latest report real. Below is one concrete remaining defect: historical reports are not fully re-validated against the source, so an inexact or unsupported citation can be resubmitted and saved as a 'visible' report for text that does not really exist. The other boundaries I checked hold: partial citation is unavailable, CSS/script/inert/multi-node/repeated text stays unsupported, and client reports are never treated as acceptance or attestation.",
+    "findings": [
+      {
+        "severity": "P3",
+        "file": "lib/source-visibility.ts",
+        "line": 128,
+        "title": "Stored validation does not check a target against the source itself, so an inexact old plan can be resubmitted and saved as an observed report",
+        "evidence": "saveSourceVisibility re-runs sourceVisibilityPlan(quote) and validates the fresh plan's readings (createSourceVisibilityReport, lines 109-115). But previousReportId is checked only as a string (line 111), and SOURCE_VISIBILITY_INSERT's CAS compares only id, delivery_id and assessment_id (source-visibility-sql.ts line 3). The stored relay checks only the latest report is the immediate predecessor. It never requires reports[0] to be non-stale. validateStoredVisibilityReport (lines 125-136) checks that a target's sourceStart/sourceEnd fall inside the citation and that the excerpt slice at those offsets parses to exactly one matching text node (lines 130-132). It does not check that the citation's start/end/excerpt matches any current source. So a plan written under an older, looser containment rule stays replayable. Under that rule, a citation with loose bounds and a target node inside it passed. It still passes line 130 because sourceStart/sourceEnd sit inside the loose citation, and it still passes line 132 because the excerpt slice at that offset decodes to t.value.",
+        "reproduction": "This is a reasoning trace, not an execution. 1. The assessment cites start=0..N for <p>New hours <b>11-20</b></p>, with excerpt equal to that slice, and a stored plan target {value:'11-20', path,tags [p,b], sourceStart,sourceEnd on '11-20'}. 2. file source:index.html, start:S, end:E, excerpt:'New hours <b>11-20</b>' passes line 71. parse5 reports <b>'s text node start>0 and ends before E, so line 82 stays conservative and this citation goes to partial_or_multiple_nodes. 3. The persisted payload from the old plan still passes every check in validateStoredVisibilityReport, including lines 130-132. 4. The user submits a new observation with previousReportId=<that id> and four identical entries {citationId:c.id, viewportWidth:375, state:'visible'} in the shape of test line 41. validateVisibilityReadings (line 102) sees citation.target from the persisted plan and accepts. Line 111 accepts the string. The INSERT matches the predecessor and returns changes=1. 5. Result: a saved report says 'visible' for a citation that the current plan marks unavailable. The report is separately flagged stale (store line 20; stamps differ) but is still retained and shown as an observation.",
+        "suggestion": "Make observation history replay-safe: when previousReportId is set, require the stored predecessor report to match the plan found now. That means !stale, or identical deliveryDigest, assessmentId and citations with targets, comparing against sourceVisibilityPlan(record.quote). Otherwise throw a 409 asking for a fresh observation. Optionally, also make the INSERT's predecessor check key on the current delivery/assessment only: add AND (SELECT count(*) FROM source_visibility_reports WHERE quote_id=? AND (delivery_id<>? OR assessment_id<>?))=0, or encode the stale rule in TypeScript."
+      }
+    ],
+    "limitations": [
+      "Source-only static review: no files were read, nothing was executed, and the supplied tests were not run. The native-SQLite concurrency outcome is inferred from the test's own assertions (executor map over two threads against one file, rowcount checks), not observed.",
+      "The packet covers source-visibility.ts, source-visibility-probe.ts, source-visibility-store.ts, source-visibility-sql.ts, tests/source-visibility.test.ts and the skill. It does not include the caller of validateStoredVisibilityReport for historical rows, the drizzle/0009 migration's constraints, or the API route that enforces record.version drift failure. The severity therefore assumes no separate version-drift check between a client fetching the plan and saving.",
+      "Legacy-plan premises are unverified: I assume the older loose containment rule allowed the target node to lie strictly inside a spanning citation. If historical plans were re-validated or migrated on load, the suggested check would find the problem already handled.",
+      "Not tested: multi-width snapshot failures, style-verification counts, and worker snapshot behavior (saved-page-observation.ts) are outside the packet. They were not assessed beyond reading the probe code.",
+      "Accessibility of any UI that renders these reports was not reviewed, because no UI source was supplied. This review does not cover acceptance, payment or attestation behavior; by inspection the report carries no acceptance or payment fields (tests lines 48-52) and the view's scope declares acceptance:false, payment:false and deploymentAttestation:false (store line 20)."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

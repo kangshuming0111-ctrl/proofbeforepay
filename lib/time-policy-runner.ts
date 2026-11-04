@@ -1,6 +1,6 @@
 import {DomainError} from "./domain.ts";
 import {validateJourneyRegistration,type JourneyRegistrationSnapshot} from "./project-journey.ts";
-import {TIME_POLICY_PROTOCOL,evaluateTimeTrace,validateTimePolicy,validateTimeSession,type TimePolicySession,type TimeTrace,type TimeCaseResult} from "./time-policy.ts";
+import {timePolicyBudget,timePolicyProtocol,timePolicyRecordMatches,evaluateTimeTrace,validateTimePolicy,validateTimeSession,type TimePolicySession,type TimeTrace,type TimeCaseResult} from "./time-policy.ts";
 type Fetcher=(url:string,init:RequestInit)=>Promise<Response>;
 class Unknown extends Error{}
 function plain(x:unknown):x is Record<string,unknown>{return !!x&&typeof x==="object"&&!Array.isArray(x)&&Object.getPrototypeOf(x)===Object.prototype;}
@@ -13,9 +13,9 @@ async function limited(response:Response,signal:AbortSignal){
  * a caller URL, retries a write, drives a browser or changes acceptance/payment. */
 export async function executeTimePolicy(sessionValue:TimePolicySession,registrationValue:JourneyRegistrationSnapshot,options:{fetch?:Fetcher;guard:()=>Promise<void>;onTrace:(trace:TimeTrace[])=>Promise<void>;timeoutMs?:number}):Promise<{trace:TimeTrace[];results:TimeCaseResult[];reason?:string}>{
  const session=validateTimeSession(sessionValue),registration=validateJourneyRegistration(registrationValue);if(registration.projectId!==session.projectId||registration.frontendBundleDigest!==session.deliveryDigest||registration.id!==session.targetId||JSON.stringify(registration)!==JSON.stringify(session.registration))throw new DomainError("Time test target does not match the exact delivery.",409);
- const trace:TimeTrace[]=[],results:TimeCaseResult[]=[],deadline=Date.now()+45000,base=new URL("time-policy/",registration.backendBaseUrl);
+ const budget=timePolicyBudget(session.plan.policy),trace:TimeTrace[]=[],results:TimeCaseResult[]=[],deadline=Date.now()+45000,base=new URL("time-policy/",registration.backendBaseUrl);
  async function request(method:"GET"|"POST",path:string,input?:Record<string,unknown>){
-  if(trace.length>=40||Date.now()>=deadline)throw new Unknown("request_budget_exhausted");await options.guard();if(Date.parse(registration.expiresAt)<=Date.now()||session.expiresAt&&Date.parse(session.expiresAt)<=Date.now())throw new Unknown("approval_or_run_expired");
+  if(trace.length>=budget.maxRequests||method==="POST"&&trace.filter(t=>t.method==="POST").length>=budget.maxPosts||Date.now()>=deadline)throw new Unknown("request_budget_exhausted");await options.guard();if(Date.parse(registration.expiresAt)<=Date.now()||session.expiresAt&&Date.parse(session.expiresAt)<=Date.now())throw new Unknown("approval_or_run_expired");
   const url=new URL(path,base);if(url.origin!==base.origin||!url.href.startsWith(base.href)||url.search||url.hash)throw new Unknown("target_mismatch");const index=trace.length;trace.push({index,method,path:url.pathname,...(input?{request:structuredClone(input)}:{}),state:"pending"});await options.onTrace(structuredClone(trace));
   const controller=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined;
   try{const work=(async()=>{const response=await(options.fetch??fetch)(url.href,{method,headers:{Accept:"application/json",...(method==="POST"?{"Content-Type":"application/json"}:{})},credentials:"omit",redirect:"manual",cache:"no-store",signal:controller.signal,...(input?{body:JSON.stringify(input)}:{})});if(response.status>=300&&response.status<400||response.redirected||response.type==="opaqueredirect"||response.url&&response.url!==url.href){void response.body?.cancel();throw new Unknown("redirect_blocked");}return{status:response.status,body:await limited(response,controller.signal)};})();
@@ -24,9 +24,9 @@ export async function executeTimePolicy(sessionValue:TimePolicySession,registrat
   finally{if(timer)clearTimeout(timer);controller.abort();}
  }
  const envelope=(caseId:string,localStart:string,now:string)=>({testRunId:session.id,caseId,marker:`PBP-${session.id}`,customer:"PBP synthetic",email:"pbp-test@example.invalid",localStart,now});
- const bodyRecord=(value:unknown,caseId:string,localStart:string,status:string,id?:string)=>plain(value)&&value.testRunId===session.id&&value.caseId===caseId&&value.marker===`PBP-${session.id}`&&value.localStart===localStart&&value.status===status&&typeof value.id==="string"&&/^[a-f0-9-]{36}$/u.test(value.id)&&(id===undefined||value.id===id);
+ const bodyRecord=(value:unknown,caseId:string,localStart:string,status:"active"|"cancelled",id?:string)=>timePolicyRecordMatches(value,session,caseId,localStart,status,id);
  try{
-  const metadata=await request("GET","meta");let matched=false;try{matched=metadata.status===200&&plain(metadata.body)&&metadata.body.protocol===TIME_POLICY_PROTOCOL&&metadata.body.syntheticOnly===true&&metadata.body.testClock===true&&metadata.body.deploymentRevision===registration.deploymentRevision&&JSON.stringify(validateTimePolicy(metadata.body.policy))===JSON.stringify(session.plan.policy);}catch{/* Unsupported protocol: stop before any write. */}
+  const metadata=await request("GET","meta");let matched=false;try{matched=metadata.status===200&&plain(metadata.body)&&metadata.body.protocol===timePolicyProtocol(session.plan.policy)&&metadata.body.syntheticOnly===true&&metadata.body.testClock===true&&metadata.body.deploymentRevision===registration.deploymentRevision&&JSON.stringify(validateTimePolicy(metadata.body.policy))===JSON.stringify(session.plan.policy);}catch{/* Unsupported protocol: stop before any write. */}
   if(!matched)return{trace,...evaluateTimeTrace(session,registration,trace)};
   for(const item of session.cases){
    if(item.operation==="create"){

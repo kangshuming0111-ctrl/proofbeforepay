@@ -1,0 +1,195 @@
+{
+  "sourceCommit": "b07a73b03425682bcaf4069fa2661a7a859a93ce",
+  "plan": {
+    "policy": {
+      "timezone": "Australia/Melbourne",
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "opens": "11:00",
+      "closes": "20:00",
+      "leadMinutes": 120,
+      "cancelMinutes": 1440
+    },
+    "testDate": "2027-01-15",
+    "gapLocal": "2027-10-03T02:30",
+    "foldLocal": "2027-04-04T02:30",
+    "sourceNote": "Additional test agreement: Melbourne local opening 11:00–20:00 daily, at least120minutes notice; cancellation at least1440minutes before start. Reject nonexistent and ambiguous local times.",
+    "provenance": "buyer-confirmed-supplemental-agreement"
+  },
+  "cases": [
+    {
+      "id": "open_before",
+      "label": "Opening minus1minute",
+      "operation": "create",
+      "localStart": "2027-01-15T10:59",
+      "now": "2027-01-14T20:59:00.000Z",
+      "expected": {
+        "allowed": false,
+        "code": "closed",
+        "utcCandidates": [
+          "2027-01-14T23:59:00.000Z"
+        ]
+      }
+    },
+    {
+      "id": "open_exact",
+      "label": "At opening",
+      "operation": "create",
+      "localStart": "2027-01-15T11:00",
+      "now": "2027-01-14T21:00:00.000Z",
+      "expected": {
+        "allowed": true,
+        "code": "allowed",
+        "utcCandidates": [
+          "2027-01-15T00:00:00.000Z"
+        ]
+      }
+    },
+    {
+      "id": "close_before",
+      "label": "Closing minus1minute",
+      "operation": "create",
+      "localStart": "2027-01-15T19:59",
+      "now": "2027-01-15T05:59:00.000Z",
+      "expected": {
+        "allowed": true,
+        "code": "allowed",
+        "utcCandidates": [
+          "2027-01-15T08:59:00.000Z"
+        ]
+      }
+    },
+    {
+      "id": "close_exact",
+      "label": "At closing",
+      "operation": "create",
+      "localStart": "2027-01-15T20:00",
+      "now": "2027-01-15T06:00:00.000Z",
+      "expected": {
+        "allowed": false,
+        "code": "closed",
+        "utcCandidates": [
+          "2027-01-15T09:00:00.000Z"
+        ]
+      }
+    },
+    {
+      "id": "lead_below",
+      "label": "Lead notice 119minutes",
+      "operation": "create",
+      "localStart": "2027-01-15T15:30",
+      "now": "2027-01-15T02:31:00.000Z",
+      "expected": {
+        "allowed": false,
+        "code": "lead_time",
+        "utcCandidates": [
+          "2027-01-15T04:30:00.000Z"
+        ]
+      }
+    },
+    {
+      "id": "lead_exact",
+      "label": "Lead notice 120minutes",
+      "operation": "create",
+      "localStart": "2027-01-15T15:30",
+      "now": "2027-01-15T02:30:00.000Z",
+      "expected": {
+        "allowed": true,
+        "code": "allowed",
+        "utcCandidates": [
+          "2027-01-15T04:30:00.000Z"
+        ]
+      }
+    },
+    {
+      "id": "lead_above",
+      "label": "Lead notice 121minutes",
+      "operation": "create",
+      "localStart": "2027-01-15T15:30",
+      "now": "2027-01-15T02:29:00.000Z",
+      "expected": {
+        "allowed": true,
+        "code": "allowed",
+        "utcCandidates": [
+          "2027-01-15T04:30:00.000Z"
+        ]
+      }
+    },
+    {
+      "id": "cancel_below",
+      "label": "Cancellation notice 1439minutes",
+      "operation": "cancel",
+      "localStart": "2027-01-15T15:30",
+      "now": "2027-01-14T04:31:00.000Z",
+      "expected": {
+        "allowed": false,
+        "code": "cancellation_deadline",
+        "utcCandidates": [
+          "2027-01-15T04:30:00.000Z"
+        ]
+      }
+    },
+    {
+      "id": "cancel_exact",
+      "label": "Cancellation notice 1440minutes",
+      "operation": "cancel",
+      "localStart": "2027-01-15T15:30",
+      "now": "2027-01-14T04:30:00.000Z",
+      "expected": {
+        "allowed": true,
+        "code": "allowed",
+        "utcCandidates": [
+          "2027-01-15T04:30:00.000Z"
+        ]
+      }
+    },
+    {
+      "id": "cancel_above",
+      "label": "Cancellation notice 1441minutes",
+      "operation": "cancel",
+      "localStart": "2027-01-15T15:30",
+      "now": "2027-01-14T04:29:00.000Z",
+      "expected": {
+        "allowed": true,
+        "code": "allowed",
+        "utcCandidates": [
+          "2027-01-15T04:30:00.000Z"
+        ]
+      }
+    },
+    {
+      "id": "dst_gap",
+      "label": "Nonexistent civil minute",
+      "operation": "create",
+      "localStart": "2027-10-03T02:30",
+      "now": "2027-01-14T21:00:00.000Z",
+      "expected": {
+        "allowed": false,
+        "code": "nonexistent_local_time",
+        "utcCandidates": []
+      }
+    },
+    {
+      "id": "dst_fold",
+      "label": "Ambiguous civil minute",
+      "operation": "create",
+      "localStart": "2027-04-04T02:30",
+      "now": "2027-04-03T12:30:00.000Z",
+      "expected": {
+        "allowed": false,
+        "code": "ambiguous_local_time",
+        "utcCandidates": [
+          "2027-04-03T15:30:00.000Z",
+          "2027-04-03T16:30:00.000Z"
+        ]
+      }
+    }
+  ]
+}

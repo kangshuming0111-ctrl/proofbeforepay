@@ -57,6 +57,20 @@
       "when": 1793752000000,
       "tag": "0008_time_policy_sessions",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1793793600000,
+      "tag": "0009_source_visibility_reports",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1793797201000,
+      "tag": "0010_deployment_source_sessions",
+      "breakpoints": true
     }
   ]
 }

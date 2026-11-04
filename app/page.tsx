@@ -28,6 +28,7 @@ import { CollaborationPanel, type CollaborationHistoryHandle, type FeedbackSugge
 import { VersionViewer } from "./components/VersionViewer";
 import { RequirementsIntake } from "./components/RequirementsIntake";
 import { DeliveryAssessment } from "./components/DeliveryAssessment";
+import {SourceVisibilityPanel} from "./components/SourceVisibilityPanel";
 import type { RiskReviewInput } from "@/lib/risk-reviews";
 import { readDeliveryUpload, deliveryFileUrl, isHtmlDeliveryPath } from "@/lib/delivery-upload";
 import { ResourceChecks } from "./components/ResourceChecks";
@@ -1515,6 +1516,7 @@ export default function Home() {
                 {proof?.criteria.map((criterion, index) => <button key={criterion.id} aria-pressed={criterionIndex === index} className={criterionIndex === index ? "active" : ""} onClick={() => setCriterionIndex(index)}><span>0{index + 1}</span><strong>{criterionDisplayTitle(criterion, language)}</strong><small>{findingLabel(findingFor(criterion))}</small></button>)}
               </nav>}
               {delivery && proof && <DeliveryAssessment report={delivery.assessment?.deliveryId === delivery.id ? delivery.assessment : undefined} riskReviews={delivery.riskReviews} actorRole={displayRole} onSaveRiskReview={saveRiskReview} criteria={proof.criteria} language={language} selectedCriterionId={proof.criteria[criterionIndex]?.id} configured={config?.aiMode === "live"} enabled={!!canCheckDelivery && reviewCurrent && !!delivery.files && !busy} busy={busy === "assess"} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked && !busy ? prepareFeedback : undefined} onRun={() => mutate("assess", {deliveryId: delivery.id, confirm: true}, tr("已保存当前版本的 AI 评估。建议与规则证据独立，最终仍由买家验收。", "AI assessment saved for this version. Advice remains separate from rule evidence; the buyer decides acceptance."))} />}
+              {quote && delivery?.assessment && <SourceVisibilityPanel quote={quote} role={role} language={language} enabled={!busy} request={request}/>}
               {delivery && <div className="criteria-evidence-list">
                 {proof?.criteria.map((criterion, index) => {
                   const finding = findingFor(criterion);

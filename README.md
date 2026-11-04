@@ -382,9 +382,10 @@ table. A returned or declined manifest is corrected through a new linked request
 the original bytes and decision remain retained.
 
 Set `PBP_OPERATOR_IDS` in the server runtime to a comma-separated list of the
-existing operator account IDs. A configured operator must additionally be the
-project's actual buyer/owner to review that project's application. The browser
-role switch and manifest never confer this authority. The default unconfigured
+existing operator account IDs. A configured operator can review their own buyer project,
+or a buyer can explicitly delegate one exact application to an independent configured
+reviewer through the separate /operator queue. The browser role switch and manifest
+never confer this authority. The default unconfigured
 state grants no review permission. Do not put account IDs or runtime configuration
 in public source examples.
 
@@ -398,7 +399,7 @@ or approving does not run tests, accept work or pay. Apply migration
 
 ## Five functional revision cycles — 4 November 2026
 
-The seller can submit a persisted integration manifest for the exact uploaded delivery, receive a reasoned operator decision, and submit a linked revision. Only a configured operator who is also the project buyer can approve or revoke a scoped synthetic target. This is a declaration of test scope, not deployed-source attestation. Contract assistance remains optional.
+The seller can submit a persisted integration manifest for the exact uploaded delivery, receive a reasoned operator decision, and submit a linked revision. The configured buyer/operator pilot remains supported; a buyer may also explicitly share one application with an independent configured reviewer, who has no source, contract, acceptance or payment access. This is a declaration of test scope, not deployed-source attestation. Contract assistance remains optional.
 
 An operator-recorded browser witness is now reconciled with metadata, receipts, merchant records and occupancy. The developer-operated no-save counterexample displayed success while independent SQLite contained no booking; the saved result records that contradiction. This is a manual browser observation with server reconciliation, not autonomous execution of arbitrary seller frontends.
 
@@ -411,3 +412,7 @@ For repeated original-model checks, an immutable D1 vault retains older reports 
 The new eight archive unit tests, independent fresh-D1/restart/CAS/replacement harness, and final combined 880-test suite passed. The archive API harness used controlled metadata 503 responses with zero target writes or provider calls; its persistence results are separate from the real model evaluation and native concurrency executions. Read `docs/collaboration/five-new-cycles-2026-11-04/` for each cycle's independent review and limits. On the macOS development environment, `node tests/run-model-archive-local.mjs` reproduces the isolated D1 archive workflow; the ordinary account-free local demo remains `node scripts/judge-demo.mjs`. Production publication and public-source commit are recorded separately from a local test pass.
 
 A recorded server-direct HTTPS transfer experiment and a separate operator-native D1 table read are retained in `tests/fixtures/recorded-transfer-competition/`. That run used 24 requests and five synthetic writes; the target contained eight guests, the rejected reservation remained in its original slot, and the unrelated reservation was unchanged. Its one-hour staging TTL and unsigned/non-customer scope are documented alongside the records.
+
+## Four additional functional cycles — source, deployment and calendar evidence
+
+See [the implementation and verification record](docs/GAP-CLOSURE-NEXT-2026-11-04.md). The existing-form guide now prepares a strict configuration, local HTML preflight and downloadable unverified connection templates; it neither supplies a seller backend nor proves runtime completion. Source-citation layout observations at375/1280px are separately saved against the exact current assessment and delivery, with hidden/visible/ambiguous/unavailable results and no mutation of the original model answer or acceptance. Platform HTTP byte comparisons independently read only uploaded-file paths under an already approved staging entry; mismatched bytes and unreadable responses are distinct, and neither proves backend build provenance or protection from selective serving. Time-policy v2 adds explicitly confirmed overnight opening and closed local dates with its own50HTTP/24POST ceiling; v1 saved policies and their twelve-case meanings remain unchanged. No external seller or novice-user study is claimed.
