@@ -1,0 +1,80 @@
+{
+  "kind": "real-strict-beta-response-shape-observation",
+  "scope": "Response shape only; not a new project, not a semantic approval.",
+  "requestedStrict": true,
+  "finishReason": "tool_calls",
+  "transport": "strict_tool",
+  "riskObjects": [
+    {
+      "title": "Template brand 'Start Bootstrap' remains in delivered page copy",
+      "explanation": "The navbar brand renders 'Start Bootstrap' on all four pages, and the homepage subheading and post bylines repeat the brand, contrary to the requirement that page copy not advertise the template brand.",
+      "suggestion": "Replace the brand text and byline copy with the site owner's name across all four pages, then re-check every page for remaining mentions.",
+      "citations": [
+        {
+          "file": "about.html",
+          "excerpt": "<a class=\"navbar-brand\" href=\"index.html\">Start Bootstrap</a>"
+        },
+        {
+          "file": "index.html",
+          "excerpt": "<span class=\"subheading\">A Blog Theme by Start Bootstrap</span>"
+        },
+        {
+          "file": "post.html",
+          "excerpt": "Posted by\n                                <a href=\"#!\">Start Bootstrap</a>"
+        }
+      ]
+    },
+    {
+      "title": "All four HTML title elements contain identical text",
+      "explanation": "index.html, about.html, contact.html and post.html each declare the same title string, so the four titles are not distinct as required.",
+      "suggestionsNote": null,
+      "suggestion": "Give each page a distinct title reflecting its content.",
+      "citations": [
+        {
+          "file": "post.html",
+          "excerpt": "<title>Clean Blog - Start Bootstrap Theme</title>"
+        },
+        {
+          "file": "about.html",
+          "excerpt": "<title>Clean Blog - Start Bootstrap Theme</title>"
+        },
+        {
+          "file": "contact.html",
+          "excerpt": "<title>Clean Blog - Start Bootstrap Theme</title>"
+        }
+      ]
+    },
+    {
+      "title": "Contact page copy lacks 30-day retention and deletion-on-request statement",
+      "explanation": "The contact page main copy only invites visitors to fill in the form; it contains no wording about a 30-day retention period or deletion on request.",
+      "suggestion": "Add static privacy copy stating the 30-day retention period and that data is deleted on request, then re-read the whole contact page.",
+      "citations": [
+        {
+          "file": "contact.html",
+          "excerpt": "<p>Want to get in touch? Fill out the form below to send me a message and I will get back to you as soon as possible!</p>"
+        },
+        {
+          "file": "contact.html",
+          "excerpt": "<div class=\"fw-bolder\">Form submission successful!</div>"
+        }
+      ]
+    },
+    {
+      "title": "Contact form submit button markup carries the disabled class",
+      "explanation": "The send button is declared with a 'disabled' class, and the form uses a placeholder data-sb-form-api-token value; whether sending works cannot be determined from source alone.",
+      "suggestion": "Verify in a browser whether the button becomes enabled and whether submissions reach the owner; treat persistence needs as untested.",
+      "citations": [
+        {
+          "file": "contact.html",
+          "excerpt": "<button class=\"btn btn-primary text-uppercase disabled\" id=\"submitButton\" type=\"submit\">Send</button>"
+        },
+        {
+          "file": "contact.html",
+          "excerpt": "<form id=\"contactForm\" data-sb-form-api-token=\"API_TOKEN\">"
+        }
+      ]
+    }
+  ],
+  "applicationFailure": "risk_fields",
+  "observation": "Required suggestion now present, but one extra suggestionsNote:null violates requested closed schema and is rejected locally. No raw data or failure was overwritten."
+}

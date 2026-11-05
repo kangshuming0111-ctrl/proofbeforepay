@@ -4,6 +4,8 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import type { ProofAssessment, ProofAssessmentCitation, ProofCriterion, ProofQuote } from "../lib/contracts.ts";
 import { assessDelivery } from "../lib/delivery-assessment.ts";
+import {assessmentCompletionText,assessmentReportJson} from "../lib/assessment-completion.ts";
+import {ASSESSMENT_ITEM_CITATION_LIMIT} from "../lib/assessment-limits.ts";
 import { createUploadedDelivery, parseStaticProject } from "../lib/static-project.ts";
 import { STATIC_RESOURCE_LIMITS } from "../lib/static-resources.ts";
 import { DEFAULT_DEEPSEEK_MODEL, type Fetcher, type ProviderEnv } from "../lib/providers.ts";
@@ -107,12 +109,17 @@ function rawResult(data: unknown, status: number, packet: Packet, criterionId: s
   const choice = root && Array.isArray(root.choices) ? object(root.choices[0]) : null;
   const message = object(choice?.message);
   let output: Record<string, unknown> | null = null;
-  if (typeof message?.content === "string" && message.content.length <= 30_000) { try { output = object(JSON.parse(message.content)); } catch { /* Invalid JSON is itself an evaluation result. */ } }
+  let content = typeof message?.content === "string" ? message.content : null;
+  if (choice?.finish_reason === "tool_calls" || message?.tool_calls !== undefined) {
+    content = null;
+    try {const decoded=assessmentCompletionText(data);content=decoded.transport==="strict_tool"?assessmentReportJson(decoded).canonicalText:decoded.text;} catch {/* Retain invalid strict envelopes as invalid evaluations. */}
+  }
+  if (content !== null && content.length <= 30_000) { try { output = object(JSON.parse(content)); } catch { /* Invalid JSON is itself an evaluation result. */ } }
   const items = output && Array.isArray(output.items) ? output.items.map(object) : [];
   const item = items.find(i => i?.criterionId === criterionId);
   const citations = Array.isArray(item?.citations) ? item.citations : null;
   const safeCitations: { file: string; excerpt: string }[] = [];
-  let valid = citations !== null && citations.length <= 3;
+  let valid = citations !== null && citations.length <= ASSESSMENT_ITEM_CITATION_LIMIT;
   for (const value of citations ?? []) {
     const c = object(value);
     if (!c || typeof c.file !== "string" || c.file.length > STATIC_RESOURCE_LIMITS.maxPathLength || typeof c.excerpt !== "string" || !c.excerpt || c.excerpt.length > 500) { valid = false; continue; }
@@ -180,7 +187,7 @@ export async function runEvaluation(input: unknown, options: EvaluationOptions =
     const began = performance.now();
     let networkAttempted = false;
     const wrapped: Fetcher = async (url, init) => {
-      if (String(url) !== "https://api.deepseek.com/chat/completions" || hash(String(init?.body ?? "")) !== plan.requestSha256 || networkAttempted) throw new Error("Unexpected evaluation request.");
+      if (String(url) !== "https://api.deepseek.com/beta/chat/completions" || hash(String(init?.body ?? "")) !== plan.requestSha256 || networkAttempted) throw new Error("Unexpected evaluation request.");
       networkAttempted = true; result.attempted = true; result.networkAttempted = true; calls++;
       const response = await (options.fetcher ?? fetch)(url, init);
       result.httpError = response.status < 200 || response.status >= 300;

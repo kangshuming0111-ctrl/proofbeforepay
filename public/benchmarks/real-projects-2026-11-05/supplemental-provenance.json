@@ -1,0 +1,80 @@
+{
+  "schema": "pbp-real-project-provenance-v1",
+  "verifiedOn": "2026-11-05",
+  "corpusSha256": "24497b578d152108569fe9766203bfa135f9ca6107ca7cd4f8865e5ffaf6aeaa",
+  "projectCount": 1,
+  "criterionCount": 8,
+  "newToPriorEvaluation": true,
+  "origins": [
+    {
+      "id": "real-personal-supplemental",
+      "repository": "https://github.com/StartBootstrap/startbootstrap-personal",
+      "commit": "6a1ebcc76a93ead054412fcbdf417d9c83dc762b",
+      "commitUrl": "https://github.com/StartBootstrap/startbootstrap-personal/commit/6a1ebcc76a93ead054412fcbdf417d9c83dc762b",
+      "license": "MIT",
+      "licensePreserved": "personal-LICENSE.txt",
+      "sourceKind": "Public template source, not a customer production delivery",
+      "selectionRoot": "dist",
+      "pathPolicy": "Remove common dist/ or template/ prefix only; file contents are byte-identical and nested relative paths remain unchanged",
+      "selectedFiles": [
+        {
+          "upstreamPath": "dist/index.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-personal/6a1ebcc76a93ead054412fcbdf417d9c83dc762b/dist/index.html",
+          "bytes": 27570,
+          "sha256": "59e92f696d9a3d54ff88a95b32b53591e9bbe66d49ad2952ac19ef7a5e85cf5b",
+          "deliveryPath": "index.html",
+          "byteIdentical": true
+        },
+        {
+          "upstreamPath": "dist/projects.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-personal/6a1ebcc76a93ead054412fcbdf417d9c83dc762b/dist/projects.html",
+          "bytes": 6395,
+          "sha256": "85b3261008f249b3341c619a49b9482991fc2d9876403ba3612e77bae387fa4a",
+          "deliveryPath": "projects.html",
+          "byteIdentical": true
+        },
+        {
+          "upstreamPath": "dist/resume.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-personal/6a1ebcc76a93ead054412fcbdf417d9c83dc762b/dist/resume.html",
+          "bytes": 15143,
+          "sha256": "3dd4e730b2762577757b762f70d75f51ab95d1d021af513308d28b3751bf2d53",
+          "deliveryPath": "resume.html",
+          "byteIdentical": true
+        },
+        {
+          "upstreamPath": "dist/contact.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-personal/6a1ebcc76a93ead054412fcbdf417d9c83dc762b/dist/contact.html",
+          "bytes": 9275,
+          "sha256": "5ce6c4cbd4f98ed0823db344251f0231cc5bf908609a1a82487ce7bd4de64f9d",
+          "deliveryPath": "contact.html",
+          "byteIdentical": true
+        },
+        {
+          "upstreamPath": "LICENSE",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-personal/6a1ebcc76a93ead054412fcbdf417d9c83dc762b/LICENSE",
+          "bytes": 1091,
+          "sha256": "e8b857747301fcd4c885b3216544b18bbf60328aec2c34da614787346cf40282",
+          "deliveryPath": null,
+          "byteIdentical": true
+        }
+      ],
+      "excludedDependencies": "All CSS, JavaScript, raster images, fonts, backend and remote services are outside the submitted HTML-only subset; source references remain intact",
+      "privacyReview": "Only public template demonstration business details, fictional sample names/amounts and public vendor contact links. No real customer data, credentials or authenticated URLs selected.",
+      "newRequirements": "Authored by Codex for this source evaluation; not original client requirements or project-author promises"
+    }
+  ],
+  "selectionLimit": "Convenience selection of one StartBootstrap HTML portfolio template. Different repository from modern-business but same publisher and conventions; not an independent customer deployment or representative production sample.",
+  "unmodifiedSource": true,
+  "providerCalls": 0,
+  "requestPlans": [
+    {
+      "id": "real-personal-supplemental",
+      "files": 4,
+      "requestUtf8Bytes": 82467,
+      "outputTokenLimit": 1980
+    }
+  ],
+  "licenseSources": [
+    "https://github.com/StartBootstrap/startbootstrap-personal/blob/6a1ebcc76a93ead054412fcbdf417d9c83dc762b/LICENSE"
+  ]
+}

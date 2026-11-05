@@ -1,4 +1,7 @@
 import type { Language, ProofCriterion } from "./contracts.ts";
+import {exactCopyLiteral} from "./exact-copy-directive.ts";
+import {isSourceLiteralDirectiveCandidate, sourceLiteralDirective} from "./source-literal-directive.ts";
+import {isStaticMarkupDirectiveCandidate, staticMarkupDirective, withoutWorkingTimeUnits} from "./static-markup-directive.ts";
 
 /** Source-only admission guard, not an entailment checker or execution result. */
 export type AssessmentEvidenceScope = {
@@ -8,7 +11,7 @@ export type AssessmentEvidenceScope = {
 
 // A literal-content allowance is deliberately narrower than the set of things
 // a model might infer from source. Unknown manual requirements stay unverified.
-const SOURCE_CONTENT = /营业(?:时间|时段)|营业日|开放时间|菜单|菜品|价格|价目|标价|地址|电话|联系方式|店名|商店名称|餐厅名称|公司名称|企业名称|文案|文字内容|文本内容|\b(?:(?:opening|business)[ -](?:hours|times?)|hours\s+of\s+operation|menu|dishes|prices?|pricing|price\s+list|address|phone(?:\s+number)?|telephone|contact\s+(?:number|details)|(?:business|shop|store|restaurant|company|brand)\s+name|copy|copywriting|(?:page|website|text)\s+content)\b/iu;
+const SOURCE_CONTENT = /营业(?:时间|时段)|营业日|开放时间|菜单|菜品|价格|价目|标价|地址|电话|联系方式|店名|商店名称|餐厅名称|公司名称|企业名称|文案|文字内容|文字(?:必须|须|应)(?:说明|写明|注明)|文本内容|\b(?:(?:opening|business)[ -](?:hours|times?)|hours\s+of\s+operation|menu|dishes|prices?|pricing|price\s+list|address|phone(?:\s+number)?|telephone|contact\s+(?:number|details)|(?:business|shop|store|restaurant|company|brand)\s+name|copy|copywriting|(?:HTML\s+title|page|website|text)\s+content)\b/iu;
 // Explicit wording directives can name their subject without using the literal
 // token "content" or "营业时间". These only identify text-content evidence;
 // observation and financial-action vetoes below still take precedence.
@@ -59,6 +62,11 @@ const REFUND_POLICY_COPY = /^cancellations?\s+(?:made\s+)?at\s+least\s+[1-9]\d{0
 // words refund/退款 in ordinary policy text. It is a conservative boundary,
 // not a complete natural-language parser or a financial execution check.
 const FINANCIAL_ACTION = /\b(?:(?:issu(?:e[sd]?|ing)|process(?:es|ed|ing)?|execut(?:e[sd]?|ing)|initiat(?:e[sd]?|ing)|trigger(?:s|ed|ing)?|settl(?:e[sd]?|ing)|disburs(?:e[sd]?|ing))\s+(?:(?:a|an|the|full|partial|automatic|real|actual|successful|customer|payment)\s+){0,4}refunds?|refund(?:s|ed|ing)?\s+(?:the|an?|original|customer'?s?)\s+(?:card|payment|money|funds|account)|(?:actually|automatically|successfully)\s+(?:(?:issue|process|execute|initiate|trigger|settle|disburse|complete|perform|make)\s+)?(?:(?:a|an|the|full|partial|real|actual)\s+){0,4}(?:refunds?|charges?|captures?|payments?)|refunds?\s+(?:are\s+|must\s+be\s+)?(?:issued|processed|executed|initiated|triggered|settled|disbursed)\s+(?:actually|automatically|successfully))\b|(?:实际|自动|真实)(?:地)?(?:进行|发起|执行|处理|完成)?(?:退款|扣款|支付)|(?:发起|执行|处理|完成)(?:实际|自动|真实)?(?:退款|扣款|支付)/iu;
+// Further explicit operation families reproduced with controlled overclaims.
+// These bounded verb/object relationships are not a general semantic parser or
+// a ban on a product name, payment column heading or exact quoted wording.
+const CARD_DEBIT_ACTION = /\b(?:(?:deduct|debit)(?:s|ed|ing)?|withdraw(?:s|ing)?|withdrew|withdrawn)\s+(?:(?:the|a|an|actual|real)\s+){0,3}(?:fees?|amounts?|money|funds?|charges?)\s+from\s+(?:(?:the|a|an|original|customer['’]s)\s+){0,3}(?:card|account|balance)\b|\bdebit(?:s|ed|ing)?\s+(?:(?:the|a|an|original|customer['’]s)\s+){0,3}card\s+for\s+(?:(?:the|a|an)\s+)?fee\b/iu;
+const EMAIL_DELIVERY_ACTION = /\bguarantee(?:s|d|ing)?\s+(?:(?:real|actual|successful)\s+)?(?:email\s+delivery|delivery\s+of\s+(?:(?:real|actual|successful|notification|confirmation)\s+){0,3}emails?)\b/iu;
 function isExplicitRefundPolicyCopy(criterion: ProofCriterion): boolean {
   const directive = POLICY_COPY_DIRECTIVE.exec(criterion.source.trim());
   if (!directive || OBSERVATION_REQUIRED.test(criterion.title)) return false;
@@ -70,15 +78,33 @@ function isExplicitRefundPolicyCopy(criterion: ProofCriterion): boolean {
 // another part of the requirement mentions receipt "copy" or page content.
 // This remains conservative bounded language, not a complete semantic parser.
 const RECORD_ACTION = /\b(?:record(?:s|ed|ing)?|archiv(?:e[sd]?|ing)|log(?:s|ged|ging)?|stor(?:e[sd]?|ing)|retain(?:s|ed|ing)?|writ(?:e[sd]?|ing)|queue(?:s|d|ing)?)\b[^.。；;\n]{0,180}\b(?:enquir(?:y|ies)|inquir(?:y|ies)|requests?|receipts?|records?|submissions?|transactions?|customer\s+data|audit\s+trail)\b|\b(?:enquir(?:y|ies)|inquir(?:y|ies)|requests?|receipts?|records?|submissions?|transactions?|audit\s+trail)\b[^.。；;\n]{0,120}\b(?:durab(?:le|ly|ility)|archived|logged|stored|retained|queryable|retrievable|persistently|permanently)\b|(?:询价|咨询|请求|回执|记录|交易|提交内容)[^。；;\n]{0,80}(?:落库|持久|留存|入库|可查询|可检索|重启后保留)|(?:落库|持久保存|持久记录|持久存储|留存|入库|归档|记录|存储)[^。；;\n]{0,80}(?:询价|咨询请求|回执|交易|提交内容)|\b(?:receipts?|records?|audit\s+trail)\b[^.。；;\n]{0,120}\b(?:after\s+(?:a\s+|the\s+)?(?:server\s+)?restart|survive\s+(?:a\s+)?restart)\b/iu;
+const CUSTOMER_DATA_REBOOT = /\bcustomer\s+data\s+(?:(?:must|should|shall|will)\s+)?surviv(?:e[sd]?|ing)\s+(?:(?:a|the)\s+)?(?:server\s+)?(?:reboot|restart)\b/iu;
 
 /** Admission controls do not establish whether a model's cited inference is true. */
 export function assessmentEvidenceScope(criterion: ProofCriterion): AssessmentEvidenceScope {
-  const combined = `${criterion.title}\n${criterion.source}`;
+  const literal = exactCopyLiteral(criterion.source), sourceDirective = sourceLiteralDirective(criterion.source), markupDirective = staticMarkupDirective(criterion.source);
+  // A title that repeats the same whole exact-copy directive adds no separate
+  // obligation. Other titles retain their own runtime/financial/record veto.
+  // In particular, do not infer a text-only scope from a truncated title.
+  const repeatedLiteralTitle = literal !== undefined && exactCopyLiteral(criterion.title) === literal;
+  const repeatedSourceTitle = sourceDirective !== undefined && sourceLiteralDirective(criterion.title) === sourceDirective;
+  const repeatedMarkupTitle = markupDirective !== undefined && staticMarkupDirective(criterion.title) === markupDirective;
+  const title = repeatedLiteralTitle || repeatedSourceTitle || repeatedMarkupTitle ? "" : criterion.title;
+  const sourceOnlyDirective = literal !== undefined || sourceDirective !== undefined || markupDirective !== undefined;
+  // Complete quoted literals and atomic markup-property statements bind their
+  // contents to source data. The unquoted label/notice grammar still receives
+  // every financial and durable-record veto before its text-only allowance.
+  const combined = literal !== undefined || markupDirective !== undefined ? title : `${title}\n${criterion.source}`;
   if (criterion.id === "mobile") return { category: "requires_observation", reason: "mobile" };
-  if (FINANCIAL_ACTION.test(combined)) return { category: "requires_observation", reason: "financial_action" };
-  if (RECORD_ACTION.test(combined)) return { category: "requires_observation", reason: "durable_record" };
+  if (FINANCIAL_ACTION.test(combined) || CARD_DEBIT_ACTION.test(combined)) return { category: "requires_observation", reason: "financial_action" };
+  if (RECORD_ACTION.test(combined) || CUSTOMER_DATA_REBOOT.test(combined)) return { category: "requires_observation", reason: "durable_record" };
+  if (EMAIL_DELIVERY_ACTION.test(combined)) return {category: "requires_observation", reason: "runtime_or_subjective"};
+  if (!sourceOnlyDirective && (isSourceLiteralDirectiveCandidate(criterion.source) || isStaticMarkupDirectiveCandidate(criterion.source))) return {category: "requires_observation", reason: "unclassified_requirement"};
+  if (sourceOnlyDirective) return OBSERVATION_REQUIRED.test(withoutWorkingTimeUnits(title))
+    ? {category: "requires_observation", reason: "runtime_or_subjective"}
+    : {category: "source_text", reason: "literal_content"};
   const policyCopy = isExplicitBookingPolicyCopy(criterion) || isExplicitRefundPolicyCopy(criterion);
-  if (!policyCopy && OBSERVATION_REQUIRED.test(combined)) return { category: "requires_observation", reason: "runtime_or_subjective" };
+  if (!policyCopy && OBSERVATION_REQUIRED.test(withoutWorkingTimeUnits(combined))) return { category: "requires_observation", reason: "runtime_or_subjective" };
   if (/^(?:manual|coverage)-/u.test(criterion.id) && !policyCopy && !SOURCE_CONTENT.test(criterion.source)
     && !PUBLISHED_POLICY_TEXT.test(criterion.source) && !ZH_CANCELLATION_WORDING.test(criterion.source.trim()) && !DISPLAYED_BUSINESS_HOURS.test(criterion.source)) {
     return { category: "requires_observation", reason: "unclassified_requirement" };

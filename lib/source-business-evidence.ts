@@ -1,6 +1,6 @@
 import {parse, type DefaultTreeAdapterTypes} from "parse5";
 import type {Language, ProofAssessmentCitation, ProofBusinessCheckStep} from "./contracts.ts";
-import {hasUncertainSourceBodyCopy} from "./exact-copy-evidence.ts";
+import {hasUncertainSourceBodyCopyAtFile} from "./exact-copy-evidence.ts";
 
 type Node = DefaultTreeAdapterTypes.Node;
 type Element = DefaultTreeAdapterTypes.Element;
@@ -61,15 +61,15 @@ const money = (currency: string, minor: number) => `${currency} ${Math.trunc(min
  * this internal seam. No prose extraction, currency inference or new scope. */
 export function createSourceBusinessEvidenceCheck(files: Record<string, string>, savedSteps: readonly ProofBusinessCheckStep[]): (criterionId: string) => SourceBusinessEvidence {
   const snapshot = {...files}, steps = structuredClone(savedSteps), checks = steps.filter((step, index) => steps.findIndex(other => other.checkId === step.checkId) === index);
-  const parsed = new Map<string, Source | undefined>(); let uncertain: boolean | undefined;
+  const parsed = new Map<string, Source | undefined>(), uncertainty = new Map<string, boolean>();
   return criterionId => {
     const selected = checks.filter(check => check.criterionId === criterionId);
     if (!selected.length) return {kind: "not_applicable"};
-    uncertain ??= hasUncertainSourceBodyCopy(snapshot);
     const results: SourceBusinessCheckResult[] = selected.map(check => {
       const unknown = (reason: string): SourceBusinessCheckResult => ({checkId: check.checkId, file: check.file, kind: "unknown", reason});
-      if (uncertain) return unknown("dynamic_or_unsupported_source");
       if (!Object.hasOwn(snapshot, check.file)) return unknown("missing_file");
+      if (!uncertainty.has(check.file)) uncertainty.set(check.file, hasUncertainSourceBodyCopyAtFile(snapshot, check.file));
+      if (uncertainty.get(check.file)) return unknown("dynamic_or_unsupported_source");
       if (!parsed.has(check.file)) parsed.set(check.file, sourceFor(check.file, snapshot[check.file]));
       const source = parsed.get(check.file); if (!source) return unknown("parse_or_budget");
       if (check.expected.kind === "visible_copy") {

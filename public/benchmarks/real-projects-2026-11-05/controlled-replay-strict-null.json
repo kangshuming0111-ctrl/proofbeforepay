@@ -1,0 +1,685 @@
+{
+  "schema": "pbp-real-project-controlled-replay-v1",
+  "createdAt": "2026-11-05T08:07:07.506Z",
+  "corpusSha256": "a7ca63f7dbaf32aab6d3d81b325fa4f2ed22e659ed2c1a862c5889f69b51aceb",
+  "priorReportSha256": "66b6f31a2ccc502b0a2fb7599d2c201325b46f0fb371e0b5abeb25fe6623d15a",
+  "networkRequests": 0,
+  "modelCalls": 0,
+  "interceptedRequests": 2,
+  "criterionCount": 16,
+  "previousApplicationAgreement": 8,
+  "replayApplicationAgreement": 16,
+  "rows": [
+    {
+      "id": "real-holdout-clean-blog",
+      "retainedResponseSha256": "93f54a7536a5753a3184ba485739ba6970161ffd21e68532074b4a0190af8867",
+      "originalRequestSha256": "1b26057bcd843dab9fd79d1bb39d5683d2f45ef412b968b860d3e87d3c5bca9d",
+      "replayRequestSha256": "1b26057bcd843dab9fd79d1bb39d5683d2f45ef412b968b860d3e87d3c5bca9d",
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "error",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "coverage-2",
+          "reference": "changes_suggested",
+          "raw": "changes_suggested",
+          "previousApplication": "error",
+          "replayApplication": "changes_suggested"
+        },
+        {
+          "id": "coverage-3",
+          "reference": "changes_suggested",
+          "raw": "changes_suggested",
+          "previousApplication": "error",
+          "replayApplication": "changes_suggested"
+        },
+        {
+          "id": "coverage-4",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "error",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "coverage-5",
+          "reference": "changes_suggested",
+          "raw": "changes_suggested",
+          "previousApplication": "error",
+          "replayApplication": "changes_suggested"
+        },
+        {
+          "id": "coverage-6",
+          "reference": "insufficient_evidence",
+          "raw": "insufficient_evidence",
+          "previousApplication": "error",
+          "replayApplication": "insufficient_evidence"
+        },
+        {
+          "id": "coverage-7",
+          "reference": "insufficient_evidence",
+          "raw": "insufficient_evidence",
+          "previousApplication": "error",
+          "replayApplication": "insufficient_evidence"
+        },
+        {
+          "id": "coverage-8",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "error",
+          "replayApplication": "supported"
+        }
+      ],
+      "report": {
+        "id": "b2d09d0e-64e2-4bf8-ad1a-efad6fb208fa",
+        "deliveryId": "eval-real-holdout-clean-blog",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-05T08:07:07.502Z",
+        "items": [
+          {
+            "criterionId": "coverage-1",
+            "status": "supported",
+            "explanation": "All four pages contain a mainNav nav with links labelled Home, About, Sample Post and Contact.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 1959,
+                "end": 2058,
+                "excerpt": "<li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"post.html\">Sample Post</a></li>"
+              },
+              {
+                "file": "post.html",
+                "start": 2083,
+                "end": 2181,
+                "excerpt": "<li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"contact.html\">Contact</a></li>"
+              },
+              {
+                "file": "about.html",
+                "start": 1722,
+                "end": 1815,
+                "excerpt": "<li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"index.html\">Home</a></li>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-1"
+            ]
+          },
+          {
+            "criterionId": "coverage-2",
+            "status": "changes_suggested",
+            "explanation": "Start Bootstrap appears in current page copy: navbar brand on all pages, homepage subheading and post-meta bylines, and visible contact form success text.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 2709,
+                "end": 2772,
+                "excerpt": "<span class=\"subheading\">A Blog Theme by Start Bootstrap</span>"
+              },
+              {
+                "file": "index.html",
+                "start": 3581,
+                "end": 3663,
+                "excerpt": "<a href=\"#!\">Start Bootstrap</a>\n                            on September 24, 2023"
+              },
+              {
+                "file": "contact.html",
+                "start": 6476,
+                "end": 6710,
+                "excerpt": "To activate this form, sign up at\n                                        <br />\n                                        <a href=\"https://startbootstrap.com/solution/contact-forms\">https://startbootstrap.com/solution/contact-forms</a>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-2"
+            ]
+          },
+          {
+            "criterionId": "coverage-3",
+            "status": "changes_suggested",
+            "explanation": "All four supplied title elements contain the identical text, so they are not distinct.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 271,
+                "end": 320,
+                "excerpt": "<title>Clean Blog - Start Bootstrap Theme</title>"
+              },
+              {
+                "file": "about.html",
+                "start": 271,
+                "end": 320,
+                "excerpt": "<title>Clean Blog - Start Bootstrap Theme</title>"
+              },
+              {
+                "file": "contact.html",
+                "start": 271,
+                "end": 320,
+                "excerpt": "<title>Clean Blog - Start Bootstrap Theme</title>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-3"
+            ]
+          },
+          {
+            "criterionId": "coverage-4",
+            "status": "supported",
+            "explanation": "Contact page labels include 'Email address', 'Phone Number' and 'Message'.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 4607,
+                "end": 4647,
+                "excerpt": "<label for=\"email\">Email address</label>"
+              },
+              {
+                "file": "contact.html",
+                "start": 5195,
+                "end": 5234,
+                "excerpt": "<label for=\"phone\">Phone Number</label>"
+              },
+              {
+                "file": "contact.html",
+                "start": 5690,
+                "end": 5726,
+                "excerpt": "<label for=\"message\">Message</label>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-4"
+            ]
+          },
+          {
+            "criterionId": "coverage-5",
+            "status": "changes_suggested",
+            "explanation": "The contact page copy has no statement of a 30-day retention period or deletion on request; only the form intro and template form notes appear.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 3156,
+                "end": 3277,
+                "excerpt": "<p>Want to get in touch? Fill out the form below to send me a message and I will get back to you as soon as possible!</p>"
+              },
+              {
+                "file": "contact.html",
+                "start": 3547,
+                "end": 3597,
+                "excerpt": "<!-- This form is pre-integrated with SB Forms.-->"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-5"
+            ]
+          },
+          {
+            "criterionId": "coverage-6",
+            "status": "insufficient_evidence",
+            "explanation": "This requirement includes actual records, durable retention or queryable receipts. Source copy cannot establish that records were written or can be read back. Provide execution and independent record-readback evidence, and check the complete locked requirement.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 3846,
+                "end": 3904,
+                "excerpt": "<form id=\"contactForm\" data-sb-form-api-token=\"API_TOKEN\">"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-6"
+            ]
+          },
+          {
+            "criterionId": "coverage-7",
+            "status": "insufficient_evidence",
+            "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 1264,
+                "end": 1369,
+                "excerpt": "<button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarResponsive\""
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-7"
+            ]
+          },
+          {
+            "criterionId": "coverage-8",
+            "status": "supported",
+            "explanation": "post.html contains the article title text as its h1 heading.",
+            "citations": [
+              {
+                "file": "post.html",
+                "start": 2661,
+                "end": 2727,
+                "excerpt": "<h1>Man must explore, and this is exploration at its greatest</h1>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-8"
+            ]
+          }
+        ],
+        "risks": [
+          {
+            "title": "Template brand 'Start Bootstrap' remains in delivered page copy",
+            "explanation": "The navbar brand renders 'Start Bootstrap' on all four pages, and the homepage subheading and post bylines repeat the brand, contrary to the requirement that page copy not advertise the template brand.",
+            "suggestion": "Replace the brand text and byline copy with the site owner's name across all four pages, then re-check every page for remaining mentions.",
+            "citations": [
+              {
+                "file": "about.html",
+                "start": 1186,
+                "end": 1247,
+                "excerpt": "<a class=\"navbar-brand\" href=\"index.html\">Start Bootstrap</a>"
+              },
+              {
+                "file": "index.html",
+                "start": 2709,
+                "end": 2772,
+                "excerpt": "<span class=\"subheading\">A Blog Theme by Start Bootstrap</span>"
+              },
+              {
+                "file": "post.html",
+                "start": 2909,
+                "end": 2983,
+                "excerpt": "Posted by\n                                <a href=\"#!\">Start Bootstrap</a>"
+              }
+            ]
+          },
+          {
+            "title": "All four HTML title elements contain identical text",
+            "explanation": "index.html, about.html, contact.html and post.html each declare the same title string, so the four titles are not distinct as required.",
+            "suggestion": "Give each page a distinct title reflecting its content.",
+            "citations": [
+              {
+                "file": "post.html",
+                "start": 271,
+                "end": 320,
+                "excerpt": "<title>Clean Blog - Start Bootstrap Theme</title>"
+              },
+              {
+                "file": "about.html",
+                "start": 271,
+                "end": 320,
+                "excerpt": "<title>Clean Blog - Start Bootstrap Theme</title>"
+              },
+              {
+                "file": "contact.html",
+                "start": 271,
+                "end": 320,
+                "excerpt": "<title>Clean Blog - Start Bootstrap Theme</title>"
+              }
+            ]
+          },
+          {
+            "title": "Contact page copy lacks 30-day retention and deletion-on-request statement",
+            "explanation": "The contact page main copy only invites visitors to fill in the form; it contains no wording about a 30-day retention period or deletion on request.",
+            "suggestion": "Add static privacy copy stating the 30-day retention period and that data is deleted on request, then re-read the whole contact page.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 3156,
+                "end": 3277,
+                "excerpt": "<p>Want to get in touch? Fill out the form below to send me a message and I will get back to you as soon as possible!</p>"
+              },
+              {
+                "file": "contact.html",
+                "start": 6379,
+                "end": 6435,
+                "excerpt": "<div class=\"fw-bolder\">Form submission successful!</div>"
+              }
+            ]
+          },
+          {
+            "title": "Contact form submit button markup carries the disabled class",
+            "explanation": "The send button is declared with a 'disabled' class, and the form uses a placeholder data-sb-form-api-token value; whether sending works cannot be determined from source alone.",
+            "suggestion": "Verify in a browser whether the button becomes enabled and whether submissions reach the owner; treat persistence needs as untested.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 7289,
+                "end": 7390,
+                "excerpt": "<button class=\"btn btn-primary text-uppercase disabled\" id=\"submitButton\" type=\"submit\">Send</button>"
+              },
+              {
+                "file": "contact.html",
+                "start": 3846,
+                "end": 3904,
+                "excerpt": "<form id=\"contactForm\" data-sb-form-api-token=\"API_TOKEN\">"
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "No browser was run; 375px horizontal overflow and mobile menu behavior remain unverified.",
+          "Email delivery to the owner and receipt persistence across restart are backend behaviors not evidenced by static source.",
+          "The placeholder API token value does not by itself prove that no handler exists or that sending fails.",
+          "No raster image pixels were supplied, so image content, alt adequacy and visual appearance were not assessed.",
+          "The CSS file referenced is not part of the supplied file set, so responsive and style behavior cannot be inspected.",
+          "Final acceptance of these coverage items rests with the buyer, not this advisory report.",
+          "Source validator record: ignored 1 extra null-valued risk annotation fields. All required risk fields and citations were still validated; no missing suggestion was invented. This does not establish model judgment correctness.",
+          "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "coverage": {
+          "includedFiles": [
+            "about.html",
+            "contact.html",
+            "index.html",
+            "post.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "usage": {
+          "promptTokens": 13631,
+          "completionTokens": 1816
+        }
+      }
+    },
+    {
+      "id": "real-holdout-html5-boilerplate",
+      "retainedResponseSha256": "2990216c54562ca2f830bcf35574cf5a67371b1c111cdf67a795adde2465f59c",
+      "originalRequestSha256": "9eecab69f7e8d1314797955131d4e14e3d62bd5c9b3883d18e6543145eea39f9",
+      "replayRequestSha256": "9eecab69f7e8d1314797955131d4e14e3d62bd5c9b3883d18e6543145eea39f9",
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "supported",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "coverage-2",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "supported",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "coverage-3",
+          "reference": "changes_suggested",
+          "raw": "changes_suggested",
+          "previousApplication": "changes_suggested",
+          "replayApplication": "changes_suggested"
+        },
+        {
+          "id": "coverage-4",
+          "reference": "changes_suggested",
+          "raw": "changes_suggested",
+          "previousApplication": "changes_suggested",
+          "replayApplication": "changes_suggested"
+        },
+        {
+          "id": "coverage-5",
+          "reference": "changes_suggested",
+          "raw": "changes_suggested",
+          "previousApplication": "changes_suggested",
+          "replayApplication": "changes_suggested"
+        },
+        {
+          "id": "coverage-6",
+          "reference": "insufficient_evidence",
+          "raw": "insufficient_evidence",
+          "previousApplication": "insufficient_evidence",
+          "replayApplication": "insufficient_evidence"
+        },
+        {
+          "id": "coverage-7",
+          "reference": "insufficient_evidence",
+          "raw": "insufficient_evidence",
+          "previousApplication": "insufficient_evidence",
+          "replayApplication": "insufficient_evidence"
+        },
+        {
+          "id": "coverage-8",
+          "reference": "changes_suggested",
+          "raw": "changes_suggested",
+          "previousApplication": "changes_suggested",
+          "replayApplication": "changes_suggested"
+        }
+      ],
+      "report": {
+        "id": "3c6c63f8-cb85-4d0e-a4e7-8c04b7434971",
+        "deliveryId": "eval-real-holdout-html5-boilerplate",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-05T08:07:07.506Z",
+        "items": [
+          {
+            "criterionId": "coverage-1",
+            "status": "supported",
+            "explanation": "404.html body contains the h1 'Page Not Found' and a p with an apology that the page does not exist.",
+            "citations": [
+              {
+                "file": "404.html",
+                "start": 818,
+                "end": 910,
+                "excerpt": "<h1>Page Not Found</h1>\n  <p>Sorry, but the page you were trying to view does not exist.</p>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-1"
+            ]
+          },
+          {
+            "criterionId": "coverage-2",
+            "status": "supported",
+            "explanation": "index.html body paragraph reads 'Hello world! This is HTML5 Boilerplate.'",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 750,
+                "end": 796,
+                "excerpt": "<p>Hello world! This is HTML5 Boilerplate.</p>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-2"
+            ]
+          },
+          {
+            "criterionId": "coverage-3",
+            "status": "changes_suggested",
+            "explanation": "404.html declares lang=\"en\", but index.html has an empty html lang attribute (lang=\"\"), which is not nonempty English.",
+            "citations": [
+              {
+                "file": "404.html",
+                "start": 16,
+                "end": 32,
+                "excerpt": "<html lang=\"en\">"
+              },
+              {
+                "file": "index.html",
+                "start": 16,
+                "end": 30,
+                "excerpt": "<html lang=\"\">"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-3"
+            ]
+          },
+          {
+            "criterionId": "coverage-4",
+            "status": "changes_suggested",
+            "explanation": "index.html document title is empty (<title></title>) and identifies no business name; the og:title meta is also empty.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 120,
+                "end": 135,
+                "excerpt": "<title></title>"
+              },
+              {
+                "file": "index.html",
+                "start": 225,
+                "end": 262,
+                "excerpt": "<meta property=\"og:title\" content=\"\">"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-4"
+            ]
+          },
+          {
+            "criterionId": "coverage-5",
+            "status": "changes_suggested",
+            "explanation": "index.html body holds only a boilerplate paragraph and a script tag; no cancellation-notice rule or refund policy copy appears anywhere on the page.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 687,
+                "end": 841,
+                "excerpt": "<body>\n\n  <!-- Add your site or application content here -->\n  <p>Hello world! This is HTML5 Boilerplate.</p>\n  <script src=\"js/app.js\"></script>\n\n</body>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-5"
+            ]
+          },
+          {
+            "criterionId": "coverage-6",
+            "status": "insufficient_evidence",
+            "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+            "citations": [],
+            "ruleEvidenceIds": [
+              "eval-evidence-6"
+            ]
+          },
+          {
+            "criterionId": "coverage-7",
+            "status": "insufficient_evidence",
+            "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+            "citations": [
+              {
+                "file": "404.html",
+                "start": 553,
+                "end": 608,
+                "excerpt": "    p {\n      margin: 0 auto;\n      width: 280px;\n    }"
+              },
+              {
+                "file": "404.html",
+                "start": 614,
+                "end": 657,
+                "excerpt": "@media only screen and (max-width: 280px) {"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-7"
+            ]
+          },
+          {
+            "criterionId": "coverage-8",
+            "status": "changes_suggested",
+            "explanation": "404.html body contains only the h1 and apology paragraph; there is no anchor element with a 'Return home' phrase targeting index.html.",
+            "citations": [
+              {
+                "file": "404.html",
+                "start": 809,
+                "end": 918,
+                "excerpt": "<body>\n  <h1>Page Not Found</h1>\n  <p>Sorry, but the page you were trying to view does not exist.</p>\n</body>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-8"
+            ]
+          }
+        ],
+        "risks": [
+          {
+            "title": "Home page html lang attribute is empty",
+            "explanation": "index.html declares lang=\"\" instead of a language value such as en, while 404.html uses lang=\"en\".",
+            "suggestion": "Set index.html's html element lang attribute to \"en\" and re-check both delivered pages.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 16,
+                "end": 30,
+                "excerpt": "<html lang=\"\">"
+              }
+            ]
+          },
+          {
+            "title": "Home page document title is empty with no business name",
+            "explanation": "The index.html title element and og:title meta both have empty content, so no business name is identified in the document title.",
+            "suggestion": "Populate the index.html <title> with the agreed business name and confirm the exact copy with the buyer.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 120,
+                "end": 135,
+                "excerpt": "<title></title>"
+              },
+              {
+                "file": "index.html",
+                "start": 225,
+                "end": 262,
+                "excerpt": "<meta property=\"og:title\" content=\"\">"
+              }
+            ]
+          },
+          {
+            "title": "No cancellation-notice or refund policy copy on home page",
+            "explanation": "The index.html body contains only the boilerplate paragraph, so the required 48 hour cancellation notice rule and refund eligibility policy text is absent from the delivered page.",
+            "suggestion": "Add the agreed 48 hour cancellation notice rule and refund eligibility wording to index.html and review it against the buyer's exact copy.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 750,
+                "end": 796,
+                "excerpt": "<p>Hello world! This is HTML5 Boilerplate.</p>"
+              }
+            ]
+          },
+          {
+            "title": "404 page lacks a linked Return home phrase to index.html",
+            "explanation": "The 404.html body contains only the heading and apology paragraph; no anchor element pointing to index.html with a 'Return home' phrase is present in the static source.",
+            "suggestion": "Add an anchor with the Return home label and an href of index.html in 404.html, then have the buyer confirm the wording.",
+            "citations": [
+              {
+                "file": "404.html",
+                "start": 844,
+                "end": 918,
+                "excerpt": "<p>Sorry, but the page you were trying to view does not exist.</p>\n</body>"
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "HTTP 404 status for nonexistent routes and rendering of the 404 page were not tested; no server configuration or runtime evidence was supplied.",
+          "Mobile readability at 375px was not verified in a browser; only 404.html width rules and a max-width 280px media query are visible in source.",
+          "No raster or visual assets were analyzed; screenshots and rendered appearance were not provided.",
+          "Whether any script (e.g., js/app.js, referenced but not delivered here) affects page content or behavior is unknown.",
+          "The buyer must make final acceptance decisions for all coverage criteria.",
+          "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "coverage": {
+          "includedFiles": [
+            "404.html",
+            "index.html",
+            "css/style.css"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "usage": {
+          "promptTokens": 7352,
+          "completionTokens": 1401
+        }
+      }
+    }
+  ],
+  "limits": [
+    "Exact retained provider responses, not new model behavior or a prompt regression test.",
+    "Changed prompt bytes are recorded; unchanged source and criteria are asserted.",
+    "Reference agreement is not complete-answer correctness, execution, customer acceptance or payment."
+  ]
+}

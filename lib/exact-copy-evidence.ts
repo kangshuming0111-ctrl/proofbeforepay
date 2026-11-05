@@ -1,5 +1,6 @@
 import { parse, type DefaultTreeAdapterTypes } from "parse5";
 import type { Language, ProofCriterion } from "./contracts.ts";
+import {exactCopyLiteral, normalizeExactCopyWhitespace as normalized} from "./exact-copy-directive.ts";
 
 type Node = DefaultTreeAdapterTypes.Node;
 type Element = DefaultTreeAdapterTypes.Element;
@@ -7,16 +8,6 @@ export type ExactCopyEvidence = { kind: "not_applicable" } | {
   kind: "present" | "missing" | "unknown";
   literal: string;
 };
-// Only HTML whitespace and NBSP are equivalent here: no lowercasing, Unicode
-// compatibility folding, punctuation removal or paraphrase comparison.
-const normalized = (value: string) => value.replace(/[\t\n\f\r \u00a0]+/gu, " ").trim();
-const ENGLISH_DIRECTIVE = /^(?:(?:The|Our)\s+)?(?:page|website|site)\s+(?:copy|text(?:\s+content)?)\s+(?:must|should|needs?\s+to)\s+(?:include|contain|display|show)\s+the\s+exact\s+(?:wording|text|string)\s+(?:"([^"\r\n]{1,300})"|“([^“”\r\n]{1,300})”)[.!]?$/iu;
-const CHINESE_DIRECTIVE = /^(?:页面|网页|网站)(?:文案|文字|文本)(?:必须|须|需要|应)(?:(?:逐字|原样)(?:包含|显示|写明)|(?:包含|显示|写明)(?:完全一致的|逐字相同的|准确的)(?:文字|文案|原文|字样))\s*[：:]?\s*(?:"([^"\r\n]{1,300})"|“([^“”\r\n]{1,300})”|「([^「」\r\n]{1,300})」)[。！]?$/u;
-function requiredLiteral(criterion: ProofCriterion): string | undefined {
-  const match = ENGLISH_DIRECTIVE.exec(criterion.source.trim()) ?? CHINESE_DIRECTIVE.exec(criterion.source.trim());
-  const literal = match?.slice(1).find(value => value !== undefined);
-  return literal && normalized(literal) || undefined;
-}
 const BLOCKS = new Set(["address", "article", "aside", "blockquote", "body", "caption", "dd", "details", "dialog", "div", "dl", "dt", "fieldset", "figcaption", "figure", "footer", "form", "h1", "h2", "h3", "h4", "h5", "h6", "header", "hr", "li", "main", "nav", "ol", "p", "pre", "section", "summary", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "ul"]);
 const INERT_TEXT = new Set(["head", "title", "script", "style", "template", "noscript", "textarea", "xmp", "iframe", "noembed", "noframes", "plaintext"]);
 const DYNAMIC_OR_UNSUPPORTED = new Set(["template", "noscript", "textarea", "xmp", "iframe", "frame", "frameset", "object", "embed", "slot", "noembed", "noframes", "plaintext"]);
@@ -79,13 +70,46 @@ export function hasUncertainSourceBodyCopy(files: Record<string, string>): boole
   return bodyCopy(Object.entries(files)).uncertain;
 }
 
+/** For a check explicitly bound to one saved HTML file, other pages do not
+ * change that file's source-copy scope. Include only its directly linked local
+ * stylesheets; imports and missing/external/unsupported sources stay uncertain.
+ * This does not render the page or establish that a value is visible. */
+export function hasUncertainSourceBodyCopyAtFile(files: Record<string, string>, file: string): boolean {
+  const entries = Object.entries(files);
+  if (!Object.hasOwn(files, file) || !file.endsWith(".html") || entries.length > 40
+    || entries.reduce((sum, [, value]) => sum + value.length, 0) > 262_144) return true;
+  const members = new Map<string, string>([[file, files[file]]]);
+  const document = parse(files[file], {scriptingEnabled: true});
+  const stack: {node: Node; depth: number}[] = [{node: document, depth: 0}];
+  let visited = 0;
+  while (stack.length) {
+    const {node, depth} = stack.pop()!;
+    if (++visited > 50_000 || depth > 512) return true;
+    if (element(node)) {
+      // A base URL can change relative resource resolution. Do not silently
+      // resolve against the saved path when another base was declared.
+      if (node.tagName === "base" && attr(node, "href") !== undefined) return true;
+      if (node.tagName === "link" && (attr(node, "rel") ?? "").toLowerCase().split(/\s+/u).includes("stylesheet")) {
+        try {
+          const url = new URL(attr(node, "href") ?? "", `https://proof.invalid/${file}`);
+          const target = url.pathname.slice(1);
+          if (url.origin !== "https://proof.invalid" || url.pathname.includes("%") || !target.endsWith(".css") || !Object.hasOwn(files, target)) return true;
+          members.set(target, files[target]);
+        } catch { return true; }
+      }
+    }
+    if ("childNodes" in node) for (let i = node.childNodes.length - 1; i >= 0; i--) stack.push({node: node.childNodes[i], depth: depth + 1});
+  }
+  return bodyCopy([...members]).uncertain;
+}
+
 /** A negative-only guard. Presence leaves a model suggestion unchanged; it never
  * establishes entailment, rendered visibility, acceptance or a new obligation. */
 export function createExactCopyEvidenceCheck(files: Record<string, string>): (criterion: ProofCriterion) => ExactCopyEvidence {
   const snapshot = Object.entries(files);
   let copy: ReturnType<typeof bodyCopy> | undefined;
   return criterion => {
-    const literal = requiredLiteral(criterion);
+    const literal = exactCopyLiteral(criterion.source);
     if (!literal) return { kind: "not_applicable" };
     copy ??= bodyCopy(snapshot);
     const present = copy.segments.some(segment => segment.includes(literal));

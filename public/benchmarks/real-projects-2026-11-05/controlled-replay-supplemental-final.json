@@ -1,0 +1,314 @@
+{
+  "schema": "pbp-real-project-controlled-replay-v1",
+  "createdAt": "2026-11-05T07:01:11.351Z",
+  "corpusSha256": "24497b578d152108569fe9766203bfa135f9ca6107ca7cd4f8865e5ffaf6aeaa",
+  "priorReportSha256": "6a0499864b1101df4e244d60cf791774cef16a54027e0079fe27a94230136386",
+  "networkRequests": 0,
+  "modelCalls": 0,
+  "interceptedRequests": 1,
+  "criterionCount": 8,
+  "previousApplicationAgreement": 6,
+  "replayApplicationAgreement": 7,
+  "rows": [
+    {
+      "id": "real-personal-supplemental",
+      "retainedResponseSha256": "6f1434d262f8ea16ad286f2222299f210517f28729006fce5b6119e3394a3639",
+      "originalRequestSha256": "99dcf51613a69798f3239e54f4c1248d81310a0319ea02a14921f83b5921ea3a",
+      "replayRequestSha256": "45bd5e2f15445a0a3e4f6a5836d8c6b6a26f3471ca201a0080f159cdbe4b20ba",
+      "criteria": [
+        {
+          "id": "manual-1",
+          "reference": "changes_suggested",
+          "raw": "changes_suggested",
+          "previousApplication": "insufficient_evidence",
+          "replayApplication": "changes_suggested"
+        },
+        {
+          "id": "manual-2",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "supported",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "manual-3",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "supported",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "manual-4",
+          "reference": "changes_suggested",
+          "raw": "changes_suggested",
+          "previousApplication": "changes_suggested",
+          "replayApplication": "changes_suggested"
+        },
+        {
+          "id": "manual-5",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "supported",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "coverage-1",
+          "reference": "changes_suggested",
+          "raw": "insufficient_evidence",
+          "previousApplication": "insufficient_evidence",
+          "replayApplication": "insufficient_evidence"
+        },
+        {
+          "id": "coverage-2",
+          "reference": "insufficient_evidence",
+          "raw": "insufficient_evidence",
+          "previousApplication": "insufficient_evidence",
+          "replayApplication": "insufficient_evidence"
+        },
+        {
+          "id": "coverage-3",
+          "reference": "insufficient_evidence",
+          "raw": "insufficient_evidence",
+          "previousApplication": "insufficient_evidence",
+          "replayApplication": "insufficient_evidence"
+        }
+      ],
+      "report": {
+        "id": "f96db75d-4f37-48b8-b2dc-afcc9e3f9180",
+        "deliveryId": "eval-real-personal-supplemental",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-05T07:01:11.350Z",
+        "items": [
+          {
+            "criterionId": "manual-1",
+            "status": "changes_suggested",
+            "explanation": "index.html uses 'Personal', but projects.html and contact.html titles still say 'Modern Business'.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 271,
+                "end": 318,
+                "excerpt": "<title>Personal - Start Bootstrap Theme</title>"
+              },
+              {
+                "file": "projects.html",
+                "start": 271,
+                "end": 328,
+                "excerpt": "<title>Modern Business - Start Bootstrap Template</title>"
+              },
+              {
+                "file": "contact.html",
+                "start": 265,
+                "end": 322,
+                "excerpt": "<title>Modern Business - Start Bootstrap Template</title>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-1"
+            ]
+          },
+          {
+            "criterionId": "manual-2",
+            "status": "supported",
+            "explanation": "Resume lists 2019 - Present, Web Developer, Stark Industries in the first experience card.",
+            "citations": [
+              {
+                "file": "resume.html",
+                "start": 3981,
+                "end": 4240,
+                "excerpt": "<div class=\"text-primary fw-bolder mb-2\">2019 - Present</div>\n                                                <div class=\"small fw-bolder\">Web Developer</div>\n                                                <div class=\"small text-muted\">Stark Industries</div>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-2"
+            ]
+          },
+          {
+            "criterionId": "manual-3",
+            "status": "supported",
+            "explanation": "Resume includes Master's / Web Development and Undergraduate / Computer Science entries.",
+            "citations": [
+              {
+                "file": "resume.html",
+                "start": 7436,
+                "end": 7584,
+                "excerpt": "<div class=\"small text-muted\">Master's</div>\n                                                    <div class=\"small text-muted\">Web Development</div>"
+              },
+              {
+                "file": "resume.html",
+                "start": 9152,
+                "end": 9306,
+                "excerpt": "<div class=\"small text-muted\">Undergraduate</div>\n                                                    <div class=\"small text-muted\">Computer Science</div>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-3"
+            ]
+          },
+          {
+            "criterionId": "manual-4",
+            "status": "changes_suggested",
+            "explanation": "projects.html still contains both placeholder headings 'Project Name 1' and 'Project Name 2'.",
+            "citations": [
+              {
+                "file": "projects.html",
+                "start": 3207,
+                "end": 3248,
+                "excerpt": "<h2 class=\"fw-bolder\">Project Name 1</h2>"
+              },
+              {
+                "file": "projects.html",
+                "start": 4175,
+                "end": 4216,
+                "excerpt": "<h2 class=\"fw-bolder\">Project Name 2</h2>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-4"
+            ]
+          },
+          {
+            "criterionId": "manual-5",
+            "status": "supported",
+            "explanation": "Contact form labels include the literal text 'Full name' and 'Email address'.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 4048,
+                "end": 4083,
+                "excerpt": "<label for=\"name\">Full name</label>"
+              },
+              {
+                "file": "contact.html",
+                "start": 4592,
+                "end": 4632,
+                "excerpt": "<label for=\"email\">Email address</label>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-5"
+            ]
+          },
+          {
+            "criterionId": "coverage-1",
+            "status": "insufficient_evidence",
+            "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 2883,
+                "end": 2949,
+                "excerpt": "<p class=\"lead fw-normal text-muted mb-0\">Let's work together!</p>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-6"
+            ]
+          },
+          {
+            "criterionId": "coverage-2",
+            "status": "insufficient_evidence",
+            "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+            "citations": [
+              {
+                "file": "resume.html",
+                "start": 3222,
+                "end": 3269,
+                "excerpt": "<a class=\"btn btn-primary px-4 py-3\" href=\"#!\">"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-7"
+            ]
+          },
+          {
+            "criterionId": "coverage-3",
+            "status": "insufficient_evidence",
+            "explanation": "Portrait image pixels not supplied; identity and uncropped rendering at 375px cannot be verified.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 4181,
+                "end": 4243,
+                "excerpt": "<img class=\"profile-img\" src=\"assets/profile.png\" alt=\"...\" />"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-8"
+            ]
+          }
+        ],
+        "risks": [
+          {
+            "title": "Placeholder project titles remain on Projects page",
+            "explanation": "Both card headings still use the template placeholder names rather than real project titles.",
+            "suggestion": "Replace 'Project Name 1' and 'Project Name 2' with actual project names.",
+            "citations": [
+              {
+                "file": "projects.html",
+                "start": 3207,
+                "end": 3248,
+                "excerpt": "<h2 class=\"fw-bolder\">Project Name 1</h2>"
+              },
+              {
+                "file": "projects.html",
+                "start": 4175,
+                "end": 4216,
+                "excerpt": "<h2 class=\"fw-bolder\">Project Name 2</h2>"
+              }
+            ]
+          },
+          {
+            "title": "Page titles on Projects and Contact still say Modern Business",
+            "explanation": "Two of the four pages retain the template 'Modern Business' title instead of 'Personal'.",
+            "suggestion": "Update head title elements in projects.html and contact.html to use Personal.",
+            "citations": [
+              {
+                "file": "projects.html",
+                "start": 271,
+                "end": 328,
+                "excerpt": "<title>Modern Business - Start Bootstrap Template</title>"
+              },
+              {
+                "file": "contact.html",
+                "start": 265,
+                "end": 322,
+                "excerpt": "<title>Modern Business - Start Bootstrap Template</title>"
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "Raster portrait pixels not supplied, so owner identity and uncropped display at 375px are unverified.",
+          "No PDF asset in inventory; Download Resume href '#' behavior and PDF contents cannot be confirmed.",
+          "Form submission, email receipt and any backend for the contact form are untested.",
+          "Rendered appearance, styling and mobile behavior were not observed in a browser.",
+          "Reply-time copy absent is judged on supplied static HTML only; dynamic alternatives unknown.",
+          "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "coverage": {
+          "includedFiles": [
+            "contact.html",
+            "index.html",
+            "projects.html",
+            "resume.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "usage": {
+          "promptTokens": 21319,
+          "completionTokens": 1062
+        }
+      }
+    }
+  ],
+  "limits": [
+    "Exact retained provider responses, not new model behavior or a prompt regression test.",
+    "Changed prompt bytes are recorded; unchanged source and criteria are asserted.",
+    "Reference agreement is not complete-answer correctness, execution, customer acceptance or payment."
+  ]
+}

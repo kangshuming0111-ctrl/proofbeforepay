@@ -1,0 +1,2861 @@
+{
+  "schema": "pbp-real-project-r3-independent-whole-review-v1",
+  "reviewedAt": "2026-11-05T07:10:53.510Z",
+  "reviewer": "Codex AI source reviewer; also authored development corpora. Independent of DeepSeek output generation, not a blinded independent human evaluator.",
+  "method": "Read every complete raw item/risk/limitation and application answer in the four named cohorts; compare with actual unmodified source. Released holdout review packets were read and pre-reference observations saved before their frozen labels were opened. Re-resolve every raw/application citation and UTF-16 offset. No model, browser, backend, source execution or payment call.",
+  "preReferenceNotes": "outputs/real-projects-2026-11-05/r3-holdout-pre-reference-observations.json",
+  "providerCalls": 0,
+  "networkCalls": 0,
+  "unchangedFrozenReferences": true,
+  "summary": {
+    "projects": 7,
+    "criteria": 64,
+    "originalReferenceStatusAgreement": {
+      "raw": 63,
+      "application": 44
+    },
+    "rawWholeAnswers": {
+      "accepted": 2,
+      "qualified": 4,
+      "rejected": 1
+    },
+    "applicationWholeAnswers": {
+      "accepted": 2,
+      "qualified": 3,
+      "rejected": 2
+    },
+    "allActualRawItemIdsComplete": true,
+    "allCitationsExactSubstrings": true,
+    "allApplicationUtf16Offsets": true
+  },
+  "projects": [
+    {
+      "cohort": "known",
+      "id": "real-business-casual",
+      "reportFile": "outputs/real-projects-2026-11-05/known-live.json",
+      "reportSha256": "71976747c0e7d396d00042b555fbc394b45fbd3fec765afad40c83415b669c0f",
+      "freezeSha256": "7a71c8d1673676e0564b17eee4f63eb3325725aff9795544a5f0f452e8707ff0",
+      "corpusFile": "scripts/real-project-assessment-corpus-2026-11-05.json",
+      "corpusSha256": "3704bb94e554e0f5a4454a1d4307c479752893a93ad5de0bd32284bc36eaf153",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "conclusion": "Eight criterion conclusions are source-grounded or appropriately unknown; exact Saturday conflict and delivered body-copy omission are scoped to named HTML files. No new runtime or payment assurance.",
+      "originalReferenceStatusAgreement": {
+        "raw": {
+          "count": 8,
+          "total": 8
+        },
+        "application": {
+          "count": 8,
+          "total": 8
+        }
+      },
+      "rawItemCoverage": {
+        "expected": 8,
+        "returned": 8,
+        "missing": [],
+        "duplicate": [],
+        "unknownCount": 0
+      },
+      "applicationAdmitted": true,
+      "applicationFailureReason": null,
+      "sourceObservations": [
+        "All Monday-Friday rows show 7:00 AM to 8:00 PM and Sunday Closed.",
+        "Saturday source says 9:00 AM to 5:00 PM, contrary to requested 7:00 AM to 8:00 PM.",
+        "Address/phone, 1987 Hernandez story and three product category headings match source.",
+        "Named products.html body lacks the required exact allergy sentence.",
+        "Mobile interaction and image subject/crop stay unknown."
+      ],
+      "issues": [
+        {
+          "severity": "P3",
+          "kind": "partial_citation_witness",
+          "at": "items[manual-1]",
+          "note": "Three excerpts cover Sunday/Monday/Friday, not Tuesday/Wednesday/Thursday. Independently read full store.html and verified all required weekdays. Do not call each weekday fully supported by the displayed excerpts alone.",
+          "material": false
+        }
+      ],
+      "citationChecks": {
+        "rawCount": 15,
+        "applicationCount": 15,
+        "allExactSubstrings": true,
+        "allApplicationUtf16Offsets": true,
+        "semanticEntailment": "Separate issue-specific human-readable adjudication; exact-substring success is not all-claim support",
+        "rows": [
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 1,
+            "file": "store.html",
+            "exactSubstring": true,
+            "utf16Start": 3096,
+            "utf16End": 3174,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 2,
+            "file": "store.html",
+            "exactSubstring": true,
+            "utf16Start": 3336,
+            "utf16End": 3426,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 3,
+            "file": "store.html",
+            "exactSubstring": true,
+            "utf16Start": 4350,
+            "utf16End": 4440,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 2,
+            "citation": 1,
+            "file": "store.html",
+            "exactSubstring": true,
+            "utf16Start": 4602,
+            "utf16End": 4694,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 3,
+            "citation": 1,
+            "file": "store.html",
+            "exactSubstring": true,
+            "utf16Start": 4893,
+            "utf16End": 5033,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 3,
+            "citation": 2,
+            "file": "store.html",
+            "exactSubstring": true,
+            "utf16Start": 5290,
+            "utf16End": 5304,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 4,
+            "citation": 1,
+            "file": "about.html",
+            "exactSubstring": true,
+            "utf16Start": 3140,
+            "utf16End": 3232,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 5,
+            "citation": 1,
+            "file": "products.html",
+            "exactSubstring": true,
+            "utf16Start": 2818,
+            "utf16End": 2875,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 5,
+            "citation": 2,
+            "file": "products.html",
+            "exactSubstring": true,
+            "utf16Start": 4129,
+            "utf16End": 4188,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 5,
+            "citation": 3,
+            "file": "products.html",
+            "exactSubstring": true,
+            "utf16Start": 5344,
+            "utf16End": 5409,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 6,
+            "citation": 1,
+            "file": "products.html",
+            "exactSubstring": true,
+            "utf16Start": 6052,
+            "utf16End": 6095,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 7,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 1413,
+            "utf16End": 1524,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 8,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 2515,
+            "utf16End": 2608,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 1,
+            "citation": 1,
+            "file": "store.html",
+            "exactSubstring": true,
+            "utf16Start": 4602,
+            "utf16End": 4694,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 2,
+            "citation": 1,
+            "file": "products.html",
+            "exactSubstring": true,
+            "utf16Start": 6052,
+            "utf16End": 6095,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 1,
+            "citation": 1,
+            "file": "store.html",
+            "exactSubstring": true,
+            "utf16Start": 3096,
+            "utf16End": 3174,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 1,
+            "citation": 2,
+            "file": "store.html",
+            "exactSubstring": true,
+            "utf16Start": 3336,
+            "utf16End": 3426,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 1,
+            "citation": 3,
+            "file": "store.html",
+            "exactSubstring": true,
+            "utf16Start": 4350,
+            "utf16End": 4440,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 2,
+            "citation": 1,
+            "file": "store.html",
+            "exactSubstring": true,
+            "utf16Start": 4602,
+            "utf16End": 4694,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 3,
+            "citation": 1,
+            "file": "store.html",
+            "exactSubstring": true,
+            "utf16Start": 4893,
+            "utf16End": 5033,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 3,
+            "citation": 2,
+            "file": "store.html",
+            "exactSubstring": true,
+            "utf16Start": 5290,
+            "utf16End": 5304,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 4,
+            "citation": 1,
+            "file": "about.html",
+            "exactSubstring": true,
+            "utf16Start": 3140,
+            "utf16End": 3232,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 5,
+            "citation": 1,
+            "file": "products.html",
+            "exactSubstring": true,
+            "utf16Start": 2818,
+            "utf16End": 2875,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 5,
+            "citation": 2,
+            "file": "products.html",
+            "exactSubstring": true,
+            "utf16Start": 4129,
+            "utf16End": 4188,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 5,
+            "citation": 3,
+            "file": "products.html",
+            "exactSubstring": true,
+            "utf16Start": 5344,
+            "utf16End": 5409,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 6,
+            "citation": 1,
+            "file": "products.html",
+            "exactSubstring": true,
+            "utf16Start": 6052,
+            "utf16End": 6095,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 7,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 1413,
+            "utf16End": 1524,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 8,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 2515,
+            "utf16End": 2608,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 1,
+            "citation": 1,
+            "file": "store.html",
+            "exactSubstring": true,
+            "utf16Start": 4602,
+            "utf16End": 4694,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 2,
+            "citation": 1,
+            "file": "products.html",
+            "exactSubstring": true,
+            "utf16Start": 6052,
+            "utf16End": 6095,
+            "storedOffsetMatch": true
+          }
+        ]
+      },
+      "risksReviewed": 2,
+      "rawLimitationsReviewed": 4
+    },
+    {
+      "cohort": "known",
+      "id": "real-modern-business",
+      "reportFile": "outputs/real-projects-2026-11-05/known-live.json",
+      "reportSha256": "71976747c0e7d396d00042b555fbc394b45fbd3fec765afad40c83415b669c0f",
+      "freezeSha256": "7a71c8d1673676e0564b17eee4f63eb3325725aff9795544a5f0f452e8707ff0",
+      "corpusFile": "scripts/real-project-assessment-corpus-2026-11-05.json",
+      "corpusSha256": "3704bb94e554e0f5a4454a1d4307c479752893a93ad5de0bd32284bc36eaf153",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "conclusion": "Core source states and runtime unknowns are useful, but citation selection is materially weaker than the claims and FAQ-page absence has scope ambiguity. Unknown on the exact-question requirement is a defensible conservative answer when linked omitted scripts could supply page content; retain the frozen mismatch score.",
+      "originalReferenceStatusAgreement": {
+        "raw": {
+          "count": 7,
+          "total": 8
+        },
+        "application": {
+          "count": 7,
+          "total": 8
+        }
+      },
+      "rawItemCoverage": {
+        "expected": 8,
+        "returned": 8,
+        "missing": [],
+        "duplicate": [],
+        "unknownCount": 0
+      },
+      "applicationAdmitted": true,
+      "applicationFailureReason": null,
+      "sourceObservations": [
+        "Full pricing source has Free $0/mo, Pro $9/mo, Enterprise $49/mo.",
+        "Newsletter privacy wording matches exactly; this does not establish privacy practices.",
+        "Contact field labels and literal success notice exist; no runtime email claim is proved.",
+        "FAQ has generic accordion placeholders and the displayed support@domain.com anchor uses #!, not a mailto link.",
+        "API_TOKEN is an actual source placeholder; provider/backend execution remains unknown.",
+        "Raw limitations explicitly allow required FAQ content in unsupplied assets."
+      ],
+      "issues": [
+        {
+          "severity": "P2",
+          "kind": "non_entailing_risk_citation",
+          "at": "risks[0]",
+          "note": "Risk claims generic Accordion Item placeholders but cites only the Account &amp; Billing heading. The quoted heading does not support the alleged placeholder wording, although the full faq.html independently contains those placeholders.",
+          "material": true
+        },
+        {
+          "severity": "P3",
+          "kind": "partial_citation_witness",
+          "at": "items[manual-1]",
+          "note": "The three excerpts are Free heading, $9 amount and Enterprise heading. They do not fully witness all three amount/plan pairs or monthly units. Full pricing.html independently establishes the stated $0/$9/$49 monthly source values.",
+          "material": false
+        },
+        {
+          "severity": "P3",
+          "kind": "partial_citation_witness",
+          "at": "items[manual-3]",
+          "note": "Excerpts show Full name/Email address/Message but omit Phone number. Full contact.html confirms the fourth label; do not label four-field citation coverage complete.",
+          "material": false
+        },
+        {
+          "severity": "P3",
+          "kind": "reference_scope_disagreement",
+          "at": "items[manual-5]",
+          "note": "Original criterion says FAQ page content, not the delivered static HTML body exclusively. The HTML lacks the required question, but missing JS dependencies mean broader rendered-page absence is not established. The reference assumes a narrower complete static-copy obligation. Keep raw/app insufficient_evidence as a reasonable conservative view; do not rewrite the frozen reference.",
+          "material": false
+        }
+      ],
+      "citationChecks": {
+        "rawCount": 15,
+        "applicationCount": 15,
+        "allExactSubstrings": true,
+        "allApplicationUtf16Offsets": true,
+        "semanticEntailment": "Separate issue-specific human-readable adjudication; exact-substring success is not all-claim support",
+        "rows": [
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 1,
+            "file": "pricing.html",
+            "exactSubstring": true,
+            "utf16Start": 4049,
+            "utf16End": 4112,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 2,
+            "file": "pricing.html",
+            "exactSubstring": true,
+            "utf16Start": 7282,
+            "utf16End": 7323,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 3,
+            "file": "pricing.html",
+            "exactSubstring": true,
+            "utf16Start": 10050,
+            "utf16End": 10119,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 2,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 15432,
+            "utf16End": 15486,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 3,
+            "citation": 1,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 5024,
+            "utf16End": 5059,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 3,
+            "citation": 2,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 5568,
+            "utf16End": 5608,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 3,
+            "citation": 3,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 6826,
+            "utf16End": 6862,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 4,
+            "citation": 1,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 7350,
+            "utf16End": 7396,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 4,
+            "citation": 2,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 7512,
+            "utf16End": 7568,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 5,
+            "citation": 1,
+            "file": "faq.html",
+            "exactSubstring": true,
+            "utf16Start": 4311,
+            "utf16End": 4337,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 6,
+            "citation": 1,
+            "file": "faq.html",
+            "exactSubstring": true,
+            "utf16Start": 13224,
+            "utf16End": 13259,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 7,
+            "citation": 1,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 4644,
+            "utf16End": 4702,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 8,
+            "citation": 1,
+            "file": "pricing.html",
+            "exactSubstring": true,
+            "utf16Start": 9631,
+            "utf16End": 9683,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 1,
+            "citation": 1,
+            "file": "faq.html",
+            "exactSubstring": true,
+            "utf16Start": 3884,
+            "utf16End": 3937,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 2,
+            "citation": 1,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 4644,
+            "utf16End": 4702,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 1,
+            "citation": 1,
+            "file": "pricing.html",
+            "exactSubstring": true,
+            "utf16Start": 4049,
+            "utf16End": 4112,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 1,
+            "citation": 2,
+            "file": "pricing.html",
+            "exactSubstring": true,
+            "utf16Start": 7282,
+            "utf16End": 7323,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 1,
+            "citation": 3,
+            "file": "pricing.html",
+            "exactSubstring": true,
+            "utf16Start": 10050,
+            "utf16End": 10119,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 2,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 15432,
+            "utf16End": 15486,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 3,
+            "citation": 1,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 5024,
+            "utf16End": 5059,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 3,
+            "citation": 2,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 5568,
+            "utf16End": 5608,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 3,
+            "citation": 3,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 6826,
+            "utf16End": 6862,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 4,
+            "citation": 1,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 7350,
+            "utf16End": 7396,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 4,
+            "citation": 2,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 7512,
+            "utf16End": 7568,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 5,
+            "citation": 1,
+            "file": "faq.html",
+            "exactSubstring": true,
+            "utf16Start": 4311,
+            "utf16End": 4337,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 6,
+            "citation": 1,
+            "file": "faq.html",
+            "exactSubstring": true,
+            "utf16Start": 13224,
+            "utf16End": 13259,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 7,
+            "citation": 1,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 4644,
+            "utf16End": 4702,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 8,
+            "citation": 1,
+            "file": "pricing.html",
+            "exactSubstring": true,
+            "utf16Start": 9631,
+            "utf16End": 9683,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 1,
+            "citation": 1,
+            "file": "faq.html",
+            "exactSubstring": true,
+            "utf16Start": 3884,
+            "utf16End": 3937,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 2,
+            "citation": 1,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 4644,
+            "utf16End": 4702,
+            "storedOffsetMatch": true
+          }
+        ]
+      },
+      "risksReviewed": 2,
+      "rawLimitationsReviewed": 5
+    },
+    {
+      "cohort": "known",
+      "id": "real-corona-admin",
+      "reportFile": "outputs/real-projects-2026-11-05/known-live.json",
+      "reportSha256": "71976747c0e7d396d00042b555fbc394b45fbd3fec765afad40c83415b669c0f",
+      "freezeSha256": "7a71c8d1673676e0564b17eee4f63eb3325725aff9795544a5f0f452e8707ff0",
+      "corpusFile": "scripts/real-project-assessment-corpus-2026-11-05.json",
+      "corpusSha256": "3704bb94e554e0f5a4454a1d4307c479752893a93ad5de0bd32284bc36eaf153",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "conclusion": "Literal financial column labels and public sample amounts are kept separate from actual authentication/payment/persistence. The requested privacy sentence is absent from the delivered register body source. No actual payment or permanent backend-absence claim is established.",
+      "originalReferenceStatusAgreement": {
+        "raw": {
+          "count": 8,
+          "total": 8
+        },
+        "application": {
+          "count": 8,
+          "total": 8
+        }
+      },
+      "rawItemCoverage": {
+        "expected": 8,
+        "returned": 8,
+        "missing": [],
+        "duplicate": [],
+        "unknownCount": 0
+      },
+      "applicationAdmitted": true,
+      "applicationFailureReason": null,
+      "sourceObservations": [
+        "Both Payment Mode/Payment Status headings present.",
+        "Transfer to Paypal and $236 occur in one source card.",
+        "Login labels, 404 apology and home link text present.",
+        "Required literal privacy sentence absent from full register HTML body.",
+        "No authentication, actual money movement or post-restart account readback demonstrated."
+      ],
+      "issues": [
+        {
+          "severity": "P3",
+          "kind": "source_only_caution",
+          "at": "items[coverage-1]",
+          "note": "Static HTML has no authentication logic or backend is acceptable only as a statement of the supplied HTML subset; it must not be read as proof that the original deployed site has no backend.",
+          "material": false
+        }
+      ],
+      "citationChecks": {
+        "rawCount": 13,
+        "applicationCount": 13,
+        "allExactSubstrings": true,
+        "allApplicationUtf16Offsets": true,
+        "semanticEntailment": "Separate issue-specific human-readable adjudication; exact-substring success is not all-claim support",
+        "rows": [
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 36220,
+            "utf16End": 36243,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 2,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 36322,
+            "utf16End": 36347,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 2,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 25190,
+            "utf16End": 25237,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 2,
+            "citation": 2,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 25538,
+            "utf16End": 25578,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 2,
+            "citation": 3,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 25828,
+            "utf16End": 25871,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 3,
+            "citation": 1,
+            "file": "pages/samples/login.html",
+            "exactSubstring": true,
+            "utf16Start": 1275,
+            "utf16End": 1309,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 3,
+            "citation": 2,
+            "file": "pages/samples/login.html",
+            "exactSubstring": true,
+            "utf16Start": 1467,
+            "utf16End": 1492,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 4,
+            "citation": 1,
+            "file": "pages/samples/error-404.html",
+            "exactSubstring": true,
+            "utf16Start": 1450,
+            "utf16End": 1492,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 4,
+            "citation": 2,
+            "file": "pages/samples/error-404.html",
+            "exactSubstring": true,
+            "utf16Start": 1719,
+            "utf16End": 1731,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 5,
+            "citation": 1,
+            "file": "pages/samples/register.html",
+            "exactSubstring": true,
+            "utf16Start": 2798,
+            "utf16End": 2898,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 7,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 25828,
+            "utf16End": 25871,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 8,
+            "citation": 1,
+            "file": "pages/samples/register.html",
+            "exactSubstring": true,
+            "utf16Start": 1208,
+            "utf16End": 1214,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 1,
+            "citation": 1,
+            "file": "pages/samples/register.html",
+            "exactSubstring": true,
+            "utf16Start": 2798,
+            "utf16End": 2898,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 1,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 36220,
+            "utf16End": 36243,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 1,
+            "citation": 2,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 36322,
+            "utf16End": 36347,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 2,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 25190,
+            "utf16End": 25237,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 2,
+            "citation": 2,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 25538,
+            "utf16End": 25578,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 2,
+            "citation": 3,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 25828,
+            "utf16End": 25871,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 3,
+            "citation": 1,
+            "file": "pages/samples/login.html",
+            "exactSubstring": true,
+            "utf16Start": 1275,
+            "utf16End": 1309,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 3,
+            "citation": 2,
+            "file": "pages/samples/login.html",
+            "exactSubstring": true,
+            "utf16Start": 1467,
+            "utf16End": 1492,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 4,
+            "citation": 1,
+            "file": "pages/samples/error-404.html",
+            "exactSubstring": true,
+            "utf16Start": 1450,
+            "utf16End": 1492,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 4,
+            "citation": 2,
+            "file": "pages/samples/error-404.html",
+            "exactSubstring": true,
+            "utf16Start": 1719,
+            "utf16End": 1731,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 5,
+            "citation": 1,
+            "file": "pages/samples/register.html",
+            "exactSubstring": true,
+            "utf16Start": 2798,
+            "utf16End": 2898,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 7,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 25828,
+            "utf16End": 25871,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 8,
+            "citation": 1,
+            "file": "pages/samples/register.html",
+            "exactSubstring": true,
+            "utf16Start": 1208,
+            "utf16End": 1214,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 1,
+            "citation": 1,
+            "file": "pages/samples/register.html",
+            "exactSubstring": true,
+            "utf16Start": 2798,
+            "utf16End": 2898,
+            "storedOffsetMatch": true
+          }
+        ]
+      },
+      "risksReviewed": 1,
+      "rawLimitationsReviewed": 4
+    },
+    {
+      "cohort": "known-supplemental",
+      "id": "real-personal-supplemental",
+      "reportFile": "outputs/real-projects-2026-11-05/known-supplemental-live.json",
+      "reportSha256": "98a5010b3130ff00bcdefcf16c8e355660fb665521e1f48f70c1111900eee9c1",
+      "freezeSha256": "0207d09cb972ac04ee4a5ce90b5677e7204f8afb0725033fc8597d413899bfbd",
+      "corpusFile": "scripts/real-project-assessment-supplemental-corpus-2026-11-05.json",
+      "corpusSha256": "24497b578d152108569fe9766203bfa135f9ca6107ca7cd4f8865e5ffaf6aeaa",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "conclusion": "HTML title mismatch is now retained correctly and other source facts are accurate. The answer still misquotes #! as # and retains a source-copy scope disagreement on two-working-day wording; do not call raw 8/8 universal semantic perfection.",
+      "originalReferenceStatusAgreement": {
+        "raw": {
+          "count": 8,
+          "total": 8
+        },
+        "application": {
+          "count": 7,
+          "total": 8
+        }
+      },
+      "rawItemCoverage": {
+        "expected": 8,
+        "returned": 8,
+        "missing": [],
+        "duplicate": [],
+        "unknownCount": 0
+      },
+      "applicationAdmitted": true,
+      "applicationFailureReason": null,
+      "sourceObservations": [
+        "index/resume titles identify Personal; projects/contact titles identify Modern Business.",
+        "Role/years/company and both degree pairs match source.",
+        "Both prohibited Project Name headings remain.",
+        "Contact label text present; no PDF or portrait pixels supplied.",
+        "No browser title rendering or download execution claimed."
+      ],
+      "issues": [
+        {
+          "severity": "P3",
+          "kind": "literal_source_misstatement",
+          "at": "items[coverage-2].explanation",
+          "actual": "href=\"#!\"",
+          "misstated": "points to '#'",
+          "note": "Citation is exact and unknown download conclusion is sound, but the explanation drops the exclamation mark. Keep this discrepancy visible.",
+          "material": false
+        },
+        {
+          "severity": "P3",
+          "kind": "reference_scope_disagreement",
+          "at": "items[coverage-1] and reply-time risk",
+          "note": "Actual criterion says Contact page copy, not static delivered HTML source exclusively. Reply-time text is absent from HTML but omitted js/scripts.js may alter copy. Application unknown is reasonable; source absence may be reported but a broader page-lacks risk should remain qualified. Frozen expected changes_suggested and raw/app counters stay unchanged.",
+          "material": false
+        },
+        {
+          "severity": "P3",
+          "kind": "partial_citation_witness",
+          "at": "items[manual-1]",
+          "note": "Excerpts cite index/resume/projects but not contact.html while explanation names contact. Full contact.html independently confirms Modern Business title; the raw claim is true but four-page citation coverage is partial.",
+          "material": false
+        }
+      ],
+      "citationChecks": {
+        "rawCount": 18,
+        "applicationCount": 18,
+        "allExactSubstrings": true,
+        "allApplicationUtf16Offsets": true,
+        "semanticEntailment": "Separate issue-specific human-readable adjudication; exact-substring success is not all-claim support",
+        "rows": [
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 271,
+            "utf16End": 318,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 2,
+            "file": "resume.html",
+            "exactSubstring": true,
+            "utf16Start": 271,
+            "utf16End": 321,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 3,
+            "file": "projects.html",
+            "exactSubstring": true,
+            "utf16Start": 271,
+            "utf16End": 328,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 2,
+            "citation": 1,
+            "file": "resume.html",
+            "exactSubstring": true,
+            "utf16Start": 3981,
+            "utf16End": 4240,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 3,
+            "citation": 1,
+            "file": "resume.html",
+            "exactSubstring": true,
+            "utf16Start": 7436,
+            "utf16End": 7584,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 3,
+            "citation": 2,
+            "file": "resume.html",
+            "exactSubstring": true,
+            "utf16Start": 9152,
+            "utf16End": 9306,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 4,
+            "citation": 1,
+            "file": "projects.html",
+            "exactSubstring": true,
+            "utf16Start": 3207,
+            "utf16End": 3248,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 4,
+            "citation": 2,
+            "file": "projects.html",
+            "exactSubstring": true,
+            "utf16Start": 4175,
+            "utf16End": 4216,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 5,
+            "citation": 1,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 4048,
+            "utf16End": 4083,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 5,
+            "citation": 2,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 4592,
+            "utf16End": 4632,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 6,
+            "citation": 1,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 2815,
+            "utf16End": 2949,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 7,
+            "citation": 1,
+            "file": "resume.html",
+            "exactSubstring": true,
+            "utf16Start": 3222,
+            "utf16End": 3269,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 8,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 4181,
+            "utf16End": 4243,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 1,
+            "citation": 1,
+            "file": "projects.html",
+            "exactSubstring": true,
+            "utf16Start": 271,
+            "utf16End": 328,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 1,
+            "citation": 2,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 265,
+            "utf16End": 322,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 2,
+            "citation": 1,
+            "file": "projects.html",
+            "exactSubstring": true,
+            "utf16Start": 3207,
+            "utf16End": 3248,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 2,
+            "citation": 2,
+            "file": "projects.html",
+            "exactSubstring": true,
+            "utf16Start": 4175,
+            "utf16End": 4216,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 3,
+            "citation": 1,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 2883,
+            "utf16End": 2949,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 1,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 271,
+            "utf16End": 318,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 1,
+            "citation": 2,
+            "file": "resume.html",
+            "exactSubstring": true,
+            "utf16Start": 271,
+            "utf16End": 321,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 1,
+            "citation": 3,
+            "file": "projects.html",
+            "exactSubstring": true,
+            "utf16Start": 271,
+            "utf16End": 328,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 2,
+            "citation": 1,
+            "file": "resume.html",
+            "exactSubstring": true,
+            "utf16Start": 3981,
+            "utf16End": 4240,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 3,
+            "citation": 1,
+            "file": "resume.html",
+            "exactSubstring": true,
+            "utf16Start": 7436,
+            "utf16End": 7584,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 3,
+            "citation": 2,
+            "file": "resume.html",
+            "exactSubstring": true,
+            "utf16Start": 9152,
+            "utf16End": 9306,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 4,
+            "citation": 1,
+            "file": "projects.html",
+            "exactSubstring": true,
+            "utf16Start": 3207,
+            "utf16End": 3248,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 4,
+            "citation": 2,
+            "file": "projects.html",
+            "exactSubstring": true,
+            "utf16Start": 4175,
+            "utf16End": 4216,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 5,
+            "citation": 1,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 4048,
+            "utf16End": 4083,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 5,
+            "citation": 2,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 4592,
+            "utf16End": 4632,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 6,
+            "citation": 1,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 2815,
+            "utf16End": 2949,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 7,
+            "citation": 1,
+            "file": "resume.html",
+            "exactSubstring": true,
+            "utf16Start": 3222,
+            "utf16End": 3269,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 8,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 4181,
+            "utf16End": 4243,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 1,
+            "citation": 1,
+            "file": "projects.html",
+            "exactSubstring": true,
+            "utf16Start": 271,
+            "utf16End": 328,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 1,
+            "citation": 2,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 265,
+            "utf16End": 322,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 2,
+            "citation": 1,
+            "file": "projects.html",
+            "exactSubstring": true,
+            "utf16Start": 3207,
+            "utf16End": 3248,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 2,
+            "citation": 2,
+            "file": "projects.html",
+            "exactSubstring": true,
+            "utf16Start": 4175,
+            "utf16End": 4216,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 3,
+            "citation": 1,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 2883,
+            "utf16End": 2949,
+            "storedOffsetMatch": true
+          }
+        ]
+      },
+      "risksReviewed": 3,
+      "rawLimitationsReviewed": 4
+    },
+    {
+      "cohort": "known-source-long-first",
+      "id": "known-corona-sixteen-checklist",
+      "reportFile": "outputs/real-projects-2026-11-05/long-live.json",
+      "reportSha256": "6e3e8d57f332086e747e59bc52f591aa1f974754b5f93497503f3beac340984f",
+      "freezeSha256": "7dd52af61dfacf5a220441bf89cfc182acecbdfdf5aacb0901e1a86aee7eb38f",
+      "corpusFile": "scripts/real-project-long-checklist-corpus-2026-11-05.json",
+      "corpusSha256": "2146495b9d1aea2836e1373a47bad7a6225baf4e4d90bd918d917535b3bc4413",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "rejected",
+      "conclusion": "All sixteen raw criterion states agree with source/reference, but password-risk explanation overstates actual runtime exposure. Application unnecessarily downgrades ten explicit source-only attributes/text obligations to unknown and retains contradictory source risks.",
+      "originalReferenceStatusAgreement": {
+        "raw": {
+          "count": 16,
+          "total": 16
+        },
+        "application": {
+          "count": 6,
+          "total": 16
+        }
+      },
+      "rawItemCoverage": {
+        "expected": 16,
+        "returned": 16,
+        "missing": [],
+        "duplicate": [],
+        "unknownCount": 0
+      },
+      "applicationAdmitted": true,
+      "applicationFailureReason": null,
+      "sourceObservations": [
+        "Login Password * adjacent input is type=text.",
+        "Register primary submit button says Login, not Create account.",
+        "404 title is generic Corona Admin.",
+        "Stripe transfer label spells Tranfer.",
+        "Order Status Henry row has Credit card and Approved; Estella row has prohibited Cash on delivered.",
+        "Register email input type=email and Terms href=#; 404 Back-to-home href=../../index.html.",
+        "Actual credentials, payment execution, account restart persistence and 375px rendering remain unknown."
+      ],
+      "issues": [
+        {
+          "severity": "P2",
+          "kind": "unsupported_runtime_inference",
+          "at": "risks[0].explanation",
+          "note": "Input under Password * really uses type=text. Claim exposing typed password characters is stronger than supplied source evidence while omitted CSS/JS and rendering were not inspected. Report the attribute mismatch and default HTML implication; actual typed-character exposure was not observed.",
+          "material": true
+        },
+        {
+          "severity": "P2",
+          "kind": "application_false_unknown",
+          "at": "application items manual-1..4 and coverage-3..8",
+          "note": "Ten explicit delivered HTML/text/attribute obligations are downgraded to unknown, including text/payment headings, type attribute, register button copy, title metadata, row values, negative text, labels/email type, Terms href and Back-to-home href. These are source facts, not authenticated login or real payment claims. This is separate from model quality.",
+          "material": true
+        },
+        {
+          "severity": "P3",
+          "kind": "association_needs_full_context",
+          "at": "items[coverage-3]",
+          "note": "Isolated Henry/Credit card/Approved excerpts support row claim only with context. Independently checked the complete same tr. Other rows also repeat Credit card/Approved, so substring validity alone is not relational evidence.",
+          "material": false
+        }
+      ],
+      "citationChecks": {
+        "rawCount": 24,
+        "applicationCount": 24,
+        "allExactSubstrings": true,
+        "allApplicationUtf16Offsets": true,
+        "semanticEntailment": "Separate issue-specific human-readable adjudication; exact-substring success is not all-claim support",
+        "rows": [
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 35426,
+            "utf16End": 35466,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 2,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 36220,
+            "utf16End": 36243,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 3,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 36322,
+            "utf16End": 36347,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 2,
+            "citation": 1,
+            "file": "pages/samples/login.html",
+            "exactSubstring": true,
+            "utf16Start": 1467,
+            "utf16End": 1561,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 3,
+            "citation": 1,
+            "file": "pages/samples/register.html",
+            "exactSubstring": true,
+            "utf16Start": 2235,
+            "utf16End": 2315,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 4,
+            "citation": 1,
+            "file": "pages/samples/error-404.html",
+            "exactSubstring": true,
+            "utf16Start": 196,
+            "utf16End": 223,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 5,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 25538,
+            "utf16End": 25578,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 5,
+            "citation": 2,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 25828,
+            "utf16End": 25871,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 6,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 26139,
+            "utf16End": 26178,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 7,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 36994,
+            "utf16End": 37031,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 7,
+            "citation": 2,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 37235,
+            "utf16End": 37257,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 7,
+            "citation": 3,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 37372,
+            "utf16End": 37427,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 8,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 38043,
+            "utf16End": 38082,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 8,
+            "citation": 2,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 38284,
+            "utf16End": 38312,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 9,
+            "citation": 1,
+            "file": "pages/samples/login.html",
+            "exactSubstring": true,
+            "utf16Start": 1275,
+            "utf16End": 1309,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 9,
+            "citation": 2,
+            "file": "pages/samples/login.html",
+            "exactSubstring": true,
+            "utf16Start": 1467,
+            "utf16End": 1492,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 10,
+            "citation": 1,
+            "file": "pages/samples/register.html",
+            "exactSubstring": true,
+            "utf16Start": 1459,
+            "utf16End": 1549,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 11,
+            "citation": 1,
+            "file": "pages/samples/register.html",
+            "exactSubstring": true,
+            "utf16Start": 2798,
+            "utf16End": 2898,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 12,
+            "citation": 1,
+            "file": "pages/samples/error-404.html",
+            "exactSubstring": true,
+            "utf16Start": 1654,
+            "utf16End": 1735,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 1,
+            "citation": 1,
+            "file": "pages/samples/login.html",
+            "exactSubstring": true,
+            "utf16Start": 1467,
+            "utf16End": 1561,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 2,
+            "citation": 1,
+            "file": "pages/samples/register.html",
+            "exactSubstring": true,
+            "utf16Start": 2235,
+            "utf16End": 2315,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 3,
+            "citation": 1,
+            "file": "pages/samples/error-404.html",
+            "exactSubstring": true,
+            "utf16Start": 196,
+            "utf16End": 223,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 4,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 26139,
+            "utf16End": 26178,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 5,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 38284,
+            "utf16End": 38312,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 1,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 35426,
+            "utf16End": 35466,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 1,
+            "citation": 2,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 36220,
+            "utf16End": 36243,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 1,
+            "citation": 3,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 36322,
+            "utf16End": 36347,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 2,
+            "citation": 1,
+            "file": "pages/samples/login.html",
+            "exactSubstring": true,
+            "utf16Start": 1467,
+            "utf16End": 1561,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 3,
+            "citation": 1,
+            "file": "pages/samples/register.html",
+            "exactSubstring": true,
+            "utf16Start": 2235,
+            "utf16End": 2315,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 4,
+            "citation": 1,
+            "file": "pages/samples/error-404.html",
+            "exactSubstring": true,
+            "utf16Start": 196,
+            "utf16End": 223,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 5,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 25538,
+            "utf16End": 25578,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 5,
+            "citation": 2,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 25828,
+            "utf16End": 25871,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 6,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 26139,
+            "utf16End": 26178,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 7,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 36994,
+            "utf16End": 37031,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 7,
+            "citation": 2,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 37235,
+            "utf16End": 37257,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 7,
+            "citation": 3,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 37372,
+            "utf16End": 37427,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 8,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 38043,
+            "utf16End": 38082,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 8,
+            "citation": 2,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 38284,
+            "utf16End": 38312,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 9,
+            "citation": 1,
+            "file": "pages/samples/login.html",
+            "exactSubstring": true,
+            "utf16Start": 1275,
+            "utf16End": 1309,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 9,
+            "citation": 2,
+            "file": "pages/samples/login.html",
+            "exactSubstring": true,
+            "utf16Start": 1467,
+            "utf16End": 1492,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 10,
+            "citation": 1,
+            "file": "pages/samples/register.html",
+            "exactSubstring": true,
+            "utf16Start": 1459,
+            "utf16End": 1549,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 11,
+            "citation": 1,
+            "file": "pages/samples/register.html",
+            "exactSubstring": true,
+            "utf16Start": 2798,
+            "utf16End": 2898,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 12,
+            "citation": 1,
+            "file": "pages/samples/error-404.html",
+            "exactSubstring": true,
+            "utf16Start": 1654,
+            "utf16End": 1735,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 1,
+            "citation": 1,
+            "file": "pages/samples/login.html",
+            "exactSubstring": true,
+            "utf16Start": 1467,
+            "utf16End": 1561,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 2,
+            "citation": 1,
+            "file": "pages/samples/register.html",
+            "exactSubstring": true,
+            "utf16Start": 2235,
+            "utf16End": 2315,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 3,
+            "citation": 1,
+            "file": "pages/samples/error-404.html",
+            "exactSubstring": true,
+            "utf16Start": 196,
+            "utf16End": 223,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 4,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 26139,
+            "utf16End": 26178,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 5,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 38284,
+            "utf16End": 38312,
+            "storedOffsetMatch": true
+          }
+        ]
+      },
+      "risksReviewed": 5,
+      "rawLimitationsReviewed": 4
+    },
+    {
+      "cohort": "released-holdout-first",
+      "id": "real-holdout-clean-blog",
+      "reportFile": "outputs/real-projects-2026-11-05/holdout-live.json",
+      "reportSha256": "75a645dc6fb536d4fd042591bae4149632cc8d2fa44643bee5bc630d3c62be6a",
+      "freezeSha256": "0789d60066421428cf0c379ba0109e066cc7731eb1f8a7fe605b28b1fb94789e",
+      "corpusFile": "scripts/real-project-holdout-corpus-2026-11-05.json",
+      "corpusSha256": "a7ca63f7dbaf32aab6d3d81b325fa4f2ed22e659ed2c1a862c5889f69b51aceb",
+      "rawWholeAnswer": "rejected",
+      "applicationWholeAnswer": "rejected",
+      "rawSemanticContent": "qualified",
+      "applicationHandling": "correct_fail_closed",
+      "conclusion": "Eight raw item states are source-correct and complete, but risk 2 omits required suggestion. Whole raw response is structurally invalid and application correctly admits no report. Do not replace this with an 8/8 whole-answer success claim.",
+      "originalReferenceStatusAgreement": {
+        "raw": {
+          "count": 8,
+          "total": 8
+        },
+        "application": {
+          "count": 0,
+          "total": 8
+        }
+      },
+      "rawItemCoverage": {
+        "expected": 8,
+        "returned": 8,
+        "missing": [],
+        "duplicate": [],
+        "unknownCount": 0
+      },
+      "applicationAdmitted": false,
+      "applicationFailureReason": "structure",
+      "sourceObservations": [
+        "All four mainNav blocks contain requested labels.",
+        "Template brand source text remains and all four title elements are identical.",
+        "Contact field labels present.",
+        "Explicit static contact privacy retention/deletion notice absent.",
+        "Post title wording matches apart from ordinary editorial comma.",
+        "Email/durable receipt and mobile behavior unverified."
+      ],
+      "issues": [
+        {
+          "severity": "P2",
+          "kind": "missing_required_response_field",
+          "at": "raw.risks[1].suggestion",
+          "note": "Second risk has title/explanation/citations but no suggestion. This violates the exact report shape. Existing fail-closed rejection is correct; a clearer bounded diagnostic may be added without fabricating the field or auto-retrying.",
+          "material": true
+        },
+        {
+          "severity": "P3",
+          "kind": "partial_citation_witness",
+          "at": "items[coverage-1]",
+          "note": "Four pages times four nav labels are claimed, but excerpts show three separate labels on three pages and omit contact.html. Full independent source inspection confirms the claim; displayed evidence is partial.",
+          "material": false
+        },
+        {
+          "severity": "P3",
+          "kind": "partial_citation_witness",
+          "at": "items[coverage-3]",
+          "note": "Three of four identical title sources are cited. Equality of even two proves distinctness failure, but all-four identity was confirmed separately from full source.",
+          "material": false
+        }
+      ],
+      "citationChecks": {
+        "rawCount": 19,
+        "applicationCount": 0,
+        "allExactSubstrings": true,
+        "allApplicationUtf16Offsets": true,
+        "semanticEntailment": "Separate issue-specific human-readable adjudication; exact-substring success is not all-claim support",
+        "rows": [
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 1722,
+            "utf16End": 1815,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 2,
+            "file": "about.html",
+            "exactSubstring": true,
+            "utf16Start": 1959,
+            "utf16End": 2058,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 3,
+            "file": "post.html",
+            "exactSubstring": true,
+            "utf16Start": 2083,
+            "utf16End": 2181,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 2,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 1186,
+            "utf16End": 1247,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 2,
+            "citation": 2,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 2709,
+            "utf16End": 2772,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 2,
+            "citation": 3,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 6476,
+            "utf16End": 6509,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 3,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 271,
+            "utf16End": 320,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 3,
+            "citation": 2,
+            "file": "about.html",
+            "exactSubstring": true,
+            "utf16Start": 271,
+            "utf16End": 320,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 3,
+            "citation": 3,
+            "file": "post.html",
+            "exactSubstring": true,
+            "utf16Start": 271,
+            "utf16End": 320,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 4,
+            "citation": 1,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 4607,
+            "utf16End": 4647,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 4,
+            "citation": 2,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 5195,
+            "utf16End": 5234,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 4,
+            "citation": 3,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 5690,
+            "utf16End": 5726,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 5,
+            "citation": 1,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 3156,
+            "utf16End": 3277,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 8,
+            "citation": 1,
+            "file": "post.html",
+            "exactSubstring": true,
+            "utf16Start": 2661,
+            "utf16End": 2727,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 1,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 1186,
+            "utf16End": 1247,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 1,
+            "citation": 2,
+            "file": "post.html",
+            "exactSubstring": true,
+            "utf16Start": 2951,
+            "utf16End": 2983,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 2,
+            "citation": 1,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 271,
+            "utf16End": 320,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 2,
+            "citation": 2,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 271,
+            "utf16End": 320,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 3,
+            "citation": 1,
+            "file": "contact.html",
+            "exactSubstring": true,
+            "utf16Start": 3156,
+            "utf16End": 3277,
+            "storedOffsetMatch": null
+          }
+        ]
+      },
+      "risksReviewed": 3,
+      "rawLimitationsReviewed": 5
+    },
+    {
+      "cohort": "released-holdout-first",
+      "id": "real-holdout-html5-boilerplate",
+      "reportFile": "outputs/real-projects-2026-11-05/holdout-live.json",
+      "reportSha256": "75a645dc6fb536d4fd042591bae4149632cc8d2fa44643bee5bc630d3c62be6a",
+      "freezeSha256": "0789d60066421428cf0c379ba0109e066cc7731eb1f8a7fe605b28b1fb94789e",
+      "corpusFile": "scripts/real-project-holdout-corpus-2026-11-05.json",
+      "corpusSha256": "a7ca63f7dbaf32aab6d3d81b325fa4f2ed22e659ed2c1a862c5889f69b51aceb",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "conclusion": "Metadata, greeting, missing static 404 anchor and runtime unknowns are sound. Cancellation-policy absence is established only for supplied homepage HTML; criterion says Home page copy and omitted js/app.js leaves broader rendered copy uncertain, so retain a qualification even though all eight frozen status labels agree.",
+      "originalReferenceStatusAgreement": {
+        "raw": {
+          "count": 8,
+          "total": 8
+        },
+        "application": {
+          "count": 8,
+          "total": 8
+        }
+      },
+      "rawItemCoverage": {
+        "expected": 8,
+        "returned": 8,
+        "missing": [],
+        "duplicate": [],
+        "unknownCount": 0
+      },
+      "applicationAdmitted": true,
+      "applicationFailureReason": null,
+      "sourceObservations": [
+        "404 heading/apology and index greeting match.",
+        "index lang empty and title empty are explicit delivered metadata mismatches.",
+        "Standalone 404.html has no Return home anchor and no JS to supply it.",
+        "Homepage policy text absent from static body, linked app.js not supplied.",
+        "HTTP status/routing and mobile viewport remain unknown."
+      ],
+      "issues": [
+        {
+          "severity": "P3",
+          "kind": "reference_scope_disagreement",
+          "at": "items[coverage-5] and policy-copy risk",
+          "note": "Raw reference expects changes_suggested for missing homepage policy copy. Complete index body lacks it, but actual criterion does not explicitly require static source text and js/app.js was omitted. A reasonable unknown is possible. Do not rewrite reference or treat source-only absence as a verified deployed-page failure.",
+          "material": false
+        }
+      ],
+      "citationChecks": {
+        "rawCount": 12,
+        "applicationCount": 12,
+        "allExactSubstrings": true,
+        "allApplicationUtf16Offsets": true,
+        "semanticEntailment": "Separate issue-specific human-readable adjudication; exact-substring success is not all-claim support",
+        "rows": [
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 1,
+            "file": "404.html",
+            "exactSubstring": true,
+            "utf16Start": 818,
+            "utf16End": 841,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 1,
+            "citation": 2,
+            "file": "404.html",
+            "exactSubstring": true,
+            "utf16Start": 844,
+            "utf16End": 910,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 2,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 750,
+            "utf16End": 796,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 3,
+            "citation": 1,
+            "file": "404.html",
+            "exactSubstring": true,
+            "utf16Start": 16,
+            "utf16End": 32,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 3,
+            "citation": 2,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 16,
+            "utf16End": 30,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 4,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 120,
+            "utf16End": 135,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 5,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 750,
+            "utf16End": 796,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "items",
+            "row": 8,
+            "citation": 1,
+            "file": "404.html",
+            "exactSubstring": true,
+            "utf16Start": 818,
+            "utf16End": 910,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 1,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 16,
+            "utf16End": 30,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 2,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 120,
+            "utf16End": 135,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 3,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 750,
+            "utf16End": 796,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "raw",
+            "kind": "risks",
+            "row": 4,
+            "citation": 1,
+            "file": "404.html",
+            "exactSubstring": true,
+            "utf16Start": 818,
+            "utf16End": 910,
+            "storedOffsetMatch": null
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 1,
+            "citation": 1,
+            "file": "404.html",
+            "exactSubstring": true,
+            "utf16Start": 818,
+            "utf16End": 841,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 1,
+            "citation": 2,
+            "file": "404.html",
+            "exactSubstring": true,
+            "utf16Start": 844,
+            "utf16End": 910,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 2,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 750,
+            "utf16End": 796,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 3,
+            "citation": 1,
+            "file": "404.html",
+            "exactSubstring": true,
+            "utf16Start": 16,
+            "utf16End": 32,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 3,
+            "citation": 2,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 16,
+            "utf16End": 30,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 4,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 120,
+            "utf16End": 135,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 5,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 750,
+            "utf16End": 796,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "items",
+            "row": 8,
+            "citation": 1,
+            "file": "404.html",
+            "exactSubstring": true,
+            "utf16Start": 818,
+            "utf16End": 910,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 1,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 16,
+            "utf16End": 30,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 2,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 120,
+            "utf16End": 135,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 3,
+            "citation": 1,
+            "file": "index.html",
+            "exactSubstring": true,
+            "utf16Start": 750,
+            "utf16End": 796,
+            "storedOffsetMatch": true
+          },
+          {
+            "layer": "application",
+            "kind": "risks",
+            "row": 4,
+            "citation": 1,
+            "file": "404.html",
+            "exactSubstring": true,
+            "utf16Start": 818,
+            "utf16End": 910,
+            "storedOffsetMatch": true
+          }
+        ]
+      },
+      "risksReviewed": 4,
+      "rawLimitationsReviewed": 3
+    }
+  ],
+  "limits": [
+    "These are public templates and newly authored tasks, not live customer deliveries or human usability sessions.",
+    "Known, supplemental known-source, long known-source task and released held-out first attempts must retain separate denominators.",
+    "Frozen label scores are retained even where a broader page-copy requirement admits a defensible unknown; qualifications are not retroactive relabeling.",
+    "No inspection of omitted JS/CSS/backend, no actual credentials or money moved, no browser rendering observed.",
+    "Source quote existence is not source inference entailment, complete list/relational coverage, runtime truth or final buyer acceptance.",
+    "Application rejected status for Clean Blog means no valid report admitted; its fail-closed response is safe behavior, not an unsafe false pass."
+  ]
+}

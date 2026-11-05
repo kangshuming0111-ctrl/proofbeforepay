@@ -1,0 +1,31 @@
+{
+  "schema": "pbp-controlled-negative-guard-v1",
+  "stage": "cycle-9-after-last-real-model-batch",
+  "modelCalls": 0,
+  "networkRequests": 0,
+  "criteria": 16,
+  "reclassifiedItems": 1,
+  "changes": [
+    {
+      "project": "real-holdout-clean-blog",
+      "criterionId": "coverage-8",
+      "before": "changes_suggested",
+      "after": "insufficient_evidence",
+      "explanation": "The quoted article-title words match the requirement, with only a comma before 'and'. That alone does not establish a content defect; the buyer should review the punctuation. Original requirements and citations are unchanged."
+    }
+  ],
+  "sourceSnapshotSha256": "7d8d88093d935e58a2bdd1a498bcd55f27bb62e9882d9d1a3baec675c7039b82",
+  "sourceFiles": 31,
+  "retainedModelBatch": "evidence-final-holdout-live.json",
+  "allOtherItemsRisksLimitationsAndCitationsUnchanged": true,
+  "rawUnknownPromotions": 0,
+  "quoteOrPaymentMutations": 0,
+  "previousReferenceAgreement": 15,
+  "replayReferenceAgreement": 15,
+  "limits": [
+    "Retained provider responses; zero new model/network calls. This is application-policy behavior, not new model accuracy.",
+    "The reference expects supported; the guard conservatively returns unknown, not automatic compliance.",
+    "Original R8 model batch remains62raw/55application of64,6/7admitted. It is not replaced by R7 best score or this replay.",
+    "Exact/verbatim/numeric/inline/ambiguous/different-word/title/business/runtime cases do not inherit this rule."
+  ]
+}

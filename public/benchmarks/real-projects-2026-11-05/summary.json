@@ -1,0 +1,300 @@
+{
+  "schema": "pbp-real-project-validation-v1",
+  "phase": "measured-including-rejected-reports",
+  "date": "2026-11-05",
+  "model": "deepseek-flash",
+  "novelFirst": {
+    "projects": 5,
+    "criteria": 40,
+    "rawAgreement": 39,
+    "applicationAgreement": 26,
+    "completeItemProjects": 5,
+    "admittedReports": 4
+  },
+  "historicalFirst": {
+    "projects": 1,
+    "criteria": 8,
+    "rawAgreement": 8,
+    "applicationAgreement": 7,
+    "completeItemProjects": 1,
+    "admittedReports": 1
+  },
+  "latestModelStage": "cycle-8-before-final-negative-guard",
+  "latestModelCounts": {
+    "projects": 7,
+    "criteria": 64,
+    "rawAgreement": 62,
+    "applicationAgreement": 55,
+    "completeItemProjects": 7,
+    "admittedReports": 6
+  },
+  "postModelGuard": {
+    "schema": "pbp-controlled-negative-guard-v1",
+    "stage": "cycle-9-after-last-real-model-batch",
+    "modelCalls": 0,
+    "networkRequests": 0,
+    "criteria": 16,
+    "reclassifiedItems": 1,
+    "changes": [
+      {
+        "project": "real-holdout-clean-blog",
+        "criterionId": "coverage-8",
+        "before": "changes_suggested",
+        "after": "insufficient_evidence",
+        "explanation": "The quoted article-title words match the requirement, with only a comma before 'and'. That alone does not establish a content defect; the buyer should review the punctuation. Original requirements and citations are unchanged."
+      }
+    ],
+    "sourceSnapshotSha256": "7d8d88093d935e58a2bdd1a498bcd55f27bb62e9882d9d1a3baec675c7039b82",
+    "sourceFiles": 31,
+    "retainedModelBatch": "evidence-final-holdout-live.json",
+    "allOtherItemsRisksLimitationsAndCitationsUnchanged": true,
+    "rawUnknownPromotions": 0,
+    "quoteOrPaymentMutations": 0,
+    "previousReferenceAgreement": 15,
+    "replayReferenceAgreement": 15,
+    "limits": [
+      "Retained provider responses; zero new model/network calls. This is application-policy behavior, not new model accuracy.",
+      "The reference expects supported; the guard conservatively returns unknown, not automatic compliance.",
+      "Original R8 model batch remains62raw/55application of64,6/7admitted. It is not replaced by R7 best score or this replay.",
+      "Exact/verbatim/numeric/inline/ambiguous/different-word/title/business/runtime cases do not inherit this rule."
+    ]
+  },
+  "knownFinal": {
+    "projects": 4,
+    "criteria": 32,
+    "rawAgreement": 31,
+    "applicationAgreement": 24,
+    "completeItemProjects": 4,
+    "admittedReports": 3
+  },
+  "heldoutFirst": {
+    "projects": 2,
+    "criteria": 16,
+    "rawAgreement": 16,
+    "applicationAgreement": 8,
+    "completeItemProjects": 2,
+    "admittedReports": 1
+  },
+  "heldoutKnownFinal": {
+    "projects": 2,
+    "criteria": 16,
+    "rawAgreement": 15,
+    "applicationAgreement": 15,
+    "completeItemProjects": 2,
+    "admittedReports": 2
+  },
+  "longFirst": {
+    "projects": 1,
+    "criteria": 16,
+    "rawAgreement": 16,
+    "applicationAgreement": 6,
+    "completeItemProjects": 1,
+    "admittedReports": 1
+  },
+  "longFinal": {
+    "projects": 1,
+    "criteria": 16,
+    "rawAgreement": 16,
+    "applicationAgreement": 16,
+    "completeItemProjects": 1,
+    "admittedReports": 1
+  },
+  "finalStatusDistribution": {
+    "error": 8,
+    "supported": 22,
+    "changes_suggested": 19,
+    "insufficient_evidence": 15
+  },
+  "assessmentCalls": 50,
+  "usageDerivedPeakCostEstimateUsd": 0.32067749999999995,
+  "unknownUsageReservedUsd": 0,
+  "finalTransport": {
+    "strictReports": 7,
+    "ignoredNullRiskFields": 0,
+    "syntaxNormalizedReports": 4
+  },
+  "wholeAnswerReview": {
+    "projects": 7,
+    "criteria": 64,
+    "originalAsReceivedJsonValid": 3,
+    "oneTrailingBraceNormalization": 4,
+    "originalArgumentBytesWholeAnswers": {
+      "accepted": 0,
+      "qualified": 2,
+      "rejected": 5
+    },
+    "normalizedRawSemanticWholeAnswers": {
+      "accepted": 1,
+      "qualified": 4,
+      "rejected": 2
+    },
+    "applicationWholeAnswers": {
+      "accepted": 2,
+      "qualified": 3,
+      "rejected": 2
+    },
+    "applicationAdmitted": 6,
+    "all64RawAndApplicationStatesMatchFixedReferences": false,
+    "referenceStatusAgreement": {
+      "raw": {
+        "count": 62,
+        "total": 64
+      },
+      "application": {
+        "count": 55,
+        "total": 64
+      }
+    },
+    "allRawItemIdsComplete": true,
+    "allCitationsExactSubstrings": false,
+    "allApplicationUtf16Offsets": true,
+    "allNormalizedFieldsMatchIndependentlyDecodedValues": true,
+    "rawCitationCount": 160,
+    "applicationCitationCount": 146,
+    "invalidRawCitations": 2,
+    "byStratum": [
+      {
+        "name": "known-source-retest",
+        "projects": 4,
+        "criteria": 32,
+        "rawReferenceAgreement": 31,
+        "applicationReferenceAgreement": 24
+      },
+      {
+        "name": "known-source-long",
+        "projects": 1,
+        "criteria": 16,
+        "rawReferenceAgreement": 16,
+        "applicationReferenceAgreement": 16
+      },
+      {
+        "name": "released-holdout-now-known",
+        "projects": 2,
+        "criteria": 16,
+        "rawReferenceAgreement": 15,
+        "applicationReferenceAgreement": 15
+      }
+    ]
+  },
+  "humanSessions": 0,
+  "externalSellerAdoption": "not-newly-observed",
+  "automaticRetries": 0,
+  "newPayments": 0,
+  "historicalCorrection": "Business Casual already existed in tracked baseline history. It remains in original calls but is excluded from novelFirst; corrected provenance and original metadata audit retained.",
+  "disputedReferences": [
+    {
+      "project": "real-personal-supplemental",
+      "criterion": "coverage-1",
+      "reason": "Broad page copy, omitted JS; conservative unknown is defensible. Original reference and strict scores unchanged."
+    },
+    {
+      "project": "real-modern-business",
+      "criterion": "manual-5",
+      "reason": "Exact page question vs omitted dynamic alternatives; source-only ambiguity retained, not force-scored as a fix."
+    },
+    {
+      "project": "real-modern-business",
+      "criterion": "coverage-1",
+      "reason": "Reference rationale said mailto; real href is #!. Text-presence label remains supported; no navigation/mail delivery proved."
+    }
+  ],
+  "limits": [
+    "Five previously unrecorded repositories include the two held-out repositories; they must not be added together. Several are related StartBootstrap templates, not five independent authors or customers.",
+    "Unmodified MIT HTML/CSS subsets plus newly authored research requirements, not original client contracts or customer deployments. Omitted JS/CSS/pixels/backend were not executed.",
+    "First cohorts used different retained implementation freezes. Known regressions and the longer Corona task add no new repository.",
+    "Raw item states, complete IDs, complete report admission, exact quotations, full semantic support and buyer acceptance are separate. First failures remain included.",
+    "Strict Beta requested a closed schema but real responses still included null extras or an orphan brace. Local bounded normalization is explicitly marked and does not invent required values; no API strict-compliance guarantee.",
+    "Raw provider envelopes and originalContentText are retained. When a single orphan brace was normalized, canonicalText and originalJsonValid/contentNormalization identify this; no original failed score is rewritten.",
+    "AI whole-answer reviews are not human usability studies. Status agreement does not imply fully supported explanations, no hidden bugs, runtime correctness or superiority over an award winner.",
+    "No new browser/backend execution for these corpus assessments, external seller adoption, human sessions, acceptance, payment, Devpost or video outcome.",
+    "Cost is usage-derived at conservative peak rates, not an invoice. Harness source-review usage is separate from assessmentCalls."
+  ],
+  "artifacts": [
+    "README.md",
+    "manifest.json",
+    "baseline-implementation.json",
+    "verified-implementation.json",
+    "baseline-live.json",
+    "baseline-freeze.json",
+    "supplemental-baseline-live.json",
+    "supplemental-baseline-freeze.json",
+    "known-live.json",
+    "known-freeze.json",
+    "known-supplemental-live.json",
+    "known-supplemental-freeze.json",
+    "long-live.json",
+    "long-freeze.json",
+    "holdout-live.json",
+    "holdout-freeze.json",
+    "final-known-live.json",
+    "final-known-freeze.json",
+    "final-supplemental-live.json",
+    "final-supplemental-freeze.json",
+    "final-long-live.json",
+    "final-long-freeze.json",
+    "final-holdout-live.json",
+    "final-holdout-freeze.json",
+    "strict-holdout-live.json",
+    "strict-holdout-freeze.json",
+    "release-holdout-live.json",
+    "release-holdout-freeze.json",
+    "verified-known-live.json",
+    "verified-known-freeze.json",
+    "verified-supplemental-live.json",
+    "verified-supplemental-freeze.json",
+    "verified-long-live.json",
+    "verified-long-freeze.json",
+    "verified-holdout-live.json",
+    "verified-holdout-freeze.json",
+    "headroom-known-live.json",
+    "headroom-known-freeze.json",
+    "headroom-supplemental-live.json",
+    "headroom-supplemental-freeze.json",
+    "headroom-long-live.json",
+    "headroom-long-freeze.json",
+    "headroom-holdout-live.json",
+    "headroom-holdout-freeze.json",
+    "semantic-final-known-live.json",
+    "semantic-final-known-freeze.json",
+    "semantic-final-supplemental-live.json",
+    "semantic-final-supplemental-freeze.json",
+    "semantic-final-long-live.json",
+    "semantic-final-long-freeze.json",
+    "semantic-final-holdout-live.json",
+    "semantic-final-holdout-freeze.json",
+    "evidence-final-known-live.json",
+    "evidence-final-known-freeze.json",
+    "evidence-final-supplemental-live.json",
+    "evidence-final-supplemental-freeze.json",
+    "evidence-final-long-live.json",
+    "evidence-final-long-freeze.json",
+    "evidence-final-holdout-live.json",
+    "evidence-final-holdout-freeze.json",
+    "r3-implementation.json",
+    "r5-implementation.json",
+    "pre-budget-implementation.json",
+    "pre-punctuation-implementation.json",
+    "controlled-replay.json",
+    "controlled-replay-supplemental-final.json",
+    "controlled-replay-strict-null.json",
+    "cycle-4-final-long-replay.json",
+    "baseline-independent-source-review.json",
+    "supplemental-independent-source-review.json",
+    "r3-independent-whole-review.json",
+    "pre-evidence-implementation.json",
+    "pre-evidence-independent-whole-review.json",
+    "r9-controlled-replay.json",
+    "r9-controlled-guard-summary.json",
+    "r9-current-freeze.json",
+    "r9-implementation.json",
+    "final-independent-whole-review.json",
+    "development-corpus.json",
+    "supplemental-corpus.json",
+    "holdout-corpus.json",
+    "long-corpus.json",
+    "development-provenance.json",
+    "supplemental-provenance.json",
+    "holdout-provenance.json",
+    "exposure-audit.json"
+  ]
+}

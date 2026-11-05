@@ -5,6 +5,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import type { ProofAssessment, ProofCriterion, ProofQuote } from "../lib/contracts.ts";
 import { assessDelivery,assessmentOutputTokenLimit } from "../lib/delivery-assessment.ts";
 import {AssessmentResponseError,requireAssessmentItemCoverage,type AssessmentFailureReason,type AssessmentCoverageDiagnostic} from "../lib/assessment-response.ts";
+import {assessmentCompletionText,assessmentReportJson} from "../lib/assessment-completion.ts";
 import { createUploadedDelivery, parseStaticProject } from "../lib/static-project.ts";
 import {summaryCoverageUnits} from "../lib/requirement-coverage.ts";
 import { DEFAULT_DEEPSEEK_MODEL, type Fetcher, type ProviderEnv } from "../lib/providers.ts";
@@ -27,9 +28,9 @@ type CriterionResult = { id: string; referenceStatus: EvaluationStatus; rawStatu
   applicationStatus: EvaluationStatus | "error" | "not_attempted"; rawCitations: CitationCheck[]; applicationCitations: CitationCheck[];
   rawCitationValidity: "valid" | "invalid" | "none" | "unavailable"; semanticReview: "pending_independent_adjudication" };
 type RawCapture = { httpStatus: number; bodyText: string | null; bodyPrefixText: string | null; bodyComplete: boolean; bodyUtf8Bytes: number; bodyByteCountIsComplete: boolean; utf8Valid: boolean; providerBody: unknown;
-  contentText: string | null; completion: unknown; items: unknown; risks: unknown; limitations: unknown; finishReason: unknown; model: unknown;
+  contentText: string | null; originalContentText: string | null; originalJsonValid: boolean | null; contentNormalization: "none" | "one_trailing_brace"; transport: "strict_tool" | "legacy_json" | null; completion: unknown; items: unknown; risks: unknown; limitations: unknown; finishReason: unknown; model: unknown;
   riskCitationChecks: CitationCheck[][] };
-export type RawItemDiagnostics={expectedCriterionIds:string[];returnedKnownCriterionIds:string[];missingCriterionIds:string[];duplicateCriterionIds:string[];unknownCriterionCount:number;invalidItemCount:number;contentParsed:boolean;idProfileParsed:boolean;completeItemCoverage:boolean;finishReason:"stop"|"length"|"other"|"unavailable"};
+export type RawItemDiagnostics={expectedCriterionIds:string[];returnedKnownCriterionIds:string[];missingCriterionIds:string[];duplicateCriterionIds:string[];unknownCriterionCount:number;invalidItemCount:number;contentParsed:boolean;idProfileParsed:boolean;profileSource:"original_json"|"normalized_strict_arguments"|"unavailable";completeItemCoverage:boolean;finishReason:"stop"|"tool_calls"|"length"|"other"|"unavailable"};
 export type ProjectEvaluationResult = { id: string; stratum: Stratum; reference: { criterionId: string; label: Reference }[]; plan: Plan;
   attempted: boolean; networkAttempted: boolean; elapsedMilliseconds?: number; raw?: RawCapture; usage?: Usage | null;
   rawDiagnostics?:RawItemDiagnostics;
@@ -189,11 +190,29 @@ async function capture(response: Response, packet: Packet): Promise<RawCapture> 
   let providerBody: unknown = null, completion: unknown = null;
   if (bodyComplete && utf8Valid) try { providerBody = JSON.parse(text); } catch { /* retain invalid original text */ }
   const root = object(providerBody), choice = Array.isArray(root?.choices) ? object(root.choices[0]) : null;
-  const contentText = typeof object(choice?.message)?.content === "string" ? object(choice?.message)!.content as string : null;
-  if (contentText !== null) try { completion = JSON.parse(contentText); } catch { /* retain complete non-JSON model text */ }
+  const message = object(choice?.message);
+  // Retain legacy partial text for historical diagnostics. A tool envelope is
+  // decoded only by production's exact-name/count validator, never by taking
+  // the first arbitrary tool argument. The raw provider finish remains intact.
+  let contentText = typeof message?.content === "string" ? message.content : null;
+  let transport: RawCapture["transport"] = contentText !== null ? "legacy_json" : null;
+  if (choice?.finish_reason === "tool_calls" || message?.tool_calls !== undefined) {
+    contentText = null; transport = null;
+    try { const decoded = assessmentCompletionText(providerBody); contentText = decoded.text; transport = decoded.transport; }
+    catch { /* Exact original envelope retained, but no trusted tool ID profile. */ }
+  }
+  const originalContentText = contentText;
+  let originalJsonValid:boolean|null = null,contentNormalization:RawCapture["contentNormalization"]="none";
+  if (contentText !== null) {
+    try {completion=JSON.parse(contentText);originalJsonValid=true;}catch{originalJsonValid=false;}
+    if (transport === "strict_tool") try {
+      const parsed=assessmentReportJson({text:contentText,transport});completion=parsed.value;contentText=parsed.canonicalText;
+      contentNormalization=parsed.repairedTrailingBrace?"one_trailing_brace":"none";
+    }catch{/* Original malformed arguments remain in originalContentText and providerBody. */}
+  }
   const output = object(completion);
   return { httpStatus: response.status, bodyText: bodyComplete && utf8Valid ? text : null,
-    bodyPrefixText: bodyComplete && utf8Valid ? null : new TextDecoder().decode(retained), bodyComplete, bodyUtf8Bytes: bytes, bodyByteCountIsComplete: bodyComplete, utf8Valid, providerBody, contentText, completion,
+    bodyPrefixText: bodyComplete && utf8Valid ? null : new TextDecoder().decode(retained), bodyComplete, bodyUtf8Bytes: bytes, bodyByteCountIsComplete: bodyComplete, utf8Valid, providerBody, contentText, originalContentText, originalJsonValid, contentNormalization, transport, completion,
     items: output?.items ?? null, risks: output?.risks ?? null, limitations: output?.limitations ?? null, finishReason: choice?.finish_reason ?? null, model: root?.model ?? null,
     riskCitationChecks: Array.isArray(output?.risks) ? output.risks.map(risk => citations(object(risk)?.citations, packet)) : [] };
 }
@@ -206,8 +225,9 @@ function rawItemDiagnostics(raw:RawCapture|undefined,expectedCriterionIds:string
  for(const item of items){const value=object(item),id=value?.criterionId;if(typeof id==="string"){if(known.has(id))counts.set(id,(counts.get(id)??0)+1);else unknownCriterionCount++;}
   try{requireAssessmentItemCoverage([item],expectedCriterionIds);}catch(error){if(!(error instanceof AssessmentResponseError)||error.reason==="structure")invalidItemCount++;}
  }
- const returnedKnownCriterionIds=expectedCriterionIds.filter(id=>counts.has(id)),missingCriterionIds=idProfileParsed?expectedCriterionIds.filter(id=>!counts.has(id)):[],duplicateCriterionIds=expectedCriterionIds.filter(id=>(counts.get(id)??0)>1),finishReason=raw?.finishReason==="stop"?"stop":raw?.finishReason==="length"?"length":raw?.finishReason===undefined||raw.finishReason===null?"unavailable":"other";
- return{expectedCriterionIds:[...expectedCriterionIds],returnedKnownCriterionIds,missingCriterionIds,duplicateCriterionIds,unknownCriterionCount,invalidItemCount,contentParsed,idProfileParsed,completeItemCoverage:idProfileParsed&&items.length===expectedCriterionIds.length&&!missingCriterionIds.length&&!duplicateCriterionIds.length&&!unknownCriterionCount&&!invalidItemCount,finishReason};
+ const returnedKnownCriterionIds=expectedCriterionIds.filter(id=>counts.has(id)),missingCriterionIds=idProfileParsed?expectedCriterionIds.filter(id=>!counts.has(id)):[],duplicateCriterionIds=expectedCriterionIds.filter(id=>(counts.get(id)??0)>1),finishReason=raw?.finishReason==="stop"?"stop":raw?.finishReason==="tool_calls"&&raw.transport==="strict_tool"?"tool_calls":raw?.finishReason==="length"?"length":raw?.finishReason===undefined||raw.finishReason===null?"unavailable":"other";
+ const profileSource:RawItemDiagnostics["profileSource"]=!idProfileParsed?"unavailable":raw?.contentNormalization==="one_trailing_brace"?"normalized_strict_arguments":"original_json";
+ return{expectedCriterionIds:[...expectedCriterionIds],returnedKnownCriterionIds,missingCriterionIds,duplicateCriterionIds,unknownCriterionCount,invalidItemCount,contentParsed,idProfileParsed,profileSource,completeItemCoverage:idProfileParsed&&items.length===expectedCriterionIds.length&&!missingCriterionIds.length&&!duplicateCriterionIds.length&&!unknownCriterionCount&&!invalidItemCount,finishReason};
 }
 function score(result: ProjectEvaluationResult, packet: Packet) {
   result.rawDiagnostics=rawItemDiagnostics(result.raw,result.criteria.map(row=>row.id));
@@ -247,12 +267,20 @@ export function summarizeProjectEvaluation(results: ProjectEvaluationResult[]) {
       raw: layer(criteria, "rawStatus"), application: layer(criteria, "applicationStatus"),
       applicationRejectedProjects: attempted.filter(p => !p.application?.accepted).length,
       rawItemStructure:{attemptedProjects:attempted.length,contentParsedProjects:attempted.filter(p=>p.rawDiagnostics?.contentParsed).length,parsedIdProfileProjects:profiles.length,
-        firstStoppedCompleteItemProjects:fraction(profiles.filter(p=>p.completeItemCoverage&&p.finishReason==="stop").length,attempted.length),
-        completeItemCoverageAmongParsedIdProfiles:fraction(profiles.filter(p=>p.completeItemCoverage).length,profiles.length),completeStoppedItemCoverageAmongParsedIdProfiles:fraction(profiles.filter(p=>p.completeItemCoverage&&p.finishReason==="stop").length,profiles.length),
+        // Historical keys are retained for readers; both normal legacy stop and
+        // validated strict tool_calls are complete finishes, never relabelled.
+        firstStoppedCompleteItemProjects:fraction(profiles.filter(p=>p.completeItemCoverage&&["stop","tool_calls"].includes(p.finishReason)).length,attempted.length),
+        firstCompletedItemProjects:fraction(profiles.filter(p=>p.completeItemCoverage&&["stop","tool_calls"].includes(p.finishReason)).length,attempted.length),
+        completeItemCoverageAmongParsedIdProfiles:fraction(profiles.filter(p=>p.completeItemCoverage).length,profiles.length),completeStoppedItemCoverageAmongParsedIdProfiles:fraction(profiles.filter(p=>p.completeItemCoverage&&["stop","tool_calls"].includes(p.finishReason)).length,profiles.length),
+        strictToolResponseProjects:attempted.filter(p=>p.raw?.transport==="strict_tool").length,
+        legacyJsonResponseProjects:attempted.filter(p=>p.raw?.transport==="legacy_json").length,
+        syntaxNormalizedProjects:attempted.filter(p=>p.raw?.contentNormalization==="one_trailing_brace").length,
+        normalizedIdProfileProjects:profiles.filter(p=>p.profileSource==="normalized_strict_arguments").length,
+        originalIdProfileProjects:profiles.filter(p=>p.profileSource==="original_json").length,
         missingItemProjectsAmongParsedIdProfiles:fraction(profiles.filter(p=>p.missingCriterionIds.length>0).length,profiles.length),duplicateItemProjectsAmongParsedIdProfiles:fraction(profiles.filter(p=>p.duplicateCriterionIds.length>0).length,profiles.length),
         unknownIdProjectsAmongParsedIdProfiles:fraction(profiles.filter(p=>p.unknownCriterionCount>0).length,profiles.length),invalidItemProjectsAmongParsedIdProfiles:fraction(profiles.filter(p=>p.invalidItemCount>0).length,profiles.length),
         unparsedIdProfileProjects:attempted.length-profiles.length,outputLimitedProjects:attempted.filter(p=>p.rawDiagnostics?.finishReason==="length").length},
-      applicationFailureReasons:Object.fromEntries(["structure","output_limit","incomplete","citation","missing_items","duplicate_items","unknown_items","generic"].map(reason=>[reason,attempted.filter(p=>!p.application?.accepted&&(p.application?.failureReason??"generic")===reason).length])),
+      applicationFailureReasons:Object.fromEntries(["structure","output_limit","incomplete","citation","missing_items","duplicate_items","unknown_items","risk_fields","generic"].map(reason=>[reason,attempted.filter(p=>!p.application?.accepted&&(p.application?.failureReason??"generic")===reason).length])),
       rawExactCitations: fraction(rawChecks.filter(c => c.valid).length, rawChecks.length), applicationExactCitationsAndOffsets: fraction(appChecks.filter(c => c.valid).length, appChecks.length),
       pendingSemanticCriterionReviews: criteria.length, pendingWholeAnswerReviews: attempted.length,
       latency: { samples: times.length, meanMilliseconds: times.length ? times.reduce((a, b) => a + b, 0) / times.length : null,
@@ -278,7 +306,7 @@ export async function runProjectEvaluation(input: unknown, options: Options = {}
     if (reportedCost + p.plan.reservedCostUsd > options.maxUsd! + 1e-12) { stopReason = "budget_reservation_rejected"; break; }
     const result = results[i], began = performance.now(), originalQuote = canonical(p.quote);
     const wrapped: Fetcher = async (url, init) => {
-      if (String(url) !== "https://api.deepseek.com/chat/completions" || hash(String(init?.body ?? "")) !== p.plan.requestSha256 || result.networkAttempted) throw new Error("Unexpected or repeated evaluation request.");
+      if (String(url) !== "https://api.deepseek.com/beta/chat/completions" || hash(String(init?.body ?? "")) !== p.plan.requestSha256 || result.networkAttempted) throw new Error("Unexpected or repeated evaluation request.");
       result.attempted = true; result.networkAttempted = true; calls++;
       const response = await (options.fetcher ?? fetch)(url, init);
       result.raw = await capture(response, p.packet); result.usage = reportedUsage(result.raw.providerBody, p.plan.outputTokenLimit);
@@ -314,7 +342,8 @@ export async function runProjectEvaluation(input: unknown, options: Options = {}
     cohort: preparation.corpus.cohort, model: preparation.snapshot.model, freezeSha256: preparation.snapshotSha256, snapshot: preparation.snapshot,
     pricing: PROJECT_EVALUATION_PRICE, limits: { maxCalls: options.live ? options.maxCalls : 0, maxUsd: options.live ? options.maxUsd : 0, automaticRetries: 0, timeoutMilliseconds: 30000, maxResponseBytes: 1_000_000 },
     accounting: { calls, reportedUsageCostUsd: reportedCost, unknownUsageReservedUsd, stopReason }, summary: summarizeProjectEvaluation(results), results,
-    measurementNotes: ["New authored synthetic projects; no real customers or human usability study.", "Reference labels never enter provider requests; freeze covers exact corpus, requests and working-tree source before live I/O.",
+    measurementNotes: ["Authored evaluation tasks; upstream or synthetic file provenance belongs to the corpus and companion provenance, not a customer deployment or human usability study.", "Reference labels never enter provider requests; freeze covers exact corpus, requests and working-tree source before live I/O.",
+      "Provider envelopes, original argument text and originalJsonValid are retained. A bounded one-brace normalization has explicit contentNormalization and rawDiagnostics.profileSource=normalized_strict_arguments; original and normalized ID profiles are counted separately. Complete-finish totals include marked normalized profiles, not a claim that the original JSON or provider strict schema was valid.",
       "This assessment layer evaluates only the declared custom manual/coverage criteria, not the additional page/mobile checks from the full product intake or an end-to-end user task. New checklist shapes use the real five-manual/twelve-coverage intake; historical two-manual packets retain their prior shape.",
       "Raw item-coverage rates use attempted projects with a parsed items array. Unparsed/no-response attempts are counted separately and remain in the all-attempt status denominators. Complete ID coverage does not establish citation entailment, full response validity or semantic correctness; multiple structural issue categories can apply to one response.",
       "Raw model status and application policy output are separate measurements. Application-forced unknown is not model abstention.",

@@ -1,6 +1,7 @@
 import {ProviderError} from "./providers.ts";
+import {ASSESSMENT_ITEM_CITATION_LIMIT} from "./assessment-limits.ts";
 
-export type AssessmentFailureReason = "structure" | "output_limit" | "incomplete" | "citation" | "missing_items" | "duplicate_items" | "unknown_items";
+export type AssessmentFailureReason = "structure" | "output_limit" | "incomplete" | "citation" | "missing_items" | "duplicate_items" | "unknown_items" | "risk_fields";
 export type AssessmentCoverageDiagnostic = {
   expectedCriterionIds: readonly string[];
   missingCriterionIds: readonly string[];
@@ -15,6 +16,7 @@ const MESSAGES: Record<AssessmentFailureReason, string> = {
   missing_items: "AI omitted one or more required criterion responses.",
   duplicate_items: "AI repeated one or more criterion responses.",
   unknown_items: "AI returned responses for criteria outside the confirmed checklist.",
+  risk_fields: "An AI risk entry has missing or invalid detail fields.",
 };
 /** Safe machine-readable diagnostics only. Unknown model IDs and model text are
  * never attached; known IDs come exclusively from the validated locked input. */
@@ -43,7 +45,7 @@ function shell(value: unknown): Record<string, unknown> {
   if (typeof r.criterionId !== "string" || !r.criterionId.trim() || r.criterionId.length > 80 || CONTROL.test(r.criterionId)
     || typeof r.status !== "string" || !["supported", "changes_suggested", "insufficient_evidence"].includes(r.status)
     || typeof r.explanation !== "string" || !r.explanation.trim() || r.explanation.length > 600 || CONTROL.test(r.explanation)
-    || !Array.isArray(r.citations) || r.citations.length > 3) fail();
+    || !Array.isArray(r.citations) || r.citations.length > ASSESSMENT_ITEM_CITATION_LIMIT) fail();
   return r;
 }
 

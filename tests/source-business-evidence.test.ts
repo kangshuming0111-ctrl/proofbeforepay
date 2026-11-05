@@ -84,7 +84,7 @@ test("noncanonical, inferred or unsafe monetary forms remain unknown", () => {
   for (const value of ["$16", "16 AUD", "AUD 016", "AUD -16", "AUD +16", "AUD 1,600", "AUD16.000", "AUD 16.", "AUD16 USD18", "aud16", "ＡＵＤ１６", "￥５９９", "AUD 9007199254740991", "EUR16"]) assert.equal(evaluate(html(`<p>Beef noodles ${value}</p>`)).kind, "unknown", value);
 });
 
-test("dynamic, generated, unresolved or unsupported source uncertainty vetoes every source interpretation", () => {
+test("dynamic, generated, unresolved or unsupported source uncertainty vetoes its bound page interpretation", () => {
   for (const source of [
     html("<p>Beef noodles AUD16</p><script>document.body.textContent='x'</script>"),
     html("<p>Beef noodles AUD16</p><template><p>Menu</p></template>"),
@@ -96,7 +96,8 @@ test("dynamic, generated, unresolved or unsupported source uncertainty vetoes ev
     html("<p>Beef noodles AUD16</p>", "<style>@import 'other.css';</style>"),
     html("<p>Beef noodles AUD16</p>", "<style>p{co\\6cor:red}</style>"),
   ]) assert.equal(evaluate(source).kind, "unknown", source);
-  assert.equal(evaluate(html("<p>Beef noodles AUD16</p>"), [{expected: price}], {"site.css": "p:after{content:'AUD18'}"}).kind, "unknown");
+  assert.equal(evaluate(html("<p>Beef noodles AUD16</p>", "<link rel='stylesheet' href='site.css'>"), [{expected: price}], {"site.css": "p:after{content:'AUD18'}"}).kind, "unknown");
+  assert.equal(evaluate(html("<p>Beef noodles AUD16</p>"), [{expected: price}], {"site.css": "p:after{content:'AUD18'}"}).kind, "mismatch");
   assert.equal(createSourceBusinessEvidenceCheck({}, savedPlan())("coverage-1").kind, "unknown");
 });
 

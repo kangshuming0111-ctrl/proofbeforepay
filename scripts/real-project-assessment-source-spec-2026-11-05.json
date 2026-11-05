@@ -1,0 +1,342 @@
+{
+  "schema": "pbp-real-project-source-spec-v1",
+  "projects": [
+    {
+      "key": "business-casual",
+      "id": "real-business-casual",
+      "language": "zh",
+      "title": "真实开源咖啡馆模板：多页面内容与交付范围",
+      "rows": [
+        [
+          "store.html 的营业时间文字须说明周一至周五 7:00 AM to 8:00 PM，且星期日 Closed。",
+          "supported",
+          "store.html的完整营业时间列表包含Monday到Friday相同7:00 AM to 8:00 PM，并单独列Sunday Closed。只验证文字。",
+          [
+            "store.html"
+          ]
+        ],
+        [
+          "store.html 的星期六营业时间文字须写为 7:00 AM to 8:00 PM。",
+          "changes_suggested",
+          "原件Saturday对应9:00 AM to 5:00 PM，与新增任务明确冲突。",
+          [
+            "store.html"
+          ]
+        ],
+        [
+          "store.html 的地址和电话须写明 1116 Orchard Street、Golden Valley, Minnesota、(317) 585-8468。",
+          "supported",
+          "完整源中门店地址与电话文字均存在；不声称真实营业或号码可用。",
+          [
+            "store.html"
+          ]
+        ],
+        [
+          "about.html 的文字须说明咖啡馆由 Hernandez brothers 于 1987 年创立。",
+          "supported",
+          "源段落明确Founded in 1987 by the Hernandez brothers；仅模板故事内容。",
+          [
+            "about.html"
+          ]
+        ],
+        [
+          "products.html 的文字内容须包含 Coffees & Teas、Bakery & Kitchen、Bulk Speciality Blends 三类产品。",
+          "supported",
+          "三处section-heading-lower包含这三类，HTML实体&在语义文本中为普通&。",
+          [
+            "products.html"
+          ]
+        ],
+        [
+          "products.html 正文文案须包含完整句子 Please tell us about food allergies before ordering.",
+          "changes_suggested",
+          "完整products.html没有该新增必需句，且任务指定正文文字，不得用未提供图像或后台推定满足。",
+          [
+            "products.html"
+          ]
+        ],
+        [
+          "四个页面的手机导航须在 375px 浏览器里展开和收起并且链接均能正常跳转。",
+          "insufficient_evidence",
+          "只有HTML子集，未提供bootstrap脚本/CSS或浏览器观察；导航标记不能证明运行。",
+          [
+            "index.html",
+            "about.html",
+            "products.html",
+            "store.html"
+          ]
+        ],
+        [
+          "首页图片须真实展示一杯热咖啡并在手机上清晰且没有裁切杯口。",
+          "insufficient_evidence",
+          "没有提供图像字节、样式或手机观察，img路径与alt不能证明图片内容和裁切。",
+          [
+            "index.html"
+          ]
+        ]
+      ],
+      "repository": "StartBootstrap/startbootstrap-business-casual",
+      "commit": "b6f928934386a54e08c2e7f40ebd9e4d7510bba4",
+      "sourceFiles": [
+        {
+          "upstreamPath": "dist/index.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-business-casual/b6f928934386a54e08c2e7f40ebd9e4d7510bba4/dist/index.html",
+          "bytes": 4813,
+          "sha256": "1004c28bb0453c2c25ad2813824710df3e7fdf74881f9198e8fc671d6d948573",
+          "deliveryPath": "index.html"
+        },
+        {
+          "upstreamPath": "dist/about.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-business-casual/b6f928934386a54e08c2e7f40ebd9e4d7510bba4/dist/about.html",
+          "bytes": 4421,
+          "sha256": "823b275d2ee03b22baf4eb523117eb3e38543783c7fe7aa766ca4109211071e9",
+          "deliveryPath": "about.html"
+        },
+        {
+          "upstreamPath": "dist/products.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-business-casual/b6f928934386a54e08c2e7f40ebd9e4d7510bba4/dist/products.html",
+          "bytes": 6612,
+          "sha256": "2827ace4fa153bb60d9fbae14e687aa8f46db36299728b2f13eea89363a2b93c",
+          "deliveryPath": "products.html"
+        },
+        {
+          "upstreamPath": "dist/store.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-business-casual/b6f928934386a54e08c2e7f40ebd9e4d7510bba4/dist/store.html",
+          "bytes": 7503,
+          "sha256": "d375e12b04e873e50967c50bba34e0bc8d39bfa1c63a67ff589443c165f00998",
+          "deliveryPath": "store.html"
+        },
+        {
+          "upstreamPath": "LICENSE",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-business-casual/b6f928934386a54e08c2e7f40ebd9e4d7510bba4/LICENSE",
+          "bytes": 1091,
+          "sha256": "e8b857747301fcd4c885b3216544b18bbf60328aec2c34da614787346cf40282",
+          "deliveryPath": null
+        }
+      ]
+    },
+    {
+      "key": "modern-business",
+      "id": "real-modern-business",
+      "language": "en",
+      "title": "Real Modern Business template: plans, contact copy and runtime boundaries",
+      "rows": [
+        [
+          "Pricing page content must list Free at $0/mo, Pro at $9/mo, and Enterprise at $49/mo.",
+          "supported",
+          "pricing.html contains three plan headings and their displayed text prices. This is source copy, not billing execution.",
+          [
+            "pricing.html"
+          ]
+        ],
+        [
+          "Home page content must state: We care about privacy, and will never share your data.",
+          "supported",
+          "The exact sentence occurs in the newsletter section of index.html. It proves the promised copy only, not privacy practices.",
+          [
+            "index.html"
+          ]
+        ],
+        [
+          "Contact form source content must label Full name, Email address, Phone number, and Message.",
+          "supported",
+          "contact.html contains all four labels explicitly associated with input/textarea IDs. This requirement asks only for source content, not submission or rendered accessibility.",
+          [
+            "contact.html"
+          ]
+        ],
+        [
+          "Contact page source copy must include the exact notice: Form submission successful!",
+          "supported",
+          "The exact notice is present in contact.html in a d-none message container. The requirement is only source-copy presence; it does not assert that the notice is currently visible or conditional at runtime.",
+          [
+            "contact.html"
+          ]
+        ],
+        [
+          "FAQ page content must include the exact question: Can I cancel my plan within 30 days?",
+          "changes_suggested",
+          "The full FAQ HTML has generic Accordion Item questions and no requested cancellation question. This task explicitly requires the literal question, not inferred policy semantics.",
+          [
+            "faq.html"
+          ]
+        ],
+        [
+          "FAQ page contact details must include support@domain.com.",
+          "supported",
+          "faq.html has a mailto:support@domain.com link with that exact text. It is a template placeholder, not verified mailbox delivery.",
+          [
+            "faq.html"
+          ]
+        ],
+        [
+          "The contact form must send a real email only after valid submission and show success after delivery.",
+          "insufficient_evidence",
+          "No runtime, activation token, email service response, or independent inbox observation supplied; static success/error containers cannot establish email behavior.",
+          [
+            "contact.html"
+          ]
+        ],
+        [
+          "Choosing Pro must actually charge $9 per month and retain a queryable subscription record.",
+          "insufficient_evidence",
+          "Pricing copy and choose-plan links are not payment execution or durable subscription records; source review cannot prove those operations.",
+          [
+            "pricing.html"
+          ]
+        ]
+      ],
+      "repository": "StartBootstrap/startbootstrap-modern-business",
+      "commit": "7d297106cbda2f04db4696752fcdb5b4dc9cd936",
+      "sourceFiles": [
+        {
+          "upstreamPath": "dist/index.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-modern-business/7d297106cbda2f04db4696752fcdb5b4dc9cd936/dist/index.html",
+          "bytes": 16715,
+          "sha256": "c19b4c03d3e37b666c74684696205111d2fa3553f99326648665510ef88ff08d",
+          "deliveryPath": "index.html"
+        },
+        {
+          "upstreamPath": "dist/contact.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-modern-business/7d297106cbda2f04db4696752fcdb5b4dc9cd936/dist/contact.html",
+          "bytes": 12011,
+          "sha256": "797ef25f80da7ddd9eb6c9fa50144539805e404ebad30ebc7cd7d03fb75b917a",
+          "deliveryPath": "contact.html"
+        },
+        {
+          "upstreamPath": "dist/pricing.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-modern-business/7d297106cbda2f04db4696752fcdb5b4dc9cd936/dist/pricing.html",
+          "bytes": 13981,
+          "sha256": "9a05cacfc04f1fae1814fa879a671f811216b465c457ca7dde84dc8cde44746f",
+          "deliveryPath": "pricing.html"
+        },
+        {
+          "upstreamPath": "dist/faq.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-modern-business/7d297106cbda2f04db4696752fcdb5b4dc9cd936/dist/faq.html",
+          "bytes": 15208,
+          "sha256": "546cab2b30b5fba6cd4a224366392704eb3fa8b74694924f06b8b4c5158f259a",
+          "deliveryPath": "faq.html"
+        },
+        {
+          "upstreamPath": "LICENSE",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-modern-business/7d297106cbda2f04db4696752fcdb5b4dc9cd936/LICENSE",
+          "bytes": 1091,
+          "sha256": "e8b857747301fcd4c885b3216544b18bbf60328aec2c34da614787346cf40282",
+          "deliveryPath": null
+        }
+      ]
+    },
+    {
+      "key": "corona-admin",
+      "id": "real-corona-admin",
+      "language": "en",
+      "title": "Real Corona Admin template: static financial labels versus real operations",
+      "rows": [
+        [
+          "Dashboard page source copy must include the exact table headings Payment Mode and Payment Status.",
+          "supported",
+          "index.html contains both th texts verbatim. These are literal column headings and no real payment action is required by this criterion.",
+          [
+            "index.html"
+          ]
+        ],
+        [
+          "Dashboard page content must show Transfer to Paypal with the amount $236 in Transaction History.",
+          "supported",
+          "The first transaction-history source card contains Transfer to Paypal and $236. These are public demonstration records in an open-source template, not authenticated transactions.",
+          [
+            "index.html"
+          ]
+        ],
+        [
+          "Login page source content must include the labels Username or email * and Password *.",
+          "supported",
+          "pages/samples/login.html contains both labels as literal label elements. This criterion asks for source text only, not authentication behavior.",
+          [
+            "pages/samples/login.html"
+          ]
+        ],
+        [
+          "404 page content must say The page you’re looking for was not found. and Back to home.",
+          "supported",
+          "pages/samples/error-404.html contains the exact sentence and home-link text; source text does not prove serving the right HTTP status.",
+          [
+            "pages/samples/error-404.html"
+          ]
+        ],
+        [
+          "Register page body copy must contain the exact sentence We never sell your personal information.",
+          "changes_suggested",
+          "The full register.html source does not include this newly required sentence; no external dependency is assumed to supply required body copy.",
+          [
+            "pages/samples/register.html"
+          ]
+        ],
+        [
+          "Login must authenticate correct credentials and reject incorrect passwords while keeping different users isolated.",
+          "insufficient_evidence",
+          "Static public template HTML cannot establish server-side authentication, password checks, sessions, or per-user authorization.",
+          [
+            "pages/samples/login.html",
+            "index.html"
+          ]
+        ],
+        [
+          "Transfer to Paypal must actually execute a $236 payment and verify its provider transaction status.",
+          "insufficient_evidence",
+          "The dashboard is only static source copy and sample amounts. No real payment/provider evidence is supplied, and no money-moving operation is attempted in this evaluation.",
+          [
+            "index.html"
+          ]
+        ],
+        [
+          "Registration must persist a new account and keep that account queryable after a server restart.",
+          "insufficient_evidence",
+          "No account service, persistence, server execution or independent readback supplied; register markup is insufficient.",
+          [
+            "pages/samples/register.html"
+          ]
+        ]
+      ],
+      "repository": "BootstrapDash/corona-free-dark-bootstrap-admin-template",
+      "commit": "9e7c560c8fad79b7031f98a9dd454c52b966d2cd",
+      "sourceFiles": [
+        {
+          "upstreamPath": "template/index.html",
+          "url": "https://raw.githubusercontent.com/BootstrapDash/corona-free-dark-bootstrap-admin-template/9e7c560c8fad79b7031f98a9dd454c52b966d2cd/template/index.html",
+          "bytes": 56069,
+          "sha256": "bb42bffdaac3e8b4a7cc08666e5fd39888979805323d420ccd574c6f1e6c6f60",
+          "deliveryPath": "index.html"
+        },
+        {
+          "upstreamPath": "template/pages/samples/login.html",
+          "url": "https://raw.githubusercontent.com/BootstrapDash/corona-free-dark-bootstrap-admin-template/9e7c560c8fad79b7031f98a9dd454c52b966d2cd/template/pages/samples/login.html",
+          "bytes": 3399,
+          "sha256": "1300b10c73089e4ae74d431b0baa99e4b0b9858490c5c7946e89fbd60d98e238",
+          "deliveryPath": "pages/samples/login.html"
+        },
+        {
+          "upstreamPath": "template/pages/samples/register.html",
+          "url": "https://raw.githubusercontent.com/BootstrapDash/corona-free-dark-bootstrap-admin-template/9e7c560c8fad79b7031f98a9dd454c52b966d2cd/template/pages/samples/register.html",
+          "bytes": 3705,
+          "sha256": "2fff45b630b1c8743207aacc42074ab348389302fe75c35537b0ef47ea9745c8",
+          "deliveryPath": "pages/samples/register.html"
+        },
+        {
+          "upstreamPath": "template/pages/samples/error-404.html",
+          "url": "https://raw.githubusercontent.com/BootstrapDash/corona-free-dark-bootstrap-admin-template/9e7c560c8fad79b7031f98a9dd454c52b966d2cd/template/pages/samples/error-404.html",
+          "bytes": 2759,
+          "sha256": "4d0fd173b36a22069072f6f410ca522e5d04cc9ba7790782bc4fb48db9924bd3",
+          "deliveryPath": "pages/samples/error-404.html"
+        },
+        {
+          "upstreamPath": "LICENSE",
+          "url": "https://raw.githubusercontent.com/BootstrapDash/corona-free-dark-bootstrap-admin-template/9e7c560c8fad79b7031f98a9dd454c52b966d2cd/LICENSE",
+          "bytes": 1070,
+          "sha256": "0e4fa80f2ef2f97e8b7d3a871b85caf4c83a1267713dd139c90492bcaf685411",
+          "deliveryPath": null
+        }
+      ]
+    }
+  ]
+}

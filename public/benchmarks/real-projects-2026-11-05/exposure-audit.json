@@ -1,0 +1,57 @@
+{
+  "schema": "pbp-real-project-prior-exposure-audit-v1",
+  "verifiedOn": "2026-11-05",
+  "sourceHead": "b2b75b7bfa4ad0928fe15a8ef121c522f3c3fe67",
+  "method": "git grep -l -i exact repository slug HEAD -- .; filename-only results, no private runtime source scanned",
+  "repositories": [
+    {
+      "slug": "startbootstrap-business-casual",
+      "trackedHeadPathMatches": [
+        "HEAD:docs/fixtures/assessment-transfer-2026-11-04/README.md",
+        "HEAD:docs/fixtures/assessment-transfer-2026-11-04/provenance.json",
+        "HEAD:public/benchmarks/gap-closure-cycles-2026-11-04/transfer-corpus.json",
+        "HEAD:public/benchmarks/gap-closure-cycles-2026-11-04/transfer-current-freeze.json",
+        "HEAD:public/benchmarks/gap-closure-cycles-2026-11-04/transfer-freeze.json",
+        "HEAD:public/benchmarks/gap-closure-cycles-2026-11-04/transfer-live.json",
+        "HEAD:public/benchmarks/gap-closure-cycles-2026-11-04/transfer-provenance.json",
+        "HEAD:public/benchmarks/gap-closure-cycles-2026-11-04/transfer-repair-freeze.json",
+        "HEAD:public/benchmarks/gap-closure-cycles-2026-11-04/transfer-repair-live.json",
+        "HEAD:public/benchmarks/gap-closure-cycles-2026-11-04/transfer-repeat-live.json",
+        "HEAD:public/benchmarks/gap-closure-cycles-2026-11-04/transfer-semantic-live.json",
+        "HEAD:scripts/assessment-transfer-corpus-2026-11-04.json"
+      ],
+      "exitCode": 0,
+      "previouslyMentionedOrUsed": true
+    },
+    {
+      "slug": "startbootstrap-modern-business",
+      "trackedHeadPathMatches": [],
+      "exitCode": 1,
+      "previouslyMentionedOrUsed": false
+    },
+    {
+      "slug": "corona-free-dark-bootstrap-admin-template",
+      "trackedHeadPathMatches": [],
+      "exitCode": 1,
+      "previouslyMentionedOrUsed": false
+    },
+    {
+      "slug": "startbootstrap-personal",
+      "trackedHeadPathMatches": [],
+      "exitCode": 1,
+      "previouslyMentionedOrUsed": false
+    }
+  ],
+  "correction": {
+    "initialProvenance": "scripts/real-project-assessment-provenance-2026-11-05.json",
+    "initialCorpusSha256": "3704bb94e554e0f5a4454a1d4307c479752893a93ad5de0bd32284bc36eaf153",
+    "invalidClaim": "The initial top-level newToPriorEvaluation:true is false for business-casual. Its same commit and adapted source family were used in the 2026-11-04 transfer corpus.",
+    "discoveryTiming": "Final tracked-HEAD audit detected this after corpus creation. Root first batch completed before receiving the correction; all initial requests, source, labels and results remain unchanged.",
+    "cohortAccounting": "Initial three-project cohort contains two new repositories (modern-business and Corona) plus one historical family (business-casual). Supplemental Personal is one further new repository, same publisher as modern-business. Do not aggregate all as first-time unseen projects.",
+    "retainedCopies": [
+      "outputs/real-projects-2026-11-05/initial-corpus-retained-corpus.json",
+      "outputs/real-projects-2026-11-05/initial-corpus-retained-provenance.json",
+      "outputs/real-projects-2026-11-05/initial-corpus-retained-source-spec.json"
+    ]
+  }
+}

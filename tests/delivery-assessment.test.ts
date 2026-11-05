@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import type { ProofBusinessExpected, ProofQuote } from "../lib/contracts.ts";
-import { assessDelivery, AssessmentResponseError } from "../lib/delivery-assessment.ts";
+import { assessDelivery, AssessmentResponseError, assessmentOutputTokenLimit } from "../lib/delivery-assessment.ts";
 import { DomainError } from "../lib/domain.ts";
 import { summaryCoverageUnits } from "../lib/requirement-coverage.ts";
 import { ProviderError, type Fetcher } from "../lib/providers.ts";
@@ -80,11 +80,13 @@ test("buyer-confirmed exclusions reach the model and unknown original requiremen
 test("one bounded request disables thinking, redirects and retries and sends no commercial or old contract fields", async () => {
   const quote = agreement(), fake = mock(proposal(quote));
   await assessDelivery(quote, env, fake.fetcher);
-  assert.equal(fake.calls.length, 1); assert.equal(fake.calls[0].url, "https://api.deepseek.com/chat/completions");
+  assert.equal(fake.calls.length, 1); assert.equal(fake.calls[0].url, "https://api.deepseek.com/beta/chat/completions");
   const init = fake.calls[0].init, payload = JSON.parse(String(init.body));
   assert.equal(init.redirect, "manual"); assert.ok(init.signal instanceof AbortSignal);
-  assert.deepEqual(payload.thinking, { type: "disabled" }); assert.equal(payload.stream, false); assert.equal(payload.max_tokens, 1800);
-  assert.equal(payload.model, "deepseek-flash"); assert.equal(payload.response_format.type, "json_object");
+  assert.deepEqual(payload.thinking, { type: "disabled" }); assert.equal(payload.stream, false); assert.equal(payload.max_tokens, assessmentOutputTokenLimit(quote.proof.criteria.length));
+  assert.equal(payload.model, "deepseek-flash"); assert.equal(payload.response_format, undefined);
+  assert.deepEqual(payload.tool_choice, {type: "function", function: {name: "submit_source_assessment"}});
+  assert.equal(payload.tools.length, 1); assert.equal(payload.tools[0].function.strict, true);
   const data = JSON.parse(payload.messages[1].content);
   assert.deepEqual(Object.keys(data).sort(), ["coverage", "criteria", "fileInventory", "files", "ruleEvidence", "scopeContext"]);
   assert.deepEqual(data.scopeContext, { summary: quote.summary });
@@ -825,17 +827,17 @@ test("provider finish reasons distinguish output-limit and incomplete failures w
   for (const [finish, expected] of [
     ["length", /^AI output reached the configured response limit and is incomplete\./u],
     ["content_filter", /^AI returned an incomplete response\./u],
-    ["tool_calls", /^AI returned an incomplete response\./u],
+    ["tool_calls", /^AI returned an invalid response structure\./u],
     ["PRIVATE PROVIDER DIAGNOSTICS synthetic-test-key", /^AI returned an incomplete response\./u],
   ] as const) {
     const quote = agreement(), before = structuredClone(quote);
     // Invalid JSON is deliberate: finish_reason must be classified before content parsing.
     const fake = mock(null, { finish, content: "PRIVATE ORIGINAL CONTRACT synthetic-test-key {invalid JSON" });
     await assert.rejects(assessDelivery(quote, env, fake.fetcher), error => error instanceof AssessmentResponseError
-      && error.reason === (finish === "length" ? "output_limit" : "incomplete")
+      && error.reason === (finish === "length" ? "output_limit" : finish === "tool_calls" ? "structure" : "incomplete")
       && error.status === 502 && expected.test(error.message) && !/PRIVATE|synthetic-test-key/.test(error.message));
     assert.equal(fake.calls.length, 1); assert.deepEqual(quote, before);
-    assert.equal(JSON.parse(String(fake.calls[0].init.body)).max_tokens, 1800);
+    assert.equal(JSON.parse(String(fake.calls[0].init.body)).max_tokens, assessmentOutputTokenLimit(quote.proof.criteria.length));
   }
 });
 
@@ -987,7 +989,7 @@ test("larger valid checklists get a bounded response budget and usage is validat
       quote.proof.criteria.push({ id, title: "Opening hours", source: "Display opening hours 11am–8pm." });
       quote.proof.delivery!.evidence.push({ ...quote.proof.delivery!.evidence[2], id: `evidence-${id}`, criterionId: id });
     }
-    const expectedLimit = Math.min(6400, 1800 + Math.max(0, count - 7) * 180);
+    const expectedLimit = assessmentOutputTokenLimit(count);
     const fake = mock(proposal(quote), { usage: { prompt_tokens: 1000, completion_tokens: expectedLimit } });
     const result = await assessDelivery(quote, env, fake.fetcher);
     assert.equal(JSON.parse(String(fake.calls[0].init.body)).max_tokens, expectedLimit);
@@ -999,7 +1001,7 @@ test("larger valid checklists get a bounded response budget and usage is validat
 });
 
 test("invalid, inconsistent or above-reservation usage is omitted while result ordering follows the agreed checklist", async () => {
-  for (const tokenUsage of [{ prompt_tokens: -1, completion_tokens: 10 }, { prompt_tokens: 20, completion_tokens: 1801 }, { prompt_tokens: 1.2, completion_tokens: 10 }, { prompt_tokens: "20", completion_tokens: 10 },
+  for (const tokenUsage of [{ prompt_tokens: -1, completion_tokens: 10 }, { prompt_tokens: 20, completion_tokens: 6401 }, { prompt_tokens: 1.2, completion_tokens: 10 }, { prompt_tokens: "20", completion_tokens: 10 },
     { prompt_tokens: 20, completion_tokens: 10, total_tokens: 29 }, { prompt_tokens: 1_000_000, completion_tokens: 10 }]) {
     const quote = agreement(), output = proposal(quote); output.items.reverse();
     const result = await assessDelivery(quote, env, mock(output, { usage: tokenUsage }).fetcher);

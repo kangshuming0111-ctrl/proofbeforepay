@@ -1,4 +1,5 @@
 import {validateSavedEnquiryEvidence,validateEnquiryReportDecision,projectEnquiryReportsFor} from "./project-enquiry.ts";
+import {ASSESSMENT_ITEM_CITATION_LIMIT, ASSESSMENT_RISK_CITATION_LIMIT} from "./assessment-limits.ts";
 import type {Language, ProofAssessment, ProofCriterion, ProofDelivery, ProofEvidence, ProofQuote, ProofFeedback, StaticProjectSpec} from "./contracts.ts";
 import {DomainError} from "./domain.ts";
 import {createUploadedDelivery, parseStaticProject, validateStaticFiles} from "./static-project.ts";
@@ -174,7 +175,7 @@ function sourceReference(value:unknown,source:string):void{
 function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]):void{
   const row=object(value,["id","deliveryId","method","mode","model","assessedAt","items","risks","limitations","coverage","usage"],"AI assessment");
   text(row.id,100);text(row.model,200);requireValue(row.deliveryId===delivery.id&&row.method==="source-ai-v1"&&row.mode==="live"&&typeof row.assessedAt==="string"&&Number.isFinite(Date.parse(row.assessedAt)),"AI assessment binding is invalid.");
-  const cite=(value:unknown)=>array(value,3,"AI citations").forEach(entry=>{
+  const cite=(value:unknown,limit:number)=>array(value,limit,"AI citations").forEach(entry=>{
     const citation=object(entry,["file","start","end","excerpt"],"AI citation"),file=text(citation.file,200);
     requireValue(Object.hasOwn(delivery.files!,file),"AI citation file is missing.");sourceReference(pick(citation,["start","end","excerpt"]),delivery.files![file]);
   });
@@ -182,12 +183,12 @@ function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]
   for(const item of items){
     const result=object(item,["criterionId","status","explanation","citations","ruleEvidenceIds"],"AI item");
     requireValue(agreed.some(criterion=>criterion.id===result.criterionId)&&["supported","changes_suggested","insufficient_evidence"].includes(result.status as string),"AI criterion reference is invalid.");
-    text(result.explanation,3000);cite(result.citations);
+    text(result.explanation,3000);cite(result.citations,ASSESSMENT_ITEM_CITATION_LIMIT);
     for(const id of array(result.ruleEvidenceIds,66,"AI rule references"))requireValue(delivery.evidence.some(entry=>entry.id===id&&entry.criterionId===result.criterionId),"AI rule reference is missing or belongs to a different criterion.");
   }
   requireValue(new Set(items.map(item=>(item as Record<string,unknown>).criterionId)).size===items.length,"AI criterion references are duplicated.");
   requireValue(items.length===agreed.length&&agreed.every(criterion=>items.some(item=>(item as Record<string,unknown>).criterionId===criterion.id)),"AI assessment must include every agreed criterion exactly once.");
-  for(const item of array(row.risks,20,"AI risks")){const risk=object(item,["title","explanation","suggestion","citations"],"AI risk");text(risk.title,500);text(risk.explanation,3000);text(risk.suggestion,3000);cite(risk.citations);}
+  for(const item of array(row.risks,20,"AI risks")){const risk=object(item,["title","explanation","suggestion","citations"],"AI risk");text(risk.title,500);text(risk.explanation,3000);text(risk.suggestion,3000);cite(risk.citations,ASSESSMENT_RISK_CITATION_LIMIT);}
   array(row.limitations,30,"AI limitations").forEach(item=>text(item,3000));
   const coverage=object(row.coverage,["includedFiles","truncatedFiles","omittedFiles"],"AI source coverage");
   for(const values of Object.values(coverage))for(const file of array(values,40,"AI source inventory"))requireValue(typeof file==="string"&&Object.hasOwn(delivery.files!,file),"AI source inventory references a missing file.");

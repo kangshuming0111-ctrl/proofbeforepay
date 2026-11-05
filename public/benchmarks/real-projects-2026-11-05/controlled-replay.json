@@ -1,0 +1,848 @@
+{
+  "schema": "pbp-real-project-controlled-replay-v1",
+  "createdAt": "2026-11-05T06:56:31.703Z",
+  "corpusSha256": "3704bb94e554e0f5a4454a1d4307c479752893a93ad5de0bd32284bc36eaf153",
+  "priorReportSha256": "23dbffaf5ffe7d168662fad6f55a79f83485f54d01fe2b28a965a883ecaf5b27",
+  "networkRequests": 0,
+  "modelCalls": 0,
+  "interceptedRequests": 3,
+  "criterionCount": 24,
+  "previousApplicationAgreement": 19,
+  "replayApplicationAgreement": 24,
+  "rows": [
+    {
+      "id": "real-business-casual",
+      "retainedResponseSha256": "4d1a60aa0799f09410441aaa4479519dca9141b1ce3910f8a6c087de3f91e81c",
+      "originalRequestSha256": "606992f41c0bc7e70d2309a05768a3b5a6505379475fd1dcb13022e3ded7cc47",
+      "replayRequestSha256": "4ece2be3dab7ba8d64d46e19a87240d7fca35c209443ccfc39c640b988c8f6f4",
+      "criteria": [
+        {
+          "id": "manual-1",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "supported",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "manual-2",
+          "reference": "changes_suggested",
+          "raw": "changes_suggested",
+          "previousApplication": "changes_suggested",
+          "replayApplication": "changes_suggested"
+        },
+        {
+          "id": "manual-3",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "supported",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "manual-4",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "insufficient_evidence",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "manual-5",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "supported",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "coverage-1",
+          "reference": "changes_suggested",
+          "raw": "changes_suggested",
+          "previousApplication": "changes_suggested",
+          "replayApplication": "changes_suggested"
+        },
+        {
+          "id": "coverage-2",
+          "reference": "insufficient_evidence",
+          "raw": "insufficient_evidence",
+          "previousApplication": "insufficient_evidence",
+          "replayApplication": "insufficient_evidence"
+        },
+        {
+          "id": "coverage-3",
+          "reference": "insufficient_evidence",
+          "raw": "insufficient_evidence",
+          "previousApplication": "insufficient_evidence",
+          "replayApplication": "insufficient_evidence"
+        }
+      ],
+      "report": {
+        "id": "f07a667b-3ad5-4468-8cbf-bb1a8acebd58",
+        "deliveryId": "eval-real-business-casual",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-05T06:56:31.672Z",
+        "items": [
+          {
+            "criterionId": "manual-1",
+            "status": "supported",
+            "explanation": "store.html 营业时间列表逐日列出：周一至周五均为 7:00 AM to 8:00 PM，周日为 Closed。",
+            "citations": [
+              {
+                "file": "store.html",
+                "start": 3096,
+                "end": 3174,
+                "excerpt": "Sunday\n                                    <span class=\"ms-auto\">Closed</span>"
+              },
+              {
+                "file": "store.html",
+                "start": 3336,
+                "end": 3426,
+                "excerpt": "Monday\n                                    <span class=\"ms-auto\">7:00 AM to 8:00 PM</span>"
+              },
+              {
+                "file": "store.html",
+                "start": 4350,
+                "end": 4440,
+                "excerpt": "Friday\n                                    <span class=\"ms-auto\">7:00 AM to 8:00 PM</span>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-1"
+            ]
+          },
+          {
+            "criterionId": "manual-2",
+            "status": "changes_suggested",
+            "explanation": "星期六文字为 9:00 AM to 5:00 PM，与要求的 7:00 AM to 8:00 PM 不符。",
+            "citations": [
+              {
+                "file": "store.html",
+                "start": 4602,
+                "end": 4694,
+                "excerpt": "Saturday\n                                    <span class=\"ms-auto\">9:00 AM to 5:00 PM</span>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-2"
+            ]
+          },
+          {
+            "criterionId": "manual-3",
+            "status": "supported",
+            "explanation": "store.html 含街道、城市州与电话号码三项内容。",
+            "citations": [
+              {
+                "file": "store.html",
+                "start": 4893,
+                "end": 5033,
+                "excerpt": "<strong>1116 Orchard Street</strong>\n                                    <br />\n                                    Golden Valley, Minnesota"
+              },
+              {
+                "file": "store.html",
+                "start": 5290,
+                "end": 5304,
+                "excerpt": "(317) 585-8468"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-3"
+            ]
+          },
+          {
+            "criterionId": "manual-4",
+            "status": "supported",
+            "explanation": "about.html 正文写明 1987 年由 Hernandez brothers 创立。",
+            "citations": [
+              {
+                "file": "about.html",
+                "start": 3140,
+                "end": 3232,
+                "excerpt": "Founded in 1987 by the Hernandez brothers, our establishment has been serving up rich coffee"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-4"
+            ]
+          },
+          {
+            "criterionId": "manual-5",
+            "status": "supported",
+            "explanation": "products.html 三个产品标题分别包含三类名称。",
+            "citations": [
+              {
+                "file": "products.html",
+                "start": 2818,
+                "end": 2875,
+                "excerpt": "<span class=\"section-heading-lower\">Coffees & Teas</span>"
+              },
+              {
+                "file": "products.html",
+                "start": 4129,
+                "end": 4188,
+                "excerpt": "<span class=\"section-heading-lower\">Bakery & Kitchen</span>"
+              },
+              {
+                "file": "products.html",
+                "start": 5344,
+                "end": 5409,
+                "excerpt": "<span class=\"section-heading-lower\">Bulk Speciality Blends</span>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-5"
+            ]
+          },
+          {
+            "criterionId": "coverage-1",
+            "status": "changes_suggested",
+            "explanation": "已检查 products.html 全部正文段落，未出现该过敏提示完整句子。",
+            "citations": [
+              {
+                "file": "products.html",
+                "start": 3258,
+                "end": 3298,
+                "excerpt": "We take pride in our work, and it shows."
+              },
+              {
+                "file": "products.html",
+                "start": 4571,
+                "end": 4684,
+                "excerpt": "Our seasonal menu features delicious snacks, baked goods, and even full meals perfect for breakfast or lunchtime."
+              },
+              {
+                "file": "products.html",
+                "start": 6052,
+                "end": 6095,
+                "excerpt": "Please visit us in person for more details."
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-6"
+            ]
+          },
+          {
+            "criterionId": "coverage-2",
+            "status": "insufficient_evidence",
+            "explanation": "本项不属于明确可用源码核对的文本内容要求，或含运行、交互、手机体验及主观判断；需要其他证据或买家实际确认。",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 1458,
+                "end": 1524,
+                "excerpt": "data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\""
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-7"
+            ]
+          },
+          {
+            "criterionId": "coverage-3",
+            "status": "insufficient_evidence",
+            "explanation": "本项不属于明确可用源码核对的文本内容要求，或含运行、交互、手机体验及主观判断；需要其他证据或买家实际确认。",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 2515,
+                "end": 2608,
+                "excerpt": "<img class=\"intro-img img-fluid mb-3 mb-lg-0 rounded\" src=\"assets/img/intro.jpg\" alt=\"...\" />"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-8"
+            ]
+          }
+        ],
+        "risks": [
+          {
+            "title": "store.html 星期六营业时间与约定不符",
+            "explanation": "星期六显示 9:00 AM to 5:00 PM，而约定为 7:00 AM to 8:00 PM。",
+            "suggestion": "核对并遵循约定值修改星期六营业时间文字。",
+            "citations": [
+              {
+                "file": "store.html",
+                "start": 4602,
+                "end": 4694,
+                "excerpt": "Saturday\n                                    <span class=\"ms-auto\">9:00 AM to 5:00 PM</span>"
+              }
+            ]
+          },
+          {
+            "title": "products.html 缺少过敏提示句",
+            "explanation": "正文三个产品段落中未出现指定的过敏提示完整句子。",
+            "suggestion": "在 products.html 正文加入约定句子 Please tell us about food allergies before ordering.",
+            "citations": [
+              {
+                "file": "products.html",
+                "start": 6052,
+                "end": 6095,
+                "excerpt": "Please visit us in person for more details."
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "未提供浏览器运行结果，375px 下导航展开收起与链接跳转无法核验。",
+          "未提供首页图片像素，无法判断是否为热咖啡、是否清晰或杯口裁切。",
+          "图片 alt 均为省略号，无法从源码得知图片实际内容。",
+          "人工验收与支付由买家最终决定，本报告仅为来源层面的建议。",
+          "已发送全部受支持 HTML/CSS 原文，但完整输入不代表 AI 已正确理解；未运行浏览器、脚本或后台，不能证明功能、安全性或完整交付。",
+          "AI 建议与服务端规则分开记录。人工检查和最终验收由买家完成，不会自动验收、授权或付款。"
+        ],
+        "coverage": {
+          "includedFiles": [
+            "about.html",
+            "index.html",
+            "products.html",
+            "store.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "usage": {
+          "promptTokens": 9664,
+          "completionTokens": 1036
+        }
+      }
+    },
+    {
+      "id": "real-modern-business",
+      "retainedResponseSha256": "349808037a23c974462dbd5a6ee5fd0f9c50834fa706ae60e3af2b924faefeb3",
+      "originalRequestSha256": "47356453007f88adf8b6852520c16ea9789abe2c2b4c5e1ff16b82b60cea3813",
+      "replayRequestSha256": "4efa950b34362fe5c3997afbe16369065dad2f322cfd0ae9eaeffb3e10d16ae6",
+      "criteria": [
+        {
+          "id": "manual-1",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "supported",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "manual-2",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "supported",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "manual-3",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "insufficient_evidence",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "manual-4",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "insufficient_evidence",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "manual-5",
+          "reference": "changes_suggested",
+          "raw": "changes_suggested",
+          "previousApplication": "changes_suggested",
+          "replayApplication": "changes_suggested"
+        },
+        {
+          "id": "coverage-1",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "supported",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "coverage-2",
+          "reference": "insufficient_evidence",
+          "raw": "insufficient_evidence",
+          "previousApplication": "insufficient_evidence",
+          "replayApplication": "insufficient_evidence"
+        },
+        {
+          "id": "coverage-3",
+          "reference": "insufficient_evidence",
+          "raw": "insufficient_evidence",
+          "previousApplication": "insufficient_evidence",
+          "replayApplication": "insufficient_evidence"
+        }
+      ],
+      "report": {
+        "id": "a1199a78-a18c-4c0c-95a2-2f577e2941a8",
+        "deliveryId": "eval-real-modern-business",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-05T06:56:31.690Z",
+        "items": [
+          {
+            "criterionId": "manual-1",
+            "status": "supported",
+            "explanation": "Pricing page cards show Free $0/mo, Pro $9/mo, Enterprise $49/mo.",
+            "citations": [
+              {
+                "file": "pricing.html",
+                "start": 4102,
+                "end": 4106,
+                "excerpt": "Free"
+              },
+              {
+                "file": "pricing.html",
+                "start": 7282,
+                "end": 7401,
+                "excerpt": "<span class=\"display-4 fw-bold\">$9</span>\n                                        <span class=\"text-muted\">/ mo.</span>"
+              },
+              {
+                "file": "pricing.html",
+                "start": 10215,
+                "end": 10257,
+                "excerpt": "<span class=\"display-4 fw-bold\">$49</span>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-1"
+            ]
+          },
+          {
+            "criterionId": "manual-2",
+            "status": "supported",
+            "explanation": "Home page contains the exact privacy statement in the newsletter aside.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 15432,
+                "end": 15486,
+                "excerpt": "We care about privacy, and will never share your data."
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-2"
+            ]
+          },
+          {
+            "criterionId": "manual-3",
+            "status": "supported",
+            "explanation": "Contact form labels match Full name, Email address, Phone number, Message.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 5024,
+                "end": 5059,
+                "excerpt": "<label for=\"name\">Full name</label>"
+              },
+              {
+                "file": "contact.html",
+                "start": 5568,
+                "end": 5608,
+                "excerpt": "<label for=\"email\">Email address</label>"
+              },
+              {
+                "file": "contact.html",
+                "start": 6236,
+                "end": 6275,
+                "excerpt": "<label for=\"phone\">Phone number</label>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-3"
+            ]
+          },
+          {
+            "criterionId": "manual-4",
+            "status": "supported",
+            "explanation": "Exact notice appears in the submit success block (no space in 'successful!').",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 7512,
+                "end": 7568,
+                "excerpt": "<div class=\"fw-bolder\">Form submission successful!</div>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-4"
+            ]
+          },
+          {
+            "criterionId": "manual-5",
+            "status": "changes_suggested",
+            "explanation": "FAQ page uses placeholder 'Accordion Item #1/#2/#3'; required exact question is absent.",
+            "citations": [
+              {
+                "file": "faq.html",
+                "start": 4311,
+                "end": 4328,
+                "excerpt": "Accordion Item #1"
+              },
+              {
+                "file": "faq.html",
+                "start": 3542,
+                "end": 3595,
+                "excerpt": "<h1 class=\"fw-bolder\">Frequently Asked Questions</h1>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-5"
+            ]
+          },
+          {
+            "criterionId": "coverage-1",
+            "status": "supported",
+            "explanation": "FAQ page contact card includes support@domain.com link.",
+            "citations": [
+              {
+                "file": "faq.html",
+                "start": 13224,
+                "end": 13259,
+                "excerpt": "<a href=\"#!\">support@domain.com</a>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-6"
+            ]
+          },
+          {
+            "criterionId": "coverage-2",
+            "status": "insufficient_evidence",
+            "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+            "citations": [],
+            "ruleEvidenceIds": [
+              "eval-evidence-7"
+            ]
+          },
+          {
+            "criterionId": "coverage-3",
+            "status": "insufficient_evidence",
+            "explanation": "This requirement includes an actual refund, charge or payment operation. Source policy copy cannot establish that money moved. Supply the execution result and transaction record, and check the complete locked requirement.",
+            "citations": [],
+            "ruleEvidenceIds": [
+              "eval-evidence-8"
+            ]
+          }
+        ],
+        "risks": [
+          {
+            "title": "Contact form uses placeholder API token",
+            "explanation": "Form declares data-sb-form-api-token=\"API_TOKEN\"; without a real token submissions may not be processed.",
+            "suggestion": "Confirm a valid API token or backend integration is configured for the form.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 4644,
+                "end": 4702,
+                "excerpt": "<form id=\"contactForm\" data-sb-form-api-token=\"API_TOKEN\">"
+              }
+            ]
+          },
+          {
+            "title": "FAQ accordion questions remain template placeholders",
+            "explanation": "Accordion headers show 'Accordion Item #1' etc., not the required cancellation question.",
+            "suggestion": "Replace placeholder accordion copy with the agreed FAQ questions.",
+            "citations": [
+              {
+                "file": "faq.html",
+                "start": 4311,
+                "end": 4328,
+                "excerpt": "Accordion Item #1"
+              }
+            ]
+          },
+          {
+            "title": "Pro 'Choose plan' link is a placeholder anchor",
+            "explanation": "Pricing plan buttons use href=\"#!\", so selecting Pro does not initiate any charge flow.",
+            "suggestion": "Confirm checkout/subscription flow is intended and verify it separately.",
+            "citations": [
+              {
+                "file": "pricing.html",
+                "start": 9631,
+                "end": 9683,
+                "excerpt": "<a class=\"btn btn-primary\" href=\"#!\">Choose plan</a>"
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "No browser rendering, interactivity, or visual appearance was observed.",
+          "Email sending, validation gating, and success-after-delivery cannot be verified from static source.",
+          "Actual $9 charging and subscription persistence are backend behaviors not testable here.",
+          "Bootstrap/JS bundle and SB Forms script contents were not supplied for review.",
+          "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "coverage": {
+          "includedFiles": [
+            "contact.html",
+            "faq.html",
+            "index.html",
+            "pricing.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "usage": {
+          "promptTokens": 16372,
+          "completionTokens": 899
+        }
+      }
+    },
+    {
+      "id": "real-corona-admin",
+      "retainedResponseSha256": "5ab4f474425032d21d3408c3d10536608920f9516fa1bff8a3118f933280c31d",
+      "originalRequestSha256": "d7e2c679f1beab5c2f5ceba260860ccb6542156c3c5a9c085295b140c1f97dde",
+      "replayRequestSha256": "12d9fb59bee35b94dda29925f9502499ebacca7df7fcf4bf9c83e866ab8dc316",
+      "criteria": [
+        {
+          "id": "manual-1",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "insufficient_evidence",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "manual-2",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "supported",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "manual-3",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "insufficient_evidence",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "manual-4",
+          "reference": "supported",
+          "raw": "supported",
+          "previousApplication": "supported",
+          "replayApplication": "supported"
+        },
+        {
+          "id": "manual-5",
+          "reference": "changes_suggested",
+          "raw": "changes_suggested",
+          "previousApplication": "changes_suggested",
+          "replayApplication": "changes_suggested"
+        },
+        {
+          "id": "coverage-1",
+          "reference": "insufficient_evidence",
+          "raw": "insufficient_evidence",
+          "previousApplication": "insufficient_evidence",
+          "replayApplication": "insufficient_evidence"
+        },
+        {
+          "id": "coverage-2",
+          "reference": "insufficient_evidence",
+          "raw": "insufficient_evidence",
+          "previousApplication": "insufficient_evidence",
+          "replayApplication": "insufficient_evidence"
+        },
+        {
+          "id": "coverage-3",
+          "reference": "insufficient_evidence",
+          "raw": "insufficient_evidence",
+          "previousApplication": "insufficient_evidence",
+          "replayApplication": "insufficient_evidence"
+        }
+      ],
+      "report": {
+        "id": "333589f6-6a9a-43d4-9046-400af7d3c8df",
+        "deliveryId": "eval-real-corona-admin",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-05T06:56:31.702Z",
+        "items": [
+          {
+            "criterionId": "manual-1",
+            "status": "supported",
+            "explanation": "Dashboard table header row contains both exact headings.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 36220,
+                "end": 36243,
+                "excerpt": "<th> Payment Mode </th>"
+              },
+              {
+                "file": "index.html",
+                "start": 36322,
+                "end": 36347,
+                "excerpt": "<th> Payment Status </th>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-1"
+            ]
+          },
+          {
+            "criterionId": "manual-2",
+            "status": "supported",
+            "explanation": "Transaction History section shows 'Transfer to Paypal' with $236.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 25190,
+                "end": 25237,
+                "excerpt": "<h4 class=\"card-title\">Transaction History</h4>"
+              },
+              {
+                "file": "index.html",
+                "start": 25538,
+                "end": 25578,
+                "excerpt": "<h6 class=\"mb-1\">Transfer to Paypal</h6>"
+              },
+              {
+                "file": "index.html",
+                "start": 25828,
+                "end": 25871,
+                "excerpt": "<h6 class=\"font-weight-bold mb-0\">$236</h6>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-2"
+            ]
+          },
+          {
+            "criterionId": "manual-3",
+            "status": "supported",
+            "explanation": "Login page contains both required labels verbatim.",
+            "citations": [
+              {
+                "file": "pages/samples/login.html",
+                "start": 1275,
+                "end": 1309,
+                "excerpt": "<label>Username or email *</label>"
+              },
+              {
+                "file": "pages/samples/login.html",
+                "start": 1467,
+                "end": 1492,
+                "excerpt": "<label>Password *</label>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-3"
+            ]
+          },
+          {
+            "criterionId": "manual-4",
+            "status": "supported",
+            "explanation": "404 page includes the required message and 'Back to home' link.",
+            "citations": [
+              {
+                "file": "pages/samples/error-404.html",
+                "start": 1420,
+                "end": 1497,
+                "excerpt": "<h3 class=\"font-weight-light\">The page you’re looking for was not found.</h3>"
+              },
+              {
+                "file": "pages/samples/error-404.html",
+                "start": 1654,
+                "end": 1735,
+                "excerpt": "<a class=\"text-white font-weight-medium\" href=\"../../index.html\">Back to home</a>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-4"
+            ]
+          },
+          {
+            "criterionId": "manual-5",
+            "status": "changes_suggested",
+            "explanation": "Register copy lacks the required sentence; only terms and sign-up text present.",
+            "citations": [
+              {
+                "file": "pages/samples/register.html",
+                "start": 2798,
+                "end": 2898,
+                "excerpt": "<p class=\"terms\">By creating an account you are accepting our<a href=\"#\"> Terms & Conditions</a></p>"
+              },
+              {
+                "file": "pages/samples/register.html",
+                "start": 2696,
+                "end": 2779,
+                "excerpt": "<p class=\"sign-up text-center\">Already have an Account?<a href=\"#\"> Sign Up</a></p>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-5"
+            ]
+          },
+          {
+            "criterionId": "coverage-1",
+            "status": "insufficient_evidence",
+            "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+            "citations": [],
+            "ruleEvidenceIds": [
+              "eval-evidence-6"
+            ]
+          },
+          {
+            "criterionId": "coverage-2",
+            "status": "insufficient_evidence",
+            "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+            "citations": [],
+            "ruleEvidenceIds": [
+              "eval-evidence-7"
+            ]
+          },
+          {
+            "criterionId": "coverage-3",
+            "status": "insufficient_evidence",
+            "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+            "citations": [],
+            "ruleEvidenceIds": [
+              "eval-evidence-8"
+            ]
+          }
+        ],
+        "risks": [
+          {
+            "title": "Required register privacy sentence absent from body copy",
+            "explanation": "The register page's body copy shown contains terms and sign-up paragraphs but not 'We never sell your personal information.'",
+            "suggestion": "Add the exact required sentence to the register page body copy and re-check the full page text.",
+            "citations": [
+              {
+                "file": "pages/samples/register.html",
+                "start": 2798,
+                "end": 2898,
+                "excerpt": "<p class=\"terms\">By creating an account you are accepting our<a href=\"#\"> Terms & Conditions</a></p>"
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "No runtime, backend or payment-provider evidence was supplied for coverage-1, coverage-2 or coverage-3.",
+          "Form submission, credential validation, user isolation and persistence after restart were not tested.",
+          "Only source text was reviewed; rendered appearance and interactivity were not observed.",
+          "The 404 message uses a curly apostrophe; exact-string checks should confirm encoding expectations.",
+          "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "coverage": {
+          "includedFiles": [
+            "index.html",
+            "pages/samples/error-404.html",
+            "pages/samples/login.html",
+            "pages/samples/register.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "usage": {
+          "promptTokens": 20176,
+          "completionTokens": 805
+        }
+      }
+    }
+  ],
+  "limits": [
+    "Exact retained provider responses, not new model behavior or a prompt regression test.",
+    "Changed prompt bytes are recorded; unchanged source and criteria are asserted.",
+    "Reference agreement is not complete-answer correctness, execution, customer acceptance or payment."
+  ]
+}

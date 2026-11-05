@@ -19,7 +19,7 @@ export async function replaySavedAssessments(corpusFile:string,resultFile:string
   if(!prior?.raw?.bodyComplete||!prior.raw.utf8Valid||typeof prior.raw.bodyText!=="string"||!frozen)throw new Error("A complete saved provider reply and frozen request are required.");
   let interceptions=0;
   const report=await assessDelivery(projectQuote(project),{DEEPSEEK_API_KEY:"offline-replay-placeholder",DEEPSEEK_MODEL:freeze.snapshot.model},async(url,init)=>{
-   if(++interceptions!==1||String(url)!=="https://api.deepseek.com/chat/completions"||hash(String(init?.body))!==frozen.plan.requestSha256)throw new Error("The replay would use another request. No network request was made.");
+   if(++interceptions!==1||String(url)!=="https://api.deepseek.com/beta/chat/completions"||hash(String(init?.body))!==frozen.plan.requestSha256)throw new Error("The replay would use another request. No network request was made.");
    return new Response(prior.raw.bodyText,{status:prior.raw.httpStatus,headers:{"content-type":"application/json"}});
   });
   cases.push({id:project.id,storedProviderReplySha256:hash(prior.raw.bodyText),sourceRequestSha256:frozen.plan.requestSha256,firstApplication:prior.application,application:report,criteria:project.criteria.map(c=>({id:c.id,reference:c.reference.expectedStatus,first:prior.criteria.find((v:{id:string})=>v.id===c.id).applicationStatus,replayed:report.items.find(v=>v.criterionId===c.id)!.status}))});

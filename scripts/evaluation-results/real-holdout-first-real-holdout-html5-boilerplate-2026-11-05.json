@@ -1,0 +1,408 @@
+{
+  "kind": "released-sealed-real-project-first-attempt",
+  "limits": "Original MIT source; newly authored acceptance task, not customer deployment or human test. Sealed before R1/R2/R3, released unchanged after R3. References excluded.",
+  "project": {
+    "id": "real-holdout-html5-boilerplate",
+    "title": "HTML5 Boilerplate official release source review",
+    "summary": "The 404 page text content must contain Page Not Found and the missing page apology\nHome page content must say Hello world and identify HTML5 Boilerplate\nThe page content must declare English in a nonempty html lang attribute on both delivered pages\nHome page content must have a nonempty document title identifying a business name\nHome page copy must state a 48 hour cancellation notice rule and a refund eligibility policy\nA request for a nonexistent route must return HTTP 404 and render the delivered 404 page\nMobile visitors at 375px must read the 404 page without clipped content\nThe 404 page content must include a linked Return home phrase targeting index.html",
+    "files": {
+      "index.html": "<!doctype html>\n<html lang=\"\">\n\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width\">\n  <title></title>\n  <link rel=\"stylesheet\" href=\"css/style.css\">\n  <meta name=\"description\" content=\"\">\n\n  <meta property=\"og:title\" content=\"\">\n  <meta property=\"og:type\" content=\"\">\n  <meta property=\"og:url\" content=\"\">\n  <meta property=\"og:image\" content=\"\">\n  <meta property=\"og:image:alt\" content=\"\">\n\n  <link rel=\"icon\" href=\"/favicon.ico\" sizes=\"any\">\n  <link rel=\"icon\" href=\"/icon.svg\" type=\"image/svg+xml\">\n  <link rel=\"apple-touch-icon\" href=\"icon.png\">\n\n  <link rel=\"manifest\" href=\"site.webmanifest\">\n  <meta name=\"theme-color\" content=\"#fafafa\">\n</head>\n\n<body>\n\n  <!-- Add your site or application content here -->\n  <p>Hello world! This is HTML5 Boilerplate.</p>\n  <script src=\"js/app.js\"></script>\n\n</body>\n\n</html>\n",
+      "404.html": "<!doctype html>\n<html lang=\"en\">\n\n<head>\n  <meta charset=\"utf-8\">\n  <title>Page Not Found</title>\n  <meta name=\"viewport\" content=\"width=device-width\">\n  <style>\n    * {\n      line-height: 1.2;\n      margin: 0;\n    }\n\n    html {\n      color: #888;\n      display: table;\n      font-family: sans-serif;\n      height: 100%;\n      text-align: center;\n      width: 100%;\n    }\n\n    body {\n      display: table-cell;\n      vertical-align: middle;\n      margin: 2em auto;\n    }\n\n    h1 {\n      color: #555;\n      font-size: 2em;\n      font-weight: 400;\n    }\n\n    p {\n      margin: 0 auto;\n      width: 280px;\n    }\n\n    @media only screen and (max-width: 280px) {\n\n      body,\n      p {\n        width: 95%;\n      }\n\n      h1 {\n        font-size: 1.5em;\n        margin: 0 0 0.3em;\n      }\n\n    }\n  </style>\n</head>\n\n<body>\n  <h1>Page Not Found</h1>\n  <p>Sorry, but the page you were trying to view does not exist.</p>\n</body>\n\n</html>\n<!-- IE needs 512+ bytes: https://docs.microsoft.com/archive/blogs/ieinternals/friendly-http-error-pages -->\n",
+      "css/style.css": "/*! HTML5 Boilerplate v9.0.1 | MIT License | https://html5boilerplate.com/ */\n\n/* main.css 3.0.0 | MIT License | https://github.com/h5bp/main.css#readme */\n/*\n * What follows is the result of much research on cross-browser styling.\n * Credit left inline and big thanks to Nicolas Gallagher, Jonathan Neal,\n * Kroc Camen, and the H5BP dev community and team.\n */\n\n/* ==========================================================================\n   Base styles: opinionated defaults\n   ========================================================================== */\n\nhtml {\n  color: #222;\n  font-size: 1em;\n  line-height: 1.4;\n}\n\n/*\n * Remove text-shadow in selection highlight:\n * https://twitter.com/miketaylr/status/12228805301\n *\n * Customize the background color to match your design.\n */\n\n::-moz-selection {\n  background: #b3d4fc;\n  text-shadow: none;\n}\n\n::selection {\n  background: #b3d4fc;\n  text-shadow: none;\n}\n\n/*\n * A better looking default horizontal rule\n */\n\nhr {\n  display: block;\n  height: 1px;\n  border: 0;\n  border-top: 1px solid #ccc;\n  margin: 1em 0;\n  padding: 0;\n}\n\n/*\n * Remove the gap between audio, canvas, iframes,\n * images, videos and the bottom of their containers:\n * https://github.com/h5bp/html5-boilerplate/issues/440\n */\n\naudio,\ncanvas,\niframe,\nimg,\nsvg,\nvideo {\n  vertical-align: middle;\n}\n\n/*\n * Remove default fieldset styles.\n */\n\nfieldset {\n  border: 0;\n  margin: 0;\n  padding: 0;\n}\n\n/*\n * Allow only vertical resizing of textareas.\n */\n\ntextarea {\n  resize: vertical;\n}\n\n/* ==========================================================================\n   Author's custom styles\n   ========================================================================== */\n\n/* ==========================================================================\n   Helper classes\n   ========================================================================== */\n\n/*\n * Hide visually and from screen readers\n */\n\n.hidden,\n[hidden] {\n  display: none !important;\n}\n\n/*\n * Hide only visually, but have it available for screen readers:\n * https://snook.ca/archives/html_and_css/hiding-content-for-accessibility\n *\n * 1. For long content, line feeds are not interpreted as spaces and small width\n *    causes content to wrap 1 word per line:\n *    https://medium.com/@jessebeach/beware-smushed-off-screen-accessible-text-5952a4c2cbfe\n */\n\n.visually-hidden {\n  border: 0;\n  clip: rect(0, 0, 0, 0);\n  height: 1px;\n  margin: -1px;\n  overflow: hidden;\n  padding: 0;\n  position: absolute;\n  white-space: nowrap;\n  width: 1px;\n  /* 1 */\n}\n\n/*\n * Extends the .visually-hidden class to allow the element\n * to be focusable when navigated to via the keyboard:\n * https://www.drupal.org/node/897638\n */\n\n.visually-hidden.focusable:active,\n.visually-hidden.focusable:focus {\n  clip: auto;\n  height: auto;\n  margin: 0;\n  overflow: visible;\n  position: static;\n  white-space: inherit;\n  width: auto;\n}\n\n/*\n * Hide visually and from screen readers, but maintain layout\n */\n\n.invisible {\n  visibility: hidden;\n}\n\n/*\n * Clearfix: contain floats\n *\n * The use of `table` rather than `block` is only necessary if using\n * `::before` to contain the top-margins of child elements.\n */\n\n.clearfix::before,\n.clearfix::after {\n  content: \"\";\n  display: table;\n}\n\n.clearfix::after {\n  clear: both;\n}\n\n/* ==========================================================================\n   EXAMPLE Media Queries for Responsive Design.\n   These examples override the primary ('mobile first') styles.\n   Modify as content requires.\n   ========================================================================== */\n\n@media only screen and (min-width: 35em) {\n  /* Style adjustments for viewports that meet the condition */\n}\n\n@media print,\n  (min-resolution: 1.25dppx),\n  (min-resolution: 120dpi) {\n  /* Style adjustments for high resolution devices */\n}\n\n/* ==========================================================================\n   Print styles.\n   Inlined to avoid the additional HTTP request:\n   https://www.phpied.com/delay-loading-your-print-css/\n   ========================================================================== */\n\n@media print {\n  *,\n  *::before,\n  *::after {\n    background: #fff !important;\n    color: #000 !important;\n    /* Black prints faster */\n    box-shadow: none !important;\n    text-shadow: none !important;\n  }\n\n  a,\n  a:visited {\n    text-decoration: underline;\n  }\n\n  a[href]::after {\n    content: \" (\" attr(href) \")\";\n  }\n\n  abbr[title]::after {\n    content: \" (\" attr(title) \")\";\n  }\n\n  /*\n   * Don't show links that are fragment identifiers,\n   * or use the `javascript:` pseudo protocol\n   */\n  a[href^=\"#\"]::after,\n  a[href^=\"javascript:\"]::after {\n    content: \"\";\n  }\n\n  pre {\n    white-space: pre-wrap !important;\n  }\n\n  pre,\n  blockquote {\n    border: 1px solid #999;\n    page-break-inside: avoid;\n  }\n\n  tr,\n  img {\n    page-break-inside: avoid;\n  }\n\n  p,\n  h2,\n  h3 {\n    orphans: 3;\n    widows: 3;\n  }\n\n  h2,\n  h3 {\n    page-break-after: avoid;\n  }\n}\n\n"
+    }
+  },
+  "criteria": [
+    {
+      "id": "coverage-1",
+      "title": "Original requirement 1",
+      "source": "The 404 page text content must contain Page Not Found and the missing page apology"
+    },
+    {
+      "id": "coverage-2",
+      "title": "Original requirement 2",
+      "source": "Home page content must say Hello world and identify HTML5 Boilerplate"
+    },
+    {
+      "id": "coverage-3",
+      "title": "Original requirement 3",
+      "source": "The page content must declare English in a nonempty html lang attribute on both delivered pages"
+    },
+    {
+      "id": "coverage-4",
+      "title": "Original requirement 4",
+      "source": "Home page content must have a nonempty document title identifying a business name"
+    },
+    {
+      "id": "coverage-5",
+      "title": "Original requirement 5",
+      "source": "Home page copy must state a 48 hour cancellation notice rule and a refund eligibility policy"
+    },
+    {
+      "id": "coverage-6",
+      "title": "Original requirement 6",
+      "source": "A request for a nonexistent route must return HTTP 404 and render the delivered 404 page"
+    },
+    {
+      "id": "coverage-7",
+      "title": "Original requirement 7",
+      "source": "Mobile visitors at 375px must read the 404 page without clipped content"
+    },
+    {
+      "id": "coverage-8",
+      "title": "Original requirement 8",
+      "source": "The 404 page content must include a linked Return home phrase targeting index.html"
+    }
+  ],
+  "rawAnswer": {
+    "items": [
+      {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "404.html contains both 'Page Not Found' and the missing-page apology text.",
+        "citations": [
+          {
+            "file": "404.html",
+            "excerpt": "<h1>Page Not Found</h1>"
+          },
+          {
+            "file": "404.html",
+            "excerpt": "<p>Sorry, but the page you were trying to view does not exist.</p>"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-2",
+        "status": "supported",
+        "explanation": "Index body copy says Hello world and identifies HTML5 Boilerplate.",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<p>Hello world! This is HTML5 Boilerplate.</p>"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-3",
+        "status": "changes_suggested",
+        "explanation": "404.html has lang=\"en\", but index.html declares an empty lang attribute.",
+        "citations": [
+          {
+            "file": "404.html",
+            "excerpt": "<html lang=\"en\">"
+          },
+          {
+            "file": "index.html",
+            "excerpt": "<html lang=\"\">"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-4",
+        "status": "changes_suggested",
+        "explanation": "Index document title is empty; no business name is present.",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<title></title>"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-5",
+        "status": "changes_suggested",
+        "explanation": "Index body contains only the Hello world line; no cancellation notice or refund policy copy.",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<p>Hello world! This is HTML5 Boilerplate.</p>"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-6",
+        "status": "insufficient_evidence",
+        "explanation": "HTTP status and routing behavior require a running server; static files cannot establish it.",
+        "citations": []
+      },
+      {
+        "criterionId": "coverage-7",
+        "status": "insufficient_evidence",
+        "explanation": "Reading 404 page at 375px without clipping needs rendered visual inspection; no browser evidence supplied.",
+        "citations": []
+      },
+      {
+        "criterionId": "coverage-8",
+        "status": "changes_suggested",
+        "explanation": "404.html body has an h1 and p but no 'Return home' link to index.html.",
+        "citations": [
+          {
+            "file": "404.html",
+            "excerpt": "<h1>Page Not Found</h1>\n  <p>Sorry, but the page you were trying to view does not exist.</p>"
+          }
+        ]
+      }
+    ],
+    "risks": [
+      {
+        "title": "Homepage html lang attribute is empty",
+        "explanation": "index.html declares lang=\"\" instead of a nonempty English declaration.",
+        "suggestion": "Set lang=\"en\" on index.html.",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<html lang=\"\">"
+          }
+        ]
+      },
+      {
+        "title": "Homepage document title is empty",
+        "explanation": "index.html has an empty title element, providing no business name.",
+        "suggestion": "Add a nonempty title with the business name.",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<title></title>"
+          }
+        ]
+      },
+      {
+        "title": "Homepage lacks cancellation and refund policy copy",
+        "explanation": "Index body contains only the Hello world line, without 48-hour notice or refund eligibility text.",
+        "suggestion": "Add homepage copy stating the 48 hour cancellation notice rule and refund eligibility policy.",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<p>Hello world! This is HTML5 Boilerplate.</p>"
+          }
+        ]
+      },
+      {
+        "title": "404 page lacks Return home link to index.html",
+        "explanation": "404.html body has only an h1 and a paragraph; no linked 'Return home' phrase is present.",
+        "suggestion": "Add an anchor with text 'Return home' targeting index.html on 404.html.",
+        "citations": [
+          {
+            "file": "404.html",
+            "excerpt": "<h1>Page Not Found</h1>\n  <p>Sorry, but the page you were trying to view does not exist.</p>"
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "HTTP 404 status and routing require runtime server testing.",
+      "375px rendering and clipping require browser visual inspection.",
+      "Link click behavior and navigation were not tested."
+    ]
+  },
+  "applicationAnswer": {
+    "id": "64694131-3009-45e2-8348-b4ca166599d9",
+    "deliveryId": "eval-real-holdout-html5-boilerplate",
+    "method": "source-ai-v1",
+    "mode": "live",
+    "model": "deepseek-flash",
+    "assessedAt": "2026-11-05T07:03:10.498Z",
+    "items": [
+      {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "404.html contains both 'Page Not Found' and the missing-page apology text.",
+        "citations": [
+          {
+            "file": "404.html",
+            "start": 818,
+            "end": 841,
+            "excerpt": "<h1>Page Not Found</h1>"
+          },
+          {
+            "file": "404.html",
+            "start": 844,
+            "end": 910,
+            "excerpt": "<p>Sorry, but the page you were trying to view does not exist.</p>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-1"
+        ]
+      },
+      {
+        "criterionId": "coverage-2",
+        "status": "supported",
+        "explanation": "Index body copy says Hello world and identifies HTML5 Boilerplate.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 750,
+            "end": 796,
+            "excerpt": "<p>Hello world! This is HTML5 Boilerplate.</p>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-2"
+        ]
+      },
+      {
+        "criterionId": "coverage-3",
+        "status": "changes_suggested",
+        "explanation": "404.html has lang=\"en\", but index.html declares an empty lang attribute.",
+        "citations": [
+          {
+            "file": "404.html",
+            "start": 16,
+            "end": 32,
+            "excerpt": "<html lang=\"en\">"
+          },
+          {
+            "file": "index.html",
+            "start": 16,
+            "end": 30,
+            "excerpt": "<html lang=\"\">"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-3"
+        ]
+      },
+      {
+        "criterionId": "coverage-4",
+        "status": "changes_suggested",
+        "explanation": "Index document title is empty; no business name is present.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 120,
+            "end": 135,
+            "excerpt": "<title></title>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-4"
+        ]
+      },
+      {
+        "criterionId": "coverage-5",
+        "status": "changes_suggested",
+        "explanation": "Index body contains only the Hello world line; no cancellation notice or refund policy copy.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 750,
+            "end": 796,
+            "excerpt": "<p>Hello world! This is HTML5 Boilerplate.</p>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-5"
+        ]
+      },
+      {
+        "criterionId": "coverage-6",
+        "status": "insufficient_evidence",
+        "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+        "citations": [],
+        "ruleEvidenceIds": [
+          "eval-evidence-6"
+        ]
+      },
+      {
+        "criterionId": "coverage-7",
+        "status": "insufficient_evidence",
+        "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+        "citations": [],
+        "ruleEvidenceIds": [
+          "eval-evidence-7"
+        ]
+      },
+      {
+        "criterionId": "coverage-8",
+        "status": "changes_suggested",
+        "explanation": "404.html body has an h1 and p but no 'Return home' link to index.html.",
+        "citations": [
+          {
+            "file": "404.html",
+            "start": 818,
+            "end": 910,
+            "excerpt": "<h1>Page Not Found</h1>\n  <p>Sorry, but the page you were trying to view does not exist.</p>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-8"
+        ]
+      }
+    ],
+    "risks": [
+      {
+        "title": "Homepage html lang attribute is empty",
+        "explanation": "index.html declares lang=\"\" instead of a nonempty English declaration.",
+        "suggestion": "Set lang=\"en\" on index.html.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 16,
+            "end": 30,
+            "excerpt": "<html lang=\"\">"
+          }
+        ]
+      },
+      {
+        "title": "Homepage document title is empty",
+        "explanation": "index.html has an empty title element, providing no business name.",
+        "suggestion": "Add a nonempty title with the business name.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 120,
+            "end": 135,
+            "excerpt": "<title></title>"
+          }
+        ]
+      },
+      {
+        "title": "Homepage lacks cancellation and refund policy copy",
+        "explanation": "Index body contains only the Hello world line, without 48-hour notice or refund eligibility text.",
+        "suggestion": "Add homepage copy stating the 48 hour cancellation notice rule and refund eligibility policy.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 750,
+            "end": 796,
+            "excerpt": "<p>Hello world! This is HTML5 Boilerplate.</p>"
+          }
+        ]
+      },
+      {
+        "title": "404 page lacks Return home link to index.html",
+        "explanation": "404.html body has only an h1 and a paragraph; no linked 'Return home' phrase is present.",
+        "suggestion": "Add an anchor with text 'Return home' targeting index.html on 404.html.",
+        "citations": [
+          {
+            "file": "404.html",
+            "start": 818,
+            "end": 910,
+            "excerpt": "<h1>Page Not Found</h1>\n  <p>Sorry, but the page you were trying to view does not exist.</p>"
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "HTTP 404 status and routing require runtime server testing.",
+      "375px rendering and clipping require browser visual inspection.",
+      "Link click behavior and navigation were not tested.",
+      "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+      "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+    ],
+    "coverage": {
+      "includedFiles": [
+        "404.html",
+        "index.html",
+        "css/style.css"
+      ],
+      "truncatedFiles": [],
+      "omittedFiles": []
+    },
+    "usage": {
+      "promptTokens": 6276,
+      "completionTokens": 868
+    }
+  },
+  "applicationFailureReason": null
+}

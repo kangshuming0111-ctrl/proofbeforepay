@@ -1,0 +1,417 @@
+{
+  "kind": "real-upstream-source+authored-acceptance-task",
+  "limits": "No backend/browser/assets executed. Original source bytes. Raw vs application is not buyer acceptance. References omitted deliberately. First exposure by tracked history audit, not a customer study.",
+  "project": {
+    "id": "real-modern-business",
+    "title": "Real Modern Business template: plans, contact copy and runtime boundaries",
+    "summary": "FAQ page contact details must include support@domain.com.\nThe contact form must send a real email only after valid submission and show success after delivery.\nChoosing Pro must actually charge $9 per month and retain a queryable subscription record.",
+    "files": {
+      "index.html": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\" />\n        <meta name=\"description\" content=\"\" />\n        <meta name=\"author\" content=\"\" />\n        <title>Modern Business - Start Bootstrap Template</title>\n        <!-- Favicon-->\n        <link rel=\"icon\" type=\"image/x-icon\" href=\"assets/favicon.ico\" />\n        <!-- Bootstrap icons-->\n        <link href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css\" rel=\"stylesheet\" />\n        <!-- Core theme CSS (includes Bootstrap)-->\n        <link href=\"css/styles.css\" rel=\"stylesheet\" />\n    </head>\n    <body class=\"d-flex flex-column h-100\">\n        <main class=\"flex-shrink-0\">\n            <!-- Navigation-->\n            <nav class=\"navbar navbar-expand-lg navbar-dark bg-dark\">\n                <div class=\"container px-5\">\n                    <a class=\"navbar-brand\" href=\"index.html\">Start Bootstrap</a>\n                    <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\"><span class=\"navbar-toggler-icon\"></span></button>\n                    <div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\n                        <ul class=\"navbar-nav ms-auto mb-2 mb-lg-0\">\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"index.html\">Home</a></li>\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"about.html\">About</a></li>\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"contact.html\">Contact</a></li>\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"pricing.html\">Pricing</a></li>\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"faq.html\">FAQ</a></li>\n                            <li class=\"nav-item dropdown\">\n                                <a class=\"nav-link dropdown-toggle\" id=\"navbarDropdownBlog\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">Blog</a>\n                                <ul class=\"dropdown-menu dropdown-menu-end\" aria-labelledby=\"navbarDropdownBlog\">\n                                    <li><a class=\"dropdown-item\" href=\"blog-home.html\">Blog Home</a></li>\n                                    <li><a class=\"dropdown-item\" href=\"blog-post.html\">Blog Post</a></li>\n                                </ul>\n                            </li>\n                            <li class=\"nav-item dropdown\">\n                                <a class=\"nav-link dropdown-toggle\" id=\"navbarDropdownPortfolio\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">Portfolio</a>\n                                <ul class=\"dropdown-menu dropdown-menu-end\" aria-labelledby=\"navbarDropdownPortfolio\">\n                                    <li><a class=\"dropdown-item\" href=\"portfolio-overview.html\">Portfolio Overview</a></li>\n                                    <li><a class=\"dropdown-item\" href=\"portfolio-item.html\">Portfolio Item</a></li>\n                                </ul>\n                            </li>\n                        </ul>\n                    </div>\n                </div>\n            </nav>\n            <!-- Header-->\n            <header class=\"bg-dark py-5\">\n                <div class=\"container px-5\">\n                    <div class=\"row gx-5 align-items-center justify-content-center\">\n                        <div class=\"col-lg-8 col-xl-7 col-xxl-6\">\n                            <div class=\"my-5 text-center text-xl-start\">\n                                <h1 class=\"display-5 fw-bolder text-white mb-2\">A Bootstrap 5 template for modern businesses</h1>\n                                <p class=\"lead fw-normal text-white-50 mb-4\">Quickly design and customize responsive mobile-first sites with Bootstrap, the world’s most popular front-end open source toolkit!</p>\n                                <div class=\"d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start\">\n                                    <a class=\"btn btn-primary btn-lg px-4 me-sm-3\" href=\"#features\">Get Started</a>\n                                    <a class=\"btn btn-outline-light btn-lg px-4\" href=\"#!\">Learn More</a>\n                                </div>\n                            </div>\n                        </div>\n                        <div class=\"col-xl-5 col-xxl-6 d-none d-xl-block text-center\"><img class=\"img-fluid rounded-3 my-5\" src=\"https://dummyimage.com/600x400/343a40/6c757d\" alt=\"...\" /></div>\n                    </div>\n                </div>\n            </header>\n            <!-- Features section-->\n            <section class=\"py-5\" id=\"features\">\n                <div class=\"container px-5 my-5\">\n                    <div class=\"row gx-5\">\n                        <div class=\"col-lg-4 mb-5 mb-lg-0\"><h2 class=\"fw-bolder mb-0\">A better way to start building.</h2></div>\n                        <div class=\"col-lg-8\">\n                            <div class=\"row gx-5 row-cols-1 row-cols-md-2\">\n                                <div class=\"col mb-5 h-100\">\n                                    <div class=\"feature bg-primary bg-gradient text-white rounded-3 mb-3\"><i class=\"bi bi-collection\"></i></div>\n                                    <h2 class=\"h5\">Featured title</h2>\n                                    <p class=\"mb-0\">Paragraph of text beneath the heading to explain the heading. Here is just a bit more text.</p>\n                                </div>\n                                <div class=\"col mb-5 h-100\">\n                                    <div class=\"feature bg-primary bg-gradient text-white rounded-3 mb-3\"><i class=\"bi bi-building\"></i></div>\n                                    <h2 class=\"h5\">Featured title</h2>\n                                    <p class=\"mb-0\">Paragraph of text beneath the heading to explain the heading. Here is just a bit more text.</p>\n                                </div>\n                                <div class=\"col mb-5 mb-md-0 h-100\">\n                                    <div class=\"feature bg-primary bg-gradient text-white rounded-3 mb-3\"><i class=\"bi bi-toggles2\"></i></div>\n                                    <h2 class=\"h5\">Featured title</h2>\n                                    <p class=\"mb-0\">Paragraph of text beneath the heading to explain the heading. Here is just a bit more text.</p>\n                                </div>\n                                <div class=\"col h-100\">\n                                    <div class=\"feature bg-primary bg-gradient text-white rounded-3 mb-3\"><i class=\"bi bi-toggles2\"></i></div>\n                                    <h2 class=\"h5\">Featured title</h2>\n                                    <p class=\"mb-0\">Paragraph of text beneath the heading to explain the heading. Here is just a bit more text.</p>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </section>\n            <!-- Testimonial section-->\n            <div class=\"py-5 bg-light\">\n                <div class=\"container px-5 my-5\">\n                    <div class=\"row gx-5 justify-content-center\">\n                        <div class=\"col-lg-10 col-xl-7\">\n                            <div class=\"text-center\">\n                                <div class=\"fs-4 mb-4 fst-italic\">\"Working with Start Bootstrap templates has saved me tons of development time when building new projects! Starting with a Bootstrap template just makes things easier!\"</div>\n                                <div class=\"d-flex align-items-center justify-content-center\">\n                                    <img class=\"rounded-circle me-3\" src=\"https://dummyimage.com/40x40/ced4da/6c757d\" alt=\"...\" />\n                                    <div class=\"fw-bold\">\n                                        Tom Ato\n                                        <span class=\"fw-bold text-primary mx-1\">/</span>\n                                        CEO, Pomodoro\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <!-- Blog preview section-->\n            <section class=\"py-5\">\n                <div class=\"container px-5 my-5\">\n                    <div class=\"row gx-5 justify-content-center\">\n                        <div class=\"col-lg-8 col-xl-6\">\n                            <div class=\"text-center\">\n                                <h2 class=\"fw-bolder\">From our blog</h2>\n                                <p class=\"lead fw-normal text-muted mb-5\">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eaque fugit ratione dicta mollitia. Officiis ad.</p>\n                            </div>\n                        </div>\n                    </div>\n                    <div class=\"row gx-5\">\n                        <div class=\"col-lg-4 mb-5\">\n                            <div class=\"card h-100 shadow border-0\">\n                                <img class=\"card-img-top\" src=\"https://dummyimage.com/600x350/ced4da/6c757d\" alt=\"...\" />\n                                <div class=\"card-body p-4\">\n                                    <div class=\"badge bg-primary bg-gradient rounded-pill mb-2\">News</div>\n                                    <a class=\"text-decoration-none link-dark stretched-link\" href=\"#!\"><h5 class=\"card-title mb-3\">Blog post title</h5></a>\n                                    <p class=\"card-text mb-0\">Some quick example text to build on the card title and make up the bulk of the card's content.</p>\n                                </div>\n                                <div class=\"card-footer p-4 pt-0 bg-transparent border-top-0\">\n                                    <div class=\"d-flex align-items-end justify-content-between\">\n                                        <div class=\"d-flex align-items-center\">\n                                            <img class=\"rounded-circle me-3\" src=\"https://dummyimage.com/40x40/ced4da/6c757d\" alt=\"...\" />\n                                            <div class=\"small\">\n                                                <div class=\"fw-bold\">Kelly Rowan</div>\n                                                <div class=\"text-muted\">March 12, 2023 &middot; 6 min read</div>\n                                            </div>\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                        <div class=\"col-lg-4 mb-5\">\n                            <div class=\"card h-100 shadow border-0\">\n                                <img class=\"card-img-top\" src=\"https://dummyimage.com/600x350/adb5bd/495057\" alt=\"...\" />\n                                <div class=\"card-body p-4\">\n                                    <div class=\"badge bg-primary bg-gradient rounded-pill mb-2\">Media</div>\n                                    <a class=\"text-decoration-none link-dark stretched-link\" href=\"#!\"><h5 class=\"card-title mb-3\">Another blog post title</h5></a>\n                                    <p class=\"card-text mb-0\">This text is a bit longer to illustrate the adaptive height of each card. Some quick example text to build on the card title and make up the bulk of the card's content.</p>\n                                </div>\n                                <div class=\"card-footer p-4 pt-0 bg-transparent border-top-0\">\n                                    <div class=\"d-flex align-items-end justify-content-between\">\n                                        <div class=\"d-flex align-items-center\">\n                                            <img class=\"rounded-circle me-3\" src=\"https://dummyimage.com/40x40/ced4da/6c757d\" alt=\"...\" />\n                                            <div class=\"small\">\n                                                <div class=\"fw-bold\">Josiah Barclay</div>\n                                                <div class=\"text-muted\">March 23, 2023 &middot; 4 min read</div>\n                                            </div>\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                        <div class=\"col-lg-4 mb-5\">\n                            <div class=\"card h-100 shadow border-0\">\n                                <img class=\"card-img-top\" src=\"https://dummyimage.com/600x350/6c757d/343a40\" alt=\"...\" />\n                                <div class=\"card-body p-4\">\n                                    <div class=\"badge bg-primary bg-gradient rounded-pill mb-2\">News</div>\n                                    <a class=\"text-decoration-none link-dark stretched-link\" href=\"#!\"><h5 class=\"card-title mb-3\">The last blog post title is a little bit longer than the others</h5></a>\n                                    <p class=\"card-text mb-0\">Some more quick example text to build on the card title and make up the bulk of the card's content.</p>\n                                </div>\n                                <div class=\"card-footer p-4 pt-0 bg-transparent border-top-0\">\n                                    <div class=\"d-flex align-items-end justify-content-between\">\n                                        <div class=\"d-flex align-items-center\">\n                                            <img class=\"rounded-circle me-3\" src=\"https://dummyimage.com/40x40/ced4da/6c757d\" alt=\"...\" />\n                                            <div class=\"small\">\n                                                <div class=\"fw-bold\">Evelyn Martinez</div>\n                                                <div class=\"text-muted\">April 2, 2023 &middot; 10 min read</div>\n                                            </div>\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                    <!-- Call to action-->\n                    <aside class=\"bg-primary bg-gradient rounded-3 p-4 p-sm-5 mt-5\">\n                        <div class=\"d-flex align-items-center justify-content-between flex-column flex-xl-row text-center text-xl-start\">\n                            <div class=\"mb-4 mb-xl-0\">\n                                <div class=\"fs-3 fw-bold text-white\">New products, delivered to you.</div>\n                                <div class=\"text-white-50\">Sign up for our newsletter for the latest updates.</div>\n                            </div>\n                            <div class=\"ms-xl-4\">\n                                <div class=\"input-group mb-2\">\n                                    <input class=\"form-control\" type=\"text\" placeholder=\"Email address...\" aria-label=\"Email address...\" aria-describedby=\"button-newsletter\" />\n                                    <button class=\"btn btn-outline-light\" id=\"button-newsletter\" type=\"button\">Sign up</button>\n                                </div>\n                                <div class=\"small text-white-50\">We care about privacy, and will never share your data.</div>\n                            </div>\n                        </div>\n                    </aside>\n                </div>\n            </section>\n        </main>\n        <!-- Footer-->\n        <footer class=\"bg-dark py-4 mt-auto\">\n            <div class=\"container px-5\">\n                <div class=\"row align-items-center justify-content-between flex-column flex-sm-row\">\n                    <div class=\"col-auto\"><div class=\"small m-0 text-white\">Copyright &copy; Your Website 2023</div></div>\n                    <div class=\"col-auto\">\n                        <a class=\"link-light small\" href=\"#!\">Privacy</a>\n                        <span class=\"text-white mx-1\">&middot;</span>\n                        <a class=\"link-light small\" href=\"#!\">Terms</a>\n                        <span class=\"text-white mx-1\">&middot;</span>\n                        <a class=\"link-light small\" href=\"#!\">Contact</a>\n                    </div>\n                </div>\n            </div>\n        </footer>\n        <!-- Bootstrap core JS-->\n        <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js\"></script>\n        <!-- Core theme JS-->\n        <script src=\"js/scripts.js\"></script>\n    </body>\n</html>\n",
+      "contact.html": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\" />\n        <meta name=\"description\" content />\n        <meta name=\"author\" content />\n        <title>Modern Business - Start Bootstrap Template</title>\n        <!-- Favicon-->\n        <link rel=\"icon\" type=\"image/x-icon\" href=\"assets/favicon.ico\" />\n        <!-- Bootstrap icons-->\n        <link href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css\" rel=\"stylesheet\" />\n        <!-- Core theme CSS (includes Bootstrap)-->\n        <link href=\"css/styles.css\" rel=\"stylesheet\" />\n    </head>\n    <body class=\"d-flex flex-column\">\n        <main class=\"flex-shrink-0\">\n            <!-- Navigation-->\n            <nav class=\"navbar navbar-expand-lg navbar-dark bg-dark\">\n                <div class=\"container px-5\">\n                    <a class=\"navbar-brand\" href=\"index.html\">Start Bootstrap</a>\n                    <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\"><span class=\"navbar-toggler-icon\"></span></button>\n                    <div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\n                        <ul class=\"navbar-nav ms-auto mb-2 mb-lg-0\">\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"index.html\">Home</a></li>\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"about.html\">About</a></li>\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"contact.html\">Contact</a></li>\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"pricing.html\">Pricing</a></li>\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"faq.html\">FAQ</a></li>\n                            <li class=\"nav-item dropdown\">\n                                <a class=\"nav-link dropdown-toggle\" id=\"navbarDropdownBlog\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">Blog</a>\n                                <ul class=\"dropdown-menu dropdown-menu-end\" aria-labelledby=\"navbarDropdownBlog\">\n                                    <li><a class=\"dropdown-item\" href=\"blog-home.html\">Blog Home</a></li>\n                                    <li><a class=\"dropdown-item\" href=\"blog-post.html\">Blog Post</a></li>\n                                </ul>\n                            </li>\n                            <li class=\"nav-item dropdown\">\n                                <a class=\"nav-link dropdown-toggle\" id=\"navbarDropdownPortfolio\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">Portfolio</a>\n                                <ul class=\"dropdown-menu dropdown-menu-end\" aria-labelledby=\"navbarDropdownPortfolio\">\n                                    <li><a class=\"dropdown-item\" href=\"portfolio-overview.html\">Portfolio Overview</a></li>\n                                    <li><a class=\"dropdown-item\" href=\"portfolio-item.html\">Portfolio Item</a></li>\n                                </ul>\n                            </li>\n                        </ul>\n                    </div>\n                </div>\n            </nav>\n            <!-- Page content-->\n            <section class=\"py-5\">\n                <div class=\"container px-5\">\n                    <!-- Contact form-->\n                    <div class=\"bg-light rounded-3 py-5 px-4 px-md-5 mb-5\">\n                        <div class=\"text-center mb-5\">\n                            <div class=\"feature bg-primary bg-gradient text-white rounded-3 mb-3\"><i class=\"bi bi-envelope\"></i></div>\n                            <h1 class=\"fw-bolder\">Get in touch</h1>\n                            <p class=\"lead fw-normal text-muted mb-0\">We'd love to hear from you</p>\n                        </div>\n                        <div class=\"row gx-5 justify-content-center\">\n                            <div class=\"col-lg-8 col-xl-6\">\n                                <!-- * * * * * * * * * * * * * * *-->\n                                <!-- * * SB Forms Contact Form * *-->\n                                <!-- * * * * * * * * * * * * * * *-->\n                                <!-- This form is pre-integrated with SB Forms.-->\n                                <!-- To make this form functional, sign up at-->\n                                <!-- https://startbootstrap.com/solution/contact-forms-->\n                                <!-- to get an API token!-->\n                                <form id=\"contactForm\" data-sb-form-api-token=\"API_TOKEN\">\n                                    <!-- Name input-->\n                                    <div class=\"form-floating mb-3\">\n                                        <input class=\"form-control\" id=\"name\" type=\"text\" placeholder=\"Enter your name...\" data-sb-validations=\"required\" />\n                                        <label for=\"name\">Full name</label>\n                                        <div class=\"invalid-feedback\" data-sb-feedback=\"name:required\">A name is required.</div>\n                                    </div>\n                                    <!-- Email address input-->\n                                    <div class=\"form-floating mb-3\">\n                                        <input class=\"form-control\" id=\"email\" type=\"email\" placeholder=\"name@example.com\" data-sb-validations=\"required,email\" />\n                                        <label for=\"email\">Email address</label>\n                                        <div class=\"invalid-feedback\" data-sb-feedback=\"email:required\">An email is required.</div>\n                                        <div class=\"invalid-feedback\" data-sb-feedback=\"email:email\">Email is not valid.</div>\n                                    </div>\n                                    <!-- Phone number input-->\n                                    <div class=\"form-floating mb-3\">\n                                        <input class=\"form-control\" id=\"phone\" type=\"tel\" placeholder=\"(123) 456-7890\" data-sb-validations=\"required\" />\n                                        <label for=\"phone\">Phone number</label>\n                                        <div class=\"invalid-feedback\" data-sb-feedback=\"phone:required\">A phone number is required.</div>\n                                    </div>\n                                    <!-- Message input-->\n                                    <div class=\"form-floating mb-3\">\n                                        <textarea class=\"form-control\" id=\"message\" type=\"text\" placeholder=\"Enter your message here...\" style=\"height: 10rem\" data-sb-validations=\"required\"></textarea>\n                                        <label for=\"message\">Message</label>\n                                        <div class=\"invalid-feedback\" data-sb-feedback=\"message:required\">A message is required.</div>\n                                    </div>\n                                    <!-- Submit success message-->\n                                    <!---->\n                                    <!-- This is what your users will see when the form-->\n                                    <!-- has successfully submitted-->\n                                    <div class=\"d-none\" id=\"submitSuccessMessage\">\n                                        <div class=\"text-center mb-3\">\n                                            <div class=\"fw-bolder\">Form submission successful!</div>\n                                            To activate this form, sign up at\n                                            <br />\n                                            <a href=\"https://startbootstrap.com/solution/contact-forms\">https://startbootstrap.com/solution/contact-forms</a>\n                                        </div>\n                                    </div>\n                                    <!-- Submit error message-->\n                                    <!---->\n                                    <!-- This is what your users will see when there is-->\n                                    <!-- an error submitting the form-->\n                                    <div class=\"d-none\" id=\"submitErrorMessage\"><div class=\"text-center text-danger mb-3\">Error sending message!</div></div>\n                                    <!-- Submit Button-->\n                                    <div class=\"d-grid\"><button class=\"btn btn-primary btn-lg disabled\" id=\"submitButton\" type=\"submit\">Submit</button></div>\n                                </form>\n                            </div>\n                        </div>\n                    </div>\n                    <!-- Contact cards-->\n                    <div class=\"row gx-5 row-cols-2 row-cols-lg-4 py-5\">\n                        <div class=\"col\">\n                            <div class=\"feature bg-primary bg-gradient text-white rounded-3 mb-3\"><i class=\"bi bi-chat-dots\"></i></div>\n                            <div class=\"h5 mb-2\">Chat with us</div>\n                            <p class=\"text-muted mb-0\">Chat live with one of our support specialists.</p>\n                        </div>\n                        <div class=\"col\">\n                            <div class=\"feature bg-primary bg-gradient text-white rounded-3 mb-3\"><i class=\"bi bi-people\"></i></div>\n                            <div class=\"h5\">Ask the community</div>\n                            <p class=\"text-muted mb-0\">Explore our community forums and communicate with other users.</p>\n                        </div>\n                        <div class=\"col\">\n                            <div class=\"feature bg-primary bg-gradient text-white rounded-3 mb-3\"><i class=\"bi bi-question-circle\"></i></div>\n                            <div class=\"h5\">Support center</div>\n                            <p class=\"text-muted mb-0\">Browse FAQ's and support articles to find solutions.</p>\n                        </div>\n                        <div class=\"col\">\n                            <div class=\"feature bg-primary bg-gradient text-white rounded-3 mb-3\"><i class=\"bi bi-telephone\"></i></div>\n                            <div class=\"h5\">Call us</div>\n                            <p class=\"text-muted mb-0\">Call us during normal business hours at (555) 892-9403.</p>\n                        </div>\n                    </div>\n                </div>\n            </section>\n        </main>\n        <!-- Footer-->\n        <footer class=\"bg-dark py-4 mt-auto\">\n            <div class=\"container px-5\">\n                <div class=\"row align-items-center justify-content-between flex-column flex-sm-row\">\n                    <div class=\"col-auto\"><div class=\"small m-0 text-white\">Copyright &copy; Your Website 2023</div></div>\n                    <div class=\"col-auto\">\n                        <a class=\"link-light small\" href=\"#!\">Privacy</a>\n                        <span class=\"text-white mx-1\">&middot;</span>\n                        <a class=\"link-light small\" href=\"#!\">Terms</a>\n                        <span class=\"text-white mx-1\">&middot;</span>\n                        <a class=\"link-light small\" href=\"#!\">Contact</a>\n                    </div>\n                </div>\n            </div>\n        </footer>\n        <!-- Bootstrap core JS-->\n        <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js\"></script>\n        <!-- Core theme JS-->\n        <script src=\"js/scripts.js\"></script>\n        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->\n        <!-- * *                               SB Forms JS                               * *-->\n        <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->\n        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->\n        <script src=\"https://cdn.startbootstrap.com/sb-forms-latest.js\"></script>\n    </body>\n</html>\n",
+      "pricing.html": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\" />\n        <meta name=\"description\" content=\"\" />\n        <meta name=\"author\" content=\"\" />\n        <title>Modern Business - Start Bootstrap Template</title>\n        <!-- Favicon-->\n        <link rel=\"icon\" type=\"image/x-icon\" href=\"assets/favicon.ico\" />\n        <!-- Bootstrap icons-->\n        <link href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css\" rel=\"stylesheet\" />\n        <!-- Core theme CSS (includes Bootstrap)-->\n        <link href=\"css/styles.css\" rel=\"stylesheet\" />\n    </head>\n    <body class=\"d-flex flex-column\">\n        <main class=\"flex-shrink-0\">\n            <!-- Navigation-->\n            <nav class=\"navbar navbar-expand-lg navbar-dark bg-dark\">\n                <div class=\"container px-5\">\n                    <a class=\"navbar-brand\" href=\"index.html\">Start Bootstrap</a>\n                    <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\"><span class=\"navbar-toggler-icon\"></span></button>\n                    <div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\n                        <ul class=\"navbar-nav ms-auto mb-2 mb-lg-0\">\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"index.html\">Home</a></li>\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"about.html\">About</a></li>\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"contact.html\">Contact</a></li>\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"pricing.html\">Pricing</a></li>\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"faq.html\">FAQ</a></li>\n                            <li class=\"nav-item dropdown\">\n                                <a class=\"nav-link dropdown-toggle\" id=\"navbarDropdownBlog\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">Blog</a>\n                                <ul class=\"dropdown-menu dropdown-menu-end\" aria-labelledby=\"navbarDropdownBlog\">\n                                    <li><a class=\"dropdown-item\" href=\"blog-home.html\">Blog Home</a></li>\n                                    <li><a class=\"dropdown-item\" href=\"blog-post.html\">Blog Post</a></li>\n                                </ul>\n                            </li>\n                            <li class=\"nav-item dropdown\">\n                                <a class=\"nav-link dropdown-toggle\" id=\"navbarDropdownPortfolio\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">Portfolio</a>\n                                <ul class=\"dropdown-menu dropdown-menu-end\" aria-labelledby=\"navbarDropdownPortfolio\">\n                                    <li><a class=\"dropdown-item\" href=\"portfolio-overview.html\">Portfolio Overview</a></li>\n                                    <li><a class=\"dropdown-item\" href=\"portfolio-item.html\">Portfolio Item</a></li>\n                                </ul>\n                            </li>\n                        </ul>\n                    </div>\n                </div>\n            </nav>\n            <!-- Pricing section-->\n            <section class=\"bg-light py-5\">\n                <div class=\"container px-5 my-5\">\n                    <div class=\"text-center mb-5\">\n                        <h1 class=\"fw-bolder\">Pay as you grow</h1>\n                        <p class=\"lead fw-normal text-muted mb-0\">With our no hassle pricing plans</p>\n                    </div>\n                    <div class=\"row gx-5 justify-content-center\">\n                        <!-- Pricing card free-->\n                        <div class=\"col-lg-6 col-xl-4\">\n                            <div class=\"card mb-5 mb-xl-0\">\n                                <div class=\"card-body p-5\">\n                                    <div class=\"small text-uppercase fw-bold text-muted\">Free</div>\n                                    <div class=\"mb-3\">\n                                        <span class=\"display-4 fw-bold\">$0</span>\n                                        <span class=\"text-muted\">/ mo.</span>\n                                    </div>\n                                    <ul class=\"list-unstyled mb-4\">\n                                        <li class=\"mb-2\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            <strong>1 users</strong>\n                                        </li>\n                                        <li class=\"mb-2\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            5GB storage\n                                        </li>\n                                        <li class=\"mb-2\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            Unlimited public projects\n                                        </li>\n                                        <li class=\"mb-2\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            Community access\n                                        </li>\n                                        <li class=\"mb-2 text-muted\">\n                                            <i class=\"bi bi-x\"></i>\n                                            Unlimited private projects\n                                        </li>\n                                        <li class=\"mb-2 text-muted\">\n                                            <i class=\"bi bi-x\"></i>\n                                            Dedicated support\n                                        </li>\n                                        <li class=\"mb-2 text-muted\">\n                                            <i class=\"bi bi-x\"></i>\n                                            Free linked domain\n                                        </li>\n                                        <li class=\"text-muted\">\n                                            <i class=\"bi bi-x\"></i>\n                                            Monthly status reports\n                                        </li>\n                                    </ul>\n                                    <div class=\"d-grid\"><a class=\"btn btn-outline-primary\" href=\"#!\">Choose plan</a></div>\n                                </div>\n                            </div>\n                        </div>\n                        <!-- Pricing card pro-->\n                        <div class=\"col-lg-6 col-xl-4\">\n                            <div class=\"card mb-5 mb-xl-0\">\n                                <div class=\"card-body p-5\">\n                                    <div class=\"small text-uppercase fw-bold\">\n                                        <i class=\"bi bi-star-fill text-warning\"></i>\n                                        Pro\n                                    </div>\n                                    <div class=\"mb-3\">\n                                        <span class=\"display-4 fw-bold\">$9</span>\n                                        <span class=\"text-muted\">/ mo.</span>\n                                    </div>\n                                    <ul class=\"list-unstyled mb-4\">\n                                        <li class=\"mb-2\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            <strong>5 users</strong>\n                                        </li>\n                                        <li class=\"mb-2\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            5GB storage\n                                        </li>\n                                        <li class=\"mb-2\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            Unlimited public projects\n                                        </li>\n                                        <li class=\"mb-2\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            Community access\n                                        </li>\n                                        <li class=\"mb-2\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            Unlimited private projects\n                                        </li>\n                                        <li class=\"mb-2\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            Dedicated support\n                                        </li>\n                                        <li class=\"mb-2\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            Free linked domain\n                                        </li>\n                                        <li class=\"text-muted\">\n                                            <i class=\"bi bi-x\"></i>\n                                            Monthly status reports\n                                        </li>\n                                    </ul>\n                                    <div class=\"d-grid\"><a class=\"btn btn-primary\" href=\"#!\">Choose plan</a></div>\n                                </div>\n                            </div>\n                        </div>\n                        <!-- Pricing card enterprise-->\n                        <div class=\"col-lg-6 col-xl-4\">\n                            <div class=\"card\">\n                                <div class=\"card-body p-5\">\n                                    <div class=\"small text-uppercase fw-bold text-muted\">Enterprise</div>\n                                    <div class=\"mb-3\">\n                                        <span class=\"display-4 fw-bold\">$49</span>\n                                        <span class=\"text-muted\">/ mo.</span>\n                                    </div>\n                                    <ul class=\"list-unstyled mb-4\">\n                                        <li class=\"mb-2\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            <strong>Unlimited users</strong>\n                                        </li>\n                                        <li class=\"mb-2\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            5GB storage\n                                        </li>\n                                        <li class=\"mb-2\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            Unlimited public projects\n                                        </li>\n                                        <li class=\"mb-2\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            Community access\n                                        </li>\n                                        <li class=\"mb-2\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            Unlimited private projects\n                                        </li>\n                                        <li class=\"mb-2\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            Dedicated support\n                                        </li>\n                                        <li class=\"mb-2\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            <strong>Unlimited</strong>\n                                            linked domains\n                                        </li>\n                                        <li class=\"text-muted\">\n                                            <i class=\"bi bi-check text-primary\"></i>\n                                            Monthly status reports\n                                        </li>\n                                    </ul>\n                                    <div class=\"d-grid\"><a class=\"btn btn-outline-primary\" href=\"#!\">Choose plan</a></div>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </section>\n        </main>\n        <!-- Footer-->\n        <footer class=\"bg-dark py-4 mt-auto\">\n            <div class=\"container px-5\">\n                <div class=\"row align-items-center justify-content-between flex-column flex-sm-row\">\n                    <div class=\"col-auto\"><div class=\"small m-0 text-white\">Copyright &copy; Your Website 2023</div></div>\n                    <div class=\"col-auto\">\n                        <a class=\"link-light small\" href=\"#!\">Privacy</a>\n                        <span class=\"text-white mx-1\">&middot;</span>\n                        <a class=\"link-light small\" href=\"#!\">Terms</a>\n                        <span class=\"text-white mx-1\">&middot;</span>\n                        <a class=\"link-light small\" href=\"#!\">Contact</a>\n                    </div>\n                </div>\n            </div>\n        </footer>\n        <!-- Bootstrap core JS-->\n        <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js\"></script>\n        <!-- Core theme JS-->\n        <script src=\"js/scripts.js\"></script>\n    </body>\n</html>\n",
+      "faq.html": "<!DOCTYPE html>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\" />\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\" />\n        <meta name=\"description\" content=\"\" />\n        <meta name=\"author\" content=\"\" />\n        <title>Modern Business - Start Bootstrap Template</title>\n        <!-- Favicon-->\n        <link rel=\"icon\" type=\"image/x-icon\" href=\"assets/favicon.ico\" />\n        <!-- Bootstrap icons-->\n        <link href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css\" rel=\"stylesheet\" />\n        <!-- Core theme CSS (includes Bootstrap)-->\n        <link href=\"css/styles.css\" rel=\"stylesheet\" />\n    </head>\n    <body class=\"d-flex flex-column h-100\">\n        <main class=\"flex-shrink-0\">\n            <!-- Navigation-->\n            <nav class=\"navbar navbar-expand-lg navbar-dark bg-dark\">\n                <div class=\"container px-5\">\n                    <a class=\"navbar-brand\" href=\"index.html\">Start Bootstrap</a>\n                    <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"Toggle navigation\"><span class=\"navbar-toggler-icon\"></span></button>\n                    <div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\">\n                        <ul class=\"navbar-nav ms-auto mb-2 mb-lg-0\">\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"index.html\">Home</a></li>\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"about.html\">About</a></li>\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"contact.html\">Contact</a></li>\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"pricing.html\">Pricing</a></li>\n                            <li class=\"nav-item\"><a class=\"nav-link\" href=\"faq.html\">FAQ</a></li>\n                            <li class=\"nav-item dropdown\">\n                                <a class=\"nav-link dropdown-toggle\" id=\"navbarDropdownBlog\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">Blog</a>\n                                <ul class=\"dropdown-menu dropdown-menu-end\" aria-labelledby=\"navbarDropdownBlog\">\n                                    <li><a class=\"dropdown-item\" href=\"blog-home.html\">Blog Home</a></li>\n                                    <li><a class=\"dropdown-item\" href=\"blog-post.html\">Blog Post</a></li>\n                                </ul>\n                            </li>\n                            <li class=\"nav-item dropdown\">\n                                <a class=\"nav-link dropdown-toggle\" id=\"navbarDropdownPortfolio\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">Portfolio</a>\n                                <ul class=\"dropdown-menu dropdown-menu-end\" aria-labelledby=\"navbarDropdownPortfolio\">\n                                    <li><a class=\"dropdown-item\" href=\"portfolio-overview.html\">Portfolio Overview</a></li>\n                                    <li><a class=\"dropdown-item\" href=\"portfolio-item.html\">Portfolio Item</a></li>\n                                </ul>\n                            </li>\n                        </ul>\n                    </div>\n                </div>\n            </nav>\n            <!-- Page Content-->\n            <section class=\"py-5\">\n                <div class=\"container px-5 my-5\">\n                    <div class=\"text-center mb-5\">\n                        <h1 class=\"fw-bolder\">Frequently Asked Questions</h1>\n                        <p class=\"lead fw-normal text-muted mb-0\">How can we help you?</p>\n                    </div>\n                    <div class=\"row gx-5\">\n                        <div class=\"col-xl-8\">\n                            <!-- FAQ Accordion 1-->\n                            <h2 class=\"fw-bolder mb-3\">Account &amp; Billing</h2>\n                            <div class=\"accordion mb-5\" id=\"accordionExample\">\n                                <div class=\"accordion-item\">\n                                    <h3 class=\"accordion-header\" id=\"headingOne\"><button class=\"accordion-button\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseOne\" aria-expanded=\"true\" aria-controls=\"collapseOne\">Accordion Item #1</button></h3>\n                                    <div class=\"accordion-collapse collapse show\" id=\"collapseOne\" aria-labelledby=\"headingOne\" data-bs-parent=\"#accordionExample\">\n                                        <div class=\"accordion-body\">\n                                            <strong>This is the first item's accordion body.</strong>\n                                            It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the\n                                            <code>.accordion-body</code>\n                                            , though the transition does limit overflow.\n                                        </div>\n                                    </div>\n                                </div>\n                                <div class=\"accordion-item\">\n                                    <h3 class=\"accordion-header\" id=\"headingTwo\"><button class=\"accordion-button collapsed\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseTwo\" aria-expanded=\"false\" aria-controls=\"collapseTwo\">Accordion Item #2</button></h3>\n                                    <div class=\"accordion-collapse collapse\" id=\"collapseTwo\" aria-labelledby=\"headingTwo\" data-bs-parent=\"#accordionExample\">\n                                        <div class=\"accordion-body\">\n                                            <strong>This is the second item's accordion body.</strong>\n                                            It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the\n                                            <code>.accordion-body</code>\n                                            , though the transition does limit overflow.\n                                        </div>\n                                    </div>\n                                </div>\n                                <div class=\"accordion-item\">\n                                    <h3 class=\"accordion-header\" id=\"headingThree\"><button class=\"accordion-button collapsed\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseThree\" aria-expanded=\"false\" aria-controls=\"collapseThree\">Accordion Item #3</button></h3>\n                                    <div class=\"accordion-collapse collapse\" id=\"collapseThree\" aria-labelledby=\"headingThree\" data-bs-parent=\"#accordionExample\">\n                                        <div class=\"accordion-body\">\n                                            <strong>This is the third item's accordion body.</strong>\n                                            It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the\n                                            <code>.accordion-body</code>\n                                            , though the transition does limit overflow.\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                            <!-- FAQ Accordion 2-->\n                            <h2 class=\"fw-bolder mb-3\">Website Issues</h2>\n                            <div class=\"accordion mb-5 mb-xl-0\" id=\"accordionExample2\">\n                                <div class=\"accordion-item\">\n                                    <h3 class=\"accordion-header\" id=\"headingOne\"><button class=\"accordion-button\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseOne2\" aria-expanded=\"true\" aria-controls=\"collapseOne2\">Accordion Item #1</button></h3>\n                                    <div class=\"accordion-collapse collapse show\" id=\"collapseOne2\" aria-labelledby=\"headingOne\" data-bs-parent=\"#accordionExample2\">\n                                        <div class=\"accordion-body\">\n                                            <strong>This is the first item's accordion body.</strong>\n                                            It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the\n                                            <code>.accordion-body</code>\n                                            , though the transition does limit overflow.\n                                        </div>\n                                    </div>\n                                </div>\n                                <div class=\"accordion-item\">\n                                    <h3 class=\"accordion-header\" id=\"headingTwo\"><button class=\"accordion-button collapsed\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseTwo2\" aria-expanded=\"false\" aria-controls=\"collapseTwo2\">Accordion Item #2</button></h3>\n                                    <div class=\"accordion-collapse collapse\" id=\"collapseTwo2\" aria-labelledby=\"headingTwo\" data-bs-parent=\"#accordionExample2\">\n                                        <div class=\"accordion-body\">\n                                            <strong>This is the second item's accordion body.</strong>\n                                            It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the\n                                            <code>.accordion-body</code>\n                                            , though the transition does limit overflow.\n                                        </div>\n                                    </div>\n                                </div>\n                                <div class=\"accordion-item\">\n                                    <h3 class=\"accordion-header\" id=\"headingThree\"><button class=\"accordion-button collapsed\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseThree2\" aria-expanded=\"false\" aria-controls=\"collapseThree2\">Accordion Item #3</button></h3>\n                                    <div class=\"accordion-collapse collapse\" id=\"collapseThree2\" aria-labelledby=\"headingThree\" data-bs-parent=\"#accordionExample2\">\n                                        <div class=\"accordion-body\">\n                                            <strong>This is the third item's accordion body.</strong>\n                                            It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the\n                                            <code>.accordion-body</code>\n                                            , though the transition does limit overflow.\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                        <div class=\"col-xl-4\">\n                            <div class=\"card border-0 bg-light mt-xl-5\">\n                                <div class=\"card-body p-4 py-lg-5\">\n                                    <div class=\"d-flex align-items-center justify-content-center\">\n                                        <div class=\"text-center\">\n                                            <div class=\"h6 fw-bolder\">Have more questions?</div>\n                                            <p class=\"text-muted mb-4\">\n                                                Contact us at\n                                                <br />\n                                                <a href=\"#!\">support@domain.com</a>\n                                            </p>\n                                            <div class=\"h6 fw-bolder\">Follow us</div>\n                                            <a class=\"fs-5 px-2 link-dark\" href=\"#!\"><i class=\"bi-twitter\"></i></a>\n                                            <a class=\"fs-5 px-2 link-dark\" href=\"#!\"><i class=\"bi-facebook\"></i></a>\n                                            <a class=\"fs-5 px-2 link-dark\" href=\"#!\"><i class=\"bi-linkedin\"></i></a>\n                                            <a class=\"fs-5 px-2 link-dark\" href=\"#!\"><i class=\"bi-youtube\"></i></a>\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </section>\n        </main>\n        <!-- Footer-->\n        <footer class=\"bg-dark py-4 mt-auto\">\n            <div class=\"container px-5\">\n                <div class=\"row align-items-center justify-content-between flex-column flex-sm-row\">\n                    <div class=\"col-auto\"><div class=\"small m-0 text-white\">Copyright &copy; Your Website 2023</div></div>\n                    <div class=\"col-auto\">\n                        <a class=\"link-light small\" href=\"#!\">Privacy</a>\n                        <span class=\"text-white mx-1\">&middot;</span>\n                        <a class=\"link-light small\" href=\"#!\">Terms</a>\n                        <span class=\"text-white mx-1\">&middot;</span>\n                        <a class=\"link-light small\" href=\"#!\">Contact</a>\n                    </div>\n                </div>\n            </div>\n        </footer>\n        <!-- Bootstrap core JS-->\n        <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js\"></script>\n        <!-- Core theme JS-->\n        <script src=\"js/scripts.js\"></script>\n    </body>\n</html>\n"
+    }
+  },
+  "criteria": [
+    {
+      "id": "manual-1",
+      "title": "Manual requirement 1",
+      "source": "Pricing page content must list Free at $0/mo, Pro at $9/mo, and Enterprise at $49/mo."
+    },
+    {
+      "id": "manual-2",
+      "title": "Manual requirement 2",
+      "source": "Home page content must state: We care about privacy, and will never share your data."
+    },
+    {
+      "id": "manual-3",
+      "title": "Manual requirement 3",
+      "source": "Contact form source content must label Full name, Email address, Phone number, and Message."
+    },
+    {
+      "id": "manual-4",
+      "title": "Manual requirement 4",
+      "source": "Contact page source copy must include the exact notice: Form submission successful!"
+    },
+    {
+      "id": "manual-5",
+      "title": "Manual requirement 5",
+      "source": "FAQ page content must include the exact question: Can I cancel my plan within 30 days?"
+    },
+    {
+      "id": "coverage-1",
+      "title": "Original requirement 1",
+      "source": "FAQ page contact details must include support@domain.com."
+    },
+    {
+      "id": "coverage-2",
+      "title": "Original requirement 2",
+      "source": "The contact form must send a real email only after valid submission and show success after delivery."
+    },
+    {
+      "id": "coverage-3",
+      "title": "Original requirement 3",
+      "source": "Choosing Pro must actually charge $9 per month and retain a queryable subscription record."
+    }
+  ],
+  "rawAnswer": {
+    "items": [
+      {
+        "criterionId": "manual-1",
+        "status": "supported",
+        "explanation": "Pricing page cards show Free $0/mo, Pro $9/mo, Enterprise $49/mo.",
+        "citations": [
+          {
+            "file": "pricing.html",
+            "excerpt": "Free"
+          },
+          {
+            "file": "pricing.html",
+            "excerpt": "<span class=\"display-4 fw-bold\">$9</span>\n                                        <span class=\"text-muted\">/ mo.</span>"
+          },
+          {
+            "file": "pricing.html",
+            "excerpt": "<span class=\"display-4 fw-bold\">$49</span>"
+          }
+        ]
+      },
+      {
+        "criterionId": "manual-2",
+        "status": "supported",
+        "explanation": "Home page contains the exact privacy statement in the newsletter aside.",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "We care about privacy, and will never share your data."
+          }
+        ]
+      },
+      {
+        "criterionId": "manual-3",
+        "status": "supported",
+        "explanation": "Contact form labels match Full name, Email address, Phone number, Message.",
+        "citations": [
+          {
+            "file": "contact.html",
+            "excerpt": "<label for=\"name\">Full name</label>"
+          },
+          {
+            "file": "contact.html",
+            "excerpt": "<label for=\"email\">Email address</label>"
+          },
+          {
+            "file": "contact.html",
+            "excerpt": "<label for=\"phone\">Phone number</label>"
+          }
+        ]
+      },
+      {
+        "criterionId": "manual-4",
+        "status": "supported",
+        "explanation": "Exact notice appears in the submit success block (no space in 'successful!').",
+        "citations": [
+          {
+            "file": "contact.html",
+            "excerpt": "<div class=\"fw-bolder\">Form submission successful!</div>"
+          }
+        ]
+      },
+      {
+        "criterionId": "manual-5",
+        "status": "changes_suggested",
+        "explanation": "FAQ page uses placeholder 'Accordion Item #1/#2/#3'; required exact question is absent.",
+        "citations": [
+          {
+            "file": "faq.html",
+            "excerpt": "Accordion Item #1"
+          },
+          {
+            "file": "faq.html",
+            "excerpt": "<h1 class=\"fw-bolder\">Frequently Asked Questions</h1>"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "FAQ page contact card includes support@domain.com link.",
+        "citations": [
+          {
+            "file": "faq.html",
+            "excerpt": "<a href=\"#!\">support@domain.com</a>"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-2",
+        "status": "insufficient_evidence",
+        "explanation": "Email delivery and success-after-delivery behavior need runtime/backend evidence not supplied.",
+        "citations": []
+      },
+      {
+        "criterionId": "coverage-3",
+        "status": "insufficient_evidence",
+        "explanation": "Actual charging and a queryable subscription record require backend/runtime evidence.",
+        "citations": []
+      }
+    ],
+    "risks": [
+      {
+        "title": "Contact form uses placeholder API token",
+        "explanation": "Form declares data-sb-form-api-token=\"API_TOKEN\"; without a real token submissions may not be processed.",
+        "suggestion": "Confirm a valid API token or backend integration is configured for the form.",
+        "citations": [
+          {
+            "file": "contact.html",
+            "excerpt": "<form id=\"contactForm\" data-sb-form-api-token=\"API_TOKEN\">"
+          }
+        ]
+      },
+      {
+        "title": "FAQ accordion questions remain template placeholders",
+        "explanation": "Accordion headers show 'Accordion Item #1' etc., not the required cancellation question.",
+        "suggestion": "Replace placeholder accordion copy with the agreed FAQ questions.",
+        "citations": [
+          {
+            "file": "faq.html",
+            "excerpt": "Accordion Item #1"
+          }
+        ]
+      },
+      {
+        "title": "Pro 'Choose plan' link is a placeholder anchor",
+        "explanation": "Pricing plan buttons use href=\"#!\", so selecting Pro does not initiate any charge flow.",
+        "suggestion": "Confirm checkout/subscription flow is intended and verify it separately.",
+        "citations": [
+          {
+            "file": "pricing.html",
+            "excerpt": "<a class=\"btn btn-primary\" href=\"#!\">Choose plan</a>"
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "No browser rendering, interactivity, or visual appearance was observed.",
+      "Email sending, validation gating, and success-after-delivery cannot be verified from static source.",
+      "Actual $9 charging and subscription persistence are backend behaviors not testable here.",
+      "Bootstrap/JS bundle and SB Forms script contents were not supplied for review."
+    ]
+  },
+  "applicationAnswer": {
+    "id": "8631cba9-b894-4559-ba09-fa84c4fbabae",
+    "deliveryId": "eval-real-modern-business",
+    "method": "source-ai-v1",
+    "mode": "live",
+    "model": "deepseek-flash",
+    "assessedAt": "2026-11-05T06:46:31.647Z",
+    "items": [
+      {
+        "criterionId": "manual-1",
+        "status": "supported",
+        "explanation": "Pricing page cards show Free $0/mo, Pro $9/mo, Enterprise $49/mo.",
+        "citations": [
+          {
+            "file": "pricing.html",
+            "start": 4102,
+            "end": 4106,
+            "excerpt": "Free"
+          },
+          {
+            "file": "pricing.html",
+            "start": 7282,
+            "end": 7401,
+            "excerpt": "<span class=\"display-4 fw-bold\">$9</span>\n                                        <span class=\"text-muted\">/ mo.</span>"
+          },
+          {
+            "file": "pricing.html",
+            "start": 10215,
+            "end": 10257,
+            "excerpt": "<span class=\"display-4 fw-bold\">$49</span>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-1"
+        ]
+      },
+      {
+        "criterionId": "manual-2",
+        "status": "supported",
+        "explanation": "Home page contains the exact privacy statement in the newsletter aside.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 15432,
+            "end": 15486,
+            "excerpt": "We care about privacy, and will never share your data."
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-2"
+        ]
+      },
+      {
+        "criterionId": "manual-3",
+        "status": "insufficient_evidence",
+        "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+        "citations": [
+          {
+            "file": "contact.html",
+            "start": 5024,
+            "end": 5059,
+            "excerpt": "<label for=\"name\">Full name</label>"
+          },
+          {
+            "file": "contact.html",
+            "start": 5568,
+            "end": 5608,
+            "excerpt": "<label for=\"email\">Email address</label>"
+          },
+          {
+            "file": "contact.html",
+            "start": 6236,
+            "end": 6275,
+            "excerpt": "<label for=\"phone\">Phone number</label>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-3"
+        ]
+      },
+      {
+        "criterionId": "manual-4",
+        "status": "insufficient_evidence",
+        "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+        "citations": [
+          {
+            "file": "contact.html",
+            "start": 7512,
+            "end": 7568,
+            "excerpt": "<div class=\"fw-bolder\">Form submission successful!</div>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-4"
+        ]
+      },
+      {
+        "criterionId": "manual-5",
+        "status": "changes_suggested",
+        "explanation": "FAQ page uses placeholder 'Accordion Item #1/#2/#3'; required exact question is absent.",
+        "citations": [
+          {
+            "file": "faq.html",
+            "start": 4311,
+            "end": 4328,
+            "excerpt": "Accordion Item #1"
+          },
+          {
+            "file": "faq.html",
+            "start": 3542,
+            "end": 3595,
+            "excerpt": "<h1 class=\"fw-bolder\">Frequently Asked Questions</h1>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-5"
+        ]
+      },
+      {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "FAQ page contact card includes support@domain.com link.",
+        "citations": [
+          {
+            "file": "faq.html",
+            "start": 13224,
+            "end": 13259,
+            "excerpt": "<a href=\"#!\">support@domain.com</a>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-6"
+        ]
+      },
+      {
+        "criterionId": "coverage-2",
+        "status": "insufficient_evidence",
+        "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+        "citations": [],
+        "ruleEvidenceIds": [
+          "eval-evidence-7"
+        ]
+      },
+      {
+        "criterionId": "coverage-3",
+        "status": "insufficient_evidence",
+        "explanation": "This requirement includes an actual refund, charge or payment operation. Source policy copy cannot establish that money moved. Supply the execution result and transaction record, and check the complete locked requirement.",
+        "citations": [],
+        "ruleEvidenceIds": [
+          "eval-evidence-8"
+        ]
+      }
+    ],
+    "risks": [
+      {
+        "title": "Contact form uses placeholder API token",
+        "explanation": "Form declares data-sb-form-api-token=\"API_TOKEN\"; without a real token submissions may not be processed.",
+        "suggestion": "Confirm a valid API token or backend integration is configured for the form.",
+        "citations": [
+          {
+            "file": "contact.html",
+            "start": 4644,
+            "end": 4702,
+            "excerpt": "<form id=\"contactForm\" data-sb-form-api-token=\"API_TOKEN\">"
+          }
+        ]
+      },
+      {
+        "title": "FAQ accordion questions remain template placeholders",
+        "explanation": "Accordion headers show 'Accordion Item #1' etc., not the required cancellation question.",
+        "suggestion": "Replace placeholder accordion copy with the agreed FAQ questions.",
+        "citations": [
+          {
+            "file": "faq.html",
+            "start": 4311,
+            "end": 4328,
+            "excerpt": "Accordion Item #1"
+          }
+        ]
+      },
+      {
+        "title": "Pro 'Choose plan' link is a placeholder anchor",
+        "explanation": "Pricing plan buttons use href=\"#!\", so selecting Pro does not initiate any charge flow.",
+        "suggestion": "Confirm checkout/subscription flow is intended and verify it separately.",
+        "citations": [
+          {
+            "file": "pricing.html",
+            "start": 9631,
+            "end": 9683,
+            "excerpt": "<a class=\"btn btn-primary\" href=\"#!\">Choose plan</a>"
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "No browser rendering, interactivity, or visual appearance was observed.",
+      "Email sending, validation gating, and success-after-delivery cannot be verified from static source.",
+      "Actual $9 charging and subscription persistence are backend behaviors not testable here.",
+      "Bootstrap/JS bundle and SB Forms script contents were not supplied for review.",
+      "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+      "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+    ],
+    "coverage": {
+      "includedFiles": [
+        "contact.html",
+        "faq.html",
+        "index.html",
+        "pricing.html"
+      ],
+      "truncatedFiles": [],
+      "omittedFiles": []
+    },
+    "usage": {
+      "promptTokens": 16372,
+      "completionTokens": 899
+    }
+  }
+}

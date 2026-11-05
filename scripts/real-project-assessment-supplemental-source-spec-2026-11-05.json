@@ -1,0 +1,119 @@
+{
+  "schema": "pbp-real-project-source-spec-v1",
+  "projects": [
+    {
+      "key": "personal",
+      "id": "real-personal-supplemental",
+      "language": "en",
+      "title": "Real Personal portfolio: cross-page titles and literal copy",
+      "repository": "StartBootstrap/startbootstrap-personal",
+      "commit": "6a1ebcc76a93ead054412fcbdf417d9c83dc762b",
+      "sourceFiles": [
+        {
+          "upstreamPath": "dist/index.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-personal/6a1ebcc76a93ead054412fcbdf417d9c83dc762b/dist/index.html",
+          "bytes": 27570,
+          "sha256": "59e92f696d9a3d54ff88a95b32b53591e9bbe66d49ad2952ac19ef7a5e85cf5b",
+          "deliveryPath": "index.html"
+        },
+        {
+          "upstreamPath": "dist/projects.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-personal/6a1ebcc76a93ead054412fcbdf417d9c83dc762b/dist/projects.html",
+          "bytes": 6395,
+          "sha256": "85b3261008f249b3341c619a49b9482991fc2d9876403ba3612e77bae387fa4a",
+          "deliveryPath": "projects.html"
+        },
+        {
+          "upstreamPath": "dist/resume.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-personal/6a1ebcc76a93ead054412fcbdf417d9c83dc762b/dist/resume.html",
+          "bytes": 15143,
+          "sha256": "3dd4e730b2762577757b762f70d75f51ab95d1d021af513308d28b3751bf2d53",
+          "deliveryPath": "resume.html"
+        },
+        {
+          "upstreamPath": "dist/contact.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-personal/6a1ebcc76a93ead054412fcbdf417d9c83dc762b/dist/contact.html",
+          "bytes": 9275,
+          "sha256": "5ce6c4cbd4f98ed0823db344251f0231cc5bf908609a1a82487ce7bd4de64f9d",
+          "deliveryPath": "contact.html"
+        },
+        {
+          "upstreamPath": "LICENSE",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-personal/6a1ebcc76a93ead054412fcbdf417d9c83dc762b/LICENSE",
+          "bytes": 1091,
+          "sha256": "e8b857747301fcd4c885b3216544b18bbf60328aec2c34da614787346cf40282",
+          "deliveryPath": null
+        }
+      ],
+      "rows": [
+        [
+          "Each page's HTML title content must identify Personal rather than Modern Business.",
+          "changes_suggested",
+          "index.html and resume.html identify Personal but projects.html and contact.html retain Modern Business in title. This is an explicit cross-page HTML-title content mismatch, not a visual branding judgment.",
+          [
+            "index.html",
+            "projects.html",
+            "resume.html",
+            "contact.html"
+          ]
+        ],
+        [
+          "Resume page content must list Web Developer at Stark Industries for 2019 - Present.",
+          "supported",
+          "resume.html has this exact role, organization and year range in its experience card. These are public fictional template details, not verified employment.",
+          [
+            "resume.html"
+          ]
+        ],
+        [
+          "Resume page content must include a Master's in Web Development and an Undergraduate entry in Computer Science.",
+          "supported",
+          "resume.html education cards contain Master's/Web Development and Undergraduate/Computer Science. Only source text is asserted.",
+          [
+            "resume.html"
+          ]
+        ],
+        [
+          "Projects page content must not retain the placeholder titles Project Name 1 and Project Name 2.",
+          "changes_suggested",
+          "Both placeholder titles remain in projects.html h2 elements, contradicting the newly authored negative content constraint.",
+          [
+            "projects.html"
+          ]
+        ],
+        [
+          "Contact page source content must contain the literal labels Full name and Email address.",
+          "supported",
+          "contact.html contains label elements for name and email with exactly these text labels. The criterion does not establish actual email delivery or rendered accessibility.",
+          [
+            "contact.html"
+          ]
+        ],
+        [
+          "Contact page copy must state that a reply is normally provided within two working days.",
+          "changes_suggested",
+          "No reply-time statement occurs anywhere in the complete contact.html source. This is an explicit text-content obligation rather than a demand to prove actual response speed.",
+          [
+            "contact.html"
+          ]
+        ],
+        [
+          "Download Resume must retrieve a valid PDF containing the current experience and education.",
+          "insufficient_evidence",
+          "Only HTML source subset supplied; the source link is not a downloaded PDF and no browser download or PDF contents are available.",
+          [
+            "resume.html"
+          ]
+        ],
+        [
+          "The portrait must depict the portfolio owner and remain uncropped at 375px on a phone.",
+          "insufficient_evidence",
+          "Image bytes, CSS, identity confirmation and mobile browser observations are not supplied; source alone cannot establish image subject or crop.",
+          [
+            "index.html"
+          ]
+        ]
+      ]
+    }
+  ]
+}

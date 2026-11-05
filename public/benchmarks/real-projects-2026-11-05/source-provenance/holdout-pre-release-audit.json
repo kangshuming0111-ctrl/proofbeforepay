@@ -1,0 +1,79 @@
+{
+  "schema": "pbp-heldout-pre-release-audit-v1",
+  "checkedAt": "2026-11-05T06:47:31.177552+00:00",
+  "trackedBaselineCommit": "b2b75b7bfa4ad0928fe15a8ef121c522f3c3fe67",
+  "historySearch": "git grep -n -i -E startbootstrap-clean-blog|html5-boilerplate|html5boilerplate|clean-blog|h5bp/ HEAD (all tracked paths)",
+  "historySearchMatches": 0,
+  "historyMeaning": "No mention in currently tracked HEAD across code/docs/old public benchmark artifacts; does not prove an unrecorded prior run never used these sources",
+  "corpusSha256": "a7ca63f7dbaf32aab6d3d81b325fa4f2ed22e659ed2c1a862c5889f69b51aceb",
+  "allRawFilesAndCorpusBytesExact": true,
+  "licenseRecordsReadAndMatched": true,
+  "publicSelection": "Not released to scripts/public yet; these are intended exact public source selections plus separate unchanged license copies",
+  "checks": [
+    {
+      "project": "real-holdout-clean-blog",
+      "sourcePath": "LICENSE",
+      "sha256": "e8b857747301fcd4c885b3216544b18bbf60328aec2c34da614787346cf40282",
+      "recordMatchesRaw": true,
+      "corpusBytesMatchRaw": false
+    },
+    {
+      "project": "real-holdout-clean-blog",
+      "sourcePath": "dist/index.html",
+      "sha256": "20e87ae8660b3f3d298a0a71364f4f7afda6a586070a65ddf2caedcd934466d8",
+      "recordMatchesRaw": true,
+      "corpusBytesMatchRaw": true
+    },
+    {
+      "project": "real-holdout-clean-blog",
+      "sourcePath": "dist/about.html",
+      "sha256": "fd00d01f5a66f96b820b090775ebc3986f483d65be1f1eee407f767198dbcdd7",
+      "recordMatchesRaw": true,
+      "corpusBytesMatchRaw": true
+    },
+    {
+      "project": "real-holdout-clean-blog",
+      "sourcePath": "dist/contact.html",
+      "sha256": "02784423b73d7d6fcf017b7fe8a043f2920ea9489b1283b71dca410be22517dc",
+      "recordMatchesRaw": true,
+      "corpusBytesMatchRaw": true
+    },
+    {
+      "project": "real-holdout-clean-blog",
+      "sourcePath": "dist/post.html",
+      "sha256": "d6885dd13e734e5315bc4cb36ba2406307812f54376dedfa776931023e0d1d56",
+      "recordMatchesRaw": true,
+      "corpusBytesMatchRaw": true
+    },
+    {
+      "project": "real-holdout-html5-boilerplate",
+      "sourcePath": "LICENSE.txt",
+      "sha256": "38dbda1787367225469ead815b992e54c5107201353821eaf3dcb30f03d4d322",
+      "recordMatchesRaw": true,
+      "corpusBytesMatchRaw": false
+    },
+    {
+      "project": "real-holdout-html5-boilerplate",
+      "sourcePath": "dist/index.html",
+      "sha256": "1dacff6e4b61aa96a8b6b94ba2280eb9a767f0d688775a088b430994c1f9ebb0",
+      "recordMatchesRaw": true,
+      "corpusBytesMatchRaw": true
+    },
+    {
+      "project": "real-holdout-html5-boilerplate",
+      "sourcePath": "dist/404.html",
+      "sha256": "57f3228f1361508362003ac5eb25cc8303b0b8fd19bf2470e462b2b8e97eef78",
+      "recordMatchesRaw": true,
+      "corpusBytesMatchRaw": true
+    },
+    {
+      "project": "real-holdout-html5-boilerplate",
+      "sourcePath": "dist/css/style.css",
+      "sha256": "7af9c40a3eeee8806a6b04f2d3a2213d6fcd8cf852c6075352d792880e7d26ca",
+      "recordMatchesRaw": true,
+      "corpusBytesMatchRaw": true
+    }
+  ],
+  "providerCalls": 0,
+  "currentModelOutputsRead": false
+}

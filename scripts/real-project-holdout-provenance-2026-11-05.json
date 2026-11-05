@@ -1,0 +1,120 @@
+{
+  "schema": "pbp-real-project-provenance-v1",
+  "cohort": "real-open-source-heldout-2026-11-05",
+  "preparedAt": "2026-11-05T06:46:17.634223+00:00",
+  "corpusSha256": "a7ca63f7dbaf32aab6d3d81b325fa4f2ed22e659ed2c1a862c5889f69b51aceb",
+  "heldOutFromParentUntilAfterR1R2": true,
+  "assessmentCalls": 0,
+  "thirdPartyCodeExecuted": false,
+  "requirementsAreAuthoredAcceptanceResearchTasks": true,
+  "allSelectedSourceBytesUnchanged": true,
+  "projects": [
+    {
+      "slug": "clean-blog",
+      "repository": "https://github.com/StartBootstrap/startbootstrap-clean-blog",
+      "commit": "1ebc4f8f3b6194335df237a2a7837955a5a4a9aa",
+      "files": [
+        {
+          "sourcePath": "LICENSE",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-clean-blog/1ebc4f8f3b6194335df237a2a7837955a5a4a9aa/LICENSE",
+          "bytes": 1091,
+          "sha256": "e8b857747301fcd4c885b3216544b18bbf60328aec2c34da614787346cf40282"
+        },
+        {
+          "sourcePath": "dist/index.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-clean-blog/1ebc4f8f3b6194335df237a2a7837955a5a4a9aa/dist/index.html",
+          "bytes": 8213,
+          "sha256": "20e87ae8660b3f3d298a0a71364f4f7afda6a586070a65ddf2caedcd934466d8"
+        },
+        {
+          "sourcePath": "dist/about.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-clean-blog/1ebc4f8f3b6194335df237a2a7837955a5a4a9aa/dist/about.html",
+          "bytes": 6113,
+          "sha256": "fd00d01f5a66f96b820b090775ebc3986f483d65be1f1eee407f767198dbcdd7"
+        },
+        {
+          "sourcePath": "dist/contact.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-clean-blog/1ebc4f8f3b6194335df237a2a7837955a5a4a9aa/dist/contact.html",
+          "bytes": 10169,
+          "sha256": "02784423b73d7d6fcf017b7fe8a043f2920ea9489b1283b71dca410be22517dc"
+        },
+        {
+          "sourcePath": "dist/post.html",
+          "url": "https://raw.githubusercontent.com/StartBootstrap/startbootstrap-clean-blog/1ebc4f8f3b6194335df237a2a7837955a5a4a9aa/dist/post.html",
+          "bytes": 9663,
+          "sha256": "d6885dd13e734e5315bc4cb36ba2406307812f54376dedfa776931023e0d1d56"
+        }
+      ],
+      "license": {
+        "spdx": "MIT",
+        "verifiedBy": "Read unchanged license text from fixed commit",
+        "path": "LICENSE"
+      }
+    },
+    {
+      "slug": "html5-boilerplate",
+      "repository": "https://github.com/h5bp/html5-boilerplate",
+      "commit": "b6597338e695dc4a8165c5abcb2bfffa586c3ee5",
+      "files": [
+        {
+          "sourcePath": "LICENSE.txt",
+          "url": "https://raw.githubusercontent.com/h5bp/html5-boilerplate/b6597338e695dc4a8165c5abcb2bfffa586c3ee5/LICENSE.txt",
+          "bytes": 1056,
+          "sha256": "38dbda1787367225469ead815b992e54c5107201353821eaf3dcb30f03d4d322"
+        },
+        {
+          "sourcePath": "dist/index.html",
+          "url": "https://raw.githubusercontent.com/h5bp/html5-boilerplate/b6597338e695dc4a8165c5abcb2bfffa586c3ee5/dist/index.html",
+          "bytes": 851,
+          "sha256": "1dacff6e4b61aa96a8b6b94ba2280eb9a767f0d688775a088b430994c1f9ebb0"
+        },
+        {
+          "sourcePath": "dist/404.html",
+          "url": "https://raw.githubusercontent.com/h5bp/html5-boilerplate/b6597338e695dc4a8165c5abcb2bfffa586c3ee5/dist/404.html",
+          "bytes": 1037,
+          "sha256": "57f3228f1361508362003ac5eb25cc8303b0b8fd19bf2470e462b2b8e97eef78"
+        },
+        {
+          "sourcePath": "dist/css/style.css",
+          "url": "https://raw.githubusercontent.com/h5bp/html5-boilerplate/b6597338e695dc4a8165c5abcb2bfffa586c3ee5/dist/css/style.css",
+          "bytes": 4965,
+          "sha256": "7af9c40a3eeee8806a6b04f2d3a2213d6fcd8cf852c6075352d792880e7d26ca"
+        }
+      ],
+      "license": {
+        "spdx": "MIT",
+        "verifiedBy": "Read unchanged license text from fixed commit",
+        "path": "LICENSE.txt"
+      }
+    }
+  ],
+  "scopeDetails": {
+    "clean-blog": {
+      "deliveryRoot": "dist",
+      "included": "index.html about.html contact.html post.html only",
+      "excluded": [
+        "dist/css/styles.css (233159 bytes exceeds production 64KiB per-text-file limit)",
+        "dist/js/ scripts",
+        "dist/assets/ raster and icons",
+        "external font/icon/bootstrap/SB Forms resources"
+      ],
+      "limits": "HTML source labels/content/metadata only; CSS/images/scripts/backend not supplied or executed. External runtime can neither be passed nor declared absent from these files alone. Public template code rather than actual client business."
+    },
+    "html5-boilerplate": {
+      "deliveryRoot": "dist",
+      "included": "index.html 404.html css/style.css",
+      "excluded": [
+        "dist/js/app.js",
+        "favicon.ico",
+        "icon.svg",
+        "icon.png",
+        "site.webmanifest",
+        "server configuration"
+      ],
+      "limits": "Official minimal site scaffold rather than production customer site. HTML/CSS source only; script and server/route requests not executed."
+    }
+  },
+  "privacyReview": "Selected HTML/CSS contain template branding/placeholder content and public vendor links, no private end-user submissions or credentials. API_TOKEN is the literal published placeholder, not a secret. License notices copied unchanged.",
+  "independenceLimit": "Clean Blog shares the StartBootstrap organization with some development projects, so repository-heldout does not imply publisher/domain independence; HTML5 Boilerplate provides a different publisher/scaffold domain.",
+  "preAssessmentEditorialRefinement": "Before any parent access or provider calls, clarified that title distinctness concerns delivered HTML title elements and privacy notice concerns static HTML copy. No response or outcome informed this wording. Previous pre-assessment corpus digest b9d3073470ddbb1674372f8ec8e412c50e8904f381d7d2e47f1b0e5888f1e012 retained here for provenance."
+}

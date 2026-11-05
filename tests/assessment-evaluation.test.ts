@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
 import { runEvaluation, VERIFIED_PRICE, type EvaluationCase } from "../scripts/run-assessment-evaluation.ts";
+import {assessmentOutputTokenLimit} from "../lib/delivery-assessment.ts";
 import type { Fetcher } from "../lib/providers.ts";
 
 const html = '<!doctype html><html><head><title>Florist</title></head><body><p>Opening hours: 11am–8pm.</p></body></html>';
@@ -65,7 +66,7 @@ test("the corpus reference labels never enter the real application request", asy
   assert.ok(!p.bodies[0].includes("THIS-REFERENCE-MUST-NEVER-BE-SENT"));
   assert.ok(!p.bodies[0].includes('"expectedStatus"'));
   const sent = JSON.parse(p.bodies[0]);
-  assert.equal(sent.max_tokens, 1800);
+  assert.equal(sent.max_tokens, assessmentOutputTokenLimit(JSON.parse(sent.messages[1].content).criteria.length));
   assert.equal(sent.model, "deepseek-flash");
   assert.equal(report.results[0].raw?.status, "supported");
   assert.equal(report.results[0].application?.status, "supported");
@@ -195,6 +196,6 @@ test("the separate complete-source corpus covers late correct copy, wrong copy, 
   assert.ok(report.results.every(item => !item.plan.coverage.truncatedFiles.length && !item.plan.coverage.omittedFiles.length));
   assert.deepEqual(group.cases.map((item: EvaluationCase) => item.reference.expectedStatus), ["supported", "changes_suggested", "changes_suggested", "changes_suggested"]);
   assert.ok(group.cases.every((item: EvaluationCase) => item.files["index.html"].length > 6000));
-  assert.ok(report.results.every(item => item.plan.outputTokenLimit === 1800));
+  assert.ok(report.results.every(item => item.plan.outputTokenLimit > 1980 && item.plan.outputTokenLimit <= 6400));
   assert.ok(group.protocolCounterexamples.invalidStatuses.some(Array.isArray));
 });

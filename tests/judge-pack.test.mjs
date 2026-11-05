@@ -70,6 +70,20 @@ test("template licences are copied byte-for-byte without admitting other TXT or 
   for(const file of copied)assert.deepEqual(await readFile(path.join(result.sourceDirectory,file)),await readFile(path.join(root,file)));
 });
 
+test("real-project source exports retain the six exact upstream licences and exclude neighbouring owner notes", async t => {
+  const {root,base}=await fixture(t),relative="public/benchmarks/real-projects-2026-11-05/source-provenance",directory=path.join(root,relative);
+  await mkdir(directory,{recursive:true});
+  const projects=["business-casual","modern-business","corona-admin","personal","clean-blog","html5-boilerplate"];
+  for(const name of projects)await writeFile(path.join(directory,`${name}-LICENSE.txt`),`Synthetic exact attribution: ${name}\r\n`);
+  for(const name of["owner-notes.txt","other-LICENSE.txt","personal-LICENSE.txt.bak"])await writeFile(path.join(directory,name),"not in exact allowlist\n");
+  const result=await buildJudgePack(root,path.join(base,"real-source-export")),manifest=JSON.parse(await readFile(result.manifest,"utf8"));
+  const copied=manifest.files.map(row=>row.file).filter(file=>file.endsWith(".txt"));
+  assert.deepEqual(copied,projects.map(name=>`${relative}/${name}-LICENSE.txt`).sort());
+  const archive=spawnSync("tar",["-tzf",result.archive],{encoding:"utf8"});assert.equal(archive.status,0);
+  for(const file of copied){assert.deepEqual(await readFile(path.join(result.sourceDirectory,file)),await readFile(path.join(root,file)));assert.ok(archive.stdout.split("\n").includes(`./${file}`));}
+  assert.ok(!archive.stdout.includes("owner-notes"));assert.ok(!archive.stdout.includes("other-LICENSE"));
+});
+
 test("the single pinned benchmark source archive exports byte-for-byte with all frozen member hashes validated", async t => {
   const {root,base}=await fixture(t),relative="public/benchmarks/five-remediation-2026-11-05",actual=new URL(`../${relative}/`,import.meta.url);
   await mkdir(path.join(root,relative),{recursive:true});

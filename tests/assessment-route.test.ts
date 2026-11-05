@@ -67,7 +67,7 @@ async function routeHarness(language: Language = "zh", changedBody?: (body: stri
     globalThis.fetch = (async (input: string | URL | Request, init?: RequestInit) => {
       state.fetches++;
       const url = new URL(typeof input === "string" ? input : input instanceof URL ? input.href : input.url);
-      assert.equal(url.href, "https://api.deepseek.com/chat/completions", "all other outbound requests are forbidden");
+      assert.equal(url.href, "https://api.deepseek.com/beta/chat/completions", "all other outbound requests are forbidden");
       assert.equal(init?.method, "POST"); assert.equal(init?.redirect, "manual");
       assert.ok(init?.signal instanceof AbortSignal);
       return new Response(state.responseBody, {status: 200, headers: {"Content-Type": "application/json"}});
@@ -124,4 +124,18 @@ test("actual assess route rejects an outsider, stale delivery and missing consen
     assert.equal((await h.call({confirm: false})).status, 400);
     assert.equal(h.state.fetches, 0); assert.equal(h.state.saves, 0); assert.deepEqual(h.state.quote, before);
   } finally {await h.close();}
+});
+
+test("actual assess route identifies omitted risk advice without saving partial answers or echoing the model",async()=>{
+  const h=await routeHarness("zh",body=>{
+    const envelope=JSON.parse(body),completion=JSON.parse(envelope.choices[0].message.content);
+    completion.risks=[{title:"PRIVATE-RISK-TITLE-NOT-FOR-API",explanation:"Provider omitted its suggestion.",citations:completion.items[0].citations}];
+    envelope.choices[0].message.content=JSON.stringify(completion);return JSON.stringify(envelope);
+  });
+  try{
+    const before=structuredClone(h.state.quote),response=await h.call(),result=await response.json() as FailureResult;
+    assert.equal(response.status,502);assert.equal(result.assessmentFailure.reason,"risk_fields");assert.equal(result.assessmentFailure.coverage,undefined);
+    assert.match(result.error,/风险条目/u);assert.match(result.error,/整份回复未保存/u);assert.doesNotMatch(JSON.stringify(result),/PRIVATE-RISK-TITLE|Provider omitted|synthetic-route-key/u);
+    assert.equal(h.state.fetches,1);assert.equal(h.state.saves,0);assert.equal(h.state.version,1);assert.deepEqual(h.state.quote,before);
+  }finally{await h.close();}
 });

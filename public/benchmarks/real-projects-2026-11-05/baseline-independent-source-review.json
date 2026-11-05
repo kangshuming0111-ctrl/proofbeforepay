@@ -1,0 +1,81 @@
+{
+  "schema": "pbp-independent-source-whole-answer-review-v1",
+  "reviewedAt": "2026-11-05T06:51:41.645Z",
+  "input": "outputs/real-projects-2026-11-05/baseline-live.json",
+  "method": "Separate Codex source reading of exact corpus files and entire item/risk/limitation responses; not human customer testing or runtime execution.",
+  "novelty": {
+    "unseenRepositoryProjects": [
+      "real-modern-business",
+      "real-corona-admin"
+    ],
+    "previouslyUsedRepositoryProject": [
+      "real-business-casual"
+    ],
+    "noHoldoutFilesRead": true
+  },
+  "rawSourceCitationValidation": {
+    "total": 43,
+    "validContiguousUtf16SourceSubstrings": 43,
+    "invalid": 0,
+    "semanticTruthNotEstablishedByThisCheck": true
+  },
+  "projects": [
+    {
+      "id": "real-business-casual",
+      "rawCriterionStates": "8/8 agree with source on their specified evidence layer",
+      "applicationFalseUnknown": [
+        "manual-4"
+      ],
+      "rawWholeAnswer": "qualified",
+      "reasons": [
+        "manual-1 asserts all five weekdays but citations show Sunday, Monday and Friday only. Full source verifies the remaining weekday values, so the state is not a demonstrated false supported; the quoted basis alone is incomplete for that explanation.",
+        "Saturday mismatch and required allergy-copy omission are grounded in the specific supplied file. Navigation and unseen pixels correctly remain unknown."
+      ],
+      "remainingScope": "Repository was used earlier; must not count this as an unseen project."
+    },
+    {
+      "id": "real-modern-business",
+      "rawCriterionStates": "8/8 agree with source on their specified evidence layer",
+      "applicationFalseUnknown": [
+        "manual-3",
+        "manual-4"
+      ],
+      "rawWholeAnswer": "qualified",
+      "reasons": [
+        "The Pro-plan risk says a #! anchor means selecting Pro does not initiate any charge flow. The source establishes that href value, not all executed click handlers or provider behavior; the causal runtime claim overreaches.",
+        "Pricing explanation states all plan-label/price pairs but excerpts show only Free, $9 and $49. Full source confirms all pairs; current quotes do not show all asserted pairings.",
+        "Contact-label explanation lists four labels but quotations cover only three. Full source contains Message too; this is incomplete explanation evidence, not proof the label is absent.",
+        "Literal successful-submit notice exists inside d-none source markup; its source presence is checkable while displayed timing, actual email, charging and persistence correctly remain unknown."
+      ],
+      "remainingScope": "The placeholder API token is a real literal source observation; no successful or failed email operation was observed."
+    },
+    {
+      "id": "real-corona-admin",
+      "rawCriterionStates": "8/8 agree with source on their specified evidence layer",
+      "applicationFalseUnknown": [
+        "manual-1",
+        "manual-3"
+      ],
+      "rawWholeAnswer": "accepted_with_minor_limit",
+      "reasons": [
+        "Payment table headings and login labels are literal source-text requirements, not money movement or authentication operation.",
+        "Missing required register privacy sentence is a bounded source-copy mismatch; authentication, payment and restart persistence correctly remain unknown.",
+        "The curly-apostrophe encoding limitation adds little because the exact requirement already uses the same character; do not invent an extra encoding acceptance demand."
+      ],
+      "remainingScope": "Password label uses input type=text in source, but masking is not a separately locked criterion. Its omission from optional risks is not counted as criterion omission or a frozen-reference failure; no comprehensive security result is established."
+    }
+  ],
+  "summary": {
+    "rawReferenceAgreement": 24,
+    "totalCriteria": 24,
+    "applicationReferenceAgreement": 19,
+    "applicationFalseUnknownCount": 5,
+    "unsafeFalseSupportedDemonstrated": 0,
+    "missingCriterionItems": 0
+  },
+  "limits": [
+    "Full source consistency is not rendered visibility, functioning behavior, payment, privacy practice or user isolation.",
+    "Known-reference agreement is not complete answer quality; incomplete quotation coverage and runtime overreach are retained separately.",
+    "No aggregate whole-answer acceptance count is asserted across different rubric labels."
+  ]
+}

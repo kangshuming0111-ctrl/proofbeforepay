@@ -1,0 +1,551 @@
+{
+  "schema": "pbp-independent-supplemental-source-review-v1",
+  "reviewedAt": "2026-11-05T06:54:58.568Z",
+  "reviewer": "Codex AI source reviewer, not a human customer",
+  "inputs": {
+    "corpus": "scripts/real-project-assessment-supplemental-corpus-2026-11-05.json",
+    "corpusSha256": "24497b578d152108569fe9766203bfa135f9ca6107ca7cd4f8865e5ffaf6aeaa",
+    "result": "outputs/real-projects-2026-11-05/supplemental-baseline-live.json",
+    "freezeSha256": "396ec429f296f2c85f4c8e086db9bb0b338425877a47c17932a81189652ba92c"
+  },
+  "method": "Read all eight original criteria, complete supplied source HTML, raw items/risks/limitations and application report. Independently re-resolve every quotation and application UTF-16 offset; read exporter and call its read-only collection API. No provider, browser, runtime, backend, payment or network call.",
+  "originalMetricsPreserved": {
+    "rawStatusAgreement": {
+      "count": 7,
+      "total": 8
+    },
+    "applicationStatusAgreement": {
+      "count": 6,
+      "total": 8
+    },
+    "missingItems": [],
+    "duplicateItems": [],
+    "unknownIds": []
+  },
+  "wholeAnswer": {
+    "raw": "qualified",
+    "application": "rejected",
+    "rationale": "Raw source findings are useful and there is no false supported runtime assurance, but a reference-scope dispute and a literal href error remain. Application downgrades an explicit HTML-title mismatch to unknown while retaining an exact source-based risk asserting the same mismatch, so it is not an internally consistent acceptable whole answer."
+  },
+  "criterionAdjudications": [
+    {
+      "id": "manual-1",
+      "reference": "changes_suggested",
+      "raw": "changes_suggested",
+      "application": "insufficient_evidence",
+      "decision": "accepted_product_defect",
+      "rationale": "HTML title content is explicitly requested and complete head title elements are supplied in all four HTML files. projects/contact say Modern Business, index/resume say Personal. No browser or omitted CSS/JS is needed to establish this exact delivered metadata discrepancy. Application false-unknown is not justified and conflicts with its retained risk."
+    },
+    {
+      "id": "manual-2",
+      "decision": "accepted",
+      "rationale": "Exact source card contains year range, role and organization. No employment truth assertion."
+    },
+    {
+      "id": "manual-3",
+      "decision": "accepted",
+      "rationale": "Both degree/subject pairs are explicitly present. No educational authenticity assertion."
+    },
+    {
+      "id": "manual-4",
+      "decision": "accepted",
+      "rationale": "Both prohibited placeholder headings occur in projects.html h2 text."
+    },
+    {
+      "id": "manual-5",
+      "decision": "accepted",
+      "rationale": "Both exact contact labels occur in the complete HTML. Source label text only."
+    },
+    {
+      "id": "coverage-1",
+      "reference": "changes_suggested",
+      "raw": "insufficient_evidence",
+      "application": "insufficient_evidence",
+      "decision": "reference_scope_ambiguity_reasonable_unknown",
+      "rationale": "The actual authored requirement says Contact page copy must state that a reply is normally provided within two working days. It does not bind the requirement to static delivered HTML body text exclusively. The supplied HTML lacks the sentence, but linked js/scripts.js and remote scripts were omitted and not inspected. Unknown with explicit static absence and dynamic-alternative limitation is a defensible conservative result for the broader page-copy requirement. The original reference rationale assumed an HTML-only obligation that was not made equally explicit to the model. Do not relabel this frozen sample or force changes_suggested to improve its numerical score.",
+      "recommendedAction": "Retain original 7/8 and 6/8 counters plus this adjudication. A future separate criterion can explicitly require the delivered HTML body source to contain the sentence, or provide missing dynamic dependencies/runtime evidence."
+    },
+    {
+      "id": "coverage-2",
+      "decision": "accepted_unknown",
+      "rationale": "The actual anchor is href=\"#!\"; no PDF supplied. Correct item explanation and citation do not prove a valid download. The separate limitation misquotes #! as # and must not be called exact."
+    },
+    {
+      "id": "coverage-3",
+      "decision": "accepted_unknown",
+      "rationale": "Portrait pixels, owner identity and mobile rendering observations absent. No subject/crop assurance can be made."
+    }
+  ],
+  "citationChecks": {
+    "rawItemCount": 13,
+    "rawRiskCount": 4,
+    "applicationItemCount": 13,
+    "applicationRiskCount": 4,
+    "allExactSubstrings": true,
+    "allApplicationUtf16Offsets": true,
+    "rows": [
+      {
+        "layer": "raw",
+        "kind": "item",
+        "row": 1,
+        "citation": 1,
+        "file": "index.html",
+        "substringValid": true,
+        "utf16Start": 271,
+        "utf16End": 318,
+        "storedOffsetsValid": null
+      },
+      {
+        "layer": "raw",
+        "kind": "item",
+        "row": 1,
+        "citation": 2,
+        "file": "projects.html",
+        "substringValid": true,
+        "utf16Start": 271,
+        "utf16End": 328,
+        "storedOffsetsValid": null
+      },
+      {
+        "layer": "raw",
+        "kind": "item",
+        "row": 1,
+        "citation": 3,
+        "file": "contact.html",
+        "substringValid": true,
+        "utf16Start": 265,
+        "utf16End": 322,
+        "storedOffsetsValid": null
+      },
+      {
+        "layer": "raw",
+        "kind": "item",
+        "row": 2,
+        "citation": 1,
+        "file": "resume.html",
+        "substringValid": true,
+        "utf16Start": 3981,
+        "utf16End": 4240,
+        "storedOffsetsValid": null
+      },
+      {
+        "layer": "raw",
+        "kind": "item",
+        "row": 3,
+        "citation": 1,
+        "file": "resume.html",
+        "substringValid": true,
+        "utf16Start": 7436,
+        "utf16End": 7584,
+        "storedOffsetsValid": null
+      },
+      {
+        "layer": "raw",
+        "kind": "item",
+        "row": 3,
+        "citation": 2,
+        "file": "resume.html",
+        "substringValid": true,
+        "utf16Start": 9152,
+        "utf16End": 9306,
+        "storedOffsetsValid": null
+      },
+      {
+        "layer": "raw",
+        "kind": "item",
+        "row": 4,
+        "citation": 1,
+        "file": "projects.html",
+        "substringValid": true,
+        "utf16Start": 3207,
+        "utf16End": 3248,
+        "storedOffsetsValid": null
+      },
+      {
+        "layer": "raw",
+        "kind": "item",
+        "row": 4,
+        "citation": 2,
+        "file": "projects.html",
+        "substringValid": true,
+        "utf16Start": 4175,
+        "utf16End": 4216,
+        "storedOffsetsValid": null
+      },
+      {
+        "layer": "raw",
+        "kind": "item",
+        "row": 5,
+        "citation": 1,
+        "file": "contact.html",
+        "substringValid": true,
+        "utf16Start": 4048,
+        "utf16End": 4083,
+        "storedOffsetsValid": null
+      },
+      {
+        "layer": "raw",
+        "kind": "item",
+        "row": 5,
+        "citation": 2,
+        "file": "contact.html",
+        "substringValid": true,
+        "utf16Start": 4592,
+        "utf16End": 4632,
+        "storedOffsetsValid": null
+      },
+      {
+        "layer": "raw",
+        "kind": "item",
+        "row": 6,
+        "citation": 1,
+        "file": "contact.html",
+        "substringValid": true,
+        "utf16Start": 2883,
+        "utf16End": 2949,
+        "storedOffsetsValid": null
+      },
+      {
+        "layer": "raw",
+        "kind": "item",
+        "row": 7,
+        "citation": 1,
+        "file": "resume.html",
+        "substringValid": true,
+        "utf16Start": 3222,
+        "utf16End": 3269,
+        "storedOffsetsValid": null
+      },
+      {
+        "layer": "raw",
+        "kind": "item",
+        "row": 8,
+        "citation": 1,
+        "file": "index.html",
+        "substringValid": true,
+        "utf16Start": 4181,
+        "utf16End": 4243,
+        "storedOffsetsValid": null
+      },
+      {
+        "layer": "raw",
+        "kind": "risk",
+        "row": 1,
+        "citation": 1,
+        "file": "projects.html",
+        "substringValid": true,
+        "utf16Start": 3207,
+        "utf16End": 3248,
+        "storedOffsetsValid": null
+      },
+      {
+        "layer": "raw",
+        "kind": "risk",
+        "row": 1,
+        "citation": 2,
+        "file": "projects.html",
+        "substringValid": true,
+        "utf16Start": 4175,
+        "utf16End": 4216,
+        "storedOffsetsValid": null
+      },
+      {
+        "layer": "raw",
+        "kind": "risk",
+        "row": 2,
+        "citation": 1,
+        "file": "projects.html",
+        "substringValid": true,
+        "utf16Start": 271,
+        "utf16End": 328,
+        "storedOffsetsValid": null
+      },
+      {
+        "layer": "raw",
+        "kind": "risk",
+        "row": 2,
+        "citation": 2,
+        "file": "contact.html",
+        "substringValid": true,
+        "utf16Start": 265,
+        "utf16End": 322,
+        "storedOffsetsValid": null
+      },
+      {
+        "layer": "application",
+        "kind": "item",
+        "row": 1,
+        "citation": 1,
+        "file": "index.html",
+        "substringValid": true,
+        "utf16Start": 271,
+        "utf16End": 318,
+        "storedOffsetsValid": true
+      },
+      {
+        "layer": "application",
+        "kind": "item",
+        "row": 1,
+        "citation": 2,
+        "file": "projects.html",
+        "substringValid": true,
+        "utf16Start": 271,
+        "utf16End": 328,
+        "storedOffsetsValid": true
+      },
+      {
+        "layer": "application",
+        "kind": "item",
+        "row": 1,
+        "citation": 3,
+        "file": "contact.html",
+        "substringValid": true,
+        "utf16Start": 265,
+        "utf16End": 322,
+        "storedOffsetsValid": true
+      },
+      {
+        "layer": "application",
+        "kind": "item",
+        "row": 2,
+        "citation": 1,
+        "file": "resume.html",
+        "substringValid": true,
+        "utf16Start": 3981,
+        "utf16End": 4240,
+        "storedOffsetsValid": true
+      },
+      {
+        "layer": "application",
+        "kind": "item",
+        "row": 3,
+        "citation": 1,
+        "file": "resume.html",
+        "substringValid": true,
+        "utf16Start": 7436,
+        "utf16End": 7584,
+        "storedOffsetsValid": true
+      },
+      {
+        "layer": "application",
+        "kind": "item",
+        "row": 3,
+        "citation": 2,
+        "file": "resume.html",
+        "substringValid": true,
+        "utf16Start": 9152,
+        "utf16End": 9306,
+        "storedOffsetsValid": true
+      },
+      {
+        "layer": "application",
+        "kind": "item",
+        "row": 4,
+        "citation": 1,
+        "file": "projects.html",
+        "substringValid": true,
+        "utf16Start": 3207,
+        "utf16End": 3248,
+        "storedOffsetsValid": true
+      },
+      {
+        "layer": "application",
+        "kind": "item",
+        "row": 4,
+        "citation": 2,
+        "file": "projects.html",
+        "substringValid": true,
+        "utf16Start": 4175,
+        "utf16End": 4216,
+        "storedOffsetsValid": true
+      },
+      {
+        "layer": "application",
+        "kind": "item",
+        "row": 5,
+        "citation": 1,
+        "file": "contact.html",
+        "substringValid": true,
+        "utf16Start": 4048,
+        "utf16End": 4083,
+        "storedOffsetsValid": true
+      },
+      {
+        "layer": "application",
+        "kind": "item",
+        "row": 5,
+        "citation": 2,
+        "file": "contact.html",
+        "substringValid": true,
+        "utf16Start": 4592,
+        "utf16End": 4632,
+        "storedOffsetsValid": true
+      },
+      {
+        "layer": "application",
+        "kind": "item",
+        "row": 6,
+        "citation": 1,
+        "file": "contact.html",
+        "substringValid": true,
+        "utf16Start": 2883,
+        "utf16End": 2949,
+        "storedOffsetsValid": true
+      },
+      {
+        "layer": "application",
+        "kind": "item",
+        "row": 7,
+        "citation": 1,
+        "file": "resume.html",
+        "substringValid": true,
+        "utf16Start": 3222,
+        "utf16End": 3269,
+        "storedOffsetsValid": true
+      },
+      {
+        "layer": "application",
+        "kind": "item",
+        "row": 8,
+        "citation": 1,
+        "file": "index.html",
+        "substringValid": true,
+        "utf16Start": 4181,
+        "utf16End": 4243,
+        "storedOffsetsValid": true
+      },
+      {
+        "layer": "application",
+        "kind": "risk",
+        "row": 1,
+        "citation": 1,
+        "file": "projects.html",
+        "substringValid": true,
+        "utf16Start": 3207,
+        "utf16End": 3248,
+        "storedOffsetsValid": true
+      },
+      {
+        "layer": "application",
+        "kind": "risk",
+        "row": 1,
+        "citation": 2,
+        "file": "projects.html",
+        "substringValid": true,
+        "utf16Start": 4175,
+        "utf16End": 4216,
+        "storedOffsetsValid": true
+      },
+      {
+        "layer": "application",
+        "kind": "risk",
+        "row": 2,
+        "citation": 1,
+        "file": "projects.html",
+        "substringValid": true,
+        "utf16Start": 271,
+        "utf16End": 328,
+        "storedOffsetsValid": true
+      },
+      {
+        "layer": "application",
+        "kind": "risk",
+        "row": 2,
+        "citation": 2,
+        "file": "contact.html",
+        "substringValid": true,
+        "utf16Start": 265,
+        "utf16End": 322,
+        "storedOffsetsValid": true
+      }
+    ]
+  },
+  "riskReview": [
+    {
+      "title": "Placeholder project titles remain on Projects page",
+      "decision": "grounded",
+      "rationale": "Both placeholder headings match source and the agreed negative content constraint."
+    },
+    {
+      "title": "Page titles on Projects and Contact still say Modern Business",
+      "decision": "grounded_raw_but_application_status_inconsistent",
+      "rationale": "Exact title mismatch exists; raw item agrees, application unknown conflicts."
+    }
+  ],
+  "limitationReview": [
+    {
+      "index": 1,
+      "text": "Raster portrait pixels not supplied, so owner identity and uncropped display at 375px are unverified.",
+      "decision": "acceptable_evidence_boundary"
+    },
+    {
+      "index": 2,
+      "text": "No PDF asset in inventory; Download Resume href '#' behavior and PDF contents cannot be confirmed.",
+      "decision": "literal_source_error",
+      "actual": "href=\"#!\"",
+      "misstated": "href '#'",
+      "severity": "P3",
+      "rationale": "A statement of unknown behavior remains correct but the source token is inaccurate; item explanation and citation retain the true #!."
+    },
+    {
+      "index": 3,
+      "text": "Form submission, email receipt and any backend for the contact form are untested.",
+      "decision": "acceptable_evidence_boundary"
+    },
+    {
+      "index": 4,
+      "text": "Rendered appearance, styling and mobile behavior were not observed in a browser.",
+      "decision": "acceptable_evidence_boundary"
+    },
+    {
+      "index": 5,
+      "text": "Reply-time copy absent is judged on supplied static HTML only; dynamic alternatives unknown.",
+      "decision": "acceptable_evidence_boundary"
+    }
+  ],
+  "packagingReview": {
+    "method": "Read-only collectPublicSource current checkout; no archive build or source changes",
+    "files": [
+      {
+        "file": "public/benchmarks/real-projects-2026-11-05/source-provenance/business-casual-LICENSE.txt",
+        "selectedByCurrentExporter": false
+      },
+      {
+        "file": "public/benchmarks/real-projects-2026-11-05/source-provenance/business-casual-original-html.json",
+        "selectedByCurrentExporter": true
+      },
+      {
+        "file": "public/benchmarks/real-projects-2026-11-05/source-provenance/corona-admin-LICENSE.txt",
+        "selectedByCurrentExporter": false
+      },
+      {
+        "file": "public/benchmarks/real-projects-2026-11-05/source-provenance/corona-admin-original-html.json",
+        "selectedByCurrentExporter": true
+      },
+      {
+        "file": "public/benchmarks/real-projects-2026-11-05/source-provenance/modern-business-LICENSE.txt",
+        "selectedByCurrentExporter": false
+      },
+      {
+        "file": "public/benchmarks/real-projects-2026-11-05/source-provenance/modern-business-original-html.json",
+        "selectedByCurrentExporter": true
+      },
+      {
+        "file": "public/benchmarks/real-projects-2026-11-05/source-provenance/personal-LICENSE.txt",
+        "selectedByCurrentExporter": false
+      },
+      {
+        "file": "public/benchmarks/real-projects-2026-11-05/source-provenance/personal-original-html.json",
+        "selectedByCurrentExporter": true
+      }
+    ],
+    "issue": "All newly added *-LICENSE.txt files are omitted by the current exporter exact-path allowlist, while the corresponding original-html JSON is included. Preserve accurate source licenses in the public release before publication.",
+    "recommendedFix": "Add only these reviewed exact attribution paths to LICENSE_TEXT_FILES or embed their full license notices into exported source JSON. Do not allow arbitrary TXT documents."
+  },
+  "limits": [
+    "AI source review, not independent human user research.",
+    "No modifications to original corpus, references, application source or prior frozen records.",
+    "All source references are public template artifacts, not authenticated customer data.",
+    "No holdout corpus read."
+  ]
+}

@@ -10,9 +10,12 @@ import { gunzipSync } from "node:zlib";
 const ROOT_FILES = ["README.md", "LICENSE", "AGENTS.md", "package.json", "pnpm-lock.yaml", "pnpm-workspace.yaml", "tsconfig.json", "next.config.ts", "vite.config.ts", "postcss.config.mjs", "eslint.config.mjs", "drizzle.config.ts", "cloudflare-env.d.ts", "components.json", ".gitignore", ".agents/skills/proofbeforepay-delivery/SKILL.md", ".agents/skills/proofbeforepay-delivery/references/code-map.md"];
 const SOURCE_DIRS = ["app", "lib", "db", "drizzle", "components", "hooks", "worker", "vendor", "public", "scripts", "tests", "docs", "examples/seller-staging", "examples/seller-capacity-staging", "examples/seller-lifecycle-staging", "examples/seller-workshop-python", "examples/seller-dom-staging", "examples/seller-time-policy-staging", "examples/seller-onboarding", "examples/seller-enquiry-staging"];
 const EXTENSIONS = new Set([".html", ".ts", ".tsx", ".mts", ".cts", ".js", ".mjs", ".cjs", ".css", ".json", ".sql", ".md", ".yaml", ".yml", ".svg", ".py", ".sh", ".csv", ".LICENSE"]);
-// Exact attribution files for the three licensed evaluator-template sources.
+// Exact attribution files for licensed evaluator sources.
 // Do not broaden this to arbitrary TXT documents or owner notes.
-const LICENSE_TEXT_FILES = new Set(["bootstrap", "florist", "html5up"].map(name => `docs/fixtures/assessment-transfer-2026-11-04/${name}-LICENSE.txt`));
+const LICENSE_TEXT_FILES = new Set([
+  ...["bootstrap", "florist", "html5up"].map(name => `docs/fixtures/assessment-transfer-2026-11-04/${name}-LICENSE.txt`),
+  ...["business-casual", "modern-business", "corona-admin", "personal", "clean-blog", "html5-boilerplate"].map(name => `public/benchmarks/real-projects-2026-11-05/source-provenance/${name}-LICENSE.txt`),
+]);
 // One immutable benchmark source archive, not a general binary/archive allowance.
 // Its members must also match the exact 20 pre-call implementation hashes.
 const PINNED_SOURCE_ARCHIVES = new Map([["public/benchmarks/five-remediation-2026-11-05/first-implementation.tar.gz", {

@@ -1,6 +1,7 @@
 import type {ProofAssessmentRisk, ProofCriterion, ProofFeedback, ProofQuote, ProofRole} from "./contracts.ts";
 import {DomainError} from "./domain.ts";
 import {isOwnerRoleplay, isSandboxCollaboration} from "./proof-demo.ts";
+import {ASSESSMENT_RISK_CITATION_LIMIT} from "./assessment-limits.ts";
 
 export const RISK_REPAIR_EVENT_LIMIT = 100;
 export const RISK_REPAIR_BYTE_LIMIT = 256 * 1024;
@@ -45,7 +46,7 @@ export function validateRiskFeedbackSource(value: unknown): RiskFeedbackSource {
   text(criterion.id, 80); text(criterion.title, 500); text(criterion.source, 3000);
   const risk = record(r.risk, ["title", "explanation", "suggestion", "citations"]);
   text(risk.title, 120); text(risk.explanation, 600); text(risk.suggestion, 400);
-  if (!Array.isArray(risk.citations) || risk.citations.length < 1 || risk.citations.length > 3) fail("A source risk must retain its exact citations.");
+  if (!Array.isArray(risk.citations) || risk.citations.length < 1 || risk.citations.length > ASSESSMENT_RISK_CITATION_LIMIT) fail("A source risk must retain its exact citations.");
   for (const entry of risk.citations) {
     const citation = record(entry, ["file", "start", "end", "excerpt"]);
     text(citation.file, 160); const excerpt = text(citation.excerpt, 500);

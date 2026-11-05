@@ -1,0 +1,118 @@
+{
+  "schema": "pbp-controlled-provider-replay-v1",
+  "createdAt": "2026-11-05T07:11:14.564Z",
+  "method": "Previously observed live replies intercepted into current actual assessor; zero new provider or network calls, not another independent evaluation.",
+  "supersedesIntermediate": "cycle-4-long-replay.json",
+  "sources": [
+    {
+      "file": "scripts/real-project-long-checklist-corpus-2026-11-05.json",
+      "sha256": "2146495b9d1aea2836e1373a47bad7a6225baf4e4d90bd918d917535b3bc4413"
+    },
+    {
+      "file": "outputs/real-projects-2026-11-05/long-live.json",
+      "sha256": "6e3e8d57f332086e747e59bc52f591aa1f974754b5f93497503f3beac340984f"
+    },
+    {
+      "file": "lib/assessment-evidence-scope.ts",
+      "sha256": "9cb5f0624fb8cdcb8e4a94cee58bd7ebb52448f659adb95682683bbeca87b3b9"
+    },
+    {
+      "file": "lib/static-markup-directive.ts",
+      "sha256": "1695a5ef3bbda3e5e996c32bcf9c7a6b750d1e3a048310929827476a5cfc22e1"
+    }
+  ],
+  "results": [
+    {
+      "id": "known-corona-sixteen-checklist",
+      "interceptedResponses": 1,
+      "actualNetworkRequests": 0,
+      "statesAgree": 16,
+      "total": 16,
+      "rawUnknownsRemainUnknown": true,
+      "quoteUnchanged": true,
+      "paymentState": "unfunded",
+      "items": [
+        {
+          "criterionId": "manual-1",
+          "status": "supported",
+          "referenceStatus": "supported"
+        },
+        {
+          "criterionId": "manual-2",
+          "status": "changes_suggested",
+          "referenceStatus": "changes_suggested"
+        },
+        {
+          "criterionId": "manual-3",
+          "status": "changes_suggested",
+          "referenceStatus": "changes_suggested"
+        },
+        {
+          "criterionId": "manual-4",
+          "status": "changes_suggested",
+          "referenceStatus": "changes_suggested"
+        },
+        {
+          "criterionId": "coverage-1",
+          "status": "supported",
+          "referenceStatus": "supported"
+        },
+        {
+          "criterionId": "coverage-2",
+          "status": "changes_suggested",
+          "referenceStatus": "changes_suggested"
+        },
+        {
+          "criterionId": "coverage-3",
+          "status": "supported",
+          "referenceStatus": "supported"
+        },
+        {
+          "criterionId": "coverage-4",
+          "status": "changes_suggested",
+          "referenceStatus": "changes_suggested"
+        },
+        {
+          "criterionId": "coverage-5",
+          "status": "supported",
+          "referenceStatus": "supported"
+        },
+        {
+          "criterionId": "coverage-6",
+          "status": "supported",
+          "referenceStatus": "supported"
+        },
+        {
+          "criterionId": "coverage-7",
+          "status": "changes_suggested",
+          "referenceStatus": "changes_suggested"
+        },
+        {
+          "criterionId": "coverage-8",
+          "status": "supported",
+          "referenceStatus": "supported"
+        },
+        {
+          "criterionId": "coverage-9",
+          "status": "insufficient_evidence",
+          "referenceStatus": "insufficient_evidence"
+        },
+        {
+          "criterionId": "coverage-10",
+          "status": "insufficient_evidence",
+          "referenceStatus": "insufficient_evidence"
+        },
+        {
+          "criterionId": "coverage-11",
+          "status": "insufficient_evidence",
+          "referenceStatus": "insufficient_evidence"
+        },
+        {
+          "criterionId": "coverage-12",
+          "status": "insufficient_evidence",
+          "referenceStatus": "insufficient_evidence"
+        }
+      ]
+    }
+  ]
+}
