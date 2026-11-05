@@ -1,5 +1,6 @@
 "use client";
 
+import {useId,useRef,useState,type MouseEvent} from "react";
 import type {Language} from "@/lib/contracts";
 import saved from "@/public/benchmarks/real-projects-2026-11-05/summary.json";
 
@@ -31,6 +32,7 @@ type SavedValidation = {
 
 const data:SavedValidation=saved;
 const ROOT="/benchmarks/real-projects-2026-11-05/";
+const MAX_DOWNLOAD_BYTES=4*1024*1024;
 function artifactUrl(file:string){
  if(!/^[a-z0-9][a-z0-9./-]*\.(?:json|md|txt)$/u.test(file)
   ||file.split("/").some(part=>!part||part==="."||part===".."))return undefined;
@@ -41,7 +43,46 @@ function artifactUrl(file:string){
  * website execution, acceptance or payment operation. */
 export function RealProjectAssessmentValidation({language}:{language:Language}){
  const tr=(zh:string,en:string)=>language==="zh"?zh:en;
+ const inFlight=useRef(new Set<string>());
+ const [pendingDownloads,setPendingDownloads]=useState<string[]>([]);
+ const [downloadError,setDownloadError]=useState<string|null>(null);
+ const [downloadStatus,setDownloadStatus]=useState("");
+ const downloadErrorId=useId();
  const n=data.novelFirst,h=data.heldoutFirst;
+ async function downloadArtifact(event:MouseEvent<HTMLAnchorElement>,file:string){
+  // Keep modified-click and the original href/download as browser fallbacks.
+  if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+  event.preventDefault();
+  const href=artifactUrl(file);
+  if(!href||inFlight.current.has(file))return;
+  inFlight.current.add(file);setPendingDownloads(current=>[...current,file]);setDownloadError(null);
+  setDownloadStatus(tr(`正在准备 ${file}。`,`Preparing ${file}.`));
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(),20_000);
+  let objectUrl:string|undefined;
+  try{
+   const response=await fetch(href,{credentials:"same-origin",mode:"same-origin",redirect:"error",signal:controller.signal});
+   const mime=(response.headers.get("content-type")??"").split(";",1)[0].trim().toLowerCase();
+   const length=response.headers.get("content-length");
+   if(!response.ok||mime&& !/^(?:application\/(?:json|octet-stream|[a-z0-9.+-]+\+json)|text\/(?:plain|markdown|x-markdown))$/u.test(mime)
+    ||length!==null&&/^\d+$/u.test(length)&&Number(length)>MAX_DOWNLOAD_BYTES)throw new Error("Artifact response refused.");
+   const blob=await response.blob();
+   if(!blob.size||blob.size>MAX_DOWNLOAD_BYTES||/^\s*(?:<!doctype\s+html\b|<html\b|<head\b|<body\b)/iu.test(await blob.slice(0,256).text()))throw new Error("Artifact body refused.");
+   objectUrl=URL.createObjectURL(blob);
+   const anchor=document.createElement("a");
+   anchor.href=objectUrl;anchor.download=file.split("/").at(-1)??file;anchor.hidden=true;
+   document.body.appendChild(anchor);
+   try{anchor.click();}finally{anchor.remove();}
+   setDownloadStatus(tr(`已发起 ${file} 下载；请在浏览器核对文件已保存。`,`Download started for ${file}; confirm the saved file in your browser.`));
+  }catch{
+   setDownloadStatus("");
+   setDownloadError(tr(`未能下载 ${file}。请确认仍已登录后重试；登录页面或无效响应不会保存为证据文件。`,`Could not download ${file}. Check that you are still signed in and retry. A sign-in page or invalid response will not be saved as evidence.`));
+  }finally{
+   clearTimeout(timeout);
+   if(objectUrl){const completedUrl=objectUrl;setTimeout(()=>URL.revokeObjectURL(completedUrl),1_000);}
+   inFlight.current.delete(file);setPendingDownloads(current=>current.filter(name=>name!==file));
+  }
+ }
  const countLine=(batch:BatchCounts)=>tr(
   `${batch.projects} 个项目、${batch.criteria} 条要求；模型状态 ${batch.rawAgreement}/${batch.criteria}、应用状态 ${batch.applicationAgreement}/${batch.criteria} 与参考一致。`,
   `${batch.projects} projects and ${batch.criteria} criteria; raw status agreement ${batch.rawAgreement}/${batch.criteria}, application status agreement ${batch.applicationAgreement}/${batch.criteria}.`,
@@ -108,9 +149,12 @@ export function RealProjectAssessmentValidation({language}:{language:Language}){
     <strong>{tr("下载逐批原答、冻结输入与限制","Download batch answers, frozen inputs and limits")}</strong>
     {Array.from(new Set(["summary.json",...data.artifacts])).map(file=>{
      const href=artifactUrl(file);
-     return href?<a className="subtle-button" key={file} href={href} download>{file}</a>:null;
+     const pending=pendingDownloads.includes(file);
+     return href?<a className="subtle-button" key={file} href={href} download aria-busy={pending||undefined} aria-disabled={pending||undefined} aria-describedby={downloadError?downloadErrorId:undefined} onClick={event=>void downloadArtifact(event,file)}>{file}{pending?tr("（准备文件中）"," (preparing file)"):""}</a>:null;
     })}
    </div>
+   <p className="benchmark-note" role="status" aria-live="polite">{downloadStatus}</p>
+   {downloadError&&<p className="benchmark-note" id={downloadErrorId} role="alert">{downloadError}</p>}
   </details>
  </section>;
 }

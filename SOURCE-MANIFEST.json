@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-05T12:08:52.930Z",
+  "generatedAt": "2026-11-05T12:32:38.417Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -448,8 +448,8 @@
     },
     {
       "file": "app/components/RealProjectAssessmentValidation.tsx",
-      "bytes": 10363,
-      "sha256": "1d7665b9d34583d8d3a2b0ad5fe2938689ef6c7977ce07e531eb30507a33168b"
+      "bytes": 13640,
+      "sha256": "4d41f07ec0c6b7f3cbecfea8e1d339bcd6c9e2dcfe969d67e9eeca4e1ac5a65f"
     },
     {
       "file": "app/components/ReliabilityAssessmentValidation.tsx",
@@ -1808,13 +1808,18 @@
     },
     {
       "file": "docs/collaboration/real-projects-2026-11-05/README.md",
-      "bytes": 5206,
-      "sha256": "2c687fcc81f54534f7acd8b445cccf795d441ac9370043258afaa4b411a3d7ff"
+      "bytes": 5773,
+      "sha256": "eb65320b63ffb0ca34c8b97cbd5f5d3ddcb2b5166163efdbfaabe2e6908361f8"
     },
     {
       "file": "docs/collaboration/real-projects-2026-11-05/cycle-1.md",
       "bytes": 2639,
       "sha256": "85d78db7cc8af81174fc948b90eaa823ba686e1645789195fe783c62530f5c79"
+    },
+    {
+      "file": "docs/collaboration/real-projects-2026-11-05/cycle-10.md",
+      "bytes": 2612,
+      "sha256": "7b32256958087bb0256cfb3ec600274f3012ba661b1cafc657b7af07c157cd88"
     },
     {
       "file": "docs/collaboration/real-projects-2026-11-05/cycle-2.md",
