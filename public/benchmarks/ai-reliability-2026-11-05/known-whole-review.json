@@ -1,0 +1,68 @@
+{
+  "schema": "pbp-ai-reliability-known-whole-review-v1",
+  "kind": "known-project-regression",
+  "additionalIndependentProjects": 0,
+  "primaryReview": "independent Codex AI agent and root source adjudication, not human testing",
+  "wholeAnswers": {
+    "accepted": 4,
+    "qualified": 0,
+    "rejected": 0
+  },
+  "cases": [
+    {
+      "id": "qingxi-policy-and-refund",
+      "raw": "accepted",
+      "application": "accepted"
+    },
+    {
+      "id": "tideglass-cross-page-eight",
+      "raw": "accepted",
+      "application": "accepted"
+    },
+    {
+      "id": "qingyu-sixteen-late-obligations",
+      "raw": "accepted",
+      "application": "accepted"
+    },
+    {
+      "id": "harbour-frame-scoped-visual-boundary",
+      "raw": "accepted",
+      "application": "accepted"
+    }
+  ],
+  "evidence": {
+    "all28ItemsChecked": true,
+    "rawCitations": 52,
+    "applicationCitationsWithUtf16Offsets": 52,
+    "allValid": true,
+    "all6RisksChecked": true,
+    "all16RawLimitationsChecked": true,
+    "stateDistribution": {
+      "supported": 16,
+      "changes_suggested": 6,
+      "insufficient_evidence": 6
+    },
+    "applicationPromotedModelStatuses": 0
+  },
+  "deepSeek": {
+    "protocolValid": true,
+    "summary": "Reviewed all four packet files (qingxi 2 items, tideglass 8, qingyu 16, harbour-frame 2) against the packet source text. I did not rerun offset checks or execute anything; verdicts are from source comparison. Qingxi (qingxi-policy-and-refund): QUALIFIED. manual-1 'supported' matches the cancellation page's exact policy sentence. manual-2 'insufficient_evidence' is correct: the seven-day text is present, but automatic card refund and receipt-number lookup need backend/runtime evidence. Risks, limitations and retention scope are honest. No actionable defect. Tideglass (tideglass-cross-page-eight): QUALIFIED. All eight items are correctly classified: address, weekday hours and pump are supported by exact copy; Saturday 13:00 on visit.html and AUD 49 truing are correctly changes_suggested; persistence and mobile usability are correctly insufficient_evidence. Limitations correctly distinguish static source from runtime. No actionable defect. Qingyu (qingyu-sixteen-late-obligations): QUALIFIED. All sixteen items are correctly classified, including the exact contradictions (Friday 10:00–18:00 vs 19:00, deposit AUD 35 vs 40, survey AUD 150 vs 120, no latex-allergy note), plus the honest insufficient_evidence for persistence and auto-refund. The '需求已收到' text is correctly treated as static copy in limitations, not a confirmed runtime message. One product-flow defect remains (finding below). Harbour-frame (harbour-frame-scoped-visual-boundary): ACCEPTED. manual-1 is supported by exact addresses on index and visit, and the archive exclusion is respected. manual-2 is correctly insufficient_evidence: image pixels are omitted and mobile usability was not observed. Limitations correctly separate text-source omission from a missing image or failed display. Note: these packets contain no items with an evidence defect, so independent review of the 28 qingxi/tideglass/qingyu item explanations finds nothing that would change their statuses. I do not assume 28/28 implies whole-correctness; complete source text does not prove correct model understanding, and no runtime/browser/backend was exercised.",
+    "findings": [
+      {
+        "severity": "P3",
+        "file": "scripts/evaluation-results/reliability-known-qingyu-sixteen-late-obligations-2026-11-05.json",
+        "line": 186,
+        "title": "Static '需求已收到' confirmation shown before any enquiry is submitted",
+        "evidence": "In visit.html (packet line 186), the form posts to /enquiries, but the paragraph '<p>需求已收到。后续沟通请保留订单号或咨询编号，方便花室对应到同一件安排。</p>' sits in the same static section outside the form and after the submit button. Plain HTML renders it whenever the page loads, before anything is submitted. A visitor who has not submitted, or whose submission failed, is still told the enquiry was received and gets no receipt/enquiry number. The AI answer did not flag it: the knownRegressionRawAnswer limitations (line 805) only say the display timing was not proven.",
+        "reproduction": "Unexecuted (static analysis): open the built visit.html in any browser. The confirmation paragraph renders immediately on load and stays visible after an empty or invalid submit, because it is not gated on a successful response. The form action's server handling is not in the packet, so the post-submission behaviour is unverified.",
+        "suggestion": "Remove the always-visible confirmation paragraph, or move it into a container hidden by default and shown only after a successful submission response that includes an enquiry number."
+      }
+    ],
+    "independentAdjudication": "DeepSeek confirms all28 criterion statuses and source boundaries. It calls Qingxi/Tideglass qualified while reporting no actionable answer defect; those labels use a stricter completion rubric than correctness under available source. Its remaining P3 proposes editing the synthetic input site to hide a fixed received message; the answer already identifies its actual display timing as unverified. We retain this as a runtime follow-up and do not mutate frozen input data or call the absent runtime test a confirmed observed fault. No consensus or buyer acceptance is claimed."
+  },
+  "limits": [
+    "One known-case batch, not four new projects or a general accuracy estimate.",
+    "Model variation and prompt effect cannot be separated by these two small batches.",
+    "No human participant, external seller adoption, browser/backend execution for these source-only assessment calls, acceptance or payment."
+  ]
+}

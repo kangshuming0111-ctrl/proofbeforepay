@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-05T04:12:59.166Z",
+  "generatedAt": "2026-11-05T05:39:49.103Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -68,8 +68,8 @@
     },
     {
       "file": "app/api/proofs/[id]/[action]/route.ts",
-      "bytes": 16942,
-      "sha256": "7a2bc87d0d3e657d6a88f86d0ea26a060ac974e9a81da290c0696361bf338c1d"
+      "bytes": 17259,
+      "sha256": "a6838bfda915692924cbc3da1493dbb1332dac3f77a9d938b479aa0b45739999"
     },
     {
       "file": "app/api/proofs/[id]/browser-checks/route.ts",
@@ -303,8 +303,8 @@
     },
     {
       "file": "app/components/AssessmentValidationPanel.tsx",
-      "bytes": 4847,
-      "sha256": "7fe6dcc8ede464ef6442f30f966263e0cf1df46c32c23d11069b022363aa9d11"
+      "bytes": 4987,
+      "sha256": "0c312e1029857979a3b333ddd4a9a07655447614499349a9812a424d789399ab"
     },
     {
       "file": "app/components/AuthorizationStart.tsx",
@@ -408,8 +408,8 @@
     },
     {
       "file": "app/components/ModelCheckPanel.tsx",
-      "bytes": 23871,
-      "sha256": "750df2740c66e2faaae998d9d3e43c2b07a2e1b35812fb39ebf4f4ecd9f5d83c"
+      "bytes": 24220,
+      "sha256": "fa71c55facce522c2efb51cd44ae93613d9fc9a298c8384d29a8119bfbfc7dd3"
     },
     {
       "file": "app/components/ModelDiagnosticComparison.tsx",
@@ -423,8 +423,13 @@
     },
     {
       "file": "app/components/ModelEvidenceReadings.tsx",
-      "bytes": 4777,
-      "sha256": "e8dc2137f729305c5c1ae8c7d70a791851264fdd0c8f5d06b8814a8c45459d37"
+      "bytes": 5207,
+      "sha256": "ed947389334b2e98ab243404dad955d73f5e970de9c925bb98da40fcb5a0893d"
+    },
+    {
+      "file": "app/components/ModelExplanationCoverage.tsx",
+      "bytes": 4637,
+      "sha256": "e76137ef2247b1de4d7ca9ce9eb97d4162c5261e2a87c428f921d0c1a89566d5"
     },
     {
       "file": "app/components/ModelSpotlight.tsx",
@@ -440,6 +445,11 @@
       "file": "app/components/ProofReadinessPanel.tsx",
       "bytes": 3499,
       "sha256": "b3e397ab7c40ac44e0ef20f083b91a14cde14fb5ae2242dfb0326ead5cd2157d"
+    },
+    {
+      "file": "app/components/ReliabilityAssessmentValidation.tsx",
+      "bytes": 4164,
+      "sha256": "29a92e8d0cf485698bc1983c110645ab367f9afac2eeed90efea8ac9230273d9"
     },
     {
       "file": "app/components/RequirementCoveragePanel.tsx",
@@ -1285,6 +1295,36 @@
       "file": "docs/collaboration/CHAMPION-CYCLE-TEMPLATE.md",
       "bytes": 1607,
       "sha256": "cf1d2b7472cae50c912cfce59a62277946bfadbd851ffec82f7a17a8473d9a24"
+    },
+    {
+      "file": "docs/collaboration/ai-reliability-2026-11-05/README.md",
+      "bytes": 3315,
+      "sha256": "67faa2eab7dc44402bafcacad2e9759e25c05486ef6d01a3cdfd20bdd53982d5"
+    },
+    {
+      "file": "docs/collaboration/ai-reliability-2026-11-05/round-1.md",
+      "bytes": 2953,
+      "sha256": "9ab4fed04801a5bc5c23f03e02e44f50f6564f4f442fa84774940d25cecf57f2"
+    },
+    {
+      "file": "docs/collaboration/ai-reliability-2026-11-05/round-2.md",
+      "bytes": 3102,
+      "sha256": "bfbf5f833773683613814f2510c157dbeaf06cf72b7f091c8ab39e2598b02e9d"
+    },
+    {
+      "file": "docs/collaboration/ai-reliability-2026-11-05/round-3.md",
+      "bytes": 3347,
+      "sha256": "304ef47b5e1788c47b21779bb4705f897f50f9455eb05188336578b6126879e0"
+    },
+    {
+      "file": "docs/collaboration/ai-reliability-2026-11-05/round-4.md",
+      "bytes": 3542,
+      "sha256": "c1ef1e1bb96e22506958096ab55a936394bf529cdd1611b04123c20a8bd52ef1"
+    },
+    {
+      "file": "docs/collaboration/ai-reliability-2026-11-05/round-5.md",
+      "bytes": 3372,
+      "sha256": "17b8b4d6c3dfac534514457030bbbea24d62a722a34d1379c3e479cd80756b14"
     },
     {
       "file": "docs/collaboration/award-cycle-2026-11-03/round-1-adjudication.json",
@@ -2173,8 +2213,18 @@
     },
     {
       "file": "lib/assessment-evidence-scope.ts",
-      "bytes": 13053,
-      "sha256": "4ab91b9c91dccd50f775556f53fee8b650136a3d32127f2d76cded9219205089"
+      "bytes": 13674,
+      "sha256": "578b86d3cc32f0d95250a444d672c66579eb2b7152c3bcf111792a21ae7d63ad"
+    },
+    {
+      "file": "lib/assessment-failure-presentation.ts",
+      "bytes": 2423,
+      "sha256": "051aedf1dc7bf7810456c3fd8ad7e8bbf4e31fcfd90f16815457b08be9823864"
+    },
+    {
+      "file": "lib/assessment-response.ts",
+      "bytes": 4634,
+      "sha256": "54096d30ad8fb2ffd6bf06f079b0780030c303922c5a7913304ce4290e0f288c"
     },
     {
       "file": "lib/booking-capacity.ts",
@@ -2283,8 +2333,8 @@
     },
     {
       "file": "lib/delivery-assessment.ts",
-      "bytes": 28720,
-      "sha256": "8f94d32613a555fae22c11b8e75a998dfa27f5f7037d8b7a7503544846818558"
+      "bytes": 31240,
+      "sha256": "186e189580cb28295368755f314e58f3286099a9487019041cd9719bad8e628b"
     },
     {
       "file": "lib/delivery-comparison.ts",
@@ -2353,8 +2403,8 @@
     },
     {
       "file": "lib/evidence-export.ts",
-      "bytes": 46892,
-      "sha256": "b73ee7e69e8084af7ec7a3413e9e9c09b8ec030ed9d3ae060aac4971cd12b25a"
+      "bytes": 47108,
+      "sha256": "4c5bad361d82bbac336621fe977946f6e332254df6c626f13e88124703a76d43"
     },
     {
       "file": "lib/evidence-followup-sql.ts",
@@ -2378,8 +2428,8 @@
     },
     {
       "file": "lib/exact-copy-evidence.ts",
-      "bytes": 8282,
-      "sha256": "f42553f62ad996f0f0916c5fa1c2072efdecc15f7805dff185067af2407e80e8"
+      "bytes": 8551,
+      "sha256": "ef718a348de5a96baeefd400575db4eb24b21e379daeb63f2f7910e84aeeb77d"
     },
     {
       "file": "lib/feedback-draft.ts",
@@ -2488,8 +2538,13 @@
     },
     {
       "file": "lib/model-evidence-provider.ts",
-      "bytes": 5252,
-      "sha256": "6cfd30e1b15d94ae82f135f6f741b7e7a1463eb42b34798da26a343c1b8943ce"
+      "bytes": 5852,
+      "sha256": "fa9ec1a3164cf657ebbd0ed3099372272179c11de24204fd6c8a7205a9c0b025"
+    },
+    {
+      "file": "lib/model-explanation-coverage.ts",
+      "bytes": 3240,
+      "sha256": "28ca5961842f3e042cf64e023c1c2ed2cdc2ec3f61e42ee545de389ebaa3b486"
     },
     {
       "file": "lib/model-report-archive.ts",
@@ -2772,6 +2827,11 @@
       "sha256": "2a40db0101d18ed60c60f8522bea8c9ef501822efcbe1a79d1d11a595d66de4c"
     },
     {
+      "file": "lib/source-business-evidence.ts",
+      "bytes": 9305,
+      "sha256": "1f7047c7c92bd5af5a423221f8cc6f01e85aa8ad6e6060846b670c47b5548a4c"
+    },
+    {
       "file": "lib/source-visibility-probe.ts",
       "bytes": 6830,
       "sha256": "a65f78d5a6aa0754746ac9a0f8a6282114b2362d64b9067d3edb1007c1a3255e"
@@ -2885,6 +2945,66 @@
       "file": "postcss.config.mjs",
       "bytes": 94,
       "sha256": "dfac7ac2d86d326a0e5adb024e7943c181393ed17a5fcb8f0315b24c7da6ddde"
+    },
+    {
+      "file": "public/benchmarks/ai-reliability-2026-11-05/README.md",
+      "bytes": 3966,
+      "sha256": "49e46fdc8402fa399aa35c0ce5c2f647219cac9a91a3727a56ef4246e21a0c13"
+    },
+    {
+      "file": "public/benchmarks/ai-reliability-2026-11-05/baseline-replay.json",
+      "bytes": 8647,
+      "sha256": "9f49bf76469a0f9e790b792cd9a308585f905d3306c6006559c3c084a2e852a9"
+    },
+    {
+      "file": "public/benchmarks/ai-reliability-2026-11-05/corpus.json",
+      "bytes": 75822,
+      "sha256": "1ba40ff37e9eef75d64a7916ad4f5ecaa5d495ee2eb3f507bf1e5ce841707b74"
+    },
+    {
+      "file": "public/benchmarks/ai-reliability-2026-11-05/first-attempts.json",
+      "bytes": 345718,
+      "sha256": "ab63f5c927490938619061e6a498b497c6c9ed001d83058a24b0c0fa1ab6c49f"
+    },
+    {
+      "file": "public/benchmarks/ai-reliability-2026-11-05/first-freeze.json",
+      "bytes": 141823,
+      "sha256": "1eef9a63dcc47d1c1b995cff2b3396aafd3a18381b87b70bc231bd79f268e99d"
+    },
+    {
+      "file": "public/benchmarks/ai-reliability-2026-11-05/first-implementation.json",
+      "bytes": 698882,
+      "sha256": "0b53b7caee009405adedca7c48879776b5d8c9aa87715ec8c1e301b68c44360a"
+    },
+    {
+      "file": "public/benchmarks/ai-reliability-2026-11-05/first-whole-review.json",
+      "bytes": 2422,
+      "sha256": "5927920af72a1556f185f97712fe6277019ccb8cd1b1295b7447180b7965df13"
+    },
+    {
+      "file": "public/benchmarks/ai-reliability-2026-11-05/known-freeze.json",
+      "bytes": 147989,
+      "sha256": "04ff4c876f32a17e13aef49f48afe16932a7adf02c8302028e42138808417fa5"
+    },
+    {
+      "file": "public/benchmarks/ai-reliability-2026-11-05/known-regression-labels.json",
+      "bytes": 727,
+      "sha256": "849e4795c6b9b7c147810eb01fd19720065c49e5b20e86b5a8d418e655c73b2e"
+    },
+    {
+      "file": "public/benchmarks/ai-reliability-2026-11-05/known-regression.json",
+      "bytes": 348632,
+      "sha256": "a4101959be640a59779bdfd655514ca5c13437c02a6fab01c9ebeb6fb45e0d97"
+    },
+    {
+      "file": "public/benchmarks/ai-reliability-2026-11-05/known-whole-review.json",
+      "bytes": 5806,
+      "sha256": "df61a398f170ab986bef3ca4c8816bc5c46413d23b52301b400e5faa7abda3d0"
+    },
+    {
+      "file": "public/benchmarks/ai-reliability-2026-11-05/summary.json",
+      "bytes": 2534,
+      "sha256": "7882bd0a32b488967d40ee5c4c10bf2e86afc50f18b91757e09d723d5feccee4"
     },
     {
       "file": "public/benchmarks/award-gap-cycles-2026-11-05/README.md",
@@ -3282,6 +3402,11 @@
       "sha256": "7e4c15137ebb0dda47366d3372ec8eba1050373ea64954567b8bf56eddd86633"
     },
     {
+      "file": "scripts/assessment-reliability-corpus-2026-11-05.json",
+      "bytes": 75822,
+      "sha256": "1ba40ff37e9eef75d64a7916ad4f5ecaa5d495ee2eb3f507bf1e5ce841707b74"
+    },
+    {
       "file": "scripts/assessment-transfer-corpus-2026-11-04.json",
       "bytes": 1013751,
       "sha256": "8dd598e44e8e94da8d9889454bfbd8d8355bddd938751852a58641ca7917427f"
@@ -3402,9 +3527,54 @@
       "sha256": "fe8b690415001a41445bf13a2d6093af89802aa973e36aef82e56e0d32ebacc9"
     },
     {
+      "file": "scripts/evaluation-results/ai-reliability-validation-summary-2026-11-05.json",
+      "bytes": 2534,
+      "sha256": "7882bd0a32b488967d40ee5c4c10bf2e86afc50f18b91757e09d723d5feccee4"
+    },
+    {
       "file": "scripts/evaluation-results/five-remediation-eight-answers-2026-11-05.json",
       "bytes": 55966,
       "sha256": "8457dade3e29aa5c20913d78a248f8e385712f65219c2736adf20ac7a0194b4b"
+    },
+    {
+      "file": "scripts/evaluation-results/reliability-harbour-frame-scoped-visual-boundary-2026-11-05.json",
+      "bytes": 20758,
+      "sha256": "6669ae97f0f50c88204cf66ffca4c21d9f13317c2557982f66f72cb5cd9a7675"
+    },
+    {
+      "file": "scripts/evaluation-results/reliability-known-harbour-frame-scoped-visual-boundary-2026-11-05.json",
+      "bytes": 22597,
+      "sha256": "f4be5e0f6b193625afe244db514659c40724820ccfb4bde8ee981afe69182548"
+    },
+    {
+      "file": "scripts/evaluation-results/reliability-known-qingxi-policy-and-refund-2026-11-05.json",
+      "bytes": 21497,
+      "sha256": "b096e5af3724503a145018c8ff8f0130e30b57496da2d7e5d0cd97749d8e724a"
+    },
+    {
+      "file": "scripts/evaluation-results/reliability-known-qingyu-sixteen-late-obligations-2026-11-05.json",
+      "bytes": 55143,
+      "sha256": "34697f94b7fa59adbbe99c5d42b24661b7830d80fbcf7b143ced815d12597af3"
+    },
+    {
+      "file": "scripts/evaluation-results/reliability-known-tideglass-cross-page-eight-2026-11-05.json",
+      "bytes": 43699,
+      "sha256": "3f3c2dac4582177eb7ccf609661470a01706c9d38150b0b959f58db59520e1c4"
+    },
+    {
+      "file": "scripts/evaluation-results/reliability-qingxi-policy-and-refund-2026-11-05.json",
+      "bytes": 20489,
+      "sha256": "d96e2508feb81cd6600d25a4a01f764a835328106d8b38f3337b03d8273824cd"
+    },
+    {
+      "file": "scripts/evaluation-results/reliability-qingyu-sixteen-late-obligations-2026-11-05.json",
+      "bytes": 47290,
+      "sha256": "f940e58839bb847a21b2e7dcb62fbc06a004999d610b629d1071f15258749dba"
+    },
+    {
+      "file": "scripts/evaluation-results/reliability-tideglass-cross-page-eight-2026-11-05.json",
+      "bytes": 37422,
+      "sha256": "f969e1c11023e484cf929e2a433265877aacada7be7fba26572e4d54fe7a5758"
     },
     {
       "file": "scripts/execution-profile.mjs",
@@ -3468,8 +3638,8 @@
     },
     {
       "file": "scripts/run-project-assessment-evaluation.ts",
-      "bytes": 30338,
-      "sha256": "909e46cf0ee3aa6f1c06902a7418b31277b200c17e954e39df113221efde237e"
+      "bytes": 37563,
+      "sha256": "73f6acaa7bde9daf0385a5179a38000dfbbffe57707fba9cf3db1a4525592869"
     },
     {
       "file": "scripts/seller-onboarding-preflight.mjs",
@@ -3568,13 +3738,23 @@
     },
     {
       "file": "tests/assessment-evidence-scope.test.ts",
-      "bytes": 2110,
-      "sha256": "c8d0814ae336a486544ef8cbf5e2823535cfe0ea1cdfa15d9f6d377cb1eb443a"
+      "bytes": 3521,
+      "sha256": "31a2265a8e0e680bb447bc059fe2445cfaf49bed5a66a4f83c8dd97f6fbbdbbb"
+    },
+    {
+      "file": "tests/assessment-failure-presentation.test.ts",
+      "bytes": 1584,
+      "sha256": "85f9997aa27e3803a14490663fed59cf90de0273657ba321e5163355645a1906"
     },
     {
       "file": "tests/assessment-feedback.test.ts",
       "bytes": 12763,
       "sha256": "5cde50e055a38c44541663e9e8489f184f671d0133a928ece68975b71c5800b7"
+    },
+    {
+      "file": "tests/assessment-route.test.ts",
+      "bytes": 10541,
+      "sha256": "d75cbbe28a4bf90f87c8c9c483c04dbdda66c493b296581ca878f127bc75c53a"
     },
     {
       "file": "tests/assessment-transfer-regression.test.ts",
@@ -3698,8 +3878,8 @@
     },
     {
       "file": "tests/delivery-assessment.test.ts",
-      "bytes": 78450,
-      "sha256": "850c8151fa0075514110fd40bfe37aa5b4f72b967385a6312f93aa4e7dd0c132"
+      "bytes": 91558,
+      "sha256": "51cffb3a84e49ab2f53cfeaced14fc9fc6e000fb49700a91911ffc1bc9ba0929"
     },
     {
       "file": "tests/delivery-comparison.test.ts",
@@ -3788,8 +3968,8 @@
     },
     {
       "file": "tests/evidence-bundle-fixtures.ts",
-      "bytes": 8455,
-      "sha256": "bfd665232a553f83448817a9651720485e293eeb9ffafaa53d76e95c656160e1"
+      "bytes": 8673,
+      "sha256": "c21125eef18acd09ae4c4306324c5ced462b212209119046ce684668634aa2cc"
     },
     {
       "file": "tests/evidence-bundle.test.ts",
@@ -3803,8 +3983,8 @@
     },
     {
       "file": "tests/evidence-export.test.ts",
-      "bytes": 31654,
-      "sha256": "4f14d8a736b43cb830dd85e392501fd8330f97d678c89c54e8c9fb0a4bdceb1a"
+      "bytes": 33679,
+      "sha256": "2ba46e716ae9fea1f15d01374000338d79f896ff2fabe73ee211b0e181b7aedc"
     },
     {
       "file": "tests/evidence-followup-api-smoke.py",
@@ -4287,6 +4467,11 @@
       "sha256": "c5ddf3ced9fa0a4bebebc9632e0dc1f97b6ca385370e1e35dca600c6c661c905"
     },
     {
+      "file": "tests/model-explanation-coverage.test.ts",
+      "bytes": 17605,
+      "sha256": "0ab708abde1d37ab0dadd50376c16fc1ea906f7fd7c3a17d36bb79ceadaa4a92"
+    },
+    {
       "file": "tests/model-report-archive.test.ts",
       "bytes": 11767,
       "sha256": "c50cc5817547d024bda5b6e728c7396f5c218516fa0a43b4f56bd51d52b9c0b3"
@@ -4320,6 +4505,11 @@
       "file": "tests/project-assessment-evaluation.test.ts",
       "bytes": 19474,
       "sha256": "0373df8a0ed8caef19a03cb8d100e384f5b2b00ef8d3af936da9d34bc1ca5aa5"
+    },
+    {
+      "file": "tests/project-assessment-reliability.test.ts",
+      "bytes": 18922,
+      "sha256": "d17332fda6722bb5f920573931db3c9a243579197a8de7c9578ee8585633e18b"
     },
     {
       "file": "tests/project-journey-api-smoke.py",
@@ -4695,6 +4885,11 @@
       "file": "tests/smooth-flow-api-smoke.py",
       "bytes": 10321,
       "sha256": "41b3e8ff88cf1840282e7235b068409cfb9459852cdeeb98abf0b3ae779f448f"
+    },
+    {
+      "file": "tests/source-business-evidence.test.ts",
+      "bytes": 11490,
+      "sha256": "da215a8f0d2b7c0fed70af71468c76617d422424dca96bdb4f5f0b712aa4aa89"
     },
     {
       "file": "tests/source-visibility-api-smoke.py",

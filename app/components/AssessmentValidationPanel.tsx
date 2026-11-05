@@ -2,6 +2,7 @@
 import type {Language} from "@/lib/contracts";
 import validation from "@/public/benchmarks/gap-closure-cycles-2026-11-04/summary.json";
 import {LatestAssessmentValidation} from "./LatestAssessmentValidation";
+import {ReliabilityAssessmentValidation} from "./ReliabilityAssessmentValidation";
 import {AssessmentBenchmarkPanel} from "./AssessmentBenchmarkPanel";
 import "../assessment-benchmark.css";
 
@@ -30,6 +31,7 @@ export function AssessmentValidationPanel({language}:{language:Language}){
   </section>)}
   <ul className="benchmark-limits">{(language==="zh"?validation.limitationsZh:validation.limitationsEn).map((limit,index)=><li key={index}>{limit}</li>)}</ul>
   <div className="benchmark-artifacts">{validation.rows.map(row=><a className="subtle-button" key={row.output} href={link(row.output)} download>{language==="zh"?row.nameZh:row.nameEn} JSON</a>)}{validation.artifacts.map(file=><a className="subtle-button" key={file} href={link(file)} download>{file}</a>)}</div>
+  <ReliabilityAssessmentValidation language={language}/>
   <LatestAssessmentValidation language={language}/>
   <AssessmentBenchmarkPanel language={language}/>
  </details>;

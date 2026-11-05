@@ -1,0 +1,81 @@
+{
+  "schema": "pbp-ai-reliability-validation-v1",
+  "date": "2026-11-05",
+  "model": "deepseek-flash",
+  "first": {
+    "projects": 4,
+    "criteria": 28,
+    "criterionCounts": [
+      2,
+      8,
+      16,
+      2
+    ],
+    "calls": 4,
+    "rawAgreement": 27,
+    "applicationAgreement": 27,
+    "firstStoppedCompleteItemProjects": 4,
+    "admittedReports": 4,
+    "missingItemProjects": 0,
+    "duplicateItemProjects": 0,
+    "unknownIdProjects": 0,
+    "defectFalseSupported": 0,
+    "wholeAnswers": {
+      "accepted": 1,
+      "qualified": 2,
+      "rejected": 1
+    }
+  },
+  "knownRegression": {
+    "projects": 4,
+    "criteria": 28,
+    "calls": 4,
+    "additionalIndependentProjects": 0,
+    "rawAgreement": 28,
+    "applicationAgreement": 28,
+    "firstStoppedCompleteItemProjects": 4,
+    "admittedReports": 4,
+    "wholeAnswers": {
+      "accepted": 4,
+      "qualified": 0,
+      "rejected": 0
+    },
+    "stateDistribution": {
+      "supported": 16,
+      "changes_suggested": 6,
+      "insufficient_evidence": 6
+    }
+  },
+  "usageDerivedPeakCostEstimateUsd": 0.024329399999999998,
+  "actualAssessmentCalls": 8,
+  "automaticRetries": 0,
+  "humanSessions": 0,
+  "externalSellerAdoption": "not-observed",
+  "source": {
+    "firstFreezeSha256": "99d7ff994d8b22ca40778c6b5b2e16c7ff74c1765b0cdf890faff8c56942e911",
+    "knownFreezeSha256": "df742c221c82d170344348d231a1fb351b9511d60fd382e7f14d2d465bb9ff8b",
+    "corpusSha256": "1ba40ff37e9eef75d64a7916ad4f5ecaa5d495ee2eb3f507bf1e5ce841707b74",
+    "selectedSourceFiles": 23,
+    "currentKnownSourceHashesMatch": true
+  },
+  "artifacts": [
+    "corpus.json",
+    "first-freeze.json",
+    "first-attempts.json",
+    "first-whole-review.json",
+    "first-implementation.json",
+    "baseline-replay.json",
+    "known-freeze.json",
+    "known-regression.json",
+    "known-regression-labels.json",
+    "known-whole-review.json"
+  ],
+  "limits": [
+    "Authored synthetic custom-criterion evaluation, not complete end-to-end product or customer accuracy.",
+    "Intake caps remain5manual/12coverage; sixteen is4manual+12coverage. Page/mobile base criteria are outside this isolated assessment measurement.",
+    "Complete item IDs/shell and parser/citation admission are not human acceptance or semantic correctness.",
+    "First failures unchanged. Known regression adds zero independent projects.",
+    "Primary whole review is AI source review; DeepSeek labels and disagreements retained separately.",
+    "No extra payment, Devpost, video or human usability result."
+  ]
+}

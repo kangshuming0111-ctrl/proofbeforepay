@@ -8,6 +8,8 @@ import { validateBusinessDecision } from "@/lib/business-decision";
 import { recordCaptureConsent } from "@/lib/acceptance-evidence";
 import { assertAcceptedSnapshotConsent } from "@/lib/acceptance-basis";
 import { assessDelivery } from "@/lib/delivery-assessment";
+import {AssessmentResponseError} from "@/lib/assessment-response";
+import {assessmentFailureResponse} from "@/lib/assessment-failure-presentation";
 import { acceptDelivery, joinSeller, prepareReplacement, requestChanges, requireExpectedDelivery, requireWorkflowAction, submitDelivery, type ProofWorkflowAction } from "@/lib/proof-workflow";
 import { createRoleplayDelivery, isDemoRoleplay, isOwnerRoleplay } from "@/lib/proof-demo";
 import { issueInvitation, proofActor, proofResponse, readProofCase, saveProofCase } from "@/lib/proof-store";
@@ -96,7 +98,9 @@ export async function POST(request: Request, context: {params: Promise<{id: stri
         if (delivery.assessment?.deliveryId === delivery.id) return response();
         // This explicit opt-in is independent of role-play's provider-free rule review/payment.
         // No contract is required and no financial mode or rule finding is changed.
-        const assessment = await assessDelivery(quote, providerEnv());
+        let assessment;
+        try {assessment = await assessDelivery(quote, providerEnv());}
+        catch(error) {if(error instanceof AssessmentResponseError)return json(assessmentFailureResponse(error,quote.language),502);throw error;}
         await persist(log({...quote, proof: {...quote.proof, delivery: {...delivery, assessment}}}, "assessed", delivery.id));
         return response();
       }

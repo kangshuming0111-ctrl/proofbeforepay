@@ -1,0 +1,243 @@
+{
+  "caseId": "qingxi-policy-and-refund",
+  "evaluationMeaning": "KNOWN CASE REGRESSION, not a new independent project. Application admission below means only source-report schema and citation validation. NO buyer acceptance, workflow mutation, database, browser or payment occurred. Human-needed ruleEvidence file placeholders are NOT AI source citations.",
+  "exactUserPacket": {
+    "criteria": [
+      {
+        "id": "manual-1",
+        "title": "人工要求 1",
+        "source": "页面取消政策必须写明：活动开始前至少七天取消可以全额退还订金。"
+      },
+      {
+        "id": "manual-2",
+        "title": "人工要求 2",
+        "source": "网站应显示与七天取消政策一致的确认文案，并在符合条件的客户提交取消后实际自动退回原支付卡，保存可按订单号查询的退款记录。"
+      }
+    ],
+    "scopeContext": {
+      "summary": "为青溪花室交付课程介绍、营业资料和取消申请页面。页面需清楚说明七天取消政策；符合条件的取消申请还需自动退回原支付卡，并保留可按订单号查询的退款记录。花束询价不包含在线结账。"
+    },
+    "fileInventory": [
+      {
+        "path": "index.html",
+        "type": "html",
+        "byteLength": 2714,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "classes.html",
+        "type": "html",
+        "byteLength": 2731,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "cancellation.html",
+        "type": "html",
+        "byteLength": 2932,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "visit.html",
+        "type": "html",
+        "byteLength": 2811,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "site.css",
+        "type": "css",
+        "byteLength": 1169,
+        "isIncludedInSource": true
+      }
+    ],
+    "files": {
+      "cancellation.html": "<!doctype html>\n<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"改期与取消资料 — 青溪花室\"><title>改期与取消资料 | 青溪花室</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">跳到正文</a><header><p class=\"wordmark\">青溪花室</p><nav aria-label=\"页面导航\"><a href=\"index.html\">青溪花室</a><a href=\"classes.html\">花艺课程</a><a href=\"cancellation.html\">改期与取消</a><a href=\"visit.html\">到访与联系</a></nav></header><main id=\"main\"><h1>改期与取消资料</h1><section><h2>取消政策</h2><p>页面取消政策：活动开始前至少七天取消，可以全额退还订金。取消时间以门店收到申请的时间为准。报名人应使用确认邮件中的订单号，以便团队核对课程、席位与付款记录。</p><p>少于七天的取消申请可能涉及已采购花材与预留席位。请说明情况并提出可接受的替代日期，团队会查看后续课程的空位，再回复可提供的安排。相关补充约定会写入邮件，不由口头讨论代替。</p></section><section><h2>填写前请核对</h2><ul><li>订单号与报名邮箱是否对应。</li><li>同一订单中需要取消的席位数量。</li><li>课程的完整日期，而不是付款日期。</li><li>希望取消还是希望先询问其他日期。</li></ul><p>不要在此填写银行卡号、密码、验证码或证件资料。订单核对使用原有订单号；如需进一步确认，我们会通过报名邮箱联系。</p></section><section><h2>取消申请</h2><form action=\"/requests/cancel\" method=\"post\"><label>订单号<input name=\"orderNumber\" required></label><label>报名邮箱<input name=\"email\" type=\"email\" required></label><label>申请类型<select name=\"requestType\"><option value=\"cancel\">取消席位</option><option value=\"move\">询问改期</option></select></label><label>说明<textarea name=\"message\" rows=\"4\"></textarea></label><button type=\"submit\">发送取消申请</button></form><p class=\"notice\">取消申请已收到后，我们会核对报名资料，并向报名邮箱发送后续说明。符合七天取消政策的订金，按照原付款安排办理退回。</p></section><section><h2>保留你的资料</h2><p>建议保存最初的课程确认邮件和后续往来，以便核对订单号、席位和协商日期。若由朋友代为报名，请先让报名人转发完整的确认信息，避免只凭课程名称寻找订单。</p><p>同一订单有多位参与者时，请在说明中列明需要调整的人数。团队不会把部分席位取消理解成整张订单取消。对尚未确认的改期，不要直接按新日期到店。</p></section></main><footer><p>青溪花室</p><p>小团队提供的日常服务，欢迎先了解安排再联系我们。</p></footer></body></html>\n",
+      "classes.html": "<!doctype html>\n<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"课程选择与当天安排 — 青溪花室\"><title>课程选择与当天安排 | 青溪花室</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">跳到正文</a><header><p class=\"wordmark\">青溪花室</p><nav aria-label=\"页面导航\"><a href=\"index.html\">青溪花室</a><a href=\"classes.html\">花艺课程</a><a href=\"cancellation.html\">改期与取消</a><a href=\"visit.html\">到访与联系</a></nav></header><main id=\"main\"><h1>课程选择与当天安排</h1><section><h2>本月课程</h2><table><thead><tr><th>课程</th><th>时长</th><th>费用</th></tr></thead><tbody><tr><td>周末手绑花束</td><td>约 90 分钟</td><td>AUD 95</td></tr><tr><td>餐桌瓶花</td><td>约 120 分钟</td><td>AUD 125</td></tr><tr><td>季节花环</td><td>约 120 分钟</td><td>AUD 135</td></tr></tbody></table><p>每班最多八位学员。费用包含课堂使用的花材、借用工具和一个成品包装。陪同者如希望一起制作，需要另行预订席位；不制作的陪同者可在门店前区等候。</p></section><section><h2>我们如何准备一节课</h2><p>开课前，老师会按课程主题选择不同质感的枝叶，保留主花、辅助花和线条材料之间的层次。学员可以在相近色系中挑选自己的组合，不需要照着同一张成品照片完成。</p><p>教室提供围裙，但处理枝条时仍建议穿方便活动的衣服。长发可以束起，包袋放在边柜，桌面留给工具与花材。课程会安排清理时间，成品带走前再检查保水和支撑。</p></section><section><h2>报名与材料信息</h2><p>报名时请提供课程名称、日期、人数和联系邮箱。收到安排说明后，再根据邮件中的方式确认名额。团队活动需要先沟通场地与参与人数，普通课程的时间表不直接作为团体活动报价。</p><p>课程开始前至少七天取消，可退回全部订金。对于七天以内的临时情况，请直接回复确认邮件，写明订单号和希望协商的安排；是否改期会根据现有名额另行确认。</p></section><section class=\"notice\"><h2>作品带回家</h2><p>花束在离店前会包好保水材料。回家后请尽快放入清洁花瓶，水位覆盖茎部即可，避免叶片长时间浸泡。花环适合放在通风处，远离持续潮湿的墙面。需要再次核对养护步骤，可在营业时间联系门店。</p></section></main><footer><p>青溪花室</p><p>小团队提供的日常服务，欢迎先了解安排再联系我们。</p></footer></body></html>\n",
+      "index.html": "<!doctype html>\n<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"把花带进日常 — 青溪花室\"><title>把花带进日常 | 青溪花室</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">跳到正文</a><header><p class=\"wordmark\">青溪花室</p><nav aria-label=\"页面导航\"><a href=\"index.html\">青溪花室</a><a href=\"classes.html\">花艺课程</a><a href=\"cancellation.html\">改期与取消</a><a href=\"visit.html\">到访与联系</a></nav></header><main id=\"main\"><h1>把花带进日常</h1><section><h2>从一束花开始</h2><p>青溪花室提供日常花束、桌面瓶花和小班花艺课程。我们按当周花材准备配色，让花束既适合收到的那一刻，也能在回家后的几天里慢慢舒展。来店选花可以说说使用场合；不确定预算时，店员会先列出两个相近的选择。</p><p>手绑花束从 AUD 45 起，成品价格取决于尺寸与当周花材。订单确认前，我们会把花束规格、取花日期和包装方式写在同一封确认邮件里。照片可用来沟通色调，但季节不同，具体品种也会变化。</p></section><section class=\"pair\"><div><h2>课程与材料</h2><p>入门课适合没有插花经验的人。课程包含基础工具、花材和一个可带走的小花器。老师会先说明花枝处理与容器保水，再留出足够时间完成自己的作品；课程结束时，每位学员会收到日常养护卡。</p><p>如果你对某类植物或香味敏感，请在报名时写明。团队会在采购前核对材料，并在无法替换时提前沟通，不会只在上课当天临时决定。</p></div><div><h2>来店之前</h2><p>门店地址：17 Sample Grove, Brunswick VIC 3056。周二至周六 10:00–18:00 开放，周日与周一休息。课程通常安排在门店后方的长桌区，来店取花不需要进入课程区域。</p><p>想为小型聚会预订桌花，可以带上桌面尺寸和场地照片。我们会根据摆放位置讨论高度，避免作品遮挡用餐者的视线。正式报价会单独写明交付范围。</p></div></section><section><h2>订课与取消</h2><p>课程名额在确认订金后保留。活动开始前七天及更早提出取消，订金全额退回；距活动不足七天的取消申请，按确认邮件中的安排处理。取消说明也会随课程确认邮件一并发送，方便报名人留存。</p><a href=\"cancellation.html\">查看取消办理资料</a></section></main><footer><p>青溪花室</p><p>小团队提供的日常服务，欢迎先了解安排再联系我们。</p></footer></body></html>\n",
+      "visit.html": "<!doctype html>\n<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"到访花室 — 青溪花室\"><title>到访花室 | 青溪花室</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">跳到正文</a><header><p class=\"wordmark\">青溪花室</p><nav aria-label=\"页面导航\"><a href=\"index.html\">青溪花室</a><a href=\"classes.html\">花艺课程</a><a href=\"cancellation.html\">改期与取消</a><a href=\"visit.html\">到访与联系</a></nav></header><main id=\"main\"><h1>到访花室</h1><section><h2>地址与营业时间</h2><p>门店地址：17 Sample Grove, Brunswick VIC 3056。周二至周六 10:00–18:00，周日与周一休息。花艺课的时间以报名确认邮件为准；如果课程在门店营业时间之外开始，请按邮件中的到场说明进入。</p><p>公共交通到站后，沿主路进入 Sample Grove，再看门店橱窗的青溪花室标识。骑车到访可使用街道公共停车架，花室内通道需要保持通畅。来店取较大的瓶花作品时，建议准备平稳的托盘或合适的车辆空间。</p></section><section><h2>提前告诉我们</h2><p>需要安静一点的咨询时段、无台阶路线资料或其他到访协助，请在来店前通过邮箱说明。团队会按当天场地安排回复，不要求在公开留言里提供医疗证明。计划带儿童参加课程，也请先询问相应年龄和工具使用安排。</p><p>课程后方的材料区只供工作人员使用。客人可以在前区挑选现成花束或与店员讨论配色；大型活动样品需事先约定时间，以免同一张工作台同时用于备课和方案展示。</p></section><section><h2>联系与询价</h2><p>课程和花束咨询邮箱：hello@qingxi.example.org。请在邮件标题写明花束、课程或团体活动，正文提供希望使用的日期、人数或花束尺寸。对于小型活动布置，我们还会询问桌面数量、场地取放条件和可用交付时间。</p><p>报价以书面确认为准。临时采购或额外送货的费用会先说明，再由你决定是否加入。现成花束可以来店挑选，但特定花材或特定包装需要在采购前沟通。</p></section><section><h2>收到花之后</h2><p>请先查看随花附带的养护卡，修剪茎部并更换清水。房间温度、日照和花材品种会影响状态，避免将瓶花贴近暖气或摆在强烈阳光直射处。若运输后出现明显折枝，可以拍下包装与花枝情况，连同取货日期一起发给花室，团队会据此讨论处理方式。</p></section></main><footer><p>青溪花室</p><p>小团队提供的日常服务，欢迎先了解安排再联系我们。</p></footer></body></html>\n",
+      "site.css": "*{box-sizing:border-box}html{font-family:system-ui,sans-serif;color:#24302b;background:#fafbf8;line-height:1.7}body{margin:0}header,main,footer{max-width:1080px;margin:auto;padding:24px}header{border-bottom:1px solid #d5dfd6}.wordmark{font-size:24px;letter-spacing:.04em}nav{display:flex;flex-wrap:wrap;gap:20px}a{color:#245f49}.skip{position:absolute;left:-9999px}.skip:focus{left:16px;top:12px;background:white;padding:12px}h1{font-size:32px;line-height:1.3}h2{font-size:22px;margin-top:32px}p,li{max-width:72ch}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px;border-bottom:1px solid #d5dfd6}.notice{padding:18px;background:#edf2e8;border-left:4px solid #55775e}.pair{display:grid;grid-template-columns:1fr 1fr;gap:28px}label{display:block;margin:14px 0}input,select,textarea,button{font:inherit;padding:9px;max-width:100%}button{background:#285d46;color:white;border:0;border-radius:4px}footer{border-top:1px solid #d5dfd6;font-size:14px}a:focus-visible,button:focus-visible{outline:3px solid #98743c;outline-offset:4px}@media(max-width:640px){header,main,footer{padding:18px}.pair{display:block}h1{font-size:27px}table{font-size:14px}}\n"
+    },
+    "ruleEvidence": [
+      {
+        "id": "eval-evidence-1",
+        "criterionId": "manual-1",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "此项须人工核对原始约定：“页面取消政策必须写明：活动开始前至少七天取消可以全额退还订金。”。源码摘录只是交付来源，不能自动证明满足要求。"
+      },
+      {
+        "id": "eval-evidence-2",
+        "criterionId": "manual-2",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "此项须人工核对原始约定：“网站应显示与七天取消政策一致的确认文案，并在符合条件的客户提交取消后实际自动退回原支付卡，保存可按订单号查询的退款记录。”。源码摘录只是交付来源，不能自动证明满足要求。"
+      }
+    ],
+    "coverage": {
+      "includedFiles": [
+        "cancellation.html",
+        "classes.html",
+        "index.html",
+        "visit.html",
+        "site.css"
+      ],
+      "truncatedFiles": [],
+      "omittedFiles": []
+    }
+  },
+  "originalFirstRawAnswer": {
+    "items": [
+      {
+        "criterionId": "manual-1",
+        "status": "supported",
+        "explanation": "取消页面明确写明活动开始前至少七天取消可全额退还订金。",
+        "citations": [
+          {
+            "file": "cancellation.html",
+            "excerpt": "页面取消政策：活动开始前至少七天取消，可以全额退还订金。"
+          }
+        ]
+      },
+      {
+        "criterionId": "manual-2",
+        "status": "insufficient_evidence",
+        "explanation": "源码有与七天政策一致的说明文案，但无证据表明提交后会实际自动退款并保存可按订单号查询的退款记录。",
+        "citations": [
+          {
+            "file": "cancellation.html",
+            "excerpt": "符合七天取消政策的订金，按照原付款安排办理退回。"
+          }
+        ]
+      }
+    ],
+    "risks": [
+      {
+        "title": "取消表单可能无实际退款处理",
+        "explanation": "源码仅有表单与说明文案，无法确认提交后会自动退回原支付卡并保存可查询退款记录。",
+        "suggestion": "检查表单提交的后续流程或提供带订单号查询结果的运行证据。",
+        "citations": [
+          {
+            "file": "cancellation.html",
+            "excerpt": "<form action=\"/requests/cancel\" method=\"post\">"
+          },
+          {
+            "file": "cancellation.html",
+            "excerpt": "符合七天取消政策的订金，按照原付款安排办理退回。"
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "源码无法验证退款是否实际执行到原支付卡。",
+      "源码无法验证退款记录是否保存并可凭订单号查询。",
+      "未提供后端、运行或浏览器证据。"
+    ]
+  },
+  "knownRegressionRawAnswer": {
+    "items": [
+      {
+        "criterionId": "manual-1",
+        "status": "supported",
+        "explanation": "页面取消政策写明活动开始前至少七天取消可全额退还订金。",
+        "citations": [
+          {
+            "file": "cancellation.html",
+            "excerpt": "页面取消政策：活动开始前至少七天取消，可以全额退还订金。"
+          }
+        ]
+      },
+      {
+        "criterionId": "manual-2",
+        "status": "insufficient_evidence",
+        "explanation": "静态源码可见一致的确认文案，但自动退款及按订单号查询退款记录需后端/运行证据，本交付未提供。",
+        "citations": [
+          {
+            "file": "cancellation.html",
+            "excerpt": "符合七天取消政策的订金，按照原付款安排办理退回。"
+          },
+          {
+            "file": "cancellation.html",
+            "excerpt": "报名人应使用确认邮件中的订单号"
+          }
+        ]
+      }
+    ],
+    "risks": [],
+    "limitations": [
+      "未提供后端或运行证据，无法核实提交取消后是否自动退款到原支付卡。",
+      "无法核实系统是否保存并支持按订单号查询退款记录。",
+      "源码中的确认文案不证明表单提交、退款或记录查询实际可用。"
+    ]
+  },
+  "knownRegressionApplicationAnswer": {
+    "id": "a61d1d81-89b1-4e02-8972-bb809c2ef4f4",
+    "deliveryId": "eval-qingxi-policy-and-refund",
+    "method": "source-ai-v1",
+    "mode": "live",
+    "model": "deepseek-flash",
+    "assessedAt": "2026-11-05T05:26:42.145Z",
+    "items": [
+      {
+        "criterionId": "manual-1",
+        "status": "supported",
+        "explanation": "页面取消政策写明活动开始前至少七天取消可全额退还订金。",
+        "citations": [
+          {
+            "file": "cancellation.html",
+            "start": 556,
+            "end": 584,
+            "excerpt": "页面取消政策：活动开始前至少七天取消，可以全额退还订金。"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-1"
+        ]
+      },
+      {
+        "criterionId": "manual-2",
+        "status": "insufficient_evidence",
+        "explanation": "本项不属于明确可用源码核对的文本内容要求，或含运行、交互、手机体验及主观判断；需要其他证据或买家实际确认。",
+        "citations": [
+          {
+            "file": "cancellation.html",
+            "start": 1404,
+            "end": 1428,
+            "excerpt": "符合七天取消政策的订金，按照原付款安排办理退回。"
+          },
+          {
+            "file": "cancellation.html",
+            "start": 601,
+            "end": 616,
+            "excerpt": "报名人应使用确认邮件中的订单号"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-2"
+        ]
+      }
+    ],
+    "risks": [],
+    "limitations": [
+      "未提供后端或运行证据，无法核实提交取消后是否自动退款到原支付卡。",
+      "无法核实系统是否保存并支持按订单号查询退款记录。",
+      "源码中的确认文案不证明表单提交、退款或记录查询实际可用。",
+      "已发送全部受支持 HTML/CSS 原文，但完整输入不代表 AI 已正确理解；未运行浏览器、脚本或后台，不能证明功能、安全性或完整交付。",
+      "AI 建议与服务端规则分开记录。人工检查和最终验收由买家完成，不会自动验收、授权或付款。"
+    ],
+    "coverage": {
+      "includedFiles": [
+        "cancellation.html",
+        "classes.html",
+        "index.html",
+        "visit.html",
+        "site.css"
+      ],
+      "truncatedFiles": [],
+      "omittedFiles": []
+    },
+    "usage": {
+      "promptTokens": 6247,
+      "completionTokens": 231
+    }
+  },
+  "sourceReportAdmittedForSchemaAndCitationValidation": true
+}

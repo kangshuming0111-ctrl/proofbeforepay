@@ -1,0 +1,1171 @@
+{
+  "caseId": "qingyu-sixteen-late-obligations",
+  "evaluationMeaning": "KNOWN CASE REGRESSION, not a new independent project. Application admission below means only source-report schema and citation validation. NO buyer acceptance, workflow mutation, database, browser or payment occurred. Human-needed ruleEvidence file placeholders are NOT AI source citations.",
+  "exactUserPacket": {
+    "criteria": [
+      {
+        "id": "manual-1",
+        "title": "人工要求 1",
+        "source": "首页必须使用店名“青屿花艺”。"
+      },
+      {
+        "id": "manual-2",
+        "title": "人工要求 2",
+        "source": "首页与到访页的取货地址必须写为 12 Sample Court, Box Hill VIC 3128。"
+      },
+      {
+        "id": "manual-3",
+        "title": "人工要求 3",
+        "source": "到访页须显示周四营业时间为 10:00–18:00。"
+      },
+      {
+        "id": "manual-4",
+        "title": "人工要求 4",
+        "source": "到访页必须显示周五营业时间为 10:00–19:00。"
+      },
+      {
+        "id": "coverage-1",
+        "title": "原始需求 1",
+        "source": "花束价目文案将晨露花束标为AUD68"
+      },
+      {
+        "id": "coverage-2",
+        "title": "原始需求 2",
+        "source": "婚礼与聚会页文案注明花器租用订金AUD40"
+      },
+      {
+        "id": "coverage-3",
+        "title": "原始需求 3",
+        "source": "页面文案说明手写卡片附加费AUD5"
+      },
+      {
+        "id": "coverage-4",
+        "title": "原始需求 4",
+        "source": "页面文案说明日常花束配送范围为花室周边8公里"
+      },
+      {
+        "id": "coverage-5",
+        "title": "原始需求 5",
+        "source": "花束页文案要求定制花束至少提前48小时确认"
+      },
+      {
+        "id": "coverage-6",
+        "title": "原始需求 6",
+        "source": "课程页文案说明每节小班课程最多十位学员"
+      },
+      {
+        "id": "coverage-7",
+        "title": "原始需求 7",
+        "source": "需求提交后持久记录咨询内容并能凭咨询编号回查"
+      },
+      {
+        "id": "coverage-8",
+        "title": "原始需求 8",
+        "source": "课程取消文案说明开课前至少七天取消可全额退还订金"
+      },
+      {
+        "id": "coverage-9",
+        "title": "原始需求 9",
+        "source": "到访页文案必须写明公共假日休息"
+      },
+      {
+        "id": "coverage-10",
+        "title": "原始需求 10",
+        "source": "课程材料说明文案必须包含天然乳胶手套过敏提示"
+      },
+      {
+        "id": "coverage-11",
+        "title": "原始需求 11",
+        "source": "婚礼与聚会页文案将场地勘察费列为按次AUD120"
+      },
+      {
+        "id": "coverage-12",
+        "title": "原始需求 12",
+        "source": "符合课程取消政策的订单须实际自动退还原支付卡并提供可查询退款交易回执"
+      }
+    ],
+    "scopeContext": {
+      "summary": "花束价目文案将晨露花束标为AUD68\n婚礼与聚会页文案注明花器租用订金AUD40\n页面文案说明手写卡片附加费AUD5\n页面文案说明日常花束配送范围为花室周边8公里\n花束页文案要求定制花束至少提前48小时确认\n课程页文案说明每节小班课程最多十位学员\n需求提交后持久记录咨询内容并能凭咨询编号回查\n课程取消文案说明开课前至少七天取消可全额退还订金\n到访页文案必须写明公共假日休息\n课程材料说明文案必须包含天然乳胶手套过敏提示\n婚礼与聚会页文案将场地勘察费列为按次AUD120\n符合课程取消政策的订单须实际自动退还原支付卡并提供可查询退款交易回执",
+      "requirementCoverage": {
+        "method": "buyer-confirmed-literal-source-groups",
+        "included": [
+          {
+            "criterionId": "coverage-1",
+            "text": "花束价目文案将晨露花束标为AUD68"
+          },
+          {
+            "criterionId": "coverage-2",
+            "text": "婚礼与聚会页文案注明花器租用订金AUD40"
+          },
+          {
+            "criterionId": "coverage-3",
+            "text": "页面文案说明手写卡片附加费AUD5"
+          },
+          {
+            "criterionId": "coverage-4",
+            "text": "页面文案说明日常花束配送范围为花室周边8公里"
+          },
+          {
+            "criterionId": "coverage-5",
+            "text": "花束页文案要求定制花束至少提前48小时确认"
+          },
+          {
+            "criterionId": "coverage-6",
+            "text": "课程页文案说明每节小班课程最多十位学员"
+          },
+          {
+            "criterionId": "coverage-7",
+            "text": "需求提交后持久记录咨询内容并能凭咨询编号回查"
+          },
+          {
+            "criterionId": "coverage-8",
+            "text": "课程取消文案说明开课前至少七天取消可全额退还订金"
+          },
+          {
+            "criterionId": "coverage-9",
+            "text": "到访页文案必须写明公共假日休息"
+          },
+          {
+            "criterionId": "coverage-10",
+            "text": "课程材料说明文案必须包含天然乳胶手套过敏提示"
+          },
+          {
+            "criterionId": "coverage-11",
+            "text": "婚礼与聚会页文案将场地勘察费列为按次AUD120"
+          },
+          {
+            "criterionId": "coverage-12",
+            "text": "符合课程取消政策的订单须实际自动退还原支付卡并提供可查询退款交易回执"
+          }
+        ],
+        "excluded": []
+      }
+    },
+    "fileInventory": [
+      {
+        "path": "index.html",
+        "type": "html",
+        "byteLength": 2675,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "bouquets.html",
+        "type": "html",
+        "byteLength": 2616,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "workshops.html",
+        "type": "html",
+        "byteLength": 2713,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "arrangements.html",
+        "type": "html",
+        "byteLength": 2432,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "visit.html",
+        "type": "html",
+        "byteLength": 2614,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "site.css",
+        "type": "css",
+        "byteLength": 1148,
+        "isIncludedInSource": true
+      }
+    ],
+    "files": {
+      "arrangements.html": "<!doctype html>\n<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"婚礼与小型聚会 — 青屿花艺\"><title>婚礼与小型聚会 | 青屿花艺</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">跳到正文</a><header><p class=\"wordmark\">青屿花艺</p><nav aria-label=\"页面导航\"><a href=\"index.html\">花艺日常</a><a href=\"bouquets.html\">花束与小礼物</a><a href=\"workshops.html\">花艺小课</a><a href=\"arrangements.html\">婚礼与聚会</a><a href=\"visit.html\">取货与到访</a></nav></header><main id=\"main\"><h1>婚礼与小型聚会</h1><section><h2>先讨论空间与人数</h2><p>小型婚礼和家庭聚会的花艺，从场地、桌面尺寸与使用时间开始。请准备预计人数、场地照片和希望保留的色调。我们会讨论桌花高度、仪式区和取放路径，避免把作品放在会阻挡通行的位置。</p><p>场地勘察费按次收取，金额为 AUD 150。勘察安排与后续制作报价分别确认。需要场地方协助开门或提供尺寸时，请在确定日期前说明，让当天讨论留出足够时间。</p></section><section><h2>花器租用</h2><p>花器租用订金为 AUD 35。报价会列出数量、尺寸和归还日期，便于聚会结束后核对。花器需保持完整，归还前请倒净余水；如有破损，不要自行把碎片装回普通包装里，应先联系花室讨论安全的处理方式。</p><p>花材与花器的关系会影响整体比例。较长桌面不一定只需要一个更大的作品，也可以由多组小花器组合，给餐具和交谈留出空间。样品讨论不代替最终数量清单。</p></section><section><h2>确认交付范围</h2><p>制作前会确认作品数量、摆放位置、交付时间和谁负责接收。场地临时增加桌面或更改动线时，请通过原有联系渠道沟通，花室会说明能否调整、需要哪些材料以及费用变化。</p><p>活动当天如由亲友接收，提前提供对接人的姓名与可联系时段即可，不需要公开身份证件或个人付款资料。作品在指定地点交接后，现场后续摆放按已确认的服务范围处理。</p></section></main><footer><p>青屿花艺</p><p>从日常花束到相聚的桌面，让安排清楚一些，让花自然一些。</p></footer></body></html>\n",
+      "bouquets.html": "<!doctype html>\n<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"花束、瓶花与附加选择 — 青屿花艺\"><title>花束、瓶花与附加选择 | 青屿花艺</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">跳到正文</a><header><p class=\"wordmark\">青屿花艺</p><nav aria-label=\"页面导航\"><a href=\"index.html\">花艺日常</a><a href=\"bouquets.html\">花束与小礼物</a><a href=\"workshops.html\">花艺小课</a><a href=\"arrangements.html\">婚礼与聚会</a><a href=\"visit.html\">取货与到访</a></nav></header><main id=\"main\"><h1>花束、瓶花与附加选择</h1><section><h2>日常花束价目</h2><table><thead><tr><th>作品</th><th>价格</th><th>适合的场合</th></tr></thead><tbody><tr><td>晨露花束</td><td>AUD 68</td><td>自然浅色调，适合日常问候与小型庆祝。</td></tr><tr><td>晚霞花束</td><td>AUD 88</td><td>较饱满的暖色组合，保留枝叶的伸展。</td></tr><tr><td>手心小花</td><td>AUD 38</td><td>小尺寸的轻盈花束，适合带去一次短暂探访。</td></tr></tbody></table><p>价目对应花束规格，不包含额外花器或配送。个别花材在供应不稳定时会由相近质感替代，确认前会说明色调和尺寸。希望保留特定品种时，需要先询问当周采购。</p></section><section><h2>手写卡片与包装</h2><p>手写卡片附加费为 AUD 5。可以写祝福、姓名和落款，请把最终文字一次提供完整；我们不替收花人猜测简称或昵称。较长的文字会先确认是否需要换用更大的卡片。</p><p>普通包装使用便于拆卸的纸张和绑带。运输保水材料到家后应尽快拆下，把花放进清洁花瓶。我们可以为需要自行驾车运输的客人补充支撑，但仍请让花束在车内保持稳定。</p></section><section class=\"details\"><h2>定制花束的准备时间</h2><p>定制花束请至少提前 48 小时确认。确认内容包括预算、尺寸、色调和取货时间。临时询问可以先了解现有材料，但不等于采购已经完成；花室会回复能够提供的具体选择。</p><p>日常配送范围为花室周边 8 公里。填写地址时，请补充收花人的接收时间和门禁说明，不需要提供身份证件或付款密码。无人接收或临时变更地点时，需要再沟通安排。</p></section></main><footer><p>青屿花艺</p><p>从日常花束到相聚的桌面，让安排清楚一些，让花自然一些。</p></footer></body></html>\n",
+      "index.html": "<!doctype html>\n<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"让相聚有一束花 — 青屿花艺\"><title>让相聚有一束花 | 青屿花艺</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">跳到正文</a><header><p class=\"wordmark\">青屿花艺</p><nav aria-label=\"页面导航\"><a href=\"index.html\">花艺日常</a><a href=\"bouquets.html\">花束与小礼物</a><a href=\"workshops.html\">花艺小课</a><a href=\"arrangements.html\">婚礼与聚会</a><a href=\"visit.html\">取货与到访</a></nav></header><main id=\"main\"><h1>让相聚有一束花</h1><section><h2>花室里的日常选择</h2><p>青屿花艺制作日常花束、简洁桌花，也为小型婚礼和家庭聚会准备花艺。我们喜欢把当季材料放在一起，让主花、枝叶与花器各自留出空间。选花时可以先说使用场合，再讨论尺寸与色彩，而不是只从一张照片判断作品大小。</p><p>花室地址：12 Sample Court, Box Hill VIC 3128。一般花束可到店挑选，定制花束请至少提前 48 小时确认。我们会把取货时间、包装方式和需要附上的文字写在确认信息中。</p></section><section class=\"two-col\"><div><h2>晨露花束</h2><p>晨露花束 AUD 68，以浅色主花、轻盈枝叶和自然伸展的线条组成。包装以便于拆开养护为主，离店前加上保水材料。具体花材会随季节变化，色调与整体尺寸在确认时说明。</p><p>如果想附一张手写卡片，可在订单里提供最终文字。手写卡片附加费为 AUD 5；请核对姓名与落款，我们按确认后的文字书写。</p></div><div><h2>来上一节花艺课</h2><p>小班课程最多十位学员，每位都有独立的操作空间。老师先演示材料处理，再陪大家调整比例，不需要把作品做得完全相同。课程成品可带走，花器与花材已经包含在对应课程费用中。</p><p>报名人可查看课程页的材料和取消说明，再选择适合自己的时间。团队活动与公开课程的桌面安排不同，人数确定后会单独沟通。</p></div></section><section><h2>配送与取花</h2><p>日常花束配送范围为花室周边 8 公里，具体时间窗会在确认时说明。花器作品和大型桌花需要更稳定的运输空间，不能仅凭距离决定配送方式。收花地点有门禁或接收时间限制时，请提前告诉花室。</p></section></main><footer><p>青屿花艺</p><p>从日常花束到相聚的桌面，让安排清楚一些，让花自然一些。</p></footer></body></html>\n",
+      "visit.html": "<!doctype html>\n<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"取花、来店与联系 — 青屿花艺\"><title>取花、来店与联系 | 青屿花艺</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">跳到正文</a><header><p class=\"wordmark\">青屿花艺</p><nav aria-label=\"页面导航\"><a href=\"index.html\">花艺日常</a><a href=\"bouquets.html\">花束与小礼物</a><a href=\"workshops.html\">花艺小课</a><a href=\"arrangements.html\">婚礼与聚会</a><a href=\"visit.html\">取货与到访</a></nav></header><main id=\"main\"><h1>取花、来店与联系</h1><section><h2>到访信息</h2><p>花室地址：12 Sample Court, Box Hill VIC 3128。周二、周三与周四 10:00–18:00，周五 10:00–18:00，周六 09:00–17:00。周日与周一休息，公共假日休息；临时营业调整会提前在门店通知中说明。</p><p>按确认的时间段取花，可以减少等待，也让花室有时间检查包装和保水。门口空间需要留给其他行人，较大的作品可由店员协助搬到安全的交接位置。接收人不是下单人时，请携带订单号与已确认的接收安排。</p></section><section><h2>联系花室</h2><p>联系邮箱：hello@qingyu.example.org。请在邮件标题写明花束、课程或活动布置，正文提供希望使用的日期、取货或配送安排。花器租用和勘察费用可以在正式确认前分别询问。</p><form action=\"/enquiries\" method=\"post\"><label>姓名<input name=\"name\" required></label><label>邮箱<input name=\"email\" type=\"email\" required></label><label>日期与需求<textarea name=\"message\" rows=\"4\" required></textarea></label><button type=\"submit\">发送需求</button></form><p>需求已收到。后续沟通请保留订单号或咨询编号，方便花室对应到同一件安排。</p></section><section><h2>取消与订金资料</h2><p>课程取消政策为开课前至少七天可全额退还订金。申请时请提供订单号、日期与席位数量。涉及同一订单的后续讨论，请沿用最初的报名邮箱，以便核对已确认的内容。</p><p>对于符合课程取消政策的申请，订金按原付款安排退回。请保存原有确认资料，不要在一般留言里填写银行卡号、密码或短信验证码。更改接收邮箱前，应先在原有联系渠道说明。</p></section></main><footer><p>青屿花艺</p><p>从日常花束到相聚的桌面，让安排清楚一些，让花自然一些。</p></footer></body></html>\n",
+      "workshops.html": "<!doctype html>\n<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"周末花艺小课 — 青屿花艺\"><title>周末花艺小课 | 青屿花艺</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">跳到正文</a><header><p class=\"wordmark\">青屿花艺</p><nav aria-label=\"页面导航\"><a href=\"index.html\">花艺日常</a><a href=\"bouquets.html\">花束与小礼物</a><a href=\"workshops.html\">花艺小课</a><a href=\"arrangements.html\">婚礼与聚会</a><a href=\"visit.html\">取货与到访</a></nav></header><main id=\"main\"><h1>周末花艺小课</h1><section><h2>课程与席位</h2><p>每节小班课程最多十位学员。课程从认识主花、辅助材料与线条开始，接着练习修剪、固定和调整比例。老师会逐桌沟通，让作品保留每个人自己的选择，而不是只追求与示范一模一样。</p><p>课程费用包含当次花材、借用工具和花器。建议穿方便活动的衣服，把包袋放在侧柜，让桌面留给材料。长发可以束起，完成作品后再一起整理桌面。</p></section><section><h2>材料说明</h2><p>课堂按当周主题准备鲜花、枝叶、花器、剪刀和固定材料。手套按每人一双准备，工作台旁有清洁用品。需要了解植物种类或对材料有特别顾虑，可以在报名时说明，花室会核对该次课程的采购安排。</p><p>工具在课堂开始时统一说明使用方式。桌边的小桶用于收集修剪下的枝叶，较长的枝条不要留在通道上。作品离开前会检查固定点，并附上适合这组花材的养护说明。</p></section><section><h2>取消政策文案</h2><p>开课前至少七天取消，可全额退还订金。距开课不足七天的申请，请回复报名确认信息，写明订单号、课程日期和人数，花室会按已确认的安排讨论后续处理。转让席位或更换参与人也需要提前告知。</p><p>团队课的人数、花器与场地准备会写在单独确认信息中。公开课程的空位不直接代表团队课可以接待的时间，安排好后再告知参与者到场细节。</p></section><section><h2>课程之后</h2><p>作品完成后，老师会解释保水、摆放和再次修剪的顺序。回家路上尽量避免花器倾倒；需要继续转乘公共交通，可以在下课前询问包装方式。想延伸练习时，可保留当次课程的养护卡，记下自己采用的花材组合。</p></section></main><footer><p>青屿花艺</p><p>从日常花束到相聚的桌面，让安排清楚一些，让花自然一些。</p></footer></body></html>\n",
+      "site.css": "*{box-sizing:border-box}body{margin:0;background:#fcfaf5;color:#35352d;font-family:system-ui,sans-serif;line-height:1.7}header,main,footer{max-width:1060px;margin:0 auto;padding:22px}.wordmark{font-size:27px;letter-spacing:.08em;color:#495a40}nav{display:flex;flex-wrap:wrap;gap:18px}a{color:#455e3c}.skip{position:absolute;left:-9999px}.skip:focus{left:12px;top:12px;background:white;padding:12px}h1{font-size:34px;line-height:1.25}h2{font-size:23px;margin-top:30px}section+section{border-top:1px solid #dcd9c9;padding-top:12px}table{border-collapse:collapse;width:100%}td,th{padding:11px;text-align:left;border-bottom:1px solid #dcd9c9}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:30px}.details{background:#f0eddf;padding:18px}label{display:block;margin:12px 0}input,textarea{display:block;width:100%;padding:9px;font:inherit}button{padding:10px 20px;background:#4c6041;color:white;border:0;font:inherit}:focus-visible{outline:3px solid #a96b48;outline-offset:4px}footer{font-size:14px;border-top:1px solid #dcd9c9}@media(max-width:680px){header,main,footer{padding:18px}.two-col{display:block}h1{font-size:28px}table{font-size:14px}}\n"
+    },
+    "ruleEvidence": [
+      {
+        "id": "eval-evidence-1",
+        "criterionId": "manual-1",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "此项须人工核对原始约定：“首页必须使用店名“青屿花艺”。”。源码摘录只是交付来源，不能自动证明满足要求。"
+      },
+      {
+        "id": "eval-evidence-2",
+        "criterionId": "manual-2",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "此项须人工核对原始约定：“首页与到访页的取货地址必须写为 12 Sample Court, Box Hill VIC 3128。”。源码摘录只是交付来源，不能自动证明满足要求。"
+      },
+      {
+        "id": "eval-evidence-3",
+        "criterionId": "manual-3",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "此项须人工核对原始约定：“到访页须显示周四营业时间为 10:00–18:00。”。源码摘录只是交付来源，不能自动证明满足要求。"
+      },
+      {
+        "id": "eval-evidence-4",
+        "criterionId": "manual-4",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "此项须人工核对原始约定：“到访页必须显示周五营业时间为 10:00–19:00。”。源码摘录只是交付来源，不能自动证明满足要求。"
+      },
+      {
+        "id": "eval-evidence-5",
+        "criterionId": "coverage-1",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "逐项核对原始需求：“花束价目文案将晨露花束标为AUD68”。如果这一段包含多个要求，必须全部满足；页面存在或 AI 建议不能代替你的确认。"
+      },
+      {
+        "id": "eval-evidence-6",
+        "criterionId": "coverage-2",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "逐项核对原始需求：“婚礼与聚会页文案注明花器租用订金AUD40”。如果这一段包含多个要求，必须全部满足；页面存在或 AI 建议不能代替你的确认。"
+      },
+      {
+        "id": "eval-evidence-7",
+        "criterionId": "coverage-3",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "逐项核对原始需求：“页面文案说明手写卡片附加费AUD5”。如果这一段包含多个要求，必须全部满足；页面存在或 AI 建议不能代替你的确认。"
+      },
+      {
+        "id": "eval-evidence-8",
+        "criterionId": "coverage-4",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "逐项核对原始需求：“页面文案说明日常花束配送范围为花室周边8公里”。如果这一段包含多个要求，必须全部满足；页面存在或 AI 建议不能代替你的确认。"
+      },
+      {
+        "id": "eval-evidence-9",
+        "criterionId": "coverage-5",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "逐项核对原始需求：“花束页文案要求定制花束至少提前48小时确认”。如果这一段包含多个要求，必须全部满足；页面存在或 AI 建议不能代替你的确认。"
+      },
+      {
+        "id": "eval-evidence-10",
+        "criterionId": "coverage-6",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "逐项核对原始需求：“课程页文案说明每节小班课程最多十位学员”。如果这一段包含多个要求，必须全部满足；页面存在或 AI 建议不能代替你的确认。"
+      },
+      {
+        "id": "eval-evidence-11",
+        "criterionId": "coverage-7",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "逐项核对原始需求：“需求提交后持久记录咨询内容并能凭咨询编号回查”。如果这一段包含多个要求，必须全部满足；页面存在或 AI 建议不能代替你的确认。"
+      },
+      {
+        "id": "eval-evidence-12",
+        "criterionId": "coverage-8",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "逐项核对原始需求：“课程取消文案说明开课前至少七天取消可全额退还订金”。如果这一段包含多个要求，必须全部满足；页面存在或 AI 建议不能代替你的确认。"
+      },
+      {
+        "id": "eval-evidence-13",
+        "criterionId": "coverage-9",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "逐项核对原始需求：“到访页文案必须写明公共假日休息”。如果这一段包含多个要求，必须全部满足；页面存在或 AI 建议不能代替你的确认。"
+      },
+      {
+        "id": "eval-evidence-14",
+        "criterionId": "coverage-10",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "逐项核对原始需求：“课程材料说明文案必须包含天然乳胶手套过敏提示”。如果这一段包含多个要求，必须全部满足；页面存在或 AI 建议不能代替你的确认。"
+      },
+      {
+        "id": "eval-evidence-15",
+        "criterionId": "coverage-11",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "逐项核对原始需求：“婚礼与聚会页文案将场地勘察费列为按次AUD120”。如果这一段包含多个要求，必须全部满足；页面存在或 AI 建议不能代替你的确认。"
+      },
+      {
+        "id": "eval-evidence-16",
+        "criterionId": "coverage-12",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "逐项核对原始需求：“符合课程取消政策的订单须实际自动退还原支付卡并提供可查询退款交易回执”。如果这一段包含多个要求，必须全部满足；页面存在或 AI 建议不能代替你的确认。"
+      }
+    ],
+    "coverage": {
+      "includedFiles": [
+        "arrangements.html",
+        "bouquets.html",
+        "index.html",
+        "visit.html",
+        "workshops.html",
+        "site.css"
+      ],
+      "truncatedFiles": [],
+      "omittedFiles": []
+    }
+  },
+  "originalFirstRawAnswer": {
+    "items": [
+      {
+        "criterionId": "manual-1",
+        "status": "supported",
+        "explanation": "首页页头品牌字与标题均含“青屿花艺”，文案亦自称青屿花艺。",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<p class=\"wordmark\">青屿花艺</p>"
+          },
+          {
+            "file": "index.html",
+            "excerpt": "<title>让相聚有一束花 | 青屿花艺</title>"
+          }
+        ]
+      },
+      {
+        "criterionId": "manual-2",
+        "status": "supported",
+        "explanation": "首页与到访页均原文写出该取货地址。",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "花室地址：12 Sample Court, Box Hill VIC 3128。"
+          },
+          {
+            "file": "visit.html",
+            "excerpt": "花室地址：12 Sample Court, Box Hill VIC 3128。"
+          }
+        ]
+      },
+      {
+        "criterionId": "manual-3",
+        "status": "supported",
+        "explanation": "到访页营业时间句列出周四为 10:00–18:00。",
+        "citations": [
+          {
+            "file": "visit.html",
+            "excerpt": "周二、周三与周四 10:00–18:00"
+          }
+        ]
+      },
+      {
+        "criterionId": "manual-4",
+        "status": "changes_suggested",
+        "explanation": "到访页周五写为 10:00–18:00，与要求的 10:00–19:00 不符。",
+        "citations": [
+          {
+            "file": "visit.html",
+            "excerpt": "周五 10:00–18:00"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "花束页价目表将晨露花束标为 AUD 68。",
+        "citations": [
+          {
+            "file": "bouquets.html",
+            "excerpt": "<td>晨露花束</td><td>AUD 68</td>"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-2",
+        "status": "changes_suggested",
+        "explanation": "婚礼与聚会页花器租用订金写为 AUD 35，与要求 AUD 40 不符。",
+        "citations": [
+          {
+            "file": "arrangements.html",
+            "excerpt": "花器租用订金为 AUD 35。"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-3",
+        "status": "supported",
+        "explanation": "花束页文案说明手写卡片附加费为 AUD 5。",
+        "citations": [
+          {
+            "file": "bouquets.html",
+            "excerpt": "手写卡片附加费为 AUD 5。"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-4",
+        "status": "supported",
+        "explanation": "花束页文案写明日配送范围为花室周边 8 公里。",
+        "citations": [
+          {
+            "file": "bouquets.html",
+            "excerpt": "日常配送范围为花室周边 8 公里。"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-5",
+        "status": "supported",
+        "explanation": "花束页要求定制花束至少提前 48 小时确认。",
+        "citations": [
+          {
+            "file": "bouquets.html",
+            "excerpt": "定制花束请至少提前 48 小时确认。"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-6",
+        "status": "supported",
+        "explanation": "课程页说明每节小班课程最多十位学员。",
+        "citations": [
+          {
+            "file": "workshops.html",
+            "excerpt": "每节小班课程最多十位学员。"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-7",
+        "status": "insufficient_evidence",
+        "explanation": "源码仅有表单与保留咨询编号的提示，无法证明持久记录及凭编号回查。",
+        "citations": [
+          {
+            "file": "visit.html",
+            "excerpt": "需求已收到。后续沟通请保留订单号或咨询编号，方便花室对应到同一件安排。"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-8",
+        "status": "supported",
+        "explanation": "课程取消文案说明开课前至少七天可全额退还订金。",
+        "citations": [
+          {
+            "file": "workshops.html",
+            "excerpt": "开课前至少七天取消，可全额退还订金。"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-9",
+        "status": "supported",
+        "explanation": "到访页营业文案写明公共假日休息。",
+        "citations": [
+          {
+            "file": "visit.html",
+            "excerpt": "周日与周一休息，公共假日休息"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-10",
+        "status": "insufficient_evidence",
+        "explanation": "课程材料说明提到对手套与材料顾虑可报备，但无天然乳胶过敏提示。",
+        "citations": [
+          {
+            "file": "workshops.html",
+            "excerpt": "手套按每人一双准备，工作台旁有清洁用品。"
+          },
+          {
+            "file": "workshops.html",
+            "excerpt": "需要了解植物种类或对材料有特别顾虑，可以在报名时说明"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-11",
+        "status": "changes_suggested",
+        "explanation": "婚礼与聚会页场地勘察费写为按次 AUD 150，与要求 AUD 120 不符。",
+        "citations": [
+          {
+            "file": "arrangements.html",
+            "excerpt": "场地勘察费按次收取，金额为 AUD 150。"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-12",
+        "status": "insufficient_evidence",
+        "explanation": "页面仅有退还订金文案，无法证明自动退回原卡及可查询退款回执。",
+        "citations": [
+          {
+            "file": "visit.html",
+            "excerpt": "对于符合课程取消政策的申请，订金按原付款安排退回。"
+          }
+        ]
+      }
+    ],
+    "risks": [
+      {
+        "title": "到访页周五营业时间与约定不一致",
+        "explanation": "要求周五 10:00–19:00，来源显示周五 10:00–18:00。",
+        "suggestion": "核对营业时间表并按约定更正周五时间。",
+        "citations": [
+          {
+            "file": "visit.html",
+            "excerpt": "周五 10:00–18:00"
+          }
+        ]
+      },
+      {
+        "title": "花器租用订金金额与约定不一致",
+        "explanation": "要求 AUD 40，来源写为花器租用订金 AUD 35。",
+        "suggestion": "核对金额并更正为约定值。",
+        "citations": [
+          {
+            "file": "arrangements.html",
+            "excerpt": "花器租用订金为 AUD 35。"
+          }
+        ]
+      },
+      {
+        "title": "场地勘察费金额与约定不一致",
+        "explanation": "要求按次 AUD 120，来源写为按次 AUD 150。",
+        "suggestion": "核对金额并更正为约定值。",
+        "citations": [
+          {
+            "file": "arrangements.html",
+            "excerpt": "场地勘察费按次收取，金额为 AUD 150。"
+          }
+        ]
+      },
+      {
+        "title": "课程材料说明缺少天然乳胶手套过敏提示",
+        "explanation": "材料说明提及手套与一般材料顾虑，但未见天然乳胶过敏提示。",
+        "suggestion": "补充明确的天然乳胶过敏提示文案供人工核对。",
+        "citations": [
+          {
+            "file": "workshops.html",
+            "excerpt": "手套按每人一双准备，工作台旁有清洁用品。"
+          },
+          {
+            "file": "workshops.html",
+            "excerpt": "需要了解植物种类或对材料有特别顾虑，可以在报名时说明"
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "未运行浏览器，无法确认页面可见性、表单提交、持久记录与凭编号回查。",
+      "退款自动退回原支付卡及可查询退款回执需后端运行时证据，源码无法证明。",
+      "人工验收项最终由买家确认，本报告仅为源码文字核对建议。"
+    ]
+  },
+  "knownRegressionRawAnswer": {
+    "items": [
+      {
+        "criterionId": "manual-1",
+        "status": "supported",
+        "explanation": "首页头部与页脚均出现店名“青屿花艺”。",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "<header><p class=\"wordmark\">青屿花艺</p>"
+          },
+          {
+            "file": "index.html",
+            "excerpt": "<footer><p>青屿花艺</p>"
+          }
+        ]
+      },
+      {
+        "criterionId": "manual-2",
+        "status": "supported",
+        "explanation": "首页与到访页均写出完整取货地址。",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "花室地址：12 Sample Court, Box Hill VIC 3128。"
+          },
+          {
+            "file": "visit.html",
+            "excerpt": "花室地址：12 Sample Court, Box Hill VIC 3128。"
+          }
+        ]
+      },
+      {
+        "criterionId": "manual-3",
+        "status": "supported",
+        "explanation": "到访页周四营业时间写作 10:00–18:00。",
+        "citations": [
+          {
+            "file": "visit.html",
+            "excerpt": "周二、周三与周四 10:00–18:00"
+          }
+        ]
+      },
+      {
+        "criterionId": "manual-4",
+        "status": "changes_suggested",
+        "explanation": "到访页周五营业时间为 10:00–18:00，与要求的 10:00–19:00 不符。",
+        "citations": [
+          {
+            "file": "visit.html",
+            "excerpt": "周五 10:00–18:00"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "花束价目表中晨露花束标为 AUD 68。",
+        "citations": [
+          {
+            "file": "bouquets.html",
+            "excerpt": "<td>晨露花束</td><td>AUD 68</td>"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-2",
+        "status": "changes_suggested",
+        "explanation": "婚礼与聚会页写花器租用订金 AUD 35，与要求 AUD40 不符。",
+        "citations": [
+          {
+            "file": "arrangements.html",
+            "excerpt": "花器租用订金为 AUD 35。"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-3",
+        "status": "supported",
+        "explanation": "花束页文案说明手写卡片附加费为 AUD 5。",
+        "citations": [
+          {
+            "file": "bouquets.html",
+            "excerpt": "手写卡片附加费为 AUD 5。"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-4",
+        "status": "supported",
+        "explanation": "花束页与首页均写日常配送范围为周边 8 公里。",
+        "citations": [
+          {
+            "file": "bouquets.html",
+            "excerpt": "日常配送范围为花室周边 8 公里。"
+          },
+          {
+            "file": "index.html",
+            "excerpt": "日常花束配送范围为花室周边 8 公里"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-5",
+        "status": "supported",
+        "explanation": "花束页文案要求定制花束至少提前 48 小时确认。",
+        "citations": [
+          {
+            "file": "bouquets.html",
+            "excerpt": "定制花束请至少提前 48 小时确认。"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-6",
+        "status": "supported",
+        "explanation": "课程页文案说明每节小班课程最多十位学员。",
+        "citations": [
+          {
+            "file": "workshops.html",
+            "excerpt": "每节小班课程最多十位学员。"
+          },
+          {
+            "file": "index.html",
+            "excerpt": "小班课程最多十位学员"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-7",
+        "status": "insufficient_evidence",
+        "explanation": "仅见表单与“需求已收到”文案，无持久存储或咨询编号回查的实现证据。",
+        "citations": []
+      },
+      {
+        "criterionId": "coverage-8",
+        "status": "supported",
+        "explanation": "到访页与课程页均写明开课前至少七天取消可全额退还订金。",
+        "citations": [
+          {
+            "file": "visit.html",
+            "excerpt": "课程取消政策为开课前至少七天可全额退还订金。"
+          },
+          {
+            "file": "workshops.html",
+            "excerpt": "开课前至少七天取消，可全额退还订金。"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-9",
+        "status": "supported",
+        "explanation": "到访页写明公共假日休息。",
+        "citations": [
+          {
+            "file": "visit.html",
+            "excerpt": "周日与周一休息，公共假日休息"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-10",
+        "status": "changes_suggested",
+        "explanation": "材料说明仅提“手套按每人一双准备”，未包含天然乳胶手套过敏提示。",
+        "citations": [
+          {
+            "file": "workshops.html",
+            "excerpt": "手套按每人一双准备，工作台旁有清洁用品。"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-11",
+        "status": "changes_suggested",
+        "explanation": "场地勘察费写作 AUD 150，与要求的按次 AUD120 不符。",
+        "citations": [
+          {
+            "file": "arrangements.html",
+            "excerpt": "场地勘察费按次收取，金额为 AUD 150。"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-12",
+        "status": "insufficient_evidence",
+        "explanation": "支付、自动原路退款及可查询退款回执需后端与运行时证据，静态源码无法确认。",
+        "citations": []
+      }
+    ],
+    "risks": [
+      {
+        "title": "到访页周五营业时间与约定不一致",
+        "explanation": "约定周五为 10:00–19:00，源码写周五 10:00–18:00。",
+        "suggestion": "核对周五时段并在 visit.html 更新。",
+        "citations": [
+          {
+            "file": "visit.html",
+            "excerpt": "周五 10:00–18:00"
+          }
+        ]
+      },
+      {
+        "title": "花器租用订金金额与约定不一致",
+        "explanation": "约定 AUD40，源码写 AUD 35。",
+        "suggestion": "确认订金金额后修正文案。",
+        "citations": [
+          {
+            "file": "arrangements.html",
+            "excerpt": "花器租用订金为 AUD 35。"
+          }
+        ]
+      },
+      {
+        "title": "场地勘察费金额与约定不一致",
+        "explanation": "约定按次 AUD120，源码写 AUD 150。",
+        "suggestion": "确认勘察费后修正文案。",
+        "citations": [
+          {
+            "file": "arrangements.html",
+            "excerpt": "场地勘察费按次收取，金额为 AUD 150。"
+          }
+        ]
+      },
+      {
+        "title": "课程材料说明缺少乳胶手套过敏提示",
+        "explanation": "材料段只写每人一双手套，未见过敏提示。",
+        "suggestion": "确认是否调整材料说明以包含过敏提示。",
+        "citations": [
+          {
+            "file": "workshops.html",
+            "excerpt": "手套按每人一双准备，工作台旁有清洁用品。"
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "未运行浏览器，无法确认页面渲染、可点击性或响应式表现。",
+      "coverage-7 的持久存储与咨询编号回查缺少后端实现证据。",
+      "coverage-12 自动退款和交易回执涉及支付后端，静态源码无法验证。",
+      "表单 action=\"/enquiries\" 的提交处理与邮件送达未验证。",
+      "未分析任何栅格图片像素。",
+      "“需求已收到”为固定源码文案，未证实其显示时机。"
+    ]
+  },
+  "knownRegressionApplicationAnswer": {
+    "id": "3ad9a35b-a8f3-4102-a889-8d95292e9cb0",
+    "deliveryId": "eval-qingyu-sixteen-late-obligations",
+    "method": "source-ai-v1",
+    "mode": "live",
+    "model": "deepseek-flash",
+    "assessedAt": "2026-11-05T05:26:53.112Z",
+    "items": [
+      {
+        "criterionId": "manual-1",
+        "status": "supported",
+        "explanation": "首页头部与页脚均出现店名“青屿花艺”。",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 298,
+            "end": 334,
+            "excerpt": "<header><p class=\"wordmark\">青屿花艺</p>"
+          },
+          {
+            "file": "index.html",
+            "start": 1340,
+            "end": 1359,
+            "excerpt": "<footer><p>青屿花艺</p>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-1"
+        ]
+      },
+      {
+        "criterionId": "manual-2",
+        "status": "supported",
+        "explanation": "首页与到访页均写出完整取货地址。",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 702,
+            "end": 742,
+            "excerpt": "花室地址：12 Sample Court, Box Hill VIC 3128。"
+          },
+          {
+            "file": "visit.html",
+            "start": 595,
+            "end": 635,
+            "excerpt": "花室地址：12 Sample Court, Box Hill VIC 3128。"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-2"
+        ]
+      },
+      {
+        "criterionId": "manual-3",
+        "status": "supported",
+        "explanation": "到访页周四营业时间写作 10:00–18:00。",
+        "citations": [
+          {
+            "file": "visit.html",
+            "start": 635,
+            "end": 655,
+            "excerpt": "周二、周三与周四 10:00–18:00"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-3"
+        ]
+      },
+      {
+        "criterionId": "manual-4",
+        "status": "changes_suggested",
+        "explanation": "到访页周五营业时间为 10:00–18:00，与要求的 10:00–19:00 不符。",
+        "citations": [
+          {
+            "file": "visit.html",
+            "start": 656,
+            "end": 670,
+            "excerpt": "周五 10:00–18:00"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-4"
+        ]
+      },
+      {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "花束价目表中晨露花束标为 AUD 68。",
+        "citations": [
+          {
+            "file": "bouquets.html",
+            "start": 678,
+            "end": 706,
+            "excerpt": "<td>晨露花束</td><td>AUD 68</td>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-5"
+        ]
+      },
+      {
+        "criterionId": "coverage-2",
+        "status": "changes_suggested",
+        "explanation": "婚礼与聚会页写花器租用订金 AUD 35，与要求 AUD40 不符。",
+        "citations": [
+          {
+            "file": "arrangements.html",
+            "start": 803,
+            "end": 818,
+            "excerpt": "花器租用订金为 AUD 35。"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-6"
+        ]
+      },
+      {
+        "criterionId": "coverage-3",
+        "status": "supported",
+        "explanation": "花束页文案说明手写卡片附加费为 AUD 5。",
+        "citations": [
+          {
+            "file": "bouquets.html",
+            "start": 1000,
+            "end": 1015,
+            "excerpt": "手写卡片附加费为 AUD 5。"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-7"
+        ]
+      },
+      {
+        "criterionId": "coverage-4",
+        "status": "supported",
+        "explanation": "花束页与首页均写日常配送范围为周边 8 公里。",
+        "citations": [
+          {
+            "file": "bouquets.html",
+            "start": 1304,
+            "end": 1321,
+            "excerpt": "日常配送范围为花室周边 8 公里。"
+          },
+          {
+            "file": "index.html",
+            "start": 1230,
+            "end": 1248,
+            "excerpt": "日常花束配送范围为花室周边 8 公里"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-8"
+        ]
+      },
+      {
+        "criterionId": "coverage-5",
+        "status": "supported",
+        "explanation": "花束页文案要求定制花束至少提前 48 小时确认。",
+        "citations": [
+          {
+            "file": "bouquets.html",
+            "start": 1219,
+            "end": 1237,
+            "excerpt": "定制花束请至少提前 48 小时确认。"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-9"
+        ]
+      },
+      {
+        "criterionId": "coverage-6",
+        "status": "supported",
+        "explanation": "课程页文案说明每节小班课程最多十位学员。",
+        "citations": [
+          {
+            "file": "workshops.html",
+            "start": 590,
+            "end": 603,
+            "excerpt": "每节小班课程最多十位学员。"
+          },
+          {
+            "file": "index.html",
+            "start": 1039,
+            "end": 1049,
+            "excerpt": "小班课程最多十位学员"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-10"
+        ]
+      },
+      {
+        "criterionId": "coverage-7",
+        "status": "insufficient_evidence",
+        "explanation": "本项不属于明确可用源码核对的文本内容要求，或含运行、交互、手机体验及主观判断；需要其他证据或买家实际确认。",
+        "citations": [],
+        "ruleEvidenceIds": [
+          "eval-evidence-11"
+        ]
+      },
+      {
+        "criterionId": "coverage-8",
+        "status": "supported",
+        "explanation": "到访页与课程页均写明开课前至少七天取消可全额退还订金。",
+        "citations": [
+          {
+            "file": "visit.html",
+            "start": 1292,
+            "end": 1314,
+            "excerpt": "课程取消政策为开课前至少七天可全额退还订金。"
+          },
+          {
+            "file": "workshops.html",
+            "start": 993,
+            "end": 1011,
+            "excerpt": "开课前至少七天取消，可全额退还订金。"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-12"
+        ]
+      },
+      {
+        "criterionId": "coverage-9",
+        "status": "supported",
+        "explanation": "到访页写明公共假日休息。",
+        "citations": [
+          {
+            "file": "visit.html",
+            "start": 686,
+            "end": 700,
+            "excerpt": "周日与周一休息，公共假日休息"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-13"
+        ]
+      },
+      {
+        "criterionId": "coverage-10",
+        "status": "changes_suggested",
+        "explanation": "材料说明仅提“手套按每人一双准备”，未包含天然乳胶手套过敏提示。",
+        "citations": [
+          {
+            "file": "workshops.html",
+            "start": 810,
+            "end": 830,
+            "excerpt": "手套按每人一双准备，工作台旁有清洁用品。"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-14"
+        ]
+      },
+      {
+        "criterionId": "coverage-11",
+        "status": "changes_suggested",
+        "explanation": "场地勘察费写作 AUD 150，与要求的按次 AUD120 不符。",
+        "citations": [
+          {
+            "file": "arrangements.html",
+            "start": 688,
+            "end": 710,
+            "excerpt": "场地勘察费按次收取，金额为 AUD 150。"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-15"
+        ]
+      },
+      {
+        "criterionId": "coverage-12",
+        "status": "insufficient_evidence",
+        "explanation": "本项不属于明确可用源码核对的文本内容要求，或含运行、交互、手机体验及主观判断；需要其他证据或买家实际确认。",
+        "citations": [],
+        "ruleEvidenceIds": [
+          "eval-evidence-16"
+        ]
+      }
+    ],
+    "risks": [
+      {
+        "title": "到访页周五营业时间与约定不一致",
+        "explanation": "约定周五为 10:00–19:00，源码写周五 10:00–18:00。",
+        "suggestion": "核对周五时段并在 visit.html 更新。",
+        "citations": [
+          {
+            "file": "visit.html",
+            "start": 656,
+            "end": 670,
+            "excerpt": "周五 10:00–18:00"
+          }
+        ]
+      },
+      {
+        "title": "花器租用订金金额与约定不一致",
+        "explanation": "约定 AUD40，源码写 AUD 35。",
+        "suggestion": "确认订金金额后修正文案。",
+        "citations": [
+          {
+            "file": "arrangements.html",
+            "start": 803,
+            "end": 818,
+            "excerpt": "花器租用订金为 AUD 35。"
+          }
+        ]
+      },
+      {
+        "title": "场地勘察费金额与约定不一致",
+        "explanation": "约定按次 AUD120，源码写 AUD 150。",
+        "suggestion": "确认勘察费后修正文案。",
+        "citations": [
+          {
+            "file": "arrangements.html",
+            "start": 688,
+            "end": 710,
+            "excerpt": "场地勘察费按次收取，金额为 AUD 150。"
+          }
+        ]
+      },
+      {
+        "title": "课程材料说明缺少乳胶手套过敏提示",
+        "explanation": "材料段只写每人一双手套，未见过敏提示。",
+        "suggestion": "确认是否调整材料说明以包含过敏提示。",
+        "citations": [
+          {
+            "file": "workshops.html",
+            "start": 810,
+            "end": 830,
+            "excerpt": "手套按每人一双准备，工作台旁有清洁用品。"
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "未运行浏览器，无法确认页面渲染、可点击性或响应式表现。",
+      "coverage-7 的持久存储与咨询编号回查缺少后端实现证据。",
+      "coverage-12 自动退款和交易回执涉及支付后端，静态源码无法验证。",
+      "表单 action=\"/enquiries\" 的提交处理与邮件送达未验证。",
+      "未分析任何栅格图片像素。",
+      "“需求已收到”为固定源码文案，未证实其显示时机。",
+      "已发送全部受支持 HTML/CSS 原文，但完整输入不代表 AI 已正确理解；未运行浏览器、脚本或后台，不能证明功能、安全性或完整交付。",
+      "AI 建议与服务端规则分开记录。人工检查和最终验收由买家完成，不会自动验收、授权或付款。"
+    ],
+    "coverage": {
+      "includedFiles": [
+        "arrangements.html",
+        "bouquets.html",
+        "index.html",
+        "visit.html",
+        "workshops.html",
+        "site.css"
+      ],
+      "truncatedFiles": [],
+      "omittedFiles": []
+    },
+    "usage": {
+      "promptTokens": 8819,
+      "completionTokens": 1456
+    }
+  },
+  "sourceReportAdmittedForSchemaAndCitationValidation": true
+}

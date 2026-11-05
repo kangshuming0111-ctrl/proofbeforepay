@@ -5,7 +5,7 @@ import {mkdtemp,writeFile,symlink,rm} from "node:fs/promises";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
 import {spawnSync} from "node:child_process";
-import type {ProofQuote} from "../lib/contracts.ts";
+import type {ProofAssessmentItem,ProofQuote} from "../lib/contracts.ts";
 import {createEvidenceExport,verifyEvidenceExport,EVIDENCE_EXPORT_BYTE_LIMIT,EVIDENCE_EXPORT_SCHEMA,EVIDENCE_EXPORT_RULES} from "../lib/evidence-export.ts";
 import {createUploadedDelivery,parseStaticProject} from "../lib/static-project.ts";
 import {createProofDelivery,proofCriteria} from "../lib/proof-evidence.ts";
@@ -29,9 +29,10 @@ function fixture():ProofQuote{
     proof:{project:parsed.project,criteria:parsed.criteria,paymentState:"unfunded",authorizationId:"PRIVATE-AUTH",audit:[],delivery,review:{deliveryId:delivery.id,reviewedAt:at,mode:"demo",summary:"Source checked"},collaboration:{stage:"submitted",submission:{deliveryId:delivery.id,at,note:"PRIVATE-SELLER-NOTE"},sellerName:"PRIVATE-SELLER",feedback:[]}}};
 }
 function accepted(q=fixture()):ProofQuote{return acceptDelivery(q,{confirm:true,deliveryId:q.proof.delivery!.id,manualChecks:q.proof.delivery!.evidence.filter(row=>row.finding==="needs_human").map(row=>row.criterionId)},at);}
+function completeAssessmentItems(q:ProofQuote):ProofAssessmentItem[]{return q.proof.criteria.map(criterion=>({criterionId:criterion.id,status:"insufficient_evidence",explanation:"Synthetic complete advisory item; no model or browser was run.",citations:[],ruleEvidenceIds:q.proof.delivery!.evidence.filter(row=>row.criterionId===criterion.id).map(row=>row.id)}));}
 function annotatedFixture():ProofQuote{
   const q=fixture(),delivery=q.proof.delivery!;
-  delivery.assessment={id:"old-assessment",deliveryId:delivery.id,method:"source-ai-v1",mode:"live",model:"synthetic",assessedAt:at,items:[],risks:[{title:"Inspect copy",explanation:"Source advice",suggestion:"Inspect directly",citations:[]}],limitations:["No provider execution proven"],coverage:{includedFiles:["index.html"],truncatedFiles:[],omittedFiles:[]}};
+  delivery.assessment={id:"old-assessment",deliveryId:delivery.id,method:"source-ai-v1",mode:"live",model:"synthetic",assessedAt:at,items:completeAssessmentItems(q),risks:[{title:"Inspect copy",explanation:"Source advice",suggestion:"Inspect directly",citations:[]}],limitations:["No provider execution proven"],coverage:{includedFiles:["index.html"],truncatedFiles:[],omittedFiles:[]}};
   delivery.riskReviews=[{id:"risk-review-1",deliveryId:delivery.id,assessmentId:"old-assessment",riskIndex:0,decision:"rejected",reason:"Human checked the original source",actorRole:"buyer",reviewedAt:at}];
   return accepted(q);
 }
@@ -39,7 +40,7 @@ const failedCheck=(report:Awaited<ReturnType<typeof verifyEvidenceExport>>,id:st
 
 test("risk return retains its agreed source and explicit later-version human review in offline export",async()=>{
   const q=fixture(),d=q.proof.delivery!,excerpt='<a href="contact.html#booking">Book</a>',start=d.files!["index.html"].indexOf(excerpt);
-  d.assessment={id:"risk-assessment",deliveryId:d.id,method:"source-ai-v1",mode:"live",model:"synthetic-no-call",assessedAt:at,items:[],risks:[{title:"Inspect link behavior",explanation:"The source alone does not verify the destination interaction.",suggestion:"Inspect the agreed local link.",citations:[{file:"index.html",start,end:start+excerpt.length,excerpt}]}],limitations:["Synthetic response"],coverage:{includedFiles:["index.html","contact.html"],truncatedFiles:[],omittedFiles:[]}};
+  d.assessment={id:"risk-assessment",deliveryId:d.id,method:"source-ai-v1",mode:"live",model:"synthetic-no-call",assessedAt:at,items:completeAssessmentItems(q),risks:[{title:"Inspect link behavior",explanation:"The source alone does not verify the destination interaction.",suggestion:"Inspect the agreed local link.",citations:[{file:"index.html",start,end:start+excerpt.length,excerpt}]}],limitations:["Synthetic response"],coverage:{includedFiles:["index.html","contact.html"],truncatedFiles:[],omittedFiles:[]}};
   const returned=requestChanges(q,{deliveryId:d.id,feedback:[{criterionId:"link",comment:"Please inspect the agreed link destination behavior.",riskSource:{assessmentId:d.assessment.id,riskIndex:0}}]},at);
   const feedbackId=returned.proof.collaboration!.feedback[0].id;
   returned.proof.delivery=createUploadedDelivery(d.files,returned.proof.project!,"en",2);
@@ -104,9 +105,35 @@ test("original contract sources retain exact spans while document name is omitte
 
 test("AI citations verify exact UTF-16 spans and cannot validate model judgment",async()=>{
   const q=fixture(),delivery=q.proof.delivery!,source=delivery.files!["index.html"],excerpt='<a href="contact.html#booking">Book</a>',start=source.indexOf(excerpt);
-  delivery.assessment={id:"assessment-1",deliveryId:delivery.id,method:"source-ai-v1",mode:"live",model:"synthetic-no-provider-call",assessedAt:at,items:[{criterionId:"link",status:"supported",explanation:"The cited anchor exists in source.",citations:[{file:"index.html",start,end:start+excerpt.length,excerpt}],ruleEvidenceIds:["evidence-link"]}],risks:[],limitations:["Synthetic report; no model call"],coverage:{includedFiles:["index.html","contact.html"],truncatedFiles:[],omittedFiles:[]}};
+  delivery.assessment={id:"assessment-1",deliveryId:delivery.id,method:"source-ai-v1",mode:"live",model:"synthetic-no-provider-call",assessedAt:at,items:[{criterionId:"link",status:"supported",explanation:"The cited anchor exists in source.",citations:[{file:"index.html",start,end:start+excerpt.length,excerpt}],ruleEvidenceIds:["evidence-link"]},...completeAssessmentItems(q).filter(item=>item.criterionId!=="link")],risks:[],limitations:["Synthetic report; no model call"],coverage:{includedFiles:["index.html","contact.html"],truncatedFiles:[],omittedFiles:[]}};
   const bundle=await createEvidenceExport(accepted(q));bundle.delivery.assessment!.items[0].citations[0].end--;
   assert.ok(failedCheck(await verifyEvidenceExport(bundle),"ai-source-citations"));
+});
+
+test("offline AI validation rejects empty, missing, duplicate and unknown criterion coverage",async()=>{
+  const original=await createEvidenceExport(annotatedFixture());
+  assert.equal((await verifyEvidenceExport(original)).consistency,"consistent");
+  for(const kind of["empty","missing","duplicate","unknown"]){
+    const changed=structuredClone(original);delete changed.delivery.acceptanceEvidence;changed.acceptanceReferences=[];
+    const items=changed.delivery.assessment!.items;
+    if(kind==="empty")items.length=0;
+    if(kind==="missing")items.pop();
+    if(kind==="duplicate")items[1]=structuredClone(items[0]);
+    if(kind==="unknown")items[0].criterionId="unknown-model-criterion";
+    const result=await verifyEvidenceExport(changed);
+    assert.equal(result.consistency,"inconsistent",kind);assert.ok(failedCheck(result,"ai-source-citations"),kind);
+  }
+  const invalid=annotatedFixture();invalid.proof.delivery!.assessment!.items=[];
+  await assert.rejects(createEvidenceExport(invalid),/cannot produce a consistent versioned evidence export/u);
+});
+
+test("partial AI reports cannot hide only in historical acceptance snapshots",async()=>{
+  const changed=await createEvidenceExport(annotatedFixture());
+  delete changed.delivery.assessment;
+  delete changed.delivery.riskReviews;
+  changed.delivery.acceptanceEvidence![0].assessment!.items=[];
+  const result=await verifyEvidenceExport(changed);
+  assert.equal(result.consistency,"inconsistent");assert.ok(failedCheck(result,"ai-source-citations"));
 });
 
 test("risk annotations bind their recorded report and risk while historical rejected annotations remain unchanged",async()=>{

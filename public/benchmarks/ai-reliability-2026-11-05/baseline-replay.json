@@ -1,0 +1,257 @@
+{
+  "schema": "proofbeforepay-first-saved-response-baseline-replay-v1",
+  "replayedAt": "2026-11-05T05:27:15.819Z",
+  "scope": "Zero-network replay of the first four complete saved provider bodies using the hash-verified reconstructed first implementation and same frozen corpus. No new model inference, provider request, human trial or new independent project.",
+  "provenance": {
+    "firstFreezeSnapshotSha256": "99d7ff994d8b22ca40778c6b5b2e16c7ff74c1765b0cdf890faff8c56942e911",
+    "firstImplementationArtifact": "first-implementation.json",
+    "implementationAssembledAfterCalls": true,
+    "preCallCompleteSourceBackup": false,
+    "hashVerifiedFiles": 23,
+    "reconstructedFiles": 1,
+    "corpusSha256": "1ba40ff37e9eef75d64a7916ad4f5ecaa5d495ee2eb3f507bf1e5ce841707b74"
+  },
+  "execution": {
+    "networkRequests": 0,
+    "providerCalls": 0,
+    "interceptedRequests": 4,
+    "exactRequestBodyMatches": 4,
+    "applicationReportsEqual": 4
+  },
+  "normalization": {
+    "removedApplicationReportFields": [
+      "id",
+      "assessedAt"
+    ],
+    "otherContentNormalization": false
+  },
+  "summary": {
+    "projects": 4,
+    "criteria": 28,
+    "rawStatusAgreement": {
+      "count": 27,
+      "total": 28,
+      "fraction": 0.9642857142857143
+    },
+    "applicationStatusAgreement": {
+      "count": 27,
+      "total": 28,
+      "fraction": 0.9642857142857143
+    }
+  },
+  "results": [
+    {
+      "id": "qingxi-policy-and-refund",
+      "requestSha256": "3a350f9a74c3365c90389260c5c1f0d55c8a580aaae5d1cfc3e743f253691be6",
+      "exactFrozenRequestBodyMatched": true,
+      "rawProviderBodySha256": "9db59dbb605c425469df68d71f1d4ddd3c1704a98a3221dc919d35fc7148ec92",
+      "rawProviderBodyComplete": true,
+      "applicationReportEqualAfterOnlyVolatileFieldRemoval": true,
+      "criteria": [
+        {
+          "id": "manual-1",
+          "referenceStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported"
+        },
+        {
+          "id": "manual-2",
+          "referenceStatus": "insufficient_evidence",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence"
+        }
+      ]
+    },
+    {
+      "id": "tideglass-cross-page-eight",
+      "requestSha256": "1a5b58aabb0c005271af98d976a9e6b9971c1744fe267d0047c9f5110ffec4fc",
+      "exactFrozenRequestBodyMatched": true,
+      "rawProviderBodySha256": "0f2371755bcc2614eba4ce02f6eaaada10bfe851b31013140ceb7876b94b1350",
+      "rawProviderBodyComplete": true,
+      "applicationReportEqualAfterOnlyVolatileFieldRemoval": true,
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "referenceStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported"
+        },
+        {
+          "id": "coverage-2",
+          "referenceStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported"
+        },
+        {
+          "id": "coverage-3",
+          "referenceStatus": "changes_suggested",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested"
+        },
+        {
+          "id": "coverage-4",
+          "referenceStatus": "changes_suggested",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested"
+        },
+        {
+          "id": "coverage-5",
+          "referenceStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported"
+        },
+        {
+          "id": "coverage-6",
+          "referenceStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported"
+        },
+        {
+          "id": "coverage-7",
+          "referenceStatus": "insufficient_evidence",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence"
+        },
+        {
+          "id": "coverage-8",
+          "referenceStatus": "insufficient_evidence",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence"
+        }
+      ]
+    },
+    {
+      "id": "qingyu-sixteen-late-obligations",
+      "requestSha256": "d774deebb80c405e7c6be509bf8cd495cad29705624e79f3e888523878f5707c",
+      "exactFrozenRequestBodyMatched": true,
+      "rawProviderBodySha256": "0f2c413ac4d46ebb22bcb34ffbdea56c12f0ef5cc4ff0a740c93109b32f4ebe8",
+      "rawProviderBodyComplete": true,
+      "applicationReportEqualAfterOnlyVolatileFieldRemoval": true,
+      "criteria": [
+        {
+          "id": "manual-1",
+          "referenceStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported"
+        },
+        {
+          "id": "manual-2",
+          "referenceStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported"
+        },
+        {
+          "id": "manual-3",
+          "referenceStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported"
+        },
+        {
+          "id": "manual-4",
+          "referenceStatus": "changes_suggested",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested"
+        },
+        {
+          "id": "coverage-1",
+          "referenceStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported"
+        },
+        {
+          "id": "coverage-2",
+          "referenceStatus": "changes_suggested",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested"
+        },
+        {
+          "id": "coverage-3",
+          "referenceStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported"
+        },
+        {
+          "id": "coverage-4",
+          "referenceStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported"
+        },
+        {
+          "id": "coverage-5",
+          "referenceStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported"
+        },
+        {
+          "id": "coverage-6",
+          "referenceStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported"
+        },
+        {
+          "id": "coverage-7",
+          "referenceStatus": "insufficient_evidence",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence"
+        },
+        {
+          "id": "coverage-8",
+          "referenceStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported"
+        },
+        {
+          "id": "coverage-9",
+          "referenceStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported"
+        },
+        {
+          "id": "coverage-10",
+          "referenceStatus": "changes_suggested",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence"
+        },
+        {
+          "id": "coverage-11",
+          "referenceStatus": "changes_suggested",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested"
+        },
+        {
+          "id": "coverage-12",
+          "referenceStatus": "insufficient_evidence",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence"
+        }
+      ]
+    },
+    {
+      "id": "harbour-frame-scoped-visual-boundary",
+      "requestSha256": "e5fef4b1bcfdeba7d01706cb8098df1baf8e8aa4e5f3dcf552592f92f065162e",
+      "exactFrozenRequestBodyMatched": true,
+      "rawProviderBodySha256": "bd8fd73b84766a658359c97b4cb3c16087bddffff9c9175e496dee3187cf801d",
+      "rawProviderBodyComplete": true,
+      "applicationReportEqualAfterOnlyVolatileFieldRemoval": true,
+      "criteria": [
+        {
+          "id": "manual-1",
+          "referenceStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported"
+        },
+        {
+          "id": "manual-2",
+          "referenceStatus": "insufficient_evidence",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Replay demonstrates reproducibility of saved replies and application processing, not new model accuracy or generalisation.",
+    "This is an after-calls source reconstruction checked against the original pre-call hashes, not a pre-call complete backup.",
+    "No replay accounting cost or original usage is represented as new provider spend."
+  ]
+}

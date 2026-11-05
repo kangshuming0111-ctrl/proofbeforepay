@@ -3,8 +3,10 @@ import { readFile, writeFile, stat, lstat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import type { ProofAssessment, ProofCriterion, ProofQuote } from "../lib/contracts.ts";
-import { assessDelivery } from "../lib/delivery-assessment.ts";
+import { assessDelivery,assessmentOutputTokenLimit } from "../lib/delivery-assessment.ts";
+import {AssessmentResponseError,requireAssessmentItemCoverage,type AssessmentFailureReason,type AssessmentCoverageDiagnostic} from "../lib/assessment-response.ts";
 import { createUploadedDelivery, parseStaticProject } from "../lib/static-project.ts";
+import {summaryCoverageUnits} from "../lib/requirement-coverage.ts";
 import { DEFAULT_DEEPSEEK_MODEL, type Fetcher, type ProviderEnv } from "../lib/providers.ts";
 
 export type EvaluationStatus = "supported" | "changes_suggested" | "insufficient_evidence";
@@ -27,9 +29,11 @@ type CriterionResult = { id: string; referenceStatus: EvaluationStatus; rawStatu
 type RawCapture = { httpStatus: number; bodyText: string | null; bodyPrefixText: string | null; bodyComplete: boolean; bodyUtf8Bytes: number; bodyByteCountIsComplete: boolean; utf8Valid: boolean; providerBody: unknown;
   contentText: string | null; completion: unknown; items: unknown; risks: unknown; limitations: unknown; finishReason: unknown; model: unknown;
   riskCitationChecks: CitationCheck[][] };
+export type RawItemDiagnostics={expectedCriterionIds:string[];returnedKnownCriterionIds:string[];missingCriterionIds:string[];duplicateCriterionIds:string[];unknownCriterionCount:number;invalidItemCount:number;contentParsed:boolean;idProfileParsed:boolean;completeItemCoverage:boolean;finishReason:"stop"|"length"|"other"|"unavailable"};
 export type ProjectEvaluationResult = { id: string; stratum: Stratum; reference: { criterionId: string; label: Reference }[]; plan: Plan;
   attempted: boolean; networkAttempted: boolean; elapsedMilliseconds?: number; raw?: RawCapture; usage?: Usage | null;
-  usageExceededReservation?: boolean; reportedUsageCostUsd?: number | null; application?: { accepted: boolean; report: ProofAssessment | null; error: string | null };
+  rawDiagnostics?:RawItemDiagnostics;
+  usageExceededReservation?: boolean; reportedUsageCostUsd?: number | null; application?: { accepted: boolean; report: ProofAssessment | null; error: string | null;failureReason?:AssessmentFailureReason;coverageDiagnostic?:AssessmentCoverageDiagnostic };
   criteria: CriterionResult[]; wholeAnswerSemanticReview: "pending_independent_adjudication" };
 type Options = { live?: boolean; maxCalls?: number; maxUsd?: number; env?: ProviderEnv; fetcher?: Fetcher; frozen?: ProjectFreeze;
   corpusText?: string; sourceRoot?: string; onResult?: (result: ProjectEvaluationResult) => Promise<void> };
@@ -46,6 +50,23 @@ const canonical = (value: unknown): string => JSON.stringify(value, (_key, entry
 const cost = (usage: Usage) => (usage.promptTokens * PROJECT_EVALUATION_PRICE.inputUsdPerMillion + usage.completionTokens * PROJECT_EVALUATION_PRICE.outputUsdPerMillion) / 1e6;
 const bounded = (value: unknown, max: number): value is string => typeof value === "string" && value.trim().length > 0 && value.length <= max;
 
+/** Preserve historical two-manual provider packets. New shapes must come from
+ * the real intake, including its five-manual/twelve-coverage limits and titles. */
+function projectIntake(project:EvaluationProject){
+ const manual=project.criteria.filter(c=>/^manual-/u.test(c.id)),coverage=project.criteria.filter(c=>/^coverage-/u.test(c.id)),legacy=project.criteria.length===2&&project.criteria.every((c,i)=>c.id===`manual-${i+1}`);
+ if(manual.length+coverage.length!==project.criteria.length||manual.length>5||coverage.length>12||!project.criteria.length||project.criteria.length>17)throw new Error("Project criteria exceed supported production intake families or limits.");
+ const units=coverage.length?summaryCoverageUnits(project.summary):[];
+ if(coverage.length&&units.length!==coverage.length)throw new Error("Project coverage count does not match the original summary groups.");
+ const parsed=parseStaticProject({title:project.title,summary:project.summary,amount:"1.00",requiredPages:["index.html"],manualRequirements:manual.map(c=>c.source),...(coverage.length?{coverage:{version:1,sourceText:project.summary,confirmed:true,decisions:units.map(u=>({id:u.id,disposition:"include"}))}}:{})},project.language);
+ // The real intake creates a current confirmation timestamp. This isolated
+ // authored fixture pins it just like delivery/review time, without changing
+ // the parsed source spans, decisions, criterion derivation or input limits.
+ if(parsed.project.coverage)parsed.project.coverage.confirmedAt=FIXTURE_TIME;
+ const derived=parsed.criteria.filter(c=>/^(?:manual|coverage)-/u.test(c.id));
+ if(derived.length!==project.criteria.length||derived.some((c,i)=>c.id!==project.criteria[i].id||c.source!==project.criteria[i].source||!legacy&&c.title!==project.criteria[i].title))throw new Error("Project custom criteria must match production intake IDs, source, titles and order.");
+ return{parsed,legacy};
+}
+
 export function validateProjectCorpus(value: unknown): ProjectCorpus {
   const corpus = object(value);
   if (corpus?.schema !== "proofbeforepay-frozen-project-corpus-v1" || !bounded(corpus.cohort, 100) || !bounded(corpus.scope, 2000)
@@ -56,23 +77,23 @@ export function validateProjectCorpus(value: unknown): ProjectCorpus {
     if (!p || !/^[a-z0-9-]{1,80}$/u.test(p.id) || ids.has(p.id) || !STRATA.includes(p.stratum) || !["en", "zh"].includes(p.language)
       || !bounded(p.title, 120) || !bounded(p.summary, 1000) || !object(p.files) || Object.keys(p.files).length < 3 || Object.keys(p.files).length > 12
       || Object.keys(p.files).filter(file => file.endsWith(".html")).length < 2 || Object.values(p.files).some(contents => typeof contents !== "string")
-      || !Array.isArray(p.criteria) || p.criteria.length !== 2) throw new Error("Invalid project or duplicate project ID.");
+      || !Array.isArray(p.criteria) || p.criteria.length<1||p.criteria.length>17) throw new Error("Invalid project or duplicate project ID.");
     ids.add(p.id);
-    for (const [i, criterion] of p.criteria.entries()) {
+    for (const criterion of p.criteria) {
       const ref = criterion?.reference;
-      if (criterion?.id !== `manual-${i + 1}` || !bounded(criterion.title, 500) || !bounded(criterion.source, 3000)
+      if (typeof criterion?.id!=="string"||!/^(?:manual|coverage)-[1-9]\d?$/u.test(criterion.id)||!bounded(criterion.title, 500) || !bounded(criterion.source, 3000)
         || !ref || !STATUSES.includes(ref.expectedStatus) || !bounded(ref.rationale, 3000) || ref.requiresSemanticReview !== true
         || !Array.isArray(ref.relevantFiles) || !ref.relevantFiles.length || ref.relevantFiles.length > 12
         || ref.relevantFiles.some(file => typeof file !== "string" || !Object.hasOwn(p.files, file))) throw new Error("Invalid project reference or criterion.");
     }
+    projectIntake(p);
   }
   return structuredClone(value) as ProjectCorpus;
 }
 
 /** Actual upload-rule evidence; deterministic IDs/times make freeze/replay exact. */
 export function projectQuote(project: EvaluationProject): ProofQuote {
-  const parsed = parseStaticProject({ title: project.title, summary: project.summary, amount: "1.00", requiredPages: ["index.html"],
-    manualRequirements: project.criteria.map(c => c.source) }, project.language);
+  const {parsed,legacy}=projectIntake(project);
   const delivery = createUploadedDelivery(project.files, parsed.project, project.language, 1);
   delivery.id = `eval-${project.id}`; delivery.submittedAt = FIXTURE_TIME;
   delivery.evidence = delivery.evidence.filter(row => project.criteria.some(c => c.id === row.criterionId))
@@ -81,7 +102,7 @@ export function projectQuote(project: EvaluationProject): ProofQuote {
     brief: "Synthetic source assessment only", clientName: "Fictional business", currency: "AUD", language: project.language,
     hourlyRateCents: 100, totalCents: 100, lineItems: [{ id: "synthetic", description: "Synthetic fixture", quantity: 1, unitPriceCents: 100 }],
     assumptions: [], questions: [], timelineDays: 1, status: "approved", aiMode: "live", paymentMode: "demo", createdAt: FIXTURE_TIME, workflow: "proof-v1",
-    proof: { criteria: project.criteria.map(({ id, title, source }) => ({ id, title, source })), delivery, paymentState: "unfunded", audit: [],
+    proof: { criteria: project.criteria.map(({ id, title, source }) => ({ id, title, source })),...(!legacy?{project:parsed.project}:{}), delivery, paymentState: "unfunded", audit: [],
       review: { deliveryId: delivery.id, reviewedAt: FIXTURE_TIME, mode: "demo", summary: "Actual upload rules on new synthetic files; no browser execution or payment." } } };
 }
 
@@ -92,9 +113,9 @@ async function prepare(project: EvaluationProject, model: string): Promise<Prepa
   }); } catch { /* capture-only sentinel is intentionally sanitized by the real application */ }
   if (!body) throw new Error(`Project ${project.id} was rejected before request construction.`);
   const request = JSON.parse(body) as { model: string; max_tokens: number; messages: { role: string; content: string }[] };
-  if (request.model !== model || request.max_tokens !== 1800 || request.messages.length !== 2 || request.messages[1].role !== "user") throw new Error("Assessment request contract changed.");
+  if (request.model !== model || request.max_tokens !== assessmentOutputTokenLimit(project.criteria.length) || request.messages.length !== 2 || request.messages[1].role !== "user") throw new Error("Assessment request contract changed.");
   const packet = JSON.parse(request.messages[1].content) as Packet;
-  if (packet.criteria.length !== 2 || packet.criteria.some(c => Object.keys(c).sort().join(",") !== "id,source,title")) throw new Error("References entered the provider packet.");
+  if (packet.criteria.length !== project.criteria.length || packet.criteria.some((c,i) => Object.keys(c).sort().join(",") !== "id,source,title"||canonical(c)!==canonical(quote.proof.criteria[i]))) throw new Error("References or non-derived criteria entered the provider packet.");
   const requestUtf8Bytes = Buffer.byteLength(body), promptTokenUpperEstimate = requestUtf8Bytes + 4096;
   return { project, quote, body, packet, plan: { requestSha256: hash(body), requestUtf8Bytes, promptTokenUpperEstimate, outputTokenLimit: request.max_tokens,
     reservedCostUsd: cost({ promptTokens: promptTokenUpperEstimate, completionTokens: request.max_tokens }), coverage: packet.coverage } };
@@ -177,7 +198,19 @@ async function capture(response: Response, packet: Packet): Promise<RawCapture> 
     riskCitationChecks: Array.isArray(output?.risks) ? output.risks.map(risk => citations(object(risk)?.citations, packet)) : [] };
 }
 
+/** Diagnostics expose only locked IDs and aggregate counts. Raw upstream
+ * strings stay solely in the separately retained synthetic raw response. */
+function rawItemDiagnostics(raw:RawCapture|undefined,expectedCriterionIds:string[]):RawItemDiagnostics{
+ let contentParsed=false;if(typeof raw?.contentText==="string")try{JSON.parse(raw.contentText);contentParsed=true;}catch{/* Preserve the raw malformed text without deriving an ID profile. */}
+ const idProfileParsed=contentParsed&&!!object(raw?.completion)&&Array.isArray(raw?.items),items=idProfileParsed?raw!.items as unknown[]:[],known=new Set(expectedCriterionIds),counts=new Map<string,number>();let unknownCriterionCount=0,invalidItemCount=0;
+ for(const item of items){const value=object(item),id=value?.criterionId;if(typeof id==="string"){if(known.has(id))counts.set(id,(counts.get(id)??0)+1);else unknownCriterionCount++;}
+  try{requireAssessmentItemCoverage([item],expectedCriterionIds);}catch(error){if(!(error instanceof AssessmentResponseError)||error.reason==="structure")invalidItemCount++;}
+ }
+ const returnedKnownCriterionIds=expectedCriterionIds.filter(id=>counts.has(id)),missingCriterionIds=idProfileParsed?expectedCriterionIds.filter(id=>!counts.has(id)):[],duplicateCriterionIds=expectedCriterionIds.filter(id=>(counts.get(id)??0)>1),finishReason=raw?.finishReason==="stop"?"stop":raw?.finishReason==="length"?"length":raw?.finishReason===undefined||raw.finishReason===null?"unavailable":"other";
+ return{expectedCriterionIds:[...expectedCriterionIds],returnedKnownCriterionIds,missingCriterionIds,duplicateCriterionIds,unknownCriterionCount,invalidItemCount,contentParsed,idProfileParsed,completeItemCoverage:idProfileParsed&&items.length===expectedCriterionIds.length&&!missingCriterionIds.length&&!duplicateCriterionIds.length&&!unknownCriterionCount&&!invalidItemCount,finishReason};
+}
 function score(result: ProjectEvaluationResult, packet: Packet) {
+  result.rawDiagnostics=rawItemDiagnostics(result.raw,result.criteria.map(row=>row.id));
   const items = Array.isArray(result.raw?.items) ? result.raw.items.map(object) : [];
   for (const row of result.criteria) {
     const matches = items.filter(item => item?.criterionId === row.id), item = matches.length === 1 ? matches[0] : null;
@@ -208,10 +241,18 @@ export function summarizeProjectEvaluation(results: ProjectEvaluationResult[]) {
   };
   const group = (selected: ProjectEvaluationResult[]) => {
     const attempted = selected.filter(p => p.attempted), criteria = attempted.flatMap(p => p.criteria), rawChecks = criteria.flatMap(c => c.rawCitations), appChecks = criteria.flatMap(c => c.applicationCitations);
+    const profiles=attempted.flatMap(p=>p.rawDiagnostics?.idProfileParsed?[p.rawDiagnostics]:[]);
     const times = attempted.map(p => p.elapsedMilliseconds ?? 0).sort((a, b) => a - b);
     return { plannedProjects: selected.length, plannedCriteria: selected.reduce((n, p) => n + p.criteria.length, 0), attemptedProjects: attempted.length, attemptedCriteria: criteria.length,
       raw: layer(criteria, "rawStatus"), application: layer(criteria, "applicationStatus"),
       applicationRejectedProjects: attempted.filter(p => !p.application?.accepted).length,
+      rawItemStructure:{attemptedProjects:attempted.length,contentParsedProjects:attempted.filter(p=>p.rawDiagnostics?.contentParsed).length,parsedIdProfileProjects:profiles.length,
+        firstStoppedCompleteItemProjects:fraction(profiles.filter(p=>p.completeItemCoverage&&p.finishReason==="stop").length,attempted.length),
+        completeItemCoverageAmongParsedIdProfiles:fraction(profiles.filter(p=>p.completeItemCoverage).length,profiles.length),completeStoppedItemCoverageAmongParsedIdProfiles:fraction(profiles.filter(p=>p.completeItemCoverage&&p.finishReason==="stop").length,profiles.length),
+        missingItemProjectsAmongParsedIdProfiles:fraction(profiles.filter(p=>p.missingCriterionIds.length>0).length,profiles.length),duplicateItemProjectsAmongParsedIdProfiles:fraction(profiles.filter(p=>p.duplicateCriterionIds.length>0).length,profiles.length),
+        unknownIdProjectsAmongParsedIdProfiles:fraction(profiles.filter(p=>p.unknownCriterionCount>0).length,profiles.length),invalidItemProjectsAmongParsedIdProfiles:fraction(profiles.filter(p=>p.invalidItemCount>0).length,profiles.length),
+        unparsedIdProfileProjects:attempted.length-profiles.length,outputLimitedProjects:attempted.filter(p=>p.rawDiagnostics?.finishReason==="length").length},
+      applicationFailureReasons:Object.fromEntries(["structure","output_limit","incomplete","citation","missing_items","duplicate_items","unknown_items","generic"].map(reason=>[reason,attempted.filter(p=>!p.application?.accepted&&(p.application?.failureReason??"generic")===reason).length])),
       rawExactCitations: fraction(rawChecks.filter(c => c.valid).length, rawChecks.length), applicationExactCitationsAndOffsets: fraction(appChecks.filter(c => c.valid).length, appChecks.length),
       pendingSemanticCriterionReviews: criteria.length, pendingWholeAnswerReviews: attempted.length,
       latency: { samples: times.length, meanMilliseconds: times.length ? times.reduce((a, b) => a + b, 0) / times.length : null,
@@ -253,7 +294,7 @@ export async function runProjectEvaluation(input: unknown, options: Options = {}
     };
     try { const report = await assessDelivery(p.quote, { DEEPSEEK_API_KEY: options.env!.DEEPSEEK_API_KEY, DEEPSEEK_MODEL: preparation.snapshot.model }, wrapped);
       result.application = { accepted: true, report, error: null };
-    } catch { result.application = { accepted: false, report: null, error: "application_rejected_or_provider_failed" }; }
+    } catch(error) { result.application = error instanceof AssessmentResponseError?{accepted:false,report:null,error:error.reason,failureReason:error.reason,...(error.coverage?{coverageDiagnostic:structuredClone(error.coverage)}:{})}:{ accepted: false, report: null, error: "application_rejected_or_provider_failed" }; }
     result.elapsedMilliseconds = Math.round(performance.now() - began);
     if (canonical(p.quote) !== originalQuote) throw new Error("Assessment mutated the synthetic workflow fixture.");
     if (result.attempted) score(result, p.packet);
@@ -274,6 +315,8 @@ export async function runProjectEvaluation(input: unknown, options: Options = {}
     pricing: PROJECT_EVALUATION_PRICE, limits: { maxCalls: options.live ? options.maxCalls : 0, maxUsd: options.live ? options.maxUsd : 0, automaticRetries: 0, timeoutMilliseconds: 30000, maxResponseBytes: 1_000_000 },
     accounting: { calls, reportedUsageCostUsd: reportedCost, unknownUsageReservedUsd, stopReason }, summary: summarizeProjectEvaluation(results), results,
     measurementNotes: ["New authored synthetic projects; no real customers or human usability study.", "Reference labels never enter provider requests; freeze covers exact corpus, requests and working-tree source before live I/O.",
+      "This assessment layer evaluates only the declared custom manual/coverage criteria, not the additional page/mobile checks from the full product intake or an end-to-end user task. New checklist shapes use the real five-manual/twelve-coverage intake; historical two-manual packets retain their prior shape.",
+      "Raw item-coverage rates use attempted projects with a parsed items array. Unparsed/no-response attempts are counted separately and remain in the all-attempt status denominators. Complete ID coverage does not establish citation entailment, full response validity or semantic correctness; multiple structural issue categories can apply to one response.",
       "Raw model status and application policy output are separate measurements. Application-forced unknown is not model abstention.",
       "Exact substring/UTF-16 offset checks do not establish semantic entailment. All criterion explanations, extra risks and limitations require separate independent adjudication, labelled AI or human honestly.",
       "This small authored cohort is not a general accuracy estimate. Revising prompts after seeing it makes it development evidence, not unseen validation.",

@@ -1,0 +1,15 @@
+{
+  "kind": "known-project-regression",
+  "originalFreezeSha256": "99d7ff994d8b22ca40778c6b5b2e16c7ff74c1765b0cdf890faff8c56942e911",
+  "knownFreezeSha256": "df742c221c82d170344348d231a1fb351b9511d60fd382e7f14d2d465bb9ff8b",
+  "corpusSha256": "1ba40ff37e9eef75d64a7916ad4f5ecaa5d495ee2eb3f507bf1e5ce841707b74",
+  "projectIds": [
+    "qingxi-policy-and-refund",
+    "tideglass-cross-page-eight",
+    "qingyu-sixteen-late-obligations",
+    "harbour-frame-scoped-visual-boundary"
+  ],
+  "additionalIndependentProjects": 0,
+  "selection": "all four original projects, one new call each; original first failures unchanged",
+  "change": "three generic source-omission/status-coherence/risk-evidence-layer prompt instructions only"
+}

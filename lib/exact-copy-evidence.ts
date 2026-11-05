@@ -73,6 +73,12 @@ function bodyCopy(files: [string, string][]): { segments: string[]; uncertain: b
   return { segments, uncertain };
 }
 
+/** Shared uncertainty gate only; no invented exact-copy requirement and no
+ * claim about presence, visibility or execution. */
+export function hasUncertainSourceBodyCopy(files: Record<string, string>): boolean {
+  return bodyCopy(Object.entries(files)).uncertain;
+}
+
 /** A negative-only guard. Presence leaves a model suggestion unchanged; it never
  * establishes entailment, rendered visibility, acceptance or a new obligation. */
 export function createExactCopyEvidenceCheck(files: Record<string, string>): (criterion: ProofCriterion) => ExactCopyEvidence {

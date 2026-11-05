@@ -1,0 +1,17 @@
+"use client";
+import type {Language} from "@/lib/contracts";
+import data from "@/public/benchmarks/ai-reliability-2026-11-05/summary.json";
+
+/** Saved experiments only; this view never assesses the customer's delivery. */
+export function ReliabilityAssessmentValidation({language}:{language:Language}){
+ const tr=(zh:string,en:string)=>language==="zh"?zh:en,f=data.first,k=data.knownRegression;
+ return <section className="benchmark-followup">
+  <strong>{tr("11月5日：漏答、误判与较长清单整改","November 5: omission, source-error and longer-checklist improvements")}</strong>
+  <p>{tr(`首次：${f.projects} 个合成网站、${f.criteria} 条自定义要求（每次 2 / 8 / 16 / 2 条）。${f.firstStoppedCompleteItemProjects}/${f.projects} 次完整返回条目，${f.admittedReports}/${f.projects} 份通过结构与引文准入；原始模型及应用状态均为 ${f.rawAgreement}/${f.criteria} 与预设参考一致。`,`First attempts: ${f.projects} synthetic sites and ${f.criteria} custom criteria (2 / 8 / 16 / 2 per request). ${f.firstStoppedCompleteItemProjects}/${f.projects} returned complete item lists; ${f.admittedReports}/${f.projects} passed schema/citation admission. Raw and application status agreement were ${f.rawAgreement}/${f.criteria}.`)}</p>
+  <p>{tr(`首次整答 AI 源码审阅：${f.wholeAnswers.accepted} 接受、${f.wholeAnswers.qualified} 保留、${f.wholeAnswers.rejected} 拒绝。静态提示缺失被写成未知、风险措辞越过运行证据层的问题均保留在原始记录。`,`First whole-answer AI source review: ${f.wholeAnswers.accepted} accepted, ${f.wholeAnswers.qualified} qualified, ${f.wholeAnswers.rejected} rejected. The static-copy omission mislabelled unknown and risk-language problems remain in the original records.`)}</p>
+  <p>{tr(`同四例修复后的一批已知回归：原始模型及应用状态 ${k.rawAgreement}/${k.criteria}。${k.projects} 份已知回归报告中，${k.wholeAnswers.accepted} 份经另一 AI 源码整答审阅为可接受。实际为 ${k.stateDistribution.supported} 条源码支持、${k.stateDistribution.changes_suggested} 条建议修改、${k.stateDistribution.insufficient_evidence} 条证据不足。`,`One known-case regression batch after the fix: raw/application agreement ${k.rawAgreement}/${k.criteria}. Of ${k.projects} known-case reports, another AI source review judged ${k.wholeAnswers.accepted} acceptable. Actual statuses: ${k.stateDistribution.supported} source-supported, ${k.stateDistribution.changes_suggested} changes suggested and ${k.stateDistribution.insufficient_evidence} insufficient.`)}</p>
+  <p className="benchmark-note">{tr("回归没有增加独立项目；单批改善不证明稳定性或通用准确率。条目完整、报告准入、语义正确与买家验收分别判断。整答是 AI 源码审阅；DeepSeek 的标签差异与保留意见单独留存。没有新增真人试用、外部卖家采用或付款结果。","Regression adds no independent projects, and one improved batch does not establish stability or general accuracy. Item completeness, report admission, semantic correctness and buyer acceptance are separate. Whole reviews are AI source reviews; DeepSeek's label differences and reservations are retained. No new human, external-seller or payment result was collected.")}</p>
+  <p className="benchmark-note">{tr("生产限制保持不变：16 条来自 4 条人工要求与 12 条原文覆盖要求。本次隔离评测未包括页面／手机基础规则，不是完整端到端验证。旧报告及首次失败保持原样；查看这些保存材料不会再次调用模型。","Production limits are unchanged: sixteen comprises four manual and twelve original-source coverage criteria. This isolated evaluation excludes base page/mobile rules and is not end-to-end validation. Old reports and first failures are preserved. Viewing these saved artifacts does not call a model.")}</p>
+  <div className="benchmark-artifacts">{data.artifacts.map(file=><a className="subtle-button" key={file} href={`/benchmarks/ai-reliability-2026-11-05/${file}`} download>{file}</a>)}</div>
+ </section>;
+}

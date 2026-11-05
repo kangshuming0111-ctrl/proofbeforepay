@@ -1,0 +1,804 @@
+{
+  "caseId": "tideglass-cross-page-eight",
+  "evaluationMeaning": "KNOWN CASE REGRESSION, not a new independent project. Application admission below means only source-report schema and citation validation. NO buyer acceptance, workflow mutation, database, browser or payment occurred. Human-needed ruleEvidence file placeholders are NOT AI source citations.",
+  "exactUserPacket": {
+    "criteria": [
+      {
+        "id": "coverage-1",
+        "title": "Original requirement 1",
+        "source": "Address copy on home visit and enquiry: 34 Sample Terrace Footscray VIC3011"
+      },
+      {
+        "id": "coverage-2",
+        "title": "Original requirement 2",
+        "source": "Weekday opening hours copy is 08:30–17:30"
+      },
+      {
+        "id": "coverage-3",
+        "title": "Original requirement 3",
+        "source": "Saturday hours copy is 09:00–14:00 across current pages"
+      },
+      {
+        "id": "coverage-4",
+        "title": "Original requirement 4",
+        "source": "Wheel truing labour copy is AUD45 per wheel"
+      },
+      {
+        "id": "coverage-5",
+        "title": "Original requirement 5",
+        "source": "Home and visit copy offer a pump during opening hours"
+      },
+      {
+        "id": "coverage-6",
+        "title": "Original requirement 6",
+        "source": "Drop-off policy copy requires prior written confirmation"
+      },
+      {
+        "id": "coverage-7",
+        "title": "Original requirement 7",
+        "source": "Enquiries persist and are retrievable by receipt number"
+      },
+      {
+        "id": "coverage-8",
+        "title": "Original requirement 8",
+        "source": "Mobile enquiry fields are readable and fully usable"
+      }
+    ],
+    "scopeContext": {
+      "summary": "Address copy on home visit and enquiry: 34 Sample Terrace Footscray VIC3011\nWeekday opening hours copy is 08:30–17:30\nSaturday hours copy is 09:00–14:00 across current pages\nWheel truing labour copy is AUD45 per wheel\nHome and visit copy offer a pump during opening hours\nDrop-off policy copy requires prior written confirmation\nEnquiries persist and are retrievable by receipt number\nMobile enquiry fields are readable and fully usable",
+      "requirementCoverage": {
+        "method": "buyer-confirmed-literal-source-groups",
+        "included": [
+          {
+            "criterionId": "coverage-1",
+            "text": "Address copy on home visit and enquiry: 34 Sample Terrace Footscray VIC3011"
+          },
+          {
+            "criterionId": "coverage-2",
+            "text": "Weekday opening hours copy is 08:30–17:30"
+          },
+          {
+            "criterionId": "coverage-3",
+            "text": "Saturday hours copy is 09:00–14:00 across current pages"
+          },
+          {
+            "criterionId": "coverage-4",
+            "text": "Wheel truing labour copy is AUD45 per wheel"
+          },
+          {
+            "criterionId": "coverage-5",
+            "text": "Home and visit copy offer a pump during opening hours"
+          },
+          {
+            "criterionId": "coverage-6",
+            "text": "Drop-off policy copy requires prior written confirmation"
+          },
+          {
+            "criterionId": "coverage-7",
+            "text": "Enquiries persist and are retrievable by receipt number"
+          },
+          {
+            "criterionId": "coverage-8",
+            "text": "Mobile enquiry fields are readable and fully usable"
+          }
+        ],
+        "excluded": []
+      }
+    },
+    "fileInventory": [
+      {
+        "path": "index.html",
+        "type": "html",
+        "byteLength": 2581,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "services.html",
+        "type": "html",
+        "byteLength": 2962,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "visit.html",
+        "type": "html",
+        "byteLength": 2728,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "questions.html",
+        "type": "html",
+        "byteLength": 2405,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "contact.html",
+        "type": "html",
+        "byteLength": 2331,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "site.css",
+        "type": "css",
+        "byteLength": 1147,
+        "isIncludedInSource": true
+      }
+    ],
+    "files": {
+      "contact.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"Make a service enquiry — Tideglass Cycle Repair\"><title>Make a service enquiry | Tideglass Cycle Repair</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><p class=\"wordmark\">Tideglass Cycle Repair</p><nav aria-label=\"Main pages\"><a href=\"index.html\">Workshop</a><a href=\"services.html\">Repair menu</a><a href=\"visit.html\">Visit</a><a href=\"questions.html\">Questions</a><a href=\"contact.html\">Service enquiry</a></nav></header><main id=\"main\"><h1>Make a service enquiry</h1><section><h2>Describe the bicycle and the issue</h2><p>Send the bicycle type, the work you are considering and a useful contact email. If you want to arrange a drop-off, include the day you prefer. We reply with the next arrangement rather than assuming that submitting an enquiry reserves space.</p><p>Workshop address: 34 Sample Terrace, Footscray VIC 3011. For a visit, check the access information and wait for the desk to confirm any overnight drop-off. The service menu explains the difference between labour and separately quoted parts.</p></section><section><h2>Service details</h2><form method=\"post\" action=\"/service-enquiries\"><label>Your name<input name=\"name\" required></label><label>Email<input type=\"email\" name=\"email\" required></label><label>Bicycle type<input name=\"bicycle\"></label><label>Preferred day<input name=\"preferredDay\"></label><label>What changed on your ride?<textarea name=\"message\" rows=\"5\" required></textarea></label><button type=\"submit\">Send service enquiry</button></form><p class=\"service-note\">Your enquiry has been received. Keep the receipt number with your bicycle notes so the desk can connect the conversation to the requested work.</p></section><section><h2>Useful details to include</h2><p>A tyre marking, component name or photograph of a worn part can be useful. Do not send passwords, bank details or identity documents. If you have an existing workshop job number, include it rather than writing out the full earlier conversation.</p></section></main><footer><p>Tideglass Cycle Repair</p><p>A small local team, with clear arrangements before you visit.</p></footer></body></html>\n",
+      "index.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"A clear plan for your next ride — Tideglass Cycle Repair\"><title>A clear plan for your next ride | Tideglass Cycle Repair</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><p class=\"wordmark\">Tideglass Cycle Repair</p><nav aria-label=\"Main pages\"><a href=\"index.html\">Workshop</a><a href=\"services.html\">Repair menu</a><a href=\"visit.html\">Visit</a><a href=\"questions.html\">Questions</a><a href=\"contact.html\">Service enquiry</a></nav></header><main id=\"main\"><h1>A clear plan for your next ride</h1><section class=\"split\"><div><h2>Repairs, not guesswork</h2><p>We service commuting, touring and family bicycles. A first conversation starts with how you use the bike and what changed on your last ride: a noise under load, a brake lever that travels further, or a wheel that no longer feels true. We inspect the reported issue before discussing a repair plan.</p><p>Routine services can be arranged by email. Bring the bicycle with its normal wheels and accessories fitted so the mechanic can see cable routing and clearance. Remove valuables from bags before leaving it with us, and tell the desk if a lock needs a separate key.</p></div><aside><h2>Workshop details</h2><p>Workshop address: 34 Sample Terrace, Footscray VIC 3011.</p><p>Monday to Friday: 08:30–17:30.</p><p>Saturday: 09:00–14:00. Closed Sunday.</p></aside></section><section><h2>Before leaving a bicycle</h2><p>Contact us first to reserve a drop-off space. Please wait for a written confirmation before bringing a bicycle for overnight storage; we cannot accept unarranged drop-offs when the workshop is full. A confirmed drop-off time is a handover arrangement, rather than a promise that the repair finishes that day.</p><p>After inspection, we list the work, parts and labour separately. If more work becomes necessary, the desk asks you to approve the revised quote before it is included. An estimate for a repair does not cover unrelated parts or accessories.</p></section><section><h2>Small help on the way</h2><p>A street-side pump is available whenever the workshop is open. Ask the desk if the valve fitting is unfamiliar. The pump area must stay clear of bicycles waiting for service, so another rider can reach it safely.</p></section></main><footer><p>Tideglass Cycle Repair</p><p>A small local team, with clear arrangements before you visit.</p></footer></body></html>\n",
+      "questions.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"Common service questions — Tideglass Cycle Repair\"><title>Common service questions | Tideglass Cycle Repair</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><p class=\"wordmark\">Tideglass Cycle Repair</p><nav aria-label=\"Main pages\"><a href=\"index.html\">Workshop</a><a href=\"services.html\">Repair menu</a><a href=\"visit.html\">Visit</a><a href=\"questions.html\">Questions</a><a href=\"contact.html\">Service enquiry</a></nav></header><main id=\"main\"><h1>Common service questions</h1><section><h2>Can I leave a bike without a booking?</h2><p>Please arrange a drop-off space first and wait for written confirmation. We do not accept unarranged overnight drop-offs. A brief pump stop during opening hours is different from leaving a bicycle for inspection or storage.</p><h2>When are you open?</h2><p>Monday to Friday: 08:30–17:30. Saturday: 09:00–14:00. Closed Sunday. Collection arrangements outside those hours need a separate written agreement with the desk.</p></section><section><h2>Does the labour price include parts?</h2><p>The repair menu separates labour from replacement parts. Where a worn part changes the cost, we explain the choice in the quote. Reusing a damaged part simply to fit an old estimate may not be suitable; discuss the options before approving the job.</p><h2>What if a noise does not happen during the visit?</h2><p>A description of the conditions is useful. Note whether the sound follows pedalling, wheel movement, braking or a particular load. A short recording can help the conversation, but the mechanic still needs to inspect the bicycle before choosing work.</p></section><section><h2>Can I buy a repair online?</h2><p>The website provides workshop information and a service enquiry form. Work and collection arrangements are confirmed with the desk after the bicycle and requirements are understood. Parts availability and the scope of a repair are discussed in the written quote.</p><h2>How should I bring an e-bike?</h2><p>Tell us the model and the problem before arranging electrical work.</p></section></main><footer><p>Tideglass Cycle Repair</p><p>A small local team, with clear arrangements before you visit.</p></footer></body></html>\n",
+      "services.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"Repair menu and workshop process — Tideglass Cycle Repair\"><title>Repair menu and workshop process | Tideglass Cycle Repair</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><p class=\"wordmark\">Tideglass Cycle Repair</p><nav aria-label=\"Main pages\"><a href=\"index.html\">Workshop</a><a href=\"services.html\">Repair menu</a><a href=\"visit.html\">Visit</a><a href=\"questions.html\">Questions</a><a href=\"contact.html\">Service enquiry</a></nav></header><main id=\"main\"><h1>Repair menu and workshop process</h1><section><h2>Individual jobs</h2><table><thead><tr><th>Work</th><th>Labour price</th><th>What is included</th></tr></thead><tbody><tr><td>Wheel truing, per wheel</td><td>AUD 49</td><td>Spoke tension and lateral alignment check for a serviceable wheel.</td></tr><tr><td>Brake adjustment, per brake</td><td>AUD 32</td><td>Cable adjustment and pad positioning; replacement parts quoted separately.</td></tr><tr><td>Gear indexing</td><td>AUD 38</td><td>Adjustment of an otherwise serviceable derailleur system.</td></tr><tr><td>Tube fitting, wheel removed</td><td>AUD 18</td><td>Fitting labour, with tube and tyre supplied or charged separately.</td></tr></tbody></table><p>Prices refer to workshop labour in Australian dollars. Damaged rims, seized fasteners and internal cable routing may need a separate assessment. The quote identifies any extra parts before we begin.</p></section><section><h2>What a routine service covers</h2><p>A routine service checks braking, shifting, accessible fasteners and tyre condition. We note wear that needs attention, distinguish an adjustment from a replacement, and discuss work that falls outside the agreed service. A suspension overhaul or electrical fault investigation needs its own booking and quote.</p><p>For cargo bicycles, send the model and approximate length when arranging a visit. We need enough working space to position the bicycle securely. We do not ask customers to remove permanently fitted equipment solely to make the first enquiry.</p></section><section><h2>Collection and aftercare</h2><p>When work is complete, we explain what changed and give you the written job description. Please ask about any new part you have not used before. Brake pads, cables and drivetrain parts may settle during their first rides; contact us with the job number if something feels different.</p><p>Items left on the bicycle are listed during handover. Take lights, tools and removable batteries with you unless they are needed for the work and have been specifically recorded. We agree a collection date before the bicycle is left overnight.</p></section></main><footer><p>Tideglass Cycle Repair</p><p>A small local team, with clear arrangements before you visit.</p></footer></body></html>\n",
+      "visit.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"Finding the workshop — Tideglass Cycle Repair\"><title>Finding the workshop | Tideglass Cycle Repair</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><p class=\"wordmark\">Tideglass Cycle Repair</p><nav aria-label=\"Main pages\"><a href=\"index.html\">Workshop</a><a href=\"services.html\">Repair menu</a><a href=\"visit.html\">Visit</a><a href=\"questions.html\">Questions</a><a href=\"contact.html\">Service enquiry</a></nav></header><main id=\"main\"><h1>Finding the workshop</h1><section><h2>Address and hours</h2><p>Workshop address: 34 Sample Terrace, Footscray VIC 3011.</p><dl><dt>Monday to Friday</dt><dd>08:30–17:30</dd><dt>Saturday</dt><dd>09:00–13:00</dd><dt>Sunday</dt><dd>Closed</dd></dl><p>The entrance is the wide door beside the workshop window. Please walk bicycles through the doorway rather than riding onto the service floor. The reception area is separate from the repair stands, where tools and parts need to remain clear.</p></section><section><h2>Arranged drop-offs</h2><p>Contact the desk before leaving a bicycle. We confirm a suitable handover time in writing and reserve the storage space it needs. If that arrangement changes, reply to the same email rather than assuming a later arrival will fit the workshop schedule.</p><p>Allow time to describe the issue at reception. A short written note can help if the problem appears only under certain conditions. Tell us whether it happens in one gear, while braking, after rain or when carrying a load.</p></section><section><h2>Waiting and transport</h2><p>The workshop has a small waiting bench, but it is not a space for long-term bicycle storage. If the repair needs an inspection, plan another way to travel rather than waiting for an immediate diagnosis. We will explain how the quote and collection arrangements are confirmed.</p><p>The street-side pump is available whenever the workshop is open. The desk can point out its valve positions; please leave the hose tidily after use. Borrowed tools and parts on the service benches are for the mechanics rather than a public self-service area.</p></section><section><h2>Access questions</h2><p>If the entrance, bicycle size or handover process may be difficult for you, send a short note before visiting. We can describe the space and discuss a quieter arrival time. No sensitive personal documents are needed for that conversation.</p></section></main><footer><p>Tideglass Cycle Repair</p><p>A small local team, with clear arrangements before you visit.</p></footer></body></html>\n",
+      "site.css": "*{box-sizing:border-box}body{margin:0;background:#f6f7f8;color:#20282f;font:16px/1.65 Arial,sans-serif}header,main,footer{max-width:1120px;padding:24px;margin:auto}.wordmark{font-size:26px;font-weight:700}header{border-bottom:3px solid #246278}nav{display:flex;gap:18px;flex-wrap:wrap}a{color:#16566d}.skip{position:absolute;left:-9999px}.skip:focus{left:12px;top:12px;background:white;padding:10px}h1{font-size:36px;line-height:1.15}h2{margin-top:30px;font-size:22px}table{border-collapse:collapse;width:100%}th,td{padding:11px 12px;text-align:left;border-bottom:1px solid #bac8cf}.service-note{border-left:5px solid #246278;padding:14px 18px;background:#e7eef2}.split{display:grid;grid-template-columns:2fr 1fr;gap:28px}label{display:block;margin:12px 0}input,textarea,select{display:block;font:inherit;padding:8px;width:100%;max-width:600px}button{background:#1b536a;color:#fff;border:0;padding:11px 20px;font:inherit}footer{font-size:14px;border-top:1px solid #bac8cf}:focus-visible{outline:3px solid #b57019;outline-offset:3px}@media(max-width:650px){header,main,footer{padding:18px}.split{display:block}h1{font-size:29px}th,td{padding:8px}}\n"
+    },
+    "ruleEvidence": [
+      {
+        "id": "eval-evidence-1",
+        "criterionId": "coverage-1",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "Check the complete original requirement: “Address copy on home visit and enquiry: 34 Sample Terrace Footscray VIC3011”. If this span contains several requirements, verify all of them. Page presence or AI advice does not replace your confirmation."
+      },
+      {
+        "id": "eval-evidence-2",
+        "criterionId": "coverage-2",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "Check the complete original requirement: “Weekday opening hours copy is 08:30–17:30”. If this span contains several requirements, verify all of them. Page presence or AI advice does not replace your confirmation."
+      },
+      {
+        "id": "eval-evidence-3",
+        "criterionId": "coverage-3",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "Check the complete original requirement: “Saturday hours copy is 09:00–14:00 across current pages”. If this span contains several requirements, verify all of them. Page presence or AI advice does not replace your confirmation."
+      },
+      {
+        "id": "eval-evidence-4",
+        "criterionId": "coverage-4",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "Check the complete original requirement: “Wheel truing labour copy is AUD45 per wheel”. If this span contains several requirements, verify all of them. Page presence or AI advice does not replace your confirmation."
+      },
+      {
+        "id": "eval-evidence-5",
+        "criterionId": "coverage-5",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "Check the complete original requirement: “Home and visit copy offer a pump during opening hours”. If this span contains several requirements, verify all of them. Page presence or AI advice does not replace your confirmation."
+      },
+      {
+        "id": "eval-evidence-6",
+        "criterionId": "coverage-6",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "Check the complete original requirement: “Drop-off policy copy requires prior written confirmation”. If this span contains several requirements, verify all of them. Page presence or AI advice does not replace your confirmation."
+      },
+      {
+        "id": "eval-evidence-7",
+        "criterionId": "coverage-7",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "Check the complete original requirement: “Enquiries persist and are retrievable by receipt number”. If this span contains several requirements, verify all of them. Page presence or AI advice does not replace your confirmation."
+      },
+      {
+        "id": "eval-evidence-8",
+        "criterionId": "coverage-8",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "Check the complete original requirement: “Mobile enquiry fields are readable and fully usable”. If this span contains several requirements, verify all of them. Page presence or AI advice does not replace your confirmation."
+      }
+    ],
+    "coverage": {
+      "includedFiles": [
+        "contact.html",
+        "index.html",
+        "questions.html",
+        "services.html",
+        "visit.html",
+        "site.css"
+      ],
+      "truncatedFiles": [],
+      "omittedFiles": []
+    }
+  },
+  "originalFirstRawAnswer": {
+    "items": [
+      {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "Exact address appears in contact.html and index.html copy.",
+        "citations": [
+          {
+            "file": "contact.html",
+            "excerpt": "Workshop address: 34 Sample Terrace, Footscray VIC 3011."
+          },
+          {
+            "file": "index.html",
+            "excerpt": "Workshop address: 34 Sample Terrace, Footscray VIC 3011."
+          },
+          {
+            "file": "visit.html",
+            "excerpt": "Workshop address: 34 Sample Terrace, Footscray VIC 3011."
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-2",
+        "status": "supported",
+        "explanation": "Weekday hours 08:30–17:30 appear in index, visit and questions copy.",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "Monday to Friday: 08:30–17:30."
+          },
+          {
+            "file": "visit.html",
+            "excerpt": "<dd>08:30–17:30</dd>"
+          },
+          {
+            "file": "questions.html",
+            "excerpt": "Monday to Friday: 08:30–17:30."
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-3",
+        "status": "changes_suggested",
+        "explanation": "visit.html states Saturday 09:00–13:00, contradicting the required 09:00–14:00 used elsewhere.",
+        "citations": [
+          {
+            "file": "visit.html",
+            "excerpt": "<dt>Saturday</dt><dd>09:00–13:00</dd>"
+          },
+          {
+            "file": "index.html",
+            "excerpt": "Saturday: 09:00–14:00. Closed Sunday."
+          },
+          {
+            "file": "questions.html",
+            "excerpt": "Saturday: 09:00–14:00. Closed Sunday."
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-4",
+        "status": "changes_suggested",
+        "explanation": "services.html lists Wheel truing at AUD 49, not the required AUD 45.",
+        "citations": [
+          {
+            "file": "services.html",
+            "excerpt": "<td>Wheel truing, per wheel</td><td>AUD 49</td>"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-5",
+        "status": "supported",
+        "explanation": "Home (index) and visit pages state a street-side pump is available whenever the workshop is open.",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "A street-side pump is available whenever the workshop is open."
+          },
+          {
+            "file": "visit.html",
+            "excerpt": "The street-side pump is available whenever the workshop is open."
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-6",
+        "status": "supported",
+        "explanation": "Index, visit and questions copy require written confirmation before drop-off.",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "Please wait for a written confirmation before bringing a bicycle for overnight storage"
+          },
+          {
+            "file": "visit.html",
+            "excerpt": "We confirm a suitable handover time in writing and reserve the storage space it needs."
+          },
+          {
+            "file": "questions.html",
+            "excerpt": "Please arrange a drop-off space first and wait for written confirmation."
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-7",
+        "status": "insufficient_evidence",
+        "explanation": "Form posts to /service-enquiries but no backend or persistence/retrieval behavior is supplied.",
+        "citations": []
+      },
+      {
+        "criterionId": "coverage-8",
+        "status": "insufficient_evidence",
+        "explanation": "Mobile readability/usability needs rendered inspection; source only shows inputs and a media query.",
+        "citations": []
+      }
+    ],
+    "risks": [
+      {
+        "title": "Saturday closing time inconsistent with required 09:00–14:00",
+        "explanation": "visit.html shows Saturday closing at 13:00 while other pages show 14:00.",
+        "suggestion": "Confirm the intended Saturday closing time and align visit.html with the agreed copy.",
+        "citations": [
+          {
+            "file": "visit.html",
+            "excerpt": "<dt>Saturday</dt><dd>09:00–13:00</dd>"
+          },
+          {
+            "file": "index.html",
+            "excerpt": "Saturday: 09:00–14:00. Closed Sunday."
+          },
+          {
+            "file": "questions.html",
+            "excerpt": "Saturday: 09:00–14:00. Closed Sunday."
+          }
+        ]
+      },
+      {
+        "title": "Wheel truing price differs from agreed AUD45",
+        "explanation": "The services table lists Wheel truing per wheel at AUD 49 instead of the required AUD 45.",
+        "suggestion": "Correct the wheel truing labour price to AUD 45 per wheel.",
+        "citations": [
+          {
+            "file": "services.html",
+            "excerpt": "<td>Wheel truing, per wheel</td><td>AUD 49</td>"
+          }
+        ]
+      },
+      {
+        "title": "Enquiry confirmation text present before any submission",
+        "explanation": "A static note says the enquiry has been received, but no submission or persistence evidence is supplied.",
+        "suggestion": "Verify whether the confirmation should only appear after successful submission and persistence.",
+        "citations": [
+          {
+            "file": "contact.html",
+            "excerpt": "<p class=\"service-note\">Your enquiry has been received. Keep the receipt number with your bicycle notes so the desk can connect the conversation to the requested work.</p>"
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "No backend, server handler, storage or retrieval mechanism is supplied, so receipt-number retrievability cannot be verified.",
+      "Mobile readability and full usability require rendered browser inspection, which was not performed.",
+      "Final acceptance of these buyer-confirmed checks remains with the buyer."
+    ]
+  },
+  "knownRegressionRawAnswer": {
+    "items": [
+      {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "Exact address copy appears on index, visit and contact pages.",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "Workshop address: 34 Sample Terrace, Footscray VIC 3011."
+          },
+          {
+            "file": "visit.html",
+            "excerpt": "Workshop address: 34 Sample Terrace, Footscray VIC 3011."
+          },
+          {
+            "file": "contact.html",
+            "excerpt": "Workshop address: 34 Sample Terrace, Footscray VIC 3011."
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-2",
+        "status": "supported",
+        "explanation": "Weekday 08:30–17:30 appears on index, visit and questions pages.",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "Monday to Friday: 08:30–17:30."
+          },
+          {
+            "file": "visit.html",
+            "excerpt": "<dt>Monday to Friday</dt><dd>08:30–17:30</dd>"
+          },
+          {
+            "file": "questions.html",
+            "excerpt": "Monday to Friday: 08:30–17:30."
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-3",
+        "status": "changes_suggested",
+        "explanation": "visit.html states Saturday 09:00–13:00, conflicting with the required 09:00–14:00; other pages say 09:00–14:00.",
+        "citations": [
+          {
+            "file": "visit.html",
+            "excerpt": "<dt>Saturday</dt><dd>09:00–13:00</dd>"
+          },
+          {
+            "file": "index.html",
+            "excerpt": "Saturday: 09:00–14:00. Closed Sunday."
+          },
+          {
+            "file": "questions.html",
+            "excerpt": "Saturday: 09:00–14:00."
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-4",
+        "status": "changes_suggested",
+        "explanation": "Wheel truing labour is listed as AUD 49, not the required AUD45 per wheel.",
+        "citations": [
+          {
+            "file": "services.html",
+            "excerpt": "<td>Wheel truing, per wheel</td><td>AUD 49</td>"
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-5",
+        "status": "supported",
+        "explanation": "index.html and visit.html both state a street-side pump is available whenever the workshop is open.",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "A street-side pump is available whenever the workshop is open."
+          },
+          {
+            "file": "visit.html",
+            "excerpt": "The street-side pump is available whenever the workshop is open."
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-6",
+        "status": "supported",
+        "explanation": "index, visit and questions copy states written confirmation is needed before an unarranged drop-off.",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "Please wait for a written confirmation before bringing a bicycle for overnight storage"
+          },
+          {
+            "file": "visit.html",
+            "excerpt": "We confirm a suitable handover time in writing"
+          },
+          {
+            "file": "questions.html",
+            "excerpt": "Please arrange a drop-off space first and wait for written confirmation."
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-7",
+        "status": "insufficient_evidence",
+        "explanation": "Persistence and retrieval by receipt number require backend/runtime evidence; static source shows only a form and notice.",
+        "citations": [
+          {
+            "file": "contact.html",
+            "excerpt": "<form method=\"post\" action=\"/service-enquiries\">"
+          },
+          {
+            "file": "contact.html",
+            "excerpt": "Keep the receipt number with your bicycle notes so the desk can connect the conversation to the requested work."
+          }
+        ]
+      },
+      {
+        "criterionId": "coverage-8",
+        "status": "insufficient_evidence",
+        "explanation": "Mobile readability and field usability need rendered/browser evidence; viewport meta and CSS alone do not establish it.",
+        "citations": [
+          {
+            "file": "contact.html",
+            "excerpt": "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
+          },
+          {
+            "file": "site.css",
+            "excerpt": "@media(max-width:650px){header,main,footer{padding:18px}"
+          }
+        ]
+      }
+    ],
+    "risks": [
+      {
+        "title": "Saturday hours on visit page conflict with required 09:00–14:00",
+        "explanation": "visit.html lists Saturday 09:00–13:00, while the requirement and other pages state 09:00–14:00.",
+        "suggestion": "Confirm intended Saturday closing time and align visit.html copy.",
+        "citations": [
+          {
+            "file": "visit.html",
+            "excerpt": "<dt>Saturday</dt><dd>09:00–13:00</dd>"
+          },
+          {
+            "file": "index.html",
+            "excerpt": "Saturday: 09:00–14:00. Closed Sunday."
+          }
+        ]
+      },
+      {
+        "title": "Wheel truing price is AUD 49, not required AUD45",
+        "explanation": "services.html lists wheel truing labour at AUD 49 per wheel.",
+        "suggestion": "Confirm the agreed wheel truing labour price and correct the services table if needed.",
+        "citations": [
+          {
+            "file": "services.html",
+            "excerpt": "<td>Wheel truing, per wheel</td><td>AUD 49</td>"
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "Enquiry persistence and receipt-number retrieval cannot be verified from static files.",
+      "Mobile usability and readability require browser/rendered inspection.",
+      "Rendered appearance, interactivity and form submission behavior were not tested.",
+      "No backend or server handler source was supplied."
+    ]
+  },
+  "knownRegressionApplicationAnswer": {
+    "id": "a7b5b193-d587-44a2-bd58-846d2a84ab85",
+    "deliveryId": "eval-tideglass-cross-page-eight",
+    "method": "source-ai-v1",
+    "mode": "live",
+    "model": "deepseek-flash",
+    "assessedAt": "2026-11-05T05:26:46.971Z",
+    "items": [
+      {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "Exact address copy appears on index, visit and contact pages.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 1400,
+            "end": 1456,
+            "excerpt": "Workshop address: 34 Sample Terrace, Footscray VIC 3011."
+          },
+          {
+            "file": "visit.html",
+            "start": 731,
+            "end": 787,
+            "excerpt": "Workshop address: 34 Sample Terrace, Footscray VIC 3011."
+          },
+          {
+            "file": "contact.html",
+            "start": 1002,
+            "end": 1058,
+            "excerpt": "Workshop address: 34 Sample Terrace, Footscray VIC 3011."
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-1"
+        ]
+      },
+      {
+        "criterionId": "coverage-2",
+        "status": "supported",
+        "explanation": "Weekday 08:30–17:30 appears on index, visit and questions pages.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 1463,
+            "end": 1493,
+            "excerpt": "Monday to Friday: 08:30–17:30."
+          },
+          {
+            "file": "visit.html",
+            "start": 795,
+            "end": 840,
+            "excerpt": "<dt>Monday to Friday</dt><dd>08:30–17:30</dd>"
+          },
+          {
+            "file": "questions.html",
+            "start": 1020,
+            "end": 1050,
+            "excerpt": "Monday to Friday: 08:30–17:30."
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-2"
+        ]
+      },
+      {
+        "criterionId": "coverage-3",
+        "status": "changes_suggested",
+        "explanation": "visit.html states Saturday 09:00–13:00, conflicting with the required 09:00–14:00; other pages say 09:00–14:00.",
+        "citations": [
+          {
+            "file": "visit.html",
+            "start": 840,
+            "end": 877,
+            "excerpt": "<dt>Saturday</dt><dd>09:00–13:00</dd>"
+          },
+          {
+            "file": "index.html",
+            "start": 1500,
+            "end": 1537,
+            "excerpt": "Saturday: 09:00–14:00. Closed Sunday."
+          },
+          {
+            "file": "questions.html",
+            "start": 1051,
+            "end": 1073,
+            "excerpt": "Saturday: 09:00–14:00."
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-3"
+        ]
+      },
+      {
+        "criterionId": "coverage-4",
+        "status": "changes_suggested",
+        "explanation": "Wheel truing labour is listed as AUD 49, not the required AUD45 per wheel.",
+        "citations": [
+          {
+            "file": "services.html",
+            "start": 863,
+            "end": 910,
+            "excerpt": "<td>Wheel truing, per wheel</td><td>AUD 49</td>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-4"
+        ]
+      },
+      {
+        "criterionId": "coverage-5",
+        "status": "supported",
+        "explanation": "index.html and visit.html both state a street-side pump is available whenever the workshop is open.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 2213,
+            "end": 2275,
+            "excerpt": "A street-side pump is available whenever the workshop is open."
+          },
+          {
+            "file": "visit.html",
+            "start": 2025,
+            "end": 2089,
+            "excerpt": "The street-side pump is available whenever the workshop is open."
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-5"
+        ]
+      },
+      {
+        "criterionId": "coverage-6",
+        "status": "supported",
+        "explanation": "index, visit and questions copy states written confirmation is needed before an unarranged drop-off.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 1650,
+            "end": 1736,
+            "excerpt": "Please wait for a written confirmation before bringing a bicycle for overnight storage"
+          },
+          {
+            "file": "visit.html",
+            "start": 1251,
+            "end": 1297,
+            "excerpt": "We confirm a suitable handover time in writing"
+          },
+          {
+            "file": "questions.html",
+            "start": 763,
+            "end": 835,
+            "excerpt": "Please arrange a drop-off space first and wait for written confirmation."
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-6"
+        ]
+      },
+      {
+        "criterionId": "coverage-7",
+        "status": "insufficient_evidence",
+        "explanation": "This requirement includes actual records, durable retention or queryable receipts. Source copy cannot establish that records were written or can be read back. Provide execution and independent record-readback evidence, and check the complete locked requirement.",
+        "citations": [
+          {
+            "file": "contact.html",
+            "start": 1289,
+            "end": 1337,
+            "excerpt": "<form method=\"post\" action=\"/service-enquiries\">"
+          },
+          {
+            "file": "contact.html",
+            "start": 1764,
+            "end": 1875,
+            "excerpt": "Keep the receipt number with your bicycle notes so the desk can connect the conversation to the requested work."
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-7"
+        ]
+      },
+      {
+        "criterionId": "coverage-8",
+        "status": "insufficient_evidence",
+        "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+        "citations": [
+          {
+            "file": "contact.html",
+            "start": 60,
+            "end": 127,
+            "excerpt": "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
+          },
+          {
+            "file": "site.css",
+            "start": 1032,
+            "end": 1088,
+            "excerpt": "@media(max-width:650px){header,main,footer{padding:18px}"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-8"
+        ]
+      }
+    ],
+    "risks": [
+      {
+        "title": "Saturday hours on visit page conflict with required 09:00–14:00",
+        "explanation": "visit.html lists Saturday 09:00–13:00, while the requirement and other pages state 09:00–14:00.",
+        "suggestion": "Confirm intended Saturday closing time and align visit.html copy.",
+        "citations": [
+          {
+            "file": "visit.html",
+            "start": 840,
+            "end": 877,
+            "excerpt": "<dt>Saturday</dt><dd>09:00–13:00</dd>"
+          },
+          {
+            "file": "index.html",
+            "start": 1500,
+            "end": 1537,
+            "excerpt": "Saturday: 09:00–14:00. Closed Sunday."
+          }
+        ]
+      },
+      {
+        "title": "Wheel truing price is AUD 49, not required AUD45",
+        "explanation": "services.html lists wheel truing labour at AUD 49 per wheel.",
+        "suggestion": "Confirm the agreed wheel truing labour price and correct the services table if needed.",
+        "citations": [
+          {
+            "file": "services.html",
+            "start": 863,
+            "end": 910,
+            "excerpt": "<td>Wheel truing, per wheel</td><td>AUD 49</td>"
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "Enquiry persistence and receipt-number retrieval cannot be verified from static files.",
+      "Mobile usability and readability require browser/rendered inspection.",
+      "Rendered appearance, interactivity and form submission behavior were not tested.",
+      "No backend or server handler source was supplied.",
+      "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+      "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+    ],
+    "coverage": {
+      "includedFiles": [
+        "contact.html",
+        "index.html",
+        "questions.html",
+        "services.html",
+        "visit.html",
+        "site.css"
+      ],
+      "truncatedFiles": [],
+      "omittedFiles": []
+    },
+    "usage": {
+      "promptTokens": 7494,
+      "completionTokens": 1110
+    }
+  },
+  "sourceReportAdmittedForSchemaAndCitationValidation": true
+}

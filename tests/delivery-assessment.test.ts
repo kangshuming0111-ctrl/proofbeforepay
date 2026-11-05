@@ -1,12 +1,13 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import type { ProofQuote } from "../lib/contracts.ts";
-import { assessDelivery } from "../lib/delivery-assessment.ts";
+import type { ProofBusinessExpected, ProofQuote } from "../lib/contracts.ts";
+import { assessDelivery, AssessmentResponseError } from "../lib/delivery-assessment.ts";
 import { DomainError } from "../lib/domain.ts";
 import { summaryCoverageUnits } from "../lib/requirement-coverage.ts";
 import { ProviderError, type Fetcher } from "../lib/providers.ts";
 import { createUploadedDelivery, parseStaticProject } from "../lib/static-project.ts";
+import {projectQuote, validateProjectCorpus} from "../scripts/run-project-assessment-evaluation.ts";
 
 const env = { DEEPSEEK_API_KEY: "synthetic-test-key" };
 const source = '<!doctype html><html><head><title>Laneway Noodles</title></head><body>🍜<h1>Laneway Noodles</h1><p>Beef noodles $16</p></body></html>';
@@ -750,6 +751,52 @@ test("all criteria must appear exactly once with a known status and no extra fie
   }
 });
 
+test("the actual saved stop-but-incomplete reply identifies trusted missing IDs without accepting a partial report", async () => {
+  const corpus=validateProjectCorpus(JSON.parse(readFileSync(new URL("../public/benchmarks/five-remediation-2026-11-05/known-regression-corpus.json",import.meta.url),"utf8")));
+  const saved=JSON.parse(readFileSync(new URL("../public/benchmarks/five-remediation-2026-11-05/known-retest.json",import.meta.url),"utf8"));
+  const project=corpus.projects.find(project=>project.id==="little-light-photographs")!,entry=saved.results.find((row:{id:string})=>row.id===project.id),quote=projectQuote(project),before=structuredClone(quote);
+  assert.equal(entry.raw.finishReason,"stop");
+  const fake=mock(null,{raw:entry.raw.bodyText});
+  await assert.rejects(assessDelivery(quote,env,fake.fetcher),error=>{
+    assert.ok(error instanceof AssessmentResponseError);
+    assert.equal(error.reason,"missing_items"); assert.equal(error.status,502);
+    assert.deepEqual(error.coverage,{expectedCriterionIds:["manual-1","manual-2"],missingCriterionIds:["manual-2"],duplicateCriterionIds:[],unknownCriterionCount:0});
+    assert.match(error.message,/omitted one or more required criterion responses/u);
+    assert.doesNotMatch(JSON.stringify(error),/Every family|Families|index\.html|photograph/u);
+    return true;
+  });
+  assert.equal(fake.calls.length,1);assert.deepEqual(quote,before);assert.equal(quote.proof.delivery!.assessment,undefined);
+});
+
+test("empty, duplicate and unknown criterion replies retain safe coverage diagnostics and never retry", async () => {
+  const cases=[
+    {reason:"missing_items",edit:(output:ReturnType<typeof proposal>)=>{output.items=[];}},
+    {reason:"duplicate_items",edit:(output:ReturnType<typeof proposal>)=>{output.items[1].criterionId=output.items[0].criterionId;}},
+    {reason:"unknown_items",edit:(output:ReturnType<typeof proposal>)=>{output.items[1].criterionId="PRIVATE_MODEL_ONLY_ID";}},
+    {reason:"duplicate_items",edit:(output:ReturnType<typeof proposal>)=>{output.items[1].criterionId=output.items[0].criterionId;output.items.pop();}},
+  ];
+  for(const item of cases){
+    const quote=agreement(),before=structuredClone(quote),output=proposal(quote);item.edit(output);const fake=mock(output);
+    await assert.rejects(assessDelivery(quote,env,fake.fetcher),error=>{
+      assert.ok(error instanceof AssessmentResponseError);assert.equal(error.reason,item.reason);assert.ok(error.coverage);
+      assert.deepEqual(error.coverage.expectedCriterionIds,quote.proof.criteria.map(criterion=>criterion.id));
+      assert.ok([...error.coverage.missingCriterionIds,...error.coverage.duplicateCriterionIds].every(id=>quote.proof.criteria.some(criterion=>criterion.id===id)));
+      assert.equal(error.coverage.unknownCriterionCount,item.reason==="unknown_items"?1:0);
+      assert.doesNotMatch(JSON.stringify(error),/PRIVATE_MODEL_ONLY_ID|PRIVATE ORIGINAL CONTRACT|synthetic-test-key/u);
+      return true;
+    });
+    assert.equal(fake.calls.length,1);assert.deepEqual(quote,before);
+  }
+});
+
+test("malformed item shells take precedence over missing-item classification", async () => {
+  for(const broken of [null,[],{criterionId:"page-1"},{criterionId:"page-1",status:"supported",explanation:"Source",citations:[],extra:"PRIVATE MODEL FIELD"}]){
+    const quote=agreement(),before=structuredClone(quote),output={...proposal(quote),items:[broken]},fake=mock(output);
+    await assert.rejects(assessDelivery(quote,env,fake.fetcher),error=>error instanceof AssessmentResponseError&&error.reason==="structure"&&error.coverage===undefined&&!/PRIVATE MODEL FIELD/u.test(error.message));
+    assert.equal(fake.calls.length,1);assert.deepEqual(quote,before);
+  }
+});
+
 test("provider statuses must be actual strings rather than arrays or coercible JSON values", async () => {
   for (const status of [["supported"], ["changes_suggested"], ["insufficient_evidence"], [], {}, null, 1, true]) {
     const quote = agreement(), before = structuredClone(quote), output = proposal(quote);
@@ -784,7 +831,8 @@ test("provider finish reasons distinguish output-limit and incomplete failures w
     const quote = agreement(), before = structuredClone(quote);
     // Invalid JSON is deliberate: finish_reason must be classified before content parsing.
     const fake = mock(null, { finish, content: "PRIVATE ORIGINAL CONTRACT synthetic-test-key {invalid JSON" });
-    await assert.rejects(assessDelivery(quote, env, fake.fetcher), error => error instanceof ProviderError
+    await assert.rejects(assessDelivery(quote, env, fake.fetcher), error => error instanceof AssessmentResponseError
+      && error.reason === (finish === "length" ? "output_limit" : "incomplete")
       && error.status === 502 && expected.test(error.message) && !/PRIVATE|synthetic-test-key/.test(error.message));
     assert.equal(fake.calls.length, 1); assert.deepEqual(quote, before);
     assert.equal(JSON.parse(String(fake.calls[0].init.body)).max_tokens, 1800);
@@ -799,7 +847,7 @@ test("nonexistent citation files and excerpts report only a safe citation-valida
     const quote = agreement(), before = structuredClone(quote), output = proposal(quote);
     output.items[0].citations = [citation];
     const fake = mock(output);
-    await assert.rejects(assessDelivery(quote, env, fake.fetcher), error => error instanceof ProviderError
+    await assert.rejects(assessDelivery(quote, env, fake.fetcher), error => error instanceof AssessmentResponseError && error.reason === "citation"
       && /^AI source citation validation failed;/u.test(error.message) && !/PRIVATE|synthetic-test-key/.test(error.message));
     assert.equal(fake.calls.length, 1); assert.deepEqual(quote, before);
   }
@@ -987,4 +1035,98 @@ test("tampered saved coverage is rejected before any model request rather than b
     assert.equal(fake.calls.length, 0);
     assert.deepEqual(quote, before);
   }
+});
+
+const businessSource = (body: string) => `<!doctype html><html><head><title>Synthetic menu</title></head><body>🍜<h1>Synthetic menu</h1>${body}</body></html>`;
+function businessAgreement(files: Record<string, string>, expectedRows: {expected: ProofBusinessExpected; file?: string}[] = [{expected: {kind: "item_price", label: "Beef noodles", amountMinor: 1800, currency: "AUD"}}], summary = "Display the menu prices and phone text."): ProofQuote {
+  const unit = summaryCoverageUnits(summary)[0];
+  const parsed = parseStaticProject({title: "Synthetic menu", summary, amount: "1.00", requiredPages: [...new Set(["index.html", ...expectedRows.map(row => row.file ?? "index.html")])], manualRequirements: [],
+    coverage: {version: 1, sourceText: summary, confirmed: true, decisions: [{id: unit.id, disposition: "include"}]},
+    businessChecks: {confirmed: true, items: expectedRows.map((row, index) => ({id: `business-${index + 1}`, criterionId: unit.id, file: row.file ?? "index.html", source: {start: unit.start, end: unit.end, excerpt: unit.text}, expected: row.expected}))}}, "en");
+  const quote = agreement(); quote.summary = parsed.summary; quote.proof.project = parsed.project; quote.proof.criteria = parsed.criteria;
+  quote.proof.delivery = createUploadedDelivery(files, parsed.project, "en", 1);
+  quote.proof.review = {deliveryId: quote.proof.delivery.id, reviewedAt: "2026-11-05T00:00:00.000Z", mode: "demo", summary: "Synthetic rules"};
+  return quote;
+}
+function businessProposal(quote: ProofQuote, status: "supported" | "changes_suggested" | "insufficient_evidence" = "supported", cite = true) {
+  return {items: quote.proof.criteria.map(criterion => ({criterionId: criterion.id, status, explanation: "Synthetic initial source suggestion.", citations: cite ? [{file: "index.html", excerpt: "<h1>Synthetic menu</h1>"}] : []})), risks: [], limitations: []};
+}
+
+test("confirmed price mismatch vetoes a synthetic false-supported suggestion using its own exact source and no extra provider request", async () => {
+  const source = businessSource("<p>Beef noodles AUD16</p>"), quote = businessAgreement({"index.html": source}), before = structuredClone(quote), fake = mock(businessProposal(quote));
+  const result = await assessDelivery(quote, env, fake.fetcher), item = result.items.find(row => row.criterionId === "coverage-1")!;
+  assert.equal(item.status, "changes_suggested"); assert.match(item.explanation, /AUD 18\.00/); assert.match(item.explanation, /AUD 16\.00/);
+  assert.equal(item.citations.length, 1); assert.equal(item.citations[0].excerpt, "<p>Beef noodles AUD16</p>");
+  assert.equal(source.slice(item.citations[0].start, item.citations[0].end), item.citations[0].excerpt);
+  assert.ok(!item.citations.some(row => row.excerpt.includes("<h1>"))); assert.equal(fake.calls.length, 1); assert.deepEqual(quote, before);
+  const sent = JSON.parse(JSON.parse(String(fake.calls[0].init.body)).messages[1].content);
+  assert.equal(sent.scopeContext.businessChecks.length, 1); assert.equal(sent.scopeContext.businessChecks[0].expected.amountMinor, 1800);
+});
+
+test("correct confirmed source never promotes initial unknown/change advice or substitutes for a missing model citation", async () => {
+  const quote = businessAgreement({"index.html": businessSource("<p>Beef noodles AUD18.0</p>")});
+  for (const status of ["supported", "changes_suggested", "insufficient_evidence"] as const) {
+    const fake = mock(businessProposal(quote, status)), result = await assessDelivery(quote, env, fake.fetcher);
+    const item = result.items.find(row => row.criterionId === "coverage-1")!;
+    assert.equal(item.status, status); assert.equal(item.explanation, "Synthetic initial source suggestion."); assert.equal(fake.calls.length, 1);
+  }
+  const result = await assessDelivery(quote, env, mock(businessProposal(quote, "supported", false)).fetcher);
+  assert.equal(result.items.find(row => row.criterionId === "coverage-1")!.status, "insufficient_evidence");
+});
+
+test("a clear confirmed price difference does not replace a model's original unknown result", async () => {
+  const quote = businessAgreement({"index.html": businessSource("<p>Beef noodles USD16</p>")}), output = businessProposal(quote, "insufficient_evidence");
+  const result = await assessDelivery(quote, env, mock(output).fetcher), item = result.items.find(row => row.criterionId === "coverage-1")!;
+  assert.equal(item.status, "insufficient_evidence"); assert.equal(item.explanation, "Synthetic initial source suggestion.");
+  assert.equal(item.citations[0].excerpt, "<h1>Synthetic menu</h1>");
+});
+
+test("all same-criterion confirmed business entries affect the final suggestion including literal copy", async () => {
+  const expectations: {expected: ProofBusinessExpected; file?: string}[] = [
+    {expected: {kind: "item_price", label: "Beef noodles", amountMinor: 1800, currency: "AUD"}},
+    {expected: {kind: "item_price", label: "Beef noodles", amountMinor: 1800, currency: "AUD"}, file: "menu.html"},
+    {expected: {kind: "visible_copy", text: "+61 3 1234 5678"}},
+  ];
+  const files = {"index.html": businessSource("<p>Beef noodles AUD18</p>"), "menu.html": businessSource("<p>Beef noodles AUD16</p>")};
+  const quote = businessAgreement(files, expectations), result = await assessDelivery(quote, env, mock(businessProposal(quote)).fetcher);
+  const item = result.items.find(row => row.criterionId === "coverage-1")!;
+  assert.equal(item.status, "changes_suggested"); assert.match(item.explanation, /All 3 confirmed checks/); assert.equal(item.citations[0].file, "menu.html");
+  const correctPriceButMissingCopy = businessAgreement({...files, "menu.html": businessSource("<p>Beef noodles AUD18</p>")}, expectations);
+  const unknown = await assessDelivery(correctPriceButMissingCopy, env, mock(businessProposal(correctPriceButMissingCopy)).fetcher);
+  assert.equal(unknown.items.find(row => row.criterionId === "coverage-1")!.status, "insufficient_evidence");
+});
+
+test("business uncertainty stays unknown and cannot be overwritten by a later missing-exact-copy veto", async () => {
+  const quote = businessAgreement({"index.html": businessSource("<p>Unrelated source text</p>")}, undefined, 'The page copy must include the exact text "Menu approved".');
+  const result = await assessDelivery(quote, env, mock(businessProposal(quote)).fetcher), item = result.items.find(row => row.criterionId === "coverage-1")!;
+  assert.equal(item.status, "insufficient_evidence"); assert.match(item.explanation, /Not all confirmed business checks/);
+  assert.doesNotMatch(item.explanation, /was not found in static body text/);
+});
+
+test("authoritative rules and financial/runtime observation vetoes retain precedence over confirmed source contradictions", async () => {
+  const files = {"index.html": businessSource("<p>Beef noodles AUD16</p>")};
+  const failed = businessAgreement(files); failed.proof.delivery!.evidence.find(row => row.criterionId === "page-1")!.finding = "fail";
+  const failedResult = await assessDelivery(failed, env, mock(businessProposal(failed)).fetcher), failedItem = failedResult.items.find(row => row.criterionId === "page-1")!;
+  assert.equal(failedItem.status, "changes_suggested"); assert.match(failedItem.explanation, /Server rules found/);
+  assert.equal(failedItem.citations[0].excerpt, "<h1>Synthetic menu</h1>");
+  for (const summary of ["Display menu prices and automatically process refunds.", "Display menu prices and submit the order form successfully."]) {
+    const quote = businessAgreement(files, undefined, summary), result = await assessDelivery(quote, env, mock(businessProposal(quote)).fetcher);
+    const item = result.items.find(row => row.criterionId === "coverage-1")!;
+    assert.equal(item.status, "insufficient_evidence"); assert.doesNotMatch(item.explanation, /limited source mismatch/);
+  }
+});
+
+test("strict business-source uncertainty and duplicate labels never become an alleged price defect", async () => {
+  for (const body of ["<p>Beef noodles AUD16</p><p>Beef noodles AUD18</p>", "<p>Beef noodles <span>AUD16</span></p>", "<p>Beef noodles AUD16</p><script>void 0</script>"]) {
+    const quote = businessAgreement({"index.html": businessSource(body)}), fake = mock(businessProposal(quote));
+    const result = await assessDelivery(quote, env, fake.fetcher), item = result.items.find(row => row.criterionId === "coverage-1")!;
+    assert.equal(item.status, "insufficient_evidence", body); assert.match(item.explanation, /limited static simple-block format/); assert.equal(fake.calls.length, 1);
+  }
+});
+
+test("business mismatch cannot heal an invalid model quotation into an accepted report", async () => {
+  const quote = businessAgreement({"index.html": businessSource("<p>Beef noodles AUD16</p>")}), output = businessProposal(quote);
+  output.items.find(row => row.criterionId === "coverage-1")!.citations[0].excerpt = "INVENTED MODEL SOURCE";
+  const fake = mock(output); await assert.rejects(assessDelivery(quote, env, fake.fetcher), error => error instanceof AssessmentResponseError && error.reason === "citation");
+  assert.equal(fake.calls.length, 1);
 });

@@ -1,0 +1,54 @@
+{
+  "schema": "pbp-ai-reliability-whole-review-v1",
+  "kind": "first-attempt-whole-answer-AI-review",
+  "reviewer": "independent Codex agent plus root source adjudication; not human testing",
+  "calls": 4,
+  "criteria": 28,
+  "rawStatusAgreement": 27,
+  "applicationStatusAgreement": 27,
+  "rawCitations": 51,
+  "applicationCitations": 51,
+  "allQuotesAndUtf16OffsetsValid": true,
+  "wholeAnswers": {
+    "accepted": 1,
+    "qualified": 2,
+    "rejected": 1
+  },
+  "cases": [
+    {
+      "id": "qingxi-policy-and-refund",
+      "raw": "qualified",
+      "application": "qualified",
+      "reason": "Main statuses correct; runtime-evidence absence is incorrectly framed as a possible processing defect in risk title."
+    },
+    {
+      "id": "tideglass-cross-page-eight",
+      "raw": "qualified",
+      "application": "qualified",
+      "reason": "Eight statuses grounded; risk title before any submission exceeds a source-only observation layer."
+    },
+    {
+      "id": "qingyu-sixteen-late-obligations",
+      "raw": "rejected",
+      "application": "rejected",
+      "reason": "coverage-10 is a confirmed pure static copy omission but unknown conflicts with its own explicit missing-copy explanation and risk."
+    },
+    {
+      "id": "harbour-frame-scoped-visual-boundary",
+      "raw": "accepted",
+      "application": "accepted",
+      "reason": "Scope/excluded archive and image/mobile observation boundaries respected."
+    }
+  ],
+  "deepSeekDisagreements": {
+    "applicationAccepted": "Evaluator schema/citation admission, not delivery acceptance. No workflow or payment action occurred. Related authority findings are rejected.",
+    "offsets": "51 raw/app references executed against supplied source; the speculative Unicode-length finding is false.",
+    "brand": "The wordmark and requested Qingyu brand are the same source string; no substituted name.",
+    "scope": "Human-needed ruleEvidence file placeholders are not AI citations; model citations independently point at the correct files."
+  },
+  "limits": [
+    "Small authored synthetic projects; references frozen before model calls but known during local admission development.",
+    "Whole-answer classifications are AI review with independent source checking, not unfamiliar-human or customer accuracy.",
+    "First failures remain unchanged; subsequent same-project tests are known regression with zero additional independent projects."
+  ]
+}

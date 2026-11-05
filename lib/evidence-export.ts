@@ -186,6 +186,7 @@ function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]
     for(const id of array(result.ruleEvidenceIds,66,"AI rule references"))requireValue(delivery.evidence.some(entry=>entry.id===id&&entry.criterionId===result.criterionId),"AI rule reference is missing or belongs to a different criterion.");
   }
   requireValue(new Set(items.map(item=>(item as Record<string,unknown>).criterionId)).size===items.length,"AI criterion references are duplicated.");
+  requireValue(items.length===agreed.length&&agreed.every(criterion=>items.some(item=>(item as Record<string,unknown>).criterionId===criterion.id)),"AI assessment must include every agreed criterion exactly once.");
   for(const item of array(row.risks,20,"AI risks")){const risk=object(item,["title","explanation","suggestion","citations"],"AI risk");text(risk.title,500);text(risk.explanation,3000);text(risk.suggestion,3000);cite(risk.citations);}
   array(row.limitations,30,"AI limitations").forEach(item=>text(item,3000));
   const coverage=object(row.coverage,["includedFiles","truncatedFiles","omittedFiles"],"AI source coverage");

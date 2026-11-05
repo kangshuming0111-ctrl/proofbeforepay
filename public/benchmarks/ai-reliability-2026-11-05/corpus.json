@@ -1,0 +1,462 @@
+{
+  "schema": "proofbeforepay-frozen-project-corpus-v1",
+  "cohort": "reliability-diagnostics-prospective-2026-11-05",
+  "scope": "New authored multi-page business handovers for structural completeness, source entailment, mixed operational requirements and scope diagnostics. No customer data or real user study; planned first-attempt cohort, not frozen or called yet.",
+  "referenceMethod": "References are authored before provider outputs, remain only in criterion.reference and are excluded from model packets. Review all criterion explanations, risk titles/explanations/suggestions and limitations independently. Preserve omissions, refusals, raw/application differences and original attempts; longer checklists require a runner capable of their declared criterion counts before freezing.",
+  "projects": [
+    {
+      "id": "qingxi-policy-and-refund",
+      "stratum": "boundary",
+      "language": "zh",
+      "title": "青溪花室课程网站",
+      "summary": "为青溪花室交付课程介绍、营业资料和取消申请页面。页面需清楚说明七天取消政策；符合条件的取消申请还需自动退回原支付卡，并保留可按订单号查询的退款记录。花束询价不包含在线结账。",
+      "files": {
+        "index.html": "<!doctype html>\n<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"把花带进日常 — 青溪花室\"><title>把花带进日常 | 青溪花室</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">跳到正文</a><header><p class=\"wordmark\">青溪花室</p><nav aria-label=\"页面导航\"><a href=\"index.html\">青溪花室</a><a href=\"classes.html\">花艺课程</a><a href=\"cancellation.html\">改期与取消</a><a href=\"visit.html\">到访与联系</a></nav></header><main id=\"main\"><h1>把花带进日常</h1><section><h2>从一束花开始</h2><p>青溪花室提供日常花束、桌面瓶花和小班花艺课程。我们按当周花材准备配色，让花束既适合收到的那一刻，也能在回家后的几天里慢慢舒展。来店选花可以说说使用场合；不确定预算时，店员会先列出两个相近的选择。</p><p>手绑花束从 AUD 45 起，成品价格取决于尺寸与当周花材。订单确认前，我们会把花束规格、取花日期和包装方式写在同一封确认邮件里。照片可用来沟通色调，但季节不同，具体品种也会变化。</p></section><section class=\"pair\"><div><h2>课程与材料</h2><p>入门课适合没有插花经验的人。课程包含基础工具、花材和一个可带走的小花器。老师会先说明花枝处理与容器保水，再留出足够时间完成自己的作品；课程结束时，每位学员会收到日常养护卡。</p><p>如果你对某类植物或香味敏感，请在报名时写明。团队会在采购前核对材料，并在无法替换时提前沟通，不会只在上课当天临时决定。</p></div><div><h2>来店之前</h2><p>门店地址：17 Sample Grove, Brunswick VIC 3056。周二至周六 10:00–18:00 开放，周日与周一休息。课程通常安排在门店后方的长桌区，来店取花不需要进入课程区域。</p><p>想为小型聚会预订桌花，可以带上桌面尺寸和场地照片。我们会根据摆放位置讨论高度，避免作品遮挡用餐者的视线。正式报价会单独写明交付范围。</p></div></section><section><h2>订课与取消</h2><p>课程名额在确认订金后保留。活动开始前七天及更早提出取消，订金全额退回；距活动不足七天的取消申请，按确认邮件中的安排处理。取消说明也会随课程确认邮件一并发送，方便报名人留存。</p><a href=\"cancellation.html\">查看取消办理资料</a></section></main><footer><p>青溪花室</p><p>小团队提供的日常服务，欢迎先了解安排再联系我们。</p></footer></body></html>\n",
+        "classes.html": "<!doctype html>\n<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"课程选择与当天安排 — 青溪花室\"><title>课程选择与当天安排 | 青溪花室</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">跳到正文</a><header><p class=\"wordmark\">青溪花室</p><nav aria-label=\"页面导航\"><a href=\"index.html\">青溪花室</a><a href=\"classes.html\">花艺课程</a><a href=\"cancellation.html\">改期与取消</a><a href=\"visit.html\">到访与联系</a></nav></header><main id=\"main\"><h1>课程选择与当天安排</h1><section><h2>本月课程</h2><table><thead><tr><th>课程</th><th>时长</th><th>费用</th></tr></thead><tbody><tr><td>周末手绑花束</td><td>约 90 分钟</td><td>AUD 95</td></tr><tr><td>餐桌瓶花</td><td>约 120 分钟</td><td>AUD 125</td></tr><tr><td>季节花环</td><td>约 120 分钟</td><td>AUD 135</td></tr></tbody></table><p>每班最多八位学员。费用包含课堂使用的花材、借用工具和一个成品包装。陪同者如希望一起制作，需要另行预订席位；不制作的陪同者可在门店前区等候。</p></section><section><h2>我们如何准备一节课</h2><p>开课前，老师会按课程主题选择不同质感的枝叶，保留主花、辅助花和线条材料之间的层次。学员可以在相近色系中挑选自己的组合，不需要照着同一张成品照片完成。</p><p>教室提供围裙，但处理枝条时仍建议穿方便活动的衣服。长发可以束起，包袋放在边柜，桌面留给工具与花材。课程会安排清理时间，成品带走前再检查保水和支撑。</p></section><section><h2>报名与材料信息</h2><p>报名时请提供课程名称、日期、人数和联系邮箱。收到安排说明后，再根据邮件中的方式确认名额。团队活动需要先沟通场地与参与人数，普通课程的时间表不直接作为团体活动报价。</p><p>课程开始前至少七天取消，可退回全部订金。对于七天以内的临时情况，请直接回复确认邮件，写明订单号和希望协商的安排；是否改期会根据现有名额另行确认。</p></section><section class=\"notice\"><h2>作品带回家</h2><p>花束在离店前会包好保水材料。回家后请尽快放入清洁花瓶，水位覆盖茎部即可，避免叶片长时间浸泡。花环适合放在通风处，远离持续潮湿的墙面。需要再次核对养护步骤，可在营业时间联系门店。</p></section></main><footer><p>青溪花室</p><p>小团队提供的日常服务，欢迎先了解安排再联系我们。</p></footer></body></html>\n",
+        "cancellation.html": "<!doctype html>\n<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"改期与取消资料 — 青溪花室\"><title>改期与取消资料 | 青溪花室</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">跳到正文</a><header><p class=\"wordmark\">青溪花室</p><nav aria-label=\"页面导航\"><a href=\"index.html\">青溪花室</a><a href=\"classes.html\">花艺课程</a><a href=\"cancellation.html\">改期与取消</a><a href=\"visit.html\">到访与联系</a></nav></header><main id=\"main\"><h1>改期与取消资料</h1><section><h2>取消政策</h2><p>页面取消政策：活动开始前至少七天取消，可以全额退还订金。取消时间以门店收到申请的时间为准。报名人应使用确认邮件中的订单号，以便团队核对课程、席位与付款记录。</p><p>少于七天的取消申请可能涉及已采购花材与预留席位。请说明情况并提出可接受的替代日期，团队会查看后续课程的空位，再回复可提供的安排。相关补充约定会写入邮件，不由口头讨论代替。</p></section><section><h2>填写前请核对</h2><ul><li>订单号与报名邮箱是否对应。</li><li>同一订单中需要取消的席位数量。</li><li>课程的完整日期，而不是付款日期。</li><li>希望取消还是希望先询问其他日期。</li></ul><p>不要在此填写银行卡号、密码、验证码或证件资料。订单核对使用原有订单号；如需进一步确认，我们会通过报名邮箱联系。</p></section><section><h2>取消申请</h2><form action=\"/requests/cancel\" method=\"post\"><label>订单号<input name=\"orderNumber\" required></label><label>报名邮箱<input name=\"email\" type=\"email\" required></label><label>申请类型<select name=\"requestType\"><option value=\"cancel\">取消席位</option><option value=\"move\">询问改期</option></select></label><label>说明<textarea name=\"message\" rows=\"4\"></textarea></label><button type=\"submit\">发送取消申请</button></form><p class=\"notice\">取消申请已收到后，我们会核对报名资料，并向报名邮箱发送后续说明。符合七天取消政策的订金，按照原付款安排办理退回。</p></section><section><h2>保留你的资料</h2><p>建议保存最初的课程确认邮件和后续往来，以便核对订单号、席位和协商日期。若由朋友代为报名，请先让报名人转发完整的确认信息，避免只凭课程名称寻找订单。</p><p>同一订单有多位参与者时，请在说明中列明需要调整的人数。团队不会把部分席位取消理解成整张订单取消。对尚未确认的改期，不要直接按新日期到店。</p></section></main><footer><p>青溪花室</p><p>小团队提供的日常服务，欢迎先了解安排再联系我们。</p></footer></body></html>\n",
+        "visit.html": "<!doctype html>\n<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"到访花室 — 青溪花室\"><title>到访花室 | 青溪花室</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">跳到正文</a><header><p class=\"wordmark\">青溪花室</p><nav aria-label=\"页面导航\"><a href=\"index.html\">青溪花室</a><a href=\"classes.html\">花艺课程</a><a href=\"cancellation.html\">改期与取消</a><a href=\"visit.html\">到访与联系</a></nav></header><main id=\"main\"><h1>到访花室</h1><section><h2>地址与营业时间</h2><p>门店地址：17 Sample Grove, Brunswick VIC 3056。周二至周六 10:00–18:00，周日与周一休息。花艺课的时间以报名确认邮件为准；如果课程在门店营业时间之外开始，请按邮件中的到场说明进入。</p><p>公共交通到站后，沿主路进入 Sample Grove，再看门店橱窗的青溪花室标识。骑车到访可使用街道公共停车架，花室内通道需要保持通畅。来店取较大的瓶花作品时，建议准备平稳的托盘或合适的车辆空间。</p></section><section><h2>提前告诉我们</h2><p>需要安静一点的咨询时段、无台阶路线资料或其他到访协助，请在来店前通过邮箱说明。团队会按当天场地安排回复，不要求在公开留言里提供医疗证明。计划带儿童参加课程，也请先询问相应年龄和工具使用安排。</p><p>课程后方的材料区只供工作人员使用。客人可以在前区挑选现成花束或与店员讨论配色；大型活动样品需事先约定时间，以免同一张工作台同时用于备课和方案展示。</p></section><section><h2>联系与询价</h2><p>课程和花束咨询邮箱：hello@qingxi.example.org。请在邮件标题写明花束、课程或团体活动，正文提供希望使用的日期、人数或花束尺寸。对于小型活动布置，我们还会询问桌面数量、场地取放条件和可用交付时间。</p><p>报价以书面确认为准。临时采购或额外送货的费用会先说明，再由你决定是否加入。现成花束可以来店挑选，但特定花材或特定包装需要在采购前沟通。</p></section><section><h2>收到花之后</h2><p>请先查看随花附带的养护卡，修剪茎部并更换清水。房间温度、日照和花材品种会影响状态，避免将瓶花贴近暖气或摆在强烈阳光直射处。若运输后出现明显折枝，可以拍下包装与花枝情况，连同取货日期一起发给花室，团队会据此讨论处理方式。</p></section></main><footer><p>青溪花室</p><p>小团队提供的日常服务，欢迎先了解安排再联系我们。</p></footer></body></html>\n",
+        "site.css": "*{box-sizing:border-box}html{font-family:system-ui,sans-serif;color:#24302b;background:#fafbf8;line-height:1.7}body{margin:0}header,main,footer{max-width:1080px;margin:auto;padding:24px}header{border-bottom:1px solid #d5dfd6}.wordmark{font-size:24px;letter-spacing:.04em}nav{display:flex;flex-wrap:wrap;gap:20px}a{color:#245f49}.skip{position:absolute;left:-9999px}.skip:focus{left:16px;top:12px;background:white;padding:12px}h1{font-size:32px;line-height:1.3}h2{font-size:22px;margin-top:32px}p,li{max-width:72ch}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px;border-bottom:1px solid #d5dfd6}.notice{padding:18px;background:#edf2e8;border-left:4px solid #55775e}.pair{display:grid;grid-template-columns:1fr 1fr;gap:28px}label{display:block;margin:14px 0}input,select,textarea,button{font:inherit;padding:9px;max-width:100%}button{background:#285d46;color:white;border:0;border-radius:4px}footer{border-top:1px solid #d5dfd6;font-size:14px}a:focus-visible,button:focus-visible{outline:3px solid #98743c;outline-offset:4px}@media(max-width:640px){header,main,footer{padding:18px}.pair{display:block}h1{font-size:27px}table{font-size:14px}}\n"
+      },
+      "criteria": [
+        {
+          "id": "manual-1",
+          "title": "人工要求 1",
+          "source": "页面取消政策必须写明：活动开始前至少七天取消可以全额退还订金。",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "取消页面直接列明七天前可全额退还订金，首页和课程页的等义表述一致。本条只要求政策文案，不代表已观察退款执行。",
+            "relevantFiles": [
+              "cancellation.html",
+              "index.html",
+              "classes.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "manual-2",
+          "title": "人工要求 2",
+          "source": "网站应显示与七天取消政策一致的确认文案，并在符合条件的客户提交取消后实际自动退回原支付卡，保存可按订单号查询的退款记录。",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "这是同一条中的文案加实际资金动作和持久记录要求。HTML表单、action地址与确认文字不能建立退款成功或记录可查询，也不能据此断言后台不存在或实际退款失败。",
+            "relevantFiles": [
+              "cancellation.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "tideglass-cross-page-eight",
+      "stratum": "mismatch",
+      "language": "en",
+      "title": "Tideglass Cycle Repair information site",
+      "summary": "Address copy on home visit and enquiry: 34 Sample Terrace Footscray VIC3011\nWeekday opening hours copy is 08:30–17:30\nSaturday hours copy is 09:00–14:00 across current pages\nWheel truing labour copy is AUD45 per wheel\nHome and visit copy offer a pump during opening hours\nDrop-off policy copy requires prior written confirmation\nEnquiries persist and are retrievable by receipt number\nMobile enquiry fields are readable and fully usable",
+      "files": {
+        "index.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"A clear plan for your next ride — Tideglass Cycle Repair\"><title>A clear plan for your next ride | Tideglass Cycle Repair</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><p class=\"wordmark\">Tideglass Cycle Repair</p><nav aria-label=\"Main pages\"><a href=\"index.html\">Workshop</a><a href=\"services.html\">Repair menu</a><a href=\"visit.html\">Visit</a><a href=\"questions.html\">Questions</a><a href=\"contact.html\">Service enquiry</a></nav></header><main id=\"main\"><h1>A clear plan for your next ride</h1><section class=\"split\"><div><h2>Repairs, not guesswork</h2><p>We service commuting, touring and family bicycles. A first conversation starts with how you use the bike and what changed on your last ride: a noise under load, a brake lever that travels further, or a wheel that no longer feels true. We inspect the reported issue before discussing a repair plan.</p><p>Routine services can be arranged by email. Bring the bicycle with its normal wheels and accessories fitted so the mechanic can see cable routing and clearance. Remove valuables from bags before leaving it with us, and tell the desk if a lock needs a separate key.</p></div><aside><h2>Workshop details</h2><p>Workshop address: 34 Sample Terrace, Footscray VIC 3011.</p><p>Monday to Friday: 08:30–17:30.</p><p>Saturday: 09:00–14:00. Closed Sunday.</p></aside></section><section><h2>Before leaving a bicycle</h2><p>Contact us first to reserve a drop-off space. Please wait for a written confirmation before bringing a bicycle for overnight storage; we cannot accept unarranged drop-offs when the workshop is full. A confirmed drop-off time is a handover arrangement, rather than a promise that the repair finishes that day.</p><p>After inspection, we list the work, parts and labour separately. If more work becomes necessary, the desk asks you to approve the revised quote before it is included. An estimate for a repair does not cover unrelated parts or accessories.</p></section><section><h2>Small help on the way</h2><p>A street-side pump is available whenever the workshop is open. Ask the desk if the valve fitting is unfamiliar. The pump area must stay clear of bicycles waiting for service, so another rider can reach it safely.</p></section></main><footer><p>Tideglass Cycle Repair</p><p>A small local team, with clear arrangements before you visit.</p></footer></body></html>\n",
+        "services.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"Repair menu and workshop process — Tideglass Cycle Repair\"><title>Repair menu and workshop process | Tideglass Cycle Repair</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><p class=\"wordmark\">Tideglass Cycle Repair</p><nav aria-label=\"Main pages\"><a href=\"index.html\">Workshop</a><a href=\"services.html\">Repair menu</a><a href=\"visit.html\">Visit</a><a href=\"questions.html\">Questions</a><a href=\"contact.html\">Service enquiry</a></nav></header><main id=\"main\"><h1>Repair menu and workshop process</h1><section><h2>Individual jobs</h2><table><thead><tr><th>Work</th><th>Labour price</th><th>What is included</th></tr></thead><tbody><tr><td>Wheel truing, per wheel</td><td>AUD 49</td><td>Spoke tension and lateral alignment check for a serviceable wheel.</td></tr><tr><td>Brake adjustment, per brake</td><td>AUD 32</td><td>Cable adjustment and pad positioning; replacement parts quoted separately.</td></tr><tr><td>Gear indexing</td><td>AUD 38</td><td>Adjustment of an otherwise serviceable derailleur system.</td></tr><tr><td>Tube fitting, wheel removed</td><td>AUD 18</td><td>Fitting labour, with tube and tyre supplied or charged separately.</td></tr></tbody></table><p>Prices refer to workshop labour in Australian dollars. Damaged rims, seized fasteners and internal cable routing may need a separate assessment. The quote identifies any extra parts before we begin.</p></section><section><h2>What a routine service covers</h2><p>A routine service checks braking, shifting, accessible fasteners and tyre condition. We note wear that needs attention, distinguish an adjustment from a replacement, and discuss work that falls outside the agreed service. A suspension overhaul or electrical fault investigation needs its own booking and quote.</p><p>For cargo bicycles, send the model and approximate length when arranging a visit. We need enough working space to position the bicycle securely. We do not ask customers to remove permanently fitted equipment solely to make the first enquiry.</p></section><section><h2>Collection and aftercare</h2><p>When work is complete, we explain what changed and give you the written job description. Please ask about any new part you have not used before. Brake pads, cables and drivetrain parts may settle during their first rides; contact us with the job number if something feels different.</p><p>Items left on the bicycle are listed during handover. Take lights, tools and removable batteries with you unless they are needed for the work and have been specifically recorded. We agree a collection date before the bicycle is left overnight.</p></section></main><footer><p>Tideglass Cycle Repair</p><p>A small local team, with clear arrangements before you visit.</p></footer></body></html>\n",
+        "visit.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"Finding the workshop — Tideglass Cycle Repair\"><title>Finding the workshop | Tideglass Cycle Repair</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><p class=\"wordmark\">Tideglass Cycle Repair</p><nav aria-label=\"Main pages\"><a href=\"index.html\">Workshop</a><a href=\"services.html\">Repair menu</a><a href=\"visit.html\">Visit</a><a href=\"questions.html\">Questions</a><a href=\"contact.html\">Service enquiry</a></nav></header><main id=\"main\"><h1>Finding the workshop</h1><section><h2>Address and hours</h2><p>Workshop address: 34 Sample Terrace, Footscray VIC 3011.</p><dl><dt>Monday to Friday</dt><dd>08:30–17:30</dd><dt>Saturday</dt><dd>09:00–13:00</dd><dt>Sunday</dt><dd>Closed</dd></dl><p>The entrance is the wide door beside the workshop window. Please walk bicycles through the doorway rather than riding onto the service floor. The reception area is separate from the repair stands, where tools and parts need to remain clear.</p></section><section><h2>Arranged drop-offs</h2><p>Contact the desk before leaving a bicycle. We confirm a suitable handover time in writing and reserve the storage space it needs. If that arrangement changes, reply to the same email rather than assuming a later arrival will fit the workshop schedule.</p><p>Allow time to describe the issue at reception. A short written note can help if the problem appears only under certain conditions. Tell us whether it happens in one gear, while braking, after rain or when carrying a load.</p></section><section><h2>Waiting and transport</h2><p>The workshop has a small waiting bench, but it is not a space for long-term bicycle storage. If the repair needs an inspection, plan another way to travel rather than waiting for an immediate diagnosis. We will explain how the quote and collection arrangements are confirmed.</p><p>The street-side pump is available whenever the workshop is open. The desk can point out its valve positions; please leave the hose tidily after use. Borrowed tools and parts on the service benches are for the mechanics rather than a public self-service area.</p></section><section><h2>Access questions</h2><p>If the entrance, bicycle size or handover process may be difficult for you, send a short note before visiting. We can describe the space and discuss a quieter arrival time. No sensitive personal documents are needed for that conversation.</p></section></main><footer><p>Tideglass Cycle Repair</p><p>A small local team, with clear arrangements before you visit.</p></footer></body></html>\n",
+        "questions.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"Common service questions — Tideglass Cycle Repair\"><title>Common service questions | Tideglass Cycle Repair</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><p class=\"wordmark\">Tideglass Cycle Repair</p><nav aria-label=\"Main pages\"><a href=\"index.html\">Workshop</a><a href=\"services.html\">Repair menu</a><a href=\"visit.html\">Visit</a><a href=\"questions.html\">Questions</a><a href=\"contact.html\">Service enquiry</a></nav></header><main id=\"main\"><h1>Common service questions</h1><section><h2>Can I leave a bike without a booking?</h2><p>Please arrange a drop-off space first and wait for written confirmation. We do not accept unarranged overnight drop-offs. A brief pump stop during opening hours is different from leaving a bicycle for inspection or storage.</p><h2>When are you open?</h2><p>Monday to Friday: 08:30–17:30. Saturday: 09:00–14:00. Closed Sunday. Collection arrangements outside those hours need a separate written agreement with the desk.</p></section><section><h2>Does the labour price include parts?</h2><p>The repair menu separates labour from replacement parts. Where a worn part changes the cost, we explain the choice in the quote. Reusing a damaged part simply to fit an old estimate may not be suitable; discuss the options before approving the job.</p><h2>What if a noise does not happen during the visit?</h2><p>A description of the conditions is useful. Note whether the sound follows pedalling, wheel movement, braking or a particular load. A short recording can help the conversation, but the mechanic still needs to inspect the bicycle before choosing work.</p></section><section><h2>Can I buy a repair online?</h2><p>The website provides workshop information and a service enquiry form. Work and collection arrangements are confirmed with the desk after the bicycle and requirements are understood. Parts availability and the scope of a repair are discussed in the written quote.</p><h2>How should I bring an e-bike?</h2><p>Tell us the model and the problem before arranging electrical work.</p></section></main><footer><p>Tideglass Cycle Repair</p><p>A small local team, with clear arrangements before you visit.</p></footer></body></html>\n",
+        "contact.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"Make a service enquiry — Tideglass Cycle Repair\"><title>Make a service enquiry | Tideglass Cycle Repair</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><p class=\"wordmark\">Tideglass Cycle Repair</p><nav aria-label=\"Main pages\"><a href=\"index.html\">Workshop</a><a href=\"services.html\">Repair menu</a><a href=\"visit.html\">Visit</a><a href=\"questions.html\">Questions</a><a href=\"contact.html\">Service enquiry</a></nav></header><main id=\"main\"><h1>Make a service enquiry</h1><section><h2>Describe the bicycle and the issue</h2><p>Send the bicycle type, the work you are considering and a useful contact email. If you want to arrange a drop-off, include the day you prefer. We reply with the next arrangement rather than assuming that submitting an enquiry reserves space.</p><p>Workshop address: 34 Sample Terrace, Footscray VIC 3011. For a visit, check the access information and wait for the desk to confirm any overnight drop-off. The service menu explains the difference between labour and separately quoted parts.</p></section><section><h2>Service details</h2><form method=\"post\" action=\"/service-enquiries\"><label>Your name<input name=\"name\" required></label><label>Email<input type=\"email\" name=\"email\" required></label><label>Bicycle type<input name=\"bicycle\"></label><label>Preferred day<input name=\"preferredDay\"></label><label>What changed on your ride?<textarea name=\"message\" rows=\"5\" required></textarea></label><button type=\"submit\">Send service enquiry</button></form><p class=\"service-note\">Your enquiry has been received. Keep the receipt number with your bicycle notes so the desk can connect the conversation to the requested work.</p></section><section><h2>Useful details to include</h2><p>A tyre marking, component name or photograph of a worn part can be useful. Do not send passwords, bank details or identity documents. If you have an existing workshop job number, include it rather than writing out the full earlier conversation.</p></section></main><footer><p>Tideglass Cycle Repair</p><p>A small local team, with clear arrangements before you visit.</p></footer></body></html>\n",
+        "site.css": "*{box-sizing:border-box}body{margin:0;background:#f6f7f8;color:#20282f;font:16px/1.65 Arial,sans-serif}header,main,footer{max-width:1120px;padding:24px;margin:auto}.wordmark{font-size:26px;font-weight:700}header{border-bottom:3px solid #246278}nav{display:flex;gap:18px;flex-wrap:wrap}a{color:#16566d}.skip{position:absolute;left:-9999px}.skip:focus{left:12px;top:12px;background:white;padding:10px}h1{font-size:36px;line-height:1.15}h2{margin-top:30px;font-size:22px}table{border-collapse:collapse;width:100%}th,td{padding:11px 12px;text-align:left;border-bottom:1px solid #bac8cf}.service-note{border-left:5px solid #246278;padding:14px 18px;background:#e7eef2}.split{display:grid;grid-template-columns:2fr 1fr;gap:28px}label{display:block;margin:12px 0}input,textarea,select{display:block;font:inherit;padding:8px;width:100%;max-width:600px}button{background:#1b536a;color:#fff;border:0;padding:11px 20px;font:inherit}footer{font-size:14px;border-top:1px solid #bac8cf}:focus-visible{outline:3px solid #b57019;outline-offset:3px}@media(max-width:650px){header,main,footer{padding:18px}.split{display:block}h1{font-size:29px}th,td{padding:8px}}\n"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "Address copy on home visit and enquiry: 34 Sample Terrace Footscray VIC3011",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "All three specifically named current pages display the same agreed address. Do not require it in unrelated headings or claim an actual visit was observed.",
+            "relevantFiles": [
+              "index.html",
+              "visit.html",
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-2",
+          "title": "Original requirement 2",
+          "source": "Weekday opening hours copy is 08:30–17:30",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "Home, visit and questions pages consistently state the agreed weekday hours. This checks advertised copy only.",
+            "relevantFiles": [
+              "index.html",
+              "visit.html",
+              "questions.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-3",
+          "title": "Original requirement 3",
+          "source": "Saturday hours copy is 09:00–14:00 across current pages",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "Home and questions show14:00, but visit.html closes at13:00. The current visit page is in scope; a precise cross-page source-copy conflict is evidenced.",
+            "relevantFiles": [
+              "index.html",
+              "visit.html",
+              "questions.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-4",
+          "title": "Original requirement 4",
+          "source": "Wheel truing labour copy is AUD45 per wheel",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "The correct service row lists AUD49 instead of agreedAUD45. The response must not confuse this service with other labour rows or invent a parts-included obligation.",
+            "relevantFiles": [
+              "services.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-5",
+          "title": "Original requirement 5",
+          "source": "Home and visit copy offer a pump during opening hours",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "Both pages provide the agreed availability text. The wording does not establish the actual physical pump condition.",
+            "relevantFiles": [
+              "index.html",
+              "visit.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-6",
+          "title": "Original requirement 6",
+          "source": "Drop-off policy copy requires prior written confirmation",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "The home, visit and questions copy expresses these conditions consistently. The clause does not promise an automated reservation platform.",
+            "relevantFiles": [
+              "index.html",
+              "visit.html",
+              "questions.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-7",
+          "title": "Original requirement 7",
+          "source": "Enquiries persist and are retrievable by receipt number",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "A form and receipt sentence do not establish persistent storage or later lookup. Neither backend absence nor successful durability is observed in static HTML/CSS.",
+            "relevantFiles": [
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-8",
+          "title": "Original requirement 8",
+          "source": "Mobile enquiry fields are readable and fully usable",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "Responsive CSS and form markup do not establish rendered mobile geometry, usable controls or successful submission. A browser and operational observation are required.",
+            "relevantFiles": [
+              "contact.html",
+              "site.css"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "qingyu-sixteen-late-obligations",
+      "stratum": "mismatch",
+      "language": "zh",
+      "title": "青屿花艺服务与课程网站",
+      "summary": "花束价目文案将晨露花束标为AUD68\n婚礼与聚会页文案注明花器租用订金AUD40\n页面文案说明手写卡片附加费AUD5\n页面文案说明日常花束配送范围为花室周边8公里\n花束页文案要求定制花束至少提前48小时确认\n课程页文案说明每节小班课程最多十位学员\n需求提交后持久记录咨询内容并能凭咨询编号回查\n课程取消文案说明开课前至少七天取消可全额退还订金\n到访页文案必须写明公共假日休息\n课程材料说明文案必须包含天然乳胶手套过敏提示\n婚礼与聚会页文案将场地勘察费列为按次AUD120\n符合课程取消政策的订单须实际自动退还原支付卡并提供可查询退款交易回执",
+      "files": {
+        "index.html": "<!doctype html>\n<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"让相聚有一束花 — 青屿花艺\"><title>让相聚有一束花 | 青屿花艺</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">跳到正文</a><header><p class=\"wordmark\">青屿花艺</p><nav aria-label=\"页面导航\"><a href=\"index.html\">花艺日常</a><a href=\"bouquets.html\">花束与小礼物</a><a href=\"workshops.html\">花艺小课</a><a href=\"arrangements.html\">婚礼与聚会</a><a href=\"visit.html\">取货与到访</a></nav></header><main id=\"main\"><h1>让相聚有一束花</h1><section><h2>花室里的日常选择</h2><p>青屿花艺制作日常花束、简洁桌花，也为小型婚礼和家庭聚会准备花艺。我们喜欢把当季材料放在一起，让主花、枝叶与花器各自留出空间。选花时可以先说使用场合，再讨论尺寸与色彩，而不是只从一张照片判断作品大小。</p><p>花室地址：12 Sample Court, Box Hill VIC 3128。一般花束可到店挑选，定制花束请至少提前 48 小时确认。我们会把取货时间、包装方式和需要附上的文字写在确认信息中。</p></section><section class=\"two-col\"><div><h2>晨露花束</h2><p>晨露花束 AUD 68，以浅色主花、轻盈枝叶和自然伸展的线条组成。包装以便于拆开养护为主，离店前加上保水材料。具体花材会随季节变化，色调与整体尺寸在确认时说明。</p><p>如果想附一张手写卡片，可在订单里提供最终文字。手写卡片附加费为 AUD 5；请核对姓名与落款，我们按确认后的文字书写。</p></div><div><h2>来上一节花艺课</h2><p>小班课程最多十位学员，每位都有独立的操作空间。老师先演示材料处理，再陪大家调整比例，不需要把作品做得完全相同。课程成品可带走，花器与花材已经包含在对应课程费用中。</p><p>报名人可查看课程页的材料和取消说明，再选择适合自己的时间。团队活动与公开课程的桌面安排不同，人数确定后会单独沟通。</p></div></section><section><h2>配送与取花</h2><p>日常花束配送范围为花室周边 8 公里，具体时间窗会在确认时说明。花器作品和大型桌花需要更稳定的运输空间，不能仅凭距离决定配送方式。收花地点有门禁或接收时间限制时，请提前告诉花室。</p></section></main><footer><p>青屿花艺</p><p>从日常花束到相聚的桌面，让安排清楚一些，让花自然一些。</p></footer></body></html>\n",
+        "bouquets.html": "<!doctype html>\n<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"花束、瓶花与附加选择 — 青屿花艺\"><title>花束、瓶花与附加选择 | 青屿花艺</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">跳到正文</a><header><p class=\"wordmark\">青屿花艺</p><nav aria-label=\"页面导航\"><a href=\"index.html\">花艺日常</a><a href=\"bouquets.html\">花束与小礼物</a><a href=\"workshops.html\">花艺小课</a><a href=\"arrangements.html\">婚礼与聚会</a><a href=\"visit.html\">取货与到访</a></nav></header><main id=\"main\"><h1>花束、瓶花与附加选择</h1><section><h2>日常花束价目</h2><table><thead><tr><th>作品</th><th>价格</th><th>适合的场合</th></tr></thead><tbody><tr><td>晨露花束</td><td>AUD 68</td><td>自然浅色调，适合日常问候与小型庆祝。</td></tr><tr><td>晚霞花束</td><td>AUD 88</td><td>较饱满的暖色组合，保留枝叶的伸展。</td></tr><tr><td>手心小花</td><td>AUD 38</td><td>小尺寸的轻盈花束，适合带去一次短暂探访。</td></tr></tbody></table><p>价目对应花束规格，不包含额外花器或配送。个别花材在供应不稳定时会由相近质感替代，确认前会说明色调和尺寸。希望保留特定品种时，需要先询问当周采购。</p></section><section><h2>手写卡片与包装</h2><p>手写卡片附加费为 AUD 5。可以写祝福、姓名和落款，请把最终文字一次提供完整；我们不替收花人猜测简称或昵称。较长的文字会先确认是否需要换用更大的卡片。</p><p>普通包装使用便于拆卸的纸张和绑带。运输保水材料到家后应尽快拆下，把花放进清洁花瓶。我们可以为需要自行驾车运输的客人补充支撑，但仍请让花束在车内保持稳定。</p></section><section class=\"details\"><h2>定制花束的准备时间</h2><p>定制花束请至少提前 48 小时确认。确认内容包括预算、尺寸、色调和取货时间。临时询问可以先了解现有材料，但不等于采购已经完成；花室会回复能够提供的具体选择。</p><p>日常配送范围为花室周边 8 公里。填写地址时，请补充收花人的接收时间和门禁说明，不需要提供身份证件或付款密码。无人接收或临时变更地点时，需要再沟通安排。</p></section></main><footer><p>青屿花艺</p><p>从日常花束到相聚的桌面，让安排清楚一些，让花自然一些。</p></footer></body></html>\n",
+        "workshops.html": "<!doctype html>\n<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"周末花艺小课 — 青屿花艺\"><title>周末花艺小课 | 青屿花艺</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">跳到正文</a><header><p class=\"wordmark\">青屿花艺</p><nav aria-label=\"页面导航\"><a href=\"index.html\">花艺日常</a><a href=\"bouquets.html\">花束与小礼物</a><a href=\"workshops.html\">花艺小课</a><a href=\"arrangements.html\">婚礼与聚会</a><a href=\"visit.html\">取货与到访</a></nav></header><main id=\"main\"><h1>周末花艺小课</h1><section><h2>课程与席位</h2><p>每节小班课程最多十位学员。课程从认识主花、辅助材料与线条开始，接着练习修剪、固定和调整比例。老师会逐桌沟通，让作品保留每个人自己的选择，而不是只追求与示范一模一样。</p><p>课程费用包含当次花材、借用工具和花器。建议穿方便活动的衣服，把包袋放在侧柜，让桌面留给材料。长发可以束起，完成作品后再一起整理桌面。</p></section><section><h2>材料说明</h2><p>课堂按当周主题准备鲜花、枝叶、花器、剪刀和固定材料。手套按每人一双准备，工作台旁有清洁用品。需要了解植物种类或对材料有特别顾虑，可以在报名时说明，花室会核对该次课程的采购安排。</p><p>工具在课堂开始时统一说明使用方式。桌边的小桶用于收集修剪下的枝叶，较长的枝条不要留在通道上。作品离开前会检查固定点，并附上适合这组花材的养护说明。</p></section><section><h2>取消政策文案</h2><p>开课前至少七天取消，可全额退还订金。距开课不足七天的申请，请回复报名确认信息，写明订单号、课程日期和人数，花室会按已确认的安排讨论后续处理。转让席位或更换参与人也需要提前告知。</p><p>团队课的人数、花器与场地准备会写在单独确认信息中。公开课程的空位不直接代表团队课可以接待的时间，安排好后再告知参与者到场细节。</p></section><section><h2>课程之后</h2><p>作品完成后，老师会解释保水、摆放和再次修剪的顺序。回家路上尽量避免花器倾倒；需要继续转乘公共交通，可以在下课前询问包装方式。想延伸练习时，可保留当次课程的养护卡，记下自己采用的花材组合。</p></section></main><footer><p>青屿花艺</p><p>从日常花束到相聚的桌面，让安排清楚一些，让花自然一些。</p></footer></body></html>\n",
+        "arrangements.html": "<!doctype html>\n<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"婚礼与小型聚会 — 青屿花艺\"><title>婚礼与小型聚会 | 青屿花艺</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">跳到正文</a><header><p class=\"wordmark\">青屿花艺</p><nav aria-label=\"页面导航\"><a href=\"index.html\">花艺日常</a><a href=\"bouquets.html\">花束与小礼物</a><a href=\"workshops.html\">花艺小课</a><a href=\"arrangements.html\">婚礼与聚会</a><a href=\"visit.html\">取货与到访</a></nav></header><main id=\"main\"><h1>婚礼与小型聚会</h1><section><h2>先讨论空间与人数</h2><p>小型婚礼和家庭聚会的花艺，从场地、桌面尺寸与使用时间开始。请准备预计人数、场地照片和希望保留的色调。我们会讨论桌花高度、仪式区和取放路径，避免把作品放在会阻挡通行的位置。</p><p>场地勘察费按次收取，金额为 AUD 150。勘察安排与后续制作报价分别确认。需要场地方协助开门或提供尺寸时，请在确定日期前说明，让当天讨论留出足够时间。</p></section><section><h2>花器租用</h2><p>花器租用订金为 AUD 35。报价会列出数量、尺寸和归还日期，便于聚会结束后核对。花器需保持完整，归还前请倒净余水；如有破损，不要自行把碎片装回普通包装里，应先联系花室讨论安全的处理方式。</p><p>花材与花器的关系会影响整体比例。较长桌面不一定只需要一个更大的作品，也可以由多组小花器组合，给餐具和交谈留出空间。样品讨论不代替最终数量清单。</p></section><section><h2>确认交付范围</h2><p>制作前会确认作品数量、摆放位置、交付时间和谁负责接收。场地临时增加桌面或更改动线时，请通过原有联系渠道沟通，花室会说明能否调整、需要哪些材料以及费用变化。</p><p>活动当天如由亲友接收，提前提供对接人的姓名与可联系时段即可，不需要公开身份证件或个人付款资料。作品在指定地点交接后，现场后续摆放按已确认的服务范围处理。</p></section></main><footer><p>青屿花艺</p><p>从日常花束到相聚的桌面，让安排清楚一些，让花自然一些。</p></footer></body></html>\n",
+        "visit.html": "<!doctype html>\n<html lang=\"zh-CN\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"取花、来店与联系 — 青屿花艺\"><title>取花、来店与联系 | 青屿花艺</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">跳到正文</a><header><p class=\"wordmark\">青屿花艺</p><nav aria-label=\"页面导航\"><a href=\"index.html\">花艺日常</a><a href=\"bouquets.html\">花束与小礼物</a><a href=\"workshops.html\">花艺小课</a><a href=\"arrangements.html\">婚礼与聚会</a><a href=\"visit.html\">取货与到访</a></nav></header><main id=\"main\"><h1>取花、来店与联系</h1><section><h2>到访信息</h2><p>花室地址：12 Sample Court, Box Hill VIC 3128。周二、周三与周四 10:00–18:00，周五 10:00–18:00，周六 09:00–17:00。周日与周一休息，公共假日休息；临时营业调整会提前在门店通知中说明。</p><p>按确认的时间段取花，可以减少等待，也让花室有时间检查包装和保水。门口空间需要留给其他行人，较大的作品可由店员协助搬到安全的交接位置。接收人不是下单人时，请携带订单号与已确认的接收安排。</p></section><section><h2>联系花室</h2><p>联系邮箱：hello@qingyu.example.org。请在邮件标题写明花束、课程或活动布置，正文提供希望使用的日期、取货或配送安排。花器租用和勘察费用可以在正式确认前分别询问。</p><form action=\"/enquiries\" method=\"post\"><label>姓名<input name=\"name\" required></label><label>邮箱<input name=\"email\" type=\"email\" required></label><label>日期与需求<textarea name=\"message\" rows=\"4\" required></textarea></label><button type=\"submit\">发送需求</button></form><p>需求已收到。后续沟通请保留订单号或咨询编号，方便花室对应到同一件安排。</p></section><section><h2>取消与订金资料</h2><p>课程取消政策为开课前至少七天可全额退还订金。申请时请提供订单号、日期与席位数量。涉及同一订单的后续讨论，请沿用最初的报名邮箱，以便核对已确认的内容。</p><p>对于符合课程取消政策的申请，订金按原付款安排退回。请保存原有确认资料，不要在一般留言里填写银行卡号、密码或短信验证码。更改接收邮箱前，应先在原有联系渠道说明。</p></section></main><footer><p>青屿花艺</p><p>从日常花束到相聚的桌面，让安排清楚一些，让花自然一些。</p></footer></body></html>\n",
+        "site.css": "*{box-sizing:border-box}body{margin:0;background:#fcfaf5;color:#35352d;font-family:system-ui,sans-serif;line-height:1.7}header,main,footer{max-width:1060px;margin:0 auto;padding:22px}.wordmark{font-size:27px;letter-spacing:.08em;color:#495a40}nav{display:flex;flex-wrap:wrap;gap:18px}a{color:#455e3c}.skip{position:absolute;left:-9999px}.skip:focus{left:12px;top:12px;background:white;padding:12px}h1{font-size:34px;line-height:1.25}h2{font-size:23px;margin-top:30px}section+section{border-top:1px solid #dcd9c9;padding-top:12px}table{border-collapse:collapse;width:100%}td,th{padding:11px;text-align:left;border-bottom:1px solid #dcd9c9}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:30px}.details{background:#f0eddf;padding:18px}label{display:block;margin:12px 0}input,textarea{display:block;width:100%;padding:9px;font:inherit}button{padding:10px 20px;background:#4c6041;color:white;border:0;font:inherit}:focus-visible{outline:3px solid #a96b48;outline-offset:4px}footer{font-size:14px;border-top:1px solid #dcd9c9}@media(max-width:680px){header,main,footer{padding:18px}.two-col{display:block}h1{font-size:28px}table{font-size:14px}}\n"
+      },
+      "criteria": [
+        {
+          "id": "manual-1",
+          "title": "人工要求 1",
+          "source": "首页必须使用店名“青屿花艺”。",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "首页页眉与正文使用约定店名；无需推断视觉品牌风格。",
+            "relevantFiles": [
+              "index.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "manual-2",
+          "title": "人工要求 2",
+          "source": "首页与到访页的取货地址必须写为 12 Sample Court, Box Hill VIC 3128。",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "两页使用同一约定地址，跨页核对范围仅为指定两页。",
+            "relevantFiles": [
+              "index.html",
+              "visit.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "manual-3",
+          "title": "人工要求 3",
+          "source": "到访页须显示周四营业时间为 10:00–18:00。",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "到访页将周二、周三、周四统一列为10:00–18:00，包含本条周四。",
+            "relevantFiles": [
+              "visit.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "manual-4",
+          "title": "人工要求 4",
+          "source": "到访页必须显示周五营业时间为 10:00–19:00。",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "到访页实际写周五10:00–18:00，与约定19:00关门不同；不涉及真实门店营业行为。",
+            "relevantFiles": [
+              "visit.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-1",
+          "title": "原始需求 1",
+          "source": "花束价目文案将晨露花束标为AUD68",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "花束价目行和首页介绍均为AUD68；不能与其他规格价格混淆。",
+            "relevantFiles": [
+              "bouquets.html",
+              "index.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-2",
+          "title": "原始需求 2",
+          "source": "婚礼与聚会页文案注明花器租用订金AUD40",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "婚礼与聚会页实际列明租用订金AUD35，与约定40不符。",
+            "relevantFiles": [
+              "arrangements.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-3",
+          "title": "原始需求 3",
+          "source": "页面文案说明手写卡片附加费AUD5",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "首页与花束页明确列明相同附加费。",
+            "relevantFiles": [
+              "index.html",
+              "bouquets.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-4",
+          "title": "原始需求 4",
+          "source": "页面文案说明日常花束配送范围为花室周边8公里",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "首页与花束页都有周边8公里的日常配送文案；不是对配送系统实际行为的判断。",
+            "relevantFiles": [
+              "index.html",
+              "bouquets.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-5",
+          "title": "原始需求 5",
+          "source": "花束页文案要求定制花束至少提前48小时确认",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "花束页直接列出48小时确认要求。",
+            "relevantFiles": [
+              "bouquets.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-6",
+          "title": "原始需求 6",
+          "source": "课程页文案说明每节小班课程最多十位学员",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "课程页明确写最多十位；本条只检查人数文案，不承诺系统容量已验证。",
+            "relevantFiles": [
+              "workshops.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-7",
+          "title": "原始需求 7",
+          "source": "需求提交后持久记录咨询内容并能凭咨询编号回查",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "到访页表单与已收到文案不能证明咨询落库或编号回查，静态源文也不证明功能失败。",
+            "relevantFiles": [
+              "visit.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-8",
+          "title": "原始需求 8",
+          "source": "课程取消文案说明开课前至少七天取消可全额退还订金",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "课程页明确给出七天前全额退订金的政策，属于文案要求而非原卡退款执行证明。",
+            "relevantFiles": [
+              "workshops.html",
+              "visit.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-9",
+          "title": "原始需求 9",
+          "source": "到访页文案必须写明公共假日休息",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "到访页有公共假日休息的明确文案；临时调整说明没有改成常规营业。",
+            "relevantFiles": [
+              "visit.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-10",
+          "title": "原始需求 10",
+          "source": "课程材料说明文案必须包含天然乳胶手套过敏提示",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "完整材料说明只有手套按每人一双和清洁用品，没有约定的天然乳胶过敏提示。应指出缺少的指定文字，不推断实际手套成分或医疗安全结论。",
+            "relevantFiles": [
+              "workshops.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-11",
+          "title": "原始需求 11",
+          "source": "婚礼与聚会页文案将场地勘察费列为按次AUD120",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "晚段条款对应arrangements.html的场地勘察费实际AUD150，不是花器订金或花束价目；这是具体金额不符。",
+            "relevantFiles": [
+              "arrangements.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-12",
+          "title": "原始需求 12",
+          "source": "符合课程取消政策的订单须实际自动退还原支付卡并提供可查询退款交易回执",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "取消政策和按原付款安排退回的页面文字并非执行结果。没有运行与独立交易记录，不能宣称已自动退款或功能已失效。",
+            "relevantFiles": [
+              "workshops.html",
+              "visit.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "harbour-frame-scoped-visual-boundary",
+      "stratum": "boundary",
+      "language": "en",
+      "title": "Harbour Frame Collective website",
+      "summary": "Deliver the current collective, team and visit pages plus the 2023 programme archive. Current visitor-address consistency applies only to index.html and visit.html; the archive retains its historical venue. The team photograph and mobile contact controls must meet the agreed visual and usability requirements. Session booking and payment are outside this website scope.",
+      "files": {
+        "index.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"A shared place for making and conversation — Harbour Frame Collective\"><title>A shared place for making and conversation | Harbour Frame Collective</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><p class=\"wordmark\">Harbour Frame Collective</p><nav aria-label=\"Main pages\"><a href=\"index.html\">Collective</a><a href=\"team.html\">People and workshops</a><a href=\"visit.html\">Visit and contact</a><a href=\"archive-2023.html\">Programme archive 2023</a></nav></header><main id=\"main\"><h1>A shared place for making and conversation</h1><section class=\"columns\"><div><h2>Small workshops, open conversations</h2><p>Harbour Frame Collective brings people together around drawing, print and simple bookmaking. Some visitors arrive with a project already in progress; others come for a first introduction to a material. We make time for questions and encourage people to take ideas in different directions.</p><p>Our current visitor address is Studio 4, 28 Sample Arcade, Northbridge WA 6003. The Visit page describes arrival and contact arrangements. Public programmes have their own dates and materials lists; a general enquiry starts a conversation rather than reserving a place.</p></div><aside><h2>What you can find here</h2><ul><li>Short introductions to the people running our sessions.</li><li>Practical notes for visiting the current studio.</li><li>A programme archive from earlier venues.</li></ul><p>Session bookings and payments are handled separately after the programme arrangements are confirmed.</p></aside></section><section><h2>Working at a comfortable scale</h2><p>We choose small groups so participants have room to work and speak with a facilitator. A session may begin with a shared demonstration, then move into individual work. People can ask to see a process again, compare materials and discuss ways to continue at home.</p><p>The collective keeps a small reference shelf with paper samples, books and tools used in earlier sessions. It supports conversation during a workshop rather than a retail catalogue. When a programme needs a specific purchase or contribution, its information sheet explains that arrangement.</p></section><section><h2>Keep in touch</h2><p>Use the contact form for a question about visiting, a group session or the materials listed for a programme. Including the session title helps us pass the question to the right facilitator. Please leave passwords, payment card numbers and identity documents out of general correspondence.</p><p>The 2023 programme archive records an earlier venue. For a current visit, use the studio address and arrangements on the Visit page rather than an address printed in an old programme.</p></section></main><footer><p>Harbour Frame Collective</p><p>Make room for shared work, conversation and a thoughtful visit.</p></footer></body></html>\n",
+        "team.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"People and workshop approaches — Harbour Frame Collective\"><title>People and workshop approaches | Harbour Frame Collective</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><p class=\"wordmark\">Harbour Frame Collective</p><nav aria-label=\"Main pages\"><a href=\"index.html\">Collective</a><a href=\"team.html\">People and workshops</a><a href=\"visit.html\">Visit and contact</a><a href=\"archive-2023.html\">Programme archive 2023</a></nav></header><main id=\"main\"><h1>People and workshop approaches</h1><section><h2>Meet the collective</h2><figure><img src=\"assets/collective.png\" width=\"640\" height=\"360\" alt=\"Four adults gathered around a worktable with paper and drawing materials\"><figcaption>The collective at a shared worktable, preparing materials for a programme.</figcaption></figure><p>Our facilitators come from illustration, printmaking and community arts. Each brings a different working rhythm: some sessions build around a repeated mark, others begin with a conversation about place or a small object. Participants do not need to use the same process as the person beside them.</p></section><section><h2>Drawing from ordinary objects</h2><p>A drawing session might start with one familiar object viewed from several positions. We discuss edges, negative space and how marks can suggest weight. The aim is to notice choices, not to produce identical pages. A facilitator can offer a short demonstration when a participant wants to try another approach.</p><p>Paper and basic drawing tools are listed with the programme. If a session permits personal materials, bring only what fits in your own working area. Keep wet materials and cutting tools away from someone else's paper, and ask before borrowing tools from another table.</p></section><section><h2>Printed layers and simple books</h2><p>Print sessions explore how a repeated shape changes when colour, pressure or orientation changes. Bookmaking sessions consider folding and sequence, with time to decide how one page leads to the next. We explain tools before they are used and make a clear space for drying or storing work during a break.</p><p>Participants who want to continue after a session can ask which tools are essential and which can be replaced with materials already at home. We describe our own approaches, while recognising that people may prefer different working methods.</p></section></main><footer><p>Harbour Frame Collective</p><p>Make room for shared work, conversation and a thoughtful visit.</p></footer></body></html>\n",
+        "visit.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"Visit the current studio — Harbour Frame Collective\"><title>Visit the current studio | Harbour Frame Collective</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><p class=\"wordmark\">Harbour Frame Collective</p><nav aria-label=\"Main pages\"><a href=\"index.html\">Collective</a><a href=\"team.html\">People and workshops</a><a href=\"visit.html\">Visit and contact</a><a href=\"archive-2023.html\">Programme archive 2023</a></nav></header><main id=\"main\"><h1>Visit the current studio</h1><section><h2>Current address</h2><p>Our current visitor address is Studio 4, 28 Sample Arcade, Northbridge WA 6003.</p><p>Check the information sent with your programme for arrival time and the studio entrance. A facilitator may be preparing materials before the session begins, so please wait in the shared reception area if the room is not ready. The corridor must stay clear for other arcade users.</p></section><section><h2>Before you come</h2><p>If you want information about steps, seating or the room layout, ask before the day of your visit. We can describe the space and discuss the arrangements available for that programme. You do not need to provide sensitive personal documents to ask an access question.</p><p>Bring the materials named in the programme notes and a bag large enough to carry your work home. Some pieces need time to dry, so a facilitator may suggest collecting them later. Please check before bringing food into a session that uses shared tools or delicate paper.</p></section><section><h2>Contact the collective</h2><p>For programme or visit questions, write to hello@harbourframe.example.org or use the form below. Include the title of a session if your question relates to a particular programme, along with a contact email where a facilitator can reply.</p><form action=\"#\" method=\"post\"><label>Name<input name=\"name\" required></label><label>Email<input name=\"email\" type=\"email\" required></label><label>Your question<textarea name=\"message\" rows=\"5\" required></textarea></label><button class=\"send-request\" type=\"submit\">Send an enquiry</button></form></section><section><h2>Earlier venues</h2><p>The programme archive preserves descriptions and venue details from earlier years. Those pages are useful for remembering a programme, but current visits use the address on this page. A reference to a past venue does not reserve a place in a current session.</p></section></main><footer><p>Harbour Frame Collective</p><p>Make room for shared work, conversation and a thoughtful visit.</p></footer></body></html>\n",
+        "archive-2023.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"Programme archive 2023 — Harbour Frame Collective\"><title>Programme archive 2023 | Harbour Frame Collective</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><p class=\"wordmark\">Harbour Frame Collective</p><nav aria-label=\"Main pages\"><a href=\"index.html\">Collective</a><a href=\"team.html\">People and workshops</a><a href=\"visit.html\">Visit and contact</a><a href=\"archive-2023.html\">Programme archive 2023</a></nav></header><main id=\"main\"><h1>Programme archive 2023</h1><section><h2>Paper, place and shared observations</h2><p>The 2023 programme brought drawing and simple print sessions to a temporary room near the river. Participants collected shapes from surrounding streets and used them to make folded sequences. The programme included an afternoon conversation about how a familiar route changes when it is recorded in marks rather than words.</p><p>2023 venue: Room 2, 9 Former Quay, East Perth WA 6004. These venue details belong to the 2023 programme. Current programmes use the Visit page for arrival information.</p></section><section><h2>Drawing a route</h2><p>Participants began with quick observations made on the way to the room: a repeating window frame, a branch above a gate, or a pattern on a footpath. At the table, those notes became a short sequence of marks. Some people chose a recognisable route; others rearranged the material into a more open story.</p><p>The conversation considered what gets left out when a place is drawn from memory. A facilitator offered examples of how a change in scale or rhythm can connect separate observations without turning the page into a map.</p></section><section><h2>Layered postcards</h2><p>The print session used simple shapes and a limited group of colours. Participants compared the effect of a lighter layer over a darker mark, then chose a sequence for a small set of postcards. The workshop allowed time to try variations before choosing which pages to keep together.</p><p>Work was displayed informally along one wall while participants talked about materials and process. Some took their pages home as a set; others folded or cut them into new arrangements after the session.</p></section></main><footer><p>Harbour Frame Collective</p><p>Make room for shared work, conversation and a thoughtful visit.</p></footer></body></html>\n",
+        "site.css": "*{box-sizing:border-box}html{font-family:Georgia,serif;color:#202f3a;background:#fafafa;line-height:1.65}body{margin:0}header,main,footer{max-width:1040px;margin:0 auto;padding:26px}header{border-bottom:2px solid #304e62}.wordmark{font-family:Arial,sans-serif;font-size:25px;font-weight:700}nav{display:flex;gap:18px;flex-wrap:wrap;font-family:Arial,sans-serif}a{color:#225b78}.skip{position:absolute;left:-9999px}.skip:focus{left:12px;top:12px;background:white;padding:12px}h1{font-size:38px;line-height:1.15}h2{margin-top:30px;font-size:24px}figure{margin:24px 0}img{max-width:100%;height:auto}figcaption{font:14px/1.5 Arial,sans-serif}.columns{display:grid;grid-template-columns:3fr 2fr;gap:32px}.programme{padding:18px;border:1px solid #c4d2db}.reserve-hidden{display:none}label{display:block;margin:14px 0}input,textarea{display:block;width:100%;max-width:620px;padding:10px;font:16px Arial,sans-serif}.send-request{display:inline-block;background:#244b61;color:white;border:0;padding:12px 22px;font:16px Arial,sans-serif}:focus-visible{outline:3px solid #ad6429;outline-offset:4px}footer{font-size:14px;border-top:1px solid #c4d2db}@media(max-width:680px){header,main,footer{padding:18px}h1{font-size:30px}.columns{display:block}.send-request{max-width:100%;white-space:normal}}\n",
+        "assets/collective.png": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAFoCAIAAABIUN0GAAAEnElEQVR42u3VsQkAIRAAQcuygC/AAgxMPxOTDx7M7NsuDg4GpoJNttQxAYBgRQIAMGAAMGAAwIABwIABAAMGAAMGAAwYAAwYADBgADBgADBgAMCAAcCAAQADBgADBgAMGAAMGAAwYAAwYAAwYADAgAHAgAEAAwYAAwYADBgADBgAMGAAMGAAMGAAwIABwIABAAMGAAMGAAwYAAwYADBgADBgADBgAMCAAcCAAQADBgADBgAMGAAMGAAwYAAwYAAwYADAgAHAgAEAAwYAAwYADBgADBgAMGAAMGAAMGAAwIABwIABAAMGAAMGAAwYAAwYADBgADBgADBgAMCAAcCAAQADBgADBgAMGAAMGAAwYAAwYAAwYADAgAHAgAEAAwYAAwYADBgADBgAMGAAMGAAMGAVAMCAAcCAAQADBgADBgAMGABSDfh5PwAgmAEDgAEDgAEDAAYMAAYMABgwABgwAGDAAGDAAIABA4ABA4ABAwAGDAAGDAAYMAAYMABgwABgwACAAQOAAQOAAQMABgwABgwAGDAAGDAAYMAAYMAAgAEDgAEDgAEDAAYMAAYMABgwABgwAGDAAGDAAIABA4ABA4ABAwAGDAAGDAAYMAAYMABgwABgwACAAQOAAQOAAQMABgwABgwAGDAAGDAAYMAAYMAAgAEDgAEDgAEDAAYMAAYMABgwABgwAGDAAGDAAIABA4ABA4ABAwAGDAAGDAAYMAAYMABgwABgwACAAQOAAQOAAQMABgwABgwAGDAAGDAAYMAAYMAAgAEDgAEDgAFLAAAGDAAGDAAYMAAYMABgwACQa8BtbQAgmAEDgAEDgAEDAAYMAAYMABgwABgwAGDAAGDAAIABA4ABA4ABAwAGDAAGDAAYMAAYMABgwABgwACAAQOAAQOAAQMABgwABgwAGDAAGDAAYMAAYMAAgAEDgAEDgAEDAAYMAAYMABgwABgwAGDAAGDAAIABA4ABA4ABAwAGDAAGDAAYMAAYMABgwABgwACAAQOAAQOAAQMABgwABgwAGDAAGDAAYMAAYMAAgAEDgAEDgAEDAAYMAAYMABgwABgwAGDAAGDAAIABA4ABA4ABAwAGDAAGDAAYMAAYMABgwABgwACAAQOAAQOAAQMABgwABgwAGDAAGDAAYMAAYMAAgAEDgAEDgAFLAAAGDAAGDAAYMAAYMABgwACQa8D9PwBAMAMGAAMGAAMGAAwYAAwYADBgADBgAMCAAcCAAQADBgADBgADBgAMGAAMGAAwYAAwYADAgAHAgAEAAwYAAwYAAwYADBgADBgAMGAAMGAAwIABwIABAAMGAAMGAAMGAAwYAAwYADBgADBgAMCAAcCAAQADBgADBgADBgAMGAAMGAAwYAAwYADAgAHAgAEAAwYAAwYAAwYADBgADBgAMGAAMGAAwIABwIABAAMGAAMGAAMGAAwYAAwYADBgADBgAMCAAcCAAQADBgADBgADBgAMGAAMGAAwYAAwYADAgAHAgAEAAwYAAwYAAwYADBgADBgAMGAAMGAAwIABwIABAAMGAAMGAAOWAAAMGAAMGAAwYAAwYADAgAEglQv0ZQcNOvBoLgAAAABJRU5ErkJggg=="
+      },
+      "criteria": [
+        {
+          "id": "manual-1",
+          "title": "Manual requirement 1",
+          "source": "The current visitor address must read Studio 4, 28 Sample Arcade, Northbridge WA 6003 on index.html and visit.html. The 2023 programme archive is excluded from current-address consistency.",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "Both specified current pages give the same Studio4/28Sample Arcade/Northbridge/WA6003 address with normal spacing. The archive explicitly refers to a different2023venue and is excluded by the locked clause. Do not invent a new current-address obligation for that page.",
+            "relevantFiles": [
+              "index.html",
+              "visit.html",
+              "archive-2023.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "manual-2",
+          "title": "Manual requirement 2",
+          "source": "The team photograph on team.html must show at least four adult people, and the contact controls on visit.html must remain visible and usable on a mobile viewport.",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "Raster pixels are inventory only in this assessment. Alt/caption and CSS do not prove the people in the image or actual mobile visibility/usability. The .reserve-hidden rule does not match the current send-request button; action=\"#\" alone does not establish that no handler exists. No booking or payment capability is agreed.",
+            "relevantFiles": [
+              "team.html",
+              "visit.html",
+              "site.css",
+              "assets/collective.png"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    }
+  ]
+}

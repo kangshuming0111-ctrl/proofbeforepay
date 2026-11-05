@@ -13,6 +13,10 @@ const SOURCE_CONTENT = /营业(?:时间|时段)|营业日|开放时间|菜单|�
 // token "content" or "营业时间". These only identify text-content evidence;
 // observation and financial-action vetoes below still take precedence.
 const PUBLISHED_POLICY_TEXT = /\b(?:published|page|website|cancellation)\s+policy\s+(?:text|copy|wording)\b/iu;
+// A complete Chinese wording directive, not a general exemption for policies.
+// This only admits source review. Financial/record/runtime vetoes below still
+// run first; adding a second obligation cannot inherit this finite allowance.
+const ZH_CANCELLATION_WORDING = /^(?:页面|网站)(?:取消|退订)政策(?:文案|文字)?(?:必须|须|应)(?:写明|说明|注明)[：:]\s*(?:活动开始前|课程开始前|开课前)至少(?:[1-9]\d{0,2}|[一二三四五六七八九十百]{1,5})(?:天|小时)取消(?:可以|可)全额退还(?:订金|定金)[。.]?$/u;
 const DISPLAYED_BUSINESS_HOURS = /(?:应|须|必须|需要|需)(?:显示|注明|写明|列出)[^。；\n]{0,120}(?:营业|休息|开门|关门)/u;
 const OBSERVATION_REQUIRED = /手机|移动端|响应式|视觉|美观|好看|易用|用户体验|交互|表单|提交|按钮|点击|导航|功能|后台|数据库|预约|预订|登录|注册|搜索|支付|购物车|发送|收件|保存|储存|加载|性能|实时|动态|权限|身份验证|运行|配色|排版|布局|样式|风格|审美|品牌(?:形象|调性|设计)|符合[^。；\n]*品牌|\b(?:responsive|mobile|visual|aesthetic|beautiful|attractive|subjective|user[- ]experience|usability|interactive|interactivity|interaction|forms?|submi(?:t|ts|tted|tting|ssion|ssions)|end[- ]to[- ]end|click(?:able|s|ing)?|navigation|nav\s+interactivity|function(?:al|ality)?|works?|working|backend|database|bookings?|reservations?|log[- ]?in|sign[- ]?up|search(?:able|ing|es)?|payment|checkout|cart|send(?:s|ing)?|receiv(?:e[ds]?|ing)|persist(?:s|ed|ing|ence)?|sav(?:e[ds]?|ing)|load(?:s|ed|ing)?|hover|toggle|animate|animation|accordion|filter|sort|upload|download|performance|real[- ]time|dynamic|authentication|authori[sz]ation|colou?rs?|layout|styling|styles?|design|looks?|feel|modern|elegant|professional|accessibility|accessible|branding|brand(?!\s+name))\b/iu;
 const BOOKING_TERMS = /预约|预订|\b(?:bookings?|reservations?)\b/giu;
@@ -76,7 +80,7 @@ export function assessmentEvidenceScope(criterion: ProofCriterion): AssessmentEv
   const policyCopy = isExplicitBookingPolicyCopy(criterion) || isExplicitRefundPolicyCopy(criterion);
   if (!policyCopy && OBSERVATION_REQUIRED.test(combined)) return { category: "requires_observation", reason: "runtime_or_subjective" };
   if (/^(?:manual|coverage)-/u.test(criterion.id) && !policyCopy && !SOURCE_CONTENT.test(criterion.source)
-    && !PUBLISHED_POLICY_TEXT.test(criterion.source) && !DISPLAYED_BUSINESS_HOURS.test(criterion.source)) {
+    && !PUBLISHED_POLICY_TEXT.test(criterion.source) && !ZH_CANCELLATION_WORDING.test(criterion.source.trim()) && !DISPLAYED_BUSINESS_HOURS.test(criterion.source)) {
     return { category: "requires_observation", reason: "unclassified_requirement" };
   }
   return { category: "source_text", reason: policyCopy ? "explicit_policy_copy" : /^(?:manual|coverage)-/u.test(criterion.id) ? "literal_content" : "other_source_rule" };

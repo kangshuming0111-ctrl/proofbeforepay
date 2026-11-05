@@ -1,0 +1,206 @@
+{
+  "caseId": "harbour-frame-scoped-visual-boundary",
+  "evaluationScope": "First call on an authored synthetic project; source-only, no browser/backend/pixels. Review all item explanations, risks and limitations. Expected labels deliberately withheld from this review packet.",
+  "exactUserPacket": {
+    "criteria": [
+      {
+        "id": "manual-1",
+        "title": "Manual requirement 1",
+        "source": "The current visitor address must read Studio 4, 28 Sample Arcade, Northbridge WA 6003 on index.html and visit.html. The 2023 programme archive is excluded from current-address consistency."
+      },
+      {
+        "id": "manual-2",
+        "title": "Manual requirement 2",
+        "source": "The team photograph on team.html must show at least four adult people, and the contact controls on visit.html must remain visible and usable on a mobile viewport."
+      }
+    ],
+    "scopeContext": {
+      "summary": "Deliver the current collective, team and visit pages plus the 2023 programme archive. Current visitor-address consistency applies only to index.html and visit.html; the archive retains its historical venue. The team photograph and mobile contact controls must meet the agreed visual and usability requirements. Session booking and payment are outside this website scope."
+    },
+    "fileInventory": [
+      {
+        "path": "index.html",
+        "type": "html",
+        "byteLength": 3043,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "team.html",
+        "type": "html",
+        "byteLength": 2734,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "visit.html",
+        "type": "html",
+        "byteLength": 2750,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "archive-2023.html",
+        "type": "html",
+        "byteLength": 2530,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "site.css",
+        "type": "css",
+        "byteLength": 1285,
+        "isIncludedInSource": true
+      },
+      {
+        "path": "assets/collective.png",
+        "type": "png",
+        "byteLength": 1237,
+        "isIncludedInSource": false
+      }
+    ],
+    "files": {
+      "archive-2023.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"Programme archive 2023 — Harbour Frame Collective\"><title>Programme archive 2023 | Harbour Frame Collective</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><p class=\"wordmark\">Harbour Frame Collective</p><nav aria-label=\"Main pages\"><a href=\"index.html\">Collective</a><a href=\"team.html\">People and workshops</a><a href=\"visit.html\">Visit and contact</a><a href=\"archive-2023.html\">Programme archive 2023</a></nav></header><main id=\"main\"><h1>Programme archive 2023</h1><section><h2>Paper, place and shared observations</h2><p>The 2023 programme brought drawing and simple print sessions to a temporary room near the river. Participants collected shapes from surrounding streets and used them to make folded sequences. The programme included an afternoon conversation about how a familiar route changes when it is recorded in marks rather than words.</p><p>2023 venue: Room 2, 9 Former Quay, East Perth WA 6004. These venue details belong to the 2023 programme. Current programmes use the Visit page for arrival information.</p></section><section><h2>Drawing a route</h2><p>Participants began with quick observations made on the way to the room: a repeating window frame, a branch above a gate, or a pattern on a footpath. At the table, those notes became a short sequence of marks. Some people chose a recognisable route; others rearranged the material into a more open story.</p><p>The conversation considered what gets left out when a place is drawn from memory. A facilitator offered examples of how a change in scale or rhythm can connect separate observations without turning the page into a map.</p></section><section><h2>Layered postcards</h2><p>The print session used simple shapes and a limited group of colours. Participants compared the effect of a lighter layer over a darker mark, then chose a sequence for a small set of postcards. The workshop allowed time to try variations before choosing which pages to keep together.</p><p>Work was displayed informally along one wall while participants talked about materials and process. Some took their pages home as a set; others folded or cut them into new arrangements after the session.</p></section></main><footer><p>Harbour Frame Collective</p><p>Make room for shared work, conversation and a thoughtful visit.</p></footer></body></html>\n",
+      "index.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"A shared place for making and conversation — Harbour Frame Collective\"><title>A shared place for making and conversation | Harbour Frame Collective</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><p class=\"wordmark\">Harbour Frame Collective</p><nav aria-label=\"Main pages\"><a href=\"index.html\">Collective</a><a href=\"team.html\">People and workshops</a><a href=\"visit.html\">Visit and contact</a><a href=\"archive-2023.html\">Programme archive 2023</a></nav></header><main id=\"main\"><h1>A shared place for making and conversation</h1><section class=\"columns\"><div><h2>Small workshops, open conversations</h2><p>Harbour Frame Collective brings people together around drawing, print and simple bookmaking. Some visitors arrive with a project already in progress; others come for a first introduction to a material. We make time for questions and encourage people to take ideas in different directions.</p><p>Our current visitor address is Studio 4, 28 Sample Arcade, Northbridge WA 6003. The Visit page describes arrival and contact arrangements. Public programmes have their own dates and materials lists; a general enquiry starts a conversation rather than reserving a place.</p></div><aside><h2>What you can find here</h2><ul><li>Short introductions to the people running our sessions.</li><li>Practical notes for visiting the current studio.</li><li>A programme archive from earlier venues.</li></ul><p>Session bookings and payments are handled separately after the programme arrangements are confirmed.</p></aside></section><section><h2>Working at a comfortable scale</h2><p>We choose small groups so participants have room to work and speak with a facilitator. A session may begin with a shared demonstration, then move into individual work. People can ask to see a process again, compare materials and discuss ways to continue at home.</p><p>The collective keeps a small reference shelf with paper samples, books and tools used in earlier sessions. It supports conversation during a workshop rather than a retail catalogue. When a programme needs a specific purchase or contribution, its information sheet explains that arrangement.</p></section><section><h2>Keep in touch</h2><p>Use the contact form for a question about visiting, a group session or the materials listed for a programme. Including the session title helps us pass the question to the right facilitator. Please leave passwords, payment card numbers and identity documents out of general correspondence.</p><p>The 2023 programme archive records an earlier venue. For a current visit, use the studio address and arrangements on the Visit page rather than an address printed in an old programme.</p></section></main><footer><p>Harbour Frame Collective</p><p>Make room for shared work, conversation and a thoughtful visit.</p></footer></body></html>\n",
+      "team.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"People and workshop approaches — Harbour Frame Collective\"><title>People and workshop approaches | Harbour Frame Collective</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><p class=\"wordmark\">Harbour Frame Collective</p><nav aria-label=\"Main pages\"><a href=\"index.html\">Collective</a><a href=\"team.html\">People and workshops</a><a href=\"visit.html\">Visit and contact</a><a href=\"archive-2023.html\">Programme archive 2023</a></nav></header><main id=\"main\"><h1>People and workshop approaches</h1><section><h2>Meet the collective</h2><figure><img src=\"assets/collective.png\" width=\"640\" height=\"360\" alt=\"Four adults gathered around a worktable with paper and drawing materials\"><figcaption>The collective at a shared worktable, preparing materials for a programme.</figcaption></figure><p>Our facilitators come from illustration, printmaking and community arts. Each brings a different working rhythm: some sessions build around a repeated mark, others begin with a conversation about place or a small object. Participants do not need to use the same process as the person beside them.</p></section><section><h2>Drawing from ordinary objects</h2><p>A drawing session might start with one familiar object viewed from several positions. We discuss edges, negative space and how marks can suggest weight. The aim is to notice choices, not to produce identical pages. A facilitator can offer a short demonstration when a participant wants to try another approach.</p><p>Paper and basic drawing tools are listed with the programme. If a session permits personal materials, bring only what fits in your own working area. Keep wet materials and cutting tools away from someone else's paper, and ask before borrowing tools from another table.</p></section><section><h2>Printed layers and simple books</h2><p>Print sessions explore how a repeated shape changes when colour, pressure or orientation changes. Bookmaking sessions consider folding and sequence, with time to decide how one page leads to the next. We explain tools before they are used and make a clear space for drying or storing work during a break.</p><p>Participants who want to continue after a session can ask which tools are essential and which can be replaced with materials already at home. We describe our own approaches, while recognising that people may prefer different working methods.</p></section></main><footer><p>Harbour Frame Collective</p><p>Make room for shared work, conversation and a thoughtful visit.</p></footer></body></html>\n",
+      "visit.html": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"description\" content=\"Visit the current studio — Harbour Frame Collective\"><title>Visit the current studio | Harbour Frame Collective</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><a class=\"skip\" href=\"#main\">Skip to content</a><header><p class=\"wordmark\">Harbour Frame Collective</p><nav aria-label=\"Main pages\"><a href=\"index.html\">Collective</a><a href=\"team.html\">People and workshops</a><a href=\"visit.html\">Visit and contact</a><a href=\"archive-2023.html\">Programme archive 2023</a></nav></header><main id=\"main\"><h1>Visit the current studio</h1><section><h2>Current address</h2><p>Our current visitor address is Studio 4, 28 Sample Arcade, Northbridge WA 6003.</p><p>Check the information sent with your programme for arrival time and the studio entrance. A facilitator may be preparing materials before the session begins, so please wait in the shared reception area if the room is not ready. The corridor must stay clear for other arcade users.</p></section><section><h2>Before you come</h2><p>If you want information about steps, seating or the room layout, ask before the day of your visit. We can describe the space and discuss the arrangements available for that programme. You do not need to provide sensitive personal documents to ask an access question.</p><p>Bring the materials named in the programme notes and a bag large enough to carry your work home. Some pieces need time to dry, so a facilitator may suggest collecting them later. Please check before bringing food into a session that uses shared tools or delicate paper.</p></section><section><h2>Contact the collective</h2><p>For programme or visit questions, write to hello@harbourframe.example.org or use the form below. Include the title of a session if your question relates to a particular programme, along with a contact email where a facilitator can reply.</p><form action=\"#\" method=\"post\"><label>Name<input name=\"name\" required></label><label>Email<input name=\"email\" type=\"email\" required></label><label>Your question<textarea name=\"message\" rows=\"5\" required></textarea></label><button class=\"send-request\" type=\"submit\">Send an enquiry</button></form></section><section><h2>Earlier venues</h2><p>The programme archive preserves descriptions and venue details from earlier years. Those pages are useful for remembering a programme, but current visits use the address on this page. A reference to a past venue does not reserve a place in a current session.</p></section></main><footer><p>Harbour Frame Collective</p><p>Make room for shared work, conversation and a thoughtful visit.</p></footer></body></html>\n",
+      "site.css": "*{box-sizing:border-box}html{font-family:Georgia,serif;color:#202f3a;background:#fafafa;line-height:1.65}body{margin:0}header,main,footer{max-width:1040px;margin:0 auto;padding:26px}header{border-bottom:2px solid #304e62}.wordmark{font-family:Arial,sans-serif;font-size:25px;font-weight:700}nav{display:flex;gap:18px;flex-wrap:wrap;font-family:Arial,sans-serif}a{color:#225b78}.skip{position:absolute;left:-9999px}.skip:focus{left:12px;top:12px;background:white;padding:12px}h1{font-size:38px;line-height:1.15}h2{margin-top:30px;font-size:24px}figure{margin:24px 0}img{max-width:100%;height:auto}figcaption{font:14px/1.5 Arial,sans-serif}.columns{display:grid;grid-template-columns:3fr 2fr;gap:32px}.programme{padding:18px;border:1px solid #c4d2db}.reserve-hidden{display:none}label{display:block;margin:14px 0}input,textarea{display:block;width:100%;max-width:620px;padding:10px;font:16px Arial,sans-serif}.send-request{display:inline-block;background:#244b61;color:white;border:0;padding:12px 22px;font:16px Arial,sans-serif}:focus-visible{outline:3px solid #ad6429;outline-offset:4px}footer{font-size:14px;border-top:1px solid #c4d2db}@media(max-width:680px){header,main,footer{padding:18px}h1{font-size:30px}.columns{display:block}.send-request{max-width:100%;white-space:normal}}\n"
+    },
+    "ruleEvidence": [
+      {
+        "id": "eval-evidence-1",
+        "criterionId": "manual-1",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "A person must verify the original requirement: “The current visitor address must read Studio 4, 28 Sample Arcade, Northbridge WA 6003 on index.html and visit.html. The 2023 programme archive is excluded from current-address consistency.”. The excerpt identifies delivered source and does not automatically establish compliance."
+      },
+      {
+        "id": "eval-evidence-2",
+        "criterionId": "manual-2",
+        "file": "index.html",
+        "finding": "needs_human",
+        "explanation": "A person must verify the original requirement: “The team photograph on team.html must show at least four adult people, and the contact controls on visit.html must remain visible and usable on a mobile viewport.”. The excerpt identifies delivered source and does not automatically establish compliance."
+      }
+    ],
+    "coverage": {
+      "includedFiles": [
+        "archive-2023.html",
+        "index.html",
+        "team.html",
+        "visit.html",
+        "site.css"
+      ],
+      "truncatedFiles": [],
+      "omittedFiles": [
+        "assets/collective.png"
+      ]
+    }
+  },
+  "firstRawAnswer": {
+    "items": [
+      {
+        "criterionId": "manual-1",
+        "status": "supported",
+        "explanation": "Exact address string appears in index.html and visit.html; archive is excluded and not checked for consistency.",
+        "citations": [
+          {
+            "file": "index.html",
+            "excerpt": "Our current visitor address is Studio 4, 28 Sample Arcade, Northbridge WA 6003."
+          },
+          {
+            "file": "visit.html",
+            "excerpt": "Our current visitor address is Studio 4, 28 Sample Arcade, Northbridge WA 6003."
+          }
+        ]
+      },
+      {
+        "criterionId": "manual-2",
+        "status": "insufficient_evidence",
+        "explanation": "Image pixels not supplied, so 'at least four adults' unverifiable; mobile visibility/usability needs rendered runtime evidence.",
+        "citations": [
+          {
+            "file": "team.html",
+            "excerpt": "<img src=\"assets/collective.png\" width=\"640\" height=\"360\" alt=\"Four adults gathered around a worktable with paper and drawing materials\">"
+          }
+        ]
+      }
+    ],
+    "risks": [],
+    "limitations": [
+      "team.html photograph content cannot be assessed because assets/collective.png raster pixels were omitted from the source input.",
+      "Mobile visibility and usability of visit.html contact controls require rendered browser testing, which was not performed.",
+      "The alt text in team.html is authored copy and does not establish what the image actually depicts."
+    ]
+  },
+  "applicationAnswer": {
+    "id": "bf9c2e88-580e-43ff-8ab8-71b9f2d06ac1",
+    "deliveryId": "eval-harbour-frame-scoped-visual-boundary",
+    "method": "source-ai-v1",
+    "mode": "live",
+    "model": "deepseek-flash",
+    "assessedAt": "2026-11-05T05:17:46.199Z",
+    "items": [
+      {
+        "criterionId": "manual-1",
+        "status": "supported",
+        "explanation": "Exact address string appears in index.html and visit.html; archive is excluded and not checked for consistency.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 1130,
+            "end": 1209,
+            "excerpt": "Our current visitor address is Studio 4, 28 Sample Arcade, Northbridge WA 6003."
+          },
+          {
+            "file": "visit.html",
+            "start": 740,
+            "end": 819,
+            "excerpt": "Our current visitor address is Studio 4, 28 Sample Arcade, Northbridge WA 6003."
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-1"
+        ]
+      },
+      {
+        "criterionId": "manual-2",
+        "status": "insufficient_evidence",
+        "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+        "citations": [
+          {
+            "file": "team.html",
+            "start": 767,
+            "end": 904,
+            "excerpt": "<img src=\"assets/collective.png\" width=\"640\" height=\"360\" alt=\"Four adults gathered around a worktable with paper and drawing materials\">"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-2"
+        ]
+      }
+    ],
+    "risks": [],
+    "limitations": [
+      "team.html photograph content cannot be assessed because assets/collective.png raster pixels were omitted from the source input.",
+      "Mobile visibility and usability of visit.html contact controls require rendered browser testing, which was not performed.",
+      "The alt text in team.html is authored copy and does not establish what the image actually depicts.",
+      "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+      "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic.",
+      "Raster files in the inventory were delivered, but their pixels were not sent to AI. Omission from text-source coverage does not mean an image file is missing or failed to display."
+    ],
+    "coverage": {
+      "includedFiles": [
+        "archive-2023.html",
+        "index.html",
+        "team.html",
+        "visit.html",
+        "site.css"
+      ],
+      "truncatedFiles": [],
+      "omittedFiles": [
+        "assets/collective.png"
+      ]
+    },
+    "usage": {
+      "promptTokens": 5744,
+      "completionTokens": 274
+    }
+  },
+  "applicationAccepted": true
+}
