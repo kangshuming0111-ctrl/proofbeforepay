@@ -1,0 +1,37 @@
+{
+  "schema": "pbp-advisory-adjudication-v1",
+  "cycle": 16,
+  "review": "cycle-16-plan-deepseek.json",
+  "reviewValid": true,
+  "accepted": [
+    "Assign reason alongside the actual guard; fallback model_unresolved without parsing explanation.",
+    "Strictly validate optionalmetadata in common current/history export path; preserve old absent fields.",
+    "Targetfiles drawn from actual sent HTML/CSS keys only; no aliases or modelpaths.",
+    "Compute full1000UTF16 draft overhead including structured action; no split surrogate/filepaths.",
+    "Preserve quarantined validated rawleads in separate pool in round17."
+  ],
+  "rejected": [
+    {
+      "claim": "manual-review namespacing requires migrating criterion ID prefixes",
+      "reason": "Review namespace means published vs withheld risk origin, independent of criterion identity. No criterion-ID migration authorized or needed."
+    },
+    {
+      "claim": "A side-object field will automatically be dropped by export",
+      "reason": "Assessment is copied whole; strictvalidation needs extension, not fabricated data copying or delivery shape migration."
+    },
+    {
+      "claim": "existing path limit is256KiB",
+      "reason": "Not supported by actual static-path code; use actual bounded path validation."
+    },
+    {
+      "claim": "Must let invalidtargetfiles degrade through export",
+      "reason": "New saved metadata is server-owned; malformed/tampered exports must fail closed, not silently repair fields."
+    }
+  ],
+  "needsVerification": [
+    "Receipt metadata doesnotprove original model execution/guardcause authenticity; shape+binding checks should state this.",
+    "Optional newmetadata rejects old compiledverifier; upgrade Lab fromsame finalsource.",
+    "Global metadata/storage/draftlimits require boundary tests."
+  ],
+  "noEditsByReviewer": true
+}

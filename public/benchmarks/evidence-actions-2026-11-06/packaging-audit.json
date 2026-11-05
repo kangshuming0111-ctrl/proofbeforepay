@@ -1,0 +1,881 @@
+{
+  "schema": "pbp-evidence-actions-public-packaging-audit-v1",
+  "createdAt": "2026-11-05T16:48:33.790300+00:00",
+  "apiCalls": 0,
+  "modelCalls": 0,
+  "networkCalls": 0,
+  "referenceCorpusAndFileHashesVerified": true,
+  "freezeSnapshotDigests": [
+    {
+      "file": "cycle-18-eight-freeze.json",
+      "snapshotSha256": "f1fe425962957749ffd84ea5a183e7694a4d4d12ae82c7aa8de55822c4117146",
+      "canonicalization": "original runner JSON.stringify plus en locale key sort",
+      "verified": true
+    },
+    {
+      "file": "cycle-18-eight-repair-freeze.json",
+      "snapshotSha256": "5e75341c30c775aa258e624889544bef6b6f6633321f9358a3b91c009fb0d551",
+      "canonicalization": "original runner JSON.stringify plus en locale key sort",
+      "verified": true
+    }
+  ],
+  "recomputedCatalogs": [
+    {
+      "file": "cycle-18-eight-first-live-admitted.json",
+      "id": "evidence-actions-explicit-complete-pair",
+      "catalogId": "47353279a7015cbce33dc2f22e49e62b8ee80134ccaeb5de6e0ec0cb287a7bf5",
+      "entries": 11,
+      "exactCatalogRecomputed": true
+    },
+    {
+      "file": "cycle-18-eight-first-live-admitted.json",
+      "id": "evidence-actions-missing-agreed-file",
+      "catalogId": "6f6b38c6b78b25337c52766185d7c83be070066eee0134ba66ee17f6f156e668",
+      "entries": 11,
+      "exactCatalogRecomputed": true
+    },
+    {
+      "file": "cycle-18-eight-first-live-admitted.json",
+      "id": "evidence-actions-wrong-page-role-alias",
+      "catalogId": "adf4f4d14190146a310b0d16ebb2f1ce41296b45aeac2ca20fd3292d83625d73",
+      "entries": 15,
+      "exactCatalogRecomputed": true
+    },
+    {
+      "file": "cycle-18-eight-first-live-admitted.json",
+      "id": "evidence-actions-neighbour-price",
+      "catalogId": "cf300a34258a7b9ed061940c47fc3ebca76b7272cf46793e0f4914efabb690af",
+      "entries": 9,
+      "exactCatalogRecomputed": true
+    },
+    {
+      "file": "cycle-18-eight-first-live-admitted.json",
+      "id": "evidence-actions-merged-row",
+      "catalogId": "750fce66fe760221281127f33c5b3f3919b2e2b9407e6d4ebb1479581a78f6e1",
+      "entries": 11,
+      "exactCatalogRecomputed": true
+    },
+    {
+      "file": "cycle-18-eight-first-live-admitted.json",
+      "id": "evidence-actions-partial-owner-only",
+      "catalogId": "3315e539817ab8bc12bbf8e29231ae23b7dc3386b12c6da50b7ebcc9854ecb44",
+      "entries": 13,
+      "exactCatalogRecomputed": true
+    },
+    {
+      "file": "cycle-18-eight-first-live-admitted.json",
+      "id": "evidence-actions-second-page-wrong-tag",
+      "catalogId": "274eb412201205beb1fc326956e83655c263bfb8195f97fb3edfcc6c1b37fdf7",
+      "entries": 11,
+      "exactCatalogRecomputed": true
+    },
+    {
+      "file": "cycle-18-eight-first-live-admitted.json",
+      "id": "evidence-actions-runtime-copy-only",
+      "catalogId": "45b3d8fa6149666f607ca88eb0d67785ecc1d69936b917c039d32676cf62621a",
+      "entries": 9,
+      "exactCatalogRecomputed": true
+    },
+    {
+      "file": "cycle-18-eight-known-repair-live.json",
+      "id": "evidence-actions-explicit-complete-pair",
+      "catalogId": "47353279a7015cbce33dc2f22e49e62b8ee80134ccaeb5de6e0ec0cb287a7bf5",
+      "entries": 11,
+      "exactCatalogRecomputed": true
+    },
+    {
+      "file": "cycle-18-eight-known-repair-live.json",
+      "id": "evidence-actions-missing-agreed-file",
+      "catalogId": "6f6b38c6b78b25337c52766185d7c83be070066eee0134ba66ee17f6f156e668",
+      "entries": 11,
+      "exactCatalogRecomputed": true
+    },
+    {
+      "file": "cycle-18-eight-known-repair-live.json",
+      "id": "evidence-actions-wrong-page-role-alias",
+      "catalogId": "adf4f4d14190146a310b0d16ebb2f1ce41296b45aeac2ca20fd3292d83625d73",
+      "entries": 15,
+      "exactCatalogRecomputed": true
+    },
+    {
+      "file": "cycle-18-eight-known-repair-live.json",
+      "id": "evidence-actions-neighbour-price",
+      "catalogId": "cf300a34258a7b9ed061940c47fc3ebca76b7272cf46793e0f4914efabb690af",
+      "entries": 9,
+      "exactCatalogRecomputed": true
+    },
+    {
+      "file": "cycle-18-eight-known-repair-live.json",
+      "id": "evidence-actions-merged-row",
+      "catalogId": "750fce66fe760221281127f33c5b3f3919b2e2b9407e6d4ebb1479581a78f6e1",
+      "entries": 11,
+      "exactCatalogRecomputed": true
+    },
+    {
+      "file": "cycle-18-eight-known-repair-live.json",
+      "id": "evidence-actions-partial-owner-only",
+      "catalogId": "3315e539817ab8bc12bbf8e29231ae23b7dc3386b12c6da50b7ebcc9854ecb44",
+      "entries": 13,
+      "exactCatalogRecomputed": true
+    },
+    {
+      "file": "cycle-18-eight-known-repair-live.json",
+      "id": "evidence-actions-second-page-wrong-tag",
+      "catalogId": "274eb412201205beb1fc326956e83655c263bfb8195f97fb3edfcc6c1b37fdf7",
+      "entries": 11,
+      "exactCatalogRecomputed": true
+    },
+    {
+      "file": "cycle-18-eight-known-repair-live.json",
+      "id": "evidence-actions-runtime-copy-only",
+      "catalogId": "45b3d8fa6149666f607ca88eb0d67785ecc1d69936b917c039d32676cf62621a",
+      "entries": 9,
+      "exactCatalogRecomputed": true
+    }
+  ],
+  "sourceFiles": [
+    {
+      "id": "evidence-actions-explicit-complete-pair",
+      "file": "index.html",
+      "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff",
+      "utf8Bytes": 178,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-explicit-complete-pair",
+      "file": "menu.html",
+      "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff",
+      "utf8Bytes": 178,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-explicit-complete-pair",
+      "file": "site.css",
+      "sha256": "5d9c00e6b4cbb996eab69c0ca905a2a61470f0bc730d668361a19bf30a3ea8c9",
+      "utf8Bytes": 23,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-missing-agreed-file",
+      "file": "index.html",
+      "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff",
+      "utf8Bytes": 178,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-missing-agreed-file",
+      "file": "about.html",
+      "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff",
+      "utf8Bytes": 178,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-missing-agreed-file",
+      "file": "site.css",
+      "sha256": "7c98040a541657584690ae2a1cc3b42a8b53b159cc60c5d3abbfecbaeac6c94a",
+      "utf8Bytes": 6,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-wrong-page-role-alias",
+      "file": "index.html",
+      "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff",
+      "utf8Bytes": 178,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-wrong-page-role-alias",
+      "file": "terms.html",
+      "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff",
+      "utf8Bytes": 178,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-wrong-page-role-alias",
+      "file": "menu.html",
+      "sha256": "32138e99397fa8f58f0231cf652bb175ff12077a1e6b31e9aa80f3b874795caf",
+      "utf8Bytes": 177,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-neighbour-price",
+      "file": "index.html",
+      "sha256": "23ae5e157ce8f919ac7a1c5f386e52d55762c973d48f89ba06ea9b8b188e5221",
+      "utf8Bytes": 103,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-neighbour-price",
+      "file": "menu.html",
+      "sha256": "854c8cd2055164ae7f3a811ebf91a6c1ff77034e563f0cccb94a9cd702e0dc40",
+      "utf8Bytes": 134,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-neighbour-price",
+      "file": "site.css",
+      "sha256": "5d9c00e6b4cbb996eab69c0ca905a2a61470f0bc730d668361a19bf30a3ea8c9",
+      "utf8Bytes": 23,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-merged-row",
+      "file": "index.html",
+      "sha256": "23ae5e157ce8f919ac7a1c5f386e52d55762c973d48f89ba06ea9b8b188e5221",
+      "utf8Bytes": 103,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-merged-row",
+      "file": "menu.html",
+      "sha256": "e5745099f1090cbca64b6d5aaa8023e5e3c9878f10810b978928d185c0fd49b7",
+      "utf8Bytes": 173,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-merged-row",
+      "file": "site.css",
+      "sha256": "5d9c00e6b4cbb996eab69c0ca905a2a61470f0bc730d668361a19bf30a3ea8c9",
+      "utf8Bytes": 23,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-partial-owner-only",
+      "file": "index.html",
+      "sha256": "aba008bccd20565d47933f9430c86308cc3f405717bca849960371dc07edc1fc",
+      "utf8Bytes": 503,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-partial-owner-only",
+      "file": "menu.html",
+      "sha256": "aba008bccd20565d47933f9430c86308cc3f405717bca849960371dc07edc1fc",
+      "utf8Bytes": 503,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-partial-owner-only",
+      "file": "site.css",
+      "sha256": "5d9c00e6b4cbb996eab69c0ca905a2a61470f0bc730d668361a19bf30a3ea8c9",
+      "utf8Bytes": 23,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-second-page-wrong-tag",
+      "file": "index.html",
+      "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff",
+      "utf8Bytes": 178,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-second-page-wrong-tag",
+      "file": "menu.html",
+      "sha256": "32138e99397fa8f58f0231cf652bb175ff12077a1e6b31e9aa80f3b874795caf",
+      "utf8Bytes": 177,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-second-page-wrong-tag",
+      "file": "site.css",
+      "sha256": "5d9c00e6b4cbb996eab69c0ca905a2a61470f0bc730d668361a19bf30a3ea8c9",
+      "utf8Bytes": 23,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-runtime-copy-only",
+      "file": "index.html",
+      "sha256": "4429c3d95e8ef331d80601bb68331bbcee98f974c6f6f2980a848d77336980f8",
+      "utf8Bytes": 152,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-runtime-copy-only",
+      "file": "menu.html",
+      "sha256": "4429c3d95e8ef331d80601bb68331bbcee98f974c6f6f2980a848d77336980f8",
+      "utf8Bytes": 152,
+      "verified": true
+    },
+    {
+      "id": "evidence-actions-runtime-copy-only",
+      "file": "site.css",
+      "sha256": "5d9c00e6b4cbb996eab69c0ca905a2a61470f0bc730d668361a19bf30a3ea8c9",
+      "utf8Bytes": 23,
+      "verified": true
+    }
+  ],
+  "liveCatalogAndQuoteChecks": [
+    {
+      "file": "cycle-18-eight-first-live-admitted.json",
+      "freeze": "cycle-18-eight-freeze.json",
+      "runtimeArchive": "cycle-18-final-implementation.json",
+      "completeAndAdmittedReports": 8,
+      "criteria": 8,
+      "totals": {
+        "rawItemCitations": 24,
+        "rawRiskCitations": 11,
+        "applicationItemCitations": 22,
+        "activeRiskCitations": 9,
+        "withheldRiskCitations": 2
+      },
+      "rows": [
+        {
+          "id": "evidence-actions-explicit-complete-pair",
+          "requestSha256": "7bbd1f18201e41c275f1041ce7b48064a7e4d8122020f05cec26f9f207e104f9",
+          "providerBodySha256": "95d6b14d2710f6f54426fb80b2fd24c894272e826d3c2534636efa801f0dcc4e",
+          "catalogId": "47353279a7015cbce33dc2f22e49e62b8ee80134ccaeb5de6e0ec0cb287a7bf5",
+          "catalogEntries": 11,
+          "selectedIds": 2,
+          "allSelectedIdsAndSpansValid": true,
+          "rawItemCitations": 2,
+          "rawRiskCitations": 0,
+          "applicationItemCitations": 2,
+          "activeRiskCitations": 0,
+          "withheldRiskCitations": 0
+        },
+        {
+          "id": "evidence-actions-missing-agreed-file",
+          "requestSha256": "4a011e7e47415f21ecd58a8cd2d37783e3f62108bb6c0db287179ab714c69f7a",
+          "providerBodySha256": "fc042fc60869dec01525c0e94a2bdeae3f32ca7f5133527f3ff9ef094ad4aa9a",
+          "catalogId": "6f6b38c6b78b25337c52766185d7c83be070066eee0134ba66ee17f6f156e668",
+          "catalogEntries": 11,
+          "selectedIds": 5,
+          "allSelectedIdsAndSpansValid": true,
+          "rawItemCitations": 3,
+          "rawRiskCitations": 2,
+          "applicationItemCitations": 3,
+          "activeRiskCitations": 2,
+          "withheldRiskCitations": 0
+        },
+        {
+          "id": "evidence-actions-wrong-page-role-alias",
+          "requestSha256": "70e009d91934d690b7144caf56c1cac9112cf328d585ad7cc502face4647f969",
+          "providerBodySha256": "34610fa7eac0d0288ddf4153537f547f3fceeb887a2f330435267420b29a8a88",
+          "catalogId": "adf4f4d14190146a310b0d16ebb2f1ce41296b45aeac2ca20fd3292d83625d73",
+          "catalogEntries": 15,
+          "selectedIds": 5,
+          "allSelectedIdsAndSpansValid": true,
+          "rawItemCitations": 3,
+          "rawRiskCitations": 2,
+          "applicationItemCitations": 3,
+          "activeRiskCitations": 2,
+          "withheldRiskCitations": 0
+        },
+        {
+          "id": "evidence-actions-neighbour-price",
+          "requestSha256": "62f7a60b6a8889d80b9fde300121522ed1558dffebda88b471f8d63ffe74e6af",
+          "providerBodySha256": "043643a28677d07c03f96a34cc6ace7bc1a32a76923ce25464f01bbfd8ff8632",
+          "catalogId": "cf300a34258a7b9ed061940c47fc3ebca76b7272cf46793e0f4914efabb690af",
+          "catalogEntries": 9,
+          "selectedIds": 5,
+          "allSelectedIdsAndSpansValid": true,
+          "rawItemCitations": 3,
+          "rawRiskCitations": 2,
+          "applicationItemCitations": 1,
+          "activeRiskCitations": 2,
+          "withheldRiskCitations": 0
+        },
+        {
+          "id": "evidence-actions-merged-row",
+          "requestSha256": "590a43ad78ebe599255707e32b5241825cb0d81215eaff125f6e9088e7f46f93",
+          "providerBodySha256": "e907ad05439fa15245841ab202932dade5341ee4f62daba9cb3265dcd1e6c44a",
+          "catalogId": "750fce66fe760221281127f33c5b3f3919b2e2b9407e6d4ebb1479581a78f6e1",
+          "catalogEntries": 11,
+          "selectedIds": 5,
+          "allSelectedIdsAndSpansValid": true,
+          "rawItemCitations": 3,
+          "rawRiskCitations": 2,
+          "applicationItemCitations": 3,
+          "activeRiskCitations": 0,
+          "withheldRiskCitations": 2
+        },
+        {
+          "id": "evidence-actions-partial-owner-only",
+          "requestSha256": "86410ae41820f86121c03f32a1ec3c631363bb9e752e04dddfd80086cdf2ec30",
+          "providerBodySha256": "aa106cd2809ad43dd8f2aa1733c25c0dfa09c44258948d2b2c9ec33728fe3f8f",
+          "catalogId": "3315e539817ab8bc12bbf8e29231ae23b7dc3386b12c6da50b7ebcc9854ecb44",
+          "catalogEntries": 13,
+          "selectedIds": 2,
+          "allSelectedIdsAndSpansValid": true,
+          "rawItemCitations": 2,
+          "rawRiskCitations": 0,
+          "applicationItemCitations": 2,
+          "activeRiskCitations": 0,
+          "withheldRiskCitations": 0
+        },
+        {
+          "id": "evidence-actions-second-page-wrong-tag",
+          "requestSha256": "30b19b215238b7448d8e7ede5d47e17df0674c5bd8ccd32e8ca842381235c593",
+          "providerBodySha256": "c40508723ea08715cb55fb3d31670b58b2d81e0b1f876be3501fa89ba6aa3e6b",
+          "catalogId": "274eb412201205beb1fc326956e83655c263bfb8195f97fb3edfcc6c1b37fdf7",
+          "catalogEntries": 11,
+          "selectedIds": 5,
+          "allSelectedIdsAndSpansValid": true,
+          "rawItemCitations": 2,
+          "rawRiskCitations": 3,
+          "applicationItemCitations": 2,
+          "activeRiskCitations": 3,
+          "withheldRiskCitations": 0
+        },
+        {
+          "id": "evidence-actions-runtime-copy-only",
+          "requestSha256": "91811bb71ac928ebdd5d346a6b7ee5ca33be63f58619c37d80f7b5929cb698ea",
+          "providerBodySha256": "02daba0835311d080f3d4b0526b745354b402b9e5af03ba82e4635adfc599e0a",
+          "catalogId": "45b3d8fa6149666f607ca88eb0d67785ecc1d69936b917c039d32676cf62621a",
+          "catalogEntries": 9,
+          "selectedIds": 6,
+          "allSelectedIdsAndSpansValid": true,
+          "rawItemCitations": 6,
+          "rawRiskCitations": 0,
+          "applicationItemCitations": 6,
+          "activeRiskCitations": 0,
+          "withheldRiskCitations": 0
+        }
+      ]
+    },
+    {
+      "file": "cycle-18-eight-known-repair-live.json",
+      "freeze": "cycle-18-eight-repair-freeze.json",
+      "runtimeArchive": "negative-scope-final-implementation.json",
+      "completeAndAdmittedReports": 8,
+      "criteria": 8,
+      "totals": {
+        "rawItemCitations": 18,
+        "rawRiskCitations": 11,
+        "applicationItemCitations": 16,
+        "activeRiskCitations": 9,
+        "withheldRiskCitations": 2
+      },
+      "rows": [
+        {
+          "id": "evidence-actions-explicit-complete-pair",
+          "requestSha256": "7bbd1f18201e41c275f1041ce7b48064a7e4d8122020f05cec26f9f207e104f9",
+          "providerBodySha256": "3db079a618e21ad9d94bf6845ab21e6735b760944ff851f7a5036dfd298d3887",
+          "catalogId": "47353279a7015cbce33dc2f22e49e62b8ee80134ccaeb5de6e0ec0cb287a7bf5",
+          "catalogEntries": 11,
+          "selectedIds": 2,
+          "allSelectedIdsAndSpansValid": true,
+          "rawItemCitations": 2,
+          "rawRiskCitations": 0,
+          "applicationItemCitations": 2,
+          "activeRiskCitations": 0,
+          "withheldRiskCitations": 0
+        },
+        {
+          "id": "evidence-actions-missing-agreed-file",
+          "requestSha256": "4a011e7e47415f21ecd58a8cd2d37783e3f62108bb6c0db287179ab714c69f7a",
+          "providerBodySha256": "88a075239fb75fe01e9a9c76e00f7ff72374d5a03fbbdb7db8c135d5a5716ad5",
+          "catalogId": "6f6b38c6b78b25337c52766185d7c83be070066eee0134ba66ee17f6f156e668",
+          "catalogEntries": 11,
+          "selectedIds": 4,
+          "allSelectedIdsAndSpansValid": true,
+          "rawItemCitations": 2,
+          "rawRiskCitations": 2,
+          "applicationItemCitations": 2,
+          "activeRiskCitations": 2,
+          "withheldRiskCitations": 0
+        },
+        {
+          "id": "evidence-actions-wrong-page-role-alias",
+          "requestSha256": "70e009d91934d690b7144caf56c1cac9112cf328d585ad7cc502face4647f969",
+          "providerBodySha256": "316df457b35235dd5a284b383fd24dfed62613d40ea862f36d7df8bfb33804d9",
+          "catalogId": "adf4f4d14190146a310b0d16ebb2f1ce41296b45aeac2ca20fd3292d83625d73",
+          "catalogEntries": 15,
+          "selectedIds": 4,
+          "allSelectedIdsAndSpansValid": true,
+          "rawItemCitations": 2,
+          "rawRiskCitations": 2,
+          "applicationItemCitations": 2,
+          "activeRiskCitations": 0,
+          "withheldRiskCitations": 2
+        },
+        {
+          "id": "evidence-actions-neighbour-price",
+          "requestSha256": "62f7a60b6a8889d80b9fde300121522ed1558dffebda88b471f8d63ffe74e6af",
+          "providerBodySha256": "fdd7e5373e9962ba53239f88a400ca048e1221d1c8b2df3a8080f0609fa75d60",
+          "catalogId": "cf300a34258a7b9ed061940c47fc3ebca76b7272cf46793e0f4914efabb690af",
+          "catalogEntries": 9,
+          "selectedIds": 5,
+          "allSelectedIdsAndSpansValid": true,
+          "rawItemCitations": 3,
+          "rawRiskCitations": 2,
+          "applicationItemCitations": 1,
+          "activeRiskCitations": 2,
+          "withheldRiskCitations": 0
+        },
+        {
+          "id": "evidence-actions-merged-row",
+          "requestSha256": "590a43ad78ebe599255707e32b5241825cb0d81215eaff125f6e9088e7f46f93",
+          "providerBodySha256": "63c8c22dd46150cd65074f4af3dc21607f376bfa80ef5ae3a9e8a928e827961c",
+          "catalogId": "750fce66fe760221281127f33c5b3f3919b2e2b9407e6d4ebb1479581a78f6e1",
+          "catalogEntries": 11,
+          "selectedIds": 6,
+          "allSelectedIdsAndSpansValid": true,
+          "rawItemCitations": 3,
+          "rawRiskCitations": 3,
+          "applicationItemCitations": 3,
+          "activeRiskCitations": 3,
+          "withheldRiskCitations": 0
+        },
+        {
+          "id": "evidence-actions-partial-owner-only",
+          "requestSha256": "86410ae41820f86121c03f32a1ec3c631363bb9e752e04dddfd80086cdf2ec30",
+          "providerBodySha256": "bc8bdc430c0146b383c335ac16103f52ef11456a882633e761297c6d0ae5fd06",
+          "catalogId": "3315e539817ab8bc12bbf8e29231ae23b7dc3386b12c6da50b7ebcc9854ecb44",
+          "catalogEntries": 13,
+          "selectedIds": 2,
+          "allSelectedIdsAndSpansValid": true,
+          "rawItemCitations": 2,
+          "rawRiskCitations": 0,
+          "applicationItemCitations": 2,
+          "activeRiskCitations": 0,
+          "withheldRiskCitations": 0
+        },
+        {
+          "id": "evidence-actions-second-page-wrong-tag",
+          "requestSha256": "30b19b215238b7448d8e7ede5d47e17df0674c5bd8ccd32e8ca842381235c593",
+          "providerBodySha256": "ccb5cf4e2da9de68f9037cf6e0303f905fae7bd743455ea0969722bdbe22a2a6",
+          "catalogId": "274eb412201205beb1fc326956e83655c263bfb8195f97fb3edfcc6c1b37fdf7",
+          "catalogEntries": 11,
+          "selectedIds": 4,
+          "allSelectedIdsAndSpansValid": true,
+          "rawItemCitations": 2,
+          "rawRiskCitations": 2,
+          "applicationItemCitations": 2,
+          "activeRiskCitations": 2,
+          "withheldRiskCitations": 0
+        },
+        {
+          "id": "evidence-actions-runtime-copy-only",
+          "requestSha256": "91811bb71ac928ebdd5d346a6b7ee5ca33be63f58619c37d80f7b5929cb698ea",
+          "providerBodySha256": "99c0388b78cd9cfa028ad5fcd40bacbc1e331a14a348c825ccc084189b4a1850",
+          "catalogId": "45b3d8fa6149666f607ca88eb0d67785ecc1d69936b917c039d32676cf62621a",
+          "catalogEntries": 9,
+          "selectedIds": 2,
+          "allSelectedIdsAndSpansValid": true,
+          "rawItemCitations": 2,
+          "rawRiskCitations": 0,
+          "applicationItemCitations": 2,
+          "activeRiskCitations": 0,
+          "withheldRiskCitations": 0
+        }
+      ]
+    }
+  ],
+  "runtimeSourceArchives": [
+    {
+      "file": "cycle-16-evaluated-implementation.json",
+      "sources": 37,
+      "allOriginalUtf8BytesAndHashesValid": true,
+      "providerClosureFiles": 37,
+      "inertOnly": true,
+      "olderHarnessRecovered": false
+    },
+    {
+      "file": "cycle-17-original-evaluated-implementation.json",
+      "sources": 37,
+      "allOriginalUtf8BytesAndHashesValid": true,
+      "providerClosureFiles": 37,
+      "inertOnly": true,
+      "olderHarnessRecovered": false
+    },
+    {
+      "file": "cycle-17-refined-implementation.json",
+      "sources": 39,
+      "allOriginalUtf8BytesAndHashesValid": true,
+      "providerClosureFiles": 37,
+      "inertOnly": true,
+      "olderHarnessRecovered": null
+    },
+    {
+      "file": "cycle-18-final-implementation.json",
+      "sources": 39,
+      "allOriginalUtf8BytesAndHashesValid": true,
+      "providerClosureFiles": 37,
+      "inertOnly": true,
+      "olderHarnessRecovered": null
+    },
+    {
+      "file": "negative-scope-final-implementation.json",
+      "sources": 39,
+      "allOriginalUtf8BytesAndHashesValid": true,
+      "providerClosureFiles": 37,
+      "inertOnly": true,
+      "olderHarnessRecovered": null
+    }
+  ],
+  "retainedReplayInputHashes": [
+    {
+      "report": "cycle-16-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/final-publication-replay.json",
+      "sha256": "95bd38d5a5d81d2fd8f9e974cd5a203764010521c6412a12a28bfc29dff5001f"
+    },
+    {
+      "report": "cycle-16-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-13-known-corpus.json",
+      "sha256": "6b1890cfbe3aec6b9d099768c108d1b2ce41a06268659b99e710fa90efbb860d"
+    },
+    {
+      "report": "cycle-16-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-known-live.json",
+      "sha256": "cad9e5cb58b39cc5ae441f952cbbe46831629abba2d89e116ac5a76bc5d5f546"
+    },
+    {
+      "report": "cycle-16-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-known-freeze.json",
+      "sha256": "76f16efa21866409c95798bc384a2eac9457ce628c92f509603ff21cfa702c8d"
+    },
+    {
+      "report": "cycle-16-final-replay.json",
+      "file": "scripts/project-assessment-corpus-citation-relations-holdout.json",
+      "sha256": "96a4f7b18a2440d9c589f2ad8d3583ea7c98aecc9eee00292db31098e036d900"
+    },
+    {
+      "report": "cycle-16-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-live.json",
+      "sha256": "a08a51653e77fff95981126805b2bf7d84a8351e307ffa23791f9816b982fb74"
+    },
+    {
+      "report": "cycle-16-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-freeze.json",
+      "sha256": "64a4237a8d31dbfa9fe63b9703fd773eb8931558a702ab90797152e76c5c95eb"
+    },
+    {
+      "report": "cycle-16-final-replay.json",
+      "file": "scripts/citation-relations-scope-corpus-2026-11-05.json",
+      "sha256": "43140fe70c5498b4bf6bb87e463cb2663d35d4d946c4293195e55d5ab54fa076"
+    },
+    {
+      "report": "cycle-16-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-scope-live.json",
+      "sha256": "6212c37de5882b9395705f677a7d857ea53a6edb967ea920507bf99b0815c780"
+    },
+    {
+      "report": "cycle-16-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-scope-freeze.json",
+      "sha256": "904489d85a038ca1c4206345b48164b499acc5a5eb4c6b67fdf225b56467d8ee"
+    },
+    {
+      "report": "cycle-17-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/final-publication-replay.json",
+      "sha256": "95bd38d5a5d81d2fd8f9e974cd5a203764010521c6412a12a28bfc29dff5001f"
+    },
+    {
+      "report": "cycle-17-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-13-known-corpus.json",
+      "sha256": "6b1890cfbe3aec6b9d099768c108d1b2ce41a06268659b99e710fa90efbb860d"
+    },
+    {
+      "report": "cycle-17-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-known-live.json",
+      "sha256": "cad9e5cb58b39cc5ae441f952cbbe46831629abba2d89e116ac5a76bc5d5f546"
+    },
+    {
+      "report": "cycle-17-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-known-freeze.json",
+      "sha256": "76f16efa21866409c95798bc384a2eac9457ce628c92f509603ff21cfa702c8d"
+    },
+    {
+      "report": "cycle-17-final-replay.json",
+      "file": "scripts/project-assessment-corpus-citation-relations-holdout.json",
+      "sha256": "96a4f7b18a2440d9c589f2ad8d3583ea7c98aecc9eee00292db31098e036d900"
+    },
+    {
+      "report": "cycle-17-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-live.json",
+      "sha256": "a08a51653e77fff95981126805b2bf7d84a8351e307ffa23791f9816b982fb74"
+    },
+    {
+      "report": "cycle-17-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-freeze.json",
+      "sha256": "64a4237a8d31dbfa9fe63b9703fd773eb8931558a702ab90797152e76c5c95eb"
+    },
+    {
+      "report": "cycle-17-final-replay.json",
+      "file": "scripts/citation-relations-scope-corpus-2026-11-05.json",
+      "sha256": "43140fe70c5498b4bf6bb87e463cb2663d35d4d946c4293195e55d5ab54fa076"
+    },
+    {
+      "report": "cycle-17-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-scope-live.json",
+      "sha256": "6212c37de5882b9395705f677a7d857ea53a6edb967ea920507bf99b0815c780"
+    },
+    {
+      "report": "cycle-17-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-scope-freeze.json",
+      "sha256": "904489d85a038ca1c4206345b48164b499acc5a5eb4c6b67fdf225b56467d8ee"
+    },
+    {
+      "report": "cycle-17-refined-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/final-publication-replay.json",
+      "sha256": "95bd38d5a5d81d2fd8f9e974cd5a203764010521c6412a12a28bfc29dff5001f"
+    },
+    {
+      "report": "cycle-17-refined-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-13-known-corpus.json",
+      "sha256": "6b1890cfbe3aec6b9d099768c108d1b2ce41a06268659b99e710fa90efbb860d"
+    },
+    {
+      "report": "cycle-17-refined-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-known-live.json",
+      "sha256": "cad9e5cb58b39cc5ae441f952cbbe46831629abba2d89e116ac5a76bc5d5f546"
+    },
+    {
+      "report": "cycle-17-refined-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-known-freeze.json",
+      "sha256": "76f16efa21866409c95798bc384a2eac9457ce628c92f509603ff21cfa702c8d"
+    },
+    {
+      "report": "cycle-17-refined-replay.json",
+      "file": "scripts/project-assessment-corpus-citation-relations-holdout.json",
+      "sha256": "96a4f7b18a2440d9c589f2ad8d3583ea7c98aecc9eee00292db31098e036d900"
+    },
+    {
+      "report": "cycle-17-refined-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-live.json",
+      "sha256": "a08a51653e77fff95981126805b2bf7d84a8351e307ffa23791f9816b982fb74"
+    },
+    {
+      "report": "cycle-17-refined-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-freeze.json",
+      "sha256": "64a4237a8d31dbfa9fe63b9703fd773eb8931558a702ab90797152e76c5c95eb"
+    },
+    {
+      "report": "cycle-17-refined-replay.json",
+      "file": "scripts/citation-relations-scope-corpus-2026-11-05.json",
+      "sha256": "43140fe70c5498b4bf6bb87e463cb2663d35d4d946c4293195e55d5ab54fa076"
+    },
+    {
+      "report": "cycle-17-refined-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-scope-live.json",
+      "sha256": "6212c37de5882b9395705f677a7d857ea53a6edb967ea920507bf99b0815c780"
+    },
+    {
+      "report": "cycle-17-refined-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-scope-freeze.json",
+      "sha256": "904489d85a038ca1c4206345b48164b499acc5a5eb4c6b67fdf225b56467d8ee"
+    },
+    {
+      "report": "cycle-18-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/final-publication-replay.json",
+      "sha256": "95bd38d5a5d81d2fd8f9e974cd5a203764010521c6412a12a28bfc29dff5001f"
+    },
+    {
+      "report": "cycle-18-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-13-known-corpus.json",
+      "sha256": "6b1890cfbe3aec6b9d099768c108d1b2ce41a06268659b99e710fa90efbb860d"
+    },
+    {
+      "report": "cycle-18-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-known-live.json",
+      "sha256": "cad9e5cb58b39cc5ae441f952cbbe46831629abba2d89e116ac5a76bc5d5f546"
+    },
+    {
+      "report": "cycle-18-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-known-freeze.json",
+      "sha256": "76f16efa21866409c95798bc384a2eac9457ce628c92f509603ff21cfa702c8d"
+    },
+    {
+      "report": "cycle-18-final-replay.json",
+      "file": "scripts/project-assessment-corpus-citation-relations-holdout.json",
+      "sha256": "96a4f7b18a2440d9c589f2ad8d3583ea7c98aecc9eee00292db31098e036d900"
+    },
+    {
+      "report": "cycle-18-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-live.json",
+      "sha256": "a08a51653e77fff95981126805b2bf7d84a8351e307ffa23791f9816b982fb74"
+    },
+    {
+      "report": "cycle-18-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-freeze.json",
+      "sha256": "64a4237a8d31dbfa9fe63b9703fd773eb8931558a702ab90797152e76c5c95eb"
+    },
+    {
+      "report": "cycle-18-final-replay.json",
+      "file": "scripts/citation-relations-scope-corpus-2026-11-05.json",
+      "sha256": "43140fe70c5498b4bf6bb87e463cb2663d35d4d946c4293195e55d5ab54fa076"
+    },
+    {
+      "report": "cycle-18-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-scope-live.json",
+      "sha256": "6212c37de5882b9395705f677a7d857ea53a6edb967ea920507bf99b0815c780"
+    },
+    {
+      "report": "cycle-18-final-replay.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-scope-freeze.json",
+      "sha256": "904489d85a038ca1c4206345b48164b499acc5a5eb4c6b67fdf225b56467d8ee"
+    },
+    {
+      "report": "negative-scope-retained15-delta-diagnostic.json",
+      "file": "outputs/evidence-actions-2026-11-06/cycle-18-final-replay.json",
+      "sha256": "372830a75b1e8cd44f4401b43c89e3ab7b0ac76833acaaa27e538a86a0b3164c"
+    },
+    {
+      "report": "negative-scope-retained15-delta-diagnostic.json",
+      "file": "outputs/evidence-actions-2026-11-06/retained-replay-inputs.json",
+      "sha256": "62243cad4cfe38beaff49a3c742bb7b5028af36bfdb7a3211d70c2596827a25c"
+    },
+    {
+      "report": "negative-scope-retained15-delta-diagnostic.json",
+      "file": "outputs/evidence-actions-2026-11-06/negative-scope-final-implementation.json",
+      "sha256": "03218b7b96412d1ee3e1ec7b71a070f673a8b7997f3cd0249df38fe31defab2a"
+    },
+    {
+      "report": "negative-scope-retained15-delta-diagnostic.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-13-known-corpus.json",
+      "sha256": "6b1890cfbe3aec6b9d099768c108d1b2ce41a06268659b99e710fa90efbb860d"
+    },
+    {
+      "report": "negative-scope-retained15-delta-diagnostic.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-known-live.json",
+      "sha256": "cad9e5cb58b39cc5ae441f952cbbe46831629abba2d89e116ac5a76bc5d5f546"
+    },
+    {
+      "report": "negative-scope-retained15-delta-diagnostic.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-known-freeze.json",
+      "sha256": "76f16efa21866409c95798bc384a2eac9457ce628c92f509603ff21cfa702c8d"
+    },
+    {
+      "report": "negative-scope-retained15-delta-diagnostic.json",
+      "file": "scripts/project-assessment-corpus-citation-relations-holdout.json",
+      "sha256": "96a4f7b18a2440d9c589f2ad8d3583ea7c98aecc9eee00292db31098e036d900"
+    },
+    {
+      "report": "negative-scope-retained15-delta-diagnostic.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-live.json",
+      "sha256": "a08a51653e77fff95981126805b2bf7d84a8351e307ffa23791f9816b982fb74"
+    },
+    {
+      "report": "negative-scope-retained15-delta-diagnostic.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-freeze.json",
+      "sha256": "64a4237a8d31dbfa9fe63b9703fd773eb8931558a702ab90797152e76c5c95eb"
+    },
+    {
+      "report": "negative-scope-retained15-delta-diagnostic.json",
+      "file": "scripts/citation-relations-scope-corpus-2026-11-05.json",
+      "sha256": "43140fe70c5498b4bf6bb87e463cb2663d35d4d946c4293195e55d5ab54fa076"
+    },
+    {
+      "report": "negative-scope-retained15-delta-diagnostic.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-scope-live.json",
+      "sha256": "6212c37de5882b9395705f677a7d857ea53a6edb967ea920507bf99b0815c780"
+    },
+    {
+      "report": "negative-scope-retained15-delta-diagnostic.json",
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-scope-freeze.json",
+      "sha256": "904489d85a038ca1c4206345b48164b499acc5a5eb4c6b67fdf225b56467d8ee"
+    }
+  ],
+  "finalSuite": {
+    "sourceFile": "outputs/evidence-actions-2026-11-06/final-suite-after-scope.log",
+    "sha256": "df7bd5542df360dda35d62861e2fad2e52efbf0fc502a26ca38771a312d467e8",
+    "tests": 1478,
+    "passed": 1478,
+    "failed": 0
+  },
+  "limits": [
+    "Packaging validates saved data; it does not rerun a model, browser, payment, hosted service or database mutation.",
+    "Runtime source is inert JSON; source contents, provider bodies, request strings and source quotations were not redacted or normalized.",
+    "Only explicitly listed metadata absolute local repository prefixes were removed in public copies. Original/public digests and JSON-pointer edits are listed in artifact-manifest.json.",
+    "Older cycle16/17 source archives do not claim to recover earlier harness contents that their records mark unavailable."
+  ]
+}

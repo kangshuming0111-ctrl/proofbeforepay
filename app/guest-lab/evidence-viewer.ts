@@ -23,7 +23,7 @@ const gates:Record<string,[string,string,string,string]>={
   "file-digest":["交付文件摘要","File-map digest","重新计算文件映射的 SHA-256。","Recompute SHA-256 for the exact file map."],
   requirements:["原始要求引用","Original requirement spans","核对原文范围与保留的字面引用。","Resolve retained literal spans in the original source."],
   "source-rule-replay":["源码规则重放","Source-rule replay","对保存的文件重算命名版本的规则。","Replay the named source rules on the saved files."],
-  "ai-source-citations":["AI 引用与人工批注","AI citations and annotations","核对来源位置与批注关联；不验证模型判断。","Check source positions and annotation bindings, not model judgment."],
+  "ai-source-citations":["AI 原文、补证与复核记录","AI source, evidence gaps and reviews","核对来源位置；若有补证、暂缓原件与批注，则核对其精确绑定。不证明模型判断、补证原因或人工身份真实。","Check source positions and, when present, exact evidence-needed, withheld-original and annotation bindings. Model judgment, gap causes and human identity are not proven."],
   "reported-observation-consistency":["已报告的浏览器读数","Reported browser observations","按提供的读数重算结果；未运行浏览器。","Recalculate supplied readings; no browser is run."],
   "runtime-bindings":["接口报告关联","HTTP report bindings","核对本版、计划、摘要及冻结目标。","Check delivery, plan, digest and frozen target bindings."],
   "journey-plan-source-mapping":["业务计划原文关联","Journey plan source mapping","核对计划建议保留的原文来源与关联；不验证模型判断。","Check retained source spans and bindings for plan suggestions, not model judgment."],

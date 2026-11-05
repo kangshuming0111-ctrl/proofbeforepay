@@ -1,0 +1,239 @@
+{
+  "schema": "pbp-evidence-actions-validation-v1",
+  "createdAt": "2026-11-05T16:48:33.790300+00:00",
+  "scope": {
+    "cycles": [
+      16,
+      17,
+      18
+    ],
+    "authoredSyntheticCases": 8,
+    "criteriaPerCase": 1,
+    "newThirdPartyRepositories": 0,
+    "customerProjects": 0,
+    "independentHumanUsers": 0,
+    "knownRepairUsesSameEightCases": true,
+    "noOverallAwardSuperiorityClaim": true
+  },
+  "live": {
+    "first": {
+      "reports": 8,
+      "criteria": 8,
+      "admitted": 8,
+      "completeReports": 8,
+      "actualProjectAssessmentCalls": 8,
+      "rawReferenceAgreement": {
+        "count": 5,
+        "total": 8,
+        "fraction": 0.625
+      },
+      "applicationReferenceAgreement": {
+        "count": 6,
+        "total": 8,
+        "fraction": 0.75
+      },
+      "wholeAnswerReview": {
+        "projects": 8,
+        "rawStatusReferenceAgreement": {
+          "count": 5,
+          "total": 8
+        },
+        "applicationStatusReferenceAgreement": {
+          "count": 6,
+          "total": 8
+        },
+        "rawWholeAnswers": {
+          "accepted": 5,
+          "qualified": 1,
+          "rejected": 2
+        },
+        "applicationWholeAnswers": {
+          "accepted": 5,
+          "qualified": 2,
+          "rejected": 1
+        },
+        "citationChecks": {
+          "rawItemCitations": 24,
+          "rawRiskCitations": 11,
+          "applicationItemCitations": 22,
+          "activeRiskCitations": 9,
+          "withheldRiskCitations": 2,
+          "withheldRisks": 1,
+          "allExact": true,
+          "rawTotal": 35,
+          "applicationPublishedTotal": 31,
+          "applicationIncludingQuarantine": 33
+        }
+      },
+      "citations": {
+        "rawItemCitations": 24,
+        "rawRiskCitations": 11,
+        "applicationItemCitations": 22,
+        "activeRiskCitations": 9,
+        "withheldRiskCitations": 2
+      },
+      "reportedUsageEstimateUsd": 0.018465300000000004
+    },
+    "knownRepair": {
+      "reports": 8,
+      "criteria": 8,
+      "admitted": 8,
+      "completeReports": 8,
+      "actualProjectAssessmentCalls": 8,
+      "rawReferenceAgreement": {
+        "count": 6,
+        "total": 8,
+        "fraction": 0.75
+      },
+      "applicationReferenceAgreement": {
+        "count": 7,
+        "total": 8,
+        "fraction": 0.875
+      },
+      "wholeAnswerReview": {
+        "projects": 8,
+        "rawReferenceAgreement": {
+          "count": 6,
+          "total": 8
+        },
+        "applicationReferenceAgreement": {
+          "count": 7,
+          "total": 8
+        },
+        "rawWholeAnswers": {
+          "accepted": 5,
+          "qualified": 2,
+          "rejected": 1
+        },
+        "applicationWholeAnswers": {
+          "accepted": 6,
+          "qualified": 2,
+          "rejected": 0
+        },
+        "citationChecks": {
+          "rawItemCitations": 18,
+          "rawRiskCitations": 11,
+          "applicationItemCitations": 16,
+          "activeRiskCitations": 9,
+          "withheldRiskCitations": 2,
+          "withheldRisks": 1,
+          "allExact": true,
+          "rawTotal": 29,
+          "applicationPublishedTotal": 25,
+          "applicationIncludingQuarantine": 27
+        }
+      },
+      "citations": {
+        "rawItemCitations": 18,
+        "rawRiskCitations": 11,
+        "applicationItemCitations": 16,
+        "activeRiskCitations": 9,
+        "withheldRiskCitations": 2
+      },
+      "reportedUsageEstimateUsd": 0.0184845
+    },
+    "actualProjectAssessmentCalls": 16,
+    "sameEightRequestBodiesAcrossFirstAndRepair": true,
+    "reportedUsageEstimateUsd": 0.036949800000000005,
+    "costIsProviderUsageTimesConfiguredEstimateNotInvoice": true,
+    "harnessReviewsCountedSeparately": true,
+    "preflight": {
+      "file": "cycle-18-eight-first-live.json",
+      "state": {
+        "state": "preparing",
+        "live": true
+      },
+      "actualCalls": 0,
+      "reason": "maxUsd=2 admission rejected before a provider attempt; the preparing marker is retained. This was not an automatic model retry."
+    }
+  },
+  "originalBodyReplay": {
+    "file": "negative-scope-eight-original-body-replay.json",
+    "projects": 8,
+    "modelCalls": 0,
+    "networkCalls": 0,
+    "unchangedNonAliasReports": 7,
+    "changedAliasReports": 1,
+    "from": "changes_suggested",
+    "to": "insufficient_evidence",
+    "originalReferenceAgreement": 6,
+    "currentReferenceAgreement": 7,
+    "total": 8,
+    "originalRawRepliesAndReferencesUnchanged": true
+  },
+  "retained15": {
+    "beforeScope": {
+      "file": "cycle-18-final-replay.json",
+      "reports": 15,
+      "criteria": 82,
+      "applicationReferenceAgreement": 79,
+      "unknowns": 25,
+      "wireStatusAdjustments": 4
+    },
+    "afterScope": {
+      "file": "negative-scope-retained15-delta-diagnostic.json",
+      "reports": 15,
+      "criteria": 82,
+      "unchangedReports": 14,
+      "changedReports": 1,
+      "statusChanges": 1,
+      "applicationReferenceAgreement": 78,
+      "itemCitations": 174,
+      "activeRiskCitations": 48,
+      "withheldRiskCitations": 15,
+      "unknowns": 26,
+      "wireStatusAdjustments": 5,
+      "withheldEntries": 6
+    },
+    "strictUnchangedRegressionPassed": false,
+    "strictGateOutcome": "correctly_failed_on_one_conservative_status_change",
+    "originalRawRepliesAndReferencesUnchanged": true,
+    "modelCalls": 0,
+    "networkCalls": 0
+  },
+  "localDualRoleControls": {
+    "reports": 15,
+    "reportsWithRisks": 13,
+    "noPoolReports": 2,
+    "publishedRisks": 24,
+    "withheldRisks": 6,
+    "roles": [
+      "buyer",
+      "seller"
+    ],
+    "savedAnnotations": 60,
+    "retryChecks": 60,
+    "rejectedNamespaceRequests": 68,
+    "rejectedStaleVersionRequests": 120
+  },
+  "verification": {
+    "finalSuite": {
+      "sourceFile": "outputs/evidence-actions-2026-11-06/final-suite-after-scope.log",
+      "sha256": "df7bd5542df360dda35d62861e2fad2e52efbf0fc502a26ca38771a312d467e8",
+      "tests": 1478,
+      "passed": 1478,
+      "failed": 0
+    },
+    "liveCatalogAndQuoteAudit": "packaging-audit.json",
+    "runtimeSourceArchiveFiles": 5,
+    "runtimeSourceFileVersionsVerified": 191,
+    "allPublishedArtifactsJson": true
+  },
+  "artifactManifest": {
+    "file": "artifact-manifest.json",
+    "sha256": "429d8dbc857829c041006c457c982b6b95d71f2c9c54b020c24c105d6e610ac7",
+    "artifacts": 42,
+    "totalPublicArtifactBytes": 8261555
+  },
+  "limits": [
+    "First and repair are the same eight authored synthetic boundaries, not new open-source/customer projects or independent populations. Repair is known-case retesting, not a fresh blind trial.",
+    "The same eight request bodies were used for fresh first/repair model answers; raw score variation is not proof that a server-only guard improved the model.",
+    "Reference-status agreement, local evidence admission and independent whole-answer judgment are separate measurements. An admitted answer can still need semantic qualification.",
+    "The missing-explicit-file case remains a documented policy/reference disagreement; the merged-row explanation remains qualified despite a correct unknown status.",
+    "The negative page-scope guard improves conservative role handling but reduces agreement with the unchanged old Tavola reference; no perfect-regression or all-statuses-unchanged claim is made.",
+    "Dual-role annotations and rejection controls are local in-memory domain operations, not database persistence, independent human research or new hosted results.",
+    "Exact quotation provenance does not guarantee semantic sufficiency, runtime behavior, full website coverage or award superiority.",
+    "Costs are usage-based configured estimates, not an invoice. Harness reviews are separate from the sixteen project-assessment calls.",
+    "Curated source archives are inert JSON data. Missing historical harness source is disclosed; frozen source, provider bodies and old references were not edited."
+  ]
+}

@@ -1,0 +1,1069 @@
+{
+  "schema": "pbp-independent-ai-whole-answer-review-v1",
+  "reviewer": "Independent Codex child agent; AI review, not human validation",
+  "createdAt": "2026-11-05T16:34:08.000Z",
+  "apiCalls": 0,
+  "modelCalls": 0,
+  "networkCalls": 0,
+  "scope": "Eight actual admitted first-live answers; full original wire, source files, locked plans and sealed references. No source/reference edits or response reruns.",
+  "inputs": {
+    "live": {
+      "file": "outputs/evidence-actions-2026-11-06/cycle-18-eight-first-live-admitted.json",
+      "sha256": "c540bf1afbafe37efb8088a91229403f379baeace2171cbf123e062af6c62cad"
+    },
+    "corpus": {
+      "file": "scripts/evidence-actions-boundary-corpus-2026-11-06.json",
+      "sha256": "b0ed37335770f9de649974cd55ca410911a77e0e9199d2e94501a774ca4f62a3"
+    },
+    "references": {
+      "file": "scripts/evidence-actions-boundary-references-2026-11-06.json",
+      "sha256": "98def261ee50f56ff97f6ccdfb88b7e74e8ba9b126cc4f0c4f3f4baf8f803c51"
+    }
+  },
+  "summary": {
+    "projects": 8,
+    "rawStatusReferenceAgreement": {
+      "count": 5,
+      "total": 8
+    },
+    "applicationStatusReferenceAgreement": {
+      "count": 6,
+      "total": 8
+    },
+    "rawWholeAnswers": {
+      "accepted": 5,
+      "qualified": 1,
+      "rejected": 2
+    },
+    "applicationWholeAnswers": {
+      "accepted": 5,
+      "qualified": 2,
+      "rejected": 1
+    },
+    "citationChecks": {
+      "rawItemCitations": 24,
+      "rawRiskCitations": 11,
+      "applicationItemCitations": 22,
+      "activeRiskCitations": 9,
+      "withheldRiskCitations": 2,
+      "withheldRisks": 1,
+      "allExact": true,
+      "rawTotal": 35,
+      "applicationPublishedTotal": 31,
+      "applicationIncludingQuarantine": 33
+    }
+  },
+  "actionableFindings": [
+    {
+      "id": "R18-A1",
+      "severity": "P2",
+      "case": "wrong-page-role-alias",
+      "kind": "unsupported_change_advice",
+      "recommendation": "Apply a bounded negative-only gate to unconfirmed role-based requirements even when raw status is changes_suggested; retain original wire, downgrade to unknown and quarantine associated optional leads."
+    },
+    {
+      "id": "R18-P1",
+      "severity": "policy_boundary",
+      "case": "missing-agreed-file",
+      "kind": "reference_policy_disagreement",
+      "recommendation": "Keep original unknown reference and 6/8 numeric result. Disclose that the submitted package genuinely lacks an explicitly agreed file; distinguish delivery-package nonconformance from unavailable content evidence. Do not call this a fabricated model error or silently relabel the oracle."
+    },
+    {
+      "id": "R18-C1",
+      "severity": "P3",
+      "case": "runtime-copy-only",
+      "kind": "compound_evidence_actionability",
+      "recommendation": "An evidence request should explicitly retain both mail delivery and independent durable receipt/readback obligations. A single dominant reason must not suggest the other is resolved."
+    }
+  ],
+  "rows": [
+    {
+      "id": "evidence-actions-explicit-complete-pair",
+      "sourceReferenceStatus": "supported",
+      "rawStatus": "supported",
+      "applicationStatus": "supported",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "protocol": {
+        "activeV3": true,
+        "originalJsonValid": true,
+        "syntaxNormalization": "none",
+        "completeCriteria": true,
+        "exactCatalogBinding": true,
+        "exactUtf16SourceCitations": true,
+        "requestBytesAndSourceHashesVerified": true
+      },
+      "entailment": "Both explicit file names have one unique complete dish owner with the target and literal GF; quoted source supports the source-only item.",
+      "reviewNotes": [
+        "Two exact complete owners establish source association, not rendered visibility or food safety."
+      ],
+      "rawItem": {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "Both index.html and menu.html place the GF tag span immediately after the Whipped cod roe name span inside the same dish div.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 72,
+            "end": 164,
+            "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+          },
+          {
+            "file": "menu.html",
+            "start": 72,
+            "end": 164,
+            "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+          }
+        ]
+      },
+      "rawRisks": [],
+      "rawLimitations": [
+        "Source markup shows the GF tag association only; rendered visibility or styling was not inspected.",
+        "No browser or runtime check was performed; final acceptance remains with the buyer."
+      ],
+      "applicationItem": {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "Both index.html and menu.html place the GF tag span immediately after the Whipped cod roe name span inside the same dish div.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 72,
+            "end": 164,
+            "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+          },
+          {
+            "file": "menu.html",
+            "start": 72,
+            "end": 164,
+            "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-1"
+        ]
+      },
+      "activeRisks": [],
+      "quarantine": {
+        "version": 1,
+        "reason": "not_withheld",
+        "adjustedCriteria": [],
+        "entries": []
+      },
+      "publishedLimitationsReview": {
+        "actualCountsCorrect": true,
+        "selfDescriptionCountCorrect": true,
+        "claimsNoBrowserScriptBackendOrPixels": true,
+        "sourceOnlyBoundaryTruthful": true
+      },
+      "sourceReferenceNumericDisagreement": false
+    },
+    {
+      "id": "evidence-actions-missing-agreed-file",
+      "sourceReferenceStatus": "insufficient_evidence",
+      "rawStatus": "changes_suggested",
+      "applicationStatus": "changes_suggested",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "protocol": {
+        "activeV3": true,
+        "originalJsonValid": true,
+        "syntaxNormalization": "none",
+        "completeCriteria": true,
+        "exactCatalogBinding": true,
+        "exactUtf16SourceCitations": true,
+        "requestBytesAndSourceHashesVerified": true
+      },
+      "entailment": "Inventory establishes that the submitted package omits explicitly named menu.html. Exact quotes establish index/about content, while absence follows from the complete inventory rather than a positive quote.",
+      "reviewNotes": [
+        "The sealed reference deliberately assigns unknown to missing-source evidence. A request to supply a specifically agreed but absent file is nevertheless factually grounded delivery-package advice.",
+        "This is a reference-policy boundary, not established fabrication or an unsupported inferred page-role mapping. Keep the original unknown reference and numeric disagreement.",
+        "Wording should say absent from the submitted file inventory; it cannot establish absence from a live website or prove the GF content missing everywhere."
+      ],
+      "rawItem": {
+        "criterionId": "coverage-1",
+        "status": "changes_suggested",
+        "explanation": "index.html attaches GF to Whipped cod roe, but no menu.html was delivered; equivalent markup appears only in about.html, which is not the named target.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 72,
+            "end": 164,
+            "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+          },
+          {
+            "file": "index.html",
+            "start": 0,
+            "end": 178,
+            "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>"
+          },
+          {
+            "file": "about.html",
+            "start": 72,
+            "end": 164,
+            "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+          }
+        ]
+      },
+      "rawRisks": [
+        {
+          "title": "menu.html is absent from the delivery; GF tag coverage exists only on index.html and about.html",
+          "explanation": "The requirement names index.html and menu.html. Inventory lists index.html, about.html and site.css; index.html has the GF dish markup, and identical markup appears in about.html rather than a menu.html.",
+          "suggestion": "Confirm whether menu.html was intended as a delivery target and provide it with Whipped cod roe tagged GF, or confirm about.html is the agreed second page.",
+          "citations": [
+            {
+              "file": "index.html",
+              "start": 72,
+              "end": 164,
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+            },
+            {
+              "file": "about.html",
+              "start": 72,
+              "end": 164,
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+            }
+          ]
+        }
+      ],
+      "rawLimitations": [
+        "No menu.html is present in fileInventory or the supplied files, so its content could not be inspected.",
+        "Source markup only; rendered visibility of the GF tag and page behavior were not observed."
+      ],
+      "applicationItem": {
+        "criterionId": "coverage-1",
+        "status": "changes_suggested",
+        "explanation": "index.html attaches GF to Whipped cod roe, but no menu.html was delivered; equivalent markup appears only in about.html, which is not the named target.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 72,
+            "end": 164,
+            "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+          },
+          {
+            "file": "index.html",
+            "start": 0,
+            "end": 178,
+            "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>"
+          },
+          {
+            "file": "about.html",
+            "start": 72,
+            "end": 164,
+            "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-1"
+        ]
+      },
+      "activeRisks": [
+        {
+          "title": "menu.html is absent from the delivery; GF tag coverage exists only on index.html and about.html",
+          "explanation": "The requirement names index.html and menu.html. Inventory lists index.html, about.html and site.css; index.html has the GF dish markup, and identical markup appears in about.html rather than a menu.html.",
+          "suggestion": "Confirm whether menu.html was intended as a delivery target and provide it with Whipped cod roe tagged GF, or confirm about.html is the agreed second page.",
+          "citations": [
+            {
+              "file": "index.html",
+              "start": 72,
+              "end": 164,
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+            },
+            {
+              "file": "about.html",
+              "start": 72,
+              "end": 164,
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+            }
+          ]
+        }
+      ],
+      "quarantine": {
+        "version": 1,
+        "reason": "not_withheld",
+        "adjustedCriteria": [],
+        "entries": []
+      },
+      "publishedLimitationsReview": {
+        "actualCountsCorrect": true,
+        "selfDescriptionCountCorrect": true,
+        "claimsNoBrowserScriptBackendOrPixels": true,
+        "sourceOnlyBoundaryTruthful": true
+      },
+      "sourceReferenceNumericDisagreement": true
+    },
+    {
+      "id": "evidence-actions-wrong-page-role-alias",
+      "sourceReferenceStatus": "insufficient_evidence",
+      "rawStatus": "changes_suggested",
+      "applicationStatus": "changes_suggested",
+      "rawWholeAnswer": "rejected",
+      "applicationWholeAnswer": "rejected",
+      "protocol": {
+        "activeV3": true,
+        "originalJsonValid": true,
+        "syntaxNormalization": "none",
+        "completeCriteria": true,
+        "exactCatalogBinding": true,
+        "exactUtf16SourceCitations": true,
+        "requestBytesAndSourceHashesVerified": true
+      },
+      "entailment": "All quotes are genuine, but full menu is not buyer-mapped to menu.html. requiredPages=index.html/terms.html does not authorize choosing menu.html by its name.",
+      "reviewNotes": [
+        "The raw explanation explicitly chooses the best map, while its own limitation admits no formally confirmed full-menu mapping. That contradiction invalidates definitive changes advice.",
+        "The conditional risk suggestion is more cautious, but its full-menu title and the published changes item still assert an unconfirmed obligation.",
+        "Application generic limitations do not restore the omitted concrete scope caveat. A negative-only role-scope gate and risk quarantine after status adjustment are appropriate."
+      ],
+      "rawItem": {
+        "criterionId": "coverage-1",
+        "status": "changes_suggested",
+        "explanation": "Homepage (index.html) pairs \"Whipped cod roe\" with GF, but menu.html pairs the same dish name with tag \"V\" instead of GF. terms.html does show GF; \"full menu\" best maps to menu.html.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 72,
+            "end": 164,
+            "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+          },
+          {
+            "file": "menu.html",
+            "start": 72,
+            "end": 163,
+            "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div>"
+          },
+          {
+            "file": "terms.html",
+            "start": 72,
+            "end": 164,
+            "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+          }
+        ]
+      },
+      "rawRisks": [
+        {
+          "title": "Full menu page tags Whipped cod roe as V, not GF",
+          "explanation": "menu.html contains the dish \"Whipped cod roe\" with the adjacent tag span reading \"V\", while index.html shows the same dish with \"GF\".",
+          "suggestion": "Confirm menu.html is the agreed full menu page and, if so, correct the tag to GF; buyer to verify which file represents the full menu.",
+          "citations": [
+            {
+              "file": "menu.html",
+              "start": 72,
+              "end": 163,
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div>"
+            },
+            {
+              "file": "index.html",
+              "start": 72,
+              "end": 164,
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+            }
+          ]
+        }
+      ],
+      "rawLimitations": [
+        "Which delivered file is the agreed \"full menu\" page is not formally confirmed; terms.html and menu.html both contain a dish block.",
+        "Only static HTML text was inspected; rendered appearance and browser behavior were not observed.",
+        "Page titles all read \"Authored boundary\", offering no content-level identification of each page's role."
+      ],
+      "applicationItem": {
+        "criterionId": "coverage-1",
+        "status": "changes_suggested",
+        "explanation": "Homepage (index.html) pairs \"Whipped cod roe\" with GF, but menu.html pairs the same dish name with tag \"V\" instead of GF. terms.html does show GF; \"full menu\" best maps to menu.html.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 72,
+            "end": 164,
+            "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+          },
+          {
+            "file": "menu.html",
+            "start": 72,
+            "end": 163,
+            "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div>"
+          },
+          {
+            "file": "terms.html",
+            "start": 72,
+            "end": 164,
+            "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-1"
+        ]
+      },
+      "activeRisks": [
+        {
+          "title": "Full menu page tags Whipped cod roe as V, not GF",
+          "explanation": "menu.html contains the dish \"Whipped cod roe\" with the adjacent tag span reading \"V\", while index.html shows the same dish with \"GF\".",
+          "suggestion": "Confirm menu.html is the agreed full menu page and, if so, correct the tag to GF; buyer to verify which file represents the full menu.",
+          "citations": [
+            {
+              "file": "menu.html",
+              "start": 72,
+              "end": 163,
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div>"
+            },
+            {
+              "file": "index.html",
+              "start": 72,
+              "end": 164,
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+            }
+          ]
+        }
+      ],
+      "quarantine": {
+        "version": 1,
+        "reason": "not_withheld",
+        "adjustedCriteria": [],
+        "entries": []
+      },
+      "publishedLimitationsReview": {
+        "actualCountsCorrect": true,
+        "selfDescriptionCountCorrect": true,
+        "claimsNoBrowserScriptBackendOrPixels": true,
+        "sourceOnlyBoundaryTruthful": true
+      },
+      "sourceReferenceNumericDisagreement": true
+    },
+    {
+      "id": "evidence-actions-neighbour-price",
+      "sourceReferenceStatus": "changes_suggested",
+      "rawStatus": "changes_suggested",
+      "applicationStatus": "changes_suggested",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "protocol": {
+        "activeV3": true,
+        "originalJsonValid": true,
+        "syntaxNormalization": "none",
+        "completeCriteria": true,
+        "exactCatalogBinding": true,
+        "exactUtf16SourceCitations": true,
+        "requestBytesAndSourceHashesVerified": true
+      },
+      "entailment": "Two explicit buyer checks lock Tea AUD18; menu.html uniquely states Tea AUD16 and separately Coffee AUD18. Both item and risk use the correct owner.",
+      "reviewNotes": [
+        "AmountMinor1800 is correctly interpreted as AUD18.00; no neighbour price is borrowed.",
+        "Application canonical evidence replaces three item quotes with the exact mismatched Tea paragraph without changing the original change status."
+      ],
+      "rawItem": {
+        "criterionId": "coverage-1",
+        "status": "changes_suggested",
+        "explanation": "index.html lists Tea AUD 18 (amountMinor 1800) as expected, but menu.html lists Tea AUD 16 (1600), conflicting with the agreed AUD 18.00.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 72,
+            "end": 89,
+            "excerpt": "<p>Tea AUD 18</p>"
+          },
+          {
+            "file": "menu.html",
+            "start": 72,
+            "end": 120,
+            "excerpt": "<div><p>Tea AUD 16</p><p>Coffee AUD 18</p></div>"
+          },
+          {
+            "file": "menu.html",
+            "start": 77,
+            "end": 94,
+            "excerpt": "<p>Tea AUD 16</p>"
+          }
+        ]
+      },
+      "rawRisks": [
+        {
+          "title": "Tea price on menu.html is AUD 16 instead of agreed AUD 18",
+          "explanation": "menu.html contains '<p>Tea AUD 16</p>' while the confirmed check for menu.html expects Tea at amountMinor 1800 AUD.",
+          "suggestion": "Confirm the intended Tea price and, if AUD 18.00 is correct, update the menu.html Tea line.",
+          "citations": [
+            {
+              "file": "menu.html",
+              "start": 77,
+              "end": 94,
+              "excerpt": "<p>Tea AUD 16</p>"
+            },
+            {
+              "file": "menu.html",
+              "start": 72,
+              "end": 120,
+              "excerpt": "<div><p>Tea AUD 16</p><p>Coffee AUD 18</p></div>"
+            }
+          ]
+        }
+      ],
+      "rawLimitations": [
+        "Source reading only; no browser rendering, visibility or runtime behavior was observed.",
+        "Menu page structure is a minimal static sample; no product styling or interactions were assessed.",
+        "Both files show the title 'Authored boundary'; whether that page title is in scope is unclear."
+      ],
+      "applicationItem": {
+        "criterionId": "coverage-1",
+        "status": "changes_suggested",
+        "explanation": "A confirmed business check expects \"Tea\" at AUD 18.00, but the unique simple source block in menu.html states AUD 16.00. This is a limited source mismatch with an exact quotation, not rendered visibility or backend execution. All 2 confirmed checks for this criterion were inspected; any unknowns still need review.",
+        "citations": [
+          {
+            "file": "menu.html",
+            "start": 77,
+            "end": 94,
+            "excerpt": "<p>Tea AUD 16</p>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-1"
+        ]
+      },
+      "activeRisks": [
+        {
+          "title": "Tea price on menu.html is AUD 16 instead of agreed AUD 18",
+          "explanation": "menu.html contains '<p>Tea AUD 16</p>' while the confirmed check for menu.html expects Tea at amountMinor 1800 AUD.",
+          "suggestion": "Confirm the intended Tea price and, if AUD 18.00 is correct, update the menu.html Tea line.",
+          "citations": [
+            {
+              "file": "menu.html",
+              "start": 77,
+              "end": 94,
+              "excerpt": "<p>Tea AUD 16</p>"
+            },
+            {
+              "file": "menu.html",
+              "start": 72,
+              "end": 120,
+              "excerpt": "<div><p>Tea AUD 16</p><p>Coffee AUD 18</p></div>"
+            }
+          ]
+        }
+      ],
+      "quarantine": {
+        "version": 1,
+        "reason": "not_withheld",
+        "adjustedCriteria": [],
+        "entries": []
+      },
+      "publishedLimitationsReview": {
+        "actualCountsCorrect": true,
+        "selfDescriptionCountCorrect": true,
+        "claimsNoBrowserScriptBackendOrPixels": true,
+        "sourceOnlyBoundaryTruthful": true
+      },
+      "sourceReferenceNumericDisagreement": false
+    },
+    {
+      "id": "evidence-actions-merged-row",
+      "sourceReferenceStatus": "insufficient_evidence",
+      "rawStatus": "supported",
+      "applicationStatus": "insufficient_evidence",
+      "rawWholeAnswer": "rejected",
+      "applicationWholeAnswer": "accepted",
+      "protocol": {
+        "activeV3": true,
+        "originalJsonValid": true,
+        "syntaxNormalization": "none",
+        "completeCriteria": true,
+        "exactCatalogBinding": true,
+        "exactUtf16SourceCitations": true,
+        "requestBytesAndSourceHashesVerified": true
+      },
+      "entailment": "Raw cites show an AUD18 row but the same Tea rowspan also relates to AUD28. Without a confirmed tier/price relation, definitive compliance is not established.",
+      "reviewNotes": [
+        "Raw supported is too strong even though its own optional risk notices the second price and asks the buyer to clarify.",
+        "Application correctly withholds to unknown, targets menu.html with source_ambiguity, and retains the original risk verbatim in a separate unverified pool.",
+        "The quarantine records one exact supported-to-unknown adjustment and never changes scope, acceptance or payment."
+      ],
+      "rawItem": {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "index.html contains a paragraph \"Tea AUD 18\"; menu.html pairs the cell \"Tea\" with \"AUD 18\" via rowspan=2. Both agreed files show Tea at AUD 18.00 (amountMinor 1800).",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 72,
+            "end": 89,
+            "excerpt": "<p>Tea AUD 18</p>"
+          },
+          {
+            "file": "menu.html",
+            "start": 79,
+            "end": 127,
+            "excerpt": "<tr><td rowspan=\"2\">Tea</td><td>AUD 18</td></tr>"
+          },
+          {
+            "file": "menu.html",
+            "start": 107,
+            "end": 122,
+            "excerpt": "<td>AUD 18</td>"
+          }
+        ]
+      },
+      "rawRisks": [
+        {
+          "title": "menu.html gives Tea a second price of AUD 28",
+          "explanation": "In menu.html the Tea label uses rowspan=\"2\" so it applies to both rows, and the second row contains AUD 28 in addition to the AUD 18 agreed price.",
+          "suggestion": "Confirm with the buyer whether Tea should list a single price of AUD 18 or multiple tiers; if a single price is intended, remove the extra AUD 28 row.",
+          "citations": [
+            {
+              "file": "menu.html",
+              "start": 79,
+              "end": 127,
+              "excerpt": "<tr><td rowspan=\"2\">Tea</td><td>AUD 18</td></tr>"
+            },
+            {
+              "file": "menu.html",
+              "start": 127,
+              "end": 151,
+              "excerpt": "<tr><td>AUD 28</td></tr>"
+            }
+          ]
+        }
+      ],
+      "rawLimitations": [
+        "Source text only; no browser rendering or visual verification of the menu pages was performed.",
+        "Buyer must give final acceptance for coverage-1; this report is advisory."
+      ],
+      "applicationItem": {
+        "criterionId": "coverage-1",
+        "status": "insufficient_evidence",
+        "explanation": "Not all confirmed business checks can be reliably matched within the limited static simple-block format. Duplicate or unlocated content, complex markup or dynamic sources need other evidence. Source suggestions cannot establish compliance; the locked agreement is unchanged.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 72,
+            "end": 89,
+            "excerpt": "<p>Tea AUD 18</p>"
+          },
+          {
+            "file": "menu.html",
+            "start": 79,
+            "end": 127,
+            "excerpt": "<tr><td rowspan=\"2\">Tea</td><td>AUD 18</td></tr>"
+          },
+          {
+            "file": "menu.html",
+            "start": 107,
+            "end": 122,
+            "excerpt": "<td>AUD 18</td>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-1"
+        ],
+        "evidenceNeed": {
+          "schema": "source-evidence-need-v1",
+          "reason": "source_ambiguity",
+          "targetFiles": [
+            "menu.html"
+          ]
+        }
+      },
+      "activeRisks": [],
+      "quarantine": {
+        "version": 1,
+        "reason": "item_status_adjusted",
+        "adjustedCriteria": [
+          {
+            "criterionId": "coverage-1",
+            "originalStatus": "supported",
+            "publishedStatus": "insufficient_evidence"
+          }
+        ],
+        "entries": [
+          {
+            "originalRiskIndex": 0,
+            "risk": {
+              "title": "menu.html gives Tea a second price of AUD 28",
+              "explanation": "In menu.html the Tea label uses rowspan=\"2\" so it applies to both rows, and the second row contains AUD 28 in addition to the AUD 18 agreed price.",
+              "suggestion": "Confirm with the buyer whether Tea should list a single price of AUD 18 or multiple tiers; if a single price is intended, remove the extra AUD 28 row.",
+              "citations": [
+                {
+                  "file": "menu.html",
+                  "start": 79,
+                  "end": 127,
+                  "excerpt": "<tr><td rowspan=\"2\">Tea</td><td>AUD 18</td></tr>"
+                },
+                {
+                  "file": "menu.html",
+                  "start": 127,
+                  "end": 151,
+                  "excerpt": "<tr><td>AUD 28</td></tr>"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "publishedLimitationsReview": {
+        "actualCountsCorrect": true,
+        "selfDescriptionCountCorrect": true,
+        "claimsNoBrowserScriptBackendOrPixels": true,
+        "sourceOnlyBoundaryTruthful": true
+      },
+      "sourceReferenceNumericDisagreement": true
+    },
+    {
+      "id": "evidence-actions-partial-owner-only",
+      "sourceReferenceStatus": "supported",
+      "rawStatus": "supported",
+      "applicationStatus": "supported",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "protocol": {
+        "activeV3": true,
+        "originalJsonValid": true,
+        "syntaxNormalization": "none",
+        "completeCriteria": true,
+        "exactCatalogBinding": true,
+        "exactUtf16SourceCitations": true,
+        "requestBytesAndSourceHashesVerified": true
+      },
+      "entailment": "The live answer selected complete 417-UTF16-unit dish owners on both pages, including name and GF. It did not select the deliberately partial windows used by the separate controlled fixture.",
+      "reviewNotes": [
+        "The source reference remains supported. Both actual quotations cover the complete owner and are below the 500-unit cap.",
+        "The scenario name must not be reported as an actual partial-quote failure: the model successfully selected the new complete candidate."
+      ],
+      "rawItem": {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "Both files contain a .dish block with <span>Whipped cod roe</span> followed by <span>GF</span> inside the same div.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 72,
+            "end": 489,
+            "excerpt": "<div class=\"dish\"><span>Whipped cod roe</span>                                                                                                                                                                                                                                                                                                                                                              <span>GF</span></div>"
+          },
+          {
+            "file": "menu.html",
+            "start": 72,
+            "end": 489,
+            "excerpt": "<div class=\"dish\"><span>Whipped cod roe</span>                                                                                                                                                                                                                                                                                                                                                              <span>GF</span></div>"
+          }
+        ]
+      },
+      "rawRisks": [],
+      "rawLimitations": [
+        "Source inspection only; rendered appearance, visibility and browser behavior were not observed.",
+        "Buyer must still confirm final acceptance of this checklist item."
+      ],
+      "applicationItem": {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "Both files contain a .dish block with <span>Whipped cod roe</span> followed by <span>GF</span> inside the same div.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 72,
+            "end": 489,
+            "excerpt": "<div class=\"dish\"><span>Whipped cod roe</span>                                                                                                                                                                                                                                                                                                                                                              <span>GF</span></div>"
+          },
+          {
+            "file": "menu.html",
+            "start": 72,
+            "end": 489,
+            "excerpt": "<div class=\"dish\"><span>Whipped cod roe</span>                                                                                                                                                                                                                                                                                                                                                              <span>GF</span></div>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-1"
+        ]
+      },
+      "activeRisks": [],
+      "quarantine": {
+        "version": 1,
+        "reason": "not_withheld",
+        "adjustedCriteria": [],
+        "entries": []
+      },
+      "publishedLimitationsReview": {
+        "actualCountsCorrect": true,
+        "selfDescriptionCountCorrect": true,
+        "claimsNoBrowserScriptBackendOrPixels": true,
+        "sourceOnlyBoundaryTruthful": true
+      },
+      "sourceReferenceNumericDisagreement": false
+    },
+    {
+      "id": "evidence-actions-second-page-wrong-tag",
+      "sourceReferenceStatus": "changes_suggested",
+      "rawStatus": "changes_suggested",
+      "applicationStatus": "changes_suggested",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "protocol": {
+        "activeV3": true,
+        "originalJsonValid": true,
+        "syntaxNormalization": "none",
+        "completeCriteria": true,
+        "exactCatalogBinding": true,
+        "exactUtf16SourceCitations": true,
+        "requestBytesAndSourceHashesVerified": true
+      },
+      "entailment": "Explicit menu.html has the target owner tagged V rather than the requested GF, while index.html has GF; exact same-owner quotes establish the source mismatch.",
+      "reviewNotes": [
+        "Advice is confined to source labels; it does not establish whether the dish is actually gluten free.",
+        "No unconfirmed page-role alias is needed because the requirement names both files."
+      ],
+      "rawItem": {
+        "criterionId": "coverage-1",
+        "status": "changes_suggested",
+        "explanation": "index.html pairs Whipped cod roe with a GF tag, but menu.html pairs the same dish with a \"V\" tag instead of GF, so the tag is not attached on both pages.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 72,
+            "end": 164,
+            "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+          },
+          {
+            "file": "menu.html",
+            "start": 72,
+            "end": 163,
+            "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div>"
+          }
+        ]
+      },
+      "rawRisks": [
+        {
+          "title": "menu.html shows \"V\" tag instead of GF for Whipped cod roe",
+          "explanation": "The menu.html dish block lists Whipped cod roe followed by a tag containing only \"V\", while index.html uses \"GF\" for the same dish. The required GF tag is absent from the menu.html source for this item.",
+          "suggestion": "Change the menu.html tag for Whipped cod roe to GF (or correct whichever label is intended) and re-verify both pages' source.",
+          "citations": [
+            {
+              "file": "menu.html",
+              "start": 72,
+              "end": 163,
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div>"
+            },
+            {
+              "file": "menu.html",
+              "start": 131,
+              "end": 157,
+              "excerpt": "<span class=\"tag\">V</span>"
+            },
+            {
+              "file": "index.html",
+              "start": 72,
+              "end": 164,
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+            }
+          ]
+        }
+      ],
+      "rawLimitations": [
+        "Inspection is limited to static HTML/CSS text; rendered appearance and visibility were not observed in a browser.",
+        "No runtime or script behavior was evaluated for either page."
+      ],
+      "applicationItem": {
+        "criterionId": "coverage-1",
+        "status": "changes_suggested",
+        "explanation": "index.html pairs Whipped cod roe with a GF tag, but menu.html pairs the same dish with a \"V\" tag instead of GF, so the tag is not attached on both pages.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 72,
+            "end": 164,
+            "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+          },
+          {
+            "file": "menu.html",
+            "start": 72,
+            "end": 163,
+            "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-1"
+        ]
+      },
+      "activeRisks": [
+        {
+          "title": "menu.html shows \"V\" tag instead of GF for Whipped cod roe",
+          "explanation": "The menu.html dish block lists Whipped cod roe followed by a tag containing only \"V\", while index.html uses \"GF\" for the same dish. The required GF tag is absent from the menu.html source for this item.",
+          "suggestion": "Change the menu.html tag for Whipped cod roe to GF (or correct whichever label is intended) and re-verify both pages' source.",
+          "citations": [
+            {
+              "file": "menu.html",
+              "start": 72,
+              "end": 163,
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div>"
+            },
+            {
+              "file": "menu.html",
+              "start": 131,
+              "end": 157,
+              "excerpt": "<span class=\"tag\">V</span>"
+            },
+            {
+              "file": "index.html",
+              "start": 72,
+              "end": 164,
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+            }
+          ]
+        }
+      ],
+      "quarantine": {
+        "version": 1,
+        "reason": "not_withheld",
+        "adjustedCriteria": [],
+        "entries": []
+      },
+      "publishedLimitationsReview": {
+        "actualCountsCorrect": true,
+        "selfDescriptionCountCorrect": true,
+        "claimsNoBrowserScriptBackendOrPixels": true,
+        "sourceOnlyBoundaryTruthful": true
+      },
+      "sourceReferenceNumericDisagreement": false
+    },
+    {
+      "id": "evidence-actions-runtime-copy-only",
+      "sourceReferenceStatus": "insufficient_evidence",
+      "rawStatus": "insufficient_evidence",
+      "applicationStatus": "insufficient_evidence",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "qualified",
+      "protocol": {
+        "activeV3": true,
+        "originalJsonValid": true,
+        "syntaxNormalization": "none",
+        "completeCriteria": true,
+        "exactCatalogBinding": true,
+        "exactUtf16SourceCitations": true,
+        "requestBytesAndSourceHashesVerified": true
+      },
+      "entailment": "Static message copy and an input do not establish email delivery, persistence or readback after restart. Raw and application correctly return unknown.",
+      "reviewNotes": [
+        "The raw answer explicitly addresses both email delivery and durable receipt/readback with truthful source limitations.",
+        "Application reason record_readback and its fixed explanation principally guide the receipt branch. The complete criterion is retained, but the next evidence request should also explicitly ask for mail-delivery evidence.",
+        "This is a compound-evidence actionability limitation, not a missing returned criterion, false pass or demonstrated backend defect."
+      ],
+      "rawItem": {
+        "criterionId": "coverage-1",
+        "status": "insufficient_evidence",
+        "explanation": "Static source shows a form with only an email input and the copy 'Message saved. Email sent.', but email delivery and receipt retention across restart require backend/runtime evidence not supplied.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 0,
+            "end": 152,
+            "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><p>Message saved. Email sent.</p><form><input name=\"email\"></form></body></html>"
+          },
+          {
+            "file": "index.html",
+            "start": 72,
+            "end": 105,
+            "excerpt": "<p>Message saved. Email sent.</p>"
+          },
+          {
+            "file": "index.html",
+            "start": 111,
+            "end": 131,
+            "excerpt": "<input name=\"email\">"
+          },
+          {
+            "file": "menu.html",
+            "start": 0,
+            "end": 152,
+            "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><p>Message saved. Email sent.</p><form><input name=\"email\"></form></body></html>"
+          },
+          {
+            "file": "menu.html",
+            "start": 72,
+            "end": 105,
+            "excerpt": "<p>Message saved. Email sent.</p>"
+          },
+          {
+            "file": "menu.html",
+            "start": 111,
+            "end": 131,
+            "excerpt": "<input name=\"email\">"
+          }
+        ]
+      },
+      "rawRisks": [],
+      "rawLimitations": [
+        "Email delivery to the owner cannot be verified from static HTML; no server or script evidence was supplied.",
+        "Receipt persistence retrievable after a restart requires storage/backend evidence that is not in the supplied files.",
+        "The form on both pages has no action or method declared in source; actual submission handling is unverified.",
+        "The delivered copy states 'Message saved. Email sent.' but no browser observation confirms what a user sees after submitting.",
+        "All source is untrusted data; no runtime, network or database behavior was examined."
+      ],
+      "applicationItem": {
+        "criterionId": "coverage-1",
+        "status": "insufficient_evidence",
+        "explanation": "This requirement includes actual records, durable retention or queryable receipts. Source copy cannot establish that records were written or can be read back. Provide execution and independent record-readback evidence, and check the complete locked requirement.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 0,
+            "end": 152,
+            "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><p>Message saved. Email sent.</p><form><input name=\"email\"></form></body></html>"
+          },
+          {
+            "file": "index.html",
+            "start": 72,
+            "end": 105,
+            "excerpt": "<p>Message saved. Email sent.</p>"
+          },
+          {
+            "file": "index.html",
+            "start": 111,
+            "end": 131,
+            "excerpt": "<input name=\"email\">"
+          },
+          {
+            "file": "menu.html",
+            "start": 0,
+            "end": 152,
+            "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><p>Message saved. Email sent.</p><form><input name=\"email\"></form></body></html>"
+          },
+          {
+            "file": "menu.html",
+            "start": 72,
+            "end": 105,
+            "excerpt": "<p>Message saved. Email sent.</p>"
+          },
+          {
+            "file": "menu.html",
+            "start": 111,
+            "end": 131,
+            "excerpt": "<input name=\"email\">"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-1"
+        ],
+        "evidenceNeed": {
+          "schema": "source-evidence-need-v1",
+          "reason": "record_readback",
+          "targetFiles": []
+        }
+      },
+      "activeRisks": [],
+      "quarantine": {
+        "version": 1,
+        "reason": "not_withheld",
+        "adjustedCriteria": [],
+        "entries": []
+      },
+      "publishedLimitationsReview": {
+        "actualCountsCorrect": true,
+        "selfDescriptionCountCorrect": true,
+        "claimsNoBrowserScriptBackendOrPixels": true,
+        "sourceOnlyBoundaryTruthful": true
+      },
+      "sourceReferenceNumericDisagreement": false
+    }
+  ],
+  "limits": [
+    "These eight are authored synthetic source boundaries, not new real projects, customer contracts or human user studies.",
+    "Exact source quotations establish provenance, not inferred page-role mapping, real runtime execution or the correctness of every normative conclusion.",
+    "The source truth reference for partial-owner-only is supported; unlike the controlled partial-selector fixture, this actual model answer chose full owners and correctly retained support.",
+    "Frozen references and both numeric disagreements remain unchanged; independent adjudication does not rewrite the measured results.",
+    "This review does not establish opponent superiority, award likelihood, browser behavior, user acceptance, payment or live production persistence."
+  ]
+}

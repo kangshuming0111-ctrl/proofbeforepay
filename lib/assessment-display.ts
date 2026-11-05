@@ -9,7 +9,7 @@ export function assessmentReviewSummary(report: ProofAssessment, reviews: ProofR
   let unreviewed = 0, differingPositions = 0;
   for (let riskIndex = 0; riskIndex < report.risks.length; riskIndex++) {
     const positions = roles.map(role => reviews.findLast(review => review.deliveryId === report.deliveryId
-      && review.assessmentId === report.id && review.riskIndex === riskIndex && review.actorRole === role));
+      && review.assessmentId === report.id && review.riskOrigin === undefined && review.riskIndex === riskIndex && review.actorRole === role));
     if (positions.every(position => !position)) unreviewed++;
     if (positions[0] && positions[1] && positions[0].decision !== positions[1].decision) differingPositions++;
     roles.forEach((role, index) => {

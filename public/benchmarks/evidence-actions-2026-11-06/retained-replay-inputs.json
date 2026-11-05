@@ -1,0 +1,23 @@
+{
+  "schema": "pbp-evidence-actions-replay-inputs-v1",
+  "groups": [
+    {
+      "label": "known",
+      "corpus": "outputs/citation-relations-2026-11-05/cycle-13-known-corpus.json",
+      "live": "outputs/citation-relations-2026-11-05/cycle-15-known-live.json",
+      "freeze": "outputs/citation-relations-2026-11-05/cycle-15-known-freeze.json"
+    },
+    {
+      "label": "repair-new",
+      "corpus": "scripts/project-assessment-corpus-citation-relations-holdout.json",
+      "live": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-live.json",
+      "freeze": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-freeze.json"
+    },
+    {
+      "label": "scope",
+      "corpus": "scripts/citation-relations-scope-corpus-2026-11-05.json",
+      "live": "outputs/citation-relations-2026-11-05/cycle-15-scope-live.json",
+      "freeze": "outputs/citation-relations-2026-11-05/cycle-15-scope-freeze.json"
+    }
+  ]
+}

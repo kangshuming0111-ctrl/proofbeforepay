@@ -1,4 +1,4 @@
-import type { ProofAssessment, ProofAssessmentCitation, ProofAssessmentItem, ProofBusinessCheck, ProofQuote } from "./contracts.ts";
+import type { ProofAssessment, ProofAssessmentCitation, ProofAssessmentItem, ProofBusinessCheck, ProofEvidenceNeed, ProofQuote } from "./contracts.ts";
 import { DomainError } from "./domain.ts";
 import { DEFAULT_DEEPSEEK_MODEL, ProviderError, requestJson, type Fetcher, type ProviderEnv } from "./providers.ts";
 import { validateStaticFiles } from "./static-project.ts";
@@ -17,6 +17,7 @@ import {hasUnestablishedArticleTitleCommaChange} from "./article-title-punctuati
 import {createUniversalSourceListEvidenceCheck} from "./universal-source-list-evidence.ts";
 import {createUniversalTagEvidenceCheck} from "./universal-tag-evidence.ts";
 import {publishSourceAssessmentNotes} from "./assessment-publication-policy.ts";
+import {makeAssessmentEvidenceNeed} from "./assessment-evidence-needs.ts";
 import {canonicalAssessmentRisk} from "./assessment-risk-fields.ts";
 import {createAssessmentCitationCatalog, resolveCatalogCitations} from "./assessment-citation-catalog.ts";
 export {AssessmentResponseError} from "./assessment-response.ts";
@@ -266,6 +267,10 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
       let status = item.status as ProofAssessmentItem["status"];
       let explanation = text(item.explanation, 600).trim();
       let checkedCitations = resolve(item.citations, ASSESSMENT_ITEM_CITATION_LIMIT);
+      let evidenceNeed: ProofEvidenceNeed | undefined;
+      const need = (reason: ProofEvidenceNeed["reason"], targetFiles: readonly string[] = []) => {
+        if (encoding === "catalog_slots") evidenceNeed = makeAssessmentEvidenceNeed(reason, targetFiles, sent);
+      };
       const related = evidence.filter(entry => entry.criterionId === criterion.id);
       const scope = assessmentEvidenceScope(criterion);
       if (related.some(entry => entry.finding === "fail")) {
@@ -274,11 +279,14 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
       } else if (scope.category === "requires_observation") {
         status = "insufficient_evidence";
         explanation = assessmentObservationExplanation(scope, quote.language);
+        need(scope.reason === "mobile" ? "browser_observation" : scope.reason === "financial_action" ? "financial_execution"
+          : scope.reason === "durable_record" ? "record_readback" : scope.reason === "unclassified_requirement" ? "requirement_clarification" : "direct_observation");
       } else {
         if (item.status === "changes_suggested" && status === "changes_suggested"
           && !savedBusinessSteps.some(step => step.criterionId === criterion.id)
           && hasUnestablishedArticleTitleCommaChange(criterion, sent, checkedCitations)) {
           status = "insufficient_evidence";
+          need("manual_interpretation");
           explanation = words(quote,
             "源码引文与要求的标题单词一致，仅在 and 前多一个逗号；此差异本身尚未证实内容缺陷，需人工确认标点含义，不能仅据此要求返工。原始约定与引文保持不变。",
             "The quoted article-title words match the requirement, with only a comma before 'and'. That alone does not establish a content defect; the buyer should review the punctuation. Original requirements and citations are unchanged.");
@@ -288,9 +296,21 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
           if (business.kind === "unknown") {
             status = "insufficient_evidence";
             explanation = sourceBusinessEvidenceExplanation(business, quote.language);
+            need("source_ambiguity", business.checks.filter(check => check.kind === "unknown").map(check => check.file));
           } else if (business.kind === "mismatch") {
             explanation = sourceBusinessEvidenceExplanation(business, quote.language);
             checkedCitations = business.citations;
+          }
+        }
+        if (item.status === "changes_suggested" && status === "changes_suggested") {
+          const tagEvidence = universalTagCheck(criterion, checkedCitations);
+          if (tagEvidence.kind === "unknown" && tagEvidence.reason === "unconfirmed_page_scope"
+            && businessEvidenceCheck(criterion.id).kind !== "mismatch") {
+            status = "insufficient_evidence";
+            need("page_scope");
+            explanation = words(quote,
+              "约定的页面角色尚未与交付文件建立明确对应，不能仅按文件名猜测目标页面并据此要求返工。请买家确认页面角色与具体文件的对应关系后，再核对源码。原始要求与引文保持不变；这是范围证据不足，不代表标签已被证实缺失或错误。",
+              "The agreed page roles have no confirmed mapping to delivered files. A filename guess does not establish a defect in the intended page. Ask the buyer to confirm the exact role-to-file mapping, then recheck the source. Original wording and citations are unchanged; this is insufficient scope evidence, not a proven missing or incorrect tag.");
           }
         }
         if (status === "supported") {
@@ -299,11 +319,14 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
             status = business.kind === "mismatch" ? "changes_suggested" : "insufficient_evidence";
             explanation = sourceBusinessEvidenceExplanation(business, quote.language);
             if (business.kind === "mismatch") checkedCitations = business.citations;
+            else need("source_ambiguity", business.checks.filter(check => check.kind === "unknown").map(check => check.file));
           } else {
             const witness = assessSourceBusinessCitationWitness(business, checkedCitations);
             if (witness.kind === "unknown") {
               status = "insufficient_evidence";
               explanation = sourceBusinessCitationWitnessExplanation(witness, quote.language);
+              need(witness.checks.some(check => check.reason === "target_file_not_cited") ? "page_citations" : "field_relationship",
+                witness.checks.filter(check => check.kind === "unknown").map(check => check.file));
             }
           }
         }
@@ -312,6 +335,7 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
           if (exactCopy.kind === "missing" || exactCopy.kind === "unknown") {
             status = exactCopy.kind === "missing" ? "changes_suggested" : "insufficient_evidence";
             explanation = exactCopyEvidenceExplanation(exactCopy, quote.language);
+            if (exactCopy.kind === "unknown") need("source_ambiguity");
           }
         }
         if (status === "supported") {
@@ -319,26 +343,40 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
           if (labelCoverage.kind === "incomplete" || labelCoverage.kind === "unknown") {
             status = "insufficient_evidence";
             explanation = labelCitationCoverageExplanation(labelCoverage, quote.language);
+            need("field_relationship");
           }
         }
-        if (status === "supported" && universalTagCheck(criterion, checkedCitations).kind === "unknown") {
-          status = "insufficient_evidence";
-          explanation = words(quote,
+        if (status === "supported") {
+          const tagEvidence = universalTagCheck(criterion, checkedCitations);
+          if (tagEvidence.kind === "unknown") {
+            status = "insufficient_evidence";
+            need(tagEvidence.reason === "unconfirmed_page_scope" ? "page_scope" : tagEvidence.reason === "unsupported_requirement" ? "requirement_clarification"
+              : ["owner_tag_unverified", "owner_price_unverified", "owner_evidence_incomplete", "owner_text_ambiguous", "ambiguous_body_label"].includes(tagEvidence.reason ?? "") ? "field_relationship" : "source_ambiguity");
+            explanation = words(quote,
             "当前源码及引用尚未证实每个指定页面都在同一完整内容块中对应所需名称、标签与价格；自然语言页面别名也不能代替已确认的文件映射。请核对具体页面和完整内容块。这是关联证据不足，不代表交付缺失，也不证明可见性或运行成功。原始要求与引用未改变。",
             "The source and citations do not establish the required name/tag/price relationship within a complete owner on every specified page. Page-role aliases cannot substitute for a confirmed file mapping. Review the exact targets and complete blocks. This is insufficient relationship evidence, not proof of absent delivery, visibility or working behavior. Requirements and citations are unchanged.");
+          }
         }
-        if (status === "supported" && universalListCheck(criterion, checkedCitations).kind === "unknown") {
-          status = "insufficient_evidence";
-          explanation = words(quote,
+        if (status === "supported") {
+          const listEvidence = universalListCheck(criterion, checkedCitations);
+          if (listEvidence.kind === "unknown") {
+            status = "insufficient_evidence";
+            const reason = listEvidence.reason === "unconfirmed_page_scope" ? "page_scope" : listEvidence.reason === "unsupported_list_requirement" ? "requirement_clarification"
+              : listEvidence.reason === "literal_not_witnessed" ? "page_citations" : "source_ambiguity";
+            need(reason, reason === "page_scope" || reason === "requirement_clarification" ? [] : Object.keys(sent).filter(file => staticFileKind(file) === "html"));
+            explanation = words(quote,
             "当前引用未能在所有指定页面的同名源码区域逐项覆盖每个要求的文字，或页面范围尚未唯一确认。请逐页核对；单项引用额度不足时可增加逐页人工检查。此结果只说明证据链未完整建立，不代表页面缺少内容，也不证明实际导航、可见性或验收成功；原始要求和引文未改变。",
             "The citations do not witness every required literal within the named source region on all specified pages, or the page scope is unconfirmed. Check each page; if one item exceeds its citation budget, add per-page human checks. This is incomplete evidence, not proof of missing content, working navigation, visibility or acceptance. Requirements and citations are unchanged.");
+          }
         }
         if (!checkedCitations.length && status !== "insufficient_evidence") {
           status = "insufficient_evidence";
+          need("no_citations");
           explanation = words(quote, "未提供可核对的交付源码引用，不能据此确认符合或要求修改。", "No verifiable delivery-source citation was supplied, so compliance or a requested change is not established.");
         }
       }
-      return { criterionId: criterion.id, status, explanation, citations: checkedCitations, ruleEvidenceIds: related.map(entry => entry.id) };
+      return { criterionId: criterion.id, status, explanation, citations: checkedCitations, ruleEvidenceIds: related.map(entry => entry.id),
+        ...(encoding === "catalog_slots" && status === "insufficient_evidence" ? {evidenceNeed: evidenceNeed ?? makeAssessmentEvidenceNeed("model_unresolved", [], sent)} : {}) };
     });
     // Keep the report in the agreed order regardless of model output order.
     items.sort((a, b) => criteria.findIndex(entry => entry.id === a.criterionId) - criteria.findIndex(entry => entry.id === b.criterionId));
@@ -362,7 +400,7 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
     // Model self-descriptions are not trusted inventory or execution facts.
     const modelLimitations = output.limitations.map(value => text(value, 300).trim());
     const originalStatuses = new Map(responseItems.map(value => {const item=record(value);return [String(item.criterionId),String(item.status)] as const;}));
-    const publication = encoding === "catalog_slots"
+    const publication: ReturnType<typeof publishSourceAssessmentNotes> = encoding === "catalog_slots"
       ? publishSourceAssessmentNotes(quote.language, items, originalStatuses, risks, modelLimitations.length, files)
       : {risks, limitations: [...modelLimitations], statusAdjustedCount: 0};
     const limitations = publication.limitations;
@@ -379,7 +417,7 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
     limitations.push(words(quote, "AI 建议与服务端规则分开记录。人工检查和最终验收由买家完成，不会自动验收、授权或付款。", "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."));
     if (Object.keys(files).some(file => !["html", "css"].includes(staticFileKind(file) ?? ""))) limitations.push(words(quote, "文件清单中的图片已经交付，但像素未送交 AI 分析；从文本分析范围省略不等于图片文件缺失或显示失败。", "Raster files in the inventory were delivered, but their pixels were not sent to AI. Omission from text-source coverage does not mean an image file is missing or failed to display."));
     const tokenUsage = usage(response.data.usage, outputTokenLimit, promptTokenUpperEstimate);
-    return { id: crypto.randomUUID(), deliveryId: delivery.id, method: "source-ai-v1", mode: "live", model, assessedAt: new Date().toISOString(), items, risks: publication.risks, limitations, coverage, ...(tokenUsage ? { usage: tokenUsage } : {}) };
+    return { id: crypto.randomUUID(), deliveryId: delivery.id, method: "source-ai-v1", mode: "live", model, assessedAt: new Date().toISOString(), items, risks: publication.risks, limitations, coverage, ...(publication.withheldRisks ? {withheldRisks: publication.withheldRisks} : {}), ...(tokenUsage ? { usage: tokenUsage } : {}) };
   } catch (error) {
     if (error instanceof AssessmentResponseError) throw error;
     throw failure();

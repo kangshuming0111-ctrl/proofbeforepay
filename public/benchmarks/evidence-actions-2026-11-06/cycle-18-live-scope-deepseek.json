@@ -1,0 +1,91 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 53573,
+      "lines": 414,
+      "sha256": "db918e35417636b5a12b9d6c701a36b7e28284d28c1d09aba9bc213e3259059d"
+    },
+    {
+      "file": "lib/universal-tag-evidence.ts",
+      "bytes": 9704,
+      "lines": 150,
+      "sha256": "dee81d5f4e869c684903e6a40ab01f51a5014e3f99f0fd733856cb04d6a07f0c"
+    },
+    {
+      "file": "lib/source-business-evidence.ts",
+      "bytes": 18353,
+      "lines": 219,
+      "sha256": "4936fba46ab28f39ec42f356987c27840d46b652f752a6011fb019d170659141"
+    },
+    {
+      "file": "scripts/evaluation-results/evidence-actions-live-counterexamples-2026-11-06.json",
+      "bytes": 29087,
+      "lines": 697,
+      "sha256": "c402846940e49ef7c85daa1287eb38b6676f8139fba3df2488cc4d4b7640d6de"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"The two synthetic retained answers in the packet show a scope-guard asymmetry, not a broken reference. In the wrong-page-role-alias case, the raw answer is changes_suggested because the model decided that \\\"full menu\\\" best maps to menu.html and that menu.html shows tag V instead of GF. Nothing in the packet records a buyer-confirmed role-to-file mapping, and universal-tag pages() deliberately refuses role-only scopes (lib/universal-tag-evidence.ts:49). The proposed downgrade to insufficient_evidence with reason page_scope is therefore sound. It should apply only when the model's change request depends on that unconfirmed scope and no server rule fail or independently confirmed business-check mismatch also stands. In the missing-agreed-file case, the reference's insufficient_evidence verdict is reasonable because the file named in the requirement was not supplied. About.html showing the same markup does not meet the named targets. The model's wording that no menu.html was delivered is a precise, factually correct request to provide the named file. It should not be suppressed, and the frozen references (8 of 8 agreement, 24 of 24 exact citations) should not be edited.\",\"findings\":[{\"severity\":\"P2\",\"file\":\"lib/delivery-assessment.ts\",\"line\":339,\"title\":\"Role-alias change requests are accepted without a confirmed page mapping\",\"evidence\":\"The universalTagCheck is only invoked inside `if (status === \\\"supported\\\")` (lines 338-348). Guarded blocks for fail (276-278), requires_observation (279-283), article-title comma (285-293), and business checks (294-321) can only move the result away from supported. So a model changes_suggested whose evidence is an unconfirmed page role reaches line 359 (citation presence) and is returned unchanged. lib/universal-tag-evidence.ts:49 returns undefined for `homepage|full menu` scopes, and line 128 then produces unknown(\\\"unconfirmed_page_scope\\\"). That never runs for this case. In evidence-actions-live-counterexamples-2026-11-06.json:619 the explanation says `\\\"full menu\\\" best maps to menu.html`, and line 649's suggestion asks the buyer to confirm the mapping. The rule evidence in that case is needs_human (line 535) and there is no saved business check, so nothing server-confirmed supports the change request. The result is a false change request based on a role alias the product explicitly refuses to treat as a mapping.\",\"reproduction\":\"Unexecuted reasoning trace. Take the providerPacket at lines 372-548 and a model item `{criterionId:\\\"coverage-1\\\",status:\\\"changes_suggested\\\",citations:[index.html block, menu.html block, terms.html block]}`. The `related` rule finding is needs_human, not fail, and `assessmentEvidenceScope` does not classify this clause as requires_observation. So the code enters the else branch. status is not supported, so universalTagCheck is skipped. businessEvidenceCheck is not_applicable because no saved steps exist. The result is changes_suggested. The retained report at lines 616-643 shows exactly this outcome.\",\"suggestion\":\"Minimal scope guard: before accepting a changes_suggested in the else branch, call universalTagCheck(criterion, checkedCitations) only to read negative reasons. When the result is unknown with reason unconfirmed_page_scope (and the criterion is not rendered requires_observation, it has no fail rule evidence, and businessEvidenceCheck(criterion.id) is not mismatch), set status to insufficient_evidence, set need(\\\"page_scope\\\"), and use a page-scope explanation that does not name an unconfirmed page. Do not apply this to other unknown reasons, do not suppress grounded wrong-tag or wrong-price changes backed by a fail rule or a mismatch, and do not upgrade any unknown result to supported. Add focused counterexamples for: role alias with no rule fail (downgrade); role alias plus a server fail (keep changes_suggested); role alias plus a business-check mismatch (keep changes_suggested); explicit file-path scope with an owner mismatch (keep changes_suggested). Consider a shared typed guard surface (a page_scope reason plus priority ahead of other check types) so universalListCheck gets the same treatment.\"},{\"severity\":\"P3\",\"file\":\"scripts/evaluation-results/evidence-actions-live-counterexamples-2026-11-06.json\",\"line\":260,\"title\":\"Missing-agreed-file explanation is factual; reference verdict and policy are consistent\",\"evidence\":\"The criterion at line 46 names index.html and menu.html. The inventory (lines 62-81) lists index.html, about.html and site.css, so the named menu.html is absent, and about.html is present. The model's explanation at line 260 says \\\"no menu.html was delivered\\\" and says the about.html markup is not the named target. Both statements match the packet exactly, and the risk at lines 288-290 asks for the missing file and offers to confirm about.html as the alternative. The authored reference (lines 29-37) expects insufficient_evidence because the named evidence file is absent, which matches the app rule \\\"Only an actual absent local target ... can support a missing-file concern\\\". Since the named target is genuinely absent, the changes_suggested answer is a precise, grounded modification request rather than a policy error. It is a known difference between the reference's conservative abstention and the model's request to provide the agreed file. It should stay as a counterexample, not be suppressed by a future guard. This finding records why the asymmetry concerns only role aliases.\",\"reproduction\":\"Unexecuted reasoning trace. Compare criterion source line 28 with files lines 83-85. menu.html is not a key, so universalTagCheck pages() returns ['index.html','menu.html'] and line 133 yields unknown('unavailable_source'). The resulting insufficient_evidence is correct. The model's change request cites only supplied files and its absence statement is verifiable from the inventory.\",\"suggestion\":\"No change to the produced verdict path is needed. When landing the page_scope guard from the first finding, scope it strictly to reason unconfirmed_page_scope (role aliases) and add a regression counterexample that keeps this missing-agreed-file changes_suggested wording and citations unchanged. Keep the frozen reference and the 8-of-8 claim untouched.\"}],\"limitations\":[\"Source-only review: no code was executed, and no tests, typecheck, build or live provider calls were run. All reproductions are reasoning traces, not observations.\",\"Guards in modules not supplied (assessmentEvidenceScope, requirement-coverage, business-checks, assessment-publication-policy) were inferred only from call sites and comments in lib/delivery-assessment.ts. The exact classification of an unconfirmed page role under those helpers is unverified.\",\"Only two synthetic retained cases were supplied. The 8-of-8 reference agreement and 24-of-24 exact citations are taken from the task statement; the other six cases and their adjudication history were not inspected. Raw-vs-app agreement (5/8 and 6/8) could not be recomputed.\",\"Whether a wrong tag on menu.html is also a genuine business mismatch cannot be established: the packet shows ruleEvidence needs_human and no saved business check for this criterion. If a typed business check later confirms menu.html as the full menu with GF expected, changes_suggested must be preserved rather than downgraded.\",\"Severity reflects the advisory impact only: false change requests can mislead buyers into rework. No acceptance or payment authority is attributed to the AI layer.\",\"The wrong-page-role-alias guard extent for universalListCheck (multi-item lists) was not assessed because no such retained case was supplied.\"]}",
+  "report": {
+    "summary": "The two synthetic retained answers in the packet show a scope-guard asymmetry, not a broken reference. In the wrong-page-role-alias case, the raw answer is changes_suggested because the model decided that \"full menu\" best maps to menu.html and that menu.html shows tag V instead of GF. Nothing in the packet records a buyer-confirmed role-to-file mapping, and universal-tag pages() deliberately refuses role-only scopes (lib/universal-tag-evidence.ts:49). The proposed downgrade to insufficient_evidence with reason page_scope is therefore sound. It should apply only when the model's change request depends on that unconfirmed scope and no server rule fail or independently confirmed business-check mismatch also stands. In the missing-agreed-file case, the reference's insufficient_evidence verdict is reasonable because the file named in the requirement was not supplied. About.html showing the same markup does not meet the named targets. The model's wording that no menu.html was delivered is a precise, factually correct request to provide the named file. It should not be suppressed, and the frozen references (8 of 8 agreement, 24 of 24 exact citations) should not be edited.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "lib/delivery-assessment.ts",
+        "line": 339,
+        "title": "Role-alias change requests are accepted without a confirmed page mapping",
+        "evidence": "The universalTagCheck is only invoked inside `if (status === \"supported\")` (lines 338-348). Guarded blocks for fail (276-278), requires_observation (279-283), article-title comma (285-293), and business checks (294-321) can only move the result away from supported. So a model changes_suggested whose evidence is an unconfirmed page role reaches line 359 (citation presence) and is returned unchanged. lib/universal-tag-evidence.ts:49 returns undefined for `homepage|full menu` scopes, and line 128 then produces unknown(\"unconfirmed_page_scope\"). That never runs for this case. In evidence-actions-live-counterexamples-2026-11-06.json:619 the explanation says `\"full menu\" best maps to menu.html`, and line 649's suggestion asks the buyer to confirm the mapping. The rule evidence in that case is needs_human (line 535) and there is no saved business check, so nothing server-confirmed supports the change request. The result is a false change request based on a role alias the product explicitly refuses to treat as a mapping.",
+        "reproduction": "Unexecuted reasoning trace. Take the providerPacket at lines 372-548 and a model item `{criterionId:\"coverage-1\",status:\"changes_suggested\",citations:[index.html block, menu.html block, terms.html block]}`. The `related` rule finding is needs_human, not fail, and `assessmentEvidenceScope` does not classify this clause as requires_observation. So the code enters the else branch. status is not supported, so universalTagCheck is skipped. businessEvidenceCheck is not_applicable because no saved steps exist. The result is changes_suggested. The retained report at lines 616-643 shows exactly this outcome.",
+        "suggestion": "Minimal scope guard: before accepting a changes_suggested in the else branch, call universalTagCheck(criterion, checkedCitations) only to read negative reasons. When the result is unknown with reason unconfirmed_page_scope (and the criterion is not rendered requires_observation, it has no fail rule evidence, and businessEvidenceCheck(criterion.id) is not mismatch), set status to insufficient_evidence, set need(\"page_scope\"), and use a page-scope explanation that does not name an unconfirmed page. Do not apply this to other unknown reasons, do not suppress grounded wrong-tag or wrong-price changes backed by a fail rule or a mismatch, and do not upgrade any unknown result to supported. Add focused counterexamples for: role alias with no rule fail (downgrade); role alias plus a server fail (keep changes_suggested); role alias plus a business-check mismatch (keep changes_suggested); explicit file-path scope with an owner mismatch (keep changes_suggested). Consider a shared typed guard surface (a page_scope reason plus priority ahead of other check types) so universalListCheck gets the same treatment."
+      },
+      {
+        "severity": "P3",
+        "file": "scripts/evaluation-results/evidence-actions-live-counterexamples-2026-11-06.json",
+        "line": 260,
+        "title": "Missing-agreed-file explanation is factual; reference verdict and policy are consistent",
+        "evidence": "The criterion at line 46 names index.html and menu.html. The inventory (lines 62-81) lists index.html, about.html and site.css, so the named menu.html is absent, and about.html is present. The model's explanation at line 260 says \"no menu.html was delivered\" and says the about.html markup is not the named target. Both statements match the packet exactly, and the risk at lines 288-290 asks for the missing file and offers to confirm about.html as the alternative. The authored reference (lines 29-37) expects insufficient_evidence because the named evidence file is absent, which matches the app rule \"Only an actual absent local target ... can support a missing-file concern\". Since the named target is genuinely absent, the changes_suggested answer is a precise, grounded modification request rather than a policy error. It is a known difference between the reference's conservative abstention and the model's request to provide the agreed file. It should stay as a counterexample, not be suppressed by a future guard. This finding records why the asymmetry concerns only role aliases.",
+        "reproduction": "Unexecuted reasoning trace. Compare criterion source line 28 with files lines 83-85. menu.html is not a key, so universalTagCheck pages() returns ['index.html','menu.html'] and line 133 yields unknown('unavailable_source'). The resulting insufficient_evidence is correct. The model's change request cites only supplied files and its absence statement is verifiable from the inventory.",
+        "suggestion": "No change to the produced verdict path is needed. When landing the page_scope guard from the first finding, scope it strictly to reason unconfirmed_page_scope (role aliases) and add a regression counterexample that keeps this missing-agreed-file changes_suggested wording and citations unchanged. Keep the frozen reference and the 8-of-8 claim untouched."
+      }
+    ],
+    "limitations": [
+      "Source-only review: no code was executed, and no tests, typecheck, build or live provider calls were run. All reproductions are reasoning traces, not observations.",
+      "Guards in modules not supplied (assessmentEvidenceScope, requirement-coverage, business-checks, assessment-publication-policy) were inferred only from call sites and comments in lib/delivery-assessment.ts. The exact classification of an unconfirmed page role under those helpers is unverified.",
+      "Only two synthetic retained cases were supplied. The 8-of-8 reference agreement and 24-of-24 exact citations are taken from the task statement; the other six cases and their adjudication history were not inspected. Raw-vs-app agreement (5/8 and 6/8) could not be recomputed.",
+      "Whether a wrong tag on menu.html is also a genuine business mismatch cannot be established: the packet shows ruleEvidence needs_human and no saved business check for this criterion. If a typed business check later confirms menu.html as the full menu with GF expected, changes_suggested must be preserved rather than downgraded.",
+      "Severity reflects the advisory impact only: false change requests can mislead buyers into rework. No acceptance or payment authority is attributed to the AI layer.",
+      "The wrong-page-role-alias guard extent for universalListCheck (multi-item lists) was not assessed because no such retained case was supplied."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

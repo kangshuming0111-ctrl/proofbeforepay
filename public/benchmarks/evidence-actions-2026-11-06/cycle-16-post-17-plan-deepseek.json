@@ -1,0 +1,113 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/contracts.ts",
+      "bytes": 15526,
+      "lines": 233,
+      "sha256": "d7fe2e9f87ecc7b8cee0d266f1e27db0d51f9ec552dbf9aeff38a5f5414361fa"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 53442,
+      "lines": 414,
+      "sha256": "8cbbecb8b91e0429552d1b0342909923b0f1e55ebbdd339d5c57a062e6d9bff5"
+    },
+    {
+      "file": "lib/assessment-evidence-needs.ts",
+      "bytes": 8320,
+      "lines": 60,
+      "sha256": "b2396b51fa7d750600bfc8833f68555422bfceb128b3099feecc743f7474901a"
+    },
+    {
+      "file": "lib/evidence-export.ts",
+      "bytes": 48278,
+      "lines": 396,
+      "sha256": "2f0bdf92118a202f9a074c7a4a601d4e65cb789cb02c47ba9533ca35aeef84e2"
+    },
+    {
+      "file": "lib/assessment-publication-policy.ts",
+      "bytes": 3353,
+      "lines": 44,
+      "sha256": "0f44723be1731bd771416eca6a0954e213f4ca6ed1c34cbc6c67d34826fe07d6"
+    },
+    {
+      "file": "app/components/assessment-feedback.ts",
+      "bytes": 4909,
+      "lines": 51,
+      "sha256": "58ac2a9444955a232ea34fe10773ee1c179fa3927a68f65c72f727b38c2a9cae"
+    },
+    {
+      "file": "app/components/DeliveryAssessment.tsx",
+      "bytes": 18556,
+      "lines": 167,
+      "sha256": "bd476425d7bd00dcfcc8c703710278eb18216492f0f915f08afb1bc482e9a9ed"
+    },
+    {
+      "file": "tests/assessment-evidence-needs.test.ts",
+      "bytes": 11706,
+      "lines": 116,
+      "sha256": "e2f8395211ddb03f0631e77d4c0aa2b59a682d3766cac16b67ec1f15fb663c0e"
+    },
+    {
+      "file": "tests/evidence-export-needs.test.ts",
+      "bytes": 9356,
+      "lines": 75,
+      "sha256": "2d6eea38cf0bc18560ca56656e32d46c5d94836612e5f865e8ec961d5cf35499"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Round 16 review of the supplied packet (contracts, assessment publication, evidence-need metadata, export validation, UI draft action, and focused tests) found no source-supported P1/P2 correctness or security defect in the round-16 code. The one code-level weakness I could support is a P3 in the evidence-request draft: when a long target-file list is trimmed, the draft points to a filename list that is collapsed by default in a disclosure. The evidence-need labels and reasons match the actual guard branches, export validation is strict (exact keys, status binding, exact provided HTML/CSS files, legacy stays absent), and old/unknown metadata gets a truthful fallback. The round-17 withheldRisks design looks sound on its core invariants but has two design risks to control: a contradiction between the unchanged schema/rules base and the strict export addition, and the need to make publishedStatus derivable so the new metadata cannot carry an extra claim. These are unexecuted design risks, not verified defects. The reported test counts were not rerun and are outside this source-only review.\",\"findings\":[{\"severity\":\"P3\",\"file\":\"app/components/assessment-feedback.ts\",\"line\":26,\"title\":\"Trimmed draft points to a default-collapsed file disclosure\",\"evidence\":\"When the joined target-file list is longer than 180 characters, the draft uses line 26: `There are ${need.targetFiles.length} related files. See the complete filename list in this item's evidence-needed panel; filenames are not shortened here.` The UI at app/components/DeliveryAssessment.tsx:90 renders that list inside `<details className=\\\"assessment-evidence-need-files\\\"><summary>Related source files (N)</summary>` with no `open` attribute, but line 38 of assessment-feedback.ts places `evidenceAction` (including this pointer) in the editable comment. The problem: with 40 targets, about 39 files are not mentioned in the comment, and the pointer lands in a collapsed section the user may not be looking at. The seller who receives the comment has no visible pointer to the files.\",\"reproduction\":\"Unexecuted trace: call makeAssessmentEvidenceNeed with 40 exact provided names (the export test at tests/evidence-export-needs.test.ts:66 builds 40). The names average over 4.5 characters, so fullFiles.length exceeds 180, and line 26 fires. buildAssessmentFeedbackDraft returns a comment containing only 'See the complete filename list...'. In DeliveryAssessment.tsx the `<details>` at line 90 is closed, and the draft button at line 97 inserts that comment into the feedback composer.\",\"suggestion\":\"Point the draft at the visible evidence-needed section instead of the collapsed list, e.g. 'see the evidence-needed panel above this draft'. Or state that the complete file list is not included in this draft rather than implying it is readable in the draft.\"}],\"limitations\":[\"Source-only review: no files were changed and no tests, typecheck, build, browser or network checks were run. The reported core/UI 20/20, export 31/31, 82-item replay, 25-unknown reason and request-byte results are taken from the task context and are not verified here.\",\"Not in the packet, so unverified: riskFields/canonicalAssessmentRisk field-order behavior, assessment-response coverage, catalog/slots encodings, assessment-display, RiskReviewPanel, server-side persistence and API routes. The round-17 withheldRisks field, its JSON tool schema and the publicLab verifier were not supplied. The round-17 items below are design risks only:\",\"ROUND 17 DESIGN RISK A (not a code defect, unexecuted): the plan changes the exported assessment shape (a new `withheldRisks` field) while keeping EVIDENCE_EXPORT_SCHEMA and EVIDENCE_EXPORT_RULES unchanged. The current assessment allowlist at lib/evidence-export.ts:178 rejects any unknown AI assessment key, and verifyEvidenceExport at line 227 returns `unsupported` for any schema/rules mismatch. If `withheldRisks` is added without bumping the verifier rules and the strict allowlists at lines 178/186 and DELIVERY_KEYS/SNAPSHOT_KEYS, a round-17 export will contain a field the shipped public verifier refuses. The fix has to be defined without weakening the old rule: either version the verifier rules and keep an old-rules path that still rejects unknown keys, or forbid `withheldRisks` when nothing was withheld so old-shaped exports stay byte-identical. Also check that `createEvidenceExport` (line 154) does not fail its own verification on new exports.\",\"ROUND 17 DESIGN RISK B (unexecuted): `publishedStatus` inside `adjustedCriteria:[criterionId,originalStatus,publishedStatus]` can carry a claim the withheld-risks feature should not make. The status adjustment already happens in `publishSourceAssessmentNotes` (lib/assessment-publication-policy.ts:33-38). For the new metadata to be truthful, the validator must recompute the final status from the saved item and its original status, not trust the stored `publishedStatus` or `adjustedCriteria` order. Controls: (1) require `originalStatus` to differ from the item's final status; (2) accept the item's status as `publishedStatus` only after confirming it matches the `fromDiff` adjustment logic; (3) every adjusted criterion id must appear exactly once, and every criterion whose status was actually changed must appear (the `<=33` count alone does not establish that); (4) `originalRiskIndex` values must be unique and contiguous from 0 with no index at or beyond the unreviewed original `risks` count — this needs a per-entry limit of `<=5` and an explicit `risks.length>0` check, because an empty original risk list plus a non-empty withheld list is otherwise still 'contiguous'; (5) clone the original `risk` object and its `citations` exactly as `publishSourceAssessmentNotes` does at line 43, and keep names within the 120/600/400 and 1..3 exact-citation bounds; (6) the whole-gate `risks` must be `[]` when withheld entries exist, and both the whole-gate count and the original count must be remembered in the record. Legacy records without `withheldRisks` must stay absent (the same way `evidenceNeed` is today), and nothing may be recovered from `limitations` prose.\",\"ROUND 18 FORWARD RISK (unexecuted): `riskOrigin:withheld` is not a `riskIndex` and must never be written into the existing `riskIndex`/`assessmentId` fields or placed in the `criterionId` namespace. It needs its own field, and the review bindings at lib/evidence-export.ts:206-213 and the snapshot risk-review structure need the same split type. Rejected or unresolved withheld-origin reviews must not be able to release the gate, change acceptance or payment, or alter `sourceVisibility` or `riskRepairs`.\",\"Independently untested UI/product flow: whether the disabled draft button (DeliveryAssessment.tsx:97) behaves correctly while a report is missing for the selected criterion, and whether the evidence-need section is reachable by screen readers through its region label. Not verified.\",\"AGENTS.md requires a champion/award comparison record each cycle; the packet contains no record or external evidence verifying IBM Bob's August strengths, so no independent comparison was made.\"]}",
+  "report": {
+    "summary": "Round 16 review of the supplied packet (contracts, assessment publication, evidence-need metadata, export validation, UI draft action, and focused tests) found no source-supported P1/P2 correctness or security defect in the round-16 code. The one code-level weakness I could support is a P3 in the evidence-request draft: when a long target-file list is trimmed, the draft points to a filename list that is collapsed by default in a disclosure. The evidence-need labels and reasons match the actual guard branches, export validation is strict (exact keys, status binding, exact provided HTML/CSS files, legacy stays absent), and old/unknown metadata gets a truthful fallback. The round-17 withheldRisks design looks sound on its core invariants but has two design risks to control: a contradiction between the unchanged schema/rules base and the strict export addition, and the need to make publishedStatus derivable so the new metadata cannot carry an extra claim. These are unexecuted design risks, not verified defects. The reported test counts were not rerun and are outside this source-only review.",
+    "findings": [
+      {
+        "severity": "P3",
+        "file": "app/components/assessment-feedback.ts",
+        "line": 26,
+        "title": "Trimmed draft points to a default-collapsed file disclosure",
+        "evidence": "When the joined target-file list is longer than 180 characters, the draft uses line 26: `There are ${need.targetFiles.length} related files. See the complete filename list in this item's evidence-needed panel; filenames are not shortened here.` The UI at app/components/DeliveryAssessment.tsx:90 renders that list inside `<details className=\"assessment-evidence-need-files\"><summary>Related source files (N)</summary>` with no `open` attribute, but line 38 of assessment-feedback.ts places `evidenceAction` (including this pointer) in the editable comment. The problem: with 40 targets, about 39 files are not mentioned in the comment, and the pointer lands in a collapsed section the user may not be looking at. The seller who receives the comment has no visible pointer to the files.",
+        "reproduction": "Unexecuted trace: call makeAssessmentEvidenceNeed with 40 exact provided names (the export test at tests/evidence-export-needs.test.ts:66 builds 40). The names average over 4.5 characters, so fullFiles.length exceeds 180, and line 26 fires. buildAssessmentFeedbackDraft returns a comment containing only 'See the complete filename list...'. In DeliveryAssessment.tsx the `<details>` at line 90 is closed, and the draft button at line 97 inserts that comment into the feedback composer.",
+        "suggestion": "Point the draft at the visible evidence-needed section instead of the collapsed list, e.g. 'see the evidence-needed panel above this draft'. Or state that the complete file list is not included in this draft rather than implying it is readable in the draft."
+      }
+    ],
+    "limitations": [
+      "Source-only review: no files were changed and no tests, typecheck, build, browser or network checks were run. The reported core/UI 20/20, export 31/31, 82-item replay, 25-unknown reason and request-byte results are taken from the task context and are not verified here.",
+      "Not in the packet, so unverified: riskFields/canonicalAssessmentRisk field-order behavior, assessment-response coverage, catalog/slots encodings, assessment-display, RiskReviewPanel, server-side persistence and API routes. The round-17 withheldRisks field, its JSON tool schema and the publicLab verifier were not supplied. The round-17 items below are design risks only:",
+      "ROUND 17 DESIGN RISK A (not a code defect, unexecuted): the plan changes the exported assessment shape (a new `withheldRisks` field) while keeping EVIDENCE_EXPORT_SCHEMA and EVIDENCE_EXPORT_RULES unchanged. The current assessment allowlist at lib/evidence-export.ts:178 rejects any unknown AI assessment key, and verifyEvidenceExport at line 227 returns `unsupported` for any schema/rules mismatch. If `withheldRisks` is added without bumping the verifier rules and the strict allowlists at lines 178/186 and DELIVERY_KEYS/SNAPSHOT_KEYS, a round-17 export will contain a field the shipped public verifier refuses. The fix has to be defined without weakening the old rule: either version the verifier rules and keep an old-rules path that still rejects unknown keys, or forbid `withheldRisks` when nothing was withheld so old-shaped exports stay byte-identical. Also check that `createEvidenceExport` (line 154) does not fail its own verification on new exports.",
+      "ROUND 17 DESIGN RISK B (unexecuted): `publishedStatus` inside `adjustedCriteria:[criterionId,originalStatus,publishedStatus]` can carry a claim the withheld-risks feature should not make. The status adjustment already happens in `publishSourceAssessmentNotes` (lib/assessment-publication-policy.ts:33-38). For the new metadata to be truthful, the validator must recompute the final status from the saved item and its original status, not trust the stored `publishedStatus` or `adjustedCriteria` order. Controls: (1) require `originalStatus` to differ from the item's final status; (2) accept the item's status as `publishedStatus` only after confirming it matches the `fromDiff` adjustment logic; (3) every adjusted criterion id must appear exactly once, and every criterion whose status was actually changed must appear (the `<=33` count alone does not establish that); (4) `originalRiskIndex` values must be unique and contiguous from 0 with no index at or beyond the unreviewed original `risks` count — this needs a per-entry limit of `<=5` and an explicit `risks.length>0` check, because an empty original risk list plus a non-empty withheld list is otherwise still 'contiguous'; (5) clone the original `risk` object and its `citations` exactly as `publishSourceAssessmentNotes` does at line 43, and keep names within the 120/600/400 and 1..3 exact-citation bounds; (6) the whole-gate `risks` must be `[]` when withheld entries exist, and both the whole-gate count and the original count must be remembered in the record. Legacy records without `withheldRisks` must stay absent (the same way `evidenceNeed` is today), and nothing may be recovered from `limitations` prose.",
+      "ROUND 18 FORWARD RISK (unexecuted): `riskOrigin:withheld` is not a `riskIndex` and must never be written into the existing `riskIndex`/`assessmentId` fields or placed in the `criterionId` namespace. It needs its own field, and the review bindings at lib/evidence-export.ts:206-213 and the snapshot risk-review structure need the same split type. Rejected or unresolved withheld-origin reviews must not be able to release the gate, change acceptance or payment, or alter `sourceVisibility` or `riskRepairs`.",
+      "Independently untested UI/product flow: whether the disabled draft button (DeliveryAssessment.tsx:97) behaves correctly while a report is missing for the selected criterion, and whether the evidence-need section is reachable by screen readers through its region label. Not verified.",
+      "AGENTS.md requires a champion/award comparison record each cycle; the packet contains no record or external evidence verifying IBM Bob's August strengths, so no independent comparison was made."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

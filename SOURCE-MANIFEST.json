@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-05T15:02:08.010Z",
+  "generatedAt": "2026-11-05T16:53:47.398Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -38,8 +38,8 @@
     },
     {
       "file": "README.md",
-      "bytes": 92690,
-      "sha256": "824d849da2ead9b54da9c7949b3f64a5f8bda4daa1c695e605d2edd321a54dbd"
+      "bytes": 93803,
+      "sha256": "7e74d64773d8a28a42ba6e974b1f6af42c99206a21261d7b273ade4466662e05"
     },
     {
       "file": "app/api/business-check-suggestions/route.ts",
@@ -248,8 +248,8 @@
     },
     {
       "file": "app/assessment.css",
-      "bytes": 10105,
-      "sha256": "f169721f7429330129dcf88eff421c2ad674e09a67db1ad4d3a1bafe5dbeadc2"
+      "bytes": 11509,
+      "sha256": "ee2bc7705463db5a90af13eb343ed1090573f085154ad4b40097254ef1f15a14"
     },
     {
       "file": "app/browser-check.css",
@@ -353,8 +353,8 @@
     },
     {
       "file": "app/components/DeliveryAssessment.tsx",
-      "bytes": 17536,
-      "sha256": "6aac8bf1ef15de712b67bcd48ac51846baed9cce953fe11044756ff362a4f490"
+      "bytes": 24029,
+      "sha256": "06a046292ee246a8ac6f01f163831234bed184257b140d1ec8e8dd712140bf6f"
     },
     {
       "file": "app/components/DeliveryComparison.tsx",
@@ -483,8 +483,8 @@
     },
     {
       "file": "app/components/RiskReviewPanel.tsx",
-      "bytes": 4348,
-      "sha256": "88daf2302bbbb1187f92f0188a251470796ad86a06d63cdd1c8337fac15412ab"
+      "bytes": 5654,
+      "sha256": "e9beeb498258fceed3a4472df9a57a0abe3567fb626166bfe1ffe3d39322f81e"
     },
     {
       "file": "app/components/RuntimeCheckPanel.tsx",
@@ -553,8 +553,8 @@
     },
     {
       "file": "app/components/assessment-feedback.ts",
-      "bytes": 4036,
-      "sha256": "9e6e9cb8dcdbad8e6414be3623c230a83c117fc1fdfee1167a3cc0ab5025b1db"
+      "bytes": 5044,
+      "sha256": "02fcf7c8ac0ea76e83290d1283bf8b913bfc0f749556dc6c28c69ba6be8fddb0"
     },
     {
       "file": "app/components/enquiry-checks.css",
@@ -638,8 +638,8 @@
     },
     {
       "file": "app/guest-lab/evidence-viewer.ts",
-      "bytes": 31783,
-      "sha256": "40755adcf39125e1d4631da4014b4805cca311ed19fd5116623bb92a7d35de32"
+      "bytes": 31989,
+      "sha256": "5c9ed29c1cf574ae4887b9526cd70b243e7d5e6e40cafb5068783c4467f6bfbb"
     },
     {
       "file": "app/guest-lab/index.html",
@@ -1158,8 +1158,13 @@
     },
     {
       "file": "docs/ASSESSMENT-CITATION-PROTOCOL.md",
-      "bytes": 8459,
-      "sha256": "d5424203e56d755c65b4f048337f70613bc7b9d4834328c7f5e7ca88adacf20a"
+      "bytes": 11503,
+      "sha256": "3196de31b063b34a834cfc59703aedd2491d317e1ab54237bdf67a0ab9928cb1"
+    },
+    {
+      "file": "docs/ASSESSMENT-REVIEW-GUIDANCE.md",
+      "bytes": 10203,
+      "sha256": "b8abea95935913ba9a8ac50251d5569592eed8ced445bd0de1f3a73c7a03bd2d"
     },
     {
       "file": "docs/BOOKING-HTTP-VERIFICATION.md",
@@ -1465,6 +1470,26 @@
       "file": "docs/collaboration/diagnosis-cycle-2026-11-04/review-adjudication.md",
       "bytes": 12367,
       "sha256": "0b8378c6d367d2897c213f593c0c74d0021062a4d2f9aed8740e2d3e4fc58ab5"
+    },
+    {
+      "file": "docs/collaboration/evidence-actions-2026-11-06/README.md",
+      "bytes": 8952,
+      "sha256": "20dbf145bfebe16284e613301e2fa4165be246cf127535af9248c616d8804a0e"
+    },
+    {
+      "file": "docs/collaboration/evidence-actions-2026-11-06/cycle-16.md",
+      "bytes": 3624,
+      "sha256": "e9f0d5a176f0824d4623f2f8fbbf4152cba369d39e8b8cc8c9eedce454d118aa"
+    },
+    {
+      "file": "docs/collaboration/evidence-actions-2026-11-06/cycle-17.md",
+      "bytes": 4471,
+      "sha256": "dd0f94c4fdbc7d854ce0f344add3bc89d4858af2123e5085ddc95532e3f5ca6e"
+    },
+    {
+      "file": "docs/collaboration/evidence-actions-2026-11-06/cycle-18.md",
+      "bytes": 5912,
+      "sha256": "6d571cade6fc4188669e11ef48c540f397df179b170a4e1270d944e308525c63"
     },
     {
       "file": "docs/collaboration/evidence-chain-cycles-2026-11-04/acceptance-adjudication.md",
@@ -2323,8 +2348,13 @@
     },
     {
       "file": "lib/assessment-display.ts",
-      "bytes": 4745,
-      "sha256": "57b6f7aaf0622e0a13c6b33a284de60ac2b62fe144ddfc79d4b32e250af8cc3a"
+      "bytes": 4780,
+      "sha256": "761ab4ca72705bc31ad393a77b84a4e29b36c614e4438d65b6fe3698fc7d9685"
+    },
+    {
+      "file": "lib/assessment-evidence-needs.ts",
+      "bytes": 8527,
+      "sha256": "fa0809f0270aee00a27e8686a035d2f93acf43995a21ae72a447192b8ac1e03a"
     },
     {
       "file": "lib/assessment-evidence-scope.ts",
@@ -2348,8 +2378,8 @@
     },
     {
       "file": "lib/assessment-publication-policy.ts",
-      "bytes": 3353,
-      "sha256": "0f44723be1731bd771416eca6a0954e213f4ca6ed1c34cbc6c67d34826fe07d6"
+      "bytes": 4731,
+      "sha256": "330984100a23dde5a9e1bed2c88a7d54276f2d64bd1df253c86c390b8685fae7"
     },
     {
       "file": "lib/assessment-response.ts",
@@ -2453,8 +2483,8 @@
     },
     {
       "file": "lib/contracts.ts",
-      "bytes": 15121,
-      "sha256": "18270aa51c401c3235eba8de6c4e8543389727cc3f2e46f93a2c1a487009c229"
+      "bytes": 16160,
+      "sha256": "119a991d73bbe4bba0c20da0f07c66c05193a76115aa4ea5e8a0d0728a59501e"
     },
     {
       "file": "lib/delivery-artifacts-store.ts",
@@ -2468,8 +2498,8 @@
     },
     {
       "file": "lib/delivery-assessment.ts",
-      "bytes": 50954,
-      "sha256": "93ce39c057733379f38e094a8b7f064642ca564f34c5ffc2e3482031b481b39f"
+      "bytes": 54735,
+      "sha256": "8c691b0e552a96d0d7a3a58159e9ae1d1843de7998715af6608307e38d0fc851"
     },
     {
       "file": "lib/delivery-comparison.ts",
@@ -2538,8 +2568,8 @@
     },
     {
       "file": "lib/evidence-export.ts",
-      "bytes": 47290,
-      "sha256": "029cc8b602eceb7e1dc6ed88541968f35d89f3ca52ff71874ca4d77c68f0f038"
+      "bytes": 51146,
+      "sha256": "a15ab2c9e0af0283ad34f9533a2621c5854753f51848941b32922e4ff1a3e78c"
     },
     {
       "file": "lib/evidence-followup-sql.ts",
@@ -2813,8 +2843,8 @@
     },
     {
       "file": "lib/risk-reviews.ts",
-      "bytes": 2718,
-      "sha256": "3b39e3b9dc84842a82661f6d5e5b4a2d14506b8374e4fd5664a9365dad97953e"
+      "bytes": 3734,
+      "sha256": "49dc5aa5c969d231942dd1c2a6d8384c3847f49cf6db4874e3bd3ce233c3fa97"
     },
     {
       "file": "lib/runtime-actions.ts",
@@ -3535,6 +3565,226 @@
       "file": "public/benchmarks/citation-relations-2026-11-05/source-provenance/tavola-original-html.json",
       "bytes": 61412,
       "sha256": "e9806ad4c97b121f643b5f567688948c1def9ce2b0adec0f8a12d76dcefdd036"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/artifact-manifest.json",
+      "bytes": 34915,
+      "sha256": "429d8dbc857829c041006c457c982b6b95d71f2c9c54b020c24c105d6e610ac7"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-16-17-source-archive-audit.json",
+      "bytes": 2308,
+      "sha256": "09ad688d1d4b99fb9b80d182b058a5220fd9adfb5311be866c9e3970ee6d4921"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-16-evaluated-implementation.json",
+      "bytes": 836390,
+      "sha256": "c370b011fbaa3b49aeafa47e6a6e7f79bb197c72164cdef6dd7a01094c61c6a4"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-16-final-replay.json",
+      "bytes": 403240,
+      "sha256": "aa8f262c4d713c7a1579d2b4f78aed3e4057cf7c351b8decd6b0d298d5a131c2"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-16-plan-adjudication.json",
+      "bytes": 1842,
+      "sha256": "6b208ee9fcd1446e04bf100cacd55bc375416d589f604e467b88b5da610f6415"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-16-plan-deepseek.json",
+      "bytes": 43784,
+      "sha256": "19043d35bb3dcef42b09facb880b4f1b0375cda714ffff6d15f9c39b39747257"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-16-post-17-plan-deepseek.json",
+      "bytes": 16958,
+      "sha256": "470b809cff310c526868a69f7f73fa2387ab2d349b0ed259ae3c376c01c526e5"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-16-post-adjudication.json",
+      "bytes": 1662,
+      "sha256": "03774955249627858f0ab4c247afe12334f61549f9d4593c82490a5e7a762f90"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-17-adjudication.json",
+      "bytes": 1858,
+      "sha256": "8f6069bb930c8d349d4fafe8a3cf13f4a1a7a1cc1e032df987e02cee5ac5388b"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-17-draft-counterchecks.json",
+      "bytes": 3893,
+      "sha256": "c8944ee0e129d3d690ae4736eff1257060c6e50f991cfac5929d0eb7a4263f01"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-17-final-replay.json",
+      "bytes": 438702,
+      "sha256": "e849ae251e7a1aeb7cc75e29fc11c86af43a71eb5bf4b26ce8e65a09093df957"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-17-followup-deepseek.json",
+      "bytes": 7971,
+      "sha256": "1b8e56e659025ff7f6083f388fe169868ef2660ae7399b401a01ac35527005b9"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-17-original-evaluated-implementation.json",
+      "bytes": 838448,
+      "sha256": "ed6f862392551d0237b14bef301bad0a207317f63e056e024d87252d0691ddf6"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-17-post-18-plan-deepseek.json",
+      "bytes": 27113,
+      "sha256": "5f16b86e8249be14dec8b85010474f262fea1a22a4f4a1dc28fa32a5bcfacb85"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-17-refined-implementation.json",
+      "bytes": 863195,
+      "sha256": "7c3cd5c6c1e013fad56ef7c8a4e4b1519026367303cc19c81c4f8dc3d1de02c9"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-17-refined-replay.json",
+      "bytes": 438702,
+      "sha256": "55ae19e4382c3853817171fbf494b5fed783b3afe0737571a9727144c9d1577d"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-18-adjudication.json",
+      "bytes": 3516,
+      "sha256": "89bd60ccad76f70d487427eb34b5c36c22e2f4e679ce53a569aca0f4dd909493"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-18-controlled-boundaries-and-roles.json",
+      "bytes": 51951,
+      "sha256": "2b0ab27f3a782e402dc8280371eb64ed0aff1c50dc6fb2cd05a287bac438aae6"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-18-controlled-harness-inert-source.json",
+      "bytes": 11386,
+      "sha256": "52cc45131a0a57a02715589fe32012d741b56fbdd0249094b189d447aaa52ca8"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-18-eight-first-independent-whole-answer-review.json",
+      "bytes": 46625,
+      "sha256": "c2a31d24ffe494869da7f35660ef1460f625ec316fb45c8e771cd905a25677c8"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-18-eight-first-live-admitted.json",
+      "bytes": 428659,
+      "sha256": "c540bf1afbafe37efb8088a91229403f379baeace2171cbf123e062af6c62cad"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-18-eight-first-live.json",
+      "bytes": 34,
+      "sha256": "c628086b4f461cecd2e5d7fab1a15758dab84dd4af7ecca32e3ab802dbad9fad"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-18-eight-first-runtime-archive-association.json",
+      "bytes": 9672,
+      "sha256": "8894255bcb154d81b0208c9572170a4ff8239b77f13fbadf631de4b7778f9bd0"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-18-eight-freeze.json",
+      "bytes": 252569,
+      "sha256": "2950a0a73e0e8d86e5f3755c2a15b2962f33809dd90ce957cd7e855f07a3f666"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-18-eight-known-repair-independent-whole-answer-review.json",
+      "bytes": 51778,
+      "sha256": "82903fc2e000a5bbdffe5dec952a1808d18a9f4d7f6dee2ae2027d1e87e4f90f"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-18-eight-known-repair-live.json",
+      "bytes": 423379,
+      "sha256": "853f4e451e6b5a3d0a07658bb0f8b12a7a89a85ef637bf0d98535386c14c9ba6"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-18-eight-repair-freeze.json",
+      "bytes": 252569,
+      "sha256": "7ee7eb67dd0f2dc9c9a58090786df826077532da4a51a2677b6a21ed1e4949b6"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-18-final-implementation.json",
+      "bytes": 864364,
+      "sha256": "b6f640b418548f0f21004ab5ec8a7d810e5658228648a41464bed9090d0df1ec"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-18-final-replay.json",
+      "bytes": 440908,
+      "sha256": "c7c9bdc6194a996a43a5e3ffe8edcb4e58ca82833237b9bb384bde9a949a5c5f"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-18-live-scope-deepseek.json",
+      "bytes": 17222,
+      "sha256": "e588fdd25a7fce21b1b415a027e21670d2199901972d79a71d05755f81c05dc8"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-18-namespace-followup-deepseek.json",
+      "bytes": 9313,
+      "sha256": "f0bded705c792412a8990d6700e14a1d16f2dbe2d8d6ba40a15fc27080d012ab"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-18-post-deepseek.json",
+      "bytes": 14443,
+      "sha256": "94f17988c5acf4d0f413c5b7b2debe80cfa0a61861c86a12ff155cf61ef2b290"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/cycle-18-scope-post-deepseek.json",
+      "bytes": 12011,
+      "sha256": "31539422cefb6878c09ea3ad846a8687dba17cbe30e64f8ee9f75c668c80c65a"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/eight-boundaries-author-dry-run.json",
+      "bytes": 5546,
+      "sha256": "30ce3a98f4fbc74778de17f1e603832130919c531df2a962d990f80192019965"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/evidence-actions-boundary-corpus-2026-11-06.json",
+      "bytes": 15050,
+      "sha256": "b0ed37335770f9de649974cd55ca410911a77e0e9199d2e94501a774ca4f62a3"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/evidence-actions-boundary-references-2026-11-06.json",
+      "bytes": 10217,
+      "sha256": "98def261ee50f56ff97f6ccdfb88b7e74e8ba9b126cc4f0c4f3f4baf8f803c51"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/evidence-actions-live-counterexamples-2026-11-06.json",
+      "bytes": 29087,
+      "sha256": "c402846940e49ef7c85daa1287eb38b6676f8139fba3df2488cc4d4b7640d6de"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/negative-scope-eight-original-body-replay.json",
+      "bytes": 77236,
+      "sha256": "ec3cd7bedbd5647b7229c878e76eb7cccc654406dec853a7417535787498a806"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/negative-scope-final-implementation.json",
+      "bytes": 873944,
+      "sha256": "03218b7b96412d1ee3e1ec7b71a070f673a8b7997f3cd0249df38fe31defab2a"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/negative-scope-replay-harnesses-inert-source.json",
+      "bytes": 16054,
+      "sha256": "67d858a14205fbf8510a464b5b3f8131b8d5eea523751cf5561695c3968ec622"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/negative-scope-retained15-delta-diagnostic.json",
+      "bytes": 381280,
+      "sha256": "93a4640e70d50dd49cb3a48db555e6254b3ef7d0af87c50f6da958401496c393"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/packaging-audit.json",
+      "bytes": 35743,
+      "sha256": "28def71055b4d65ae0da48d3de3fbae2934086163fa26d23dc0760f33bfc8d72"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/retained-replay-inputs.json",
+      "bytes": 933,
+      "sha256": "4f2b5de5854d300e2369433372171659b098a5325a72a6b380ad19519ced61e3"
+    },
+    {
+      "file": "public/benchmarks/evidence-actions-2026-11-06/summary.json",
+      "bytes": 7922,
+      "sha256": "577db0f498d0530795ae82d47c15ad66a41f67d4c5e0c08189f08fae7ed6f9aa"
     },
     {
       "file": "public/benchmarks/five-cycles-2026-11-04/corpus.json",
@@ -4547,6 +4797,11 @@
       "sha256": "87321bd8bef551f54a274c069d8980eb600a66b84a532d53bfc9e0b8ad176487"
     },
     {
+      "file": "scripts/evaluation-results/evidence-actions-live-counterexamples-2026-11-06.json",
+      "bytes": 29087,
+      "sha256": "c402846940e49ef7c85daa1287eb38b6676f8139fba3df2488cc4d4b7640d6de"
+    },
+    {
       "file": "scripts/evaluation-results/five-remediation-eight-answers-2026-11-05.json",
       "bytes": 55966,
       "sha256": "8457dade3e29aa5c20913d78a248f8e385712f65219c2736adf20ac7a0194b4b"
@@ -4625,6 +4880,16 @@
       "file": "scripts/evaluation-results/reliability-tideglass-cross-page-eight-2026-11-05.json",
       "bytes": 37422,
       "sha256": "f969e1c11023e484cf929e2a433265877aacada7be7fba26572e4d54fe7a5758"
+    },
+    {
+      "file": "scripts/evidence-actions-boundary-corpus-2026-11-06.json",
+      "bytes": 15050,
+      "sha256": "b0ed37335770f9de649974cd55ca410911a77e0e9199d2e94501a774ca4f62a3"
+    },
+    {
+      "file": "scripts/evidence-actions-boundary-references-2026-11-06.json",
+      "bytes": 10217,
+      "sha256": "98def261ee50f56ff97f6ccdfb88b7e74e8ba9b126cc4f0c4f3f4baf8f803c51"
     },
     {
       "file": "scripts/execution-profile.mjs",
@@ -4720,6 +4985,11 @@
       "file": "scripts/record-first-use-session.mjs",
       "bytes": 8590,
       "sha256": "2dfbadd66e7df70e3cb748d0d0dee46821353e49174b23778bd39d4f21f66bc5"
+    },
+    {
+      "file": "scripts/replay-evidence-actions-2026-11-06.mjs",
+      "bytes": 25532,
+      "sha256": "265ac820b8dba41cd96d6ffb48bced5fb9607307b3f3c2f2ddd568cffd2fb893"
     },
     {
       "file": "scripts/replay-publication-policy-2026-11-06.mjs",
@@ -4882,6 +5152,11 @@
       "sha256": "b33e96eb4cab9ce3b2a111328c65b4d3fcbdf5bca42f06d10978ee3355f75dd7"
     },
     {
+      "file": "tests/assessment-evidence-needs.test.ts",
+      "bytes": 11706,
+      "sha256": "e2f8395211ddb03f0631e77d4c0aa2b59a682d3766cac16b67ec1f15fb663c0e"
+    },
+    {
       "file": "tests/assessment-evidence-scope.test.ts",
       "bytes": 3521,
       "sha256": "31a2265a8e0e680bb447bc059fe2445cfaf49bed5a66a4f83c8dd97f6fbbdbbb"
@@ -4893,8 +5168,8 @@
     },
     {
       "file": "tests/assessment-feedback.test.ts",
-      "bytes": 12763,
-      "sha256": "5cde50e055a38c44541663e9e8489f184f671d0133a928ece68975b71c5800b7"
+      "bytes": 25800,
+      "sha256": "48d1544b3251ff41f12dc5beae45bea53dca524b1940730ff345b80d849e1135"
     },
     {
       "file": "tests/assessment-label-citation-coverage.test.ts",
@@ -4907,9 +5182,14 @@
       "sha256": "4546bbdd0bb21b5df1adde84853e6cb9a64764d693f80869994bdc41aab72b4b"
     },
     {
+      "file": "tests/assessment-negative-page-scope.test.ts",
+      "bytes": 7559,
+      "sha256": "0b0b4e537cc24f5903a1e4a34053f4af23e80152c6d5a12a437b99fd9e60dafb"
+    },
+    {
       "file": "tests/assessment-publication-policy.test.ts",
-      "bytes": 6569,
-      "sha256": "a05fa39130187cf103d4a4a397a1b3f84b91c1ae54e37fe59f7ffbe899fda558"
+      "bytes": 6727,
+      "sha256": "798eac0339ee581f35f9bec097ed7aac85fdc5e8321ace2f5711d060135d2479"
     },
     {
       "file": "tests/assessment-risk-fields.test.ts",
@@ -4950,6 +5230,11 @@
       "file": "tests/assessment-validation-record.test.ts",
       "bytes": 2242,
       "sha256": "83b3471d955aca80cb5f8103fa2a7d17a4a9afb76ffdb11d4d55e6e4e41bbdba"
+    },
+    {
+      "file": "tests/assessment-withheld-risks.test.ts",
+      "bytes": 17602,
+      "sha256": "15f254b7fae7ff4a979f54d56570b1d111eb1c3d1f3bc6cd401a791a4bc1a282"
     },
     {
       "file": "tests/booking-capacity.test.ts",
@@ -5152,6 +5437,11 @@
       "sha256": "0d4cce260f17622856ad7f6bee93241142a6e8eb74a15c5268827a34044455aa"
     },
     {
+      "file": "tests/evidence-actions-replay.test.ts",
+      "bytes": 10844,
+      "sha256": "8bda11bfc405b7b6f3c2d9c3e26380aff5fbe3789f8afe5d83d9ec1803162746"
+    },
+    {
       "file": "tests/evidence-budget.test.ts",
       "bytes": 11623,
       "sha256": "1191cb4b38bf4bb2cbad2466f641d3be804e9cabf2dc2b7ef9629decef84fa1d"
@@ -5170,6 +5460,11 @@
       "file": "tests/evidence-catalog-refresh.test.ts",
       "bytes": 2936,
       "sha256": "a1c6a285dc5ab9b65a08d20f3f7d737517f5951bf8a3a5192eb6b356d19a3c47"
+    },
+    {
+      "file": "tests/evidence-export-needs.test.ts",
+      "bytes": 9356,
+      "sha256": "2d6eea38cf0bc18560ca56656e32d46c5d94836612e5f865e8ec961d5cf35499"
     },
     {
       "file": "tests/evidence-export.test.ts",
@@ -5817,9 +6112,14 @@
       "sha256": "535b09c91f082aa9e17203d67d007e85c5122d941780b588c7b573a857b7ace4"
     },
     {
+      "file": "tests/risk-review-origins.test.ts",
+      "bytes": 15594,
+      "sha256": "3c1fe805d7080afaa02ec704b638d8db70dcab81d5f6530d178a5a6031acfcc3"
+    },
+    {
       "file": "tests/risk-review-save-feedback.test.ts",
-      "bytes": 3298,
-      "sha256": "35b62ca46a852b52b595032e0f46c2be9a68e3b12f4618e1f3796a5434dc1aa7"
+      "bytes": 7573,
+      "sha256": "efbef25f4501180797fd9a9e45561c49e61f0da36cb4522e9d1755d82560ffbb"
     },
     {
       "file": "tests/risk-reviews.test.ts",

@@ -1,0 +1,111 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/contracts.ts",
+      "bytes": 16160,
+      "lines": 242,
+      "sha256": "119a991d73bbe4bba0c20da0f07c66c05193a76115aa4ea5e8a0d0728a59501e"
+    },
+    {
+      "file": "lib/risk-reviews.ts",
+      "bytes": 3734,
+      "lines": 31,
+      "sha256": "49dc5aa5c969d231942dd1c2a6d8384c3847f49cf6db4874e3bd3ce233c3fa97"
+    },
+    {
+      "file": "lib/assessment-display.ts",
+      "bytes": 4780,
+      "lines": 61,
+      "sha256": "761ab4ca72705bc31ad393a77b84a4e29b36c614e4438d65b6fe3698fc7d9685"
+    },
+    {
+      "file": "lib/evidence-export.ts",
+      "bytes": 51146,
+      "lines": 420,
+      "sha256": "a15ab2c9e0af0283ad34f9533a2621c5854753f51848941b32922e4ff1a3e78c"
+    },
+    {
+      "file": "lib/assessment-publication-policy.ts",
+      "bytes": 4731,
+      "lines": 57,
+      "sha256": "330984100a23dde5a9e1bed2c88a7d54276f2d64bd1df253c86c390b8685fae7"
+    },
+    {
+      "file": "app/components/RiskReviewPanel.tsx",
+      "bytes": 5654,
+      "lines": 18,
+      "sha256": "e9beeb498258fceed3a4472df9a57a0abe3567fb626166bfe1ffe3d39322f81e"
+    },
+    {
+      "file": "app/components/DeliveryAssessment.tsx",
+      "bytes": 24029,
+      "lines": 198,
+      "sha256": "06a046292ee246a8ac6f01f163831234bed184257b140d1ec8e8dd712140bf6f"
+    },
+    {
+      "file": "app/guest-lab/evidence-viewer.ts",
+      "bytes": 31989,
+      "lines": 205,
+      "sha256": "5c9ed29c1cf574ae4887b9526cd70b243e7d5e6e40cafb5068783c4467f6bfbb"
+    },
+    {
+      "file": "tests/risk-review-origins.test.ts",
+      "bytes": 15594,
+      "lines": 93,
+      "sha256": "3c1fe805d7080afaa02ec704b638d8db70dcab81d5f6530d178a5a6031acfcc3"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Reviewed the supplied packet read-only against the namespaced risk-origin contract: an omitted riskOrigin means a published risk, and any other value is rejected. The default published index path in lib/risk-reviews.ts never checks whether the report has a status-adjusted (withheld) pool, so a caller who forgets the riskOrigin field on a withheld-only report is not rejected. Instead, a legacy published-origin annotation is saved at the same numeric index as the withheld lead. The same mixed state is then still accepted by the export verifier, because lib/evidence-export.ts riskBindings only checks that the index is within report.risks.length and never cross-checks the pool. The diff itself is sound: the recordRiskReview input hardening works, the default-origin check matches the assessment-display filter (line 12), the UI history filter keeps the roles and origins separate, the withheld entries keep their contiguous index, and human reviews never touch status, gate, acceptance or payment. No runtime checks, tests, type checks or browser runs were performed; findings are source-derived only.\",\"findings\":[{\"severity\":\"P3\",\"file\":\"lib/risk-reviews.ts\",\"line\":21,\"title\":\"Default (published) origin is accepted for a withheld-only report, creating an index collision with the withheld lead\",\"evidence\":\"Line 12 treats an omitted riskOrigin as published. Line 18 handles only the explicit 'withheld' branch by requiring pool.reason === 'item_status_adjusted' and a contiguous entry. The else branch at line 21 only checks `riskIndex>=report.risks.length`. In a status-adjusted report, publishSourceAssessmentNotes (assessment-publication-policy.ts lines 44-50) sets risks to [] and moves every original lead into withheldRisks.entries[i] with originalRiskIndex = i. So for such a report, any riskIndex >= 0 passes the line 21 check, and line 29 stores an annotation with no riskOrigin at the same numeric index as the withheld entry. The UI avoids the collision only because DeliveryAssessment.tsx renders RiskReviewPanel without riskOrigin only for published risks (lines 143-148) and passes riskOrigin='withheld' for withheld entries (line 174). This is a contract-level gap: the user's stated rule that absent means published and that default indexes must not address withheld leads is not enforced server-side, and nothing stops a future or direct caller from producing the mixed state.\",\"reproduction\":\"Unexecuted source trace. Start from the fixture() case in tests/risk-review-origins.test.ts line 17: report.withheldRisks.reason = 'item_status_adjusted', entries = [{originalRiskIndex:0, risk}], risks = []. Call recordRiskReview(q, 'buyer', {deliveryId, assessmentId, riskIndex: 0, decision: 'confirmed', reason: 'x'} without riskOrigin). Line 21's test 0 >= 0 is false, so it throws nothing, and a review with no riskOrigin is appended at withheld index 0. This state is the mixed publication pool that test line 28 treats as invalid ('not a valid mixed publication pool'). Pass the result to createEvidenceExport and verifyEvidenceExport: the assessment() call accepts risks = [] with reason 'item_status_adjusted' (evidence-export.ts line 214 also accepts activeRisks.length === 0), and riskBindings (line 234) only requires index < report.risks.length, which is satisfied (0 < 0 is false; here it would fail. To be explicit: 0<0 is false, so it fails). Correction of that trace: with risks = [] the published annotation is rejected under this particular fixture, so no currently reachable persisted collision arises from an empty pool. A collision needs risks.length > 0 together with a withheld pool. No supplied path produces that because publishSourceAssessmentNotes enforces those two conditions as mutually exclusive (lines 44-50 vs 55-56), and lines 18-21 reject the explicit origin in that case. The defect is therefore limited to missing cross-branch enforcement at input time. An absent-origin request against a status-adjusted report is not rejected upfront with the 'choose withheld origin' message; it is rejected later with a generic published-risk error, or in a mixed pool it would be saved and only then rejected by export verification.\",\"suggestion\":\"In the else branch, add `if (report.withheldRisks?.reason === 'item_status_adjusted') throw new DomainError('Choose the explicit withheld origin for a status-adjusted report.')` before the index check. Optionally, require a contiguous eligible published pool in evidence-export.ts riskBindings by also rejecting when pool.reason === 'item_status_adjusted'.\"}],\"limitations\":[\"Read-only static review of only the nine supplied files. Nothing was executed: no tests, type check, build, browser run or API harness. The reported server 81/81, UI 22/22 and type 0 results are not verified here, and I make no claim about them.\",\"Dependencies outside the packet were not inspected: publishSourceAssessmentNotes callers, the acceptDeliveryWithBasis/acceptance-client helper, proof-workflow, risk-repairs snapshotRiskFeedbackSource, acceptance-basis, source-visibility, and the full verifyEvidenceExport path after line 419. Some unshown functions could close or widen the gap described (for example, a server handler that always supplies riskOrigin).\",\"The risk-reviews.ts change is defensively sound. The remaining text about the mixed pool in test line 28 refers to a synthetic, hand-built review list; no production write path in the packet creates that state. This is therefore scoped as a P3 robustness/contract-alignment gap rather than a reachable data-integrity defect.\",\"The unsigned export proves internal consistency only. Authenticity, identity, backend/model execution, payment and any award comparison (AgentReceipt / PHAROS_INC) were not assessed and are out of scope.\",\"Runtime/browser and eight new boundary tests are stated to be underway and were not available, so their behaviour is unverified.\"]}",
+  "report": {
+    "summary": "Reviewed the supplied packet read-only against the namespaced risk-origin contract: an omitted riskOrigin means a published risk, and any other value is rejected. The default published index path in lib/risk-reviews.ts never checks whether the report has a status-adjusted (withheld) pool, so a caller who forgets the riskOrigin field on a withheld-only report is not rejected. Instead, a legacy published-origin annotation is saved at the same numeric index as the withheld lead. The same mixed state is then still accepted by the export verifier, because lib/evidence-export.ts riskBindings only checks that the index is within report.risks.length and never cross-checks the pool. The diff itself is sound: the recordRiskReview input hardening works, the default-origin check matches the assessment-display filter (line 12), the UI history filter keeps the roles and origins separate, the withheld entries keep their contiguous index, and human reviews never touch status, gate, acceptance or payment. No runtime checks, tests, type checks or browser runs were performed; findings are source-derived only.",
+    "findings": [
+      {
+        "severity": "P3",
+        "file": "lib/risk-reviews.ts",
+        "line": 21,
+        "title": "Default (published) origin is accepted for a withheld-only report, creating an index collision with the withheld lead",
+        "evidence": "Line 12 treats an omitted riskOrigin as published. Line 18 handles only the explicit 'withheld' branch by requiring pool.reason === 'item_status_adjusted' and a contiguous entry. The else branch at line 21 only checks `riskIndex>=report.risks.length`. In a status-adjusted report, publishSourceAssessmentNotes (assessment-publication-policy.ts lines 44-50) sets risks to [] and moves every original lead into withheldRisks.entries[i] with originalRiskIndex = i. So for such a report, any riskIndex >= 0 passes the line 21 check, and line 29 stores an annotation with no riskOrigin at the same numeric index as the withheld entry. The UI avoids the collision only because DeliveryAssessment.tsx renders RiskReviewPanel without riskOrigin only for published risks (lines 143-148) and passes riskOrigin='withheld' for withheld entries (line 174). This is a contract-level gap: the user's stated rule that absent means published and that default indexes must not address withheld leads is not enforced server-side, and nothing stops a future or direct caller from producing the mixed state.",
+        "reproduction": "Unexecuted source trace. Start from the fixture() case in tests/risk-review-origins.test.ts line 17: report.withheldRisks.reason = 'item_status_adjusted', entries = [{originalRiskIndex:0, risk}], risks = []. Call recordRiskReview(q, 'buyer', {deliveryId, assessmentId, riskIndex: 0, decision: 'confirmed', reason: 'x'} without riskOrigin). Line 21's test 0 >= 0 is false, so it throws nothing, and a review with no riskOrigin is appended at withheld index 0. This state is the mixed publication pool that test line 28 treats as invalid ('not a valid mixed publication pool'). Pass the result to createEvidenceExport and verifyEvidenceExport: the assessment() call accepts risks = [] with reason 'item_status_adjusted' (evidence-export.ts line 214 also accepts activeRisks.length === 0), and riskBindings (line 234) only requires index < report.risks.length, which is satisfied (0 < 0 is false; here it would fail. To be explicit: 0<0 is false, so it fails). Correction of that trace: with risks = [] the published annotation is rejected under this particular fixture, so no currently reachable persisted collision arises from an empty pool. A collision needs risks.length > 0 together with a withheld pool. No supplied path produces that because publishSourceAssessmentNotes enforces those two conditions as mutually exclusive (lines 44-50 vs 55-56), and lines 18-21 reject the explicit origin in that case. The defect is therefore limited to missing cross-branch enforcement at input time. An absent-origin request against a status-adjusted report is not rejected upfront with the 'choose withheld origin' message; it is rejected later with a generic published-risk error, or in a mixed pool it would be saved and only then rejected by export verification.",
+        "suggestion": "In the else branch, add `if (report.withheldRisks?.reason === 'item_status_adjusted') throw new DomainError('Choose the explicit withheld origin for a status-adjusted report.')` before the index check. Optionally, require a contiguous eligible published pool in evidence-export.ts riskBindings by also rejecting when pool.reason === 'item_status_adjusted'."
+      }
+    ],
+    "limitations": [
+      "Read-only static review of only the nine supplied files. Nothing was executed: no tests, type check, build, browser run or API harness. The reported server 81/81, UI 22/22 and type 0 results are not verified here, and I make no claim about them.",
+      "Dependencies outside the packet were not inspected: publishSourceAssessmentNotes callers, the acceptDeliveryWithBasis/acceptance-client helper, proof-workflow, risk-repairs snapshotRiskFeedbackSource, acceptance-basis, source-visibility, and the full verifyEvidenceExport path after line 419. Some unshown functions could close or widen the gap described (for example, a server handler that always supplies riskOrigin).",
+      "The risk-reviews.ts change is defensively sound. The remaining text about the mixed pool in test line 28 refers to a synthetic, hand-built review list; no production write path in the packet creates that state. This is therefore scoped as a P3 robustness/contract-alignment gap rather than a reachable data-integrity defect.",
+      "The unsigned export proves internal consistency only. Authenticity, identity, backend/model execution, payment and any award comparison (AgentReceipt / PHAROS_INC) were not assessed and are out of scope.",
+      "Runtime/browser and eight new boundary tests are stated to be underway and were not available, so their behaviour is unverified."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

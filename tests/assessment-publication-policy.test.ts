@@ -30,11 +30,12 @@ test("one adjusted item suppresses all optional risks with exact counts without 
   assert.deepEqual({items, original, modelRisks}, before);
 });
 
-test("every final status difference is counted and a missing premise conservatively withholds risks", () => {
+test("every final status difference is counted and a missing original status fails closed", () => {
   const items = [item("coverage-1", "changes_suggested"), item("coverage-2", "insufficient_evidence"), item("coverage-3", "supported")];
-  const result = publishSourceAssessmentNotes("zh", items, new Map([["coverage-1", "supported"], ["coverage-2", "changes_suggested"]]), risks(), 2, files);
+  const result = publishSourceAssessmentNotes("zh", items, new Map([["coverage-1", "supported"], ["coverage-2", "changes_suggested"], ["coverage-3", "insufficient_evidence"]]), risks(), 2, files);
   assert.equal(result.statusAdjustedCount, 3); assert.deepEqual(result.risks, []);
   assert.match(result.limitations[2], /3 项状态经系统调整，1 条未复核风险暂不采纳，以逐项证据为准/);
+  assert.throws(()=>publishSourceAssessmentNotes("zh",items,new Map([["coverage-1","supported"]]),risks(),2,files),TypeError);
 });
 
 test("unchanged statuses retain all validated risk details in independent arrays and objects", () => {

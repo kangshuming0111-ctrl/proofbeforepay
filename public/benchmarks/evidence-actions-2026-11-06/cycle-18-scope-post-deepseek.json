@@ -1,0 +1,82 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 54735,
+      "lines": 425,
+      "sha256": "8c691b0e552a96d0d7a3a58159e9ae1d1843de7998715af6608307e38d0fc851"
+    },
+    {
+      "file": "lib/universal-tag-evidence.ts",
+      "bytes": 9704,
+      "lines": 150,
+      "sha256": "dee81d5f4e869c684903e6a40ab01f51a5014e3f99f0fd733856cb04d6a07f0c"
+    },
+    {
+      "file": "lib/assessment-evidence-needs.ts",
+      "bytes": 8527,
+      "lines": 60,
+      "sha256": "fa0809f0270aee00a27e8686a035d2f93acf43995a21ae72a447192b8ac1e03a"
+    },
+    {
+      "file": "tests/assessment-negative-page-scope.test.ts",
+      "bytes": 7559,
+      "lines": 57,
+      "sha256": "0b0b4e537cc24f5903a1e4a34053f4af23e80152c6d5a12a437b99fd9e60dafb"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Reviewed the supplied packet against the Round18 scope: the new raw changes_suggested logic in lib/delivery-assessment.ts (lines 294-315) combined with pages() in lib/universal-tag-evidence.ts. The guard fires only when the model's raw status is changes_suggested (line 305), the universal-tag checker returns unknown with reason unconfirmed_page_scope, and the typed business check is not a mismatch (line 308). It then downgrades to insufficient_evidence with evidenceNeed page_scope and empty targetFiles, and replaces the model explanation with fixed bilingual copy (lines 309-313). I traced each branch the packet says must keep priority. A failed server rule sets a generic explanation and returns before line 284. requires_observation returns at line 279. An explicit filename directive returns an unavailable_source or owner_tag_unverified reason from pages()/the per-file loop, not page_scope, so line 308 is not triggered. A typed mismatch is excluded by line 308. A raw insufficient_evidence never reaches the guard because it checks item.status. With page_scope, line 310 supplies empty targets, and makeAssessmentEvidenceNeed accepts an empty list, so no filename is guessed. The fixed explanations do not claim delivery, the label is missing, or a rendering result. I found no new correctness, priority, error, accessibility or product-flow defect in the changed boundary. The points below are minor residual notes, and the packet itself flags some of them as retained limits.\",\"findings\":[{\"severity\":\"P3\",\"file\":\"lib/universal-tag-evidence.ts\",\"line\":49,\"title\":\"Page-role alias guard also triggers on any scope without an explicit file list, including unrecognised but explicit role wording\",\"evidence\":\"The line `if(/\\\\b(?:homepage|full\\\\s+menu)\\\\b/iu.test(scope))return;` returns undefined for role-only scopes. Line 128 (`if(!validPageList||!scoped)return unknown(\\\"unconfirmed_page_scope\\\")`) reports every undefined scope, or an invalid required-page list, with the same reason. delivery-assessment.ts line 307 then downgrades any raw changes_suggested to insufficient_evidence with this reason. So a scope such as 'the contact page and the booking page' (no explicit filename, no homepage/menu alias) gets the explanation at delivery-assessment.ts line 313, 'The agreed page roles have no confirmed mapping to delivered files... Ask the buyer to confirm the exact role-to-file mapping'. In that case the model never implicated a page-role alias. The explanation is still cautious and never asks for a repair, so this is a wording mismatch, not a false defect.\",\"reproduction\":\"Unexecuted reasoning trace: criterion source 'The contact page and the booking page source content must both attach the GF tag to Whipped cod roe'. The model returns changes_suggested. directive() matches (source content + tag + an .html-like alternative is not needed because pages() splits on ' and ' and 'contact page' fails validHtmlPath). pages() returns undefined because the scope has no homepage/full menu phrase but is also not two valid html paths. The tag check returns unconfirmed_page_scope, and the published explanation asks the buyer to confirm a 'page-role mapping' that was never asserted.\",\"suggestion\":\"Optionally broaden or reword. For example, give a non-role-alias, non-file scope its own reason (such as target_clarification) with neutral copy, or keep the copy and add a phrase such as 'or the page scope is not an explicit file list'. Both are optional and do not affect priority.\"}],\"limitations\":[\"Read-only review. No code was changed and no tests, typecheck, lint, build or live model call was executed. The reported 7 new plus 51 existing passing tests, type 0 and lint 0 are taken as reported, not verified.\",\"This packet is limited to delivery-assessment.ts (lines 1-425), universal-tag-evidence.ts (lines 1-150), assessment-evidence-needs.ts (lines 1-60) and assessment-negative-page-scope.test.ts (lines 1-57). It does not include source-business-evidence.ts, assessment-evidence-scope.ts, assessment-publication-policy.ts, exact-copy-evidence.ts, universal-source-list-evidence.ts, the UI rendering of evidenceNeed, or the export validator. The priority claims for typed business mismatch, explicit-filename wrong tags and raw-unknown non-promotion are confirmed only by how the included call sites combine the included code, plus the test assertions. They were not run.\",\"The withheld-risks behavior (publication and withheldRisks) depends on publishSourceAssessmentNotes, which is not in the packet, so it was not reviewed.\",\"The retained gaps the packet lists were not re-audited: the missing-explicit-menu difference in factual inventory and reference policy, and the unchanged frozen references and first-live counts (raw 5/8, app 6/8).\",\"The claim that all 24 bilingual draft branches with 40 long paths stay at or below 1000 characters was not verified because the UI and draft code is not in the packet.\",\"The PHAROS August 1st and AgentReceipt comparisons rely on the rules summarised in the task. Their primary sources were not supplied. No overall-winner or score claim is made.\"]}",
+  "report": {
+    "summary": "Reviewed the supplied packet against the Round18 scope: the new raw changes_suggested logic in lib/delivery-assessment.ts (lines 294-315) combined with pages() in lib/universal-tag-evidence.ts. The guard fires only when the model's raw status is changes_suggested (line 305), the universal-tag checker returns unknown with reason unconfirmed_page_scope, and the typed business check is not a mismatch (line 308). It then downgrades to insufficient_evidence with evidenceNeed page_scope and empty targetFiles, and replaces the model explanation with fixed bilingual copy (lines 309-313). I traced each branch the packet says must keep priority. A failed server rule sets a generic explanation and returns before line 284. requires_observation returns at line 279. An explicit filename directive returns an unavailable_source or owner_tag_unverified reason from pages()/the per-file loop, not page_scope, so line 308 is not triggered. A typed mismatch is excluded by line 308. A raw insufficient_evidence never reaches the guard because it checks item.status. With page_scope, line 310 supplies empty targets, and makeAssessmentEvidenceNeed accepts an empty list, so no filename is guessed. The fixed explanations do not claim delivery, the label is missing, or a rendering result. I found no new correctness, priority, error, accessibility or product-flow defect in the changed boundary. The points below are minor residual notes, and the packet itself flags some of them as retained limits.",
+    "findings": [
+      {
+        "severity": "P3",
+        "file": "lib/universal-tag-evidence.ts",
+        "line": 49,
+        "title": "Page-role alias guard also triggers on any scope without an explicit file list, including unrecognised but explicit role wording",
+        "evidence": "The line `if(/\\b(?:homepage|full\\s+menu)\\b/iu.test(scope))return;` returns undefined for role-only scopes. Line 128 (`if(!validPageList||!scoped)return unknown(\"unconfirmed_page_scope\")`) reports every undefined scope, or an invalid required-page list, with the same reason. delivery-assessment.ts line 307 then downgrades any raw changes_suggested to insufficient_evidence with this reason. So a scope such as 'the contact page and the booking page' (no explicit filename, no homepage/menu alias) gets the explanation at delivery-assessment.ts line 313, 'The agreed page roles have no confirmed mapping to delivered files... Ask the buyer to confirm the exact role-to-file mapping'. In that case the model never implicated a page-role alias. The explanation is still cautious and never asks for a repair, so this is a wording mismatch, not a false defect.",
+        "reproduction": "Unexecuted reasoning trace: criterion source 'The contact page and the booking page source content must both attach the GF tag to Whipped cod roe'. The model returns changes_suggested. directive() matches (source content + tag + an .html-like alternative is not needed because pages() splits on ' and ' and 'contact page' fails validHtmlPath). pages() returns undefined because the scope has no homepage/full menu phrase but is also not two valid html paths. The tag check returns unconfirmed_page_scope, and the published explanation asks the buyer to confirm a 'page-role mapping' that was never asserted.",
+        "suggestion": "Optionally broaden or reword. For example, give a non-role-alias, non-file scope its own reason (such as target_clarification) with neutral copy, or keep the copy and add a phrase such as 'or the page scope is not an explicit file list'. Both are optional and do not affect priority."
+      }
+    ],
+    "limitations": [
+      "Read-only review. No code was changed and no tests, typecheck, lint, build or live model call was executed. The reported 7 new plus 51 existing passing tests, type 0 and lint 0 are taken as reported, not verified.",
+      "This packet is limited to delivery-assessment.ts (lines 1-425), universal-tag-evidence.ts (lines 1-150), assessment-evidence-needs.ts (lines 1-60) and assessment-negative-page-scope.test.ts (lines 1-57). It does not include source-business-evidence.ts, assessment-evidence-scope.ts, assessment-publication-policy.ts, exact-copy-evidence.ts, universal-source-list-evidence.ts, the UI rendering of evidenceNeed, or the export validator. The priority claims for typed business mismatch, explicit-filename wrong tags and raw-unknown non-promotion are confirmed only by how the included call sites combine the included code, plus the test assertions. They were not run.",
+      "The withheld-risks behavior (publication and withheldRisks) depends on publishSourceAssessmentNotes, which is not in the packet, so it was not reviewed.",
+      "The retained gaps the packet lists were not re-audited: the missing-explicit-menu difference in factual inventory and reference policy, and the unchanged frozen references and first-live counts (raw 5/8, app 6/8).",
+      "The claim that all 24 bilingual draft branches with 40 long paths stay at or below 1000 characters was not verified because the UI and draft code is not in the packet.",
+      "The PHAROS August 1st and AgentReceipt comparisons rely on the rules summarised in the task. Their primary sources were not supplied. No overall-winner or score claim is made."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

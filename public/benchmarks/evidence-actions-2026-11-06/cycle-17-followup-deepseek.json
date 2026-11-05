@@ -1,0 +1,80 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/assessment-publication-policy.ts",
+      "bytes": 4731,
+      "lines": 57,
+      "sha256": "330984100a23dde5a9e1bed2c88a7d54276f2d64bd1df253c86c390b8685fae7"
+    },
+    {
+      "file": "lib/evidence-export.ts",
+      "bytes": 50527,
+      "lines": 416,
+      "sha256": "8f3a3dbe7776db51e7d0a4427e5e3e811d8fc4badcc765775c349cfb5e285791"
+    },
+    {
+      "file": "app/components/assessment-feedback.ts",
+      "bytes": 5044,
+      "lines": 51,
+      "sha256": "02fcf7c8ac0ea76e83290d1283bf8b913bfc0f749556dc6c28c69ba6be8fddb0"
+    },
+    {
+      "file": "lib/assessment-evidence-needs.ts",
+      "bytes": 8320,
+      "lines": 60,
+      "sha256": "b2396b51fa7d750600bfc8833f68555422bfceb128b3099feecc743f7474901a"
+    },
+    {
+      "file": "tests/assessment-withheld-risks.test.ts",
+      "bytes": 17602,
+      "lines": 99,
+      "sha256": "15f254b7fae7ff4a979f54d56570b1d111eb1c3d1f3bc6cd401a791a4bc1a282"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Countercheck of the publication/withheld-risk boundary against the supplied files only. I examined the moved risk cap (assessment-publication-policy.ts:18), the export-side disposition checks (evidence-export.ts:200-220), the new counterexamples in assessment-withheld-risks.test.ts, and the interface risk cap in assessment-feedback.ts. Each previously disputed claim matches the source, so I do not repeat it as a reachable defect. I found no remaining reachable correctness, security, accessibility or product-flow defect at this boundary. Stage 17 replay results, the 12×2×40 enumeration, and the exact 15-provider-body/82-criterion counts are taken as your reported evidence; I did not execute them.\",\"findings\":[],\"limitations\":[\"Read-only, packet-only review: I did not run tests, typecheck, builds, the stage 17 replay orchestrator, or the 12×2×40 enumeration. The claimed counts (650 max fixed overhead, 15 provider bodies, 82 criteria, unchanged request bytes/statuses, 15 exact status ledgers) are unverified here.\",\"No reachable defect was found in the supplied files. The removed claims (6-risk active assessor publication, malformed not_withheld+entries / adjusted+active passing export, fixed-overhead regression) were not asserted previously and are not repeated.\",\"The legacy risk cap at assessment-feedback.ts:41-50 runs only after the output passes its caller's limit. Whether that caller now limits the explanation to 3000 UTF-16 units and the criterion source to 3000 depends on lib/static-project.ts and lib/delivery-assessment.ts, which the packet does not include. So whether all 24 draft cases are reachable could not be checked.\",\"Lines 22-26 of assessment-feedback.ts omit the file list when it exceeds 180 units. Paths valid under PATH (assessment-evidence-needs.ts:5) are up to about 320 units each, so printed paths could total roughly 12,800. This is guarded by an explicit omission and explanation in both languages, and whether the caller's draft-length limit makes it unreachable cannot be checked here.\",\"The export accepts the new not_withheld/adjusted dispositions and limits retained citations. It does not prove the original provider output, the model's judgment, the cause of an evidence gap, or human identity (evidence-export.ts:240-242, 298). Unsigned exports prove internal consistency only, not original-model authenticity.\",\"No criterion-ID migration was reviewed. The 18-namespaced human-review plan and production runtime are outside this packet and were not inspected.\",\"I found no reachable mismatch between the publication metadata and the format requirements (entries limited to 5, contiguous originalRiskIndex, adjustments refer to existing items). The assessor and guarded paths that generate these fields are outside the packet.\",\"From the workflow skill I followed only the review guidance (focused scope, reproduce-or-reject claims, record limits). Its final \\\"plain Chinese\\\" step was not applied because your output contract requires this exact JSON schema. That does not change the review findings.\"]}",
+  "report": {
+    "summary": "Countercheck of the publication/withheld-risk boundary against the supplied files only. I examined the moved risk cap (assessment-publication-policy.ts:18), the export-side disposition checks (evidence-export.ts:200-220), the new counterexamples in assessment-withheld-risks.test.ts, and the interface risk cap in assessment-feedback.ts. Each previously disputed claim matches the source, so I do not repeat it as a reachable defect. I found no remaining reachable correctness, security, accessibility or product-flow defect at this boundary. Stage 17 replay results, the 12×2×40 enumeration, and the exact 15-provider-body/82-criterion counts are taken as your reported evidence; I did not execute them.",
+    "findings": [],
+    "limitations": [
+      "Read-only, packet-only review: I did not run tests, typecheck, builds, the stage 17 replay orchestrator, or the 12×2×40 enumeration. The claimed counts (650 max fixed overhead, 15 provider bodies, 82 criteria, unchanged request bytes/statuses, 15 exact status ledgers) are unverified here.",
+      "No reachable defect was found in the supplied files. The removed claims (6-risk active assessor publication, malformed not_withheld+entries / adjusted+active passing export, fixed-overhead regression) were not asserted previously and are not repeated.",
+      "The legacy risk cap at assessment-feedback.ts:41-50 runs only after the output passes its caller's limit. Whether that caller now limits the explanation to 3000 UTF-16 units and the criterion source to 3000 depends on lib/static-project.ts and lib/delivery-assessment.ts, which the packet does not include. So whether all 24 draft cases are reachable could not be checked.",
+      "Lines 22-26 of assessment-feedback.ts omit the file list when it exceeds 180 units. Paths valid under PATH (assessment-evidence-needs.ts:5) are up to about 320 units each, so printed paths could total roughly 12,800. This is guarded by an explicit omission and explanation in both languages, and whether the caller's draft-length limit makes it unreachable cannot be checked here.",
+      "The export accepts the new not_withheld/adjusted dispositions and limits retained citations. It does not prove the original provider output, the model's judgment, the cause of an evidence gap, or human identity (evidence-export.ts:240-242, 298). Unsigned exports prove internal consistency only, not original-model authenticity.",
+      "No criterion-ID migration was reviewed. The 18-namespaced human-review plan and production runtime are outside this packet and were not inspected.",
+      "I found no reachable mismatch between the publication metadata and the format requirements (entries limited to 5, contiguous originalRiskIndex, adjustments refer to existing items). The assessor and guarded paths that generate these fields are outside the packet.",
+      "From the workflow skill I followed only the review guidance (focused scope, reproduce-or-reject claims, record limits). Its final \"plain Chinese\" step was not applied because your output contract requires this exact JSON schema. That does not change the review findings."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

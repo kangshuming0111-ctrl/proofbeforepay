@@ -1,0 +1,697 @@
+{
+  "schema": "pbp-authored-live-counterexamples-v1",
+  "allSynthetic": true,
+  "sourceReport": "cycle-18-eight-first-live-admitted.json",
+  "originalReferenceUnchanged": true,
+  "cases": [
+    {
+      "id": "evidence-actions-missing-agreed-file",
+      "originalSourceAndAuthoredReference": {
+        "id": "evidence-actions-missing-agreed-file",
+        "stratum": "boundary",
+        "language": "en",
+        "title": "Authored evidence-actions boundary 2",
+        "summary": "The index.html and menu.html source content must both attach the GF tag to Whipped cod roe",
+        "requiredPages": [
+          "index.html",
+          "menu.html"
+        ],
+        "files": {
+          "index.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>",
+          "about.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>",
+          "site.css": "body{}"
+        },
+        "criteria": [
+          {
+            "id": "coverage-1",
+            "title": "Original requirement 1",
+            "source": "The index.html and menu.html source content must both attach the GF tag to Whipped cod roe",
+            "reference": {
+              "expectedStatus": "insufficient_evidence",
+              "rationale": "The explicitly agreed menu.html is not supplied; about.html cannot substitute. No conclusion of missing delivered feature follows from a missing evidence file.",
+              "relevantFiles": [
+                "index.html",
+                "about.html"
+              ],
+              "requiresSemanticReview": true
+            }
+          }
+        ]
+      },
+      "providerPacket": {
+        "criteria": [
+          {
+            "id": "coverage-1",
+            "title": "Original requirement 1",
+            "source": "The index.html and menu.html source content must both attach the GF tag to Whipped cod roe"
+          }
+        ],
+        "scopeContext": {
+          "summary": "The index.html and menu.html source content must both attach the GF tag to Whipped cod roe",
+          "requirementCoverage": {
+            "method": "buyer-confirmed-literal-source-groups",
+            "included": [
+              {
+                "criterionId": "coverage-1",
+                "text": "The index.html and menu.html source content must both attach the GF tag to Whipped cod roe"
+              }
+            ],
+            "excluded": []
+          }
+        },
+        "fileInventory": [
+          {
+            "path": "index.html",
+            "type": "html",
+            "byteLength": 178,
+            "isIncludedInSource": true
+          },
+          {
+            "path": "about.html",
+            "type": "html",
+            "byteLength": 178,
+            "isIncludedInSource": true
+          },
+          {
+            "path": "site.css",
+            "type": "css",
+            "byteLength": 6,
+            "isIncludedInSource": true
+          }
+        ],
+        "files": {
+          "about.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>",
+          "index.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>",
+          "site.css": "body{}"
+        },
+        "citationCatalog": {
+          "version": "source-citation-catalog-v1",
+          "catalogId": "6f6b38c6b78b25337c52766185d7c83be070066eee0134ba66ee17f6f156e668",
+          "entries": [
+            {
+              "id": "s1",
+              "file": "about.html",
+              "start": 0,
+              "end": 178,
+              "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>"
+            },
+            {
+              "id": "s2",
+              "file": "about.html",
+              "start": 27,
+              "end": 59,
+              "excerpt": "<title>Authored boundary</title>"
+            },
+            {
+              "id": "s3",
+              "file": "about.html",
+              "start": 72,
+              "end": 164,
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+            },
+            {
+              "id": "s4",
+              "file": "about.html",
+              "start": 90,
+              "end": 131,
+              "excerpt": "<span class=\"name\">Whipped cod roe</span>"
+            },
+            {
+              "id": "s5",
+              "file": "about.html",
+              "start": 131,
+              "end": 158,
+              "excerpt": "<span class=\"tag\">GF</span>"
+            },
+            {
+              "id": "s6",
+              "file": "index.html",
+              "start": 0,
+              "end": 178,
+              "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>"
+            },
+            {
+              "id": "s7",
+              "file": "index.html",
+              "start": 27,
+              "end": 59,
+              "excerpt": "<title>Authored boundary</title>"
+            },
+            {
+              "id": "s8",
+              "file": "index.html",
+              "start": 72,
+              "end": 164,
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+            },
+            {
+              "id": "s9",
+              "file": "index.html",
+              "start": 90,
+              "end": 131,
+              "excerpt": "<span class=\"name\">Whipped cod roe</span>"
+            },
+            {
+              "id": "s10",
+              "file": "index.html",
+              "start": 131,
+              "end": 158,
+              "excerpt": "<span class=\"tag\">GF</span>"
+            },
+            {
+              "id": "s11",
+              "file": "site.css",
+              "start": 0,
+              "end": 6,
+              "excerpt": "body{}"
+            }
+          ]
+        },
+        "citationEncoding": "catalog_slots",
+        "ruleEvidence": [
+          {
+            "id": "eval-evidence-1",
+            "criterionId": "coverage-1",
+            "file": "index.html",
+            "finding": "needs_human",
+            "explanation": "Check the complete original requirement: “The index.html and menu.html source content must both attach the GF tag to Whipped cod roe”. If this span contains several requirements, verify all of them. Page presence or AI advice does not replace your confirmation."
+          }
+        ],
+        "coverage": {
+          "includedFiles": [
+            "about.html",
+            "index.html",
+            "site.css"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "rawParsed": null,
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "referenceStatus": "insufficient_evidence",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawCitations": [
+            {
+              "file": "index.html",
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>",
+              "start": 72,
+              "end": 164,
+              "valid": true
+            },
+            {
+              "file": "index.html",
+              "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>",
+              "start": 0,
+              "end": 178,
+              "valid": true
+            },
+            {
+              "file": "about.html",
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>",
+              "start": 72,
+              "end": 164,
+              "valid": true
+            }
+          ],
+          "applicationCitations": [
+            {
+              "file": "index.html",
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>",
+              "valid": true,
+              "start": 72,
+              "end": 164
+            },
+            {
+              "file": "index.html",
+              "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>",
+              "valid": true,
+              "start": 0,
+              "end": 178
+            },
+            {
+              "file": "about.html",
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>",
+              "valid": true,
+              "start": 72,
+              "end": 164
+            }
+          ],
+          "rawCitationValidity": "valid",
+          "semanticReview": "pending_independent_adjudication"
+        }
+      ],
+      "application": {
+        "accepted": true,
+        "report": {
+          "id": "85c21599-b037-4fda-9fb0-54b67f0b8c16",
+          "deliveryId": "eval-evidence-actions-missing-agreed-file",
+          "method": "source-ai-v1",
+          "mode": "live",
+          "model": "deepseek-flash",
+          "assessedAt": "2026-11-05T16:27:36.966Z",
+          "items": [
+            {
+              "criterionId": "coverage-1",
+              "status": "changes_suggested",
+              "explanation": "index.html attaches GF to Whipped cod roe, but no menu.html was delivered; equivalent markup appears only in about.html, which is not the named target.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "start": 72,
+                  "end": 164,
+                  "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+                },
+                {
+                  "file": "index.html",
+                  "start": 0,
+                  "end": 178,
+                  "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>"
+                },
+                {
+                  "file": "about.html",
+                  "start": 72,
+                  "end": 164,
+                  "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+                }
+              ],
+              "ruleEvidenceIds": [
+                "eval-evidence-1"
+              ]
+            }
+          ],
+          "risks": [
+            {
+              "title": "menu.html is absent from the delivery; GF tag coverage exists only on index.html and about.html",
+              "explanation": "The requirement names index.html and menu.html. Inventory lists index.html, about.html and site.css; index.html has the GF dish markup, and identical markup appears in about.html rather than a menu.html.",
+              "suggestion": "Confirm whether menu.html was intended as a delivery target and provide it with Whipped cod roe tagged GF, or confirm about.html is the agreed second page.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "start": 72,
+                  "end": 164,
+                  "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+                },
+                {
+                  "file": "about.html",
+                  "start": 72,
+                  "end": 164,
+                  "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+                }
+              ]
+            }
+          ],
+          "limitations": [
+            "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+            "The model supplied 2 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+            "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog 6f6b38c6b78b25337c52766185d7c83be070066eee0134ba66ee17f6f156e668. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+            "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+            "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+          ],
+          "coverage": {
+            "includedFiles": [
+              "about.html",
+              "index.html",
+              "site.css"
+            ],
+            "truncatedFiles": [],
+            "omittedFiles": []
+          },
+          "withheldRisks": {
+            "version": 1,
+            "reason": "not_withheld",
+            "adjustedCriteria": [],
+            "entries": []
+          },
+          "usage": {
+            "promptTokens": 6231,
+            "completionTokens": 400
+          }
+        },
+        "error": null
+      }
+    },
+    {
+      "id": "evidence-actions-wrong-page-role-alias",
+      "originalSourceAndAuthoredReference": {
+        "id": "evidence-actions-wrong-page-role-alias",
+        "stratum": "boundary",
+        "language": "en",
+        "title": "Authored evidence-actions boundary 3",
+        "summary": "The homepage and full menu source content must both attach the GF tag to Whipped cod roe",
+        "requiredPages": [
+          "index.html",
+          "terms.html"
+        ],
+        "files": {
+          "index.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>",
+          "terms.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>",
+          "menu.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div></body></html>"
+        },
+        "criteria": [
+          {
+            "id": "coverage-1",
+            "title": "Original requirement 1",
+            "source": "The homepage and full menu source content must both attach the GF tag to Whipped cod roe",
+            "reference": {
+              "expectedStatus": "insufficient_evidence",
+              "rationale": "Required pages index/terms do not establish a trusted homepage/full-menu role mapping. The delivered menu.html may not be silently ignored or replaced by terms.html.",
+              "relevantFiles": [
+                "index.html",
+                "terms.html",
+                "menu.html"
+              ],
+              "requiresSemanticReview": true
+            }
+          }
+        ]
+      },
+      "providerPacket": {
+        "criteria": [
+          {
+            "id": "coverage-1",
+            "title": "Original requirement 1",
+            "source": "The homepage and full menu source content must both attach the GF tag to Whipped cod roe"
+          }
+        ],
+        "scopeContext": {
+          "summary": "The homepage and full menu source content must both attach the GF tag to Whipped cod roe",
+          "requirementCoverage": {
+            "method": "buyer-confirmed-literal-source-groups",
+            "included": [
+              {
+                "criterionId": "coverage-1",
+                "text": "The homepage and full menu source content must both attach the GF tag to Whipped cod roe"
+              }
+            ],
+            "excluded": []
+          }
+        },
+        "fileInventory": [
+          {
+            "path": "index.html",
+            "type": "html",
+            "byteLength": 178,
+            "isIncludedInSource": true
+          },
+          {
+            "path": "terms.html",
+            "type": "html",
+            "byteLength": 178,
+            "isIncludedInSource": true
+          },
+          {
+            "path": "menu.html",
+            "type": "html",
+            "byteLength": 177,
+            "isIncludedInSource": true
+          }
+        ],
+        "files": {
+          "index.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>",
+          "menu.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div></body></html>",
+          "terms.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>"
+        },
+        "citationCatalog": {
+          "version": "source-citation-catalog-v1",
+          "catalogId": "adf4f4d14190146a310b0d16ebb2f1ce41296b45aeac2ca20fd3292d83625d73",
+          "entries": [
+            {
+              "id": "s1",
+              "file": "index.html",
+              "start": 0,
+              "end": 178,
+              "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>"
+            },
+            {
+              "id": "s2",
+              "file": "index.html",
+              "start": 27,
+              "end": 59,
+              "excerpt": "<title>Authored boundary</title>"
+            },
+            {
+              "id": "s3",
+              "file": "index.html",
+              "start": 72,
+              "end": 164,
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+            },
+            {
+              "id": "s4",
+              "file": "index.html",
+              "start": 90,
+              "end": 131,
+              "excerpt": "<span class=\"name\">Whipped cod roe</span>"
+            },
+            {
+              "id": "s5",
+              "file": "index.html",
+              "start": 131,
+              "end": 158,
+              "excerpt": "<span class=\"tag\">GF</span>"
+            },
+            {
+              "id": "s6",
+              "file": "menu.html",
+              "start": 0,
+              "end": 177,
+              "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div></body></html>"
+            },
+            {
+              "id": "s7",
+              "file": "menu.html",
+              "start": 27,
+              "end": 59,
+              "excerpt": "<title>Authored boundary</title>"
+            },
+            {
+              "id": "s8",
+              "file": "menu.html",
+              "start": 72,
+              "end": 163,
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div>"
+            },
+            {
+              "id": "s9",
+              "file": "menu.html",
+              "start": 90,
+              "end": 131,
+              "excerpt": "<span class=\"name\">Whipped cod roe</span>"
+            },
+            {
+              "id": "s10",
+              "file": "menu.html",
+              "start": 131,
+              "end": 157,
+              "excerpt": "<span class=\"tag\">V</span>"
+            },
+            {
+              "id": "s11",
+              "file": "terms.html",
+              "start": 0,
+              "end": 178,
+              "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>"
+            },
+            {
+              "id": "s12",
+              "file": "terms.html",
+              "start": 27,
+              "end": 59,
+              "excerpt": "<title>Authored boundary</title>"
+            },
+            {
+              "id": "s13",
+              "file": "terms.html",
+              "start": 72,
+              "end": 164,
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+            },
+            {
+              "id": "s14",
+              "file": "terms.html",
+              "start": 90,
+              "end": 131,
+              "excerpt": "<span class=\"name\">Whipped cod roe</span>"
+            },
+            {
+              "id": "s15",
+              "file": "terms.html",
+              "start": 131,
+              "end": 158,
+              "excerpt": "<span class=\"tag\">GF</span>"
+            }
+          ]
+        },
+        "citationEncoding": "catalog_slots",
+        "ruleEvidence": [
+          {
+            "id": "eval-evidence-1",
+            "criterionId": "coverage-1",
+            "file": "index.html",
+            "finding": "needs_human",
+            "explanation": "Check the complete original requirement: “The homepage and full menu source content must both attach the GF tag to Whipped cod roe”. If this span contains several requirements, verify all of them. Page presence or AI advice does not replace your confirmation."
+          }
+        ],
+        "coverage": {
+          "includedFiles": [
+            "index.html",
+            "menu.html",
+            "terms.html"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        }
+      },
+      "rawParsed": null,
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "referenceStatus": "insufficient_evidence",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawCitations": [
+            {
+              "file": "index.html",
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>",
+              "start": 72,
+              "end": 164,
+              "valid": true
+            },
+            {
+              "file": "menu.html",
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div>",
+              "start": 72,
+              "end": 163,
+              "valid": true
+            },
+            {
+              "file": "terms.html",
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>",
+              "start": 72,
+              "end": 164,
+              "valid": true
+            }
+          ],
+          "applicationCitations": [
+            {
+              "file": "index.html",
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>",
+              "valid": true,
+              "start": 72,
+              "end": 164
+            },
+            {
+              "file": "menu.html",
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div>",
+              "valid": true,
+              "start": 72,
+              "end": 163
+            },
+            {
+              "file": "terms.html",
+              "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>",
+              "valid": true,
+              "start": 72,
+              "end": 164
+            }
+          ],
+          "rawCitationValidity": "valid",
+          "semanticReview": "pending_independent_adjudication"
+        }
+      ],
+      "application": {
+        "accepted": true,
+        "report": {
+          "id": "adf18ca1-3f86-4f89-a3a6-40c0792a4e29",
+          "deliveryId": "eval-evidence-actions-wrong-page-role-alias",
+          "method": "source-ai-v1",
+          "mode": "live",
+          "model": "deepseek-flash",
+          "assessedAt": "2026-11-05T16:27:39.518Z",
+          "items": [
+            {
+              "criterionId": "coverage-1",
+              "status": "changes_suggested",
+              "explanation": "Homepage (index.html) pairs \"Whipped cod roe\" with GF, but menu.html pairs the same dish name with tag \"V\" instead of GF. terms.html does show GF; \"full menu\" best maps to menu.html.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "start": 72,
+                  "end": 164,
+                  "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+                },
+                {
+                  "file": "menu.html",
+                  "start": 72,
+                  "end": 163,
+                  "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div>"
+                },
+                {
+                  "file": "terms.html",
+                  "start": 72,
+                  "end": 164,
+                  "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+                }
+              ],
+              "ruleEvidenceIds": [
+                "eval-evidence-1"
+              ]
+            }
+          ],
+          "risks": [
+            {
+              "title": "Full menu page tags Whipped cod roe as V, not GF",
+              "explanation": "menu.html contains the dish \"Whipped cod roe\" with the adjacent tag span reading \"V\", while index.html shows the same dish with \"GF\".",
+              "suggestion": "Confirm menu.html is the agreed full menu page and, if so, correct the tag to GF; buyer to verify which file represents the full menu.",
+              "citations": [
+                {
+                  "file": "menu.html",
+                  "start": 72,
+                  "end": 163,
+                  "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div>"
+                },
+                {
+                  "file": "index.html",
+                  "start": 72,
+                  "end": 164,
+                  "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+                }
+              ]
+            }
+          ],
+          "limitations": [
+            "Supplied inventory: 3 HTML, 0 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+            "The model supplied 3 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+            "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog adf4f4d14190146a310b0d16ebb2f1ce41296b45aeac2ca20fd3292d83625d73. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+            "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+            "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+          ],
+          "coverage": {
+            "includedFiles": [
+              "index.html",
+              "menu.html",
+              "terms.html"
+            ],
+            "truncatedFiles": [],
+            "omittedFiles": []
+          },
+          "withheldRisks": {
+            "version": 1,
+            "reason": "not_withheld",
+            "adjustedCriteria": [],
+            "entries": []
+          },
+          "usage": {
+            "promptTokens": 6638,
+            "completionTokens": 430
+          }
+        },
+        "error": null
+      }
+    }
+  ]
+}

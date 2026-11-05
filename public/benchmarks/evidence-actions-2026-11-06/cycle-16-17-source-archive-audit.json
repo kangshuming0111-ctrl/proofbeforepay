@@ -1,0 +1,52 @@
+{
+  "schema": "pbp-evaluated-source-archive-audit-v1",
+  "apiCalls": 0,
+  "modelCalls": 0,
+  "networkCalls": 0,
+  "checks": [
+    {
+      "replay": "cycle-16-harness-pre-core-replay.json",
+      "replaySha256": "d3c7a759f6ffe872073498e83d14c6a5fc2d7a96f3f91cad91421c2ae6631293",
+      "archive": "cycle-16-evaluated-implementation.json",
+      "archiveSha256": "c370b011fbaa3b49aeafa47e6a6e7f79bb197c72164cdef6dd7a01094c61c6a4",
+      "providerFiles": 37,
+      "exactProviderFilesVerified": 37,
+      "missingProviderFiles": []
+    },
+    {
+      "replay": "cycle-16-final-replay.json",
+      "replaySha256": "3941f18e7fab9a4a0dd48270d06a1bbf7495fa3efe2d10280f08ce3e73aa1e01",
+      "archive": "cycle-16-evaluated-implementation.json",
+      "archiveSha256": "c370b011fbaa3b49aeafa47e6a6e7f79bb197c72164cdef6dd7a01094c61c6a4",
+      "providerFiles": 37,
+      "exactProviderFilesVerified": 37,
+      "missingProviderFiles": []
+    },
+    {
+      "replay": "cycle-17-final-replay.json",
+      "replaySha256": "d535998ef07be7cc2995499aa4215d255bc25736d2f3d8049d5e78bf11be94e1",
+      "archive": "cycle-17-original-evaluated-implementation.json",
+      "archiveSha256": "ed6f862392551d0237b14bef301bad0a207317f63e056e024d87252d0691ddf6",
+      "providerFiles": 37,
+      "exactProviderFilesVerified": 37,
+      "missingProviderFiles": []
+    },
+    {
+      "replay": "cycle-17-refined-replay.json",
+      "replaySha256": "40c7fd4f3e103d8822cd8c99423f3d8e4372a888830a798049558c9935d10ec3",
+      "archive": "cycle-17-refined-implementation.json",
+      "archiveSha256": "7c3cd5c6c1e013fad56ef7c8a4e4b1519026367303cc19c81c4f8dc3d1de02c9",
+      "providerFiles": 37,
+      "exactProviderFilesVerified": 37,
+      "missingProviderFiles": []
+    }
+  ],
+  "initialBoundaryCorpusSha256": "b0ed37335770f9de649974cd55ca410911a77e0e9199d2e94501a774ca4f62a3",
+  "initialBoundaryReferencesSha256": "98def261ee50f56ff97f6ccdfb88b7e74e8ba9b126cc4f0c4f3f4baf8f803c51",
+  "initialSourceAndReferenceUnchanged": true,
+  "limits": [
+    "Recovery means hash-identical bytes, not a newly executed historical run.",
+    "The old16/old17 provider closures are complete; their earlier harness contents are not claimed recovered.",
+    "All archive source is inert JSON; no runtime file, old corpus or old output was modified."
+  ]
+}

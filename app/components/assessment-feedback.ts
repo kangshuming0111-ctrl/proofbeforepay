@@ -1,4 +1,5 @@
 import type {Language,ProofAssessmentItem,ProofCriterion} from "../../lib/contracts.ts";
+import {assessmentEvidenceNeedPresentation} from "../../lib/assessment-evidence-needs.ts";
 
 export const ASSESSMENT_FEEDBACK_MAX_UTF16=1000;
 export type AssessmentFeedbackDraft={comment:string;sourceExcerpted:boolean;explanationExcerpted:boolean};
@@ -16,6 +17,15 @@ function prefix(value:string,budget:number):string{
 export function buildAssessmentFeedbackDraft(criterion:ProofCriterion|undefined,item:ProofAssessmentItem,language:Language):AssessmentFeedbackDraft|undefined{
  const source=assessmentCriterionSource(criterion,item.criterionId);if(source===undefined)return undefined;
  const zh=language==="zh",explanation=item.explanation,insufficient=item.status==="insufficient_evidence";
+ const need=insufficient?assessmentEvidenceNeedPresentation(item.evidenceNeed,language):undefined;
+ let evidenceAction="";
+ if(need&&!need.legacy){
+  const fullFiles=need.targetFiles.join("; ");
+  const files=fullFiles.length<=180
+   ?(fullFiles?(zh?`相关源码文件（完整）：${fullFiles}`:`Related source files (complete): ${fullFiles}`):"")
+   :(zh?`相关文件共 ${need.targetFiles.length} 个；本短草稿未包含完整文件清单。请先展开同一版本的补证提示核对，编辑补全后再发送。本草稿没有截短文件名。`:`There are ${need.targetFiles.length} related files; this short draft omits the full list. Expand this version's evidence-needed file list, check and complete the draft before sending; filenames are not shortened here.`);
+  evidenceAction=`${zh?"补证下一步：":"Next evidence step: "}${need.nextStep}${files?`\n${files}`:""}\n\n`;
+ }
  function compose(sourceText:string,explanationText:string,sourceExcerpted:boolean,explanationExcerpted:boolean){
   const intro=insufficient
    ?(zh?"补证草稿（AI 建议，待买家核对）：":"Evidence request draft (AI suggestion for buyer review):")
@@ -25,7 +35,7 @@ export function buildAssessmentFeedbackDraft(criterion:ProofCriterion|undefined,
   const next=insufficient
    ?(zh?"请补充可复查的交付证据，并逐项对照完整锁定原文。此草稿尚未发送，也不是验收结论。":"Please provide verifiable delivery evidence against the full locked wording. This draft is not sent and is not an acceptance decision.")
    :(zh?"请核对完整约定与证据后修改或说明；AI 建议本身不认定违约。此草稿尚未发送，也不是验收结论。":"Review the full agreement and evidence, then correct or explain the issue. An AI suggestion alone does not establish a breach. This draft is not sent and is not an acceptance decision.");
-  return `${intro}\n${sourceLabel}\n${sourceText}\n\n${explanationLabel}\n${explanationText}\n\n${next}`;
+  return `${intro}\n${sourceLabel}\n${sourceText}\n\n${explanationLabel}\n${explanationText}\n\n${evidenceAction}${next}`;
  }
  const complete=compose(source,explanation,false,false);
  if(complete.length<=ASSESSMENT_FEEDBACK_MAX_UTF16)return{comment:complete,sourceExcerpted:false,explanationExcerpted:false};

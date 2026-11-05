@@ -32,6 +32,12 @@
 .assessment-status-changes_suggested { background: #f5e7db; color: #8b482b; }
 .assessment-status-insufficient_evidence { background: #f0eddc; color: #716132; }
 .assessment-explanation { margin: 6px 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.assessment-evidence-need { min-width: 0; margin: 6px 0; padding: 7px 8px; border-left: 2px solid #b8b085; background: #f8f5e8; font-size: 11px; overflow-wrap: anywhere; }
+.assessment-evidence-need > strong { color: #716132; font-weight: 650; }
+.assessment-evidence-need p { margin: 3px 0; }
+.assessment-evidence-need-files > summary { padding: 2px 0; font-size: 10px; }
+.assessment-evidence-need-files ul { margin: 4px 0 0; padding-left: 16px; }
+.assessment-evidence-need-files code { overflow-wrap: anywhere; }
 .assessment-feedback-action { display: flex; align-items: center; flex-wrap: wrap; gap: 5px 8px; margin-top: 7px; }
 .assessment-feedback-action > span { color: #6c775b; font-size: 10px; }
 .assessment-body .assessment-feedback-button { max-width: 100%; min-height: 32px; padding: 5px 8px; border: 1px solid #c4d3b4; border-radius: 4px; background: #edf3e4; color: #34572e; font: inherit; font-size: 11px; line-height: 1.5; cursor: pointer; }
@@ -50,6 +56,16 @@
 .assessment-other-items > summary, .assessment-risks > summary, .assessment-coverage > summary { padding: 8px 0; color: #49643b; font-size: 11px; }
 .assessment-other-items .assessment-item:last-child { border-bottom: 0; }
 .assessment-risks { border-top: 1px solid #dce4d4; }
+.assessment-withheld-risks { min-width: 0; border-top: 1px solid #dce4d4; }
+.assessment-withheld-risks > summary { flex-wrap: wrap; padding: 8px 0; color: #716132; font-size: 11px; }
+.assessment-withheld-risks > summary > small { color: #796c50; font-size: 10px; }
+.assessment-withheld-body { min-width: 0; padding: 7px 8px; border-left: 2px solid #b8b085; background: #f8f5e8; }
+.assessment-withheld-adjustments > summary { padding: 3px 0; font-size: 10px; }
+.assessment-withheld-adjustments ul { padding-left: 16px; margin: 4px 0 7px; }
+.assessment-withheld-adjustments li { margin: 3px 0; overflow-wrap: anywhere; }
+.assessment-withheld-adjustments li > span { display: block; color: #6c775b; font-size: 10px; }
+.assessment-withheld-risk .risk-human-review { margin-top: 7px; padding-top: 7px; font-size: 11px; }
+.assessment-withheld-risk .risk-review-form { gap: 6px; margin-top: 7px; }
 .assessment-risk-body { min-width: 0; }
 .assessment-risk-notice { margin: 0 0 7px; font-size: 10px; color: #79653d; }
 .assessment-review-summary { padding: 9px 10px; margin-bottom: 7px; border-left: 2px solid #8da46f; background: #eef3e6; font-size: 11px; }

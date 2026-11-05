@@ -1,5 +1,7 @@
 import {validateSavedEnquiryEvidence,validateEnquiryReportDecision,projectEnquiryReportsFor} from "./project-enquiry.ts";
 import {ASSESSMENT_ITEM_CITATION_LIMIT, ASSESSMENT_RISK_CITATION_LIMIT} from "./assessment-limits.ts";
+import {ASSESSMENT_EVIDENCE_NEED_REASONS} from "./assessment-evidence-needs.ts";
+import {staticFileKind} from "./static-resources.ts";
 import type {Language, ProofAssessment, ProofCriterion, ProofDelivery, ProofEvidence, ProofQuote, ProofFeedback, StaticProjectSpec} from "./contracts.ts";
 import {DomainError} from "./domain.ts";
 import {createUploadedDelivery, parseStaticProject, validateStaticFiles} from "./static-project.ts";
@@ -108,7 +110,7 @@ function dataShapes(bundle:EvidenceExport):void{
   const {spec,requirements}=bundle.project,delivery=bundle.delivery;
   if(spec){object(spec,["requiredPages","link","links","manualRequirements","coverage","businessChecks","runtimeCheck"],"Locked project");for(const link of [...(spec.link?[spec.link]:[]),...array(spec.links??[],5,"Local links")])object(link,["from","text","to"],"Local link");}
   if(requirements){object(requirements,["sourceText","sourceRefs"],"Original requirements");for(const entry of array(requirements.sourceRefs,66,"Original references")){const row=object(entry,["criterionId","source"],"Original reference");sourceReference(row.source,requirements.sourceText);}}
-  const riskReviews=(value:unknown)=>{for(const entry of array(value??[],100,"Risk reviews"))object(entry,["id","deliveryId","assessmentId","riskIndex","decision","reason","actorRole","reviewedAt"],"Risk review");};
+  const riskReviews=(value:unknown)=>{for(const entry of array(value??[],100,"Risk reviews"))object(entry,["id","deliveryId","assessmentId","riskIndex","riskOrigin","decision","reason","actorRole","reviewedAt"],"Risk review");};
   const review=(value:unknown)=>{if(value!==undefined)object(value,["deliveryId","reviewedAt","mode","summary"],"Rule review");};
   for(const key of ["browserChecks","browserCheckHistory","businessChecks","businessCheckHistory","layoutReport","layoutHistory"] as const){
     const value=delivery[key];if(value===undefined)continue;
@@ -173,7 +175,7 @@ function sourceReference(value:unknown,source:string):void{
   requireValue(Number.isSafeInteger(row.start)&&Number.isSafeInteger(row.end)&&(row.start as number)>=0&&(row.end as number)>(row.start as number)&&(row.end as number)<=source.length&&typeof row.excerpt==="string"&&row.excerpt===source.slice(row.start as number,row.end as number),"A source reference does not match its exact UTF-16 span.");
 }
 function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]):void{
-  const row=object(value,["id","deliveryId","method","mode","model","assessedAt","items","risks","limitations","coverage","usage"],"AI assessment");
+  const row=object(value,["id","deliveryId","method","mode","model","assessedAt","items","risks","limitations","coverage","usage","withheldRisks"],"AI assessment");
   text(row.id,100);text(row.model,200);requireValue(row.deliveryId===delivery.id&&row.method==="source-ai-v1"&&row.mode==="live"&&typeof row.assessedAt==="string"&&Number.isFinite(Date.parse(row.assessedAt)),"AI assessment binding is invalid.");
   const cite=(value:unknown,limit:number)=>array(value,limit,"AI citations").forEach(entry=>{
     const citation=object(entry,["file","start","end","excerpt"],"AI citation"),file=text(citation.file,200);
@@ -181,14 +183,41 @@ function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]
   });
   const items=array(row.items,33,"AI items");
   for(const item of items){
-    const result=object(item,["criterionId","status","explanation","citations","ruleEvidenceIds"],"AI item");
+    const result=object(item,["criterionId","status","explanation","citations","ruleEvidenceIds","evidenceNeed"],"AI item");
     requireValue(agreed.some(criterion=>criterion.id===result.criterionId)&&["supported","changes_suggested","insufficient_evidence"].includes(result.status as string),"AI criterion reference is invalid.");
     text(result.explanation,3000);cite(result.citations,ASSESSMENT_ITEM_CITATION_LIMIT);
+    if(result.evidenceNeed!==undefined){
+      const need=object(result.evidenceNeed,["schema","reason","targetFiles"],"AI evidence need");
+      requireValue(result.status==="insufficient_evidence"&&need.schema==="source-evidence-need-v1"&&ASSESSMENT_EVIDENCE_NEED_REASONS.some(reason=>reason===need.reason),"AI evidence-need schema, reason or item status is invalid.");
+      const targets=array(need.targetFiles,40,"AI evidence-need targets");
+      requireValue(new Set(targets).size===targets.length,"AI evidence-need targets must be unique.");
+      for(const value of targets){const file=text(value,300);requireValue(Object.hasOwn(delivery.files!,file)&&["html","css"].includes(staticFileKind(file)??""),"AI evidence-need target is not an exact provided HTML/CSS file.");}
+    }
     for(const id of array(result.ruleEvidenceIds,66,"AI rule references"))requireValue(delivery.evidence.some(entry=>entry.id===id&&entry.criterionId===result.criterionId),"AI rule reference is missing or belongs to a different criterion.");
   }
   requireValue(new Set(items.map(item=>(item as Record<string,unknown>).criterionId)).size===items.length,"AI criterion references are duplicated.");
   requireValue(items.length===agreed.length&&agreed.every(criterion=>items.some(item=>(item as Record<string,unknown>).criterionId===criterion.id)),"AI assessment must include every agreed criterion exactly once.");
-  for(const item of array(row.risks,20,"AI risks")){const risk=object(item,["title","explanation","suggestion","citations"],"AI risk");text(risk.title,500);text(risk.explanation,3000);text(risk.suggestion,3000);cite(risk.citations,ASSESSMENT_RISK_CITATION_LIMIT);}
+  const validateRisk=(value:unknown,strict:boolean)=>{
+    const risk=object(value,["title","explanation","suggestion","citations"],"AI risk");
+    text(risk.title,strict?120:500);text(risk.explanation,strict?600:3000);text(risk.suggestion,strict?400:3000);
+    const citations=array(risk.citations,ASSESSMENT_RISK_CITATION_LIMIT,"AI risk citations");
+    if(strict){requireValue(citations.length>0,"A retained AI lead needs its exact source citations.");for(const entry of citations)text((entry as Record<string,unknown>)?.excerpt,500);}
+    cite(citations,ASSESSMENT_RISK_CITATION_LIMIT);
+  };
+  const activeRisks=array(row.risks,row.withheldRisks===undefined?20:5,"AI risks");
+  for(const risk of activeRisks)validateRisk(risk,row.withheldRisks!==undefined);
+  if(row.withheldRisks!==undefined){
+    const pool=object(row.withheldRisks,["version","reason","adjustedCriteria","entries"],"AI withheld-risk disposition");
+    requireValue(pool.version===1&&["item_status_adjusted","not_withheld"].includes(pool.reason as string),"Unsupported AI withheld-risk disposition.");
+    const adjustments=array(pool.adjustedCriteria,33,"AI status adjustments"),entries=array(pool.entries,5,"Withheld AI leads"),ids=new Set<string>();
+    if(pool.reason==="not_withheld")requireValue(adjustments.length===0&&entries.length===0,"A not-withheld disposition cannot retain adjustments or withheld leads.");
+    else requireValue(adjustments.length>0&&activeRisks.length===0,"A status-adjusted disposition needs an adjustment and no active risks.");
+    for(const value of adjustments){
+      const adjustment=object(value,["criterionId","originalStatus","publishedStatus"],"AI status adjustment"),id=text(adjustment.criterionId,80),item=items.find(value=>(value as Record<string,unknown>).criterionId===id) as Record<string,unknown>|undefined;
+      requireValue(!ids.has(id)&&item&&["supported","changes_suggested","insufficient_evidence"].includes(adjustment.originalStatus as string)&&adjustment.originalStatus!==adjustment.publishedStatus&&adjustment.publishedStatus===item.status,"An AI status adjustment has a duplicated, foreign or conflicting criterion/status binding.");ids.add(id);
+    }
+    entries.forEach((value,index)=>{const entry=object(value,["originalRiskIndex","risk"],"Withheld AI lead");requireValue(entry.originalRiskIndex===index,"Withheld AI lead indices must retain the contiguous original order.");validateRisk(entry.risk,true);});
+  }
   array(row.limitations,30,"AI limitations").forEach(item=>text(item,3000));
   const coverage=object(row.coverage,["includedFiles","truncatedFiles","omittedFiles"],"AI source coverage");
   for(const values of Object.values(coverage))for(const file of array(values,40,"AI source inventory"))requireValue(typeof file==="string"&&Object.hasOwn(delivery.files!,file),"AI source inventory references a missing file.");
@@ -197,8 +226,12 @@ function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]
 function riskBindings(value:unknown,deliveryId:string,reports:ProofAssessment[]):void{
   const ids=new Set<string>();
   for(const entry of array(value??[],100,"Risk annotations")){
-    const row=entry as Record<string,unknown>,id=text(row.id,100),report=reports.find(report=>report.id===row.assessmentId);
-    requireValue(!ids.has(id)&&row.deliveryId===deliveryId&&report&&Number.isInteger(row.riskIndex)&&(row.riskIndex as number)>=0&&(row.riskIndex as number)<report.risks.length,"Risk annotation references another delivery, report or risk.");ids.add(id);
+    const row=object(entry,["id","deliveryId","assessmentId","riskIndex","riskOrigin","decision","reason","actorRole","reviewedAt"],"Risk annotation"),id=text(row.id,100),report=reports.find(report=>report.id===row.assessmentId),withheld=Object.hasOwn(row,"riskOrigin");
+    requireValue(!withheld||row.riskOrigin==="withheld","Unsupported risk annotation origin.");
+    requireValue(!ids.has(id)&&row.deliveryId===deliveryId&&report&&Number.isSafeInteger(row.riskIndex)&&(row.riskIndex as number)>=0,"Risk annotation references another delivery, report or risk.");ids.add(id);
+    const index=row.riskIndex as number;
+    if(withheld){const pool=report.withheldRisks;requireValue(pool?.version===1&&pool.reason==="item_status_adjusted"&&pool.entries[index]?.originalRiskIndex===index&&pool.entries[index]?.risk,"Risk annotation references a missing or unbound withheld lead.");}
+    else requireValue(index<report.risks.length,"Risk annotation references a missing published risk.");
     requireValue(["confirmed","rejected","needs_evidence"].includes(row.decision as string)&&["buyer","seller"].includes(row.actorRole as string)&&typeof row.reviewedAt==="string"&&Number.isFinite(Date.parse(row.reviewedAt)),"Risk annotation fields are invalid.");text(row.reason,1000);
   }
 }
@@ -266,7 +299,7 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
     immutableIds([...(bundle.delivery.riskReviews??[]),...(bundle.delivery.acceptanceEvidence??[]).flatMap(snapshot=>snapshot.riskReviews??[])]);
     for(const report of reports)assessment(report,bundle.delivery,bundle.project.criteria);
     riskBindings(bundle.delivery.riskReviews,bundle.delivery.id,reports);
-  },"Included AI citations resolve to source and risk annotations reference their recorded delivery/report/risk; model judgment, human identity and provider execution are not proven.");
+  },"Included AI citations resolve to source; risk annotations, optional evidence-need metadata and withheld-risk dispositions have valid saved bindings. Model judgment, the asserted original statuses or cause of an evidence gap, human identity and provider execution are not proven.");
   if(bundle.riskRepairs)await check("risk-repair-chain",()=>{
     const records=object(bundle.riskRepairs,["schema","feedback","events"],"Risk repair chain");
     requireValue(records.schema==="pbp-risk-repairs-v1","Unsupported risk repair chain schema.");

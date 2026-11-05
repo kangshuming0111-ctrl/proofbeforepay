@@ -11,6 +11,7 @@ import { AssessmentValidationPanel } from "./AssessmentValidationPanel";
 import { assessmentCriterionSource, buildAssessmentFeedbackDraft } from "./assessment-feedback";
 import type { RiskReviewInput } from "@/lib/risk-reviews";
 import { assessmentCoverageGroups, assessmentReviewSummary, assessmentRiskPresentation } from "@/lib/assessment-display";
+import {assessmentEvidenceNeedPresentation} from "@/lib/assessment-evidence-needs";
 
 export type DeliveryAssessmentProps = {
   report?: ProofAssessment;
@@ -55,6 +56,9 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
   const otherItems = report?.items.filter(item => item !== selectedItem) ?? [];
   const reviewSummary = report ? assessmentReviewSummary(report, riskReviews) : undefined;
   const coverage = report ? assessmentCoverageGroups(report) : undefined;
+  const withheld = report?.withheldRisks?.version === 1 && ["item_status_adjusted", "not_withheld"].includes(report.withheldRisks.reason)
+    && Array.isArray(report.withheldRisks.adjustedCriteria) && Array.isArray(report.withheldRisks.entries)
+    ? report.withheldRisks : undefined;
   const titleFor = (criterionId: string) => {
     const criterion = criteria.find(item => item.id === criterionId);
     return criterion ? criterionDisplayTitle(criterion, language) : criterionId;
@@ -75,6 +79,7 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
     const criterion = criteria.find(criterion => criterion.id === item.criterionId);
     const lockedSource = assessmentCriterionSource(criterion, item.criterionId);
     const draft = canPrepareFeedback ? buildAssessmentFeedbackDraft(criterion, item, language) : undefined;
+    const evidenceNeed = insufficient ? assessmentEvidenceNeedPresentation(item.evidenceNeed, language) : undefined;
     return <article className={`assessment-item${selected ? " assessment-item-selected" : ""}`} key={item.criterionId}>
       <div className="assessment-item-heading"><h4>{titleFor(item.criterionId)}</h4><span className={`assessment-status assessment-status-${item.status}`}>{statusLabel(item.status)}</span></div>
       {lockedSource !== undefined ? <details className="assessment-locked-source">
@@ -83,6 +88,13 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
         <blockquote>{lockedSource}</blockquote>
       </details> : <p className="assessment-source-unavailable">{tr("尚未取得此项的锁定原文，暂不能生成带要求的补证草稿。请重新载入当前交付后核对。", "This criterion’s locked wording is unavailable, so an evidence request cannot be prepared. Reload the current delivery and check again.")}</p>}
       <p className="assessment-explanation">{item.explanation}</p>
+      {evidenceNeed && <section className="assessment-evidence-need" aria-label={tr("补证方向", "Evidence needed")}>
+        <strong>{evidenceNeed.reason}</strong><p>{evidenceNeed.nextStep}</p>
+        {evidenceNeed.targetFiles.length > 0 && <details className="assessment-evidence-need-files"><summary>{tr(`相关源码文件（${evidenceNeed.targetFiles.length}）`, `Related source files (${evidenceNeed.targetFiles.length})`)}</summary>
+          <ul>{evidenceNeed.targetFiles.map(file => <li key={file}><code>{file}</code></li>)}</ul>
+        </details>}
+        {!evidenceNeed.legacy && !evidenceNeed.targetFiles.length && <p>{tr("尚未定位具体文件，请先按锁定要求确认范围。", "No exact target file was recorded; confirm the scope against the locked requirement.")}</p>}
+      </section>}
       <Citations citations={item.citations} language={language} />
       {item.ruleEvidenceIds.length > 0 && <p className="assessment-rule-refs">{tr("已关联此要求的规则证据，可与下方核查结果对照。", "Linked to this requirement’s rule evidence; compare it with the rule findings below.")}</p>}
       {canPrepareFeedback && <div className="assessment-feedback-action no-print"><button type="button" className="assessment-feedback-button" disabled={busy || !draft} onClick={() => {
@@ -120,7 +132,7 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
           {selectedItem ? renderItem(selectedItem, true) : <p className="assessment-empty">{selectedCriterionId ? tr("此报告没有当前所选标准的建议，不能据此视为通过。", "This report has no suggestion for the selected criterion; it cannot be treated as a pass.") : tr("此报告没有逐项建议。", "This report has no criterion suggestions.")}</p>}
           {otherItems.length > 0 && <details className="assessment-other-items"><summary>{tr(`查看其余 ${otherItems.length} 条要求`, `Inspect the other ${otherItems.length} criteria`)}<ChevronDown size={13} aria-hidden="true" /></summary><div>{otherItems.map(item => renderItem(item))}</div></details>}
         </div>
-        <details className="assessment-risks"><summary><TriangleAlert size={13} aria-hidden="true" />{tr(`待核查的 AI 线索（${report.risks.length}）`, `AI indications to review (${report.risks.length})`)}<ChevronDown size={13} aria-hidden="true" /></summary>
+        <details className="assessment-risks"><summary><TriangleAlert size={13} aria-hidden="true" />{tr(`已发布、待核查的 AI 线索（${report.risks.length}）`, `Published AI indications to review (${report.risks.length})`)}<ChevronDown size={13} aria-hidden="true" /></summary>
           <div className="assessment-risk-body">{report.risks.length ? <><p className="assessment-risk-notice">{tr("源码线索尚未运行验证，需要复现后确认。", "Source-level indications have not been verified by execution. Reproduce them before drawing a conclusion.")}</p>
             {reviewSummary && <section className="assessment-review-summary" aria-label={tr("潜在线索的人工复核概览", "Human review summary for potential issues")}>
               <strong>{tr(`共 ${reviewSummary.total} 条线索，${reviewSummary.unreviewed} 条尚无人工记录`, `Potential issues: ${reviewSummary.total}; without any human record: ${reviewSummary.unreviewed}`)}</strong>
@@ -133,9 +145,37 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
               return <article className="assessment-risk" key={`${risk.title}-${index}`} data-evidence-kind={reading.kind}>
                 <span className="assessment-risk-basis">{reading.label}</span><h4>{reading.title}</h4><p className="assessment-risk-notice">{reading.explanation}</p>
                 {reading.kind === "image_evidence_gap" ? <details className="assessment-original-risk"><summary>{tr("查看原始模型措辞", "Inspect original model wording")}</summary><strong>{risk.title}</strong><p>{risk.explanation}</p><p>{risk.suggestion}</p></details> : <p>{risk.explanation}</p>}
-                <p className="assessment-risk-suggestion">{tr("下一步核对：", "Next check: ")}{reading.nextStep}</p><Citations citations={risk.citations} language={language} /><RiskReviewPanel key={`${report.deliveryId}-${report.id}-${index}-${actorRole ?? ""}`} deliveryId={report.deliveryId} assessmentId={report.id} riskIndex={index} reviews={riskReviews} role={actorRole} language={language} busy={busy} readOnly={readOnly} onSave={onSaveRiskReview}/>{!readOnly && onPrepareFeedback && <RiskFeedbackAction report={report} index={index} criteria={criteria} language={language} disabled={busy} onPrepare={onPrepareFeedback}/>}
+                <p className="assessment-risk-suggestion">{tr("下一步核对：", "Next check: ")}{reading.nextStep}</p><Citations citations={risk.citations} language={language} /><RiskReviewPanel key={`${report.deliveryId}-${report.id}-published-${index}-${actorRole ?? "buyer"}`} deliveryId={report.deliveryId} assessmentId={report.id} riskIndex={index} reviews={riskReviews} role={actorRole} language={language} busy={busy} readOnly={readOnly} onSave={onSaveRiskReview}/>{!readOnly && onPrepareFeedback && <RiskFeedbackAction report={report} index={index} criteria={criteria} language={language} disabled={busy} onPrepare={onPrepareFeedback}/>}
               </article>;
             })}{report.risks.length > 5 && <p className="assessment-risk-notice">{tr("此处展示前 5 项；完整报告保留在交付记录中。", "Showing the first 5 issues; the full report remains in the delivery record.")}</p>}</> : <p className="assessment-empty">{tr("此报告没有已发布的风险线索。请结合逐项结论与覆盖记录核对；这不代表网站没有缺陷。", "This report has no published risk indications. Inspect its criterion findings and coverage records; this does not establish that the website is free of defects.")}</p>}</div>
+        </details>
+        <details className="assessment-withheld-risks"><summary><TriangleAlert size={13} aria-hidden="true" />
+          <span>{withheld ? withheld.reason === "not_withheld"
+            ? tr("本次没有暂缓 AI 线索（0）", "No AI indications were withheld (0)")
+            : tr(`已暂缓 AI 线索（${withheld.entries.length}，待复核）`, `Withheld AI indications (${withheld.entries.length}, awaiting review)`)
+            : tr("暂缓 AI 线索记录（未保存）", "Withheld AI indication record (not saved)")}</span>
+          {withheld?.reason === "item_status_adjusted" && <small>{tr(`${withheld.adjustedCriteria.length} 项状态调整后的统一暂缓`, `Report-wide gate after ${withheld.adjustedCriteria.length} item status adjustment(s)`)}</small>}
+          <ChevronDown size={13} aria-hidden="true" /></summary>
+          <div className="assessment-withheld-body">
+            {!withheld ? <p className="assessment-empty">{report.withheldRisks === undefined
+              ? tr("此报告没有结构化暂缓记录；仅展示已发布部分，不能从数量说明恢复原件。", "This report has no structured withholding record. Only the published part is shown; count notes cannot recover the original indications.")
+              : tr("暂缓记录格式无法核对，当前仅展示已发布部分；请重新载入此交付快照。", "The withholding record format cannot be checked. Only the published part is shown; reload this delivery snapshot.")}</p>
+              : withheld.reason === "not_withheld" ? <p className="assessment-empty">{tr("本次没有暂缓 AI 线索。已发布线索仍需人工复核，不代表网站没有缺陷。", "No AI indications were withheld in this assessment. Published indications still need human review; this does not establish a defect-free website.")}</p>
+                : <>
+                  <p className="assessment-risk-notice">{tr("部分逐项状态经规则或证据校验调整，因此本报告的全部可选 AI 线索统一暂缓。这不表示每条线索都由下列要求造成，也不表示线索已证实、被驳回或问题已解决。", "Some item statuses changed under rule or evidence checks, so this report's optional AI indications were withheld together. This does not establish that every indication is caused by the items below, confirm or reject a defect, or show that an issue was resolved.")}</p>
+                  <details className="assessment-withheld-adjustments"><summary>{tr(`查看状态调整的要求（${withheld.adjustedCriteria.length}）`, `Inspect adjusted requirements (${withheld.adjustedCriteria.length})`)}</summary>
+                    <ul>{withheld.adjustedCriteria.map(adjustment => <li key={adjustment.criterionId}><strong>{titleFor(adjustment.criterionId)}</strong><span>{tr("原 AI 建议 → 发布状态：", "Original model suggestion → Published status: ")}{statusLabel(adjustment.originalStatus)} → {statusLabel(adjustment.publishedStatus)}</span></li>)}</ul>
+                  </details>
+                  <p className="assessment-risk-notice">{tr("下列保留原模型线索原文与来源引用。人工核对意见单独追加保存，不计入上方已发布线索数量；本区不提供关联返工操作。", "The original model wording and source citations below are preserved. Human opinions are appended separately and excluded from the published indication count above. This section offers no linked repair actions.")}</p>
+                  {withheld.entries.length ? withheld.entries.map(entry => <article className="assessment-risk assessment-withheld-risk" key={entry.originalRiskIndex} data-original-risk-index={entry.originalRiskIndex}>
+                    <span className="assessment-risk-basis">{tr(`原模型线索 ${entry.originalRiskIndex + 1} · 暂缓，待复核`, `Original model indication ${entry.originalRiskIndex + 1} · Withheld, awaiting review`)}</span>
+                    <h4>{entry.risk.title}</h4><p>{entry.risk.explanation}</p><p className="assessment-risk-suggestion"><strong>{tr("模型原建议：", "Original model suggestion: ")}</strong>{entry.risk.suggestion}</p>
+                    <Citations citations={entry.risk.citations} language={language} />
+                    <RiskReviewPanel key={`${report.deliveryId}-${report.id}-withheld-${entry.originalRiskIndex}-${actorRole ?? "buyer"}`} deliveryId={report.deliveryId} assessmentId={report.id} riskIndex={entry.originalRiskIndex} riskOrigin="withheld" reviews={riskReviews} role={actorRole} language={language} busy={busy} readOnly={readOnly} onSave={onSaveRiskReview} />
+                  </article>) : <p className="assessment-empty">{tr("本次有状态调整，但暂缓线索为 0 条；没有暂缓原件需要查看。", "Item statuses were adjusted, but there are 0 withheld indications and no quarantined originals to inspect.")}</p>}
+                </>}
+            {withheld && <p className="assessment-delivery-id">{tr("记录所属交付 / 评估：", "Recorded delivery / assessment: ")}<code>{report.deliveryId}</code> / <code>{report.id}</code></p>}
+          </div>
         </details>
         <details className="assessment-coverage"><summary>{tr("分析范围与局限", "Coverage and limitations")}<ChevronDown size={13} aria-hidden="true" /></summary><div className="assessment-coverage-body">
           <dl>{([

@@ -1,0 +1,45 @@
+{
+  "schema": "pbp-advisory-adjudication-v1",
+  "cycle": 17,
+  "reviews": [
+    "cycle-17-post-18-plan-deepseek.json",
+    "cycle-17-followup-deepseek.json"
+  ],
+  "bothValid": true,
+  "initialFindings": [
+    {
+      "claim": "6risks reachassessor andsavednot_withheld cannotexport",
+      "decision": "rejected as userreachabledefect; accepted defensive helperpremise",
+      "evidence": "delivery-assessment if(output.risks.length>5)throw; original controlled6risk reportrejected beforepublisher. Added unconditionalhelpercap tobothbranches with focusedtest."
+    },
+    {
+      "claim": "not_withheld withentries/adjustedwithactivepassesexport",
+      "decision": "rejected",
+      "evidence": "Bothcases explicitlyrequireValue false atcurrentexport conditions; current/historytampercountertests pass rejection."
+    },
+    {
+      "claim": "longdraftcurrentcopiesexceed1000UTF16",
+      "decision": "rejected",
+      "evidence": "24actualreason/language cases40longtargets: maximumfixedoverhead650, everyactualdraft<=1000/wellformed. Addedpermanent24case regression."
+    }
+  ],
+  "followupFindings": [],
+  "remainingReviewerLimits": [
+    "Reviewer didnotexecute anytests orprovider; latermetadata authenticity isnotestablished byunsignedexport.",
+    "Followup narrativehasinaccuracies e.gmentionsfeedbackriskcap; no codechangesbasedon unsupportednarrative."
+  ],
+  "implementedRefinement": "AllnewactiveV3 records explicitly distinguish not_withheld vsitem_status_adjusted. Historyabsentstaysabsent.",
+  "verifiedReplay": "cycle-17-refined-replay.json",
+  "verifiedOriginalRiskLineage": {
+    "reports": 15,
+    "criteria": 82,
+    "unchangedStatuses": 82,
+    "unknownsWithNeed": 25,
+    "withheldEntries": 6,
+    "withheldCitations": 15,
+    "completeStatusLedgers": 15,
+    "statusChangesFromWire": 4
+  },
+  "modelCalls": 0,
+  "networkCalls": 0
+}

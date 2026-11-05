@@ -1,0 +1,778 @@
+{
+  "schema": "pbp-evidence-actions-artifact-manifest-v1",
+  "createdAt": "2026-11-05T16:48:33.790300+00:00",
+  "scope": "Curated public synthetic/source-audit artifacts, not all local logs. Paths in sourceFile are repository-relative retained-original locations.",
+  "redactionPolicy": "Only exact absolute local repository prefixes at listed metadata paths are removed. Provider/request/source/citation string contents are unchanged.",
+  "entries": [
+    {
+      "file": "cycle-16-plan-deepseek.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-16-plan-deepseek.json",
+      "originalSha256": "19043d35bb3dcef42b09facb880b4f1b0375cda714ffff6d15f9c39b39747257",
+      "publicSha256": "19043d35bb3dcef42b09facb880b4f1b0375cda714ffff6d15f9c39b39747257",
+      "originalBytes": 43784,
+      "publicBytes": 43784,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-16-plan-adjudication.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-16-plan-adjudication.json",
+      "originalSha256": "6b208ee9fcd1446e04bf100cacd55bc375416d589f604e467b88b5da610f6415",
+      "publicSha256": "6b208ee9fcd1446e04bf100cacd55bc375416d589f604e467b88b5da610f6415",
+      "originalBytes": 1842,
+      "publicBytes": 1842,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-16-post-17-plan-deepseek.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-16-post-17-plan-deepseek.json",
+      "originalSha256": "470b809cff310c526868a69f7f73fa2387ab2d349b0ed259ae3c376c01c526e5",
+      "publicSha256": "470b809cff310c526868a69f7f73fa2387ab2d349b0ed259ae3c376c01c526e5",
+      "originalBytes": 16958,
+      "publicBytes": 16958,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-16-post-adjudication.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-16-post-adjudication.json",
+      "originalSha256": "03774955249627858f0ab4c247afe12334f61549f9d4593c82490a5e7a762f90",
+      "publicSha256": "03774955249627858f0ab4c247afe12334f61549f9d4593c82490a5e7a762f90",
+      "originalBytes": 1662,
+      "publicBytes": 1662,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-17-post-18-plan-deepseek.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-17-post-18-plan-deepseek.json",
+      "originalSha256": "5f16b86e8249be14dec8b85010474f262fea1a22a4f4a1dc28fa32a5bcfacb85",
+      "publicSha256": "5f16b86e8249be14dec8b85010474f262fea1a22a4f4a1dc28fa32a5bcfacb85",
+      "originalBytes": 27113,
+      "publicBytes": 27113,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-17-followup-deepseek.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-17-followup-deepseek.json",
+      "originalSha256": "1b8e56e659025ff7f6083f388fe169868ef2660ae7399b401a01ac35527005b9",
+      "publicSha256": "1b8e56e659025ff7f6083f388fe169868ef2660ae7399b401a01ac35527005b9",
+      "originalBytes": 7971,
+      "publicBytes": 7971,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-17-adjudication.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-17-adjudication.json",
+      "originalSha256": "8f6069bb930c8d349d4fafe8a3cf13f4a1a7a1cc1e032df987e02cee5ac5388b",
+      "publicSha256": "8f6069bb930c8d349d4fafe8a3cf13f4a1a7a1cc1e032df987e02cee5ac5388b",
+      "originalBytes": 1858,
+      "publicBytes": 1858,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-17-draft-counterchecks.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-17-draft-counterchecks.json",
+      "originalSha256": "c8944ee0e129d3d690ae4736eff1257060c6e50f991cfac5929d0eb7a4263f01",
+      "publicSha256": "c8944ee0e129d3d690ae4736eff1257060c6e50f991cfac5929d0eb7a4263f01",
+      "originalBytes": 3893,
+      "publicBytes": 3893,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-18-post-deepseek.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-18-post-deepseek.json",
+      "originalSha256": "94f17988c5acf4d0f413c5b7b2debe80cfa0a61861c86a12ff155cf61ef2b290",
+      "publicSha256": "94f17988c5acf4d0f413c5b7b2debe80cfa0a61861c86a12ff155cf61ef2b290",
+      "originalBytes": 14443,
+      "publicBytes": 14443,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-18-namespace-followup-deepseek.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-18-namespace-followup-deepseek.json",
+      "originalSha256": "f0bded705c792412a8990d6700e14a1d16f2dbe2d8d6ba40a15fc27080d012ab",
+      "publicSha256": "f0bded705c792412a8990d6700e14a1d16f2dbe2d8d6ba40a15fc27080d012ab",
+      "originalBytes": 9313,
+      "publicBytes": 9313,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-18-live-scope-deepseek.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-18-live-scope-deepseek.json",
+      "originalSha256": "e588fdd25a7fce21b1b415a027e21670d2199901972d79a71d05755f81c05dc8",
+      "publicSha256": "e588fdd25a7fce21b1b415a027e21670d2199901972d79a71d05755f81c05dc8",
+      "originalBytes": 17222,
+      "publicBytes": 17222,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-18-scope-post-deepseek.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-18-scope-post-deepseek.json",
+      "originalSha256": "31539422cefb6878c09ea3ad846a8687dba17cbe30e64f8ee9f75c668c80c65a",
+      "publicSha256": "31539422cefb6878c09ea3ad846a8687dba17cbe30e64f8ee9f75c668c80c65a",
+      "originalBytes": 12011,
+      "publicBytes": 12011,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-18-adjudication.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-18-adjudication.json",
+      "originalSha256": "89bd60ccad76f70d487427eb34b5c36c22e2f4e679ce53a569aca0f4dd909493",
+      "publicSha256": "89bd60ccad76f70d487427eb34b5c36c22e2f4e679ce53a569aca0f4dd909493",
+      "originalBytes": 3516,
+      "publicBytes": 3516,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-16-final-replay.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-16-final-replay.json",
+      "originalSha256": "3941f18e7fab9a4a0dd48270d06a1bbf7495fa3efe2d10280f08ce3e73aa1e01",
+      "publicSha256": "aa8f262c4d713c7a1579d2b4f78aed3e4057cf7c351b8decd6b0d298d5a131c2",
+      "originalBytes": 403812,
+      "publicBytes": 403240,
+      "redactions": [
+        {
+          "pointer": "/inputs/0/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/final-publication-replay.json"
+        },
+        {
+          "pointer": "/inputs/1/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-13-known-corpus.json"
+        },
+        {
+          "pointer": "/inputs/2/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-known-live.json"
+        },
+        {
+          "pointer": "/inputs/3/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-known-freeze.json"
+        },
+        {
+          "pointer": "/inputs/4/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "scripts/project-assessment-corpus-citation-relations-holdout.json"
+        },
+        {
+          "pointer": "/inputs/5/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-live.json"
+        },
+        {
+          "pointer": "/inputs/6/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-freeze.json"
+        },
+        {
+          "pointer": "/inputs/7/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "scripts/citation-relations-scope-corpus-2026-11-05.json"
+        },
+        {
+          "pointer": "/inputs/8/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-scope-live.json"
+        },
+        {
+          "pointer": "/inputs/9/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-scope-freeze.json"
+        },
+        {
+          "pointer": "/manifest/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/evidence-actions-2026-11-06/retained-replay-inputs.json"
+        }
+      ],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-17-final-replay.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-17-final-replay.json",
+      "originalSha256": "d535998ef07be7cc2995499aa4215d255bc25736d2f3d8049d5e78bf11be94e1",
+      "publicSha256": "e849ae251e7a1aeb7cc75e29fc11c86af43a71eb5bf4b26ce8e65a09093df957",
+      "originalBytes": 439274,
+      "publicBytes": 438702,
+      "redactions": [
+        {
+          "pointer": "/inputs/0/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/final-publication-replay.json"
+        },
+        {
+          "pointer": "/inputs/1/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-13-known-corpus.json"
+        },
+        {
+          "pointer": "/inputs/2/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-known-live.json"
+        },
+        {
+          "pointer": "/inputs/3/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-known-freeze.json"
+        },
+        {
+          "pointer": "/inputs/4/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "scripts/project-assessment-corpus-citation-relations-holdout.json"
+        },
+        {
+          "pointer": "/inputs/5/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-live.json"
+        },
+        {
+          "pointer": "/inputs/6/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-freeze.json"
+        },
+        {
+          "pointer": "/inputs/7/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "scripts/citation-relations-scope-corpus-2026-11-05.json"
+        },
+        {
+          "pointer": "/inputs/8/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-scope-live.json"
+        },
+        {
+          "pointer": "/inputs/9/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-scope-freeze.json"
+        },
+        {
+          "pointer": "/manifest/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/evidence-actions-2026-11-06/retained-replay-inputs.json"
+        }
+      ],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-17-refined-replay.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-17-refined-replay.json",
+      "originalSha256": "40c7fd4f3e103d8822cd8c99423f3d8e4372a888830a798049558c9935d10ec3",
+      "publicSha256": "55ae19e4382c3853817171fbf494b5fed783b3afe0737571a9727144c9d1577d",
+      "originalBytes": 439274,
+      "publicBytes": 438702,
+      "redactions": [
+        {
+          "pointer": "/inputs/0/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/final-publication-replay.json"
+        },
+        {
+          "pointer": "/inputs/1/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-13-known-corpus.json"
+        },
+        {
+          "pointer": "/inputs/2/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-known-live.json"
+        },
+        {
+          "pointer": "/inputs/3/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-known-freeze.json"
+        },
+        {
+          "pointer": "/inputs/4/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "scripts/project-assessment-corpus-citation-relations-holdout.json"
+        },
+        {
+          "pointer": "/inputs/5/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-live.json"
+        },
+        {
+          "pointer": "/inputs/6/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-freeze.json"
+        },
+        {
+          "pointer": "/inputs/7/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "scripts/citation-relations-scope-corpus-2026-11-05.json"
+        },
+        {
+          "pointer": "/inputs/8/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-scope-live.json"
+        },
+        {
+          "pointer": "/inputs/9/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-scope-freeze.json"
+        },
+        {
+          "pointer": "/manifest/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/evidence-actions-2026-11-06/retained-replay-inputs.json"
+        }
+      ],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-18-final-replay.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-18-final-replay.json",
+      "originalSha256": "372830a75b1e8cd44f4401b43c89e3ab7b0ac76833acaaa27e538a86a0b3164c",
+      "publicSha256": "c7c9bdc6194a996a43a5e3ffe8edcb4e58ca82833237b9bb384bde9a949a5c5f",
+      "originalBytes": 441480,
+      "publicBytes": 440908,
+      "redactions": [
+        {
+          "pointer": "/inputs/0/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/final-publication-replay.json"
+        },
+        {
+          "pointer": "/inputs/1/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-13-known-corpus.json"
+        },
+        {
+          "pointer": "/inputs/2/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-known-live.json"
+        },
+        {
+          "pointer": "/inputs/3/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-known-freeze.json"
+        },
+        {
+          "pointer": "/inputs/4/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "scripts/project-assessment-corpus-citation-relations-holdout.json"
+        },
+        {
+          "pointer": "/inputs/5/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-live.json"
+        },
+        {
+          "pointer": "/inputs/6/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-freeze.json"
+        },
+        {
+          "pointer": "/inputs/7/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "scripts/citation-relations-scope-corpus-2026-11-05.json"
+        },
+        {
+          "pointer": "/inputs/8/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-scope-live.json"
+        },
+        {
+          "pointer": "/inputs/9/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-scope-freeze.json"
+        },
+        {
+          "pointer": "/manifest/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/evidence-actions-2026-11-06/retained-replay-inputs.json"
+        }
+      ],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-16-evaluated-implementation.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-16-evaluated-implementation.json",
+      "originalSha256": "c370b011fbaa3b49aeafa47e6a6e7f79bb197c72164cdef6dd7a01094c61c6a4",
+      "publicSha256": "c370b011fbaa3b49aeafa47e6a6e7f79bb197c72164cdef6dd7a01094c61c6a4",
+      "originalBytes": 836390,
+      "publicBytes": 836390,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-17-original-evaluated-implementation.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-17-original-evaluated-implementation.json",
+      "originalSha256": "ed6f862392551d0237b14bef301bad0a207317f63e056e024d87252d0691ddf6",
+      "publicSha256": "ed6f862392551d0237b14bef301bad0a207317f63e056e024d87252d0691ddf6",
+      "originalBytes": 838448,
+      "publicBytes": 838448,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-17-refined-implementation.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-17-refined-implementation.json",
+      "originalSha256": "7c3cd5c6c1e013fad56ef7c8a4e4b1519026367303cc19c81c4f8dc3d1de02c9",
+      "publicSha256": "7c3cd5c6c1e013fad56ef7c8a4e4b1519026367303cc19c81c4f8dc3d1de02c9",
+      "originalBytes": 863195,
+      "publicBytes": 863195,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-18-final-implementation.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-18-final-implementation.json",
+      "originalSha256": "b6f640b418548f0f21004ab5ec8a7d810e5658228648a41464bed9090d0df1ec",
+      "publicSha256": "b6f640b418548f0f21004ab5ec8a7d810e5658228648a41464bed9090d0df1ec",
+      "originalBytes": 864364,
+      "publicBytes": 864364,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "negative-scope-final-implementation.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/negative-scope-final-implementation.json",
+      "originalSha256": "03218b7b96412d1ee3e1ec7b71a070f673a8b7997f3cd0249df38fe31defab2a",
+      "publicSha256": "03218b7b96412d1ee3e1ec7b71a070f673a8b7997f3cd0249df38fe31defab2a",
+      "originalBytes": 873944,
+      "publicBytes": 873944,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-16-17-source-archive-audit.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-16-17-source-archive-audit.json",
+      "originalSha256": "09ad688d1d4b99fb9b80d182b058a5220fd9adfb5311be866c9e3970ee6d4921",
+      "publicSha256": "09ad688d1d4b99fb9b80d182b058a5220fd9adfb5311be866c9e3970ee6d4921",
+      "originalBytes": 2308,
+      "publicBytes": 2308,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-18-eight-first-live-admitted.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-18-eight-first-live-admitted.json",
+      "originalSha256": "c540bf1afbafe37efb8088a91229403f379baeace2171cbf123e062af6c62cad",
+      "publicSha256": "c540bf1afbafe37efb8088a91229403f379baeace2171cbf123e062af6c62cad",
+      "originalBytes": 428659,
+      "publicBytes": 428659,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-18-eight-known-repair-live.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-18-eight-known-repair-live.json",
+      "originalSha256": "853f4e451e6b5a3d0a07658bb0f8b12a7a89a85ef637bf0d98535386c14c9ba6",
+      "publicSha256": "853f4e451e6b5a3d0a07658bb0f8b12a7a89a85ef637bf0d98535386c14c9ba6",
+      "originalBytes": 423379,
+      "publicBytes": 423379,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-18-eight-freeze.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-18-eight-freeze.json",
+      "originalSha256": "2950a0a73e0e8d86e5f3755c2a15b2962f33809dd90ce957cd7e855f07a3f666",
+      "publicSha256": "2950a0a73e0e8d86e5f3755c2a15b2962f33809dd90ce957cd7e855f07a3f666",
+      "originalBytes": 252569,
+      "publicBytes": 252569,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-18-eight-repair-freeze.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-18-eight-repair-freeze.json",
+      "originalSha256": "7ee7eb67dd0f2dc9c9a58090786df826077532da4a51a2677b6a21ed1e4949b6",
+      "publicSha256": "7ee7eb67dd0f2dc9c9a58090786df826077532da4a51a2677b6a21ed1e4949b6",
+      "originalBytes": 252569,
+      "publicBytes": 252569,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-18-eight-first-independent-whole-answer-review.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-18-eight-first-independent-whole-answer-review.json",
+      "originalSha256": "c2a31d24ffe494869da7f35660ef1460f625ec316fb45c8e771cd905a25677c8",
+      "publicSha256": "c2a31d24ffe494869da7f35660ef1460f625ec316fb45c8e771cd905a25677c8",
+      "originalBytes": 46625,
+      "publicBytes": 46625,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-18-eight-known-repair-independent-whole-answer-review.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-18-eight-known-repair-independent-whole-answer-review.json",
+      "originalSha256": "82903fc2e000a5bbdffe5dec952a1808d18a9f4d7f6dee2ae2027d1e87e4f90f",
+      "publicSha256": "82903fc2e000a5bbdffe5dec952a1808d18a9f4d7f6dee2ae2027d1e87e4f90f",
+      "originalBytes": 51778,
+      "publicBytes": 51778,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "negative-scope-eight-original-body-replay.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/negative-scope-eight-original-body-replay.json",
+      "originalSha256": "5c49b62190437ec06ef6bd4c176e91649cd224ec3a079b15aa903d66f9cc294b",
+      "publicSha256": "ec3cd7bedbd5647b7229c878e76eb7cccc654406dec853a7417535787498a806",
+      "originalBytes": 77392,
+      "publicBytes": 77236,
+      "redactions": [
+        {
+          "pointer": "/inputs/live/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/evidence-actions-2026-11-06/cycle-18-eight-first-live-admitted.json"
+        },
+        {
+          "pointer": "/inputs/corpus/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "scripts/evidence-actions-boundary-corpus-2026-11-06.json"
+        },
+        {
+          "pointer": "/inputs/refs/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "scripts/evidence-actions-boundary-references-2026-11-06.json"
+        }
+      ],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "negative-scope-retained15-delta-diagnostic.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/negative-scope-retained15-delta-diagnostic.json",
+      "originalSha256": "a3eb2021c61f82db1b57e6745b681fa6745dbe0d866bece34b5aed3c5496a151",
+      "publicSha256": "93a4640e70d50dd49cb3a48db555e6254b3ef7d0af87c50f6da958401496c393",
+      "originalBytes": 381904,
+      "publicBytes": 381280,
+      "redactions": [
+        {
+          "pointer": "/inputs/0/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/evidence-actions-2026-11-06/cycle-18-final-replay.json"
+        },
+        {
+          "pointer": "/inputs/1/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/evidence-actions-2026-11-06/retained-replay-inputs.json"
+        },
+        {
+          "pointer": "/inputs/2/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/evidence-actions-2026-11-06/negative-scope-final-implementation.json"
+        },
+        {
+          "pointer": "/inputs/3/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-13-known-corpus.json"
+        },
+        {
+          "pointer": "/inputs/4/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-known-live.json"
+        },
+        {
+          "pointer": "/inputs/5/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-known-freeze.json"
+        },
+        {
+          "pointer": "/inputs/6/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "scripts/project-assessment-corpus-citation-relations-holdout.json"
+        },
+        {
+          "pointer": "/inputs/7/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-live.json"
+        },
+        {
+          "pointer": "/inputs/8/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-freeze.json"
+        },
+        {
+          "pointer": "/inputs/9/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "scripts/citation-relations-scope-corpus-2026-11-05.json"
+        },
+        {
+          "pointer": "/inputs/10/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-scope-live.json"
+        },
+        {
+          "pointer": "/inputs/11/file",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-scope-freeze.json"
+        }
+      ],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-18-controlled-boundaries-and-roles.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-18-controlled-boundaries-and-roles.json",
+      "originalSha256": "2b0ab27f3a782e402dc8280371eb64ed0aff1c50dc6fb2cd05a287bac438aae6",
+      "publicSha256": "2b0ab27f3a782e402dc8280371eb64ed0aff1c50dc6fb2cd05a287bac438aae6",
+      "originalBytes": 51951,
+      "publicBytes": 51951,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-18-controlled-harness-inert-source.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-18-controlled-harness-inert-source.json",
+      "originalSha256": "52cc45131a0a57a02715589fe32012d741b56fbdd0249094b189d447aaa52ca8",
+      "publicSha256": "52cc45131a0a57a02715589fe32012d741b56fbdd0249094b189d447aaa52ca8",
+      "originalBytes": 11386,
+      "publicBytes": 11386,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "negative-scope-replay-harnesses-inert-source.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/negative-scope-replay-harnesses-inert-source.json",
+      "originalSha256": "67d858a14205fbf8510a464b5b3f8131b8d5eea523751cf5561695c3968ec622",
+      "publicSha256": "67d858a14205fbf8510a464b5b3f8131b8d5eea523751cf5561695c3968ec622",
+      "originalBytes": 16054,
+      "publicBytes": 16054,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-18-eight-first-runtime-archive-association.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-18-eight-first-runtime-archive-association.json",
+      "originalSha256": "8894255bcb154d81b0208c9572170a4ff8239b77f13fbadf631de4b7778f9bd0",
+      "publicSha256": "8894255bcb154d81b0208c9572170a4ff8239b77f13fbadf631de4b7778f9bd0",
+      "originalBytes": 9672,
+      "publicBytes": 9672,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "cycle-18-eight-first-live.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/cycle-18-eight-first-live.json",
+      "originalSha256": "c628086b4f461cecd2e5d7fab1a15758dab84dd4af7ecca32e3ab802dbad9fad",
+      "publicSha256": "c628086b4f461cecd2e5d7fab1a15758dab84dd4af7ecca32e3ab802dbad9fad",
+      "originalBytes": 34,
+      "publicBytes": 34,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "eight-boundaries-author-dry-run.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/eight-boundaries-author-dry-run.json",
+      "originalSha256": "30ce3a98f4fbc74778de17f1e603832130919c531df2a962d990f80192019965",
+      "publicSha256": "30ce3a98f4fbc74778de17f1e603832130919c531df2a962d990f80192019965",
+      "originalBytes": 5546,
+      "publicBytes": 5546,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "retained-replay-inputs.json",
+      "sourceFile": "outputs/evidence-actions-2026-11-06/retained-replay-inputs.json",
+      "originalSha256": "62243cad4cfe38beaff49a3c742bb7b5028af36bfdb7a3211d70c2596827a25c",
+      "publicSha256": "4f2b5de5854d300e2369433372171659b098a5325a72a6b380ad19519ced61e3",
+      "originalBytes": 1401,
+      "publicBytes": 933,
+      "redactions": [
+        {
+          "pointer": "/groups/0/corpus",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-13-known-corpus.json"
+        },
+        {
+          "pointer": "/groups/0/live",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-known-live.json"
+        },
+        {
+          "pointer": "/groups/0/freeze",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-known-freeze.json"
+        },
+        {
+          "pointer": "/groups/1/corpus",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "scripts/project-assessment-corpus-citation-relations-holdout.json"
+        },
+        {
+          "pointer": "/groups/1/live",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-live.json"
+        },
+        {
+          "pointer": "/groups/1/freeze",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-freeze.json"
+        },
+        {
+          "pointer": "/groups/2/corpus",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "scripts/citation-relations-scope-corpus-2026-11-05.json"
+        },
+        {
+          "pointer": "/groups/2/live",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-scope-live.json"
+        },
+        {
+          "pointer": "/groups/2/freeze",
+          "kind": "absolute-local-repository-prefix-removed",
+          "replacement": "outputs/citation-relations-2026-11-05/cycle-15-scope-freeze.json"
+        }
+      ],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "evidence-actions-boundary-corpus-2026-11-06.json",
+      "sourceFile": "scripts/evidence-actions-boundary-corpus-2026-11-06.json",
+      "originalSha256": "b0ed37335770f9de649974cd55ca410911a77e0e9199d2e94501a774ca4f62a3",
+      "publicSha256": "b0ed37335770f9de649974cd55ca410911a77e0e9199d2e94501a774ca4f62a3",
+      "originalBytes": 15050,
+      "publicBytes": 15050,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "evidence-actions-boundary-references-2026-11-06.json",
+      "sourceFile": "scripts/evidence-actions-boundary-references-2026-11-06.json",
+      "originalSha256": "98def261ee50f56ff97f6ccdfb88b7e74e8ba9b126cc4f0c4f3f4baf8f803c51",
+      "publicSha256": "98def261ee50f56ff97f6ccdfb88b7e74e8ba9b126cc4f0c4f3f4baf8f803c51",
+      "originalBytes": 10217,
+      "publicBytes": 10217,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "evidence-actions-live-counterexamples-2026-11-06.json",
+      "sourceFile": "scripts/evaluation-results/evidence-actions-live-counterexamples-2026-11-06.json",
+      "originalSha256": "c402846940e49ef7c85daa1287eb38b6676f8139fba3df2488cc4d4b7640d6de",
+      "publicSha256": "c402846940e49ef7c85daa1287eb38b6676f8139fba3df2488cc4d4b7640d6de",
+      "originalBytes": 29087,
+      "publicBytes": 29087,
+      "redactions": [],
+      "providerSourceAndQuotesUnchanged": true
+    },
+    {
+      "file": "packaging-audit.json",
+      "sourceFile": null,
+      "originalSha256": null,
+      "publicSha256": "28def71055b4d65ae0da48d3de3fbae2934086163fa26d23dc0760f33bfc8d72",
+      "publicBytes": 35743,
+      "redactions": [],
+      "generatedPackagingAudit": true
+    }
+  ],
+  "selfExclusion": [
+    "artifact-manifest.json",
+    "summary.json"
+  ]
+}

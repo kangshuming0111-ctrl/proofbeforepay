@@ -1,0 +1,1110 @@
+{
+  "schema": "pbp-cycle18-independent-controlled-boundaries-and-roles-v1",
+  "apiCalls": 0,
+  "modelCalls": 0,
+  "networkCalls": 0,
+  "externalAttempts": 0,
+  "interceptedControlledResponses": 8,
+  "corpusSha256": "b0ed37335770f9de649974cd55ca410911a77e0e9199d2e94501a774ca4f62a3",
+  "referenceSha256": "98def261ee50f56ff97f6ccdfb88b7e74e8ba9b126cc4f0c4f3f4baf8f803c51",
+  "harnessSha256": "de3a68a9ac4c456525b7829496fa07748002f177e1b9d41accd499799acf163a",
+  "providerArchiveSha256": "b6f640b418548f0f21004ab5ec8a7d810e5658228648a41464bed9090d0df1ec",
+  "namespace": {
+    "reports": 15,
+    "reportsWithRisks": 13,
+    "noPoolReports": 2,
+    "publishedRisks": 24,
+    "withheldRisks": 6,
+    "roles": [
+      "buyer",
+      "seller"
+    ],
+    "savedAnnotations": 60,
+    "retryChecks": 60,
+    "rejectedNamespaceRequests": 68,
+    "rejectedStaleVersionRequests": 120,
+    "rows": [
+      {
+        "id": "real-business-casual",
+        "publishedRisks": 2,
+        "withheldRisks": 0,
+        "roles": [
+          "buyer",
+          "seller"
+        ],
+        "everyRiskIndexReviewed": true,
+        "annotationsSaved": 4,
+        "noPoolBothOriginsRejected": false
+      },
+      {
+        "id": "real-modern-business",
+        "publishedRisks": 2,
+        "withheldRisks": 0,
+        "roles": [
+          "buyer",
+          "seller"
+        ],
+        "everyRiskIndexReviewed": true,
+        "annotationsSaved": 4,
+        "noPoolBothOriginsRejected": false
+      },
+      {
+        "id": "real-corona-admin",
+        "publishedRisks": 3,
+        "withheldRisks": 0,
+        "roles": [
+          "buyer",
+          "seller"
+        ],
+        "everyRiskIndexReviewed": true,
+        "annotationsSaved": 6,
+        "noPoolBothOriginsRejected": false
+      },
+      {
+        "id": "real-personal-supplemental",
+        "publishedRisks": 3,
+        "withheldRisks": 0,
+        "roles": [
+          "buyer",
+          "seller"
+        ],
+        "everyRiskIndexReviewed": true,
+        "annotationsSaved": 6,
+        "noPoolBothOriginsRejected": false
+      },
+      {
+        "id": "real-holdout-clean-blog",
+        "publishedRisks": 0,
+        "withheldRisks": 3,
+        "roles": [
+          "buyer",
+          "seller"
+        ],
+        "everyRiskIndexReviewed": true,
+        "annotationsSaved": 6,
+        "noPoolBothOriginsRejected": false
+      },
+      {
+        "id": "real-holdout-html5-boilerplate",
+        "publishedRisks": 4,
+        "withheldRisks": 0,
+        "roles": [
+          "buyer",
+          "seller"
+        ],
+        "everyRiskIndexReviewed": true,
+        "annotationsSaved": 8,
+        "noPoolBothOriginsRejected": false
+      },
+      {
+        "id": "known-corona-sixteen-checklist",
+        "publishedRisks": 5,
+        "withheldRisks": 0,
+        "roles": [
+          "buyer",
+          "seller"
+        ],
+        "everyRiskIndexReviewed": true,
+        "annotationsSaved": 10,
+        "noPoolBothOriginsRejected": false
+      },
+      {
+        "id": "citation-relations-holdout-tavola",
+        "publishedRisks": 0,
+        "withheldRisks": 2,
+        "roles": [
+          "buyer",
+          "seller"
+        ],
+        "everyRiskIndexReviewed": true,
+        "annotationsSaved": 4,
+        "noPoolBothOriginsRejected": false
+      },
+      {
+        "id": "citation-relations-holdout-material-dashboard-lite",
+        "publishedRisks": 2,
+        "withheldRisks": 0,
+        "roles": [
+          "buyer",
+          "seller"
+        ],
+        "everyRiskIndexReviewed": true,
+        "annotationsSaved": 4,
+        "noPoolBothOriginsRejected": false
+      },
+      {
+        "id": "scoped-two-pages-correct",
+        "publishedRisks": 0,
+        "withheldRisks": 0,
+        "roles": [],
+        "everyRiskIndexReviewed": false,
+        "annotationsSaved": 0,
+        "noPoolBothOriginsRejected": true
+      },
+      {
+        "id": "scoped-target-price-wrong",
+        "publishedRisks": 1,
+        "withheldRisks": 0,
+        "roles": [
+          "buyer",
+          "seller"
+        ],
+        "everyRiskIndexReviewed": true,
+        "annotationsSaved": 2,
+        "noPoolBothOriginsRejected": false
+      },
+      {
+        "id": "scoped-neighbour-price-borrow",
+        "publishedRisks": 1,
+        "withheldRisks": 0,
+        "roles": [
+          "buyer",
+          "seller"
+        ],
+        "everyRiskIndexReviewed": true,
+        "annotationsSaved": 2,
+        "noPoolBothOriginsRejected": false
+      },
+      {
+        "id": "scoped-table-row-correct",
+        "publishedRisks": 0,
+        "withheldRisks": 0,
+        "roles": [],
+        "everyRiskIndexReviewed": false,
+        "annotationsSaved": 0,
+        "noPoolBothOriginsRejected": true
+      },
+      {
+        "id": "scoped-table-cross-row",
+        "publishedRisks": 1,
+        "withheldRisks": 0,
+        "roles": [
+          "buyer",
+          "seller"
+        ],
+        "everyRiskIndexReviewed": true,
+        "annotationsSaved": 2,
+        "noPoolBothOriginsRejected": false
+      },
+      {
+        "id": "scoped-merged-row-uncertain",
+        "publishedRisks": 0,
+        "withheldRisks": 1,
+        "roles": [
+          "buyer",
+          "seller"
+        ],
+        "everyRiskIndexReviewed": true,
+        "annotationsSaved": 2,
+        "noPoolBothOriginsRejected": false
+      }
+    ]
+  },
+  "boundaries": {
+    "cases": 8,
+    "controlledGatesMet": 8,
+    "sourceReferenceAgreement": 6,
+    "rows": [
+      {
+        "id": "evidence-actions-explicit-complete-pair",
+        "requestSha256": "7bbd1f18201e41c275f1041ce7b48064a7e4d8122020f05cec26f9f207e104f9",
+        "sourceFiles": [
+          {
+            "file": "index.html",
+            "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff"
+          },
+          {
+            "file": "menu.html",
+            "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff"
+          },
+          {
+            "file": "site.css",
+            "sha256": "5d9c00e6b4cbb996eab69c0ca905a2a61470f0bc730d668361a19bf30a3ea8c9"
+          }
+        ],
+        "sourceReferenceStatus": "supported",
+        "controlledRawStatus": "supported",
+        "controlledExpectedApplicationStatus": "supported",
+        "actualApplicationStatus": "supported",
+        "controlledGateMet": true,
+        "sourceReferenceAgreement": true,
+        "quoteUnchanged": true,
+        "providerBodySha256": "555a3aab49aec5342150fe8a9d708eb462d7d1e4d19eb8adb3a20e42a03c4f7d",
+        "controlledProviderBody": {
+          "choices": [
+            {
+              "finish_reason": "tool_calls",
+              "message": {
+                "content": null,
+                "tool_calls": [
+                  {
+                    "type": "function",
+                    "function": {
+                      "name": "submit_source_assessment_v3",
+                      "arguments": "{\"catalogId\":\"47353279a7015cbce33dc2f22e49e62b8ee80134ccaeb5de6e0ec0cb287a7bf5\",\"items\":[{\"criterionId\":\"coverage-1\",\"status\":\"supported\",\"explanation\":\"Author-fixed controlled answer for a protocol boundary, not an AI inference.\",\"citations\":{\"c1\":\"s3\",\"c2\":\"s8\",\"c3\":\"\",\"c4\":\"\",\"c5\":\"\",\"c6\":\"\"}}],\"risks\":[],\"limitations\":[\"Controlled response only; no external model or website execution.\"]}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "applicationReport": {
+          "id": "8908de5f-2bc6-4fcd-912e-cdbcc534a960",
+          "deliveryId": "eval-evidence-actions-explicit-complete-pair",
+          "method": "source-ai-v1",
+          "mode": "live",
+          "model": "deepseek-flash",
+          "assessedAt": "2026-11-05T16:29:08.743Z",
+          "items": [
+            {
+              "criterionId": "coverage-1",
+              "status": "supported",
+              "explanation": "Author-fixed controlled answer for a protocol boundary, not an AI inference.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "start": 72,
+                  "end": 164,
+                  "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+                },
+                {
+                  "file": "menu.html",
+                  "start": 72,
+                  "end": 164,
+                  "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+                }
+              ],
+              "ruleEvidenceIds": [
+                "eval-evidence-1"
+              ]
+            }
+          ],
+          "risks": [],
+          "limitations": [
+            "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+            "The model supplied 1 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+            "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog 47353279a7015cbce33dc2f22e49e62b8ee80134ccaeb5de6e0ec0cb287a7bf5. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+            "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+            "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+          ],
+          "coverage": {
+            "includedFiles": [
+              "index.html",
+              "menu.html",
+              "site.css"
+            ],
+            "truncatedFiles": [],
+            "omittedFiles": []
+          },
+          "withheldRisks": {
+            "version": 1,
+            "reason": "not_withheld",
+            "adjustedCriteria": [],
+            "entries": []
+          }
+        }
+      },
+      {
+        "id": "evidence-actions-missing-agreed-file",
+        "requestSha256": "4a011e7e47415f21ecd58a8cd2d37783e3f62108bb6c0db287179ab714c69f7a",
+        "sourceFiles": [
+          {
+            "file": "index.html",
+            "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff"
+          },
+          {
+            "file": "about.html",
+            "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff"
+          },
+          {
+            "file": "site.css",
+            "sha256": "7c98040a541657584690ae2a1cc3b42a8b53b159cc60c5d3abbfecbaeac6c94a"
+          }
+        ],
+        "sourceReferenceStatus": "insufficient_evidence",
+        "controlledRawStatus": "supported",
+        "controlledExpectedApplicationStatus": "insufficient_evidence",
+        "actualApplicationStatus": "insufficient_evidence",
+        "controlledGateMet": true,
+        "sourceReferenceAgreement": true,
+        "quoteUnchanged": true,
+        "providerBodySha256": "72882a9b19c9a16288bc8169f7a99888876fad7ee28999e2c8bddd721e3a5f35",
+        "controlledProviderBody": {
+          "choices": [
+            {
+              "finish_reason": "tool_calls",
+              "message": {
+                "content": null,
+                "tool_calls": [
+                  {
+                    "type": "function",
+                    "function": {
+                      "name": "submit_source_assessment_v3",
+                      "arguments": "{\"catalogId\":\"6f6b38c6b78b25337c52766185d7c83be070066eee0134ba66ee17f6f156e668\",\"items\":[{\"criterionId\":\"coverage-1\",\"status\":\"supported\",\"explanation\":\"Author-fixed controlled answer for a protocol boundary, not an AI inference.\",\"citations\":{\"c1\":\"s8\",\"c2\":\"s3\",\"c3\":\"\",\"c4\":\"\",\"c5\":\"\",\"c6\":\"\"}}],\"risks\":[],\"limitations\":[\"Controlled response only; no external model or website execution.\"]}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "applicationReport": {
+          "id": "60f8a02c-617c-4f0a-83ba-a83b92ac8eb9",
+          "deliveryId": "eval-evidence-actions-missing-agreed-file",
+          "method": "source-ai-v1",
+          "mode": "live",
+          "model": "deepseek-flash",
+          "assessedAt": "2026-11-05T16:29:08.750Z",
+          "items": [
+            {
+              "criterionId": "coverage-1",
+              "status": "insufficient_evidence",
+              "explanation": "The source and citations do not establish the required name/tag/price relationship within a complete owner on every specified page. Page-role aliases cannot substitute for a confirmed file mapping. Review the exact targets and complete blocks. This is insufficient relationship evidence, not proof of absent delivery, visibility or working behavior. Requirements and citations are unchanged.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "start": 72,
+                  "end": 164,
+                  "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+                },
+                {
+                  "file": "about.html",
+                  "start": 72,
+                  "end": 164,
+                  "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+                }
+              ],
+              "ruleEvidenceIds": [
+                "eval-evidence-1"
+              ],
+              "evidenceNeed": {
+                "schema": "source-evidence-need-v1",
+                "reason": "source_ambiguity",
+                "targetFiles": []
+              }
+            }
+          ],
+          "risks": [],
+          "limitations": [
+            "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+            "The model supplied 1 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+            "1 item status(es) were adjusted by system checks. 0 unreviewed optional AI risk(s) are temporarily withheld; use item-level evidence. This publication gate does not accept work, authorize or trigger payment.",
+            "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog 6f6b38c6b78b25337c52766185d7c83be070066eee0134ba66ee17f6f156e668. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+            "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+            "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+          ],
+          "coverage": {
+            "includedFiles": [
+              "about.html",
+              "index.html",
+              "site.css"
+            ],
+            "truncatedFiles": [],
+            "omittedFiles": []
+          },
+          "withheldRisks": {
+            "version": 1,
+            "reason": "item_status_adjusted",
+            "adjustedCriteria": [
+              {
+                "criterionId": "coverage-1",
+                "originalStatus": "supported",
+                "publishedStatus": "insufficient_evidence"
+              }
+            ],
+            "entries": []
+          }
+        }
+      },
+      {
+        "id": "evidence-actions-wrong-page-role-alias",
+        "requestSha256": "70e009d91934d690b7144caf56c1cac9112cf328d585ad7cc502face4647f969",
+        "sourceFiles": [
+          {
+            "file": "index.html",
+            "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff"
+          },
+          {
+            "file": "terms.html",
+            "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff"
+          },
+          {
+            "file": "menu.html",
+            "sha256": "32138e99397fa8f58f0231cf652bb175ff12077a1e6b31e9aa80f3b874795caf"
+          }
+        ],
+        "sourceReferenceStatus": "insufficient_evidence",
+        "controlledRawStatus": "supported",
+        "controlledExpectedApplicationStatus": "insufficient_evidence",
+        "actualApplicationStatus": "insufficient_evidence",
+        "controlledGateMet": true,
+        "sourceReferenceAgreement": true,
+        "quoteUnchanged": true,
+        "providerBodySha256": "1c2967fca685ad30edcf190a9aa44c431c3e9097289ebb429cabc98fe5ce7ccd",
+        "controlledProviderBody": {
+          "choices": [
+            {
+              "finish_reason": "tool_calls",
+              "message": {
+                "content": null,
+                "tool_calls": [
+                  {
+                    "type": "function",
+                    "function": {
+                      "name": "submit_source_assessment_v3",
+                      "arguments": "{\"catalogId\":\"adf4f4d14190146a310b0d16ebb2f1ce41296b45aeac2ca20fd3292d83625d73\",\"items\":[{\"criterionId\":\"coverage-1\",\"status\":\"supported\",\"explanation\":\"Author-fixed controlled answer for a protocol boundary, not an AI inference.\",\"citations\":{\"c1\":\"s3\",\"c2\":\"s13\",\"c3\":\"s8\",\"c4\":\"\",\"c5\":\"\",\"c6\":\"\"}}],\"risks\":[],\"limitations\":[\"Controlled response only; no external model or website execution.\"]}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "applicationReport": {
+          "id": "69e61760-d535-4d2b-ad07-4c7ce8b79599",
+          "deliveryId": "eval-evidence-actions-wrong-page-role-alias",
+          "method": "source-ai-v1",
+          "mode": "live",
+          "model": "deepseek-flash",
+          "assessedAt": "2026-11-05T16:29:08.751Z",
+          "items": [
+            {
+              "criterionId": "coverage-1",
+              "status": "insufficient_evidence",
+              "explanation": "The source and citations do not establish the required name/tag/price relationship within a complete owner on every specified page. Page-role aliases cannot substitute for a confirmed file mapping. Review the exact targets and complete blocks. This is insufficient relationship evidence, not proof of absent delivery, visibility or working behavior. Requirements and citations are unchanged.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "start": 72,
+                  "end": 164,
+                  "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+                },
+                {
+                  "file": "terms.html",
+                  "start": 72,
+                  "end": 164,
+                  "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+                },
+                {
+                  "file": "menu.html",
+                  "start": 72,
+                  "end": 163,
+                  "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div>"
+                }
+              ],
+              "ruleEvidenceIds": [
+                "eval-evidence-1"
+              ],
+              "evidenceNeed": {
+                "schema": "source-evidence-need-v1",
+                "reason": "page_scope",
+                "targetFiles": []
+              }
+            }
+          ],
+          "risks": [],
+          "limitations": [
+            "Supplied inventory: 3 HTML, 0 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+            "The model supplied 1 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+            "1 item status(es) were adjusted by system checks. 0 unreviewed optional AI risk(s) are temporarily withheld; use item-level evidence. This publication gate does not accept work, authorize or trigger payment.",
+            "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog adf4f4d14190146a310b0d16ebb2f1ce41296b45aeac2ca20fd3292d83625d73. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+            "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+            "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+          ],
+          "coverage": {
+            "includedFiles": [
+              "index.html",
+              "menu.html",
+              "terms.html"
+            ],
+            "truncatedFiles": [],
+            "omittedFiles": []
+          },
+          "withheldRisks": {
+            "version": 1,
+            "reason": "item_status_adjusted",
+            "adjustedCriteria": [
+              {
+                "criterionId": "coverage-1",
+                "originalStatus": "supported",
+                "publishedStatus": "insufficient_evidence"
+              }
+            ],
+            "entries": []
+          }
+        }
+      },
+      {
+        "id": "evidence-actions-neighbour-price",
+        "requestSha256": "62f7a60b6a8889d80b9fde300121522ed1558dffebda88b471f8d63ffe74e6af",
+        "sourceFiles": [
+          {
+            "file": "index.html",
+            "sha256": "23ae5e157ce8f919ac7a1c5f386e52d55762c973d48f89ba06ea9b8b188e5221"
+          },
+          {
+            "file": "menu.html",
+            "sha256": "854c8cd2055164ae7f3a811ebf91a6c1ff77034e563f0cccb94a9cd702e0dc40"
+          },
+          {
+            "file": "site.css",
+            "sha256": "5d9c00e6b4cbb996eab69c0ca905a2a61470f0bc730d668361a19bf30a3ea8c9"
+          }
+        ],
+        "sourceReferenceStatus": "changes_suggested",
+        "controlledRawStatus": "supported",
+        "controlledExpectedApplicationStatus": "changes_suggested",
+        "actualApplicationStatus": "changes_suggested",
+        "controlledGateMet": true,
+        "sourceReferenceAgreement": true,
+        "quoteUnchanged": true,
+        "providerBodySha256": "0d63649fd0dfa140927fac42560dda7e975d0ae0829a01e889a3657c071fe9ea",
+        "controlledProviderBody": {
+          "choices": [
+            {
+              "finish_reason": "tool_calls",
+              "message": {
+                "content": null,
+                "tool_calls": [
+                  {
+                    "type": "function",
+                    "function": {
+                      "name": "submit_source_assessment_v3",
+                      "arguments": "{\"catalogId\":\"cf300a34258a7b9ed061940c47fc3ebca76b7272cf46793e0f4914efabb690af\",\"items\":[{\"criterionId\":\"coverage-1\",\"status\":\"supported\",\"explanation\":\"Author-fixed controlled answer for a protocol boundary, not an AI inference.\",\"citations\":{\"c1\":\"s1\",\"c2\":\"s4\",\"c3\":\"\",\"c4\":\"\",\"c5\":\"\",\"c6\":\"\"}}],\"risks\":[],\"limitations\":[\"Controlled response only; no external model or website execution.\"]}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "applicationReport": {
+          "id": "ee009461-7c9c-4269-a5a4-6f6603a09c77",
+          "deliveryId": "eval-evidence-actions-neighbour-price",
+          "method": "source-ai-v1",
+          "mode": "live",
+          "model": "deepseek-flash",
+          "assessedAt": "2026-11-05T16:29:08.753Z",
+          "items": [
+            {
+              "criterionId": "coverage-1",
+              "status": "changes_suggested",
+              "explanation": "A confirmed business check expects \"Tea\" at AUD 18.00, but the unique simple source block in menu.html states AUD 16.00. This is a limited source mismatch with an exact quotation, not rendered visibility or backend execution. All 2 confirmed checks for this criterion were inspected; any unknowns still need review.",
+              "citations": [
+                {
+                  "file": "menu.html",
+                  "start": 77,
+                  "end": 94,
+                  "excerpt": "<p>Tea AUD 16</p>"
+                }
+              ],
+              "ruleEvidenceIds": [
+                "eval-evidence-1"
+              ]
+            }
+          ],
+          "risks": [],
+          "limitations": [
+            "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+            "The model supplied 1 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+            "1 item status(es) were adjusted by system checks. 0 unreviewed optional AI risk(s) are temporarily withheld; use item-level evidence. This publication gate does not accept work, authorize or trigger payment.",
+            "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog cf300a34258a7b9ed061940c47fc3ebca76b7272cf46793e0f4914efabb690af. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+            "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+            "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+          ],
+          "coverage": {
+            "includedFiles": [
+              "index.html",
+              "menu.html",
+              "site.css"
+            ],
+            "truncatedFiles": [],
+            "omittedFiles": []
+          },
+          "withheldRisks": {
+            "version": 1,
+            "reason": "item_status_adjusted",
+            "adjustedCriteria": [
+              {
+                "criterionId": "coverage-1",
+                "originalStatus": "supported",
+                "publishedStatus": "changes_suggested"
+              }
+            ],
+            "entries": []
+          }
+        }
+      },
+      {
+        "id": "evidence-actions-merged-row",
+        "requestSha256": "590a43ad78ebe599255707e32b5241825cb0d81215eaff125f6e9088e7f46f93",
+        "sourceFiles": [
+          {
+            "file": "index.html",
+            "sha256": "23ae5e157ce8f919ac7a1c5f386e52d55762c973d48f89ba06ea9b8b188e5221"
+          },
+          {
+            "file": "menu.html",
+            "sha256": "e5745099f1090cbca64b6d5aaa8023e5e3c9878f10810b978928d185c0fd49b7"
+          },
+          {
+            "file": "site.css",
+            "sha256": "5d9c00e6b4cbb996eab69c0ca905a2a61470f0bc730d668361a19bf30a3ea8c9"
+          }
+        ],
+        "sourceReferenceStatus": "insufficient_evidence",
+        "controlledRawStatus": "supported",
+        "controlledExpectedApplicationStatus": "insufficient_evidence",
+        "actualApplicationStatus": "insufficient_evidence",
+        "controlledGateMet": true,
+        "sourceReferenceAgreement": true,
+        "quoteUnchanged": true,
+        "providerBodySha256": "055e81b9a7ff1d68879baccbe8caa6d78460390ea24b62156378ab37d87d413d",
+        "controlledProviderBody": {
+          "choices": [
+            {
+              "finish_reason": "tool_calls",
+              "message": {
+                "content": null,
+                "tool_calls": [
+                  {
+                    "type": "function",
+                    "function": {
+                      "name": "submit_source_assessment_v3",
+                      "arguments": "{\"catalogId\":\"750fce66fe760221281127f33c5b3f3919b2e2b9407e6d4ebb1479581a78f6e1\",\"items\":[{\"criterionId\":\"coverage-1\",\"status\":\"supported\",\"explanation\":\"Author-fixed controlled answer for a protocol boundary, not an AI inference.\",\"citations\":{\"c1\":\"s1\",\"c2\":\"s4\",\"c3\":\"\",\"c4\":\"\",\"c5\":\"\",\"c6\":\"\"}}],\"risks\":[],\"limitations\":[\"Controlled response only; no external model or website execution.\"]}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "applicationReport": {
+          "id": "56010f8b-ab1d-4ca7-ac48-4ec4aaa618cd",
+          "deliveryId": "eval-evidence-actions-merged-row",
+          "method": "source-ai-v1",
+          "mode": "live",
+          "model": "deepseek-flash",
+          "assessedAt": "2026-11-05T16:29:08.754Z",
+          "items": [
+            {
+              "criterionId": "coverage-1",
+              "status": "insufficient_evidence",
+              "explanation": "Not all confirmed business checks can be reliably matched within the limited static simple-block format. Duplicate or unlocated content, complex markup or dynamic sources need other evidence. Source suggestions cannot establish compliance; the locked agreement is unchanged.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "start": 0,
+                  "end": 103,
+                  "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><p>Tea AUD 18</p></body></html>"
+                },
+                {
+                  "file": "menu.html",
+                  "start": 0,
+                  "end": 173,
+                  "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><table><tr><td rowspan=\"2\">Tea</td><td>AUD 18</td></tr><tr><td>AUD 28</td></tr></table></body></html>"
+                }
+              ],
+              "ruleEvidenceIds": [
+                "eval-evidence-1"
+              ],
+              "evidenceNeed": {
+                "schema": "source-evidence-need-v1",
+                "reason": "source_ambiguity",
+                "targetFiles": [
+                  "menu.html"
+                ]
+              }
+            }
+          ],
+          "risks": [],
+          "limitations": [
+            "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+            "The model supplied 1 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+            "1 item status(es) were adjusted by system checks. 0 unreviewed optional AI risk(s) are temporarily withheld; use item-level evidence. This publication gate does not accept work, authorize or trigger payment.",
+            "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog 750fce66fe760221281127f33c5b3f3919b2e2b9407e6d4ebb1479581a78f6e1. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+            "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+            "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+          ],
+          "coverage": {
+            "includedFiles": [
+              "index.html",
+              "menu.html",
+              "site.css"
+            ],
+            "truncatedFiles": [],
+            "omittedFiles": []
+          },
+          "withheldRisks": {
+            "version": 1,
+            "reason": "item_status_adjusted",
+            "adjustedCriteria": [
+              {
+                "criterionId": "coverage-1",
+                "originalStatus": "supported",
+                "publishedStatus": "insufficient_evidence"
+              }
+            ],
+            "entries": []
+          }
+        }
+      },
+      {
+        "id": "evidence-actions-partial-owner-only",
+        "requestSha256": "86410ae41820f86121c03f32a1ec3c631363bb9e752e04dddfd80086cdf2ec30",
+        "sourceFiles": [
+          {
+            "file": "index.html",
+            "sha256": "aba008bccd20565d47933f9430c86308cc3f405717bca849960371dc07edc1fc"
+          },
+          {
+            "file": "menu.html",
+            "sha256": "aba008bccd20565d47933f9430c86308cc3f405717bca849960371dc07edc1fc"
+          },
+          {
+            "file": "site.css",
+            "sha256": "5d9c00e6b4cbb996eab69c0ca905a2a61470f0bc730d668361a19bf30a3ea8c9"
+          }
+        ],
+        "sourceReferenceStatus": "supported",
+        "controlledRawStatus": "supported",
+        "controlledExpectedApplicationStatus": "insufficient_evidence",
+        "actualApplicationStatus": "insufficient_evidence",
+        "controlledGateMet": true,
+        "sourceReferenceAgreement": false,
+        "quoteUnchanged": true,
+        "providerBodySha256": "21130112b9eedcd9a31f802bd79638a579bdbe257199c71e1c094768ed5e3491",
+        "controlledProviderBody": {
+          "choices": [
+            {
+              "finish_reason": "tool_calls",
+              "message": {
+                "content": null,
+                "tool_calls": [
+                  {
+                    "type": "function",
+                    "function": {
+                      "name": "submit_source_assessment_v3",
+                      "arguments": "{\"catalogId\":\"3315e539817ab8bc12bbf8e29231ae23b7dc3386b12c6da50b7ebcc9854ecb44\",\"items\":[{\"criterionId\":\"coverage-1\",\"status\":\"supported\",\"explanation\":\"Author-fixed controlled answer for a protocol boundary, not an AI inference.\",\"citations\":{\"c1\":\"s1\",\"c2\":\"s5\",\"c3\":\"s7\",\"c4\":\"s11\",\"c5\":\"\",\"c6\":\"\"}}],\"risks\":[],\"limitations\":[\"Controlled response only; no external model or website execution.\"]}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "applicationReport": {
+          "id": "a9f20e47-b41a-483d-8d52-3330abfc19ee",
+          "deliveryId": "eval-evidence-actions-partial-owner-only",
+          "method": "source-ai-v1",
+          "mode": "live",
+          "model": "deepseek-flash",
+          "assessedAt": "2026-11-05T16:29:08.755Z",
+          "items": [
+            {
+              "criterionId": "coverage-1",
+              "status": "insufficient_evidence",
+              "explanation": "The source and citations do not establish the required name/tag/price relationship within a complete owner on every specified page. Page-role aliases cannot substitute for a confirmed file mapping. Review the exact targets and complete blocks. This is insufficient relationship evidence, not proof of absent delivery, visibility or working behavior. Requirements and citations are unchanged.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "start": 0,
+                  "end": 400,
+                  "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span>Whipped cod roe</span>                                                                                                                                                                                                                                                                                          "
+                },
+                {
+                  "file": "index.html",
+                  "start": 400,
+                  "end": 503,
+                  "excerpt": "                                                                    <span>GF</span></div></body></html>"
+                },
+                {
+                  "file": "menu.html",
+                  "start": 0,
+                  "end": 400,
+                  "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span>Whipped cod roe</span>                                                                                                                                                                                                                                                                                          "
+                },
+                {
+                  "file": "menu.html",
+                  "start": 400,
+                  "end": 503,
+                  "excerpt": "                                                                    <span>GF</span></div></body></html>"
+                }
+              ],
+              "ruleEvidenceIds": [
+                "eval-evidence-1"
+              ],
+              "evidenceNeed": {
+                "schema": "source-evidence-need-v1",
+                "reason": "field_relationship",
+                "targetFiles": []
+              }
+            }
+          ],
+          "risks": [],
+          "limitations": [
+            "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+            "The model supplied 1 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+            "1 item status(es) were adjusted by system checks. 0 unreviewed optional AI risk(s) are temporarily withheld; use item-level evidence. This publication gate does not accept work, authorize or trigger payment.",
+            "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog 3315e539817ab8bc12bbf8e29231ae23b7dc3386b12c6da50b7ebcc9854ecb44. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+            "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+            "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+          ],
+          "coverage": {
+            "includedFiles": [
+              "index.html",
+              "menu.html",
+              "site.css"
+            ],
+            "truncatedFiles": [],
+            "omittedFiles": []
+          },
+          "withheldRisks": {
+            "version": 1,
+            "reason": "item_status_adjusted",
+            "adjustedCriteria": [
+              {
+                "criterionId": "coverage-1",
+                "originalStatus": "supported",
+                "publishedStatus": "insufficient_evidence"
+              }
+            ],
+            "entries": []
+          }
+        }
+      },
+      {
+        "id": "evidence-actions-second-page-wrong-tag",
+        "requestSha256": "30b19b215238b7448d8e7ede5d47e17df0674c5bd8ccd32e8ca842381235c593",
+        "sourceFiles": [
+          {
+            "file": "index.html",
+            "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff"
+          },
+          {
+            "file": "menu.html",
+            "sha256": "32138e99397fa8f58f0231cf652bb175ff12077a1e6b31e9aa80f3b874795caf"
+          },
+          {
+            "file": "site.css",
+            "sha256": "5d9c00e6b4cbb996eab69c0ca905a2a61470f0bc730d668361a19bf30a3ea8c9"
+          }
+        ],
+        "sourceReferenceStatus": "changes_suggested",
+        "controlledRawStatus": "supported",
+        "controlledExpectedApplicationStatus": "insufficient_evidence",
+        "actualApplicationStatus": "insufficient_evidence",
+        "controlledGateMet": true,
+        "sourceReferenceAgreement": false,
+        "quoteUnchanged": true,
+        "providerBodySha256": "94c1f6158ba880dfbff916b787a51702295c168bfc77a4dbe1a9c8b7359600c7",
+        "controlledProviderBody": {
+          "choices": [
+            {
+              "finish_reason": "tool_calls",
+              "message": {
+                "content": null,
+                "tool_calls": [
+                  {
+                    "type": "function",
+                    "function": {
+                      "name": "submit_source_assessment_v3",
+                      "arguments": "{\"catalogId\":\"274eb412201205beb1fc326956e83655c263bfb8195f97fb3edfcc6c1b37fdf7\",\"items\":[{\"criterionId\":\"coverage-1\",\"status\":\"supported\",\"explanation\":\"Author-fixed controlled answer for a protocol boundary, not an AI inference.\",\"citations\":{\"c1\":\"s3\",\"c2\":\"s8\",\"c3\":\"\",\"c4\":\"\",\"c5\":\"\",\"c6\":\"\"}}],\"risks\":[],\"limitations\":[\"Controlled response only; no external model or website execution.\"]}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "applicationReport": {
+          "id": "62bd0142-79f5-4791-8eaa-1c6052dbd1ab",
+          "deliveryId": "eval-evidence-actions-second-page-wrong-tag",
+          "method": "source-ai-v1",
+          "mode": "live",
+          "model": "deepseek-flash",
+          "assessedAt": "2026-11-05T16:29:08.756Z",
+          "items": [
+            {
+              "criterionId": "coverage-1",
+              "status": "insufficient_evidence",
+              "explanation": "The source and citations do not establish the required name/tag/price relationship within a complete owner on every specified page. Page-role aliases cannot substitute for a confirmed file mapping. Review the exact targets and complete blocks. This is insufficient relationship evidence, not proof of absent delivery, visibility or working behavior. Requirements and citations are unchanged.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "start": 72,
+                  "end": 164,
+                  "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div>"
+                },
+                {
+                  "file": "menu.html",
+                  "start": 72,
+                  "end": 163,
+                  "excerpt": "<div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div>"
+                }
+              ],
+              "ruleEvidenceIds": [
+                "eval-evidence-1"
+              ],
+              "evidenceNeed": {
+                "schema": "source-evidence-need-v1",
+                "reason": "field_relationship",
+                "targetFiles": []
+              }
+            }
+          ],
+          "risks": [],
+          "limitations": [
+            "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+            "The model supplied 1 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+            "1 item status(es) were adjusted by system checks. 0 unreviewed optional AI risk(s) are temporarily withheld; use item-level evidence. This publication gate does not accept work, authorize or trigger payment.",
+            "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog 274eb412201205beb1fc326956e83655c263bfb8195f97fb3edfcc6c1b37fdf7. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+            "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+            "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+          ],
+          "coverage": {
+            "includedFiles": [
+              "index.html",
+              "menu.html",
+              "site.css"
+            ],
+            "truncatedFiles": [],
+            "omittedFiles": []
+          },
+          "withheldRisks": {
+            "version": 1,
+            "reason": "item_status_adjusted",
+            "adjustedCriteria": [
+              {
+                "criterionId": "coverage-1",
+                "originalStatus": "supported",
+                "publishedStatus": "insufficient_evidence"
+              }
+            ],
+            "entries": []
+          }
+        }
+      },
+      {
+        "id": "evidence-actions-runtime-copy-only",
+        "requestSha256": "91811bb71ac928ebdd5d346a6b7ee5ca33be63f58619c37d80f7b5929cb698ea",
+        "sourceFiles": [
+          {
+            "file": "index.html",
+            "sha256": "4429c3d95e8ef331d80601bb68331bbcee98f974c6f6f2980a848d77336980f8"
+          },
+          {
+            "file": "menu.html",
+            "sha256": "4429c3d95e8ef331d80601bb68331bbcee98f974c6f6f2980a848d77336980f8"
+          },
+          {
+            "file": "site.css",
+            "sha256": "5d9c00e6b4cbb996eab69c0ca905a2a61470f0bc730d668361a19bf30a3ea8c9"
+          }
+        ],
+        "sourceReferenceStatus": "insufficient_evidence",
+        "controlledRawStatus": "supported",
+        "controlledExpectedApplicationStatus": "insufficient_evidence",
+        "actualApplicationStatus": "insufficient_evidence",
+        "controlledGateMet": true,
+        "sourceReferenceAgreement": true,
+        "quoteUnchanged": true,
+        "providerBodySha256": "3eb4617f629f8c2ffee7646c554acbdbfad6e9163fbb936e64f79f1555eb82b0",
+        "controlledProviderBody": {
+          "choices": [
+            {
+              "finish_reason": "tool_calls",
+              "message": {
+                "content": null,
+                "tool_calls": [
+                  {
+                    "type": "function",
+                    "function": {
+                      "name": "submit_source_assessment_v3",
+                      "arguments": "{\"catalogId\":\"45b3d8fa6149666f607ca88eb0d67785ecc1d69936b917c039d32676cf62621a\",\"items\":[{\"criterionId\":\"coverage-1\",\"status\":\"supported\",\"explanation\":\"Author-fixed controlled answer for a protocol boundary, not an AI inference.\",\"citations\":{\"c1\":\"s1\",\"c2\":\"s5\",\"c3\":\"\",\"c4\":\"\",\"c5\":\"\",\"c6\":\"\"}}],\"risks\":[],\"limitations\":[\"Controlled response only; no external model or website execution.\"]}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "applicationReport": {
+          "id": "83c0a3b3-8e7d-4fe1-b47f-d06c975dc6ee",
+          "deliveryId": "eval-evidence-actions-runtime-copy-only",
+          "method": "source-ai-v1",
+          "mode": "live",
+          "model": "deepseek-flash",
+          "assessedAt": "2026-11-05T16:29:08.757Z",
+          "items": [
+            {
+              "criterionId": "coverage-1",
+              "status": "insufficient_evidence",
+              "explanation": "This requirement includes actual records, durable retention or queryable receipts. Source copy cannot establish that records were written or can be read back. Provide execution and independent record-readback evidence, and check the complete locked requirement.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "start": 0,
+                  "end": 152,
+                  "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><p>Message saved. Email sent.</p><form><input name=\"email\"></form></body></html>"
+                },
+                {
+                  "file": "menu.html",
+                  "start": 0,
+                  "end": 152,
+                  "excerpt": "<!doctype html><html><head><title>Authored boundary</title></head><body><p>Message saved. Email sent.</p><form><input name=\"email\"></form></body></html>"
+                }
+              ],
+              "ruleEvidenceIds": [
+                "eval-evidence-1"
+              ],
+              "evidenceNeed": {
+                "schema": "source-evidence-need-v1",
+                "reason": "record_readback",
+                "targetFiles": []
+              }
+            }
+          ],
+          "risks": [],
+          "limitations": [
+            "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+            "The model supplied 1 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+            "1 item status(es) were adjusted by system checks. 0 unreviewed optional AI risk(s) are temporarily withheld; use item-level evidence. This publication gate does not accept work, authorize or trigger payment.",
+            "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog 45b3d8fa6149666f607ca88eb0d67785ecc1d69936b917c039d32676cf62621a. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+            "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+            "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+          ],
+          "coverage": {
+            "includedFiles": [
+              "index.html",
+              "menu.html",
+              "site.css"
+            ],
+            "truncatedFiles": [],
+            "omittedFiles": []
+          },
+          "withheldRisks": {
+            "version": 1,
+            "reason": "item_status_adjusted",
+            "adjustedCriteria": [
+              {
+                "criterionId": "coverage-1",
+                "originalStatus": "supported",
+                "publishedStatus": "insufficient_evidence"
+              }
+            ],
+            "entries": []
+          }
+        }
+      }
+    ]
+  },
+  "limits": [
+    "All eight responses are authored catalog-selector mocks passed through the real active assessor, not provider/model calls or model performance.",
+    "Source-reference agreement remains separate from deliberately conservative controlled gate expectations; references were not edited to improve either count.",
+    "Namespace/state controls use local synthetic captured/accepted state fields and no payment action. Valid frozen-acceptance lifecycle is also covered by separate domain tests.",
+    "All risk indices were reviewed separately by buyer and seller, with default published versus explicit withheld namespaces; no valid v1 report has both active and quarantined pools.",
+    "No root live8 response was read. Source corpora, references and previous artifacts remain unchanged."
+  ]
+}

@@ -1,0 +1,205 @@
+{
+  "schema": "pbp-live-first-runtime-archive-association-v1",
+  "liveFile": "cycle-18-eight-first-live-admitted.json",
+  "liveSha256": "c540bf1afbafe37efb8088a91229403f379baeace2171cbf123e062af6c62cad",
+  "liveFreezeSha256": "f1fe425962957749ffd84ea5a183e7694a4d4d12ae82c7aa8de55822c4117146",
+  "archiveFile": "cycle-18-final-implementation.json",
+  "archiveSha256": "b6f640b418548f0f21004ab5ec8a7d810e5658228648a41464bed9090d0df1ec",
+  "implementationFiles": 37,
+  "exactMatches": 37,
+  "completeAssociation": true,
+  "matches": [
+    {
+      "file": "lib/article-title-punctuation.ts",
+      "expectedSha256": "043826a30a1d8c5d78a5b86c0e4be231824187fe264f0eb0e2637a9ddc95e12a",
+      "archiveSha256": "043826a30a1d8c5d78a5b86c0e4be231824187fe264f0eb0e2637a9ddc95e12a"
+    },
+    {
+      "file": "lib/assessment-citation-catalog.ts",
+      "expectedSha256": "3765ff500c22abd42536c64bd24a9844f7bb7de099d70b5d4f449ac9b24a7904",
+      "archiveSha256": "3765ff500c22abd42536c64bd24a9844f7bb7de099d70b5d4f449ac9b24a7904"
+    },
+    {
+      "file": "lib/assessment-citation-selection.ts",
+      "expectedSha256": "c192ca65a095fa7aaba5a242e3d8ba7c2a6573c6e20d41d95afcebc4578abbb0",
+      "archiveSha256": "c192ca65a095fa7aaba5a242e3d8ba7c2a6573c6e20d41d95afcebc4578abbb0"
+    },
+    {
+      "file": "lib/assessment-completion.ts",
+      "expectedSha256": "18ec5c3984b06c1b62a1d1d9449746ba8f19cf2d9a9b3d23914d0b474b7a6a3e",
+      "archiveSha256": "18ec5c3984b06c1b62a1d1d9449746ba8f19cf2d9a9b3d23914d0b474b7a6a3e"
+    },
+    {
+      "file": "lib/assessment-evidence-needs.ts",
+      "expectedSha256": "b2396b51fa7d750600bfc8833f68555422bfceb128b3099feecc743f7474901a",
+      "archiveSha256": "b2396b51fa7d750600bfc8833f68555422bfceb128b3099feecc743f7474901a"
+    },
+    {
+      "file": "lib/assessment-evidence-scope.ts",
+      "expectedSha256": "a4e7c9c6ceca64810b51c0c9980b14950875a3d19cc4e0b68e24b6cf5b06ee13",
+      "archiveSha256": "a4e7c9c6ceca64810b51c0c9980b14950875a3d19cc4e0b68e24b6cf5b06ee13"
+    },
+    {
+      "file": "lib/assessment-label-citations.ts",
+      "expectedSha256": "97fd5a5dea3e2dd5baa9c4b696b3866b2f8196f7d3dc64604f598c3594736c78",
+      "archiveSha256": "97fd5a5dea3e2dd5baa9c4b696b3866b2f8196f7d3dc64604f598c3594736c78"
+    },
+    {
+      "file": "lib/assessment-limits.ts",
+      "expectedSha256": "4efb8a22faef0699431b264f6a106e7a6b15c516166830b04da7fe44ee873230",
+      "archiveSha256": "4efb8a22faef0699431b264f6a106e7a6b15c516166830b04da7fe44ee873230"
+    },
+    {
+      "file": "lib/assessment-publication-policy.ts",
+      "expectedSha256": "330984100a23dde5a9e1bed2c88a7d54276f2d64bd1df253c86c390b8685fae7",
+      "archiveSha256": "330984100a23dde5a9e1bed2c88a7d54276f2d64bd1df253c86c390b8685fae7"
+    },
+    {
+      "file": "lib/assessment-response.ts",
+      "expectedSha256": "9f847b4cfa805af77347031e2c54d01231e56edfb9762f25ec4ecd8f64314e4c",
+      "archiveSha256": "9f847b4cfa805af77347031e2c54d01231e56edfb9762f25ec4ecd8f64314e4c"
+    },
+    {
+      "file": "lib/assessment-risk-fields.ts",
+      "expectedSha256": "14b21b863a6f4cf5ff6380c821a21122c66c35dcac84e030b8f65cdf211b8cf8",
+      "archiveSha256": "14b21b863a6f4cf5ff6380c821a21122c66c35dcac84e030b8f65cdf211b8cf8"
+    },
+    {
+      "file": "lib/booking-capacity.ts",
+      "expectedSha256": "5d4f7acea243d56165cf58a1c8213cbb3121c20c1acd397eecf152ff7d95389d",
+      "archiveSha256": "5d4f7acea243d56165cf58a1c8213cbb3121c20c1acd397eecf152ff7d95389d"
+    },
+    {
+      "file": "lib/booking-policy.ts",
+      "expectedSha256": "9af09f79f5dd2694771d03ca2358265cafb3c05db43f773cd642d89e656dea10",
+      "archiveSha256": "9af09f79f5dd2694771d03ca2358265cafb3c05db43f773cd642d89e656dea10"
+    },
+    {
+      "file": "lib/business-checks.ts",
+      "expectedSha256": "5b6d6b2cfbe487aac9bf647f3cdf97f303fcec835e2479b7c7154f4708433ffd",
+      "archiveSha256": "5b6d6b2cfbe487aac9bf647f3cdf97f303fcec835e2479b7c7154f4708433ffd"
+    },
+    {
+      "file": "lib/contracts.ts",
+      "expectedSha256": "119a991d73bbe4bba0c20da0f07c66c05193a76115aa4ea5e8a0d0728a59501e",
+      "archiveSha256": "119a991d73bbe4bba0c20da0f07c66c05193a76115aa4ea5e8a0d0728a59501e"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "expectedSha256": "db918e35417636b5a12b9d6c701a36b7e28284d28c1d09aba9bc213e3259059d",
+      "archiveSha256": "db918e35417636b5a12b9d6c701a36b7e28284d28c1d09aba9bc213e3259059d"
+    },
+    {
+      "file": "lib/domain.ts",
+      "expectedSha256": "e122bd4af7124e3c72ce06505bc3f64acb2daa8a8e43ba75df1779f78952aa85",
+      "archiveSha256": "e122bd4af7124e3c72ce06505bc3f64acb2daa8a8e43ba75df1779f78952aa85"
+    },
+    {
+      "file": "lib/exact-copy-directive.ts",
+      "expectedSha256": "e2e407311de1a9352deac8b52dff6da5acb90ff2076319bb6b52533bb2fb65bc",
+      "archiveSha256": "e2e407311de1a9352deac8b52dff6da5acb90ff2076319bb6b52533bb2fb65bc"
+    },
+    {
+      "file": "lib/exact-copy-evidence.ts",
+      "expectedSha256": "3c27a02f8238272e3f47433ecf237445420454e5d89227f60bb415ac1f3c9a91",
+      "archiveSha256": "3c27a02f8238272e3f47433ecf237445420454e5d89227f60bb415ac1f3c9a91"
+    },
+    {
+      "file": "lib/html-source-inspection.ts",
+      "expectedSha256": "b4571de85500b74f724aee51f46fa9ab2a5c67d4e8cb16ac0a8bb73419834687",
+      "archiveSha256": "b4571de85500b74f724aee51f46fa9ab2a5c67d4e8cb16ac0a8bb73419834687"
+    },
+    {
+      "file": "lib/providers.ts",
+      "expectedSha256": "279550700cddfeabe56091e0f984289575c21b409da381b7805cb85b0ec8c073",
+      "archiveSha256": "279550700cddfeabe56091e0f984289575c21b409da381b7805cb85b0ec8c073"
+    },
+    {
+      "file": "lib/requirement-coverage.ts",
+      "expectedSha256": "8119444f01cb28bad2807d5108a1e52d7b9de2345c89826855e8e3546c455e90",
+      "archiveSha256": "8119444f01cb28bad2807d5108a1e52d7b9de2345c89826855e8e3546c455e90"
+    },
+    {
+      "file": "lib/runtime-capacity.ts",
+      "expectedSha256": "21f070bf90e028a15d6e33e38df0637a8bbc7358efa4809978cff8ed71f1c87a",
+      "archiveSha256": "21f070bf90e028a15d6e33e38df0637a8bbc7358efa4809978cff8ed71f1c87a"
+    },
+    {
+      "file": "lib/runtime-checks.ts",
+      "expectedSha256": "7f2d93f4e471121c65b02998216eee105f9b77fe3fa186f32dce7148f579ee2f",
+      "archiveSha256": "7f2d93f4e471121c65b02998216eee105f9b77fe3fa186f32dce7148f579ee2f"
+    },
+    {
+      "file": "lib/runtime-metadata.ts",
+      "expectedSha256": "d80cde282a8361230612caa3cf00eca254234cd3ef1a4b1dcb5afad538506f80",
+      "archiveSha256": "d80cde282a8361230612caa3cf00eca254234cd3ef1a4b1dcb5afad538506f80"
+    },
+    {
+      "file": "lib/runtime-project.ts",
+      "expectedSha256": "96df86528efaa12ae43eb45c27f544e54583f3410b6d34fbbab29f80eeada3d5",
+      "archiveSha256": "96df86528efaa12ae43eb45c27f544e54583f3410b6d34fbbab29f80eeada3d5"
+    },
+    {
+      "file": "lib/runtime-registration.ts",
+      "expectedSha256": "a43ca3cc259e425d9114d6184f9df645bf6f68b3b036f1efd2b1ecf9f4c0a18b",
+      "archiveSha256": "a43ca3cc259e425d9114d6184f9df645bf6f68b3b036f1efd2b1ecf9f4c0a18b"
+    },
+    {
+      "file": "lib/source-business-evidence.ts",
+      "expectedSha256": "4936fba46ab28f39ec42f356987c27840d46b652f752a6011fb019d170659141",
+      "archiveSha256": "4936fba46ab28f39ec42f356987c27840d46b652f752a6011fb019d170659141"
+    },
+    {
+      "file": "lib/source-literal-directive.ts",
+      "expectedSha256": "cc65f84581ee8cca00afe49efc9626dea8bce91393fcf25137cc76a6338bb002",
+      "archiveSha256": "cc65f84581ee8cca00afe49efc9626dea8bce91393fcf25137cc76a6338bb002"
+    },
+    {
+      "file": "lib/static-markup-directive.ts",
+      "expectedSha256": "1695a5ef3bbda3e5e996c32bcf9c7a6b750d1e3a048310929827476a5cfc22e1",
+      "archiveSha256": "1695a5ef3bbda3e5e996c32bcf9c7a6b750d1e3a048310929827476a5cfc22e1"
+    },
+    {
+      "file": "lib/static-project.ts",
+      "expectedSha256": "282a72654575255041efeec393cb2138db63b6fc025683bb5ad17a79be9bf15a",
+      "archiveSha256": "282a72654575255041efeec393cb2138db63b6fc025683bb5ad17a79be9bf15a"
+    },
+    {
+      "file": "lib/static-resources.ts",
+      "expectedSha256": "4fe957338889300bb524045b36b160acdfae685a3304bc377fbf4aed1187b445",
+      "archiveSha256": "4fe957338889300bb524045b36b160acdfae685a3304bc377fbf4aed1187b445"
+    },
+    {
+      "file": "lib/universal-source-list-evidence.ts",
+      "expectedSha256": "7f896ce3aa8070f8ac6060da07e8234f4d361be7b2d634869c79e1ca1d88b4ff",
+      "archiveSha256": "7f896ce3aa8070f8ac6060da07e8234f4d361be7b2d634869c79e1ca1d88b4ff"
+    },
+    {
+      "file": "lib/universal-tag-evidence.ts",
+      "expectedSha256": "dee81d5f4e869c684903e6a40ab01f51a5014e3f99f0fd733856cb04d6a07f0c",
+      "archiveSha256": "dee81d5f4e869c684903e6a40ab01f51a5014e3f99f0fd733856cb04d6a07f0c"
+    },
+    {
+      "file": "package.json",
+      "expectedSha256": "92957921555c3c1b4c3bb2369ddb14e7b0c432609b39e2adfc98b3c5d3a1b717",
+      "archiveSha256": "92957921555c3c1b4c3bb2369ddb14e7b0c432609b39e2adfc98b3c5d3a1b717"
+    },
+    {
+      "file": "pnpm-lock.yaml",
+      "expectedSha256": "f58106e62337e04188d1a7e8606dcd794c3f5d744a95ca5e6d47ed30688ec235",
+      "archiveSha256": "f58106e62337e04188d1a7e8606dcd794c3f5d744a95ca5e6d47ed30688ec235"
+    },
+    {
+      "file": "scripts/run-project-assessment-evaluation.ts",
+      "expectedSha256": "98bf2cb0321723e5be6cd299f12ac73093a7d0e4f5a89818048242fc77d4d5dc",
+      "archiveSha256": "98bf2cb0321723e5be6cd299f12ac73093a7d0e4f5a89818048242fc77d4d5dc"
+    }
+  ],
+  "mismatches": [],
+  "apiCalls": 0,
+  "networkCalls": 0,
+  "limits": [
+    "Compares actual first-live snapshot source hashes against inert archived UTF8 contents, not current edited files.",
+    "No implementation, raw response, source corpus or reference was changed."
+  ]
+}

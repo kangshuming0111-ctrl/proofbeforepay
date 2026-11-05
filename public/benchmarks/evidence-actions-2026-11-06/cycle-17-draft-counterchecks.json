@@ -1,0 +1,181 @@
+{
+  "schema": "pbp-round17-draft-overhead-countercheck-v1",
+  "cases": 24,
+  "maxMinimumOverhead": 650,
+  "allWithin1000": true,
+  "allWellFormed": true,
+  "rows": [
+    {
+      "language": "zh",
+      "reason": "browser_observation",
+      "characters": 1000,
+      "minimumOverhead": 203,
+      "valid": true
+    },
+    {
+      "language": "zh",
+      "reason": "direct_observation",
+      "characters": 1000,
+      "minimumOverhead": 203,
+      "valid": true
+    },
+    {
+      "language": "zh",
+      "reason": "financial_execution",
+      "characters": 999,
+      "minimumOverhead": 212,
+      "valid": true
+    },
+    {
+      "language": "zh",
+      "reason": "record_readback",
+      "characters": 999,
+      "minimumOverhead": 208,
+      "valid": true
+    },
+    {
+      "language": "zh",
+      "reason": "requirement_clarification",
+      "characters": 1000,
+      "minimumOverhead": 201,
+      "valid": true
+    },
+    {
+      "language": "zh",
+      "reason": "manual_interpretation",
+      "characters": 999,
+      "minimumOverhead": 202,
+      "valid": true
+    },
+    {
+      "language": "zh",
+      "reason": "page_scope",
+      "characters": 1000,
+      "minimumOverhead": 201,
+      "valid": true
+    },
+    {
+      "language": "zh",
+      "reason": "page_citations",
+      "characters": 1000,
+      "minimumOverhead": 203,
+      "valid": true
+    },
+    {
+      "language": "zh",
+      "reason": "field_relationship",
+      "characters": 998,
+      "minimumOverhead": 205,
+      "valid": true
+    },
+    {
+      "language": "zh",
+      "reason": "source_ambiguity",
+      "characters": 999,
+      "minimumOverhead": 206,
+      "valid": true
+    },
+    {
+      "language": "zh",
+      "reason": "no_citations",
+      "characters": 998,
+      "minimumOverhead": 205,
+      "valid": true
+    },
+    {
+      "language": "zh",
+      "reason": "model_unresolved",
+      "characters": 1000,
+      "minimumOverhead": 203,
+      "valid": true
+    },
+    {
+      "language": "en",
+      "reason": "browser_observation",
+      "characters": 1000,
+      "minimumOverhead": 619,
+      "valid": true
+    },
+    {
+      "language": "en",
+      "reason": "direct_observation",
+      "characters": 999,
+      "minimumOverhead": 642,
+      "valid": true
+    },
+    {
+      "language": "en",
+      "reason": "financial_execution",
+      "characters": 1000,
+      "minimumOverhead": 641,
+      "valid": true
+    },
+    {
+      "language": "en",
+      "reason": "record_readback",
+      "characters": 999,
+      "minimumOverhead": 644,
+      "valid": true
+    },
+    {
+      "language": "en",
+      "reason": "requirement_clarification",
+      "characters": 999,
+      "minimumOverhead": 630,
+      "valid": true
+    },
+    {
+      "language": "en",
+      "reason": "manual_interpretation",
+      "characters": 999,
+      "minimumOverhead": 640,
+      "valid": true
+    },
+    {
+      "language": "en",
+      "reason": "page_scope",
+      "characters": 998,
+      "minimumOverhead": 629,
+      "valid": true
+    },
+    {
+      "language": "en",
+      "reason": "page_citations",
+      "characters": 998,
+      "minimumOverhead": 629,
+      "valid": true
+    },
+    {
+      "language": "en",
+      "reason": "field_relationship",
+      "characters": 1000,
+      "minimumOverhead": 637,
+      "valid": true
+    },
+    {
+      "language": "en",
+      "reason": "source_ambiguity",
+      "characters": 999,
+      "minimumOverhead": 650,
+      "valid": true
+    },
+    {
+      "language": "en",
+      "reason": "no_citations",
+      "characters": 999,
+      "minimumOverhead": 636,
+      "valid": true
+    },
+    {
+      "language": "en",
+      "reason": "model_unresolved",
+      "characters": 999,
+      "minimumOverhead": 626,
+      "valid": true
+    }
+  ],
+  "limits": [
+    "Controlled current-copy enumeration, not future arbitrary-copy guarantee.",
+    "No provider or network requests."
+  ]
+}

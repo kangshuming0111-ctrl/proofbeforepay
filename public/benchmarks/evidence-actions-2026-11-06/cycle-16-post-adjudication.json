@@ -1,0 +1,32 @@
+{
+  "schema": "pbp-advisory-adjudication-v1",
+  "cycle": 16,
+  "review": "cycle-16-post-17-plan-deepseek.json",
+  "reviewValid": true,
+  "finding": {
+    "severity": "P3",
+    "accepted": true,
+    "problem": "A long target list is not in the short draft; a pointer alone may imply a recipient has the complete list.",
+    "change": "Bilingual draft now explicitly says the full list is omitted, asks buyer to expand the same-version list and complete draft before sending, and never truncates a filename.",
+    "validation": "cycle-16-core-final.log20/20; actionoverhead retained before1000UTF16 clipping."
+  },
+  "round17ControlsAccepted": [
+    "Strict shared current/history allowlist and originalstatus->actualitembinding.",
+    "Separate readonly riskpool; preserve originals and exactindices; countsderived.",
+    "Oldmetadata remainsabsent; no prose recovery; updatecompiledLab."
+  ],
+  "rejected": [
+    {
+      "claim": "Must changeDELIVERY_KEYS/SNAPSHOT_KEYS for nestedfield",
+      "reason": "Assessment is already copied whole; only its nested strictvalidator requires extension."
+    },
+    {
+      "claim": "Optionalmetadata necessarily requires breaking base schema/rules",
+      "reason": "New versioned optionalmetadata can be checked by upgradedvalidator; oldcompiledvalidator rejectsunknownkeys. Wewilldeploy upgradedLab and state binding-only limits. No silent old acceptance."
+    },
+    {
+      "claim": "Persisted metadata alone proves originalmodelriskcount/status history",
+      "reason": "Unsigned export can check selfconsistency and exactsource only. Generation tests/replay check original provider lineage separately."
+    }
+  ]
+}

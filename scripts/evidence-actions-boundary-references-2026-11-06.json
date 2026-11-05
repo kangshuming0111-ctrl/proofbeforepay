@@ -1,0 +1,244 @@
+{
+  "schema": "pbp-evidence-actions-boundary-reference-v1",
+  "frozenBeforeProviderInspection": true,
+  "apiCalls": 0,
+  "modelCalls": 0,
+  "networkCalls": 0,
+  "thirdPartyRepositories": 0,
+  "customerProjects": 0,
+  "corpusFile": "evidence-actions-boundary-corpus-2026-11-06.json",
+  "corpusSha256": "b0ed37335770f9de649974cd55ca410911a77e0e9199d2e94501a774ca4f62a3",
+  "cases": [
+    {
+      "id": "evidence-actions-explicit-complete-pair",
+      "criterionId": "coverage-1",
+      "sourceReferenceStatus": "supported",
+      "controlledRawStatus": "supported",
+      "expectedApplicationStatus": "supported",
+      "citationSelection": "complete-owner",
+      "sourceRationale": "Both explicitly named HTML files contain a complete unique nearest dish div with the target and separate GF tag.",
+      "controlBoundary": "Author-fixed deterministic transport/evidence boundary, not a model answer or customer task."
+    },
+    {
+      "id": "evidence-actions-missing-agreed-file",
+      "criterionId": "coverage-1",
+      "sourceReferenceStatus": "insufficient_evidence",
+      "controlledRawStatus": "supported",
+      "expectedApplicationStatus": "insufficient_evidence",
+      "citationSelection": "complete-owner",
+      "sourceRationale": "The explicitly agreed menu.html is not supplied; about.html cannot substitute. No conclusion of missing delivered feature follows from a missing evidence file.",
+      "controlBoundary": "Author-fixed deterministic transport/evidence boundary, not a model answer or customer task."
+    },
+    {
+      "id": "evidence-actions-wrong-page-role-alias",
+      "criterionId": "coverage-1",
+      "sourceReferenceStatus": "insufficient_evidence",
+      "controlledRawStatus": "supported",
+      "expectedApplicationStatus": "insufficient_evidence",
+      "citationSelection": "complete-owner",
+      "sourceRationale": "Required pages index/terms do not establish a trusted homepage/full-menu role mapping. The delivered menu.html may not be silently ignored or replaced by terms.html.",
+      "controlBoundary": "Author-fixed deterministic transport/evidence boundary, not a model answer or customer task."
+    },
+    {
+      "id": "evidence-actions-neighbour-price",
+      "criterionId": "coverage-1",
+      "sourceReferenceStatus": "changes_suggested",
+      "controlledRawStatus": "supported",
+      "expectedApplicationStatus": "changes_suggested",
+      "citationSelection": "whole-file",
+      "sourceRationale": "Two buyer-confirmed expectations lock Tea AUD18. menu.html uniquely shows Tea AUD16; Coffee AUD18 belongs to a different owner.",
+      "controlBoundary": "Author-fixed deterministic transport/evidence boundary, not a model answer or customer task."
+    },
+    {
+      "id": "evidence-actions-merged-row",
+      "criterionId": "coverage-1",
+      "sourceReferenceStatus": "insufficient_evidence",
+      "controlledRawStatus": "supported",
+      "expectedApplicationStatus": "insufficient_evidence",
+      "citationSelection": "whole-file",
+      "sourceRationale": "The rowspan relation gives multiple potential Tea price rows. Finite simple-block evidence cannot select a size/price or infer a definite defect.",
+      "controlBoundary": "Author-fixed deterministic transport/evidence boundary, not a model answer or customer task."
+    },
+    {
+      "id": "evidence-actions-partial-owner-only",
+      "criterionId": "coverage-1",
+      "sourceReferenceStatus": "supported",
+      "controlledRawStatus": "supported",
+      "expectedApplicationStatus": "insufficient_evidence",
+      "citationSelection": "partial-owner",
+      "sourceRationale": "Complete source contains the required unique relationship on each explicit page. The authored response deliberately selects only partial owner windows, so its evidence must remain insufficient.",
+      "controlBoundary": "Author-fixed deterministic transport/evidence boundary, not a model answer or customer task."
+    },
+    {
+      "id": "evidence-actions-second-page-wrong-tag",
+      "criterionId": "coverage-1",
+      "sourceReferenceStatus": "changes_suggested",
+      "controlledRawStatus": "supported",
+      "expectedApplicationStatus": "insufficient_evidence",
+      "citationSelection": "complete-owner",
+      "sourceRationale": "The named menu.html target owner has V rather than requested GF. A source-supported raw answer must not borrow GF from index.html; the finite witness guard may conservatively withhold instead of asserting a defect.",
+      "controlBoundary": "Author-fixed deterministic transport/evidence boundary, not a model answer or customer task."
+    },
+    {
+      "id": "evidence-actions-runtime-copy-only",
+      "criterionId": "coverage-1",
+      "sourceReferenceStatus": "insufficient_evidence",
+      "controlledRawStatus": "supported",
+      "expectedApplicationStatus": "insufficient_evidence",
+      "citationSelection": "whole-file",
+      "sourceRationale": "Static status copy and form markup cannot establish mail delivery, durable writes or independent readback after restart.",
+      "controlBoundary": "Author-fixed deterministic transport/evidence boundary, not a model answer or customer task."
+    }
+  ],
+  "files": [
+    {
+      "id": "evidence-actions-explicit-complete-pair",
+      "file": "index.html",
+      "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff",
+      "utf8Bytes": 178
+    },
+    {
+      "id": "evidence-actions-explicit-complete-pair",
+      "file": "menu.html",
+      "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff",
+      "utf8Bytes": 178
+    },
+    {
+      "id": "evidence-actions-explicit-complete-pair",
+      "file": "site.css",
+      "sha256": "5d9c00e6b4cbb996eab69c0ca905a2a61470f0bc730d668361a19bf30a3ea8c9",
+      "utf8Bytes": 23
+    },
+    {
+      "id": "evidence-actions-missing-agreed-file",
+      "file": "index.html",
+      "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff",
+      "utf8Bytes": 178
+    },
+    {
+      "id": "evidence-actions-missing-agreed-file",
+      "file": "about.html",
+      "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff",
+      "utf8Bytes": 178
+    },
+    {
+      "id": "evidence-actions-missing-agreed-file",
+      "file": "site.css",
+      "sha256": "7c98040a541657584690ae2a1cc3b42a8b53b159cc60c5d3abbfecbaeac6c94a",
+      "utf8Bytes": 6
+    },
+    {
+      "id": "evidence-actions-wrong-page-role-alias",
+      "file": "index.html",
+      "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff",
+      "utf8Bytes": 178
+    },
+    {
+      "id": "evidence-actions-wrong-page-role-alias",
+      "file": "terms.html",
+      "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff",
+      "utf8Bytes": 178
+    },
+    {
+      "id": "evidence-actions-wrong-page-role-alias",
+      "file": "menu.html",
+      "sha256": "32138e99397fa8f58f0231cf652bb175ff12077a1e6b31e9aa80f3b874795caf",
+      "utf8Bytes": 177
+    },
+    {
+      "id": "evidence-actions-neighbour-price",
+      "file": "index.html",
+      "sha256": "23ae5e157ce8f919ac7a1c5f386e52d55762c973d48f89ba06ea9b8b188e5221",
+      "utf8Bytes": 103
+    },
+    {
+      "id": "evidence-actions-neighbour-price",
+      "file": "menu.html",
+      "sha256": "854c8cd2055164ae7f3a811ebf91a6c1ff77034e563f0cccb94a9cd702e0dc40",
+      "utf8Bytes": 134
+    },
+    {
+      "id": "evidence-actions-neighbour-price",
+      "file": "site.css",
+      "sha256": "5d9c00e6b4cbb996eab69c0ca905a2a61470f0bc730d668361a19bf30a3ea8c9",
+      "utf8Bytes": 23
+    },
+    {
+      "id": "evidence-actions-merged-row",
+      "file": "index.html",
+      "sha256": "23ae5e157ce8f919ac7a1c5f386e52d55762c973d48f89ba06ea9b8b188e5221",
+      "utf8Bytes": 103
+    },
+    {
+      "id": "evidence-actions-merged-row",
+      "file": "menu.html",
+      "sha256": "e5745099f1090cbca64b6d5aaa8023e5e3c9878f10810b978928d185c0fd49b7",
+      "utf8Bytes": 173
+    },
+    {
+      "id": "evidence-actions-merged-row",
+      "file": "site.css",
+      "sha256": "5d9c00e6b4cbb996eab69c0ca905a2a61470f0bc730d668361a19bf30a3ea8c9",
+      "utf8Bytes": 23
+    },
+    {
+      "id": "evidence-actions-partial-owner-only",
+      "file": "index.html",
+      "sha256": "aba008bccd20565d47933f9430c86308cc3f405717bca849960371dc07edc1fc",
+      "utf8Bytes": 503
+    },
+    {
+      "id": "evidence-actions-partial-owner-only",
+      "file": "menu.html",
+      "sha256": "aba008bccd20565d47933f9430c86308cc3f405717bca849960371dc07edc1fc",
+      "utf8Bytes": 503
+    },
+    {
+      "id": "evidence-actions-partial-owner-only",
+      "file": "site.css",
+      "sha256": "5d9c00e6b4cbb996eab69c0ca905a2a61470f0bc730d668361a19bf30a3ea8c9",
+      "utf8Bytes": 23
+    },
+    {
+      "id": "evidence-actions-second-page-wrong-tag",
+      "file": "index.html",
+      "sha256": "abd2ec57b1526dcf60ed5a8b0af310454059d78a8bd84b6efeaa603ded0991ff",
+      "utf8Bytes": 178
+    },
+    {
+      "id": "evidence-actions-second-page-wrong-tag",
+      "file": "menu.html",
+      "sha256": "32138e99397fa8f58f0231cf652bb175ff12077a1e6b31e9aa80f3b874795caf",
+      "utf8Bytes": 177
+    },
+    {
+      "id": "evidence-actions-second-page-wrong-tag",
+      "file": "site.css",
+      "sha256": "5d9c00e6b4cbb996eab69c0ca905a2a61470f0bc730d668361a19bf30a3ea8c9",
+      "utf8Bytes": 23
+    },
+    {
+      "id": "evidence-actions-runtime-copy-only",
+      "file": "index.html",
+      "sha256": "4429c3d95e8ef331d80601bb68331bbcee98f974c6f6f2980a848d77336980f8",
+      "utf8Bytes": 152
+    },
+    {
+      "id": "evidence-actions-runtime-copy-only",
+      "file": "menu.html",
+      "sha256": "4429c3d95e8ef331d80601bb68331bbcee98f974c6f6f2980a848d77336980f8",
+      "utf8Bytes": 152
+    },
+    {
+      "id": "evidence-actions-runtime-copy-only",
+      "file": "site.css",
+      "sha256": "5d9c00e6b4cbb996eab69c0ca905a2a61470f0bc730d668361a19bf30a3ea8c9",
+      "utf8Bytes": 23
+    }
+  ],
+  "limits": [
+    "All eight are synthetic authored boundaries, not unseen real projects.",
+    "Source reference agreement and deterministic controlled-response admission/status are separate measurements.",
+    "No response is generated or provider called during this data freeze."
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "schema": "pbp-advisory-adjudication-v1",
+  "cycle": 18,
+  "validReviews": [
+    "cycle-18-post-deepseek.json",
+    "cycle-18-namespace-followup-deepseek.json",
+    "cycle-18-live-scope-deepseek.json",
+    "cycle-18-scope-post-deepseek.json"
+  ],
+  "rejectedFindings": [
+    {
+      "claim": "Default origin index0 passes empty publishedpool because0>=0false",
+      "reason": "Arithmetic false;0>=0true andrecordRiskReview throws beforeappend. Focusedtests andallindexdualrolecontrolshow default cannotreferenceq. Followupwithdrawsfinding."
+    },
+    {
+      "claim": "contact/booking-page role scope triggers universal-tag P3example",
+      "reason": "That exactsource lacks homepage/fullmenu/.html candidate, so not_applicable; ordinarybookingwordingalsorequiresobservation earlier. Broader page-scope support remainsfinite andunknown, not a reproduced defect."
+    }
+  ],
+  "acceptedFindings": [
+    {
+      "severity": "P2",
+      "issue": "raw negative changes guessfullmenu->menu.html because priorpositive-only tagwitness notrun",
+      "fix": "Narrow unconfirmed_page_scope veto for rawchanges afterknownbusinesspriority; page_scope emptytargets; preserve serverfail/typedmismatch/explicit wrongtag/missingfile facts.",
+      "tests": "new7 +related51; final1478/1478; actualoriginal8bodyalias-only repair thenknown8freshcalls."
+    },
+    {
+      "severity": "P3",
+      "issue": "readbackprimaryaction didnotseparatelymention email/otherobligation in actualcompoundcase",
+      "fix": "ConditionalsharedUI/draft nextstep includes separateexecution evidence ifsameoriginalrequirement includesotheroperations; notclaimedfullcompoundclassifier."
+    }
+  ],
+  "referencePolicyBoundary": "Explicitmenu.html absent fromsubmittedinventory: factualrequest toconfirm/provide hasgrounds, whilefrozenreference abstains. Keepreferenceandqualifiedlabel; do notforceunknownorclaim8/8.",
+  "actualFirst8": {
+    "rawAgreement": 5,
+    "appAgreement": 6,
+    "denominator": 8,
+    "appWhole": {
+      "accepted": 5,
+      "qualified": 2,
+      "rejected": 1
+    }
+  },
+  "actualKnownRepair8": {
+    "rawAgreement": 6,
+    "appAgreement": 7,
+    "denominator": 8,
+    "appWhole": {
+      "accepted": 6,
+      "qualified": 2,
+      "rejected": 0
+    }
+  },
+  "retained15ScopeDelta": {
+    "strictUnchangedRegressionPassed": false,
+    "unchangedWholeReports": 14,
+    "onlyAffected": "citation-relations-holdout-tavola/coverage-3",
+    "change": "changes_suggested->insufficient_evidence page_scope; oneadditionalwireledgerentry andadjustmentcount2->3",
+    "referenceAgreementBefore": 79,
+    "referenceAgreementAfter": 78,
+    "criteria": 82,
+    "unknownsBefore": 25,
+    "unknownsAfter": 26,
+    "withheldEntries": 6,
+    "withheldCitationCount": 15
+  },
+  "actualSourceAssessmentCalls": 16,
+  "usageDerivedEstimateUsd": 0.0369498,
+  "providerInvoice": false,
+  "preflightRejection": {
+    "file": "cycle-18-eight-first-live.json",
+    "reason": "maxUsd2exceedsunchangedevaluatorcap1",
+    "apiCalls": 0,
+    "attempts": 0,
+    "correctedNewOutput": "cycle-18-eight-first-live-admitted.json"
+  },
+  "remaining": [
+    "Twoqualifiedknownrepairanswers: explicitmissingfile referencepolicy andimpreciserowspandouble-priceexplanation.",
+    "Fouroldreferenceitems nowconservativeunknown; no automaticsemanticpage-roleadoption.",
+    "No actualcustomer/novice study, unboundedwebsitequality orgeneralAIaccuracy claim.",
+    "Read-onlysourceAI notfullbrowser/backendexecution; userstilldecidesacceptance/payment."
+  ]
+}

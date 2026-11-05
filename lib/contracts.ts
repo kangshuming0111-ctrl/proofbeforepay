@@ -77,14 +77,28 @@ export type ProofBusinessCheckReport = {
 };
 /** Exact original-file substring; start/end are UTF-16 code-unit offsets, [start,end). */
 export type ProofAssessmentCitation = { file: string; start: number; end: number; excerpt: string };
-export type ProofAssessmentItem = { criterionId: string; status: "supported" | "changes_suggested" | "insufficient_evidence"; explanation: string; citations: ProofAssessmentCitation[]; ruleEvidenceIds: string[] };
+export type ProofEvidenceNeed = {
+  schema: "source-evidence-need-v1";
+  reason: "browser_observation" | "direct_observation" | "financial_execution" | "record_readback" | "requirement_clarification" | "manual_interpretation" | "page_scope" | "page_citations" | "field_relationship" | "source_ambiguity" | "no_citations" | "model_unresolved";
+  targetFiles: string[];
+};
+export type ProofAssessmentItem = { criterionId: string; status: "supported" | "changes_suggested" | "insufficient_evidence"; explanation: string; citations: ProofAssessmentCitation[]; ruleEvidenceIds: string[]; evidenceNeed?: ProofEvidenceNeed };
 export type ProofAssessmentRisk = { title: string; explanation: string; suggestion: string; citations: ProofAssessmentCitation[] };
-/** Append-only human annotations; never edits the source model report or accepts work. */
-export type ProofRiskReview = { id: string; deliveryId: string; assessmentId: string; riskIndex: number; decision: "confirmed" | "rejected" | "needs_evidence"; reason: string; actorRole: ProofRole; reviewedAt: string };
+/** Validated AI leads retained separately after a system status adjustment.
+ * This record neither confirms the leads nor releases the publication gate. */
+export type ProofAssessmentWithheldRisks = {
+  version: 1; reason: "item_status_adjusted" | "not_withheld";
+  adjustedCriteria: {criterionId: string; originalStatus: ProofAssessmentItem["status"]; publishedStatus: ProofAssessmentItem["status"]}[];
+  entries: {originalRiskIndex: number; risk: ProofAssessmentRisk}[];
+};
+/** Append-only human annotations; never edits the source model report or accepts work.
+ * Absent riskOrigin retains legacy published indices; withheld is a separate pool. */
+export type ProofRiskReview = { id: string; deliveryId: string; assessmentId: string; riskIndex: number; riskOrigin?: "withheld"; decision: "confirmed" | "rejected" | "needs_evidence"; reason: string; actorRole: ProofRole; reviewedAt: string };
 export type ProofResourceReport = { method: "static-resources-v1"; checked: number; findings: { from: string; reference: string; target?: string; kind: "missing" | "blocked" | "uninspectable" }[] };
 export type ProofAssessment = {
   id: string; deliveryId: string; method: "source-ai-v1"; mode: "live"; model: string; assessedAt: string;
   items: ProofAssessmentItem[]; risks: ProofAssessmentRisk[]; limitations: string[];
+  withheldRisks?: ProofAssessmentWithheldRisks;
   coverage: { includedFiles: string[]; truncatedFiles: string[]; omittedFiles: string[] };
   usage?: { promptTokens: number; completionTokens: number };
 };

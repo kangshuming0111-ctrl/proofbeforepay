@@ -1,0 +1,339 @@
+{
+  "schema": "proofbeforepay-frozen-project-corpus-v1",
+  "cohort": "evidence-actions-eight-authored-boundaries-2026-11-06",
+  "scope": "Eight newly authored synthetic source/evidence boundaries. No third-party project, real client, human use or model performance is claimed. Source truth references remain separate from deliberately incomplete response-witness controls.",
+  "referenceMethod": "Independent source inspection fixed before any response generated for these scenarios. Application control expectations may conservatively differ from source truth and do not replace the original references.",
+  "projects": [
+    {
+      "id": "evidence-actions-explicit-complete-pair",
+      "stratum": "boundary",
+      "language": "en",
+      "title": "Authored evidence-actions boundary 1",
+      "summary": "The index.html and menu.html source content must both attach the GF tag to Whipped cod roe",
+      "requiredPages": [
+        "index.html",
+        "menu.html"
+      ],
+      "files": {
+        "index.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>",
+        "menu.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>",
+        "site.css": "body{font-family:serif}"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The index.html and menu.html source content must both attach the GF tag to Whipped cod roe",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "Both explicitly named HTML files contain a complete unique nearest dish div with the target and separate GF tag.",
+            "relevantFiles": [
+              "index.html",
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "evidence-actions-missing-agreed-file",
+      "stratum": "boundary",
+      "language": "en",
+      "title": "Authored evidence-actions boundary 2",
+      "summary": "The index.html and menu.html source content must both attach the GF tag to Whipped cod roe",
+      "requiredPages": [
+        "index.html",
+        "menu.html"
+      ],
+      "files": {
+        "index.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>",
+        "about.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>",
+        "site.css": "body{}"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The index.html and menu.html source content must both attach the GF tag to Whipped cod roe",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "The explicitly agreed menu.html is not supplied; about.html cannot substitute. No conclusion of missing delivered feature follows from a missing evidence file.",
+            "relevantFiles": [
+              "index.html",
+              "about.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "evidence-actions-wrong-page-role-alias",
+      "stratum": "boundary",
+      "language": "en",
+      "title": "Authored evidence-actions boundary 3",
+      "summary": "The homepage and full menu source content must both attach the GF tag to Whipped cod roe",
+      "requiredPages": [
+        "index.html",
+        "terms.html"
+      ],
+      "files": {
+        "index.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>",
+        "terms.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>",
+        "menu.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div></body></html>"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The homepage and full menu source content must both attach the GF tag to Whipped cod roe",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "Required pages index/terms do not establish a trusted homepage/full-menu role mapping. The delivered menu.html may not be silently ignored or replaced by terms.html.",
+            "relevantFiles": [
+              "index.html",
+              "terms.html",
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "evidence-actions-neighbour-price",
+      "stratum": "boundary",
+      "language": "en",
+      "title": "Authored evidence-actions boundary 4",
+      "summary": "Display Tea prices on both agreed menu pages.",
+      "requiredPages": [
+        "index.html",
+        "menu.html"
+      ],
+      "files": {
+        "index.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><p>Tea AUD 18</p></body></html>",
+        "menu.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div><p>Tea AUD 16</p><p>Coffee AUD 18</p></div></body></html>",
+        "site.css": "body{font-family:serif}"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "Display Tea prices on both agreed menu pages.",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "Two buyer-confirmed expectations lock Tea AUD18. menu.html uniquely shows Tea AUD16; Coffee AUD18 belongs to a different owner.",
+            "relevantFiles": [
+              "index.html",
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ],
+      "businessChecks": {
+        "confirmed": true,
+        "items": [
+          {
+            "id": "business-1",
+            "criterionId": "coverage-1",
+            "file": "index.html",
+            "source": {
+              "start": 0,
+              "end": 45,
+              "excerpt": "Display Tea prices on both agreed menu pages."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            }
+          },
+          {
+            "id": "business-2",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 45,
+              "excerpt": "Display Tea prices on both agreed menu pages."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "evidence-actions-merged-row",
+      "stratum": "boundary",
+      "language": "en",
+      "title": "Authored evidence-actions boundary 5",
+      "summary": "Display Tea prices on both agreed menu pages.",
+      "requiredPages": [
+        "index.html",
+        "menu.html"
+      ],
+      "files": {
+        "index.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><p>Tea AUD 18</p></body></html>",
+        "menu.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><table><tr><td rowspan=\"2\">Tea</td><td>AUD 18</td></tr><tr><td>AUD 28</td></tr></table></body></html>",
+        "site.css": "body{font-family:serif}"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "Display Tea prices on both agreed menu pages.",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "The rowspan relation gives multiple potential Tea price rows. Finite simple-block evidence cannot select a size/price or infer a definite defect.",
+            "relevantFiles": [
+              "index.html",
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ],
+      "businessChecks": {
+        "confirmed": true,
+        "items": [
+          {
+            "id": "business-1",
+            "criterionId": "coverage-1",
+            "file": "index.html",
+            "source": {
+              "start": 0,
+              "end": 45,
+              "excerpt": "Display Tea prices on both agreed menu pages."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            }
+          },
+          {
+            "id": "business-2",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 45,
+              "excerpt": "Display Tea prices on both agreed menu pages."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "evidence-actions-partial-owner-only",
+      "stratum": "boundary",
+      "language": "en",
+      "title": "Authored evidence-actions boundary 6",
+      "summary": "The index.html and menu.html source content must both attach the GF tag to Whipped cod roe",
+      "requiredPages": [
+        "index.html",
+        "menu.html"
+      ],
+      "files": {
+        "index.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span>Whipped cod roe</span>                                                                                                                                                                                                                                                                                                                                                              <span>GF</span></div></body></html>",
+        "menu.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span>Whipped cod roe</span>                                                                                                                                                                                                                                                                                                                                                              <span>GF</span></div></body></html>",
+        "site.css": "body{font-family:serif}"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The index.html and menu.html source content must both attach the GF tag to Whipped cod roe",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "Complete source contains the required unique relationship on each explicit page. The authored response deliberately selects only partial owner windows, so its evidence must remain insufficient.",
+            "relevantFiles": [
+              "index.html",
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "evidence-actions-second-page-wrong-tag",
+      "stratum": "boundary",
+      "language": "en",
+      "title": "Authored evidence-actions boundary 7",
+      "summary": "The index.html and menu.html source content must both attach the GF tag to Whipped cod roe",
+      "requiredPages": [
+        "index.html",
+        "menu.html"
+      ],
+      "files": {
+        "index.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">GF</span></div></body></html>",
+        "menu.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><div class=\"dish\"><span class=\"name\">Whipped cod roe</span><span class=\"tag\">V</span></div></body></html>",
+        "site.css": "body{font-family:serif}"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The index.html and menu.html source content must both attach the GF tag to Whipped cod roe",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "The named menu.html target owner has V rather than requested GF. A source-supported raw answer must not borrow GF from index.html; the finite witness guard may conservatively withhold instead of asserting a defect.",
+            "relevantFiles": [
+              "index.html",
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "evidence-actions-runtime-copy-only",
+      "stratum": "boundary",
+      "language": "en",
+      "title": "Authored evidence-actions boundary 8",
+      "summary": "The contact form must actually email the owner and preserve a receipt retrievable after restart",
+      "requiredPages": [
+        "index.html",
+        "menu.html"
+      ],
+      "files": {
+        "index.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><p>Message saved. Email sent.</p><form><input name=\"email\"></form></body></html>",
+        "menu.html": "<!doctype html><html><head><title>Authored boundary</title></head><body><p>Message saved. Email sent.</p><form><input name=\"email\"></form></body></html>",
+        "site.css": "body{font-family:serif}"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The contact form must actually email the owner and preserve a receipt retrievable after restart",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "Static status copy and form markup cannot establish mail delivery, durable writes or independent readback after restart.",
+            "relevantFiles": [
+              "index.html",
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    }
+  ]
+}
