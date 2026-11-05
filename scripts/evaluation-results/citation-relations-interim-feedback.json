@@ -1,0 +1,15 @@
+{
+  "advisoryOnly": true,
+  "independentReview": "outputs/citation-relations-2026-11-05/interim-independent-whole-answer-review.json",
+  "observed": [
+    "All11 interim raw/app statuses reference-consistent and IDs exact, but all4 whole answers qualified.",
+    "BusinessCase footer risk cited products without footer context; optional footer attribution overreach.",
+    "All3 synthetic scope reports claimed uncertainty over agreed pages despite explicit saved file list; one contradicts its own next limitation."
+  ],
+  "response": [
+    "Strengthen plan/file authority distinction from unperformed rendering.",
+    "Require location-specific risk evidence and forbid template-name inference.",
+    "Retain raw first attempts; rerun all6 scope cases plus known7 and new2 after final freeze.",
+    "Do not delete or rewrite wrong raw limitations; source review will inspect new full answers."
+  ]
+}

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { ProofQuote } from "../lib/contracts.ts";
-import { assessDelivery } from "../lib/delivery-assessment.ts";
+import { assessDeliveryLegacyReplay as assessDelivery } from "../lib/delivery-assessment.ts";
 import { createUploadedDelivery, parseStaticProject } from "../lib/static-project.ts";
 import { summaryCoverageUnits } from "../lib/requirement-coverage.ts";
 import { getBusinessCheckPlan, createBusinessCheckReport } from "../lib/business-checks.ts";

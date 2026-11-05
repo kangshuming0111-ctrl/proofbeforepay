@@ -1,0 +1,1071 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-05T13:18:46.306Z",
+  "kind": "independent-production-counterchecks",
+  "reviewArtifact": "outputs/citation-relations-2026-11-05/cycle-13-post-deepseek.json",
+  "reviewValid": false,
+  "reviewErrors": [
+    "report_not_json"
+  ],
+  "reviewAccepted": false,
+  "sourceHashes": [
+    {
+      "file": "lib/source-business-evidence.ts",
+      "sha256": "4936fba46ab28f39ec42f356987c27840d46b652f752a6011fb019d170659141"
+    },
+    {
+      "file": "lib/static-project.ts",
+      "sha256": "282a72654575255041efeec393cb2138db63b6fc025683bb5ad17a79be9bf15a"
+    },
+    {
+      "file": "lib/business-checks.ts",
+      "sha256": "5b6d6b2cfbe487aac9bf647f3cdf97f303fcec835e2479b7c7154f4708433ffd"
+    },
+    {
+      "file": "lib/exact-copy-evidence.ts",
+      "sha256": "3c27a02f8238272e3f47433ecf237445420454e5d89227f60bb415ac1f3c9a91"
+    }
+  ],
+  "method": {
+    "actor": "Codex independent scripted checks, not a human usability test",
+    "entryPoints": [
+      "parseStaticProject",
+      "createUploadedDelivery",
+      "getBusinessCheckPlan",
+      "createSourceBusinessEvidenceCheck",
+      "assessSourceBusinessCitationWitness"
+    ],
+    "extraInstrumentation": "parse5 AST inspection with the same sourceCodeLocationInfo/scriptingEnabled options",
+    "newProviderCalls": 0,
+    "networkCalls": 0,
+    "sourceOrTestFilesModified": false,
+    "artifactOnlyWrite": true
+  },
+  "summary": {
+    "sourceCases": 20,
+    "expectedOutcomesMatched": 20,
+    "lockedFileWitnessCases": 1,
+    "lockedFileWitnessExpectedMatched": 1,
+    "confirmedCurrentBugs": 0,
+    "adjudication": "The invalid review is not a sign-off. Its three proposed current defects are not substantiated by these production-entry-point counterchecks."
+  },
+  "findings": [
+    {
+      "finding": 1,
+      "title": "Multi-text-node / compound-price false mismatch allegation",
+      "disposition": "rejected-as-current-defect",
+      "reason": "The review contradicts itself about p/em and table markup guards. Element children fail the existing p/li every-text check and table raw/AST text-only checks. Full-tail amount matching rejects compounds, while a genuinely literal entity-decoded AUD16 remains a correct source-only mismatch. Multiple adjacent text nodes alone do not imply multiple semantic prices.",
+      "caseIds": [
+        "p-em-review-example",
+        "li-em",
+        "p-wbr",
+        "table-wbr",
+        "table-b-review-example",
+        "p-two-amounts",
+        "li-two-amounts",
+        "p-qualifier-final-price",
+        "table-compound-label",
+        "table-compound-price",
+        "table-entities-valid",
+        "p-entities-explicit-mismatch",
+        "table-encoded-markup-is-text"
+      ],
+      "limit": "No claim is made about rendered visibility, browser layout, or future changes that loosen these guards."
+    },
+    {
+      "finding": 2,
+      "title": "Missing explicit body alleged to bypass body scope",
+      "disposition": "rejected-as-current-defect",
+      "reason": "parse5 document parsing inserts a body. The explicit p/table in the tested valid no-body documents is traversed within that body. Orphan table rows, head-only text, templates and empty sources remain unknown.",
+      "caseIds": [
+        "implicit-body-paragraph-after-head",
+        "implicit-body-paragraph-fragment",
+        "implicit-body-valid-table",
+        "implicit-body-orphan-tr-review-example",
+        "head-only-label",
+        "head-template-label",
+        "no-source-label"
+      ],
+      "limit": "An implicit body is valid HTML document parsing, not a promise that malformed source is visually correct. Explicit p/table/tr/cell source boundaries are still required for source citations."
+    },
+    {
+      "finding": 3,
+      "title": "Ordinary criterion may ignore buyer-locked target file",
+      "disposition": "rejected-as-business-scope-change",
+      "reason": "Buyer-confirmed check.file is the saved target for that linked business check. The same price on index.html does not witness a locked menu.html block. Ignoring that file would erase an explicit saved obligation. Phantom unknown-page limitations should be corrected in model reporting, not by discarding buyer scope.",
+      "evidence": {
+        "lockedPlan": [
+          {
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 46,
+              "excerpt": "Display the agreed menu prices and phone text."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Beef noodles",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            },
+            "checkId": "business-1",
+            "stepId": "business:375:business-1",
+            "viewportWidth": 375
+          },
+          {
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 46,
+              "excerpt": "Display the agreed menu prices and phone text."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Beef noodles",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            },
+            "checkId": "business-1",
+            "stepId": "business:900:business-1",
+            "viewportWidth": 900
+          }
+        ],
+        "sourceResult": {
+          "kind": "unchanged",
+          "checks": [
+            {
+              "checkId": "business-1",
+              "file": "menu.html",
+              "kind": "unchanged",
+              "reason": "explicit_iso_price_equal",
+              "citation": {
+                "file": "menu.html",
+                "start": 66,
+                "end": 110,
+                "excerpt": "<tr><td>Beef noodles</td><td>AUD18</td></tr>"
+              },
+              "label": "Beef noodles",
+              "expected": "AUD 18.00",
+              "actual": "AUD 18.00"
+            }
+          ],
+          "citations": []
+        },
+        "wrongPageWitness": {
+          "kind": "unknown",
+          "checks": [
+            {
+              "checkId": "business-1",
+              "file": "menu.html",
+              "kind": "unknown",
+              "reason": "target_file_not_cited"
+            }
+          ]
+        }
+      },
+      "limit": "This check exercises production intake, plan, source checker and witness. It does not substitute for an end-to-end model prompt rerun."
+    }
+  ],
+  "cases": [
+    {
+      "id": "p-em-review-example",
+      "source": "<!doctype html><html><head><title>Menu</title></head><body><p>Beef noodles AUD16 <em>frozen</em></p></body></html>",
+      "want": "unknown",
+      "why": "A p containing em does not satisfy every-child-is-text.",
+      "result": {
+        "kind": "unknown",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unknown",
+            "reason": "complex_or_unlocated_item"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": true,
+            "childKinds": [
+              "p"
+            ]
+          }
+        ],
+        "blocks": [
+          {
+            "tag": "p",
+            "childKinds": [
+              "#text",
+              "em"
+            ],
+            "textChildren": [
+              "Beef noodles AUD16 "
+            ]
+          }
+        ]
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "li-em",
+      "source": "<!doctype html><html><head><title>Menu</title></head><body><ul><li>Beef noodles AUD16 <em>frozen</em></li></ul></body></html>",
+      "want": "unknown",
+      "why": "Nested inline markup makes the list item unsupported.",
+      "result": {
+        "kind": "unknown",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unknown",
+            "reason": "complex_or_unlocated_item"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": true,
+            "childKinds": [
+              "ul"
+            ]
+          }
+        ],
+        "blocks": [
+          {
+            "tag": "li",
+            "childKinds": [
+              "#text",
+              "em"
+            ],
+            "textChildren": [
+              "Beef noodles AUD16 "
+            ]
+          }
+        ]
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "p-wbr",
+      "source": "<!doctype html><html><head><title>Menu</title></head><body><p>Beef noodles AUD16<wbr></p></body></html>",
+      "want": "unknown",
+      "why": "wbr is an element, not a text child.",
+      "result": {
+        "kind": "unknown",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unknown",
+            "reason": "complex_or_unlocated_item"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": true,
+            "childKinds": [
+              "p"
+            ]
+          }
+        ],
+        "blocks": [
+          {
+            "tag": "p",
+            "childKinds": [
+              "#text",
+              "wbr"
+            ],
+            "textChildren": [
+              "Beef noodles AUD16"
+            ]
+          }
+        ]
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "table-wbr",
+      "source": "<!doctype html><html><head><title>Menu</title></head><body><table><tr><td>Beef noodles</td><td>AUD16<wbr></td></tr></table></body></html>",
+      "want": "unknown",
+      "why": "A table cell with wbr fails raw markup and text-only constraints.",
+      "result": {
+        "kind": "unknown",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unknown",
+            "reason": "complex_or_unlocated_item"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": true,
+            "childKinds": [
+              "table"
+            ]
+          }
+        ],
+        "blocks": [
+          {
+            "tag": "td",
+            "childKinds": [
+              "#text"
+            ],
+            "textChildren": [
+              "Beef noodles"
+            ]
+          },
+          {
+            "tag": "td",
+            "childKinds": [
+              "#text",
+              "wbr"
+            ],
+            "textChildren": [
+              "AUD16"
+            ]
+          }
+        ]
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "table-b-review-example",
+      "source": "<!doctype html><html><head><title>Menu</title></head><body><table><tr><td>Beef noodles AUD16</td><td><b>x</b></td></tr></table></body></html>",
+      "want": "unknown",
+      "why": "Second cell is markup rather than a complete ISO amount; first cell is not the exact locked label.",
+      "result": {
+        "kind": "unknown",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unknown",
+            "reason": "complex_or_unlocated_item"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": true,
+            "childKinds": [
+              "table"
+            ]
+          }
+        ],
+        "blocks": [
+          {
+            "tag": "td",
+            "childKinds": [
+              "#text"
+            ],
+            "textChildren": [
+              "Beef noodles AUD16"
+            ]
+          },
+          {
+            "tag": "td",
+            "childKinds": [
+              "b"
+            ],
+            "textChildren": []
+          }
+        ]
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "p-two-amounts",
+      "source": "<!doctype html><html><head><title>Menu</title></head><body><p>Beef noodles AUD16 AUD18</p></body></html>",
+      "want": "unknown",
+      "why": "amount() matches the complete normalized tail, not its final segment.",
+      "result": {
+        "kind": "unknown",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unknown",
+            "reason": "noncanonical_or_compound_price"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": true,
+            "childKinds": [
+              "p"
+            ]
+          }
+        ],
+        "blocks": [
+          {
+            "tag": "p",
+            "childKinds": [
+              "#text"
+            ],
+            "textChildren": [
+              "Beef noodles AUD16 AUD18"
+            ]
+          }
+        ]
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "li-two-amounts",
+      "source": "<!doctype html><html><head><title>Menu</title></head><body><ul><li>Beef noodles AUD16 / AUD18</li></ul></body></html>",
+      "want": "unknown",
+      "why": "Compound monetary tail does not fully match one canonical ISO price.",
+      "result": {
+        "kind": "unknown",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unknown",
+            "reason": "noncanonical_or_compound_price"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": true,
+            "childKinds": [
+              "ul"
+            ]
+          }
+        ],
+        "blocks": [
+          {
+            "tag": "li",
+            "childKinds": [
+              "#text"
+            ],
+            "textChildren": [
+              "Beef noodles AUD16 / AUD18"
+            ]
+          }
+        ]
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "p-qualifier-final-price",
+      "source": "<!doctype html><html><head><title>Menu</title></head><body><p>Beef noodles large AUD16</p></body></html>",
+      "want": "unknown",
+      "why": "A final bare price does not remove preceding non-price tail text.",
+      "result": {
+        "kind": "unknown",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unknown",
+            "reason": "noncanonical_or_compound_price"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": true,
+            "childKinds": [
+              "p"
+            ]
+          }
+        ],
+        "blocks": [
+          {
+            "tag": "p",
+            "childKinds": [
+              "#text"
+            ],
+            "textChildren": [
+              "Beef noodles large AUD16"
+            ]
+          }
+        ]
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "table-compound-label",
+      "source": "<!doctype html><html><head><title>Menu</title></head><body><table><tr><td>Beef noodles AUD16&nbsp;</td><td>AUD18</td></tr></table></body></html>",
+      "want": "unknown",
+      "why": "Table label must equal the full locked label; a unique label prefix is insufficient.",
+      "result": {
+        "kind": "unknown",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unknown",
+            "reason": "complex_or_unlocated_item"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": true,
+            "childKinds": [
+              "table"
+            ]
+          }
+        ],
+        "blocks": [
+          {
+            "tag": "td",
+            "childKinds": [
+              "#text"
+            ],
+            "textChildren": [
+              "Beef noodles AUD16 "
+            ]
+          },
+          {
+            "tag": "td",
+            "childKinds": [
+              "#text"
+            ],
+            "textChildren": [
+              "AUD18"
+            ]
+          }
+        ]
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "table-compound-price",
+      "source": "<!doctype html><html><head><title>Menu</title></head><body><table><tr><td>Beef noodles</td><td>AUD16&nbsp;AUD18</td></tr></table></body></html>",
+      "want": "unknown",
+      "why": "Decoded whitespace does not make two prices one canonical amount.",
+      "result": {
+        "kind": "unknown",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unknown",
+            "reason": "complex_or_unlocated_item"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": true,
+            "childKinds": [
+              "table"
+            ]
+          }
+        ],
+        "blocks": [
+          {
+            "tag": "td",
+            "childKinds": [
+              "#text"
+            ],
+            "textChildren": [
+              "Beef noodles"
+            ]
+          },
+          {
+            "tag": "td",
+            "childKinds": [
+              "#text"
+            ],
+            "textChildren": [
+              "AUD16 AUD18"
+            ]
+          }
+        ]
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "table-entities-valid",
+      "source": "<!doctype html><html><head><title>Menu</title></head><body>🍜<table><tr><td>Beef&#32;noodles&nbsp;</td><td>AUD&#49;8&nbsp;</td></tr></table></body></html>",
+      "want": "unchanged",
+      "why": "Entities form one literal label and AUD18, with whitespace normalized and raw tr quotation retained.",
+      "result": {
+        "kind": "unchanged",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unchanged",
+            "reason": "explicit_iso_price_equal",
+            "citation": {
+              "file": "index.html",
+              "start": 68,
+              "end": 132,
+              "excerpt": "<tr><td>Beef&#32;noodles&nbsp;</td><td>AUD&#49;8&nbsp;</td></tr>"
+            },
+            "label": "Beef noodles",
+            "expected": "AUD 18.00",
+            "actual": "AUD 18.00"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": true,
+            "childKinds": [
+              "#text",
+              "table"
+            ]
+          }
+        ],
+        "blocks": [
+          {
+            "tag": "td",
+            "childKinds": [
+              "#text"
+            ],
+            "textChildren": [
+              "Beef noodles "
+            ]
+          },
+          {
+            "tag": "td",
+            "childKinds": [
+              "#text"
+            ],
+            "textChildren": [
+              "AUD18 "
+            ]
+          }
+        ]
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "p-entities-explicit-mismatch",
+      "source": "<!doctype html><html><head><title>Menu</title></head><body><p>Beef noodles AUD&#49;6&nbsp;</p></body></html>",
+      "want": "mismatch",
+      "why": "The exact decoded source is one unambiguous AUD16 price; expected AUD18 is a finite source mismatch.",
+      "result": {
+        "kind": "mismatch",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "mismatch",
+            "reason": "explicit_iso_price_differs",
+            "citation": {
+              "file": "index.html",
+              "start": 59,
+              "end": 94,
+              "excerpt": "<p>Beef noodles AUD&#49;6&nbsp;</p>"
+            },
+            "label": "Beef noodles",
+            "expected": "AUD 18.00",
+            "actual": "AUD 16.00"
+          }
+        ],
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 59,
+            "end": 94,
+            "excerpt": "<p>Beef noodles AUD&#49;6&nbsp;</p>"
+          }
+        ]
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": true,
+            "childKinds": [
+              "p"
+            ]
+          }
+        ],
+        "blocks": [
+          {
+            "tag": "p",
+            "childKinds": [
+              "#text"
+            ],
+            "textChildren": [
+              "Beef noodles AUD16 "
+            ]
+          }
+        ]
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "table-encoded-markup-is-text",
+      "source": "<!doctype html><html><head><title>Menu</title></head><body><table><tr><td>Beef noodles</td><td>AUD16&lt;wbr&gt;</td></tr></table></body></html>",
+      "want": "unknown",
+      "why": "Encoded markup is text, but the decoded amount has a non-price suffix.",
+      "result": {
+        "kind": "unknown",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unknown",
+            "reason": "complex_or_unlocated_item"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": true,
+            "childKinds": [
+              "table"
+            ]
+          }
+        ],
+        "blocks": [
+          {
+            "tag": "td",
+            "childKinds": [
+              "#text"
+            ],
+            "textChildren": [
+              "Beef noodles"
+            ]
+          },
+          {
+            "tag": "td",
+            "childKinds": [
+              "#text"
+            ],
+            "textChildren": [
+              "AUD16<wbr>"
+            ]
+          }
+        ]
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "implicit-body-paragraph-after-head",
+      "source": "<!doctype html><html><head><title>Menu</title></head><p>Beef noodles AUD18</p></html>",
+      "want": "unchanged",
+      "why": "parse5 inserts a body and source-locates the explicit p inside that body.",
+      "result": {
+        "kind": "unchanged",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unchanged",
+            "reason": "explicit_iso_price_equal",
+            "citation": {
+              "file": "index.html",
+              "start": 53,
+              "end": 78,
+              "excerpt": "<p>Beef noodles AUD18</p>"
+            },
+            "label": "Beef noodles",
+            "expected": "AUD 18.00",
+            "actual": "AUD 18.00"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": false,
+            "childKinds": [
+              "p"
+            ]
+          }
+        ],
+        "blocks": [
+          {
+            "tag": "p",
+            "childKinds": [
+              "#text"
+            ],
+            "textChildren": [
+              "Beef noodles AUD18"
+            ]
+          }
+        ]
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "implicit-body-paragraph-fragment",
+      "source": "<p>Beef noodles AUD18</p>",
+      "want": "unchanged",
+      "why": "parse5 document parsing creates html/head/body around this complete p.",
+      "result": {
+        "kind": "unchanged",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unchanged",
+            "reason": "explicit_iso_price_equal",
+            "citation": {
+              "file": "index.html",
+              "start": 0,
+              "end": 25,
+              "excerpt": "<p>Beef noodles AUD18</p>"
+            },
+            "label": "Beef noodles",
+            "expected": "AUD 18.00",
+            "actual": "AUD 18.00"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": false,
+            "childKinds": [
+              "p"
+            ]
+          }
+        ],
+        "blocks": [
+          {
+            "tag": "p",
+            "childKinds": [
+              "#text"
+            ],
+            "textChildren": [
+              "Beef noodles AUD18"
+            ]
+          }
+        ]
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "implicit-body-valid-table",
+      "source": "<!doctype html><html><head><title>Menu</title></head><table><tr><td>Beef noodles</td><td>AUD18</td></tr></table></html>",
+      "want": "unchanged",
+      "why": "An implicit body can own an explicitly bounded valid table and row.",
+      "result": {
+        "kind": "unchanged",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unchanged",
+            "reason": "explicit_iso_price_equal",
+            "citation": {
+              "file": "index.html",
+              "start": 60,
+              "end": 104,
+              "excerpt": "<tr><td>Beef noodles</td><td>AUD18</td></tr>"
+            },
+            "label": "Beef noodles",
+            "expected": "AUD 18.00",
+            "actual": "AUD 18.00"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": false,
+            "childKinds": [
+              "table"
+            ]
+          }
+        ],
+        "blocks": [
+          {
+            "tag": "td",
+            "childKinds": [
+              "#text"
+            ],
+            "textChildren": [
+              "Beef noodles"
+            ]
+          },
+          {
+            "tag": "td",
+            "childKinds": [
+              "#text"
+            ],
+            "textChildren": [
+              "AUD18"
+            ]
+          }
+        ]
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "implicit-body-orphan-tr-review-example",
+      "source": "<!doctype html><html><head><title>Menu</title></head><tr><td>Beef noodles</td><td>AUD18</td></tr></html>",
+      "want": "unknown",
+      "why": "Orphan table tags do not create an eligible table owner or simple block, even though body exists.",
+      "result": {
+        "kind": "unknown",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unknown",
+            "reason": "label_not_unique_or_not_located"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": false,
+            "childKinds": [
+              "#text"
+            ]
+          }
+        ],
+        "blocks": []
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "head-only-label",
+      "source": "<!doctype html><html><head><title>Beef noodles AUD18</title></head></html>",
+      "want": "unknown",
+      "why": "Head/title content is not body source evidence.",
+      "result": {
+        "kind": "unknown",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unknown",
+            "reason": "label_not_unique_or_not_located"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": false,
+            "childKinds": []
+          }
+        ],
+        "blocks": []
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "head-template-label",
+      "source": "<!doctype html><html><head><template><p>Beef noodles AUD18</p></template></head></html>",
+      "want": "unknown",
+      "why": "Template input remains uncertain/inert; its label is not active evidence.",
+      "result": {
+        "kind": "unknown",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unknown",
+            "reason": "dynamic_or_unsupported_source"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": false,
+            "childKinds": []
+          }
+        ],
+        "blocks": []
+      },
+      "savedPlanUnchanged": true
+    },
+    {
+      "id": "no-source-label",
+      "source": "<!doctype html><html><head><title>Menu</title></head></html>",
+      "want": "unknown",
+      "why": "An inserted empty body has no target label or eligible owner.",
+      "result": {
+        "kind": "unknown",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "index.html",
+            "kind": "unknown",
+            "reason": "label_not_unique_or_not_located"
+          }
+        ],
+        "citations": []
+      },
+      "ast": {
+        "bodyCount": 1,
+        "bodies": [
+          {
+            "explicit": false,
+            "childKinds": []
+          }
+        ],
+        "blocks": []
+      },
+      "savedPlanUnchanged": true
+    }
+  ],
+  "remainingLimits": [
+    "All fixtures are synthetic counterexamples; no external/customer site was executed.",
+    "Only the specific alleged defects and nearby boundary cases were checked; this is not an exhaustive proof of correctness.",
+    "The raw invalid DeepSeek response is retained without normalization into a valid sign-off.",
+    "No award comparison, runtime functionality, model-quality improvement, deployment or payment result follows from these source checks."
+  ]
+}

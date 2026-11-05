@@ -1,0 +1,80 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/universal-tag-evidence.ts",
+      "bytes": 9716,
+      "lines": 150,
+      "sha256": "bdd481dc0da83060cbe131c25ec2963382d1322a2235dafc1624866e28ed2e6c"
+    },
+    {
+      "file": "lib/assessment-evidence-scope.ts",
+      "bytes": 22171,
+      "lines": 200,
+      "sha256": "a4e7c9c6ceca64810b51c0c9980b14950875a3d19cc4e0b68e24b6cf5b06ee13"
+    },
+    {
+      "file": "lib/assessment-citation-catalog.ts",
+      "bytes": 9230,
+      "lines": 146,
+      "sha256": "3765ff500c22abd42536c64bd24a9844f7bb7de099d70b5d4f449ac9b24a7904"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 46506,
+      "lines": 354,
+      "sha256": "293432afd68b38cd16cfd2d70226e42963b441a527c503c4249db34ba217e85c"
+    },
+    {
+      "file": "tests/universal-tag-assessment.test.ts",
+      "bytes": 4008,
+      "lines": 32,
+      "sha256": "0a16c2aef8af15f51735461913e31ead6808a9c7218ba90bf631ed2256a0a321"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Read-only static review of the supplied cycle-14 packet: lib/universal-tag-evidence.ts, lib/assessment-evidence-scope.ts, lib/assessment-citation-catalog.ts, lib/delivery-assessment.ts, tests/universal-tag-assessment.test.ts and the skill file. The universal-tag witness is negative-only: it returns only not_applicable, covered or unknown. In delivery-assessment.ts lines 304-309, only kind===\\\"unknown\\\" downgrades a status to insufficient_evidence. There is no finding because I traced several edge paths (malformed-owner fallback, entity encoding, requiredPages case sensitivity, raw statuses, and the static-attribute mixed veto in scope lines 172-175) and each either resolves safely or needs more source context than the packet gives. This is static reasoning only; nothing was executed, and the source-inventory, hidden-file and risk-3 prompt changes remain behavior-unverified until the next actual regression calls.\",\"findings\":[],\"limitations\":[\"Static source review only; no tests, typecheck, build, browser or provider calls were executed, so I make no claim about runtime behavior.\",\"I checked a universal owner whose owner chunk holds several labels (for example a repeated tag 'GF' in the same div). The expected unknown (owner_tag_unverified) is constrained to a safe insufficient_evidence outcome and cannot produce a false supported status.\",\"I checked CSS-only, raw-changes_suggested and raw-insufficient_evidence paths: all can only leave a raw supported result unchanged or downgrade it, and the intended raw non-promotion appears to hold.\",\"Not in the packet: contracts.ts, assessment-limits.ts, exact-copy-directive.ts, source-business-evidence.ts, assessment-label-citations.ts, static-resources.ts and the prompt/catalog code paths outside the shown lines. Relations with those modules and the items' citation resolution are assumed, not verified.\",\"The parser (parse5) behavior for unusual markup (template, foreign content, duplicated attributes, deep nesting) was not run, so those edge cases remain unverified.\",\"The source-inventory, hidden-file and risk-3 prompt changes mentioned in the task are not materially covered by this packet and remain behavior-unverified.\",\"No overall award comparison or winner claim: AGENTS.md requires verified primary references, which were not supplied. Only a narrow traceable evidence and clear-rule comparison can be made from this packet.\",\"Integration raw unknown/changes not promoted, and no money movement or acceptance by AI, are consistent with the shown source (lines 304-309 downgrade to insufficient_evidence; no acceptance/payment call in delivery-assessment.ts); this is source-only evidence, not a runtime guarantee.\"]}",
+  "report": {
+    "summary": "Read-only static review of the supplied cycle-14 packet: lib/universal-tag-evidence.ts, lib/assessment-evidence-scope.ts, lib/assessment-citation-catalog.ts, lib/delivery-assessment.ts, tests/universal-tag-assessment.test.ts and the skill file. The universal-tag witness is negative-only: it returns only not_applicable, covered or unknown. In delivery-assessment.ts lines 304-309, only kind===\"unknown\" downgrades a status to insufficient_evidence. There is no finding because I traced several edge paths (malformed-owner fallback, entity encoding, requiredPages case sensitivity, raw statuses, and the static-attribute mixed veto in scope lines 172-175) and each either resolves safely or needs more source context than the packet gives. This is static reasoning only; nothing was executed, and the source-inventory, hidden-file and risk-3 prompt changes remain behavior-unverified until the next actual regression calls.",
+    "findings": [],
+    "limitations": [
+      "Static source review only; no tests, typecheck, build, browser or provider calls were executed, so I make no claim about runtime behavior.",
+      "I checked a universal owner whose owner chunk holds several labels (for example a repeated tag 'GF' in the same div). The expected unknown (owner_tag_unverified) is constrained to a safe insufficient_evidence outcome and cannot produce a false supported status.",
+      "I checked CSS-only, raw-changes_suggested and raw-insufficient_evidence paths: all can only leave a raw supported result unchanged or downgrade it, and the intended raw non-promotion appears to hold.",
+      "Not in the packet: contracts.ts, assessment-limits.ts, exact-copy-directive.ts, source-business-evidence.ts, assessment-label-citations.ts, static-resources.ts and the prompt/catalog code paths outside the shown lines. Relations with those modules and the items' citation resolution are assumed, not verified.",
+      "The parser (parse5) behavior for unusual markup (template, foreign content, duplicated attributes, deep nesting) was not run, so those edge cases remain unverified.",
+      "The source-inventory, hidden-file and risk-3 prompt changes mentioned in the task are not materially covered by this packet and remain behavior-unverified.",
+      "No overall award comparison or winner claim: AGENTS.md requires verified primary references, which were not supplied. Only a narrow traceable evidence and clear-rule comparison can be made from this packet.",
+      "Integration raw unknown/changes not promoted, and no money movement or acceptance by AI, are consistent with the shown source (lines 304-309 downgrade to insufficient_evidence; no acceptance/payment call in delivery-assessment.ts); this is source-only evidence, not a runtime guarantee."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

@@ -1,0 +1,235 @@
+{
+  "cycle": 15,
+  "schema": "pbp-citation-relations-cycle-adjudication-v1",
+  "generatedAt": "2026-11-05T14:52:03.365Z",
+  "scope": "Bounded V3 citation/publication cleanup; independent documentation adjudication, no runtime edits or new project/model calls.",
+  "plan": "cycle-15-plan-deepseek.json",
+  "planValid": true,
+  "post": "cycle-15-post-deepseek.json",
+  "postValid": true,
+  "followup": "cycle-15-followup-deepseek.json",
+  "followupValid": true,
+  "publicationPost": "cycle-15-publication-deepseek.json",
+  "publicationPostValid": false,
+  "publicationPostErrors": [
+    "report_not_json"
+  ],
+  "publicationPostSha256": "36506f842bf8e17bfd6e0317ad95ee144f5681d84f2ec74ac72d3837eb34a9bb",
+  "publicationPostClearance": false,
+  "adjudication": [
+    "V3 plan P2 overflow/gap allegation rejected: exact slot keys, data strings, contiguous prefix, duplicate and exact-ID resolution fail closed; the validation view is separate from immutable raw output.",
+    "Accepted actual HTML-membership bug from valid post-review: staticFileKind includes About.HTML and required pages retain canonical exact keys; no ./ or case alias rewriting.",
+    "Accepted conservative known hidden/style/dynamic-hint consistency improvement; not a demonstrated arbitrary-CSS or rendered-visibility defect.",
+    "Valid bounded list followup reported no reproduced reachable regression; it is a source critique, not execution or winning-quality proof.",
+    "Publication critique is invalid report_not_json because of trailing DSML text. Its advisory reasoning was examined independently; invalid output is preserved and is not approval.",
+    "Whole-report optional-risk withholding is an explicit safe tradeoff: citation/file overlap does not reliably establish semantic dependency. Unrelated leads can be withheld; do not claim their issues were resolved.",
+    "Current saved live ProofAssessment does not retain suppressed raw risk objects or a separate structured withheld counter; it records bounded prose. Raw model risks are retained in these benchmark artifacts, not promised for every live report.",
+    "System checks denotes rule and evidence-policy validation, including abstention. Each item retains the actual final status/reason; the aggregate note does not assert that all adjustments prove defects.",
+    "Replay true flags follow fail-closed deep equality assertions, not invented observations. The independent diff review and this adjudication reconcile raw-vs-final status adjustment counts, withheld risk counts and inventory notes.",
+    "Corrected quote decomposition from actual original/current report arrays:243=180 item+63risk;222=174item+48risk. Three canonical mismatch consolidations reduce6item citations; six withheld risk rows reduce15risk citations. Status/input-project quote invariants do not mean saved report citation sets are unchanged."
+  ],
+  "publicationFindings": [
+    {
+      "finding": 1,
+      "severity": "P3",
+      "disposition": "accepted-residual-safe-tradeoff-not-runtime-defect",
+      "reason": "The all-risk gate is deliberately coarse because optional risks have no trustworthy criterion/dependency mapping. The note is explicit; item evidence remains available. Original optional leads are preserved in benchmark raw artifacts but are not retained as structured live report fields.",
+      "rejectedRecommendation": "Do not infer risk dependencies from citation/file overlap or silently keep a supposedly unrelated risk.",
+      "deferredEnhancement": "A separately designed structured audit trail/cause mapping could improve recoverability; not implemented in this bounded cleanup."
+    },
+    {
+      "finding": 2,
+      "severity": "P3",
+      "disposition": "rejected-as-current-false-finding-with-residual-granularity-limit",
+      "reason": "System checks includes server-rule and evidence-admission checks, not solely positive defect detection. The note says adjusted, while item status/explanation distinguish mismatches from insufficient evidence. No wording/runtime change is needed for factual accuracy.",
+      "deferredEnhancement": "Per-item adjustment cause codes would improve audit granularity but require an explicit saved-schema design."
+    },
+    {
+      "finding": 3,
+      "severity": "P3",
+      "disposition": "partly-accepted-readability-limit-independent-count-reconciliation-complete",
+      "reason": "The harness records literal true only after assertions that abort on drift. A retained artifact reader can inspect those assertions. The harness alone does not expose every withheld count as a dedicated field; final-publication-replay-review.json and independently computed gateRows below reconcile those counts. It is incorrect to call assertion-backed invariants fabricated proof."
+    }
+  ],
+  "actual": {
+    "assessmentCalls": 49,
+    "assessmentCallBatches": [
+      {
+        "file": "cycle-11-pilot-live.json",
+        "calls": 1
+      },
+      {
+        "file": "cycle-12-scope-live.json",
+        "calls": 3
+      },
+      {
+        "file": "cycle-13-known-live.json",
+        "calls": 7
+      },
+      {
+        "file": "cycle-13-new-first-live.json",
+        "calls": 2
+      },
+      {
+        "file": "cycle-13-scope-live.json",
+        "calls": 6
+      },
+      {
+        "file": "cycle-14-known-live.json",
+        "calls": 7
+      },
+      {
+        "file": "cycle-14-repair-new-live.json",
+        "calls": 2
+      },
+      {
+        "file": "cycle-14-scope-live.json",
+        "calls": 6
+      },
+      {
+        "file": "cycle-15-known-live.json",
+        "calls": 7
+      },
+      {
+        "file": "cycle-15-repair-new-live.json",
+        "calls": 2
+      },
+      {
+        "file": "cycle-15-scope-live.json",
+        "calls": 6
+      }
+    ],
+    "harnessReviewCallsIncludedIn49": false,
+    "finalV3": {
+      "reports": 15,
+      "criteria": 82,
+      "rawReferenceAgreement": 81,
+      "applicationReferenceAgreement": 79,
+      "admittedReports": 15,
+      "retainedRawExactQuotes": 243,
+      "originalApplicationExactQuotes": 243,
+      "itemQuotes": 180,
+      "riskQuotes": 63
+    },
+    "publicationReplay": {
+      "modelCalls": 0,
+      "networkCalls": 0,
+      "interceptedRetainedResponses": 15,
+      "criteria": 82,
+      "allStatusesUnchanged": true,
+      "publishedExactQuotes": 222,
+      "publishedItemQuotes": 174,
+      "publishedRiskQuotes": 48,
+      "withheldOptionalRisks": 6,
+      "withheldRiskQuotes": 15,
+      "sourceMismatchNarrativesCanonicalized": 3,
+      "gateRows": [
+        {
+          "id": "real-holdout-clean-blog",
+          "statusAdjustedCount": 1,
+          "rawValidatedOptionalRiskCount": 3,
+          "publishedRiskCount": 0,
+          "withheldRiskCount": 3
+        },
+        {
+          "id": "citation-relations-holdout-tavola",
+          "statusAdjustedCount": 2,
+          "rawValidatedOptionalRiskCount": 2,
+          "publishedRiskCount": 0,
+          "withheldRiskCount": 2
+        },
+        {
+          "id": "scoped-merged-row-uncertain",
+          "statusAdjustedCount": 1,
+          "rawValidatedOptionalRiskCount": 1,
+          "publishedRiskCount": 0,
+          "withheldRiskCount": 1
+        }
+      ],
+      "independentDiffReview": "final-publication-replay-review.json",
+      "inputHashVerified": true,
+      "canonicalMismatchItemQuotesConsolidated": 6,
+      "itemCitationSetChanges": [
+        {
+          "id": "scoped-target-price-wrong",
+          "changes": [
+            {
+              "criterionId": "coverage-1",
+              "previousCitations": 4,
+              "currentCitations": 1
+            }
+          ]
+        },
+        {
+          "id": "scoped-neighbour-price-borrow",
+          "changes": [
+            {
+              "criterionId": "coverage-1",
+              "previousCitations": 2,
+              "currentCitations": 1
+            }
+          ]
+        },
+        {
+          "id": "scoped-table-cross-row",
+          "changes": [
+            {
+              "criterionId": "coverage-1",
+              "previousCitations": 3,
+              "currentCitations": 1
+            }
+          ]
+        }
+      ],
+      "inputProjectQuoteHashesUnchanged": true,
+      "reportCitationSetsUnchanged": false
+    },
+    "tests": {
+      "passed": 1415,
+      "total": 1415,
+      "log": "final-publication-suite.log"
+    }
+  },
+  "cleanBlogCorrection": {
+    "requiredRawSpanUtf16PerPage": 370,
+    "pageCount": 4,
+    "perQuoteLimit": 500,
+    "itemQuoteLimit": 6,
+    "fourQuotesCanFitInPrinciple": true,
+    "frozenCatalogHasComplete370UnitSpan": false,
+    "reason": "The chosen/current catalog spans do not fully witness every label on all four pages. The old eight-choice answer and all its six-choice subsets failing do not prove that a six-citation budget is intrinsically insufficient. Four appropriately addressed 370-unit quotes would fit."
+  },
+  "awardComparison": {
+    "primarySource": "https://www.bemyapp.com/insights/ai-builders-challenge-with-ibm-bob-2026-winners.html",
+    "recheckedLocalDate": "2026-11-06",
+    "references": [
+      {
+        "project": "PHAROS_INC",
+        "award": "August Challenge 1st Place",
+        "observableDimension": "Deterministic rule checking and clear reports alongside live orbital data."
+      },
+      {
+        "project": "Agent Receipt",
+        "award": "August Challenge Most Innovative",
+        "observableDimension": "Evidence-linked authority review and exportable replay evidence."
+      }
+    ],
+    "limits": "These are named category/monthly awards, not a head-to-head source/runtime benchmark. No opponent code was tested; no overall parity, superiority or winning probability is claimed."
+  },
+  "remainingLimits": [
+    "Free-prose entailment and unseen requirements are not fully covered by finite witnesses.",
+    "Clean Blog catalog granularity and three conservative source-status mismatches remain visible; no source fact is relabeled absent.",
+    "Six optional model risk rows are temporarily withheld, including possibly useful unrelated leads; this is reduced published coverage, not proof of resolution.",
+    "Original invalid DeepSeek review is not cleared; source critique plus independent audit is not a human study.",
+    "No browser/auth/backend/payment/image-pixel evidence is established by source or zero-network publication replay."
+  ],
+  "changesInThisAdjudication": {
+    "runtimeEdits": false,
+    "frontendEdits": false,
+    "builderEdits": false,
+    "newModelCalls": 0,
+    "newProjectAssessmentCalls": 0,
+    "awardPrimaryPageReads": 1,
+    "publicCopySafe": true
+  }
+}

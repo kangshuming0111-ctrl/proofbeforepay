@@ -1,0 +1,28 @@
+{
+  "cycle": 14,
+  "postReview": "cycle-14-post-deepseek.json",
+  "postReviewValid": true,
+  "noApprovalClaim": true,
+  "actualRepair": {
+    "newProjects": 2,
+    "criteria": 12,
+    "rawAgreement": 12,
+    "applicationAgreement": 9,
+    "knownTasks": 7,
+    "knownCriteria": 64,
+    "rawKnownAgreement": 64,
+    "appKnownAgreement": 56,
+    "knownReportsAdmitted": 6,
+    "scopeAgreement": "raw5/6 app5/6"
+  },
+  "newFailures": [
+    "CleanBlog item8/risk4 IDs still exceedlocal cap; explicit prompts did not solve structural bound.",
+    "Radio pairing accidentally matched a tag candidate; independently found by actualbatch.",
+    "Merged-row rawchanges was not withheld by supported-only uncertainty path."
+  ],
+  "remainingDeliberateUnknown": [
+    "Unconfirmed semantic page-role mapping.",
+    "Unsupported CSS/dynamic evidence for visible-copy expectation."
+  ],
+  "next": "Cycle15 fixed object slots, narrower candidate and symmetric uncertainty withholding; do not mark R14 complete or superior to award projects."
+}

@@ -1,0 +1,26 @@
+{
+  "cycle": 15,
+  "observed": [
+    "R14CleanBlog returned item8/risk4 despite explicit cap instructions, correctly whole-report rejected.",
+    "R14merged-rowrawchanges escaped supported-only uncertainty gate.",
+    "R14universal candidate paired radio requirement without tag concept, causing new falseunknown."
+  ],
+  "design": [
+    "New strict named V3 data-only output: fixed c1..c6 item slots and c1..c3 risk slots, source-ID enum or trailing empty strings. No unsupported maxItems, preserve hard expanded30000.",
+    "Shared slot decoder returns selector arrays only for validation; original providerargs/slot objects retained. Unknown/gap/duplicate/missing/extra slot rejected; no trimming or retry.",
+    "Explicit V2array andlegacy replay exports only, active routes V3 exclusively.",
+    "Universal candidate requires tag word; plain radio pair unaffected.",
+    "Businessunknown + rawchanges ->unknown; definite mismatch and authoritative rule failures still unchanged."
+  ],
+  "critiqueFocus": [
+    "Objectrequiredstrict schema and empty-string enum only; maxslots by construction.",
+    "No rawslot normalization represented as original reply; IDcoverage separate from citation selection shell.",
+    "No unknown/statuspromotion, no source-visibility/runtime guarantee, no payment/acceptance."
+  ],
+  "awardComparison": {
+    "primary": "https://www.bemyapp.com/insights/ai-builders-challenge-with-ibm-bob-2026-winners.html",
+    "AgentReceipt": "AugustMostInnovative evidence provenance/replay only",
+    "PHAROS_INC": "August1st deterministicrules/clearreport only",
+    "remaining": "No opponentcode or score comparison, unknownrole/dynamic source remain explicit."
+  }
+}

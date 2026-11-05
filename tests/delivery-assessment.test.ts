@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import type { ProofBusinessExpected, ProofQuote } from "../lib/contracts.ts";
-import { assessDelivery, AssessmentResponseError, assessmentOutputTokenLimit } from "../lib/delivery-assessment.ts";
+import { assessDeliveryLegacyReplay as assessDelivery, AssessmentResponseError, assessmentOutputTokenLimit } from "../lib/delivery-assessment.ts";
 import { DomainError } from "../lib/domain.ts";
 import { summaryCoverageUnits } from "../lib/requirement-coverage.ts";
 import { ProviderError, type Fetcher } from "../lib/providers.ts";
@@ -1070,7 +1070,10 @@ test("correct confirmed source never promotes initial unknown/change advice or s
   for (const status of ["supported", "changes_suggested", "insufficient_evidence"] as const) {
     const fake = mock(businessProposal(quote, status)), result = await assessDelivery(quote, env, fake.fetcher);
     const item = result.items.find(row => row.criterionId === "coverage-1")!;
-    assert.equal(item.status, status); assert.equal(item.explanation, "Synthetic initial source suggestion."); assert.equal(fake.calls.length, 1);
+    assert.equal(item.status, status === "supported" ? "insufficient_evidence" : status);
+    if(status === "supported") assert.match(item.explanation,/citation-scope gap/);
+    else assert.equal(item.explanation, "Synthetic initial source suggestion.");
+    assert.equal(fake.calls.length, 1);
   }
   const result = await assessDelivery(quote, env, mock(businessProposal(quote, "supported", false)).fetcher);
   assert.equal(result.items.find(row => row.criterionId === "coverage-1")!.status, "insufficient_evidence");

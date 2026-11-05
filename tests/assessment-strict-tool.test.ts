@@ -8,7 +8,7 @@ test("strict reports reserve headroom beyond the observed eight-item 1980-token 
   assert.ok(assessmentOutputTokenLimit(16)>=assessmentOutputTokenLimit(8));
   for(const count of [0,-1,34,NaN])assert.throws(()=>assessmentOutputTokenLimit(count));
 });
-import {assessDelivery} from "../lib/delivery-assessment.ts";
+import {assessDeliveryLegacyReplay as assessDelivery} from "../lib/delivery-assessment.ts";
 import {AssessmentResponseError} from "../lib/assessment-response.ts";
 import {assessmentCompletionText, assessmentToolDefinition} from "../lib/assessment-completion.ts";
 import {projectQuote, type EvaluationProject} from "../scripts/run-project-assessment-evaluation.ts";

@@ -1,0 +1,550 @@
+{
+  "schema": "pbp-citation-relations-validation-v1",
+  "phase": "five evidence-driven cycles, 2026-11-05 to 2026-11-06 Melbourne",
+  "newFirst": {
+    "projects": 2,
+    "criteria": 12,
+    "rawAgreement": 11,
+    "applicationAgreement": 6,
+    "admittedReports": 2,
+    "completeItemProjects": 2
+  },
+  "repairNew": {
+    "projects": 2,
+    "criteria": 12,
+    "rawAgreement": 12,
+    "applicationAgreement": 10,
+    "admittedReports": 2,
+    "completeItemProjects": 2
+  },
+  "previousKnown": {
+    "projects": 7,
+    "criteria": 64,
+    "rawAgreement": 64,
+    "applicationAgreement": 56,
+    "admittedReports": 6,
+    "completeItemProjects": 7
+  },
+  "knownFinal": {
+    "projects": 7,
+    "criteria": 64,
+    "rawAgreement": 64,
+    "applicationAgreement": 63,
+    "admittedReports": 7,
+    "completeItemProjects": 7
+  },
+  "scopePrevious": {
+    "projects": 6,
+    "criteria": 6,
+    "rawAgreement": 5,
+    "applicationAgreement": 6,
+    "admittedReports": 6,
+    "completeItemProjects": 6
+  },
+  "scopeFinal": {
+    "projects": 6,
+    "criteria": 6,
+    "rawAgreement": 5,
+    "applicationAgreement": 6,
+    "admittedReports": 6,
+    "completeItemProjects": 6
+  },
+  "pilot": {
+    "projects": 1,
+    "criteria": 8,
+    "rawAgreement": 8,
+    "applicationAgreement": 8,
+    "admittedReports": 1,
+    "completeItemProjects": 1
+  },
+  "assessmentCalls": 49,
+  "usageEstimateUsd": 0.5178615,
+  "unknownUsageReservedUsd": 0,
+  "latestCitationChecks": {
+    "count": 243,
+    "valid": 243,
+    "itemCount": 180,
+    "riskCount": 63,
+    "evidenceLayer": "retained original R15 answers; not current published risk count",
+    "originalJsonValid": 15,
+    "reports": 15,
+    "allActualCatalogEncoding": true
+  },
+  "currentPublishedCitationChecks": {
+    "count": 222,
+    "valid": 222,
+    "itemCount": 174,
+    "riskCount": 48,
+    "evidenceLayer": "controlled current publication-policy replay",
+    "optionalRiskRowsWithheld": 6,
+    "riskQuotesWithheld": 15,
+    "itemQuotesConsolidatedByCanonicalMismatch": 6,
+    "totalQuoteDifference": 21
+  },
+  "publicationReplay": {
+    "artifact": "final-publication-replay.json",
+    "reviewArtifact": "final-publication-replay-review.json",
+    "wxArtifact": "publication-replay-wx-control.json",
+    "mode": "controlled_application_replay",
+    "apiCalls": 0,
+    "networkCalls": 0,
+    "projects": 15,
+    "criteria": 82,
+    "itemStatusesUnchanged": true,
+    "originalArtifactSha256": "95bd38d5a5d81d2fd8f9e974cd5a203764010521c6412a12a28bfc29dff5001f",
+    "sanitizedPublicSha256": "38eaceae6a8875e0119d032bf81b4e0264c731a3814de6ce844575acee9b3359",
+    "sanitizedMetadataFieldCount": 9,
+    "runtimeSourceArtifact": "publication-verified-implementation.json",
+    "runtimeSourceSha256": "e0abd77924493c2d0672e03a9caed101e4876f2dbe88fad3176b5726bcaebdfa",
+    "runtimeClosureFiles": 36,
+    "runtimeArchiveFilesIncludingHarness": 37
+  },
+  "checks": {
+    "fullTests": 1415,
+    "fullPassed": 1415,
+    "fullFailed": 0,
+    "packageTests": 11,
+    "packagePassed": 11,
+    "packageFailed": 0,
+    "typecheckExit": 0,
+    "lintErrors": 0,
+    "source": "Full suite1415 from root-run final-publication-suite.log (counts independently read); this summary pass independently ran TypeScript, packaging11 and scoped UI lint. No redundant full-suite run.",
+    "evidence": {
+      "fullSuite": {
+        "log": "final-publication-suite.log",
+        "sha256": "6ecb07134b5b0e34ff0311ab3e2df7cfa554a145625f3cd6f234674d188f38dd",
+        "executedBy": "root; independently read and counted here"
+      },
+      "typecheck": {
+        "log": "final-publication-summary-tsc.log",
+        "exitCode": 0,
+        "executedBy": "summary packaging agent"
+      },
+      "packaging": {
+        "log": "final-publication-summary-pack.log",
+        "sha256": "7b6f8d2a13d89250aa6aaa6284dc4d5ce3350b8fa5c95d291b22d2a011b81cbf",
+        "passed": 11,
+        "total": 11,
+        "executedBy": "summary packaging agent"
+      },
+      "uiScopedLint": {
+        "log": "final-publication-summary-ui-lint.log",
+        "exitCode": 0,
+        "errors": 0,
+        "target": "app/components/RealProjectAssessmentValidation.tsx",
+        "executedBy": "summary packaging agent"
+      }
+    },
+    "previousMutableChecksPreserved": {
+      "artifact": "final-checks-before-summary-publication.json",
+      "sha256": "2d26ea666508aff31cbf20b5a6b11e77f32cc3bb4b8742884d26ce5d400d5611"
+    }
+  },
+  "wholeAnswerReviews": {
+    "known": {
+      "artifact": "r15-known-independent-whole-answer-review.json",
+      "summary": {
+        "projects": 7,
+        "sourceRepositories": 6,
+        "criteria": 64,
+        "rawReferenceStatusAgreement": {
+          "count": 64,
+          "total": 64
+        },
+        "applicationReferenceStatusAgreement": {
+          "count": 63,
+          "total": 64
+        },
+        "applicationAdmitted": 7,
+        "wholeRawAnswers": {
+          "accepted": 3,
+          "qualified": 4,
+          "rejected": 0
+        },
+        "wholeApplicationAnswers": {
+          "accepted": 3,
+          "qualified": 4,
+          "rejected": 0
+        },
+        "rawExactItemCitations": 139,
+        "rawExactRiskCitations": 49,
+        "applicationExactItemCitationsAndOffsets": 139,
+        "applicationExactRiskCitationsAndOffsets": 49,
+        "allSevenOriginalJsonsAndSlotContractsValid": true,
+        "all64CriterionIdsReturnedExactlyOnce": true,
+        "applicationStatusChanges": 1,
+        "unqualifiedReliabilityClaim": false
+      }
+    },
+    "repairNew": {
+      "artifact": "r15-new-independent-whole-answer-review.json",
+      "summary": {
+        "projects": 2,
+        "criteria": 12,
+        "rawSourceStatusAgreement": {
+          "count": 12,
+          "total": 12
+        },
+        "applicationVsGoldSourceStatusAgreement": {
+          "count": 10,
+          "total": 12
+        },
+        "materialRawAndApplicationAgreement": {
+          "count": 6,
+          "total": 6
+        },
+        "rawWholeAnswers": {
+          "accepted": 0,
+          "qualified": 2,
+          "rejected": 0
+        },
+        "applicationWholeAnswers": {
+          "accepted": 0,
+          "qualified": 2,
+          "rejected": 0
+        },
+        "applicationAdmittedProjects": 2,
+        "falsePassesDetected": 0,
+        "missingCriterionAnswers": 0,
+        "confirmedSourceDefectsRecognized": {
+          "raw": 4,
+          "application": 4,
+          "total": 4
+        },
+        "conservativeTavolaAdmissionUnknowns": 2,
+        "rawItemCitationExactness": {
+          "count": 22,
+          "total": 22
+        },
+        "rawRiskCitationExactness": {
+          "count": 7,
+          "total": 7
+        },
+        "applicationCitationExactness": {
+          "count": 29,
+          "total": 29
+        },
+        "itemSelectedSlots": 22,
+        "itemEmptyTailSlots": 50,
+        "riskSelectedSlots": 7,
+        "riskEmptyTailSlots": 5,
+        "syntaxOrSlotRepairs": 0,
+        "minorQualifications": [
+          {
+            "project": "tavola",
+            "field": "risk1.explanation",
+            "issue": "Unobserved renders wording; static source facts otherwise correct."
+          },
+          {
+            "project": "material-dashboard-lite",
+            "field": "limitations[3]",
+            "issue": "Claims raster files are in inventory, but only HTML/CSS inventory entries exist."
+          }
+        ],
+        "headline": "The first-pass GF error and four static-scope losses are repaired in this known-source rerun. All selected V3 source IDs and offsets are exact; two conservative app boundaries and two minor whole-answer wording/inventory qualifications remain."
+      }
+    },
+    "scope": {
+      "artifact": "r15-scope-independent-whole-answer-review.json",
+      "summary": {
+        "projects": 6,
+        "criteria": 6,
+        "rawReferenceAgreement": 5,
+        "applicationReferenceAgreement": 6,
+        "rawWholeAnswers": {
+          "accepted": 4,
+          "qualified": 1,
+          "rejected": 1
+        },
+        "applicationWholeAnswers": {
+          "accepted": 4,
+          "qualified": 2,
+          "rejected": 0
+        },
+        "applicationAdmitted": 6,
+        "originalJsonValid": 6,
+        "syntaxNormalizations": 0,
+        "rawCitationCount": 26,
+        "applicationCitationCount": 26,
+        "allCatalogEntriesSourceExact": true,
+        "allSlotsAndCatalogBindingValid": true,
+        "allApplicationUtf16OffsetsExact": true
+      }
+    }
+  },
+  "artifactCopies": {
+    "cycle-11-pilot-live.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "893b0947f469506a51f10e70c90dae47666a36dda932c1110b3b3d0ca3173564",
+      "publicSha256": "893b0947f469506a51f10e70c90dae47666a36dda932c1110b3b3d0ca3173564",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-11-pilot-freeze.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "2e6f142c066208291f4bf5f79941d538e271e539ce8790797ef2f7a486b94bc9",
+      "publicSha256": "2e6f142c066208291f4bf5f79941d538e271e539ce8790797ef2f7a486b94bc9",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-12-scope-live.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "16a2d294a2b7f7fb78074c59c168621b2457d0fa31d78b8a9823acab18063255",
+      "publicSha256": "16a2d294a2b7f7fb78074c59c168621b2457d0fa31d78b8a9823acab18063255",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-12-scope-freeze.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "19163550a198ba51c7189fc2c93a56e69027433f3bff6537b1b7219980a6d0f5",
+      "publicSha256": "19163550a198ba51c7189fc2c93a56e69027433f3bff6537b1b7219980a6d0f5",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-13-new-first-live.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "62bcb6da58a6ef93d2cdea3081d6d14fd04ae892c013c3e75416f43fe8d6fe9b",
+      "publicSha256": "62bcb6da58a6ef93d2cdea3081d6d14fd04ae892c013c3e75416f43fe8d6fe9b",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-13-new-first-freeze.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "3fb2ff94ece301e212def34b7b382eb9072ce547143ef2c040c8f92fa44c9b3f",
+      "publicSha256": "3fb2ff94ece301e212def34b7b382eb9072ce547143ef2c040c8f92fa44c9b3f",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-13-known-live.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "5030d14e2376dc749931c790601bacf377ae9b3545e8ecf3e088686333d9eeb2",
+      "publicSha256": "5030d14e2376dc749931c790601bacf377ae9b3545e8ecf3e088686333d9eeb2",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-13-known-freeze.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "7c23f28fe1ee5801561e98ba35361c4ea11761f259f227a591fd4fc82b6310a2",
+      "publicSha256": "7c23f28fe1ee5801561e98ba35361c4ea11761f259f227a591fd4fc82b6310a2",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-13-scope-live.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "bd204c9c2a2529e1e3e8c1eee52b97164a70430d26fd5ecaacb735b78d119ce4",
+      "publicSha256": "bd204c9c2a2529e1e3e8c1eee52b97164a70430d26fd5ecaacb735b78d119ce4",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-13-scope-freeze.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "fe3818d9e0cea6544c8982f6045b6d29e9de90952f11ac69a61c427944feb5c6",
+      "publicSha256": "fe3818d9e0cea6544c8982f6045b6d29e9de90952f11ac69a61c427944feb5c6",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-14-repair-new-live.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "075438bb6c0de5a53b0b071f28ebc87fd6e5cc08c01d33ff9acf3e2c5f9d8e99",
+      "publicSha256": "075438bb6c0de5a53b0b071f28ebc87fd6e5cc08c01d33ff9acf3e2c5f9d8e99",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-14-repair-new-freeze.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "bb7f3f99af1a195c2f9175bef579fcc790190d912ba04d267e7d6d899bd2baaa",
+      "publicSha256": "bb7f3f99af1a195c2f9175bef579fcc790190d912ba04d267e7d6d899bd2baaa",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-14-known-live.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "da476becd8cfcb231082ceb32c64f1c2285be30a12962f1c591976ce6b69f33f",
+      "publicSha256": "da476becd8cfcb231082ceb32c64f1c2285be30a12962f1c591976ce6b69f33f",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-14-known-freeze.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "e40fecd5829fffb77230fb40c18eab398f390bc422d748333e229226e7708069",
+      "publicSha256": "e40fecd5829fffb77230fb40c18eab398f390bc422d748333e229226e7708069",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-14-scope-live.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "a0d2cce7ad38223aae5ae8454ed0f4e55fcd5b2f43aa1cb6d85dca63f839ff09",
+      "publicSha256": "a0d2cce7ad38223aae5ae8454ed0f4e55fcd5b2f43aa1cb6d85dca63f839ff09",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-14-scope-freeze.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "fb7bd0febe68e54772ab80e145c12873d5b132be91efb001b346bfe4675c4a40",
+      "publicSha256": "fb7bd0febe68e54772ab80e145c12873d5b132be91efb001b346bfe4675c4a40",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-15-repair-new-live.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "a08a51653e77fff95981126805b2bf7d84a8351e307ffa23791f9816b982fb74",
+      "publicSha256": "a08a51653e77fff95981126805b2bf7d84a8351e307ffa23791f9816b982fb74",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-15-repair-new-freeze.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "64a4237a8d31dbfa9fe63b9703fd773eb8931558a702ab90797152e76c5c95eb",
+      "publicSha256": "64a4237a8d31dbfa9fe63b9703fd773eb8931558a702ab90797152e76c5c95eb",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-15-known-live.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "cad9e5cb58b39cc5ae441f952cbbe46831629abba2d89e116ac5a76bc5d5f546",
+      "publicSha256": "cad9e5cb58b39cc5ae441f952cbbe46831629abba2d89e116ac5a76bc5d5f546",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-15-known-freeze.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "76f16efa21866409c95798bc384a2eac9457ce628c92f509603ff21cfa702c8d",
+      "publicSha256": "76f16efa21866409c95798bc384a2eac9457ce628c92f509603ff21cfa702c8d",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-15-scope-live.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "6212c37de5882b9395705f677a7d857ea53a6edb967ea920507bf99b0815c780",
+      "publicSha256": "6212c37de5882b9395705f677a7d857ea53a6edb967ea920507bf99b0815c780",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-15-scope-freeze.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "904489d85a038ca1c4206345b48164b499acc5a5eb4c6b67fdf225b56467d8ee",
+      "publicSha256": "904489d85a038ca1c4206345b48164b499acc5a5eb4c6b67fdf225b56467d8ee",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-14-post-deepseek.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "505dc2c2f2d683c6c537c4b23df588ac5ad6082f75e37767e65325f162cc09c2",
+      "publicSha256": "505dc2c2f2d683c6c537c4b23df588ac5ad6082f75e37767e65325f162cc09c2",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-14-adjudication.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "de05a060992660e4dd8f244981b6ad4ec0940e64f54c6b1f1a4b2f7385d1851c",
+      "publicSha256": "de05a060992660e4dd8f244981b6ad4ec0940e64f54c6b1f1a4b2f7385d1851c",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-15-plan-deepseek.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "fe3f796b2106f06a918618a671cd347921734e93f5532533a57827402733dcb2",
+      "publicSha256": "fe3f796b2106f06a918618a671cd347921734e93f5532533a57827402733dcb2",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-15-post-deepseek.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "f0c2de0ff55281e4b40e175286d68f45fef658d94591b7a842ae4450529c264e",
+      "publicSha256": "f0c2de0ff55281e4b40e175286d68f45fef658d94591b7a842ae4450529c264e",
+      "sanitizedMetadataFields": []
+    },
+    "cycle-15-adjudication.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "e3a53de9c2be6dc846686554c75662ea2c058c116e93c24eed09732677ab118a",
+      "publicSha256": "e3a53de9c2be6dc846686554c75662ea2c058c116e93c24eed09732677ab118a",
+      "sanitizedMetadataFields": []
+    },
+    "r15-known-independent-whole-answer-review.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "d643cdba97f367c2f1bbcdb306493a01176b0c87ae51ec13412c1e55c95478cc",
+      "publicSha256": "d643cdba97f367c2f1bbcdb306493a01176b0c87ae51ec13412c1e55c95478cc",
+      "sanitizedMetadataFields": []
+    },
+    "r15-new-independent-whole-answer-review.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "ad396b662bf4b6c4e7a31c60a39019732de5417ef167622a25bb7533a8acf950",
+      "publicSha256": "ad396b662bf4b6c4e7a31c60a39019732de5417ef167622a25bb7533a8acf950",
+      "sanitizedMetadataFields": []
+    },
+    "r15-scope-independent-whole-answer-review.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "ebffc827d9707d8bf751833f4c9effe0cb2f63cbe7da20402b944ca415698e54",
+      "publicSha256": "ebffc827d9707d8bf751833f4c9effe0cb2f63cbe7da20402b944ca415698e54",
+      "sanitizedMetadataFields": []
+    },
+    "final-checks.json": {
+      "copyKind": "exact copy of retained artifact",
+      "originalArtifactSha256": "43c9379aa41395ffa872ebb9f16d066386e98582e9cea109c698d31cc6cd88e8",
+      "publicSha256": "43c9379aa41395ffa872ebb9f16d066386e98582e9cea109c698d31cc6cd88e8",
+      "sanitizedMetadataFields": []
+    },
+    "final-publication-replay.json": {
+      "copyKind": "explicit sanitized public copy",
+      "originalArtifactSha256": "95bd38d5a5d81d2fd8f9e974cd5a203764010521c6412a12a28bfc29dff5001f",
+      "publicSha256": "38eaceae6a8875e0119d032bf81b4e0264c731a3814de6ce844575acee9b3359",
+      "sanitizedMetadataFields": [
+        "inputs[0].corpus",
+        "inputs[0].live",
+        "inputs[0].freeze",
+        "inputs[1].corpus",
+        "inputs[1].live",
+        "inputs[1].freeze",
+        "inputs[2].corpus",
+        "inputs[2].live",
+        "inputs[2].freeze"
+      ]
+    },
+    "final-publication-replay-review.json": {
+      "copyKind": "public copy with explicit provenance note",
+      "originalArtifactSha256": "836c5f903ee5b6f75e63a70c06b2d67814ee6cd00ab43a3cd2c8423a057e1a24",
+      "publicSha256": "f023b32bc73583e5f63fdd35c1ce5b6a4df2d226ab35b634ebaf6ad53f594d07",
+      "sanitizedMetadataFields": []
+    },
+    "publication-replay-wx-control.json": {
+      "copyKind": "public copy with explicit provenance note",
+      "originalArtifactSha256": "4c58835715d410a3c6ed90848210e0fd59b355bf5eadfd6964472b9bcc88a24f",
+      "publicSha256": "ef60322d979cc553b8a77a8659f71deaf7c45a8f7e657b25eff60f6328a060b5",
+      "sanitizedMetadataFields": []
+    }
+  },
+  "artifacts": [
+    "citation-relations-summary.json",
+    "cycle-11-pilot-live.json",
+    "cycle-12-scope-live.json",
+    "cycle-13-new-first-live.json",
+    "cycle-13-known-live.json",
+    "cycle-13-scope-live.json",
+    "cycle-14-repair-new-live.json",
+    "cycle-14-known-live.json",
+    "cycle-14-scope-live.json",
+    "cycle-15-repair-new-live.json",
+    "cycle-15-known-live.json",
+    "cycle-15-scope-live.json",
+    "cycle-11-pilot-freeze.json",
+    "cycle-12-scope-freeze.json",
+    "cycle-13-new-first-freeze.json",
+    "cycle-13-known-freeze.json",
+    "cycle-13-scope-freeze.json",
+    "cycle-14-repair-new-freeze.json",
+    "cycle-14-known-freeze.json",
+    "cycle-14-scope-freeze.json",
+    "cycle-15-repair-new-freeze.json",
+    "cycle-15-known-freeze.json",
+    "cycle-15-scope-freeze.json",
+    "r13-verified-implementation.json",
+    "r14-verified-implementation.json",
+    "r15-verified-implementation.json",
+    "publication-verified-implementation.json",
+    "r13-source-freeze-reproduction.json",
+    "new-first-independent-whole-answer-review.json",
+    "r15-known-independent-whole-answer-review.json",
+    "r15-new-independent-whole-answer-review.json",
+    "r15-scope-independent-whole-answer-review.json",
+    "final-publication-replay.json",
+    "final-publication-replay-review.json",
+    "publication-replay-wx-control.json",
+    "final-checks.json",
+    "cycle-14-post-deepseek.json",
+    "cycle-14-adjudication.json",
+    "cycle-15-plan-deepseek.json",
+    "cycle-15-post-deepseek.json",
+    "cycle-15-adjudication.json",
+    "source-provenance/provenance.json"
+  ],
+  "pendingArtifacts": [],
+  "limits": [
+    "Public original templates and authored acceptance tasks, not real customer contracts or independent human tests.",
+    "Two repositories were new to tracked tests; first results remain separate from later known repair runs. No model-training-data claim.",
+    "Known seven tasks use six repositories; the longer Corona task does not add another repository.",
+    "All exact citations are source provenance, not semantic/runtime correctness. Whole answers are reviewed by AI, not humans.",
+    "Original R15 answers retain243 quotes (180 item,63 risk). Current controlled publication has222 (174 item,48 risk). Canonical mismatch witnesses consolidate six item quotes; six optional risks with15 risk quotes are temporarily withheld, not proven false or resolved.",
+    "The publication-policy replay makes zero new API/model calls, preserves all82 statuses and exact original request bytes, and retains both old/current reports.",
+    "Only nine absolute input-path metadata fields are sanitized in the public replay. Original SHA and explicit copy notes distinguish it from the ignored original.",
+    "Conservative unknown retains unconfirmed file-role mapping and incomplete source witnesses; unknown is not a proven delivery defect.",
+    "MainNav label text can fit within370 original units per page, but the current catalog candidates split those witnesses; six slots are not intrinsically insufficient.",
+    "Schema/risk bounds still fail closed before optional-risk publication decisions, without trimming or automatic retry.",
+    "No third-party browser/backend execution, human acceptance or payment is established by source batches.",
+    "Usage estimates use frozen stated rates, not invoices. Hosted UI smoke is separate from retained model-call totals."
+  ]
+}

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {readFile} from "node:fs/promises";
 import {assessmentEvidenceScope} from "../lib/assessment-evidence-scope.ts";
-import {assessDelivery} from "../lib/delivery-assessment.ts";
+import {assessDeliveryLegacyReplay as assessDelivery} from "../lib/delivery-assessment.ts";
 import {projectQuote, validateProjectCorpus} from "../scripts/run-project-assessment-evaluation.ts";
 
 const corpus = validateProjectCorpus(JSON.parse(await readFile(new URL("../scripts/real-project-long-checklist-corpus-2026-11-05.json", import.meta.url), "utf8")));
@@ -75,5 +75,80 @@ test("a complete source-only inspection allowance never promotes sixteen raw unk
     })}}]});
   });
   assert.equal(calls, 1); assert.equal(report.items.length, 16); assert.ok(report.items.every(c => c.status === "insufficient_evidence"));
+  assert.deepEqual(q, before); assert.equal(q.proof.paymentState, "unfunded");
+});
+
+// These were disclosed only after the retained first-exposure replies. They
+// are now known-source regressions, not a new blind evaluation or reference.
+const staticRelations = [
+  "The static HTML labels Name Password and Email on sign-up.html must each target its matching input through a for and id pair",
+  "The forms.html source content must pair Fulltime Part time and Remote radio labels with values 1 2 and 3 under the same employment name",
+  "The static Password control markup in both login.html and sign-up.html must use input type password",
+  "The static Email control markup in sign-up.html must use input type email rather than text",
+];
+
+test("explicit bounded HTML associations and attributes admit source inspection without a runtime verdict", () => {
+  for (const source of staticRelations) {
+    const criterion = sourceCriterion(source), before = structuredClone(criterion);
+    assert.deepEqual(assessmentEvidenceScope(criterion), {category: "source_text", reason: "literal_content"}, source);
+    assert.equal(assessmentEvidenceScope(sourceCriterion(source + ".")).category, "source_text");
+    assert.equal(assessmentEvidenceScope(sourceCriterion(source, source)).category, "source_text");
+    assert.deepEqual(criterion, before);
+  }
+});
+
+test("static association grammar cannot absorb operational, visual, auth or retention obligations", () => {
+  for (const source of [
+    "Actual sign in must reject invalid credentials and protect the dashboard from unauthenticated access",
+    "The static Password control markup in login.html must be visually masked while typing",
+    staticRelations[2] + " and actual sign in must reject invalid credentials",
+    staticRelations[3] + " and the field must be visible at a 375px viewport",
+    staticRelations[0] + " and focusing each label must activate the corresponding input",
+    staticRelations[0] + ". After a reload the account record must remain stored",
+    staticRelations[1] + " and clicking Remote must change the selected state",
+    staticRelations[1] + ". The form must submit the selected employment value",
+    staticRelations[2] + " and must prevent password leakage",
+    staticRelations[3] + ". Then send a confirmation email",
+    "The forms.html source content must pair Fulltime Part time and Remote radio labels with values 1 2 and 3 under the same employment name after a reload",
+    "The static Password control markup in login.html must use input type password to guarantee security",
+  ]) assert.equal(assessmentEvidenceScope(sourceCriterion(source)).category, "requires_observation", source);
+  for (const title of ["Working login functionality", "Radio click interaction", "Mobile layout", "Password is visually masked", "Password security", "Save transaction records"])
+    for (const source of staticRelations)
+      assert.equal(assessmentEvidenceScope(sourceCriterion(source, title)).category, "requires_observation", `${title}: ${source}`);
+  for (const source of staticRelations) assert.equal(assessmentEvidenceScope(sourceCriterion(source, "Static markup", "mobile")).reason, "mobile");
+});
+
+test("malformed static relation targets and incomplete tuple lists stay unclassified", () => {
+  for (const source of [
+    staticRelations[0].replace("sign-up.html", "../sign-up.html"),
+    staticRelations[0].replace("sign-up.html", "https://example.invalid/sign-up.html"),
+    staticRelations[0].replace("Name Password and Email", "Name Name and Email"),
+    staticRelations[0].replace("Name Password and Email", "One Two Three Four Five Six and Seven"),
+    staticRelations[1].replace("1 2 and 3", "1 and 2"),
+    staticRelations[1].replace("1 2 and 3", "1 1 and 3"),
+    staticRelations[1].replace("Fulltime Part time and Remote", "Fulltime and"),
+    staticRelations[2].replace("both login.html and sign-up.html", "both login.html and login.html"),
+    staticRelations[2].replace("input type password", "input type passwordish"),
+    staticRelations[3].replace("input type email", 'input type "email'),
+  ]) assert.equal(assessmentEvidenceScope(sourceCriterion(source)).category, "requires_observation", source);
+});
+
+test("new static relation scope never promotes a provider unknown or changes the locked requirements", async () => {
+  const q = projectQuote({id: "known-static-relation-scope", stratum: "boundary", language: "en", title: "Controlled static relationship scope",
+    summary: "Inspect the explicitly named static HTML associations and attributes only.",
+    files: {"index.html": "<!doctype html><html><body><p>Static fixture</p></body></html>",
+      "sign-up.html": '<!doctype html><html><body><label for="name">Name</label><input id="name"><label for="password">Password</label><input id="password" type="text"><label for="email">Email</label><input id="email" type="text"></body></html>',
+      "login.html": '<!doctype html><html><body><label for="password">Password</label><input id="password" type="text"></body></html>',
+      "forms.html": '<!doctype html><html><body><form><label>Fulltime<input type="radio" name="employment" value="1"></label></form></body></html>'},
+    criteria: staticRelations.map((source, index) => ({id: `manual-${index + 1}`, title: `Manual requirement ${index + 1}`, source,
+      reference: {expectedStatus: "insufficient_evidence", rationale: "Controlled raw unknown preservation; no actual provider call.", relevantFiles: ["index.html"], requiresSemanticReview: true}}))});
+  const before = structuredClone(q); let calls = 0;
+  const report = await assessDelivery(q, {DEEPSEEK_API_KEY: "controlled-offline-no-network"}, async () => {
+    calls++;
+    return Response.json({choices: [{finish_reason: "stop", message: {content: JSON.stringify({items: q.proof.criteria.map(c => ({criterionId: c.id,
+      status: "insufficient_evidence", explanation: "Controlled unknown; static scope is not a compliance verdict.", citations: []})),
+      risks: [], limitations: ["No real provider, browser, authentication or storage was exercised."]})}}]});
+  });
+  assert.equal(calls, 1); assert.ok(report.items.every(item => item.status === "insufficient_evidence"));
   assert.deepEqual(q, before); assert.equal(q.proof.paymentState, "unfunded");
 });

@@ -1,0 +1,1842 @@
+{
+  "schema": "proofbeforepay-independent-whole-answer-review-v1",
+  "generatedAt": "2026-11-05T14:21:46.161Z",
+  "reviewer": "Independent Codex AI source/whole-answer review, not a human study",
+  "phase": "R15 known-source repair rerun; not cold or new first exposure",
+  "inputs": {
+    "corpus": "scripts/project-assessment-corpus-citation-relations-holdout.json",
+    "corpusSha256": "96a4f7b18a2440d9c589f2ad8d3583ea7c98aecc9eee00292db31098e036d900",
+    "results": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-live.json",
+    "resultsSha256": "a08a51653e77fff95981126805b2bf7d84a8351e307ffa23791f9816b982fb74",
+    "freezeSha256": "d71d580e1457bbb8445b8d9a6705dc6c9a668551be8ea0740207e8267085454e",
+    "provenance": "public/benchmarks/citation-relations-2026-11-05/source-provenance/provenance.json"
+  },
+  "method": {
+    "newProviderCalls": 0,
+    "networkCalls": 0,
+    "originalSourceFilesRead": 9,
+    "htmlFilesFullyParsed": 6,
+    "cssFilesFullyRead": 3,
+    "sourceExecution": false,
+    "sourceReferenceOrAnswerEdits": false,
+    "allSelectedIdsResolvedIndependently": true,
+    "catalogReconstructedWithFrozenBinding": true,
+    "completeExplanationsRisksLimitationsReviewed": true
+  },
+  "summary": {
+    "projects": 2,
+    "criteria": 12,
+    "rawSourceStatusAgreement": {
+      "count": 12,
+      "total": 12
+    },
+    "applicationVsGoldSourceStatusAgreement": {
+      "count": 10,
+      "total": 12
+    },
+    "materialRawAndApplicationAgreement": {
+      "count": 6,
+      "total": 6
+    },
+    "rawWholeAnswers": {
+      "accepted": 0,
+      "qualified": 2,
+      "rejected": 0
+    },
+    "applicationWholeAnswers": {
+      "accepted": 0,
+      "qualified": 2,
+      "rejected": 0
+    },
+    "applicationAdmittedProjects": 2,
+    "falsePassesDetected": 0,
+    "missingCriterionAnswers": 0,
+    "confirmedSourceDefectsRecognized": {
+      "raw": 4,
+      "application": 4,
+      "total": 4
+    },
+    "conservativeTavolaAdmissionUnknowns": 2,
+    "rawItemCitationExactness": {
+      "count": 22,
+      "total": 22
+    },
+    "rawRiskCitationExactness": {
+      "count": 7,
+      "total": 7
+    },
+    "applicationCitationExactness": {
+      "count": 29,
+      "total": 29
+    },
+    "itemSelectedSlots": 22,
+    "itemEmptyTailSlots": 50,
+    "riskSelectedSlots": 7,
+    "riskEmptyTailSlots": 5,
+    "syntaxOrSlotRepairs": 0,
+    "minorQualifications": [
+      {
+        "project": "tavola",
+        "field": "risk1.explanation",
+        "issue": "Unobserved renders wording; static source facts otherwise correct."
+      },
+      {
+        "project": "material-dashboard-lite",
+        "field": "limitations[3]",
+        "issue": "Claims raster files are in inventory, but only HTML/CSS inventory entries exist."
+      }
+    ],
+    "headline": "The first-pass GF error and four static-scope losses are repaired in this known-source rerun. All selected V3 source IDs and offsets are exact; two conservative app boundaries and two minor whole-answer wording/inventory qualifications remain."
+  },
+  "firstExposurePreserved": {
+    "result": "outputs/citation-relations-2026-11-05/cycle-13-new-first-live.json",
+    "resultSha256": "62bcb6da58a6ef93d2cdea3081d6d14fd04ae892c013c3e75416f43fe8d6fe9b",
+    "independentReview": "outputs/citation-relations-2026-11-05/new-first-independent-whole-answer-review.json",
+    "independentReviewSha256": "a45bc64ac4c03eb745f64bda78148fbaf8c814d41bbc4a4d97628eecb1fbb682",
+    "rawStatusAgreement": {
+      "count": 11,
+      "total": 12
+    },
+    "applicationStatusAgreement": {
+      "count": 6,
+      "total": 12
+    },
+    "applicationWholeAnswersRejected": 2,
+    "originalFalsePassCount": 1,
+    "unchangedDuringReview": true,
+    "notReplacedByR15": true
+  },
+  "remainingIssues": [
+    {
+      "kind": "admission_boundary",
+      "severity": "bounded-limitation",
+      "project": "tavola",
+      "criteria": [
+        "coverage-1",
+        "coverage-2"
+      ],
+      "reason": "Role-to-file mapping and global dynamic/unsupported-page guard remain conservative. Both source facts independently exist and are cited; no source absence or browser result should be inferred."
+    },
+    {
+      "kind": "minor_wording",
+      "severity": "P3",
+      "project": "tavola",
+      "field": "risk1.explanation",
+      "reason": "Prefer source lists to renders; current limitations establish that no browser was run."
+    },
+    {
+      "kind": "inventory_hallucination",
+      "severity": "P3",
+      "project": "material-dashboard-lite",
+      "field": "limitations[3]",
+      "reason": "No raster inventory entries exist in the frozen packet. Do not present this as image analysis."
+    }
+  ],
+  "projects": [
+    {
+      "id": "citation-relations-holdout-tavola",
+      "rawVerdict": "qualified",
+      "applicationVerdict": "qualified",
+      "applicationAdmitted": true,
+      "wholeReasons": [
+        "All six raw status judgments agree with independently checked source/runtime boundaries.",
+        "The prior GF false pass and Cacio incomplete citation have been corrected in this known-source rerun.",
+        "Two app unknowns remain explicit conservative admission boundaries; they do not mean source facts are missing.",
+        "Risk1 has a minor unobserved-rendering word and therefore the whole answer is qualified rather than unconditionally accepted."
+      ],
+      "sourceFactVsAdmission": [
+        {
+          "criterionId": "coverage-1",
+          "goldSourceFactStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "insufficient_evidence",
+          "admissionBoundary": "unconfirmed_page_role_mapping",
+          "notProofOfMissingSource": true
+        },
+        {
+          "criterionId": "coverage-2",
+          "goldSourceFactStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "insufficient_evidence",
+          "admissionBoundary": "dynamic_or_unsupported_page_dependency",
+          "notProofOfMissingSource": true
+        },
+        {
+          "criterionId": "coverage-3",
+          "goldSourceFactStatus": "changes_suggested",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "admissionBoundary": null,
+          "notProofOfMissingSource": false
+        },
+        {
+          "criterionId": "coverage-4",
+          "goldSourceFactStatus": "changes_suggested",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "admissionBoundary": null,
+          "notProofOfMissingSource": false
+        },
+        {
+          "criterionId": "coverage-5",
+          "goldSourceFactStatus": "insufficient_evidence",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "admissionBoundary": null,
+          "notProofOfMissingSource": false
+        },
+        {
+          "criterionId": "coverage-6",
+          "goldSourceFactStatus": "insufficient_evidence",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "admissionBoundary": null,
+          "notProofOfMissingSource": false
+        }
+      ],
+      "originalSourceAudit": {
+        "repository": "https://github.com/ColorlibHQ/bootstrap-templates",
+        "commit": "feebd4716ef5c9149613b3c5a78030c34cbf846d",
+        "license": "MIT",
+        "sourceKind": "Official Colorlib public restaurant template; not a customer site",
+        "files": [
+          {
+            "file": "index.html",
+            "utf8Bytes": 25388,
+            "utf16Units": 25343,
+            "sha256": "467ca3c28a632d9791e04f95f64570a117054b37af3ffb61442731ec4a931937",
+            "originalArchiveExact": true,
+            "frozenRequestExact": true,
+            "frozenFileHashExact": true,
+            "astNodes": 895,
+            "scripts": [
+              {
+                "src": null,
+                "type": "importmap",
+                "sourceSupplied": null
+              },
+              {
+                "src": "assets/js/main.js",
+                "type": "module",
+                "sourceSupplied": false
+              }
+            ],
+            "forms": [
+              {
+                "id": "bookForm",
+                "action": null
+              }
+            ]
+          },
+          {
+            "file": "menu.html",
+            "utf8Bytes": 14865,
+            "utf16Units": 14852,
+            "sha256": "eeaaadc790743dccc2cbb4f4277eb39d9e1e01ce5168b747c35ad8075e3f14f4",
+            "originalArchiveExact": true,
+            "frozenRequestExact": true,
+            "frozenFileHashExact": true,
+            "astNodes": 623,
+            "scripts": [
+              {
+                "src": null,
+                "type": "importmap",
+                "sourceSupplied": null
+              },
+              {
+                "src": "assets/js/main.js",
+                "type": "module",
+                "sourceSupplied": false
+              }
+            ],
+            "forms": []
+          },
+          {
+            "file": "assets/css/base.css",
+            "utf8Bytes": 12208,
+            "utf16Units": 12182,
+            "sha256": "84662d517b2d223427a0d403a347cb8edf1a834ecaf160e5f4c8f8627c78b56c",
+            "originalArchiveExact": true,
+            "frozenRequestExact": true,
+            "frozenFileHashExact": true,
+            "astNodes": 0,
+            "scripts": [],
+            "forms": []
+          },
+          {
+            "file": "assets/css/style.css",
+            "utf8Bytes": 5530,
+            "utf16Units": 5524,
+            "sha256": "d1cdc65f1fdb90045f631c4dfcae79d814a316df48fcc21c32b25cc93aa5706a",
+            "originalArchiveExact": true,
+            "frozenRequestExact": true,
+            "frozenFileHashExact": true,
+            "astNodes": 0,
+            "scripts": [],
+            "forms": []
+          }
+        ],
+        "allOriginalArchiveHashesMatch": true,
+        "allFrozenRequestHashesMatch": true,
+        "completeHtmlAstInspection": true,
+        "allIncludedCssRead": true,
+        "excludedDependencies": "Bootstrap6 CSS is381199bytes; vendor JS, images/fonts excluded. Source-only task, no rendered/dynamic/runtime evidence."
+      },
+      "transportAudit": {
+        "strictToolName": "submit_source_assessment_v3",
+        "encoding": "catalog_slots",
+        "originalJsonValid": true,
+        "normalization": "none",
+        "originalArgumentTextDecodedExactly": true,
+        "slotObjectsExact": true,
+        "nonemptyPrefixAndTailEmpty": true,
+        "catalogId": "4510a0300b797ad643fa37bccf99d25386f515d0021790597f8cb554e2424cc0",
+        "catalogRebuiltAndHashMatched": true,
+        "catalogEntries": 583,
+        "requestBodyHashMatched": true,
+        "criterionIdsCompleteOrderedUnique": true,
+        "rawKeptUnchanged": true
+      },
+      "facts": {
+        "dishes": [
+          {
+            "name": "Whipped cod roe",
+            "file": "index.html",
+            "tags": [
+              "GF"
+            ],
+            "price": "£9",
+            "ancestorIds": [
+              "svcLunch",
+              "menu",
+              "main"
+            ],
+            "cardLabels": [],
+            "owner": {
+              "file": "index.html",
+              "start": 6055,
+              "end": 6261,
+              "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Whipped cod roe<span class=\"dish-tags\"><span class=\"dish-tag\">GF</span></span></span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;9</span></div>"
+            }
+          },
+          {
+            "name": "Cacio e pepe",
+            "file": "index.html",
+            "tags": [
+              "V"
+            ],
+            "price": "£14",
+            "ancestorIds": [
+              "svcLunch",
+              "menu",
+              "main"
+            ],
+            "cardLabels": [],
+            "owner": {
+              "file": "index.html",
+              "start": 6797,
+              "end": 7000,
+              "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Cacio e pepe<span class=\"dish-tags\"><span class=\"dish-tag\">V</span></span></span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;14</span></div>"
+            }
+          },
+          {
+            "name": "Whipped cod roe",
+            "file": "menu.html",
+            "tags": [],
+            "price": "£9",
+            "ancestorIds": [
+              "main"
+            ],
+            "cardLabels": [
+              "Snacks & starters"
+            ],
+            "owner": {
+              "file": "menu.html",
+              "start": 5105,
+              "end": 5248,
+              "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Whipped cod roe</span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;9</span></div>"
+            }
+          },
+          {
+            "name": "Cacio e pepe",
+            "file": "menu.html",
+            "tags": [
+              "V"
+            ],
+            "price": "£14",
+            "ancestorIds": [
+              "main"
+            ],
+            "cardLabels": [
+              "Pasta"
+            ],
+            "owner": {
+              "file": "menu.html",
+              "start": 6318,
+              "end": 6521,
+              "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Cacio e pepe<span class=\"dish-tags\"><span class=\"dish-tag\">V</span></span></span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;14</span></div>"
+            }
+          },
+          {
+            "name": "Nero d'Avola",
+            "file": "menu.html",
+            "tags": [],
+            "price": "£8",
+            "ancestorIds": [
+              "main"
+            ],
+            "cardLabels": [
+              "By the glass"
+            ],
+            "owner": {
+              "file": "menu.html",
+              "start": 10786,
+              "end": 10926,
+              "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Nero d'Avola</span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;8</span></div>"
+            }
+          }
+        ],
+        "updatedDaily": {
+          "file": "menu.html",
+          "start": 3877,
+          "end": 3923,
+          "excerpt": "<p class=\"eyebrow-rule mb-4\">Updated daily</p>"
+        },
+        "buyerConfirmedPageRoleMappingPresent": false,
+        "whyRoleMappingIsSeparate": "Supplied original source and filenames let the independent source reviewer recognize the intended pages. The saved packet does not contain a separate trusted buyer role-to-file mapping for the role-only universal tag criterion; source facts are not absent."
+      },
+      "criteria": [
+        {
+          "criterionId": "coverage-1",
+          "sourceFactStatus": "supported",
+          "rawVerdict": "accepted",
+          "applicationVerdict": "qualified",
+          "admissionBoundary": "unconfirmed_page_role_mapping",
+          "reason": "Both original complete dish owners pair Cacio e pepe, V and £14; the homepage owner is in svcLunch, the full-menu owner in Pasta. Current selected IDs s104/s400 each cover the complete target owner, so the prior missing-name citation gap is gone. App unknown is a conservative role-to-file admission boundary, not missing source labels/prices or incomplete current blocks.",
+          "originalRequirement": "The homepage lunch menu and full menu source content must each pair Cacio e pepe with the V tag and advertised price £14",
+          "originalReference": {
+            "expectedStatus": "supported",
+            "rationale": "Both original HTML files have the Cacio e pepe dish-name span with V tag and the same adjacent &pound;14 dish-price span in the same dish row. This establishes published source content and row association only, not the correctness of the food label or payment. No AUD or USD is inferred from the pound symbol.",
+            "relevantFiles": [
+              "index.html",
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          },
+          "rawStatus": "supported",
+          "applicationStatus": "insufficient_evidence",
+          "rawSlots": {
+            "c1": "s104",
+            "c2": "s400",
+            "c3": "",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          },
+          "rawSelectedIds": [
+            "s104",
+            "s400"
+          ],
+          "rawExplanation": "index.html lunch pane pairs Cacio e pepe with V tag and £14; menu.html Pasta card does the same. Both required pairings are in source.",
+          "resolvedCitations": [
+            {
+              "file": "index.html",
+              "start": 6797,
+              "end": 7000,
+              "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Cacio e pepe<span class=\"dish-tags\"><span class=\"dish-tag\">V</span></span></span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;14</span></div>"
+            },
+            {
+              "file": "menu.html",
+              "start": 6318,
+              "end": 6521,
+              "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Cacio e pepe<span class=\"dish-tags\"><span class=\"dish-tag\">V</span></span></span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;14</span></div>"
+            }
+          ],
+          "applicationExplanation": "The source and citations do not establish the required name/tag/price relationship within a complete owner on every specified page. Page-role aliases cannot substitute for a confirmed file mapping. Review the exact targets and complete blocks. This is insufficient relationship evidence, not proof of absent delivery, visibility or working behavior. Requirements and citations are unchanged."
+        },
+        {
+          "criterionId": "coverage-2",
+          "sourceFactStatus": "supported",
+          "rawVerdict": "accepted",
+          "applicationVerdict": "qualified",
+          "admissionBoundary": "dynamic_or_unsupported_page_dependency",
+          "reason": "The literal simple p Updated daily is present and completely cited by s349. External CSS/main JS references cause the source-business helper to abstain. Keep the source fact and policy outcome separate: this is not proof of absent copy, failed daily updates or rendered visibility.",
+          "originalRequirement": "The full menu page copy must include the literal phrase Updated daily",
+          "originalReference": {
+            "expectedStatus": "supported",
+            "rationale": "menu.html has a simple text-only p containing Updated daily. The source phrase is present. It is an authored static-copy task; it does not establish that a daily update actually runs or that the real menu is current.",
+            "relevantFiles": [
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          },
+          "rawStatus": "supported",
+          "applicationStatus": "insufficient_evidence",
+          "rawSlots": {
+            "c1": "s349",
+            "c2": "",
+            "c3": "",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          },
+          "rawSelectedIds": [
+            "s349"
+          ],
+          "rawExplanation": "menu.html contains the literal string \"Updated daily\" in the sub-head eyebrow paragraph.",
+          "resolvedCitations": [
+            {
+              "file": "menu.html",
+              "start": 3877,
+              "end": 3923,
+              "excerpt": "<p class=\"eyebrow-rule mb-4\">Updated daily</p>"
+            }
+          ],
+          "applicationExplanation": "Not all confirmed business checks can be reliably matched within the limited static simple-block format. Duplicate or unlocated content, complex markup or dynamic sources need other evidence. Source suggestions cannot establish compliance; the locked agreement is unchanged."
+        },
+        {
+          "criterionId": "coverage-3",
+          "sourceFactStatus": "changes_suggested",
+          "rawVerdict": "accepted",
+          "applicationVerdict": "accepted",
+          "reason": "Homepage complete Whipped cod roe owner has GF; full-menu complete owner has no dish-tags. Raw status, explanation, risk and app status now consistently identify the source mismatch. Both whole owners are cited; unrelated GF tags are not borrowed. The original first-exposure false pass is fixed in this known-source rerun.",
+          "originalRequirement": "The homepage and full menu source content must both attach the GF tag to Whipped cod roe",
+          "originalReference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "The homepage Whipped cod roe dish row contains a GF tag, whereas the full-menu Whipped cod roe row has no dietary tag. Other full-menu GF tags belong to other dish rows and cannot establish this item. The requirement checks source consistency, not actual allergen safety or rendered visibility.",
+            "relevantFiles": [
+              "index.html",
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          },
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawSlots": {
+            "c1": "s88",
+            "c2": "s371",
+            "c3": "",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          },
+          "rawSelectedIds": [
+            "s88",
+            "s371"
+          ],
+          "rawExplanation": "index.html attaches GF to Whipped cod roe, but menu.html lists Whipped cod roe with no tags at all — the required GF tag is missing there.",
+          "resolvedCitations": [
+            {
+              "file": "index.html",
+              "start": 6055,
+              "end": 6261,
+              "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Whipped cod roe<span class=\"dish-tags\"><span class=\"dish-tag\">GF</span></span></span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;9</span></div>"
+            },
+            {
+              "file": "menu.html",
+              "start": 5105,
+              "end": 5248,
+              "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Whipped cod roe</span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;9</span></div>"
+            }
+          ],
+          "applicationExplanation": "index.html attaches GF to Whipped cod roe, but menu.html lists Whipped cod roe with no tags at all — the required GF tag is missing there."
+        },
+        {
+          "criterionId": "coverage-4",
+          "sourceFactStatus": "changes_suggested",
+          "rawVerdict": "accepted",
+          "applicationVerdict": "accepted",
+          "reason": "Same original By the glass card pairs Nero d'Avola with £8; required £10 is a source numeric mismatch. s489 locates the correct section and s506 covers the whole matching row. Curly/straight apostrophes are appropriately treated as the same item.",
+          "originalRequirement": "The full menu source copy must pair Nero d’Avola in the By the glass section with advertised price £10",
+          "originalReference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "The By the glass section in menu.html lists Nero d'Avola with &pound;8 rather than required pound10. The typographic apostrophe variation in the task does not change the named wine; this is a numeric advertised-copy mismatch, not a comma-only title change. No currency conversion or AUD/USD lock is inferred.",
+            "relevantFiles": [
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          },
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawSlots": {
+            "c1": "s489",
+            "c2": "s506",
+            "c3": "",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          },
+          "rawSelectedIds": [
+            "s489",
+            "s506"
+          ],
+          "rawExplanation": "In menu.html's \"By the glass\" section, Nero d'Avola is priced £8, not the required £10.",
+          "resolvedCitations": [
+            {
+              "file": "menu.html",
+              "start": 10053,
+              "end": 10093,
+              "excerpt": "<p class=\"course-label\">By the glass</p>"
+            },
+            {
+              "file": "menu.html",
+              "start": 10786,
+              "end": 10926,
+              "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Nero d'Avola</span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;8</span></div>"
+            }
+          ],
+          "applicationExplanation": "In menu.html's \"By the glass\" section, Nero d'Avola is priced £8, not the required £10."
+        },
+        {
+          "criterionId": "coverage-5",
+          "sourceFactStatus": "insufficient_evidence",
+          "rawVerdict": "accepted",
+          "applicationVerdict": "accepted",
+          "reason": "data-demo-form markup and confirmation copy cannot establish persistence, email delivery or restart readback. The answer remains unknown and does not assert deployed server failure.",
+          "originalRequirement": "The reservation flow must actually persist the booking and email a confirmation retrievable after a server restart",
+          "originalReference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "A demo-marked booking form and confirmation copy do not prove backend persistence, delivery of email, or independent readback after restart. External JS/backend were not supplied or executed. The task must not be passed from text or declared an actual server failure solely from HTML.",
+            "relevantFiles": [
+              "index.html"
+            ],
+            "requiresSemanticReview": true
+          },
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawSlots": {
+            "c1": "s240",
+            "c2": "s274",
+            "c3": "",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          },
+          "rawSelectedIds": [
+            "s240",
+            "s274"
+          ],
+          "rawExplanation": "Booking persistence, email confirmation delivery and retrieval after restart need runtime/backend evidence; source only shows a form with data-demo-form and a copy line about email confirmation.",
+          "resolvedCitations": [
+            {
+              "file": "index.html",
+              "start": 15200,
+              "end": 15600,
+              "excerpt": "Form\" data-demo-form data-bs-validate novalidate>\n              <div class=\"row g-4\">\n                <div class=\"md:col-6\">\n                  <div class=\"form-field\">\n                    <label class=\"form-label\" for=\"bkDate\">Date</label>\n                    <input type=\"text\" class=\"form-control\" id=\"bkDate\" data-bs-toggle=\"datepicker\" autocomplete=\"off\" placeholder=\"Choose a date…\" required>\n  "
+            },
+            {
+              "file": "index.html",
+              "start": 19884,
+              "end": 20242,
+              "excerpt": "<div class=\"col-12\">\n                  <button class=\"btn-solid theme-primary btn-lg\" type=\"submit\" data-done-text=\"Table requested ✓\">Request the table</button>\n                  <p class=\"fs-xs fg-3 mt-4 mb-0\">We confirm by email within a couple of hours. For six or more, please call <a href=\"tel:01179000000\">0117 900 0000</a>.</p>\n                </div>"
+            }
+          ],
+          "applicationExplanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed."
+        },
+        {
+          "criterionId": "coverage-6",
+          "sourceFactStatus": "insufficient_evidence",
+          "rawVerdict": "accepted",
+          "applicationVerdict": "accepted",
+          "reason": "Tab markup/CSS declarations do not establish actual switching or measured 375px overflow. Browser execution remains unobserved.",
+          "originalRequirement": "At a 375px viewport the Lunch Dinner and Sunday tabs must switch correctly without horizontal overflow",
+          "originalReference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "The supplied files have tab markup and custom CSS, but no browser interaction or geometry observation was made. The large Bootstrap CSS and JS are outside the source subset. File declarations cannot establish successful switching or measured overflow.",
+            "relevantFiles": [
+              "index.html",
+              "assets/css/base.css",
+              "assets/css/style.css"
+            ],
+            "requiresSemanticReview": true
+          },
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawSlots": {
+            "c1": "s76",
+            "c2": "s77",
+            "c3": "s79",
+            "c4": "s39",
+            "c5": "",
+            "c6": ""
+          },
+          "rawSelectedIds": [
+            "s76",
+            "s77",
+            "s79",
+            "s39"
+          ],
+          "rawExplanation": "Tab switching behavior and absence of horizontal overflow at 375px require a rendering browser; source shows tab buttons/markup only.",
+          "resolvedCitations": [
+            {
+              "file": "index.html",
+              "start": 4955,
+              "end": 5141,
+              "excerpt": "<li class=\"nav-item\" role=\"presentation\"><button class=\"nav-link active\" data-bs-toggle=\"tab\" data-bs-target=\"#svcLunch\" type=\"button\" role=\"tab\" aria-selected=\"true\">Lunch</button></li>"
+            },
+            {
+              "file": "index.html",
+              "start": 5150,
+              "end": 5332,
+              "excerpt": "<li class=\"nav-item\" role=\"presentation\"><button class=\"nav-link\" data-bs-toggle=\"tab\" data-bs-target=\"#svcDinner\" type=\"button\" role=\"tab\" aria-selected=\"false\">Dinner</button></li>"
+            },
+            {
+              "file": "index.html",
+              "start": 5341,
+              "end": 5523,
+              "excerpt": "<li class=\"nav-item\" role=\"presentation\"><button class=\"nav-link\" data-bs-toggle=\"tab\" data-bs-target=\"#svcSunday\" type=\"button\" role=\"tab\" aria-selected=\"false\">Sunday</button></li>"
+            },
+            {
+              "file": "assets/css/style.css",
+              "start": 2800,
+              "end": 3200,
+              "excerpt": "border-color);\n}\n\n/* Dish rows with leader dots, set the way a printed menu sets them. The dots\n   are a repeating-linear-gradient on a flexible middle cell, so they stretch to\n   whatever gap is left and never wrap. */\n.dish {\n  display: grid;\n  grid-template-columns: auto 1fr auto;\n  align-items: baseline;\n  gap: 0.5rem;\n  margin-bottom: 0.35rem;\n}\n\n.dish-name { font-size: 1.15rem; }\n\n.dish-lead"
+            }
+          ],
+          "applicationExplanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed."
+        }
+      ],
+      "risks": [
+        {
+          "index": 0,
+          "verdict": "qualified",
+          "factsAccepted": true,
+          "citationCoverage": "complete-two-page-owners",
+          "reason": "The GF inconsistency and requested source edit are accurate and fully cited. The word renders overstates the evidence layer; no browser rendering was performed. Interpret it as source markup lists and retain this wording qualification instead of claiming observed visibility.",
+          "rawTitle": "Whipped cod roe lacks the agreed GF tag on the full menu page",
+          "rawExplanation": "menu.html renders Whipped cod roe with a name, leader and £9 price but no dish-tags span, while the homepage version carries the GF tag.",
+          "rawSuggestion": "Add a GF dish-tag to the Whipped cod roe row in menu.html's Snacks & starters card.",
+          "rawSlots": {
+            "c1": "s371",
+            "c2": "s88",
+            "c3": ""
+          },
+          "selectedIds": [
+            "s371",
+            "s88"
+          ],
+          "resolvedCitations": [
+            {
+              "file": "menu.html",
+              "start": 5105,
+              "end": 5248,
+              "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Whipped cod roe</span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;9</span></div>"
+            },
+            {
+              "file": "index.html",
+              "start": 6055,
+              "end": 6261,
+              "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Whipped cod roe<span class=\"dish-tags\"><span class=\"dish-tag\">GF</span></span></span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;9</span></div>"
+            }
+          ],
+          "applicationRetainedExactly": true
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "factsAccepted": true,
+          "citationCoverage": "complete-price-owner-and-section",
+          "reason": "The £8 versus £10 source difference is exact and cited within the correct card; suggestion asks to confirm the intended price before editing.",
+          "rawTitle": "Nero d'Avola price is £8 rather than the agreed £10",
+          "rawExplanation": "In the By the glass menu card, the Nero d'Avola row shows a dish-price of £8.",
+          "rawSuggestion": "Confirm the agreed £10 glass price and update the Nero d'Avola dish-price in menu.html if £10 is correct.",
+          "rawSlots": {
+            "c1": "s506",
+            "c2": "s489",
+            "c3": ""
+          },
+          "selectedIds": [
+            "s506",
+            "s489"
+          ],
+          "resolvedCitations": [
+            {
+              "file": "menu.html",
+              "start": 10786,
+              "end": 10926,
+              "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Nero d'Avola</span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;8</span></div>"
+            },
+            {
+              "file": "menu.html",
+              "start": 10053,
+              "end": 10093,
+              "excerpt": "<p class=\"course-label\">By the glass</p>"
+            }
+          ],
+          "applicationRetainedExactly": true
+        }
+      ],
+      "limitations": {
+        "rawAndApplicationRetained": [
+          {
+            "index": 0,
+            "text": "Reservation persistence, email delivery and retrieval after a server restart cannot be verified from static HTML/CSS; no backend code is supplied.",
+            "verdict": "accepted",
+            "reason": "Only static HTML/CSS and references are supplied; no backend/email/restart trace."
+          },
+          {
+            "index": 1,
+            "text": "Tab switching at 375px and absence of horizontal overflow require rendered/browser inspection.",
+            "verdict": "accepted",
+            "reason": "No actual browser/viewport geometry observation was performed."
+          },
+          {
+            "index": 2,
+            "text": "Only HTML and CSS were supplied; assets/js/main.js and Bootstrap vendor files are referenced but not included, so script-driven behavior is unverified.",
+            "verdict": "accepted",
+            "reason": "The original HTML references main.js and excluded vendor dependencies; they are absent from fileInventory and supplied source."
+          },
+          {
+            "index": 3,
+            "text": "The full menu uses \"Nero d'Avola\" with a straight apostrophe while the requirement writes “Nero d’Avola”; treated as the same name, not a defect.",
+            "verdict": "accepted",
+            "reason": "The straight/curly apostrophe difference is correctly not counted as a source identity defect."
+          }
+        ],
+        "applicationAdded": [
+          {
+            "index": 4,
+            "text": "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog 4510a0300b797ad643fa37bccf99d25386f515d0021790597f8cb554e2424cc0. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+            "verdict": "accepted",
+            "reason": "Exact V3 catalog/ID restoration verified independently; correct caveat that identity is not judgment."
+          },
+          {
+            "index": 5,
+            "text": "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+            "verdict": "accepted",
+            "reason": "Complete included HTML/CSS means the declared subset, not omitted dependencies or runtime coverage."
+          },
+          {
+            "index": 6,
+            "text": "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic.",
+            "verdict": "accepted",
+            "reason": "Human acceptance and payment remain separate from model advice."
+          }
+        ]
+      },
+      "runtimeAssuranceAudit": {
+        "unsupportedExecutionSuccess": false,
+        "unsupportedExecutionFailure": false,
+        "passwordExposureClaim": false,
+        "browserActuallyRun": false,
+        "minorRuntimeWordingQualification": true
+      }
+    },
+    {
+      "id": "citation-relations-holdout-material-dashboard-lite",
+      "rawVerdict": "qualified",
+      "applicationVerdict": "qualified",
+      "applicationAdmitted": true,
+      "wholeReasons": [
+        "All six raw and application status judgments agree with independent static-source/runtime checks.",
+        "The four static association/attribute answers are restored and all control citations cover full identity/type relations.",
+        "The limitation claiming raster image files were listed is not supported by the actual frozen inventory, so the whole raw/app answer remains qualified."
+      ],
+      "sourceFactVsAdmission": [
+        {
+          "criterionId": "coverage-1",
+          "goldSourceFactStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "admissionBoundary": null,
+          "notProofOfMissingSource": false
+        },
+        {
+          "criterionId": "coverage-2",
+          "goldSourceFactStatus": "supported",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "admissionBoundary": null,
+          "notProofOfMissingSource": false
+        },
+        {
+          "criterionId": "coverage-3",
+          "goldSourceFactStatus": "changes_suggested",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "admissionBoundary": null,
+          "notProofOfMissingSource": false
+        },
+        {
+          "criterionId": "coverage-4",
+          "goldSourceFactStatus": "changes_suggested",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "admissionBoundary": null,
+          "notProofOfMissingSource": false
+        },
+        {
+          "criterionId": "coverage-5",
+          "goldSourceFactStatus": "insufficient_evidence",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "admissionBoundary": null,
+          "notProofOfMissingSource": false
+        },
+        {
+          "criterionId": "coverage-6",
+          "goldSourceFactStatus": "insufficient_evidence",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "admissionBoundary": null,
+          "notProofOfMissingSource": false
+        }
+      ],
+      "originalSourceAudit": {
+        "repository": "https://github.com/CreativeIT/material-dashboard-lite",
+        "commit": "65f510e1bc127877b7d52087d4334b8764583404",
+        "license": "MIT",
+        "sourceKind": "Official CreativeIT public MDL dashboard template; not a customer site",
+        "files": [
+          {
+            "file": "index.html",
+            "utf8Bytes": 32826,
+            "utf16Units": 32825,
+            "sha256": "9e19ce8908f6d12af9b307aec7a2e6cd2441cb7f2d1438bbbe92184db6750cdc",
+            "originalArchiveExact": true,
+            "frozenRequestExact": true,
+            "frozenFileHashExact": true,
+            "astNodes": 966,
+            "scripts": [
+              {
+                "src": "js/d3.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/getmdl-select.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/material.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/nv.d3.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/layout/layout.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/scroll/scroll.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/charts/discreteBarChart.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/charts/linePlusBarChart.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/charts/stackedBarChart.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/employer-form/employer-form.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/line-chart/line-charts-nvd3.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/map/maps.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/pie-chart/pie-charts-nvd3.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/table/table.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/todo/todo.min.js",
+                "type": null,
+                "sourceSupplied": false
+              }
+            ],
+            "forms": []
+          },
+          {
+            "file": "forms.html",
+            "utf8Bytes": 33727,
+            "utf16Units": 33726,
+            "sha256": "c39c4632ddd42038c9d6792555bb27cbbbf015ec89344211c39489e1abf68c23",
+            "originalArchiveExact": true,
+            "frozenRequestExact": true,
+            "frozenFileHashExact": true,
+            "astNodes": 918,
+            "scripts": [
+              {
+                "src": "js/d3.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/getmdl-select.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/material.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/nv.d3.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/layout/layout.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/scroll/scroll.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/charts/discreteBarChart.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/charts/linePlusBarChart.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/charts/stackedBarChart.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/employer-form/employer-form.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/line-chart/line-charts-nvd3.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/map/maps.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/pie-chart/pie-charts-nvd3.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/table/table.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/todo/todo.min.js",
+                "type": null,
+                "sourceSupplied": false
+              }
+            ],
+            "forms": [
+              {
+                "id": null,
+                "action": "#"
+              }
+            ]
+          },
+          {
+            "file": "login.html",
+            "utf8Bytes": 5015,
+            "utf16Units": 5014,
+            "sha256": "28dd1e4608f2c23abbda43a52eda576f714788371b3557df763e46b66805edd9",
+            "originalArchiveExact": true,
+            "frozenRequestExact": true,
+            "frozenFileHashExact": true,
+            "astNodes": 157,
+            "scripts": [
+              {
+                "src": "js/d3.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/getmdl-select.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/material.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/nv.d3.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/layout/layout.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/scroll/scroll.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/charts/discreteBarChart.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/charts/linePlusBarChart.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/charts/stackedBarChart.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/employer-form/employer-form.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/line-chart/line-charts-nvd3.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/map/maps.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/pie-chart/pie-charts-nvd3.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/table/table.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/todo/todo.min.js",
+                "type": null,
+                "sourceSupplied": false
+              }
+            ],
+            "forms": []
+          },
+          {
+            "file": "sign-up.html",
+            "utf8Bytes": 5262,
+            "utf16Units": 5261,
+            "sha256": "82ec18e7ebe9f635b7f09ed8c2617b2235d9bb86b1364c343531791cc1f1ff7d",
+            "originalArchiveExact": true,
+            "frozenRequestExact": true,
+            "frozenFileHashExact": true,
+            "astNodes": 169,
+            "scripts": [
+              {
+                "src": "js/d3.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/getmdl-select.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/material.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/nv.d3.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/layout/layout.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/scroll/scroll.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/charts/discreteBarChart.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/charts/linePlusBarChart.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/charts/stackedBarChart.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/employer-form/employer-form.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/line-chart/line-charts-nvd3.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/map/maps.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/pie-chart/pie-charts-nvd3.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/table/table.min.js",
+                "type": null,
+                "sourceSupplied": false
+              },
+              {
+                "src": "js/widgets/todo/todo.min.js",
+                "type": null,
+                "sourceSupplied": false
+              }
+            ],
+            "forms": []
+          },
+          {
+            "file": "css/lib/getmdl-select.min.css",
+            "utf8Bytes": 570,
+            "utf16Units": 570,
+            "sha256": "3cebc29f3ea8692615087fc3041c090d14b9033e5c2dd3190424a4742ad1c71c",
+            "originalArchiveExact": true,
+            "frozenRequestExact": true,
+            "frozenFileHashExact": true,
+            "astNodes": 0,
+            "scripts": [],
+            "forms": []
+          }
+        ],
+        "allOriginalArchiveHashesMatch": true,
+        "allFrozenRequestHashesMatch": true,
+        "completeHtmlAstInspection": true,
+        "allIncludedCssRead": true,
+        "excludedDependencies": "application.min.css195136bytes and JS/widgets/images excluded. dist HTML already compiled; no build run."
+      },
+      "transportAudit": {
+        "strictToolName": "submit_source_assessment_v3",
+        "encoding": "catalog_slots",
+        "originalJsonValid": true,
+        "normalization": "none",
+        "originalArgumentTextDecodedExactly": true,
+        "slotObjectsExact": true,
+        "nonemptyPrefixAndTailEmpty": true,
+        "catalogId": "f68180518728c265cc2e96b57294793844d865361339092694a0694381f7fd99",
+        "catalogRebuiltAndHashMatched": true,
+        "catalogEntries": 558,
+        "requestBodyHashMatched": true,
+        "criterionIdsCompleteOrderedUnique": true,
+        "rawKeptUnchanged": true
+      },
+      "facts": {
+        "controls": [
+          {
+            "file": "sign-up.html",
+            "label": "Name",
+            "for": "name",
+            "id": "name",
+            "type": "text",
+            "input": {
+              "file": "sign-up.html",
+              "start": 2597,
+              "end": 2655,
+              "excerpt": "<input class=\"mdl-textfield__input\" type=\"text\" id=\"name\">"
+            },
+            "labelQuote": {
+              "file": "sign-up.html",
+              "start": 2680,
+              "end": 2739,
+              "excerpt": "<label class=\"mdl-textfield__label\" for=\"name\">Name</label>"
+            }
+          },
+          {
+            "file": "sign-up.html",
+            "label": "Password",
+            "for": "password",
+            "id": "password",
+            "type": "text",
+            "input": {
+              "file": "sign-up.html",
+              "start": 2896,
+              "end": 2958,
+              "excerpt": "<input class=\"mdl-textfield__input\" type=\"text\" id=\"password\">"
+            },
+            "labelQuote": {
+              "file": "sign-up.html",
+              "start": 2983,
+              "end": 3050,
+              "excerpt": "<label class=\"mdl-textfield__label\" for=\"password\">Password</label>"
+            }
+          },
+          {
+            "file": "sign-up.html",
+            "label": "Email",
+            "for": "e-mail",
+            "id": "e-mail",
+            "type": "text",
+            "input": {
+              "file": "sign-up.html",
+              "start": 3207,
+              "end": 3267,
+              "excerpt": "<input class=\"mdl-textfield__input\" type=\"text\" id=\"e-mail\">"
+            },
+            "labelQuote": {
+              "file": "sign-up.html",
+              "start": 3292,
+              "end": 3354,
+              "excerpt": "<label class=\"mdl-textfield__label\" for=\"e-mail\">Email</label>"
+            }
+          },
+          {
+            "file": "login.html",
+            "label": "Email",
+            "for": "e-mail",
+            "id": "e-mail",
+            "type": "text",
+            "input": {
+              "file": "login.html",
+              "start": 2810,
+              "end": 2870,
+              "excerpt": "<input class=\"mdl-textfield__input\" type=\"text\" id=\"e-mail\">"
+            },
+            "labelQuote": {
+              "file": "login.html",
+              "start": 2903,
+              "end": 2965,
+              "excerpt": "<label class=\"mdl-textfield__label\" for=\"e-mail\">Email</label>"
+            }
+          },
+          {
+            "file": "login.html",
+            "label": "Password",
+            "for": "password",
+            "id": "password",
+            "type": "text",
+            "input": {
+              "file": "login.html",
+              "start": 3146,
+              "end": 3208,
+              "excerpt": "<input class=\"mdl-textfield__input\" type=\"text\" id=\"password\">"
+            },
+            "labelQuote": {
+              "file": "login.html",
+              "start": 3241,
+              "end": 3308,
+              "excerpt": "<label class=\"mdl-textfield__label\" for=\"password\">Password</label>"
+            }
+          }
+        ],
+        "employment": [
+          {
+            "label": "Fulltime",
+            "for": "partition-fulltime",
+            "id": "partition-fulltime",
+            "name": "employment",
+            "value": "1",
+            "owner": {
+              "file": "forms.html",
+              "start": 24309,
+              "end": 24649,
+              "excerpt": "<label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"partition-fulltime\">\n                                <input type=\"radio\" id=\"partition-fulltime\" class=\"mdl-radio__button\" name=\"employment\" value=\"1\" checked/>\n                                <span class=\"mdl-radio__label\">Fulltime</span>\n                            </label>"
+            },
+            "formStart": 19049
+          },
+          {
+            "label": "Part time",
+            "for": "partition-partTime",
+            "id": "partition-partTime",
+            "name": "employment",
+            "value": "2",
+            "owner": {
+              "file": "forms.html",
+              "start": 24678,
+              "end": 25011,
+              "excerpt": "<label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"partition-partTime\">\n                                <input type=\"radio\" id=\"partition-partTime\" class=\"mdl-radio__button\" name=\"employment\" value=\"2\"/>\n                                <span class=\"mdl-radio__label\">Part time</span>\n                            </label>"
+            },
+            "formStart": 19049
+          },
+          {
+            "label": "Remote",
+            "for": "partition-remote",
+            "id": "partition-remote",
+            "name": "employment",
+            "value": "3",
+            "owner": {
+              "file": "forms.html",
+              "start": 25040,
+              "end": 25366,
+              "excerpt": "<label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"partition-remote\">\n                                <input type=\"radio\" id=\"partition-remote\" class=\"mdl-radio__button\" name=\"employment\" value=\"3\"/>\n                                <span class=\"mdl-radio__label\">Remote</span>\n                            </label>"
+            },
+            "formStart": 19049
+          }
+        ],
+        "actualFileInventory": [
+          {
+            "path": "index.html",
+            "type": "html",
+            "byteLength": 32826,
+            "isIncludedInSource": true
+          },
+          {
+            "path": "forms.html",
+            "type": "html",
+            "byteLength": 33727,
+            "isIncludedInSource": true
+          },
+          {
+            "path": "login.html",
+            "type": "html",
+            "byteLength": 5015,
+            "isIncludedInSource": true
+          },
+          {
+            "path": "sign-up.html",
+            "type": "html",
+            "byteLength": 5262,
+            "isIncludedInSource": true
+          },
+          {
+            "path": "css/lib/getmdl-select.min.css",
+            "type": "css",
+            "byteLength": 570,
+            "isIncludedInSource": true
+          }
+        ],
+        "rasterInventoryEntries": []
+      },
+      "criteria": [
+        {
+          "criterionId": "coverage-1",
+          "sourceFactStatus": "supported",
+          "rawVerdict": "accepted",
+          "applicationVerdict": "accepted",
+          "reason": "All Name/Password/Email for/id associations are unique and correct in original sign-up source. New complete div owner citations cover input and label together. No live registration or focus outcome is inferred.",
+          "originalRequirement": "The static HTML labels Name Password and Email on sign-up.html must each target its matching input through a for and id pair",
+          "originalReference": {
+            "expectedStatus": "supported",
+            "rationale": "The sign-up source has Name for=name with input id=name, Password for=password with input id=password, and Email for=e-mail with input id=e-mail. This is a static label/control association only. It neither requires nor implies usable live registration, safe secret handling, focus behavior or proper input types.",
+            "relevantFiles": [
+              "sign-up.html"
+            ],
+            "requiresSemanticReview": true
+          },
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawSlots": {
+            "c1": "s538",
+            "c2": "s541",
+            "c3": "s545",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          },
+          "rawSelectedIds": [
+            "s538",
+            "s541",
+            "s545"
+          ],
+          "rawExplanation": "sign-up.html pairs id/for for all three: id=\"name\"/for=\"name\", id=\"password\"/for=\"password\", id=\"e-mail\"/for=\"e-mail\".",
+          "resolvedCitations": [
+            {
+              "file": "sign-up.html",
+              "start": 2488,
+              "end": 2766,
+              "excerpt": "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label full-size\">\n                        <input class=\"mdl-textfield__input\" type=\"text\" id=\"name\">\n                        <label class=\"mdl-textfield__label\" for=\"name\">Name</label>\n                    </div>"
+            },
+            {
+              "file": "sign-up.html",
+              "start": 2787,
+              "end": 3077,
+              "excerpt": "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label full-size\">\n                        <input class=\"mdl-textfield__input\" type=\"text\" id=\"password\">\n                        <label class=\"mdl-textfield__label\" for=\"password\">Password</label>\n                    </div>"
+            },
+            {
+              "file": "sign-up.html",
+              "start": 3098,
+              "end": 3381,
+              "excerpt": "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label full-size\">\n                        <input class=\"mdl-textfield__input\" type=\"text\" id=\"e-mail\">\n                        <label class=\"mdl-textfield__label\" for=\"e-mail\">Email</label>\n                    </div>"
+            }
+          ],
+          "applicationExplanation": "sign-up.html pairs id/for for all three: id=\"name\"/for=\"name\", id=\"password\"/for=\"password\", id=\"e-mail\"/for=\"e-mail\"."
+        },
+        {
+          "criterionId": "coverage-2",
+          "sourceFactStatus": "supported",
+          "rawVerdict": "accepted",
+          "applicationVerdict": "accepted",
+          "reason": "Complete same-form label wrappers establish Fulltime/Part time/Remote with corresponding ids, same employment name and values1/2/3. Nothing from unrelated groups/pages is combined.",
+          "originalRequirement": "The forms.html source content must pair Fulltime Part time and Remote radio labels with values 1 2 and 3 under the same employment name",
+          "originalReference": {
+            "expectedStatus": "supported",
+            "rationale": "The three source label wrappers for partition-fulltime, partition-partTime and partition-remote contain radio inputs with name=employment and values1/2/3 respectively, plus Fulltime/Part time/Remote label spans. These must be witnessed as matching grouped tuples, not unrelated strings elsewhere. No actual selection behavior or persisted employee data is observed.",
+            "relevantFiles": [
+              "forms.html"
+            ],
+            "requiresSemanticReview": true
+          },
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawSlots": {
+            "c1": "s181",
+            "c2": "s185",
+            "c3": "s189",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          },
+          "rawSelectedIds": [
+            "s181",
+            "s185",
+            "s189"
+          ],
+          "rawExplanation": "Fulltime value=1, Part time value=2, Remote value=3, all name=\"employment\" with matching label for/id.",
+          "resolvedCitations": [
+            {
+              "file": "forms.html",
+              "start": 24309,
+              "end": 24649,
+              "excerpt": "<label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"partition-fulltime\">\n                                <input type=\"radio\" id=\"partition-fulltime\" class=\"mdl-radio__button\" name=\"employment\" value=\"1\" checked/>\n                                <span class=\"mdl-radio__label\">Fulltime</span>\n                            </label>"
+            },
+            {
+              "file": "forms.html",
+              "start": 24678,
+              "end": 25011,
+              "excerpt": "<label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"partition-partTime\">\n                                <input type=\"radio\" id=\"partition-partTime\" class=\"mdl-radio__button\" name=\"employment\" value=\"2\"/>\n                                <span class=\"mdl-radio__label\">Part time</span>\n                            </label>"
+            },
+            {
+              "file": "forms.html",
+              "start": 25040,
+              "end": 25366,
+              "excerpt": "<label class=\"mdl-radio mdl-js-radio mdl-js-ripple-effect\" for=\"partition-remote\">\n                                <input type=\"radio\" id=\"partition-remote\" class=\"mdl-radio__button\" name=\"employment\" value=\"3\"/>\n                                <span class=\"mdl-radio__label\">Remote</span>\n                            </label>"
+            }
+          ],
+          "applicationExplanation": "Fulltime value=1, Part time value=2, Remote value=3, all name=\"employment\" with matching label for/id."
+        },
+        {
+          "criterionId": "coverage-3",
+          "sourceFactStatus": "changes_suggested",
+          "rawVerdict": "accepted",
+          "applicationVerdict": "accepted",
+          "reason": "Both Password-associated inputs are explicitly type=text. Complete login/sign-up control owner citations now include identity, type and Password label; prior truncated risk citation is fixed. No actual password exposure/auth exploit is claimed.",
+          "originalRequirement": "The static Password control markup in both login.html and sign-up.html must use input type password",
+          "originalReference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "Both supplied pages have the Password label associated with input id=password but the actual input type is text. This directly contradicts the explicit static attribute requirement. It is not a claim that an exploitable vulnerability or real authentication outcome was tested.",
+            "relevantFiles": [
+              "login.html",
+              "sign-up.html"
+            ],
+            "requiresSemanticReview": true
+          },
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawSlots": {
+            "c1": "s517",
+            "c2": "s541",
+            "c3": "",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          },
+          "rawSelectedIds": [
+            "s517",
+            "s541"
+          ],
+          "rawExplanation": "Both password inputs are declared type=\"text\", not password.",
+          "resolvedCitations": [
+            {
+              "file": "login.html",
+              "start": 3029,
+              "end": 3343,
+              "excerpt": "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label full-size\">\n                                <input class=\"mdl-textfield__input\" type=\"text\" id=\"password\">\n                                <label class=\"mdl-textfield__label\" for=\"password\">Password</label>\n                            </div>"
+            },
+            {
+              "file": "sign-up.html",
+              "start": 2787,
+              "end": 3077,
+              "excerpt": "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label full-size\">\n                        <input class=\"mdl-textfield__input\" type=\"text\" id=\"password\">\n                        <label class=\"mdl-textfield__label\" for=\"password\">Password</label>\n                    </div>"
+            }
+          ],
+          "applicationExplanation": "Both password inputs are declared type=\"text\", not password."
+        },
+        {
+          "criterionId": "coverage-4",
+          "sourceFactStatus": "changes_suggested",
+          "rawVerdict": "accepted",
+          "applicationVerdict": "accepted",
+          "reason": "The complete Email control owner shows type=text rather than required type=email. Advice stays at static markup level.",
+          "originalRequirement": "The static Email control markup in sign-up.html must use input type email rather than text",
+          "originalReference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "The Email label for=e-mail points to input id=e-mail with type=text, not type=email. The specific source attribute requirement is unmet; runtime validation or successful email delivery is not inferred.",
+            "relevantFiles": [
+              "sign-up.html"
+            ],
+            "requiresSemanticReview": true
+          },
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawSlots": {
+            "c1": "s545",
+            "c2": "",
+            "c3": "",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          },
+          "rawSelectedIds": [
+            "s545"
+          ],
+          "rawExplanation": "sign-up.html Email input declares type=\"text\" with id=\"e-mail\", not type=\"email\".",
+          "resolvedCitations": [
+            {
+              "file": "sign-up.html",
+              "start": 3098,
+              "end": 3381,
+              "excerpt": "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label full-size\">\n                        <input class=\"mdl-textfield__input\" type=\"text\" id=\"e-mail\">\n                        <label class=\"mdl-textfield__label\" for=\"e-mail\">Email</label>\n                    </div>"
+            }
+          ],
+          "applicationExplanation": "sign-up.html Email input declares type=\"text\" with id=\"e-mail\", not type=\"email\"."
+        },
+        {
+          "criterionId": "coverage-5",
+          "sourceFactStatus": "insufficient_evidence",
+          "rawVerdict": "accepted",
+          "applicationVerdict": "accepted",
+          "reason": "Actual credential rejection and dashboard protection need runtime/backend evidence. Empty citations are allowed for this honest unknown; source inventory independently confirms no script bodies supplied.",
+          "originalRequirement": "Actual sign in must reject invalid credentials and protect the dashboard from unauthenticated access",
+          "originalReference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "The template has sign-in links and credential-looking controls, but no authenticated server requests or access checks were performed. External scripts and backend are not in the source subset. An HTML href cannot prove real authentication succeeds or prove the deployed site has no additional access controls.",
+            "relevantFiles": [
+              "login.html",
+              "index.html"
+            ],
+            "requiresSemanticReview": true
+          },
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawSlots": {
+            "c1": "",
+            "c2": "",
+            "c3": "",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          },
+          "rawSelectedIds": [],
+          "rawExplanation": "Sign-in requires runtime behavior; source only shows fields and a SIGN IN link to index.html. No server/script bodies supplied.",
+          "resolvedCitations": [],
+          "applicationExplanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed."
+        },
+        {
+          "criterionId": "coverage-6",
+          "sourceFactStatus": "insufficient_evidence",
+          "rawVerdict": "accepted",
+          "applicationVerdict": "accepted",
+          "reason": "Form action=# and declared radio values do not establish actual storage or reload readback. Correctly unknown with no fabricated runtime result.",
+          "originalRequirement": "The employer form must actually store the selected employment value and return the same saved record after a reload",
+          "originalReference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "The static forms source includes employment choices and controls, but no storage/readback, reload execution or backend evidence exists. Default checked/value attributes do not establish an actual persisted record.",
+            "relevantFiles": [
+              "forms.html"
+            ],
+            "requiresSemanticReview": true
+          },
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawSlots": {
+            "c1": "",
+            "c2": "",
+            "c3": "",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          },
+          "rawSelectedIds": [],
+          "rawExplanation": "Persistence and reload retrieval need runtime/backend evidence; only markup with form action=\"#\" and referenced but unsupplied scripts.",
+          "resolvedCitations": [],
+          "applicationExplanation": "This requirement includes actual records, durable retention or queryable receipts. Source copy cannot establish that records were written or can be read back. Provide execution and independent record-readback evidence, and check the complete locked requirement."
+        }
+      ],
+      "risks": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "factsAccepted": true,
+          "citationCoverage": "complete-two-page-input-label-owners",
+          "reason": "Both exact Password controls are type=text. s517/s541 now cover complete input+label owners, fixing the old truncated login identity quote. Recommendation changes an attribute and does not claim actual leakage or successful security testing.",
+          "rawTitle": "Password fields declared as text inputs",
+          "rawExplanation": "login.html and sign-up.html both use <input type=\"text\" id=\"password\">, so the markup declares plain text rather than a password control.",
+          "rawSuggestion": "Change the password inputs to type=\"password\" in both files and re-check the source.",
+          "rawSlots": {
+            "c1": "s517",
+            "c2": "s541",
+            "c3": ""
+          },
+          "selectedIds": [
+            "s517",
+            "s541"
+          ],
+          "resolvedCitations": [
+            {
+              "file": "login.html",
+              "start": 3029,
+              "end": 3343,
+              "excerpt": "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label full-size\">\n                                <input class=\"mdl-textfield__input\" type=\"text\" id=\"password\">\n                                <label class=\"mdl-textfield__label\" for=\"password\">Password</label>\n                            </div>"
+            },
+            {
+              "file": "sign-up.html",
+              "start": 2787,
+              "end": 3077,
+              "excerpt": "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label full-size\">\n                        <input class=\"mdl-textfield__input\" type=\"text\" id=\"password\">\n                        <label class=\"mdl-textfield__label\" for=\"password\">Password</label>\n                    </div>"
+            }
+          ],
+          "applicationRetainedExactly": true
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "factsAccepted": true,
+          "citationCoverage": "complete-email-input-label-owner",
+          "reason": "s545 covers the complete sign-up Email type=text association. Suggested source edit is bounded.",
+          "rawTitle": "Sign-up Email input declared as text",
+          "rawExplanation": "The sign-up e-mail field is declared type=\"text\"; only the label says Email.",
+          "rawSuggestion": "Set the sign-up email input to type=\"email\" and confirm the label's for matches its id.",
+          "rawSlots": {
+            "c1": "s545",
+            "c2": "",
+            "c3": ""
+          },
+          "selectedIds": [
+            "s545"
+          ],
+          "resolvedCitations": [
+            {
+              "file": "sign-up.html",
+              "start": 3098,
+              "end": 3381,
+              "excerpt": "<div class=\"mdl-textfield mdl-js-textfield mdl-textfield--floating-label full-size\">\n                        <input class=\"mdl-textfield__input\" type=\"text\" id=\"e-mail\">\n                        <label class=\"mdl-textfield__label\" for=\"e-mail\">Email</label>\n                    </div>"
+            }
+          ],
+          "applicationRetainedExactly": true
+        }
+      ],
+      "limitations": {
+        "rawAndApplicationRetained": [
+          {
+            "index": 0,
+            "text": "Only static HTML/CSS was supplied; script files referenced by the pages were not included, so no behavior could be verified.",
+            "verdict": "accepted",
+            "reason": "Included source is HTML/CSS; referenced script files are not included."
+          },
+          {
+            "index": 1,
+            "text": "Rendered appearance, visibility, and browser action of the controls were not observed.",
+            "verdict": "accepted",
+            "reason": "No appearance, visibility or browser interaction was observed."
+          },
+          {
+            "index": 2,
+            "text": "Authentication, dashboard protection, form storage and reload persistence require runtime or backend evidence not present here.",
+            "verdict": "accepted",
+            "reason": "No actual authentication/protected-route/storage/reload trace was supplied."
+          },
+          {
+            "index": 3,
+            "text": "Raster image files listed in the inventory were not analyzed.",
+            "verdict": "qualified",
+            "reason": "The no-analysis boundary is correct, but the claim that raster image files were listed in this packet inventory is false: inventory contains four HTML files and one CSS file, with no raster entries. Treat as a minor inventory hallucination, not completed image inspection."
+          }
+        ],
+        "applicationAdded": [
+          {
+            "index": 4,
+            "text": "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog f68180518728c265cc2e96b57294793844d865361339092694a0694381f7fd99. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+            "verdict": "accepted",
+            "reason": "Exact V3 catalog/ID restoration verified independently; correct caveat that identity is not judgment."
+          },
+          {
+            "index": 5,
+            "text": "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+            "verdict": "accepted",
+            "reason": "Complete included HTML/CSS means the declared subset, not omitted dependencies or runtime coverage."
+          },
+          {
+            "index": 6,
+            "text": "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic.",
+            "verdict": "accepted",
+            "reason": "Human acceptance and payment remain separate from model advice."
+          }
+        ]
+      },
+      "runtimeAssuranceAudit": {
+        "unsupportedExecutionSuccess": false,
+        "unsupportedExecutionFailure": false,
+        "passwordExposureClaim": false,
+        "browserActuallyRun": false,
+        "minorRuntimeWordingQualification": false
+      }
+    }
+  ],
+  "measurementLimits": [
+    "Known-source repair on the same two previously disclosed repositories; 12/12 raw status agreement is not unseen generalization accuracy or whole-answer perfection.",
+    "Original MIT templates plus authored requirements are not customer projects/contracts/deployments.",
+    "Gold-source facts and app evidence-admission policy are reported separately without editing either reference or result.",
+    "No browser, external JS, backend, auth test, persistence readback, image-pixel analysis or payment was executed.",
+    "Strict schema/slot validity and exact IDs prove addressing/transport, not semantic truth or complete delivery.",
+    "AI-authored references and AI independent review are not a blinded human evaluation.",
+    "No claim of overall superiority over award winners or guaranteed competition outcome follows."
+  ]
+}

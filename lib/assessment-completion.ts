@@ -2,6 +2,9 @@ import {AssessmentResponseError} from "./assessment-response.ts";
 import {ASSESSMENT_ITEM_CITATION_LIMIT, ASSESSMENT_RISK_CITATION_LIMIT} from "./assessment-limits.ts";
 
 export const SOURCE_ASSESSMENT_TOOL_NAME = "submit_source_assessment";
+export const SOURCE_ASSESSMENT_CATALOG_TOOL_NAME = "submit_source_assessment_v2";
+export const SOURCE_ASSESSMENT_SLOTS_TOOL_NAME = "submit_source_assessment_v3";
+export type AssessmentCitationEncoding = "catalog_slots" | "catalog_ids" | "legacy_quotes";
 export type AssessmentCompletionTransport = "strict_tool" | "legacy_json";
 const fail = (reason: "structure" | "output_limit" | "incomplete" = "structure"): never => {throw new AssessmentResponseError(reason);};
 function record(value: unknown): Record<string, unknown> {
@@ -16,7 +19,7 @@ function content(value: unknown): string {
 /** Decode one report envelope, never execute a tool or interpret its contents as
  * instructions. The caller must still perform the complete JSON, bounds,
  * criterion coverage, risk-field and exact source-citation validation. */
-export function assessmentCompletionText(providerBody: unknown): {text: string; transport: AssessmentCompletionTransport} {
+export function assessmentCompletionText(providerBody: unknown, encoding: AssessmentCitationEncoding = "legacy_quotes"): {text: string; transport: AssessmentCompletionTransport} {
   const body = record(providerBody);
   if (!Array.isArray(body.choices) || body.choices.length !== 1) return fail();
   const choice = record(body.choices[0]);
@@ -24,6 +27,7 @@ export function assessmentCompletionText(providerBody: unknown): {text: string; 
   if (choice.finish_reason !== "tool_calls" && choice.finish_reason !== "stop") return fail("incomplete");
   const message = record(choice.message);
   if (choice.finish_reason === "stop") {
+    if (encoding !== "legacy_quotes") return fail();
     // Null/empty legacy metadata is harmless. A real or malformed call alongside
     // a stop/content answer is ambiguous and cannot be silently ignored.
     if (message.tool_calls !== undefined && message.tool_calls !== null
@@ -34,7 +38,9 @@ export function assessmentCompletionText(providerBody: unknown): {text: string; 
   const call = record(message.tool_calls[0]);
   if (call.type !== "function") return fail();
   const fn = record(call.function);
-  if (fn.name !== SOURCE_ASSESSMENT_TOOL_NAME) return fail();
+  const expectedTool = encoding === "catalog_slots" ? SOURCE_ASSESSMENT_SLOTS_TOOL_NAME
+    : encoding === "catalog_ids" ? SOURCE_ASSESSMENT_CATALOG_TOOL_NAME : SOURCE_ASSESSMENT_TOOL_NAME;
+  if (fn.name !== expectedTool) return fail();
   return {text: content(fn.arguments), transport: "strict_tool"};
 }
 
@@ -59,7 +65,7 @@ export function assessmentReportJson(completion:{text:string;transport:Assessmen
 }
 
 const textSchema = (description: string) => ({type: "string", pattern: "\\S", description});
-function objectSchema(properties: Record<string, unknown>) {
+function objectSchema<T extends Record<string, unknown>>(properties: T) {
   return {type: "object", properties, required: Object.keys(properties), additionalProperties: false};
 }
 
@@ -79,4 +85,41 @@ export function assessmentToolDefinition(criterionIds: readonly string[], source
     parameters: objectSchema({items: {type: "array", items: item, description: "Exactly one item for every locked criterion ID, in its supplied order; never merge, duplicate or omit an ID."},
       risks: {type: "array", items: risk, description: "At most five concrete source-grounded potential issues; each requires all four fields."},
       limitations: {type: "array", items: textSchema("One remaining uncertainty, at most 300 characters."), description: "At most eight remaining uncertainties."}})}};
+}
+
+/** Explicit V2 replay protocol: the provider selects immutable server-owned spans. Strict
+ * enums constrain syntax; local resolution still checks identity, cardinality,
+ * duplicates and expanded-report bounds. IDs do not establish semantic support. */
+export function assessmentCatalogToolDefinition(criterionIds: readonly string[], catalog: {catalogId:string;entries:readonly {id:string}[]}) {
+  const old = assessmentToolDefinition(criterionIds, []);
+  const citation = {type: "string", enum: catalog.entries.map(entry => entry.id)};
+  const parameters = old.function.parameters;
+  parameters.properties.items.items.properties.citations.items = citation as never;
+  parameters.properties.items.items.properties.citations.description = `At most ${ASSESSMENT_ITEM_CITATION_LIMIT} distinct source-catalog IDs, enough context to witness every asserted relationship.`;
+  parameters.properties.risks.items.properties.citations.items = citation as never;
+  parameters.properties.risks.items.properties.citations.description = `One to ${ASSESSMENT_RISK_CITATION_LIMIT} distinct source-catalog IDs.`;
+  return {type: "function", function: {...old.function, name: SOURCE_ASSESSMENT_CATALOG_TOOL_NAME,
+    parameters: objectSchema({catalogId:{type:"string",enum:[catalog.catalogId]}, ...parameters.properties})}};
+}
+
+/** V3 expresses the citation count in supported strict-schema object shape,
+ * rather than relying on an unsupported maxItems keyword or prompt wording.
+ * Empty strings mark only trailing unused slots. Local selection still rejects
+ * gaps and duplicates; catalog identity and exact source resolution remain
+ * separate checks, and no slot establishes semantic support. */
+export function assessmentSlotsToolDefinition(criterionIds: readonly string[], catalog: {catalogId:string;entries:readonly {id:string}[]}) {
+  const old = assessmentCatalogToolDefinition(criterionIds, catalog), parameters = old.function.parameters;
+  const ids = catalog.entries.map(entry => entry.id);
+  const slots = (maximum: number, requiredFirst: boolean) => objectSchema(Object.fromEntries(Array.from({length: maximum}, (_, index) => [
+    `c${index + 1}`, {type: "string", enum: index === 0 && requiredFirst ? [...ids] : ["", ...ids],
+      description: index === 0 && requiredFirst ? "First exact source-catalog ID; a risk must cite source evidence."
+        : "Exact source-catalog ID, or empty only when this and all later slots are unused."},
+  ])));
+  const item = objectSchema({...parameters.properties.items.items.properties,
+    citations: slots(ASSESSMENT_ITEM_CITATION_LIMIT, false)});
+  const risk = objectSchema({...parameters.properties.risks.items.properties,
+    citations: slots(ASSESSMENT_RISK_CITATION_LIMIT, true)});
+  return {type: "function", function: {...old.function, name: SOURCE_ASSESSMENT_SLOTS_TOOL_NAME,
+    parameters: objectSchema({...parameters.properties,
+      items: {...parameters.properties.items, items: item}, risks: {...parameters.properties.risks, items: risk}})}};
 }

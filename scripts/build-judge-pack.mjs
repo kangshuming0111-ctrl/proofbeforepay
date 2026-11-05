@@ -13,6 +13,7 @@ const EXTENSIONS = new Set([".html", ".ts", ".tsx", ".mts", ".cts", ".js", ".mjs
 // Exact attribution files for licensed evaluator sources.
 // Do not broaden this to arbitrary TXT documents or owner notes.
 const LICENSE_TEXT_FILES = new Set([
+  ...["tavola", "material-dashboard-lite"].map(name => `public/benchmarks/citation-relations-2026-11-05/source-provenance/${name}-LICENSE.txt`),
   ...["bootstrap", "florist", "html5up"].map(name => `docs/fixtures/assessment-transfer-2026-11-04/${name}-LICENSE.txt`),
   ...["business-casual", "modern-business", "corona-admin", "personal", "clean-blog", "html5-boilerplate"].map(name => `public/benchmarks/real-projects-2026-11-05/source-provenance/${name}-LICENSE.txt`),
 ]);

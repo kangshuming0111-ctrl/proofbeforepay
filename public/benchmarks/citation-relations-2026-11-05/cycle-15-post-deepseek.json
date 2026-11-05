@@ -1,0 +1,110 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/assessment-completion.ts",
+      "bytes": 9553,
+      "lines": 125,
+      "sha256": "18ec5c3984b06c1b62a1d1d9449746ba8f19cf2d9a9b3d23914d0b474b7a6a3e"
+    },
+    {
+      "file": "lib/assessment-citation-selection.ts",
+      "bytes": 2748,
+      "lines": 43,
+      "sha256": "c192ca65a095fa7aaba5a242e3d8ba7c2a6573c6e20d41d95afcebc4578abbb0"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 50048,
+      "lines": 376,
+      "sha256": "8bdbbab9f2b75b21fb01cfc36ce3bcab6fb3dc96b45ad1d9783837054e55e204"
+    },
+    {
+      "file": "lib/universal-source-list-evidence.ts",
+      "bytes": 12400,
+      "lines": 167,
+      "sha256": "de25207ff806153b6776a70767ad872fd9c5c048d7ccbf0c04a339ed4b1a7d40"
+    },
+    {
+      "file": "lib/universal-tag-evidence.ts",
+      "bytes": 9704,
+      "lines": 150,
+      "sha256": "dee81d5f4e869c684903e6a40ab01f51a5014e3f99f0fd733856cb04d6a07f0c"
+    },
+    {
+      "file": "scripts/run-project-assessment-evaluation.ts",
+      "bytes": 43807,
+      "lines": 416,
+      "sha256": "98bf2cb0321723e5be6cd299f12ac73093a7d0e4f5a89818048242fc77d4d5dc"
+    },
+    {
+      "file": "tests/assessment-bounded-citations.test.ts",
+      "bytes": 9647,
+      "lines": 130,
+      "sha256": "2285af7e61937ce9e5bf0114ed481d413505e6bba463708ed568988c4ab76fc3"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Source-only review of the V3 fixed-slot chain (tool schema -> selection normalization -> item coverage -> catalog resolution -> semantic guards -> public return), plus the universal source-list verifier, tag verifier, and evaluation harness. Two concrete defects were found in the new allN source-list verifier: it does not bind to HTML files by actual type or to the declared required pages, and hidden @media-only declarations are treated as active evidence. Both are confined to negative-only 'unknown' enforcement (no path turns unknown into supported), so the effect is over-abstention/under-abstention on evidence sufficiency rather than wrong acceptance. No reachable counterexample was found for the previously disproved V3 claims (gap rejection, c7, original mutation, public return using unchecked citations); those behave as described in the packet. Nothing was executed.\",\"findings\":[{\"severity\":\"P3\",\"file\":\"lib/universal-source-list-evidence.ts\",\"line\":148,\"title\":\"allN page binding uses a case-sensitive .html suffix and byte-read requiredPages instead of actual file type and static type rules\",\"evidence\":\"Line 148 computes html = Object.keys(snapshot).filter(file => file.endsWith(\\\".html\\\")). Line 150 then requires html.length === expectation.count and every requiredPages entry to be in html. The rest of the packet treats extensions case-insensitively (delivery-assessment.ts:65 uses staticFileKind for ranking, universal-tag-evidence.ts:117 and :54 use /iu and /\\\\.html$/iu, and universal-tag-evidence.ts:54 accepts upper case). So a validated delivery file named 'About.HTML' exists as an HTML page for the tag verifier and the file inventory, but the list verifier leaves it out of html. Two concrete outcomes: (a) with an 'on all 2 pages' directive and index.html + About.HTML, line 150 returns 'unconfirmed_page_scope' (unknown) even when both pages literally witness every label, so a genuine full-coverage report is downgraded to insufficient_evidence; (b) with a case-sensitive 1-page count (e.g. 'on all 1 pages' plus Index.HTML), line 150 passes with html=['index.html'] and an unrelated './not-an-html-page.html' in the same delivery is included as a required page. Also, requiredPages comes from quote.proof.project?.requiredPages and is not normalized the way universal-tag-evidence.ts:123's validHtmlPath does; a required page recorded with a './' prefix or different case can never equal an Object.keys entry, so the criterion is always unknown regardless of citations.\",\"reproduction\":\"Not executed (source-only). Trace: delivery files {'index.html': <all labels>, 'About.HTML': <all labels>}. index.html is kept before CSS; About.HTML is not tagged 'html' by staticFileKind, so it is in coverage.omittedFiles and not in sent. The verifier snapshots sent, and line 148 counts only index.html. Line 150 with count 2 returns unknown('unconfirmed_page_scope'), so delivery-assessment.ts:326 forces insufficient_evidence. Case (b): files {'index.html', 'x.html'}; criterion 'Text content in menu on all 1 pages must include Starters'. Line 150 accepts count 1 for x.html, and if x.html carries the id and the citations cover it, the result is covered even though x.html is not a page the buyer confirmed.\",\"suggestion\":\"Derive HTML membership from the same type predicate used elsewhere (e.g. staticFileKind(file) === 'html' in lowercase) rather than file.endsWith(\\\".html\\\"). Compare requiredPages after the same path validation/normalization (or lookup by exact actual key), and return 'unconfirmed_page_scope' for required entries that are not validated HTML keys.\"},{\"severity\":\"P3\",\"file\":\"lib/universal-source-list-evidence.ts\",\"line\":23,\"title\":\"Source-list verifier considers only hidden/inert attributes and ignores display:none/aria-hidden class/CSS, unlike the tag verifier\",\"evidence\":\"The list verifier's unavailable() (lines 22-23) checks only the hidden and inert attributes and aria-hidden='true'. targetRuns (line 114) only splits on unavailable() plus br/hr. The sibling universal-tag verifier has a stricter unsafeElement (universal-tag-evidence.ts:57-63) that also rejects style attributes, style elements, contenteditable, on*/framework/template/dynamic attributes, and classes such as d-none, hidden, sr-only, visually-hidden, invisible and is-hidden (and any aria-hidden value other than 'false'). For example, '<div id=\\\"menu\\\" class=\\\"d-none\\\">Starters Main Courses</div>' is active evidence to the list verifier but hidden to the tag verifier. This makes the two universal checks inconsistent: for the same page state, the list guard can return 'covered' or pass over a hidden-only block, while the tag guard abstains.\",\"reproduction\":\"Not executed (source-only). Page: <body><p>visible</p><div id=\\\"menu\\\" class=\\\"d-none\\\"><p>Starters</p><p>Main Courses</p></div></body>, with criterion 'Text content in menu on all 1 pages must include Starters and Main Courses'. The text inside #menu maps to normalized runs. unavailable() is false because there is no hidden, inert or aria-hidden attribute. If the item citation covers the whole div, witnessed() returns true for both labels and the check returns covered, even though the block is declared d-none in its class and the tag verifier would treat it as unsafe_source_owner.\",\"suggestion\":\"Share one unsafe/unavailable predicate between universal-tag-evidence.ts and universal-source-list-evidence.ts (tag name, inert region, hidden/inert/aria-hidden, style attribute, d-none and similar classes), and apply it both when building targets and when collecting runs.\"}],\"limitations\":[\"Source-only review. No commands, tests, typecheck or runtime checks were run, and no live provider, browser, database or payment behavior is certified.\",\"The packet is partial. assessment-response.ts (requireAssessmentItemCoverage), assessment-citation-catalog.ts (createAssessmentCitationCatalog/resolveCatalogCitations), assessment-risk-fields.ts (canonicalAssessmentRisk), assessment-limits.ts, exact-copy-directive.ts, static-resources.ts, business-check and article-title modules, and the corpus JSON referenced by tests/assessment-bounded-citations.test.ts (lines 121-122) were not supplied. Exact behavior of risk-null-field tolerance, catalog ID generation/duplicates, and the expanded report limit cannot be verified beyond how delivery-assessment.ts uses them.\",\"The earlier claims (gap check reads the original slots, c7 is rejected by exact keys, and the public return uses checkedCitations at delivery-assessment.ts:337) are consistent with the supplied code and were not re-reported. A defect would need a reachable counterexample not shown in the packet.\",\"parse5 behavior (parse errors, scriptingEnabled raw-text for noscript, sourceCodeLocation offsets for entity-decoded text, CRLF normalization, template content not attached as childNodes) is assumed from its documented behavior and was not executed. The mappedText decoded-equality check returns unknown on any mismatch, which is fail-closed.\",\"universal-source-list-evidence.ts requires both a start tag and an end tag (line 98), while the tag verifier only needs a start tag (universal-tag-evidence.ts:139). This is a conservative limit, not filed as a defect.\",\"Some existing delivery-assessment.ts handling (for example canonicalAssessmentRisk possibly ignoring unspecified reason values and rethrowing them; line 248-249 retains only a 'citation' reason) cannot be fully judged without assessment-risk-fields.ts/assessment-response.ts.\",\"Findings are limited to the supplied files and explicit line numbers. Role aliases, radio pairs, business-unknown behavior (lines 287-297) and the evaluation harness accounting were reviewed at the stated level and produced no additional supported defect beyond the global reservations above.\"]}",
+  "report": {
+    "summary": "Source-only review of the V3 fixed-slot chain (tool schema -> selection normalization -> item coverage -> catalog resolution -> semantic guards -> public return), plus the universal source-list verifier, tag verifier, and evaluation harness. Two concrete defects were found in the new allN source-list verifier: it does not bind to HTML files by actual type or to the declared required pages, and hidden @media-only declarations are treated as active evidence. Both are confined to negative-only 'unknown' enforcement (no path turns unknown into supported), so the effect is over-abstention/under-abstention on evidence sufficiency rather than wrong acceptance. No reachable counterexample was found for the previously disproved V3 claims (gap rejection, c7, original mutation, public return using unchecked citations); those behave as described in the packet. Nothing was executed.",
+    "findings": [
+      {
+        "severity": "P3",
+        "file": "lib/universal-source-list-evidence.ts",
+        "line": 148,
+        "title": "allN page binding uses a case-sensitive .html suffix and byte-read requiredPages instead of actual file type and static type rules",
+        "evidence": "Line 148 computes html = Object.keys(snapshot).filter(file => file.endsWith(\".html\")). Line 150 then requires html.length === expectation.count and every requiredPages entry to be in html. The rest of the packet treats extensions case-insensitively (delivery-assessment.ts:65 uses staticFileKind for ranking, universal-tag-evidence.ts:117 and :54 use /iu and /\\.html$/iu, and universal-tag-evidence.ts:54 accepts upper case). So a validated delivery file named 'About.HTML' exists as an HTML page for the tag verifier and the file inventory, but the list verifier leaves it out of html. Two concrete outcomes: (a) with an 'on all 2 pages' directive and index.html + About.HTML, line 150 returns 'unconfirmed_page_scope' (unknown) even when both pages literally witness every label, so a genuine full-coverage report is downgraded to insufficient_evidence; (b) with a case-sensitive 1-page count (e.g. 'on all 1 pages' plus Index.HTML), line 150 passes with html=['index.html'] and an unrelated './not-an-html-page.html' in the same delivery is included as a required page. Also, requiredPages comes from quote.proof.project?.requiredPages and is not normalized the way universal-tag-evidence.ts:123's validHtmlPath does; a required page recorded with a './' prefix or different case can never equal an Object.keys entry, so the criterion is always unknown regardless of citations.",
+        "reproduction": "Not executed (source-only). Trace: delivery files {'index.html': <all labels>, 'About.HTML': <all labels>}. index.html is kept before CSS; About.HTML is not tagged 'html' by staticFileKind, so it is in coverage.omittedFiles and not in sent. The verifier snapshots sent, and line 148 counts only index.html. Line 150 with count 2 returns unknown('unconfirmed_page_scope'), so delivery-assessment.ts:326 forces insufficient_evidence. Case (b): files {'index.html', 'x.html'}; criterion 'Text content in menu on all 1 pages must include Starters'. Line 150 accepts count 1 for x.html, and if x.html carries the id and the citations cover it, the result is covered even though x.html is not a page the buyer confirmed.",
+        "suggestion": "Derive HTML membership from the same type predicate used elsewhere (e.g. staticFileKind(file) === 'html' in lowercase) rather than file.endsWith(\".html\"). Compare requiredPages after the same path validation/normalization (or lookup by exact actual key), and return 'unconfirmed_page_scope' for required entries that are not validated HTML keys."
+      },
+      {
+        "severity": "P3",
+        "file": "lib/universal-source-list-evidence.ts",
+        "line": 23,
+        "title": "Source-list verifier considers only hidden/inert attributes and ignores display:none/aria-hidden class/CSS, unlike the tag verifier",
+        "evidence": "The list verifier's unavailable() (lines 22-23) checks only the hidden and inert attributes and aria-hidden='true'. targetRuns (line 114) only splits on unavailable() plus br/hr. The sibling universal-tag verifier has a stricter unsafeElement (universal-tag-evidence.ts:57-63) that also rejects style attributes, style elements, contenteditable, on*/framework/template/dynamic attributes, and classes such as d-none, hidden, sr-only, visually-hidden, invisible and is-hidden (and any aria-hidden value other than 'false'). For example, '<div id=\"menu\" class=\"d-none\">Starters Main Courses</div>' is active evidence to the list verifier but hidden to the tag verifier. This makes the two universal checks inconsistent: for the same page state, the list guard can return 'covered' or pass over a hidden-only block, while the tag guard abstains.",
+        "reproduction": "Not executed (source-only). Page: <body><p>visible</p><div id=\"menu\" class=\"d-none\"><p>Starters</p><p>Main Courses</p></div></body>, with criterion 'Text content in menu on all 1 pages must include Starters and Main Courses'. The text inside #menu maps to normalized runs. unavailable() is false because there is no hidden, inert or aria-hidden attribute. If the item citation covers the whole div, witnessed() returns true for both labels and the check returns covered, even though the block is declared d-none in its class and the tag verifier would treat it as unsafe_source_owner.",
+        "suggestion": "Share one unsafe/unavailable predicate between universal-tag-evidence.ts and universal-source-list-evidence.ts (tag name, inert region, hidden/inert/aria-hidden, style attribute, d-none and similar classes), and apply it both when building targets and when collecting runs."
+      }
+    ],
+    "limitations": [
+      "Source-only review. No commands, tests, typecheck or runtime checks were run, and no live provider, browser, database or payment behavior is certified.",
+      "The packet is partial. assessment-response.ts (requireAssessmentItemCoverage), assessment-citation-catalog.ts (createAssessmentCitationCatalog/resolveCatalogCitations), assessment-risk-fields.ts (canonicalAssessmentRisk), assessment-limits.ts, exact-copy-directive.ts, static-resources.ts, business-check and article-title modules, and the corpus JSON referenced by tests/assessment-bounded-citations.test.ts (lines 121-122) were not supplied. Exact behavior of risk-null-field tolerance, catalog ID generation/duplicates, and the expanded report limit cannot be verified beyond how delivery-assessment.ts uses them.",
+      "The earlier claims (gap check reads the original slots, c7 is rejected by exact keys, and the public return uses checkedCitations at delivery-assessment.ts:337) are consistent with the supplied code and were not re-reported. A defect would need a reachable counterexample not shown in the packet.",
+      "parse5 behavior (parse errors, scriptingEnabled raw-text for noscript, sourceCodeLocation offsets for entity-decoded text, CRLF normalization, template content not attached as childNodes) is assumed from its documented behavior and was not executed. The mappedText decoded-equality check returns unknown on any mismatch, which is fail-closed.",
+      "universal-source-list-evidence.ts requires both a start tag and an end tag (line 98), while the tag verifier only needs a start tag (universal-tag-evidence.ts:139). This is a conservative limit, not filed as a defect.",
+      "Some existing delivery-assessment.ts handling (for example canonicalAssessmentRisk possibly ignoring unspecified reason values and rethrowing them; line 248-249 retains only a 'citation' reason) cannot be fully judged without assessment-risk-fields.ts/assessment-response.ts.",
+      "Findings are limited to the supplied files and explicit line numbers. Role aliases, radio pairs, business-unknown behavior (lines 287-297) and the evaluation harness accounting were reviewed at the stated level and produced no additional supported defect beyond the global reservations above."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

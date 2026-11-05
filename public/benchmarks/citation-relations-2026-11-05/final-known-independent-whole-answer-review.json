@@ -1,0 +1,5165 @@
+{
+  "schema": "pbp-citation-relations-final-known-independent-whole-answer-review-v1",
+  "reviewedAt": "2026-11-05T13:25:06.155314+00:00",
+  "reviewer": "Codex implementation/review agent, independent of DeepSeek response generation. Not an independent human, not blinded, and all six source repositories had been inspected before this batch.",
+  "method": "Read all64 raw/app criterion explanations, every risk and limitation against complete frozen source, criterion/reference and inventory. Parse5 owner checks independently confirmed three Modern Business name/price cards, Paypal transaction owner and Henry/Estella rows. Recomputed request/source SHA256, original argument JSON, catalog SHA binding and exact UTF16 selected/restored spans; no indexOf rebinding.",
+  "providerCalls": 0,
+  "networkCalls": 0,
+  "input": {
+    "report": "outputs/citation-relations-2026-11-05/cycle-13-known-live.json",
+    "reportSha256": "5030d14e2376dc749931c790601bacf377ae9b3545e8ecf3e088686333d9eeb2",
+    "corpus": "outputs/citation-relations-2026-11-05/cycle-13-known-corpus.json",
+    "corpusSha256": "6b1890cfbe3aec6b9d099768c108d1b2ce41a06268659b99e710fa90efbb860d",
+    "freezeSha256": "8b1fd072f15ee89f969c865975c55ee5c8279e388ab64d4aae2bba1ec27fc26f",
+    "implementationFiles": 32
+  },
+  "summary": {
+    "projects": 7,
+    "sourceRepositories": 6,
+    "criteria": 64,
+    "rawReferenceStatusAgreement": {
+      "count": 64,
+      "total": 64
+    },
+    "applicationReferenceStatusAgreement": {
+      "count": 56,
+      "total": 64
+    },
+    "all64MainDecisionsSourceJustifiedWithinStaticScope": true,
+    "applicationAdmitted": 6,
+    "applicationRejected": 1,
+    "rawWholeAnswers": {
+      "accepted": 1,
+      "qualified": 5,
+      "rejected": 1
+    },
+    "applicationWholeAnswers": {
+      "accepted": 1,
+      "qualified": 5,
+      "rejected": 1
+    },
+    "allOriginalArgumentJsonValid": true,
+    "allSevenCriterionListsComplete": true,
+    "distinctSourceFilesByHash": 23,
+    "distinctSourceBytesByHash": 246590,
+    "unqualifiedModelReliabilityClaim": false,
+    "rawExactItemCitations": 145,
+    "rawExactRiskCitations": 41,
+    "rawExactAllCitations": 186,
+    "applicationExactItemCitationsAndOffsets": 114,
+    "applicationExactRiskCitationsAndOffsets": 31,
+    "applicationExactAllCitationsAndOffsets": 145,
+    "rawSemanticWholeAnswers": {
+      "accepted": 1,
+      "qualified": 6,
+      "rejected": 0
+    }
+  },
+  "comparisonWithInterim": {
+    "businessCasual": "The known-source ampersand and complete six-day witnesses remain correct. The interim footer-brand wording and only-footer assertion are absent in the new reply; no new false defect was observed. This is one known regression, not unseen generalization.",
+    "scopeCases": "The three synthetic scope cases were not rerun in this final seven-packet batch; their unnecessary agreed-file uncertainty remains the separately retained interim finding. No disappearance or unmeasured improvement is claimed.",
+    "cleanBlog": "The comma-title is supported by the new raw reply, so R9 did not need to change it. A different real failure remains: four risk citations exceed3, correctly refusing the whole report. Do not label raw64/64 as seven valid whole answers.",
+    "semanticAssociation": "Modern Business quotes now cover all three name/price relationships; Corona adjacent spans preserve Paypal/$236 and the actual Henry row. These checked examples do not certify arbitrary cards/forms/rows."
+  },
+  "verdictDefinitions": {
+    "accepted": "All reviewed claims are supported at their stated source-only layer without an unresolved qualification.",
+    "qualified": "Main statuses are source-justified but a specific citation coverage, scope, inventory or capability statement requires qualification.",
+    "rejected": "The whole report violates a required structure/bound or makes a material unsupported statement; no partial admission is implied."
+  },
+  "projects": [
+    {
+      "id": "real-business-casual",
+      "classification": "known-source-regression",
+      "rawWholeAnswer": "accepted",
+      "rawSemanticWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "applicationAdmitted": true,
+      "applicationFailureReason": null,
+      "applicationHandling": "All items/risk citations remain exact chosen spans; fixed scope explanations only replace appropriate runtime/financial reasoning; no status promotion observed",
+      "sourceFiles": [
+        {
+          "file": "about.html",
+          "sha256": "823b275d2ee03b22baf4eb523117eb3e38543783c7fe7aa766ca4109211071e9",
+          "utf8Bytes": 4421
+        },
+        {
+          "file": "index.html",
+          "sha256": "1004c28bb0453c2c25ad2813824710df3e7fdf74881f9198e8fc671d6d948573",
+          "utf8Bytes": 4813
+        },
+        {
+          "file": "products.html",
+          "sha256": "2827ace4fa153bb60d9fbae14e687aa8f46db36299728b2f13eea89363a2b93c",
+          "utf8Bytes": 6612
+        },
+        {
+          "file": "store.html",
+          "sha256": "d375e12b04e873e50967c50bba34e0bc8d39bfa1c63a67ff589443c165f00998",
+          "utf8Bytes": 7503
+        }
+      ],
+      "integrity": {
+        "requestHashMatchesFreeze": true,
+        "sourceHashesMatchFreeze": true,
+        "catalogBindingSha256IndependentlyRecomputed": true,
+        "allCatalogUtf16SpansMatch": true,
+        "allSelectedIdsKnown": true,
+        "allOriginalArgumentsJsonValid": true,
+        "normalization": "none",
+        "actualFinishReason": "tool_calls",
+        "allCriteriaPresentExactlyOnce": true,
+        "allApplicationCitationsEqualSelectedServerSpans": true
+      },
+      "criterionReview": [
+        {
+          "criterionId": "manual-1",
+          "source": "store.html 的营业时间文字须说明周一至周五 7:00 AM to 8:00 PM，且星期日 Closed。",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "All six named weekdays/Sunday have their own complete store li citation. No intermediate weekday was inferred from endpoints.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-2",
+          "source": "store.html 的星期六营业时间文字须写为 7:00 AM to 8:00 PM。",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "Saturday is 9:00 AM to 5:00 PM in its own row, not the required 7:00 AM to 8:00 PM; both cited windows contain that actual row.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-3",
+          "source": "store.html 的地址和电话须写明 1116 Orchard Street、Golden Valley, Minnesota、(317) 585-8468。",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The store address and telephone paragraphs contain all three exact required values on the named page.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-4",
+          "source": "about.html 的文字须说明咖啡馆由 Hernandez brothers 于 1987 年创立。",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "about.html itself contains Founded in 1987 by the Hernandez brothers; the duplicate story in store.html was not substituted.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-5",
+          "source": "products.html 的文字内容须包含 Coffees & Teas、Bakery & Kitchen、Bulk Speciality Blends 三类产品。",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "Three products.html heading windows contain complete category strings and preserve literal raw ampersands.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-1",
+          "source": "products.html 正文文案须包含完整句子 Please tell us about food allergies before ordering.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "Full products.html static body has no required allergy sentence. Three product paragraphs are accurately represented; unlike the interim report, this answer does not invent a footer brand or claim other page content is only footer.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-2",
+          "source": "四个页面的手机导航须在 375px 浏览器里展开和收起并且链接均能正常跳转。",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "Correctly unknown for actual four-page 375px interactions. Source navigation markup is present; no navigation operation is claimed successful.",
+          "appPolicyExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-3",
+          "source": "首页图片须真实展示一杯热咖啡并在手机上清晰且没有裁切杯口。",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The cited intro img path/alt are real, inventory has no pixels, so subject/clarity/crop correctly remain unknown.",
+          "appPolicyExplanationChanged": true
+        }
+      ],
+      "riskReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "The complete Saturday row directly proves the price-free hours mismatch and scoped correction."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "All three product descriptions are cited and the complete static page lacks the exact allergy sentence; no unnecessary footer-absence claim remains."
+        }
+      ],
+      "limitationReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "Correct: no mobile/browser observations."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "Correct: image paths/alt only, no pixels."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "Correct: all four HTML pages reference unsupplied stylesheet/local and CDN scripts; no effects were verified."
+        }
+      ],
+      "appendedSystemLimitationsReview": {
+        "count": 3,
+        "verdict": "accepted",
+        "note": "Actual catalog identity, complete-input-versus-understanding, no-execution and human acceptance/payment separation are accurately stated."
+      },
+      "remainingIssues": [],
+      "citationChecks": [
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 0,
+          "id": "s85",
+          "file": "store.html",
+          "start": 3005,
+          "end": 3212,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 1,
+          "id": "s87",
+          "file": "store.html",
+          "start": 3245,
+          "end": 3464,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 2,
+          "id": "s88",
+          "file": "store.html",
+          "start": 3497,
+          "end": 3717,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 3,
+          "id": "s90",
+          "file": "store.html",
+          "start": 3750,
+          "end": 3972,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 4,
+          "id": "s92",
+          "file": "store.html",
+          "start": 4005,
+          "end": 4226,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 5,
+          "id": "s93",
+          "file": "store.html",
+          "start": 4259,
+          "end": 4478,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "index": 0,
+          "id": "s94",
+          "file": "store.html",
+          "start": 4400,
+          "end": 4800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "index": 1,
+          "id": "s95",
+          "file": "store.html",
+          "start": 4511,
+          "end": 4732,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 0,
+          "id": "s96",
+          "file": "store.html",
+          "start": 4795,
+          "end": 5104,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 1,
+          "id": "s98",
+          "file": "store.html",
+          "start": 5133,
+          "end": 5337,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "index": 0,
+          "id": "s15",
+          "file": "about.html",
+          "start": 3137,
+          "end": 3424,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 0,
+          "id": "s57",
+          "file": "products.html",
+          "start": 2800,
+          "end": 3200,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 1,
+          "id": "s61",
+          "file": "products.html",
+          "start": 4000,
+          "end": 4400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 2,
+          "id": "s65",
+          "file": "products.html",
+          "start": 5200,
+          "end": 5600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 0,
+          "id": "s58",
+          "file": "products.html",
+          "start": 3200,
+          "end": 3600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 1,
+          "id": "s63",
+          "file": "products.html",
+          "start": 4555,
+          "end": 4806,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 2,
+          "id": "s67",
+          "file": "products.html",
+          "start": 5776,
+          "end": 6099,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 0,
+          "id": "s6",
+          "file": "about.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 1,
+          "id": "s7",
+          "file": "about.html",
+          "start": 1600,
+          "end": 2000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 2,
+          "id": "s27",
+          "file": "index.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 3,
+          "id": "s49",
+          "file": "products.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 4,
+          "id": "s76",
+          "file": "store.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 0,
+          "id": "s34",
+          "file": "index.html",
+          "start": 2400,
+          "end": 2800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "index": 0,
+          "id": "s95",
+          "file": "store.html",
+          "start": 4511,
+          "end": 4732,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "index": 0,
+          "id": "s58",
+          "file": "products.html",
+          "start": 3200,
+          "end": 3600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "index": 1,
+          "id": "s63",
+          "file": "products.html",
+          "start": 4555,
+          "end": 4806,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "index": 2,
+          "id": "s67",
+          "file": "products.html",
+          "start": 5776,
+          "end": 6099,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 0,
+          "id": null,
+          "file": "store.html",
+          "start": 3005,
+          "end": 3212,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 1,
+          "id": null,
+          "file": "store.html",
+          "start": 3245,
+          "end": 3464,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 2,
+          "id": null,
+          "file": "store.html",
+          "start": 3497,
+          "end": 3717,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 3,
+          "id": null,
+          "file": "store.html",
+          "start": 3750,
+          "end": 3972,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 4,
+          "id": null,
+          "file": "store.html",
+          "start": 4005,
+          "end": 4226,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 5,
+          "id": null,
+          "file": "store.html",
+          "start": 4259,
+          "end": 4478,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-2",
+          "index": 0,
+          "id": null,
+          "file": "store.html",
+          "start": 4400,
+          "end": 4800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-2",
+          "index": 1,
+          "id": null,
+          "file": "store.html",
+          "start": 4511,
+          "end": 4732,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 0,
+          "id": null,
+          "file": "store.html",
+          "start": 4795,
+          "end": 5104,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 1,
+          "id": null,
+          "file": "store.html",
+          "start": 5133,
+          "end": 5337,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-4",
+          "index": 0,
+          "id": null,
+          "file": "about.html",
+          "start": 3137,
+          "end": 3424,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 0,
+          "id": null,
+          "file": "products.html",
+          "start": 2800,
+          "end": 3200,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 1,
+          "id": null,
+          "file": "products.html",
+          "start": 4000,
+          "end": 4400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 2,
+          "id": null,
+          "file": "products.html",
+          "start": 5200,
+          "end": 5600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 0,
+          "id": null,
+          "file": "products.html",
+          "start": 3200,
+          "end": 3600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 1,
+          "id": null,
+          "file": "products.html",
+          "start": 4555,
+          "end": 4806,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 2,
+          "id": null,
+          "file": "products.html",
+          "start": 5776,
+          "end": 6099,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 0,
+          "id": null,
+          "file": "about.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 1,
+          "id": null,
+          "file": "about.html",
+          "start": 1600,
+          "end": 2000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 2,
+          "id": null,
+          "file": "index.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 3,
+          "id": null,
+          "file": "products.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 4,
+          "id": null,
+          "file": "store.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 2400,
+          "end": 2800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 0,
+          "index": 0,
+          "id": null,
+          "file": "store.html",
+          "start": 4511,
+          "end": 4732,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 1,
+          "index": 0,
+          "id": null,
+          "file": "products.html",
+          "start": 3200,
+          "end": 3600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 1,
+          "index": 1,
+          "id": null,
+          "file": "products.html",
+          "start": 4555,
+          "end": 4806,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 1,
+          "index": 2,
+          "id": null,
+          "file": "products.html",
+          "start": 5776,
+          "end": 6099,
+          "exactSourceSpan": true
+        }
+      ]
+    },
+    {
+      "id": "real-modern-business",
+      "classification": "known-source-regression",
+      "rawWholeAnswer": "qualified",
+      "rawSemanticWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "applicationAdmitted": true,
+      "applicationFailureReason": null,
+      "applicationHandling": "All items/risk citations remain exact chosen spans; fixed scope explanations only replace appropriate runtime/financial reasoning; no status promotion observed",
+      "sourceFiles": [
+        {
+          "file": "contact.html",
+          "sha256": "797ef25f80da7ddd9eb6c9fa50144539805e404ebad30ebc7cd7d03fb75b917a",
+          "utf8Bytes": 12011
+        },
+        {
+          "file": "faq.html",
+          "sha256": "546cab2b30b5fba6cd4a224366392704eb3fa8b74694924f06b8b4c5158f259a",
+          "utf8Bytes": 15208
+        },
+        {
+          "file": "index.html",
+          "sha256": "c19b4c03d3e37b666c74684696205111d2fa3553f99326648665510ef88ff08d",
+          "utf8Bytes": 16715
+        },
+        {
+          "file": "pricing.html",
+          "sha256": "9a05cacfc04f1fae1814fa879a671f811216b465c457ca7dde84dc8cde44746f",
+          "utf8Bytes": 13981
+        }
+      ],
+      "integrity": {
+        "requestHashMatchesFreeze": true,
+        "sourceHashesMatchFreeze": true,
+        "catalogBindingSha256IndependentlyRecomputed": true,
+        "allCatalogUtf16SpansMatch": true,
+        "allSelectedIdsKnown": true,
+        "allOriginalArgumentsJsonValid": true,
+        "normalization": "none",
+        "actualFinishReason": "tool_calls",
+        "allCriteriaPresentExactlyOnce": true,
+        "allApplicationCitationsEqualSelectedServerSpans": true
+      },
+      "criterionReview": [
+        {
+          "criterionId": "manual-1",
+          "source": "Pricing page content must list Free at $0/mo, Pro at $9/mo, and Enterprise at $49/mo.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "Three unique card-body owners at pricing.html 3985..6644, 6908..9728 and 9986..12762 bind Free/$0, Pro/$9 and Enterprise/$49. The two adjacent Pro windows concatenate across 7200 and preserve its name/value association.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-2",
+          "source": "Home page content must state: We care about privacy, and will never share your data.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The complete newsletter aside quotation contains the exact privacy sentence in index.html.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-3",
+          "source": "Contact form source content must label Full name, Email address, Phone number, and Message.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "All four quoted labels occur in the same contact form, with exact capitalization and raw source spans.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-4",
+          "source": "Contact page source copy must include the exact notice: Form submission successful!",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The success string is in source under class d-none; support is correctly limited to notice text, with display explicitly unverified.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-5",
+          "source": "FAQ page content must include the exact question: Can I cancel my plan within 30 days?",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "qualified",
+          "appExplanationVerdict": "qualified",
+          "note": "The complete FAQ static source contains template accordion placeholders and lacks the exact cancellation question. This does not prove what an omitted external script would render.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-1",
+          "source": "FAQ page contact details must include support@domain.com.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The FAQ contact paragraph actually includes support@domain.com in the cited local card.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-2",
+          "source": "The contact form must send a real email only after valid submission and show success after delivery.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "Email sending/order needs runtime evidence. API_TOKEN and success div are source indications only; no email success is claimed.",
+          "appPolicyExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-3",
+          "source": "Choosing Pro must actually charge $9 per month and retain a queryable subscription record.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "qualified",
+          "appExplanationVerdict": "qualified",
+          "note": "The Pro link href is #!, and runtime charging/storage remain unknown. The phrase no charge or record logic should be confined to supplied HTML, since linked script bytes/backend were not supplied.",
+          "appPolicyExplanationChanged": true
+        }
+      ],
+      "riskReview": [
+        {
+          "index": 0,
+          "verdict": "qualified",
+          "note": "The FAQ really has six placeholder entries in two groups, but these three citations show examples, not all #2/#3 claims. Full-source inspection confirms the broader statement."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "API_TOKEN and activation text are actual source. Real email is in the agreed scope, so configuring and rechecking the service is a scoped next action, not a claim the backend was actually absent."
+        }
+      ],
+      "limitationReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "Rendering/visibility/interactivity are unverified; class d-none is actually declared, not an observed hidden state."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "Real email/validation order/success timing were not tested."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "Real billing and queryable storage are not evidenced by static source."
+        },
+        {
+          "index": 3,
+          "verdict": "accepted",
+          "note": "Final acceptance is correctly reserved for the buyer."
+        }
+      ],
+      "appendedSystemLimitationsReview": {
+        "count": 3,
+        "verdict": "accepted",
+        "note": "Actual catalog identity, complete-input-versus-understanding, no-execution and human acceptance/payment separation are accurately stated."
+      },
+      "remainingIssues": [
+        {
+          "severity": "P3",
+          "kind": "partial_risk_witness",
+          "at": "risks[0].citations",
+          "message": "Risk claims all #1/2/3 entries in both groups, while selected spans only show first-entry examples and a group boundary. Whole-source inspection confirms placeholders, but displayed citation coverage is partial."
+        },
+        {
+          "severity": "P3",
+          "kind": "overbroad_logic_absence",
+          "at": "items[coverage-3].explanation",
+          "message": "No charge or record logic should mean none supplied in HTML, not that linked scripts or a real backend lack it. Unknown status is correct."
+        }
+      ],
+      "citationChecks": [
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 0,
+          "id": "s188",
+          "file": "pricing.html",
+          "start": 4000,
+          "end": 4400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 1,
+          "id": "s203",
+          "file": "pricing.html",
+          "start": 6800,
+          "end": 7200,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 2,
+          "id": "s204",
+          "file": "pricing.html",
+          "start": 7200,
+          "end": 7600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 3,
+          "id": "s219",
+          "file": "pricing.html",
+          "start": 10000,
+          "end": 10400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "index": 0,
+          "id": "s162",
+          "file": "index.html",
+          "start": 15200,
+          "end": 15600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 0,
+          "id": "s26",
+          "file": "contact.html",
+          "start": 5024,
+          "end": 5059,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 1,
+          "id": "s28",
+          "file": "contact.html",
+          "start": 5568,
+          "end": 5608,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 2,
+          "id": "s31",
+          "file": "contact.html",
+          "start": 6236,
+          "end": 6275,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 3,
+          "id": "s34",
+          "file": "contact.html",
+          "start": 6826,
+          "end": 6862,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "index": 0,
+          "id": "s35",
+          "file": "contact.html",
+          "start": 7200,
+          "end": 7600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 0,
+          "id": "s74",
+          "file": "faq.html",
+          "start": 4000,
+          "end": 4400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 1,
+          "id": "s75",
+          "file": "faq.html",
+          "start": 4400,
+          "end": 4800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 2,
+          "id": "s84",
+          "file": "faq.html",
+          "start": 8000,
+          "end": 8400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 3,
+          "id": "s85",
+          "file": "faq.html",
+          "start": 8400,
+          "end": 8800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 0,
+          "id": "s96",
+          "file": "faq.html",
+          "start": 12800,
+          "end": 13200,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 1,
+          "id": "s97",
+          "file": "faq.html",
+          "start": 13031,
+          "end": 13308,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 0,
+          "id": "s24",
+          "file": "contact.html",
+          "start": 4400,
+          "end": 4800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 1,
+          "id": "s35",
+          "file": "contact.html",
+          "start": 7200,
+          "end": 7600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 2,
+          "id": "s50",
+          "file": "contact.html",
+          "start": 11600,
+          "end": 12000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 0,
+          "id": "s203",
+          "file": "pricing.html",
+          "start": 6800,
+          "end": 7200,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 1,
+          "id": "s204",
+          "file": "pricing.html",
+          "start": 7200,
+          "end": 7600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 2,
+          "id": "s218",
+          "file": "pricing.html",
+          "start": 9600,
+          "end": 10000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "index": 0,
+          "id": "s74",
+          "file": "faq.html",
+          "start": 4000,
+          "end": 4400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "index": 1,
+          "id": "s75",
+          "file": "faq.html",
+          "start": 4400,
+          "end": 4800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "index": 2,
+          "id": "s84",
+          "file": "faq.html",
+          "start": 8000,
+          "end": 8400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "index": 0,
+          "id": "s24",
+          "file": "contact.html",
+          "start": 4400,
+          "end": 4800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "index": 1,
+          "id": "s35",
+          "file": "contact.html",
+          "start": 7200,
+          "end": 7600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "index": 2,
+          "id": "s36",
+          "file": "contact.html",
+          "start": 7600,
+          "end": 8000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 0,
+          "id": null,
+          "file": "pricing.html",
+          "start": 4000,
+          "end": 4400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 1,
+          "id": null,
+          "file": "pricing.html",
+          "start": 6800,
+          "end": 7200,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 2,
+          "id": null,
+          "file": "pricing.html",
+          "start": 7200,
+          "end": 7600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 3,
+          "id": null,
+          "file": "pricing.html",
+          "start": 10000,
+          "end": 10400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-2",
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 15200,
+          "end": 15600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 0,
+          "id": null,
+          "file": "contact.html",
+          "start": 5024,
+          "end": 5059,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 1,
+          "id": null,
+          "file": "contact.html",
+          "start": 5568,
+          "end": 5608,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 2,
+          "id": null,
+          "file": "contact.html",
+          "start": 6236,
+          "end": 6275,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 3,
+          "id": null,
+          "file": "contact.html",
+          "start": 6826,
+          "end": 6862,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-4",
+          "index": 0,
+          "id": null,
+          "file": "contact.html",
+          "start": 7200,
+          "end": 7600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 0,
+          "id": null,
+          "file": "faq.html",
+          "start": 4000,
+          "end": 4400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 1,
+          "id": null,
+          "file": "faq.html",
+          "start": 4400,
+          "end": 4800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 2,
+          "id": null,
+          "file": "faq.html",
+          "start": 8000,
+          "end": 8400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 3,
+          "id": null,
+          "file": "faq.html",
+          "start": 8400,
+          "end": 8800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 0,
+          "id": null,
+          "file": "faq.html",
+          "start": 12800,
+          "end": 13200,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 1,
+          "id": null,
+          "file": "faq.html",
+          "start": 13031,
+          "end": 13308,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 0,
+          "id": null,
+          "file": "contact.html",
+          "start": 4400,
+          "end": 4800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 1,
+          "id": null,
+          "file": "contact.html",
+          "start": 7200,
+          "end": 7600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 2,
+          "id": null,
+          "file": "contact.html",
+          "start": 11600,
+          "end": 12000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 0,
+          "id": null,
+          "file": "pricing.html",
+          "start": 6800,
+          "end": 7200,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 1,
+          "id": null,
+          "file": "pricing.html",
+          "start": 7200,
+          "end": 7600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 2,
+          "id": null,
+          "file": "pricing.html",
+          "start": 9600,
+          "end": 10000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 0,
+          "index": 0,
+          "id": null,
+          "file": "faq.html",
+          "start": 4000,
+          "end": 4400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 0,
+          "index": 1,
+          "id": null,
+          "file": "faq.html",
+          "start": 4400,
+          "end": 4800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 0,
+          "index": 2,
+          "id": null,
+          "file": "faq.html",
+          "start": 8000,
+          "end": 8400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 1,
+          "index": 0,
+          "id": null,
+          "file": "contact.html",
+          "start": 4400,
+          "end": 4800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 1,
+          "index": 1,
+          "id": null,
+          "file": "contact.html",
+          "start": 7200,
+          "end": 7600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 1,
+          "index": 2,
+          "id": null,
+          "file": "contact.html",
+          "start": 7600,
+          "end": 8000,
+          "exactSourceSpan": true
+        }
+      ]
+    },
+    {
+      "id": "real-corona-admin",
+      "classification": "known-source-regression",
+      "rawWholeAnswer": "qualified",
+      "rawSemanticWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "applicationAdmitted": true,
+      "applicationFailureReason": null,
+      "applicationHandling": "All items/risk citations remain exact chosen spans; fixed scope explanations only replace appropriate runtime/financial reasoning; no status promotion observed",
+      "sourceFiles": [
+        {
+          "file": "index.html",
+          "sha256": "bb42bffdaac3e8b4a7cc08666e5fd39888979805323d420ccd574c6f1e6c6f60",
+          "utf8Bytes": 56069
+        },
+        {
+          "file": "pages/samples/error-404.html",
+          "sha256": "4d0fd173b36a22069072f6f410ca522e5d04cc9ba7790782bc4fb48db9924bd3",
+          "utf8Bytes": 2759
+        },
+        {
+          "file": "pages/samples/login.html",
+          "sha256": "1300b10c73089e4ae74d431b0baa99e4b0b9858490c5c7946e89fbd60d98e238",
+          "utf8Bytes": 3399
+        },
+        {
+          "file": "pages/samples/register.html",
+          "sha256": "2fff45b630b1c8743207aacc42074ab348389302fe75c35537b0ef47ea9745c8",
+          "utf8Bytes": 3705
+        }
+      ],
+      "integrity": {
+        "requestHashMatchesFreeze": true,
+        "sourceHashesMatchFreeze": true,
+        "catalogBindingSha256IndependentlyRecomputed": true,
+        "allCatalogUtf16SpansMatch": true,
+        "allSelectedIdsKnown": true,
+        "allOriginalArgumentsJsonValid": true,
+        "normalization": "none",
+        "actualFinishReason": "tool_calls",
+        "allCriteriaPresentExactlyOnce": true,
+        "allApplicationCitationsEqualSelectedServerSpans": true
+      },
+      "criterionReview": [
+        {
+          "criterionId": "manual-1",
+          "source": "Dashboard page source copy must include the exact table headings Payment Mode and Payment Status.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The quoted Order Status header has both exact th names in the same table.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-2",
+          "source": "Dashboard page content must show Transfer to Paypal with the amount $236 in Transaction History.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "Transfer to Paypal and $236 share the unique dashboard transaction owner 25347..25927, witnessed by adjacent windows.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-3",
+          "source": "Login page source content must include the labels Username or email * and Password *.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The two exact login labels, including asterisks, are in its one supplied form.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-4",
+          "source": "404 page content must say The page you’re looking for was not found. and Back to home.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The 404 heading has the curly-apostrophe sentence and the quoted Back to home anchor text.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-5",
+          "source": "Register page body copy must contain the exact sentence We never sell your personal information.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "qualified",
+          "appExplanationVerdict": "qualified",
+          "note": "The complete registration body lacks the required privacy sentence. Only a Terms line is imprecise if read as all body copy: labels, buttons and other prose also exist.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-1",
+          "source": "Login must authenticate correct credentials and reject incorrect passwords while keeping different users isolated.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "No authentication or user-isolation execution was supplied. Static form evidence does not prove either success or actual backend absence.",
+          "appPolicyExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-2",
+          "source": "Transfer to Paypal must actually execute a $236 payment and verify its provider transaction status.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The $236 entry is static sample copy, not a real provider transaction; unknown is warranted.",
+          "appPolicyExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-3",
+          "source": "Registration must persist a new account and keep that account queryable after a server restart.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The supplied four HTML files contain no backend persistence service or restart observations; durability remains unknown.",
+          "appPolicyExplanationChanged": true
+        }
+      ],
+      "riskReview": [
+        {
+          "index": 0,
+          "verdict": "qualified",
+          "note": "The privacy sentence is genuinely absent. Saying body shows only the Terms line is overbroad; actual registration labels/buttons/other account copy also exist."
+        }
+      ],
+      "limitationReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "Only four HTML files are supplied; references to omitted scripts do not supply their code or execution."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "No browser/screenshots; rendering remains unknown."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "Register primary submit text really is Login; its intended semantics are not assumed."
+        },
+        {
+          "index": 3,
+          "verdict": "accepted",
+          "note": "Both forms really omit action; handling is unknown, not proven absent."
+        }
+      ],
+      "appendedSystemLimitationsReview": {
+        "count": 3,
+        "verdict": "accepted",
+        "note": "Actual catalog identity, complete-input-versus-understanding, no-execution and human acceptance/payment separation are accurately stated."
+      },
+      "remainingIssues": [
+        {
+          "severity": "P3",
+          "kind": "overbroad_body_description",
+          "at": "items[manual-5].explanation and risks[0].explanation",
+          "message": "The privacy sentence is absent, but the whole body does not only contain a Terms line: Username/Email/Password/Remember me/Login/social/account copy is also present.",
+          "counterevidence": {
+            "file": "pages/samples/register.html",
+            "termsSpan": [
+              2798,
+              2898
+            ]
+          }
+        }
+      ],
+      "citationChecks": [
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 0,
+          "id": "s162",
+          "file": "index.html",
+          "start": 36000,
+          "end": 36400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "index": 0,
+          "id": "s113",
+          "file": "index.html",
+          "start": 25200,
+          "end": 25600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "index": 1,
+          "id": "s114",
+          "file": "index.html",
+          "start": 25600,
+          "end": 26000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 0,
+          "id": "s261",
+          "file": "pages/samples/login.html",
+          "start": 1275,
+          "end": 1309,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 1,
+          "id": "s262",
+          "file": "pages/samples/login.html",
+          "start": 1467,
+          "end": 1492,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "index": 0,
+          "id": "s250",
+          "file": "pages/samples/error-404.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "index": 1,
+          "id": "s252",
+          "file": "pages/samples/error-404.html",
+          "start": 1600,
+          "end": 2000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 0,
+          "id": "s283",
+          "file": "pages/samples/register.html",
+          "start": 2798,
+          "end": 2898,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 1,
+          "id": "s282",
+          "file": "pages/samples/register.html",
+          "start": 2696,
+          "end": 2779,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 0,
+          "id": "s260",
+          "file": "pages/samples/login.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 1,
+          "id": "s265",
+          "file": "pages/samples/login.html",
+          "start": 2000,
+          "end": 2400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 0,
+          "id": "s113",
+          "file": "index.html",
+          "start": 25200,
+          "end": 25600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 1,
+          "id": "s114",
+          "file": "index.html",
+          "start": 25600,
+          "end": 26000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 0,
+          "id": "s274",
+          "file": "pages/samples/register.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 1,
+          "id": "s280",
+          "file": "pages/samples/register.html",
+          "start": 2000,
+          "end": 2400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "index": 0,
+          "id": "s283",
+          "file": "pages/samples/register.html",
+          "start": 2798,
+          "end": 2898,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "index": 1,
+          "id": "s282",
+          "file": "pages/samples/register.html",
+          "start": 2696,
+          "end": 2779,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 36000,
+          "end": 36400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-2",
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 25200,
+          "end": 25600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-2",
+          "index": 1,
+          "id": null,
+          "file": "index.html",
+          "start": 25600,
+          "end": 26000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/login.html",
+          "start": 1275,
+          "end": 1309,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 1,
+          "id": null,
+          "file": "pages/samples/login.html",
+          "start": 1467,
+          "end": 1492,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-4",
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/error-404.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-4",
+          "index": 1,
+          "id": null,
+          "file": "pages/samples/error-404.html",
+          "start": 1600,
+          "end": 2000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/register.html",
+          "start": 2798,
+          "end": 2898,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 1,
+          "id": null,
+          "file": "pages/samples/register.html",
+          "start": 2696,
+          "end": 2779,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/login.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 1,
+          "id": null,
+          "file": "pages/samples/login.html",
+          "start": 2000,
+          "end": 2400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 25200,
+          "end": 25600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 1,
+          "id": null,
+          "file": "index.html",
+          "start": 25600,
+          "end": 26000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/register.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 1,
+          "id": null,
+          "file": "pages/samples/register.html",
+          "start": 2000,
+          "end": 2400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 0,
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/register.html",
+          "start": 2798,
+          "end": 2898,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 0,
+          "index": 1,
+          "id": null,
+          "file": "pages/samples/register.html",
+          "start": 2696,
+          "end": 2779,
+          "exactSourceSpan": true
+        }
+      ]
+    },
+    {
+      "id": "real-personal-supplemental",
+      "classification": "known-source-regression",
+      "rawWholeAnswer": "qualified",
+      "rawSemanticWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "applicationAdmitted": true,
+      "applicationFailureReason": null,
+      "applicationHandling": "All items/risk citations remain exact chosen spans; fixed scope explanations only replace appropriate runtime/financial reasoning; no status promotion observed",
+      "sourceFiles": [
+        {
+          "file": "contact.html",
+          "sha256": "5ce6c4cbd4f98ed0823db344251f0231cc5bf908609a1a82487ce7bd4de64f9d",
+          "utf8Bytes": 9275
+        },
+        {
+          "file": "index.html",
+          "sha256": "59e92f696d9a3d54ff88a95b32b53591e9bbe66d49ad2952ac19ef7a5e85cf5b",
+          "utf8Bytes": 27570
+        },
+        {
+          "file": "projects.html",
+          "sha256": "85b3261008f249b3341c619a49b9482991fc2d9876403ba3612e77bae387fa4a",
+          "utf8Bytes": 6395
+        },
+        {
+          "file": "resume.html",
+          "sha256": "3dd4e730b2762577757b762f70d75f51ab95d1d021af513308d28b3751bf2d53",
+          "utf8Bytes": 15143
+        }
+      ],
+      "integrity": {
+        "requestHashMatchesFreeze": true,
+        "sourceHashesMatchFreeze": true,
+        "catalogBindingSha256IndependentlyRecomputed": true,
+        "allCatalogUtf16SpansMatch": true,
+        "allSelectedIdsKnown": true,
+        "allOriginalArgumentsJsonValid": true,
+        "normalization": "none",
+        "actualFinishReason": "tool_calls",
+        "allCriteriaPresentExactlyOnce": true,
+        "allApplicationCitationsEqualSelectedServerSpans": true
+      },
+      "criterionReview": [
+        {
+          "criterionId": "manual-1",
+          "source": "Each page's HTML title content must identify Personal rather than Modern Business.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "All four title elements are separately quoted: index/resume identify Personal, contact/projects identify Modern Business, establishing the explicit every-page counterexample.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-2",
+          "source": "Resume page content must list Web Developer at Stark Industries for 2019 - Present.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The first resume experience card contains 2019 - Present, Web Developer and Stark Industries together.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-3",
+          "source": "Resume page content must include a Master's in Web Development and an Undergraduate entry in Computer Science.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "Two distinct education cards correctly pair Masters/Web Development and Undergraduate/Computer Science; adjacent raw windows retain the second pair.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-4",
+          "source": "Projects page content must not retain the placeholder titles Project Name 1 and Project Name 2.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "Both placeholder project headings are actually present on projects.html; negative literal requirement is violated.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-5",
+          "source": "Contact page source content must contain the literal labels Full name and Email address.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "Full name and Email address labels are both actual contact form labels, not navigation/attribute strings.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-1",
+          "source": "Contact page copy must state that a reply is normally provided within two working days.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "Complete contact copy includes the introductory phrases and template form messages, with no two-working-day reply commitment; source-copy changes are justified without asserting actual email behavior.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-2",
+          "source": "Download Resume must retrieve a valid PDF containing the current experience and education.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The resume link is #! and inventory contains no PDF. Valid retrieval/content needs runtime or supplied artifact evidence, correctly unknown.",
+          "appPolicyExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-3",
+          "source": "The portrait must depict the portfolio owner and remain uncropped at 375px on a phone.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The profile.png reference and alt are accurate; no raster pixels or 375px observations were supplied.",
+          "appPolicyExplanationChanged": false
+        }
+      ],
+      "riskReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "Both wrong title elements are quoted and the suggested title change follows the agreed literal identity."
+        },
+        {
+          "index": 1,
+          "verdict": "qualified",
+          "note": "Both placeholder headings and lorem ipsum bodies exist; replacing body prose is additional advice beyond the explicit requirement about placeholder titles and should not become an unstated acceptance obligation."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "The reply-time promise is absent in the complete static contact body; its two quotes are contextual examples rather than independent proof of whole-page absence."
+        }
+      ],
+      "limitationReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "No runtime/browser evidence for links or layout."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "Resume href is #! and no PDF is inventoried."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "No raster pixels were input; source profile path cannot establish identity."
+        },
+        {
+          "index": 3,
+          "verdict": "accepted",
+          "note": "No form/email/token execution was performed; this is a capability limitation, not a required new feature."
+        },
+        {
+          "index": 4,
+          "verdict": "accepted",
+          "note": "Human final acceptance remains separate."
+        }
+      ],
+      "appendedSystemLimitationsReview": {
+        "count": 3,
+        "verdict": "accepted",
+        "note": "Actual catalog identity, complete-input-versus-understanding, no-execution and human acceptance/payment separation are accurately stated."
+      },
+      "remainingIssues": [
+        {
+          "severity": "P3",
+          "kind": "extra_acceptance_scope",
+          "at": "risks[1].suggestion",
+          "message": "Replacing lorem ipsum descriptions is additional advice beyond the locked placeholder-title requirement; do not silently treat it as an agreed defect."
+        }
+      ],
+      "citationChecks": [
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 0,
+          "id": "s37",
+          "file": "index.html",
+          "start": 271,
+          "end": 318,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 1,
+          "id": "s138",
+          "file": "resume.html",
+          "start": 271,
+          "end": 321,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 2,
+          "id": "s2",
+          "file": "contact.html",
+          "start": 265,
+          "end": 322,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 3,
+          "id": "s114",
+          "file": "projects.html",
+          "start": 271,
+          "end": 328,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "index": 0,
+          "id": "s153",
+          "file": "resume.html",
+          "start": 4000,
+          "end": 4400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 0,
+          "id": "s161",
+          "file": "resume.html",
+          "start": 7200,
+          "end": 7600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 1,
+          "id": "s165",
+          "file": "resume.html",
+          "start": 8800,
+          "end": 9200,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 2,
+          "id": "s166",
+          "file": "resume.html",
+          "start": 9200,
+          "end": 9600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "index": 0,
+          "id": "s127",
+          "file": "projects.html",
+          "start": 3200,
+          "end": 3600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "index": 1,
+          "id": "s130",
+          "file": "projects.html",
+          "start": 4000,
+          "end": 4400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 0,
+          "id": "s19",
+          "file": "contact.html",
+          "start": 4048,
+          "end": 4083,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 1,
+          "id": "s21",
+          "file": "contact.html",
+          "start": 4592,
+          "end": 4632,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 0,
+          "id": "s14",
+          "file": "contact.html",
+          "start": 2815,
+          "end": 2854,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 1,
+          "id": "s15",
+          "file": "contact.html",
+          "start": 2883,
+          "end": 2949,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 2,
+          "id": "s31",
+          "file": "contact.html",
+          "start": 7600,
+          "end": 8000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 0,
+          "id": "s151",
+          "file": "resume.html",
+          "start": 3200,
+          "end": 3600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 0,
+          "id": "s52",
+          "file": "index.html",
+          "start": 4000,
+          "end": 4400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "index": 0,
+          "id": "s2",
+          "file": "contact.html",
+          "start": 265,
+          "end": 322,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "index": 1,
+          "id": "s114",
+          "file": "projects.html",
+          "start": 271,
+          "end": 328,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "index": 0,
+          "id": "s127",
+          "file": "projects.html",
+          "start": 3200,
+          "end": 3600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "index": 1,
+          "id": "s130",
+          "file": "projects.html",
+          "start": 4000,
+          "end": 4400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "index": 0,
+          "id": "s14",
+          "file": "contact.html",
+          "start": 2815,
+          "end": 2854,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "index": 1,
+          "id": "s15",
+          "file": "contact.html",
+          "start": 2883,
+          "end": 2949,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 271,
+          "end": 318,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 1,
+          "id": null,
+          "file": "resume.html",
+          "start": 271,
+          "end": 321,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 2,
+          "id": null,
+          "file": "contact.html",
+          "start": 265,
+          "end": 322,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 3,
+          "id": null,
+          "file": "projects.html",
+          "start": 271,
+          "end": 328,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-2",
+          "index": 0,
+          "id": null,
+          "file": "resume.html",
+          "start": 4000,
+          "end": 4400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 0,
+          "id": null,
+          "file": "resume.html",
+          "start": 7200,
+          "end": 7600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 1,
+          "id": null,
+          "file": "resume.html",
+          "start": 8800,
+          "end": 9200,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 2,
+          "id": null,
+          "file": "resume.html",
+          "start": 9200,
+          "end": 9600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-4",
+          "index": 0,
+          "id": null,
+          "file": "projects.html",
+          "start": 3200,
+          "end": 3600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-4",
+          "index": 1,
+          "id": null,
+          "file": "projects.html",
+          "start": 4000,
+          "end": 4400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 0,
+          "id": null,
+          "file": "contact.html",
+          "start": 4048,
+          "end": 4083,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-5",
+          "index": 1,
+          "id": null,
+          "file": "contact.html",
+          "start": 4592,
+          "end": 4632,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 0,
+          "id": null,
+          "file": "contact.html",
+          "start": 2815,
+          "end": 2854,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 1,
+          "id": null,
+          "file": "contact.html",
+          "start": 2883,
+          "end": 2949,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 2,
+          "id": null,
+          "file": "contact.html",
+          "start": 7600,
+          "end": 8000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 0,
+          "id": null,
+          "file": "resume.html",
+          "start": 3200,
+          "end": 3600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 4000,
+          "end": 4400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 0,
+          "index": 0,
+          "id": null,
+          "file": "contact.html",
+          "start": 265,
+          "end": 322,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 0,
+          "index": 1,
+          "id": null,
+          "file": "projects.html",
+          "start": 271,
+          "end": 328,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 1,
+          "index": 0,
+          "id": null,
+          "file": "projects.html",
+          "start": 3200,
+          "end": 3600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 1,
+          "index": 1,
+          "id": null,
+          "file": "projects.html",
+          "start": 4000,
+          "end": 4400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 2,
+          "index": 0,
+          "id": null,
+          "file": "contact.html",
+          "start": 2815,
+          "end": 2854,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 2,
+          "index": 1,
+          "id": null,
+          "file": "contact.html",
+          "start": 2883,
+          "end": 2949,
+          "exactSourceSpan": true
+        }
+      ]
+    },
+    {
+      "id": "real-holdout-clean-blog",
+      "classification": "known-source-regression",
+      "rawWholeAnswer": "rejected",
+      "rawSemanticWholeAnswer": "qualified",
+      "applicationWholeAnswer": "rejected",
+      "applicationAdmitted": false,
+      "applicationFailureReason": "risk_fields",
+      "applicationHandling": "Correct fail-closed risk4>3 whole-report refusal; no partial item statuses or auto-trim",
+      "sourceFiles": [
+        {
+          "file": "about.html",
+          "sha256": "fd00d01f5a66f96b820b090775ebc3986f483d65be1f1eee407f767198dbcdd7",
+          "utf8Bytes": 6113
+        },
+        {
+          "file": "contact.html",
+          "sha256": "02784423b73d7d6fcf017b7fe8a043f2920ea9489b1283b71dca410be22517dc",
+          "utf8Bytes": 10169
+        },
+        {
+          "file": "index.html",
+          "sha256": "20e87ae8660b3f3d298a0a71364f4f7afda6a586070a65ddf2caedcd934466d8",
+          "utf8Bytes": 8213
+        },
+        {
+          "file": "post.html",
+          "sha256": "d6885dd13e734e5315bc4cb36ba2406307812f54376dedfa776931023e0d1d56",
+          "utf8Bytes": 9663
+        }
+      ],
+      "integrity": {
+        "requestHashMatchesFreeze": true,
+        "sourceHashesMatchFreeze": true,
+        "catalogBindingSha256IndependentlyRecomputed": true,
+        "allCatalogUtf16SpansMatch": true,
+        "allSelectedIdsKnown": true,
+        "allOriginalArgumentsJsonValid": true,
+        "normalization": "none",
+        "actualFinishReason": "tool_calls",
+        "allCriteriaPresentExactlyOnce": true,
+        "allApplicationCitationsEqualSelectedServerSpans": null
+      },
+      "criterionReview": [
+        {
+          "criterionId": "coverage-1",
+          "source": "Text content in mainNav on all four pages must include Home and About and Sample Post and Contact",
+          "rawStatus": "supported",
+          "applicationStatus": "error",
+          "rawExplanationVerdict": "qualified",
+          "appExplanationVerdict": "not_admitted",
+          "note": "Full source independently confirms Home/About/Sample Post/Contact in mainNav on all four pages. Selected contact/post citations only show Sample Post and Contact; their Home/About witnesses are absent from displayed evidence.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-2",
+          "source": "The website content must not advertise the template brand Start Bootstrap anywhere in current page copy",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "error",
+          "rawExplanationVerdict": "qualified",
+          "appExplanationVerdict": "not_admitted",
+          "note": "Template branding is truly present in navbar/home/post copy. Calling the success link visible is unsupported: it is under a d-none source ancestor and no CSS/rendering was supplied.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-3",
+          "source": "The text content of the four delivered HTML title elements must be distinct",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "error",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "not_admitted",
+          "note": "Four separate complete title citations correctly show identical Clean Blog - Start Bootstrap Theme metadata.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-4",
+          "source": "The contact page content must name Email address and Phone Number and Message",
+          "rawStatus": "supported",
+          "applicationStatus": "error",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "not_admitted",
+          "note": "Email address, Phone Number and Message are exact contact labels in one form; capital N is preserved.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-5",
+          "source": "The static contact HTML copy must explain privacy retention as 30 days and deletion on request",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "error",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "not_admitted",
+          "note": "Complete static contact body has no 30-day/deletion-on-request policy. This is a static-copy omission, not proof that storage/deletion behavior exists or fails.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-6",
+          "source": "Sending a message must actually email the owner and preserve a receipt retrievable after restart",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "error",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "not_admitted",
+          "note": "Email receipt/restart persistence correctly remain unknown; placeholder token and activation text do not establish execution.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-7",
+          "source": "The delivered website must display no horizontal overflow at 375px and allow all mobile menu items",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "error",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "not_admitted",
+          "note": "375px overflow/menu behavior correctly remain unknown without browser output.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-8",
+          "source": "The post page content must contain the article title Man must explore and this is exploration at its greatest",
+          "rawStatus": "supported",
+          "applicationStatus": "error",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "not_admitted",
+          "note": "The full post h1 title differs only by editorial comma before and. Supported source-copy advice is reasonable for this non-exact content criterion; no R9 negative override was needed in this raw answer.",
+          "appPolicyExplanationChanged": false
+        }
+      ],
+      "riskReview": [
+        {
+          "index": 0,
+          "verdict": "qualified",
+          "note": "Brand instances are genuine, but visibility of the success block is unobserved and the post-meta assertion is not included in these three risk citations."
+        },
+        {
+          "index": 1,
+          "verdict": "rejected",
+          "note": "All four titles are genuine and equal, but four IDs violate the unchanged per-risk maximum3. This invalidates the whole report; the application correctly refuses it."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "Static retention/deletion copy is absent in complete contact source; it does not establish storage behavior."
+        }
+      ],
+      "limitationReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "No 375px/menu observations."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "API_TOKEN and external SB Forms script are source references, not observed delivery."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "No server/restart/receipt evidence."
+        },
+        {
+          "index": 3,
+          "verdict": "accepted",
+          "note": "d-none is declared on success/error; conditional behavior unknown."
+        },
+        {
+          "index": 4,
+          "verdict": "accepted",
+          "note": "Branding interpretation may require a buyer, but explicit literal Start Bootstrap examples still establish a source-copy counterexample."
+        },
+        {
+          "index": 5,
+          "verdict": "accepted",
+          "note": "Inventory contains four HTML files only; stylesheet/script bytes were not supplied."
+        }
+      ],
+      "appendedSystemLimitationsReview": null,
+      "remainingIssues": [
+        {
+          "severity": "P2",
+          "kind": "risk_citation_limit",
+          "at": "risks[1].citations",
+          "message": "Four valid title IDs exceed the per-risk maximum3. All four refer to correct source, but whole report rejection with risk_fields is correct. Do not truncate or silently omit a quote to admit it.",
+          "counterevidence": {
+            "ids": [
+              "s2",
+              "s30",
+              "s70",
+              "s104"
+            ],
+            "count": 4,
+            "maximum": 3
+          }
+        },
+        {
+          "severity": "P3",
+          "kind": "unobserved_visibility",
+          "at": "items[coverage-2].explanation and risks[0].explanation",
+          "message": "Visible/display claims for the success link are unsupported by static source; it sits inside class=d-none and CSS/rendering were not provided. Literal branding presence remains real.",
+          "counterevidence": {
+            "file": "contact.html",
+            "linkCatalogId": "s56",
+            "ancestor": "div class=\"d-none\" id=\"submitSuccessMessage\""
+          }
+        },
+        {
+          "severity": "P3",
+          "kind": "partial_every_page_witness",
+          "at": "items[coverage-1].citations",
+          "message": "Source really has all four labels on each page, but contact/post selected windows only show Sample Post/Contact; Home/About on those two files are not quoted.",
+          "counterevidence": {
+            "contactSelected": [
+              "s38"
+            ],
+            "postSelected": [
+              "s112"
+            ],
+            "sourceNavStart": 1600,
+            "uncitedParts": "Home/About in1600..2000 on contact/post"
+          }
+        },
+        {
+          "severity": "P3",
+          "kind": "partial_risk_witness",
+          "at": "risks[0].citations",
+          "message": "Risk includes post-meta author links, but chosen risk IDs show navbar/home/success examples, not post meta. Full input independently confirms it."
+        }
+      ],
+      "citationChecks": [
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 0,
+          "id": "s74",
+          "file": "index.html",
+          "start": 1600,
+          "end": 2000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 1,
+          "id": "s78",
+          "file": "index.html",
+          "start": 2000,
+          "end": 2400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 2,
+          "id": "s10",
+          "file": "about.html",
+          "start": 2000,
+          "end": 2400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 3,
+          "id": "s6",
+          "file": "about.html",
+          "start": 1600,
+          "end": 2000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 4,
+          "id": "s38",
+          "file": "contact.html",
+          "start": 2000,
+          "end": 2400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 5,
+          "id": "s112",
+          "file": "post.html",
+          "start": 2000,
+          "end": 2400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 0,
+          "id": "s73",
+          "file": "index.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 1,
+          "id": "s80",
+          "file": "index.html",
+          "start": 2400,
+          "end": 2800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 2,
+          "id": "s84",
+          "file": "index.html",
+          "start": 3493,
+          "end": 3692,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 3,
+          "id": "s116",
+          "file": "post.html",
+          "start": 2800,
+          "end": 3200,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 4,
+          "id": "s56",
+          "file": "contact.html",
+          "start": 6400,
+          "end": 6800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 5,
+          "id": "s33",
+          "file": "contact.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 0,
+          "id": "s2",
+          "file": "about.html",
+          "start": 271,
+          "end": 320,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 1,
+          "id": "s30",
+          "file": "contact.html",
+          "start": 271,
+          "end": 320,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 2,
+          "id": "s70",
+          "file": "index.html",
+          "start": 271,
+          "end": 320,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 3,
+          "id": "s104",
+          "file": "post.html",
+          "start": 271,
+          "end": 320,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-4",
+          "index": 0,
+          "id": "s49",
+          "file": "contact.html",
+          "start": 4607,
+          "end": 4647,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-4",
+          "index": 1,
+          "id": "s51",
+          "file": "contact.html",
+          "start": 5195,
+          "end": 5234,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-4",
+          "index": 2,
+          "id": "s54",
+          "file": "contact.html",
+          "start": 5690,
+          "end": 5726,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "index": 0,
+          "id": "s43",
+          "file": "contact.html",
+          "start": 3156,
+          "end": 3277,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "index": 1,
+          "id": "s45",
+          "file": "contact.html",
+          "start": 3600,
+          "end": 4000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "index": 2,
+          "id": "s53",
+          "file": "contact.html",
+          "start": 5600,
+          "end": 6000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "index": 3,
+          "id": "s56",
+          "file": "contact.html",
+          "start": 6400,
+          "end": 6800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "index": 4,
+          "id": "s58",
+          "file": "contact.html",
+          "start": 7200,
+          "end": 7600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-6",
+          "index": 0,
+          "id": "s45",
+          "file": "contact.html",
+          "start": 3600,
+          "end": 4000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-6",
+          "index": 1,
+          "id": "s56",
+          "file": "contact.html",
+          "start": 6400,
+          "end": 6800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-6",
+          "index": 2,
+          "id": "s58",
+          "file": "contact.html",
+          "start": 7200,
+          "end": 7600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-6",
+          "index": 3,
+          "id": "s68",
+          "file": "contact.html",
+          "start": 10000,
+          "end": 10169,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-7",
+          "index": 0,
+          "id": "s73",
+          "file": "index.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-7",
+          "index": 1,
+          "id": "s78",
+          "file": "index.html",
+          "start": 2000,
+          "end": 2400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-8",
+          "index": 0,
+          "id": "s115",
+          "file": "post.html",
+          "start": 2661,
+          "end": 2727,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "index": 0,
+          "id": "s73",
+          "file": "index.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "index": 1,
+          "id": "s80",
+          "file": "index.html",
+          "start": 2400,
+          "end": 2800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "index": 2,
+          "id": "s56",
+          "file": "contact.html",
+          "start": 6400,
+          "end": 6800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "index": 0,
+          "id": "s2",
+          "file": "about.html",
+          "start": 271,
+          "end": 320,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "index": 1,
+          "id": "s30",
+          "file": "contact.html",
+          "start": 271,
+          "end": 320,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "index": 2,
+          "id": "s70",
+          "file": "index.html",
+          "start": 271,
+          "end": 320,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "index": 3,
+          "id": "s104",
+          "file": "post.html",
+          "start": 271,
+          "end": 320,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "index": 0,
+          "id": "s43",
+          "file": "contact.html",
+          "start": 3156,
+          "end": 3277,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "index": 1,
+          "id": "s45",
+          "file": "contact.html",
+          "start": 3600,
+          "end": 4000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "index": 2,
+          "id": "s53",
+          "file": "contact.html",
+          "start": 5600,
+          "end": 6000,
+          "exactSourceSpan": true
+        }
+      ]
+    },
+    {
+      "id": "real-holdout-html5-boilerplate",
+      "classification": "known-source-regression",
+      "rawWholeAnswer": "qualified",
+      "rawSemanticWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "applicationAdmitted": true,
+      "applicationFailureReason": null,
+      "applicationHandling": "All items/risk citations remain exact chosen spans; fixed scope explanations only replace appropriate runtime/financial reasoning; no status promotion observed",
+      "sourceFiles": [
+        {
+          "file": "404.html",
+          "sha256": "57f3228f1361508362003ac5eb25cc8303b0b8fd19bf2470e462b2b8e97eef78",
+          "utf8Bytes": 1037
+        },
+        {
+          "file": "index.html",
+          "sha256": "1dacff6e4b61aa96a8b6b94ba2280eb9a767f0d688775a088b430994c1f9ebb0",
+          "utf8Bytes": 851
+        },
+        {
+          "file": "css/style.css",
+          "sha256": "7af9c40a3eeee8806a6b04f2d3a2213d6fcd8cf852c6075352d792880e7d26ca",
+          "utf8Bytes": 4965
+        }
+      ],
+      "integrity": {
+        "requestHashMatchesFreeze": true,
+        "sourceHashesMatchFreeze": true,
+        "catalogBindingSha256IndependentlyRecomputed": true,
+        "allCatalogUtf16SpansMatch": true,
+        "allSelectedIdsKnown": true,
+        "allOriginalArgumentsJsonValid": true,
+        "normalization": "none",
+        "actualFinishReason": "tool_calls",
+        "allCriteriaPresentExactlyOnce": true,
+        "allApplicationCitationsEqualSelectedServerSpans": true
+      },
+      "criterionReview": [
+        {
+          "criterionId": "coverage-1",
+          "source": "The 404 page text content must contain Page Not Found and the missing page apology",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The exact 404 heading and apology are both cited as complete elements.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-2",
+          "source": "Home page content must say Hello world and identify HTML5 Boilerplate",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The complete home paragraph contains Hello world! and HTML5 Boilerplate.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-3",
+          "source": "The page content must declare English in a nonempty html lang attribute on both delivered pages",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "Both opening html tags are quoted: 404 lang=en versus empty index lang, so the explicit both-page metadata condition fails.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-4",
+          "source": "Home page content must have a nonempty document title identifying a business name",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "index title is the exact empty title element and identifies no business.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-5",
+          "source": "Home page copy must state a 48 hour cancellation notice rule and a refund eligibility policy",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The complete static homepage body only contains the boilerplate paragraph plus a script reference, with no cancellation/refund copy. This is not an assertion about actual refund execution.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-6",
+          "source": "A request for a nonexistent route must return HTTP 404 and render the delivered 404 page",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "A 404 file does not establish routing/status. No server execution was supplied; unknown is warranted even with empty citations.",
+          "appPolicyExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-7",
+          "source": "Mobile visitors at 375px must read the 404 page without clipped content",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "Inline 280px media-query source is real, but measured 375px clipping is unknown.",
+          "appPolicyExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-8",
+          "source": "The 404 page content must include a linked Return home phrase targeting index.html",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The complete standalone 404 body has only h1 and apology, with no anchor or Return home phrase; exact source changes are justified.",
+          "appPolicyExplanationChanged": false
+        }
+      ],
+      "riskReview": [
+        {
+          "index": 0,
+          "verdict": "qualified",
+          "note": "The empty index lang is accurately quoted; the comparison to404 lang=en is independently true but not included in this risk single citation (item quotes both)."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "Empty title is directly and completely witnessed."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "The complete supplied home body lacks the agreed policy copy; no money movement is inferred."
+        },
+        {
+          "index": 3,
+          "verdict": "accepted",
+          "note": "The complete 404 body proves no requested home anchor is present."
+        }
+      ],
+      "limitationReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "No HTTP/routing observations."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "No375px rendering or clipping measurements."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "No runtime/backend observations supplied."
+        },
+        {
+          "index": 3,
+          "verdict": "accepted",
+          "note": "Exactly three files are inventoried and no server config."
+        },
+        {
+          "index": 4,
+          "verdict": "accepted",
+          "note": "Advisory review does not accept delivery."
+        }
+      ],
+      "appendedSystemLimitationsReview": {
+        "count": 3,
+        "verdict": "accepted",
+        "note": "Actual catalog identity, complete-input-versus-understanding, no-execution and human acceptance/payment separation are accurately stated."
+      },
+      "remainingIssues": [
+        {
+          "severity": "P3",
+          "kind": "partial_comparison_witness",
+          "at": "risks[0].citations",
+          "message": "Risk compares index lang with404 lang but only quotes index. Item coverage-3 quotes both; full source independently confirms comparison."
+        }
+      ],
+      "citationChecks": [
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 0,
+          "id": "s5",
+          "file": "404.html",
+          "start": 818,
+          "end": 841,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 1,
+          "id": "s6",
+          "file": "404.html",
+          "start": 844,
+          "end": 910,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 0,
+          "id": "s23",
+          "file": "index.html",
+          "start": 750,
+          "end": 796,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 0,
+          "id": "s1",
+          "file": "404.html",
+          "start": 0,
+          "end": 400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 1,
+          "id": "s20",
+          "file": "index.html",
+          "start": 0,
+          "end": 400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-4",
+          "index": 0,
+          "id": "s20",
+          "file": "index.html",
+          "start": 0,
+          "end": 400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-4",
+          "index": 1,
+          "id": "s21",
+          "file": "index.html",
+          "start": 120,
+          "end": 135,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "index": 0,
+          "id": "s22",
+          "file": "index.html",
+          "start": 400,
+          "end": 800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "index": 1,
+          "id": "s23",
+          "file": "index.html",
+          "start": 750,
+          "end": 796,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "index": 2,
+          "id": "s24",
+          "file": "index.html",
+          "start": 800,
+          "end": 851,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-7",
+          "index": 0,
+          "id": "s3",
+          "file": "404.html",
+          "start": 400,
+          "end": 800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-8",
+          "index": 0,
+          "id": "s4",
+          "file": "404.html",
+          "start": 800,
+          "end": 1037,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "index": 0,
+          "id": "s20",
+          "file": "index.html",
+          "start": 0,
+          "end": 400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "index": 0,
+          "id": "s21",
+          "file": "index.html",
+          "start": 120,
+          "end": 135,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "index": 0,
+          "id": "s22",
+          "file": "index.html",
+          "start": 400,
+          "end": 800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "index": 1,
+          "id": "s23",
+          "file": "index.html",
+          "start": 750,
+          "end": 796,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "index": 2,
+          "id": "s24",
+          "file": "index.html",
+          "start": 800,
+          "end": 851,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 3,
+          "index": 0,
+          "id": "s4",
+          "file": "404.html",
+          "start": 800,
+          "end": 1037,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 0,
+          "id": null,
+          "file": "404.html",
+          "start": 818,
+          "end": 841,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 1,
+          "id": null,
+          "file": "404.html",
+          "start": 844,
+          "end": 910,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 750,
+          "end": 796,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 0,
+          "id": null,
+          "file": "404.html",
+          "start": 0,
+          "end": 400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 1,
+          "id": null,
+          "file": "index.html",
+          "start": 0,
+          "end": 400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-4",
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 0,
+          "end": 400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-4",
+          "index": 1,
+          "id": null,
+          "file": "index.html",
+          "start": 120,
+          "end": 135,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-5",
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 400,
+          "end": 800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-5",
+          "index": 1,
+          "id": null,
+          "file": "index.html",
+          "start": 750,
+          "end": 796,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-5",
+          "index": 2,
+          "id": null,
+          "file": "index.html",
+          "start": 800,
+          "end": 851,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-7",
+          "index": 0,
+          "id": null,
+          "file": "404.html",
+          "start": 400,
+          "end": 800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-8",
+          "index": 0,
+          "id": null,
+          "file": "404.html",
+          "start": 800,
+          "end": 1037,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 0,
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 0,
+          "end": 400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 1,
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 120,
+          "end": 135,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 2,
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 400,
+          "end": 800,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 2,
+          "index": 1,
+          "id": null,
+          "file": "index.html",
+          "start": 750,
+          "end": 796,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 2,
+          "index": 2,
+          "id": null,
+          "file": "index.html",
+          "start": 800,
+          "end": 851,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 3,
+          "index": 0,
+          "id": null,
+          "file": "404.html",
+          "start": 800,
+          "end": 1037,
+          "exactSourceSpan": true
+        }
+      ]
+    },
+    {
+      "id": "known-corona-sixteen-checklist",
+      "classification": "known-source-regression",
+      "rawWholeAnswer": "qualified",
+      "rawSemanticWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "applicationAdmitted": true,
+      "applicationFailureReason": null,
+      "applicationHandling": "All items/risk citations remain exact chosen spans; fixed scope explanations only replace appropriate runtime/financial reasoning; no status promotion observed",
+      "sourceFiles": [
+        {
+          "file": "index.html",
+          "sha256": "bb42bffdaac3e8b4a7cc08666e5fd39888979805323d420ccd574c6f1e6c6f60",
+          "utf8Bytes": 56069
+        },
+        {
+          "file": "pages/samples/error-404.html",
+          "sha256": "4d0fd173b36a22069072f6f410ca522e5d04cc9ba7790782bc4fb48db9924bd3",
+          "utf8Bytes": 2759
+        },
+        {
+          "file": "pages/samples/login.html",
+          "sha256": "1300b10c73089e4ae74d431b0baa99e4b0b9858490c5c7946e89fbd60d98e238",
+          "utf8Bytes": 3399
+        },
+        {
+          "file": "pages/samples/register.html",
+          "sha256": "2fff45b630b1c8743207aacc42074ab348389302fe75c35537b0ef47ea9745c8",
+          "utf8Bytes": 3705
+        }
+      ],
+      "integrity": {
+        "requestHashMatchesFreeze": true,
+        "sourceHashesMatchFreeze": true,
+        "catalogBindingSha256IndependentlyRecomputed": true,
+        "allCatalogUtf16SpansMatch": true,
+        "allSelectedIdsKnown": true,
+        "allOriginalArgumentsJsonValid": true,
+        "normalization": "none",
+        "actualFinishReason": "tool_calls",
+        "allCriteriaPresentExactlyOnce": true,
+        "allApplicationCitationsEqualSelectedServerSpans": true
+      },
+      "criterionReview": [
+        {
+          "criterionId": "manual-1",
+          "source": "In the delivered dashboard HTML the Order Status table must contain the literal headings Payment Mode and Payment Status.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The Order Status table is named and its Payment Mode/Payment Status th elements are quoted.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-2",
+          "source": "In the delivered login HTML the input immediately under Password * must use type=\"password\" rather than type=\"text\".",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The input immediately following Password * is type=text in the same form group, contrary to the explicit source-attribute requirement.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-3",
+          "source": "In the delivered register HTML the primary submit button text must read Create account rather than Login.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The actual primary register submit button is Login rather than Create account.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-4",
+          "source": "The delivered 404 HTML document title must be Not found - Corona Admin rather than the generic Corona Admin.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The actual error-404 title element is Corona Admin, not the required Not found - Corona Admin.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-1",
+          "source": "Dashboard source copy must pair Transfer to Paypal with $236.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The adjacent transaction windows correctly pair Transfer to Paypal with $236 in one owner.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-2",
+          "source": "Dashboard source copy must spell the second transfer label Transfer to Stripe.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The second transaction label really is Tranfer to Stripe, missing the required s.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-3",
+          "source": "Henry Klein must have Credit card and Approved in his source table row.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The unique Henry Klein tr at 36471..37493 contains Credit card and Approved; the two windows are adjacent across 37200, not borrowed from another row.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-4",
+          "source": "Dashboard source text must not contain Cash on delivered.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The forbidden Cash on delivered literal occurs in Estella Bryan row at 37520..38547, not another field or requirement text.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-5",
+          "source": "Login source labels must include Username or email * and Password *.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The actual same-form login labels include both exact requested strings.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-6",
+          "source": "Register source email input must have type=\"email\".",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The Email form group in register.html contains type=email; the property is associated with the correct label.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-7",
+          "source": "Register source Terms & Conditions link href must be terms.html.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The actual register Terms anchor href is #, not terms.html; source and required path are kept distinct in the item.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-8",
+          "source": "404 source Back to home link href must be ../../index.html.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "The actual Back to home anchor href is ../../index.html, without implying observed navigation success.",
+          "appPolicyExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-9",
+          "source": "Login must authenticate correct credentials and reject incorrect passwords.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "qualified",
+          "appExplanationVerdict": "qualified",
+          "note": "Authentication is correctly unknown, but the explanation overstates no submission target or client script: the form omits action and the same page explicitly links multiple script tags, whose bytes were not supplied.",
+          "appPolicyExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-10",
+          "source": "Paypal transfer must actually pay $236 and confirm provider status.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "Actual payment/provider status are unknown. Static sample transaction copy is not payment execution.",
+          "appPolicyExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-11",
+          "source": "New accounts must persist and remain queryable after a server restart.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "No backend/storage/restart evidence is supplied. Unknown is correct without asserting an actual deployed server is absent.",
+          "appPolicyExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-12",
+          "source": "At 375px the dashboard table must remain readable without page overflow.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "appExplanationVerdict": "accepted",
+          "note": "Table-responsive class is real; observed readability/overflow at375px remains unknown.",
+          "appPolicyExplanationChanged": true
+        }
+      ],
+      "riskReview": [
+        {
+          "index": 0,
+          "verdict": "qualified",
+          "note": "The agreed type attribute mismatch is real; saying it does not mask typed characters goes beyond the supplied source/runtime observations and should be framed only as the declared type."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "Actual register submit text contradicts Create account."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "Exact 404 title contradicts the required text."
+        },
+        {
+          "index": 3,
+          "verdict": "accepted",
+          "note": "Actual Terms href contradicts terms.html; delivering that target remains a next check, not an observed result."
+        },
+        {
+          "index": 4,
+          "verdict": "accepted",
+          "note": "Both the exact Stripe misspelling and forbidden Estella row text have separate precise source windows."
+        }
+      ],
+      "limitationReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "No browser/375px measurements."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "Authentication/password behavior not tested."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "No provider execution is supplied."
+        },
+        {
+          "index": 3,
+          "verdict": "accepted",
+          "note": "Only source HTML, no backend/restart evidence."
+        },
+        {
+          "index": 4,
+          "verdict": "qualified",
+          "note": "Inaccurate inventory wording: there are zero raster inventory entries; img references exist but are not delivered inventory-only rasters. Correct statement is that no pixels were supplied."
+        },
+        {
+          "index": 5,
+          "verdict": "qualified",
+          "note": "Four HTML files are supplied and terms.html is absent, but it is not a current linked href: the register Terms link is #. Do not conflate required target with actual source reference."
+        },
+        {
+          "index": 6,
+          "verdict": "accepted",
+          "note": "Source alone does not establish form handling; this is the appropriately qualified version of item coverage-9."
+        }
+      ],
+      "appendedSystemLimitationsReview": {
+        "count": 3,
+        "verdict": "accepted",
+        "note": "Actual catalog identity, complete-input-versus-understanding, no-execution and human acceptance/payment separation are accurately stated."
+      },
+      "remainingIssues": [
+        {
+          "severity": "P3",
+          "kind": "overbroad_script_target_absence",
+          "at": "items[coverage-9].explanation",
+          "message": "No explicit action is not evidence of no submission target. The page contains multiple external client script tags, so no client script is overbroad; bytes/execution were omitted, not necessarily scripts absent.",
+          "counterevidence": {
+            "file": "pages/samples/login.html",
+            "scriptWindow": [
+              2800,
+              3200
+            ],
+            "formWindow": [
+              1200,
+              1600
+            ]
+          }
+        },
+        {
+          "severity": "P3",
+          "kind": "unobserved_password_display",
+          "at": "risks[0].explanation",
+          "message": "Actual password-display behavior was not observed. The explicit source attribute mismatch is sufficient; a masking outcome needs its own scope/observation."
+        },
+        {
+          "severity": "P3",
+          "kind": "invented_raster_inventory",
+          "at": "limitations[4]",
+          "message": "The fileInventory lists only four HTML files and zero raster files. Image paths in HTML are references, not inventory-only delivered rasters.",
+          "counterevidence": {
+            "rasterInventoryCount": 0
+          }
+        },
+        {
+          "severity": "P3",
+          "kind": "required_target_as_actual_link",
+          "at": "limitations[5]",
+          "message": "terms.html is the required future href and is absent from inventory, but actual register Terms href is #. It is not already a linked page.",
+          "counterevidence": {
+            "file": "pages/samples/register.html",
+            "actualTermsSpan": [
+              2798,
+              2898
+            ],
+            "actualHref": "#",
+            "requiredHref": "terms.html"
+          }
+        }
+      ],
+      "citationChecks": [
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 0,
+          "id": "s159",
+          "file": "index.html",
+          "start": 35200,
+          "end": 35600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 1,
+          "id": "s162",
+          "file": "index.html",
+          "start": 36000,
+          "end": 36400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "index": 0,
+          "id": "s260",
+          "file": "pages/samples/login.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "index": 1,
+          "id": "s262",
+          "file": "pages/samples/login.html",
+          "start": 1467,
+          "end": 1492,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 0,
+          "id": "s280",
+          "file": "pages/samples/register.html",
+          "start": 2000,
+          "end": 2400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "index": 0,
+          "id": "s247",
+          "file": "pages/samples/error-404.html",
+          "start": 196,
+          "end": 223,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 0,
+          "id": "s113",
+          "file": "index.html",
+          "start": 25200,
+          "end": 25600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 1,
+          "id": "s114",
+          "file": "index.html",
+          "start": 25600,
+          "end": 26000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 0,
+          "id": "s116",
+          "file": "index.html",
+          "start": 26000,
+          "end": 26400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 0,
+          "id": "s165",
+          "file": "index.html",
+          "start": 36800,
+          "end": 37200,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 1,
+          "id": "s166",
+          "file": "index.html",
+          "start": 37200,
+          "end": 37600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-4",
+          "index": 0,
+          "id": "s169",
+          "file": "index.html",
+          "start": 38000,
+          "end": 38400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "index": 0,
+          "id": "s261",
+          "file": "pages/samples/login.html",
+          "start": 1275,
+          "end": 1309,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "index": 1,
+          "id": "s262",
+          "file": "pages/samples/login.html",
+          "start": 1467,
+          "end": 1492,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-6",
+          "index": 0,
+          "id": "s274",
+          "file": "pages/samples/register.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-6",
+          "index": 1,
+          "id": "s276",
+          "file": "pages/samples/register.html",
+          "start": 1459,
+          "end": 1479,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-7",
+          "index": 0,
+          "id": "s283",
+          "file": "pages/samples/register.html",
+          "start": 2798,
+          "end": 2898,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-8",
+          "index": 0,
+          "id": "s252",
+          "file": "pages/samples/error-404.html",
+          "start": 1600,
+          "end": 2000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-9",
+          "index": 0,
+          "id": "s260",
+          "file": "pages/samples/login.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-9",
+          "index": 1,
+          "id": "s265",
+          "file": "pages/samples/login.html",
+          "start": 2000,
+          "end": 2400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-9",
+          "index": 2,
+          "id": "s268",
+          "file": "pages/samples/login.html",
+          "start": 2800,
+          "end": 3200,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-10",
+          "index": 0,
+          "id": "s113",
+          "file": "index.html",
+          "start": 25200,
+          "end": 25600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-10",
+          "index": 1,
+          "id": "s114",
+          "file": "index.html",
+          "start": 25600,
+          "end": 26000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-11",
+          "index": 0,
+          "id": "s280",
+          "file": "pages/samples/register.html",
+          "start": 2000,
+          "end": 2400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-12",
+          "index": 0,
+          "id": "s159",
+          "file": "index.html",
+          "start": 35200,
+          "end": 35600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "index": 0,
+          "id": "s260",
+          "file": "pages/samples/login.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "index": 1,
+          "id": "s262",
+          "file": "pages/samples/login.html",
+          "start": 1467,
+          "end": 1492,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "index": 0,
+          "id": "s280",
+          "file": "pages/samples/register.html",
+          "start": 2000,
+          "end": 2400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "index": 0,
+          "id": "s247",
+          "file": "pages/samples/error-404.html",
+          "start": 196,
+          "end": 223,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 3,
+          "index": 0,
+          "id": "s283",
+          "file": "pages/samples/register.html",
+          "start": 2798,
+          "end": 2898,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 4,
+          "index": 0,
+          "id": "s116",
+          "file": "index.html",
+          "start": 26000,
+          "end": 26400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 4,
+          "index": 1,
+          "id": "s169",
+          "file": "index.html",
+          "start": 38000,
+          "end": 38400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 35200,
+          "end": 35600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "index": 1,
+          "id": null,
+          "file": "index.html",
+          "start": 36000,
+          "end": 36400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-2",
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/login.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-2",
+          "index": 1,
+          "id": null,
+          "file": "pages/samples/login.html",
+          "start": 1467,
+          "end": 1492,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-3",
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/register.html",
+          "start": 2000,
+          "end": 2400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-4",
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/error-404.html",
+          "start": 196,
+          "end": 223,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 25200,
+          "end": 25600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "index": 1,
+          "id": null,
+          "file": "index.html",
+          "start": 25600,
+          "end": 26000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-2",
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 26000,
+          "end": 26400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 36800,
+          "end": 37200,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-3",
+          "index": 1,
+          "id": null,
+          "file": "index.html",
+          "start": 37200,
+          "end": 37600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-4",
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 38000,
+          "end": 38400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-5",
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/login.html",
+          "start": 1275,
+          "end": 1309,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-5",
+          "index": 1,
+          "id": null,
+          "file": "pages/samples/login.html",
+          "start": 1467,
+          "end": 1492,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-6",
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/register.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-6",
+          "index": 1,
+          "id": null,
+          "file": "pages/samples/register.html",
+          "start": 1459,
+          "end": 1479,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-7",
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/register.html",
+          "start": 2798,
+          "end": 2898,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-8",
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/error-404.html",
+          "start": 1600,
+          "end": 2000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-9",
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/login.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-9",
+          "index": 1,
+          "id": null,
+          "file": "pages/samples/login.html",
+          "start": 2000,
+          "end": 2400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-9",
+          "index": 2,
+          "id": null,
+          "file": "pages/samples/login.html",
+          "start": 2800,
+          "end": 3200,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-10",
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 25200,
+          "end": 25600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-10",
+          "index": 1,
+          "id": null,
+          "file": "index.html",
+          "start": 25600,
+          "end": 26000,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-11",
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/register.html",
+          "start": 2000,
+          "end": 2400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-12",
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 35200,
+          "end": 35600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 0,
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/login.html",
+          "start": 1200,
+          "end": 1600,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 0,
+          "index": 1,
+          "id": null,
+          "file": "pages/samples/login.html",
+          "start": 1467,
+          "end": 1492,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 1,
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/register.html",
+          "start": 2000,
+          "end": 2400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 2,
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/error-404.html",
+          "start": 196,
+          "end": 223,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 3,
+          "index": 0,
+          "id": null,
+          "file": "pages/samples/register.html",
+          "start": 2798,
+          "end": 2898,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 4,
+          "index": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 26000,
+          "end": 26400,
+          "exactSourceSpan": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 4,
+          "index": 1,
+          "id": null,
+          "file": "index.html",
+          "start": 38000,
+          "end": 38400,
+          "exactSourceSpan": true
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Seven packets contain six already-seen repositories because Corona is evaluated twice at eight and sixteen criteria. None is an unseen final batch.",
+    "Status-reference agreement is not human semantic accuracy and must not replace the whole-answer verdicts.",
+    "Catalog validity establishes exact source provenance, not displayed visibility, script absence, page identity or arbitrary semantic entailment.",
+    "No browser, real backend, payment, human user, source code, reference or model answer was changed or executed by this audit.",
+    "R13 remains its actual recorded result. Any later R14 remediation must have a separate freeze and cannot overwrite or rescore this original record."
+  ]
+}

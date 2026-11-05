@@ -1,0 +1,294 @@
+{
+  "schema": "pbp-r15-scope-independent-whole-answer-review-v1",
+  "reviewedAt": "2026-11-05T14:22:30.311Z",
+  "reviewer": "Codex child AI reviewer, independent from generation and authorship of these six controlled scope cases; saw frozen reference labels during source review. Not a blinded human study.",
+  "method": "Read all six complete input file maps and buyer-locked plans, original items/risks/limitations and complete application reports. Independently verify envelope/tool/slots/catalog binding, request/source snapshot hashes and every raw/catalog/application exact UTF16 source span. No model or third-party source execution.",
+  "report": {
+    "file": "cycle-15-scope-live.json",
+    "sha256": "6212c37de5882b9395705f677a7d857ea53a6edb967ea920507bf99b0815c780",
+    "corpusFile": "scripts/citation-relations-scope-corpus-2026-11-05.json",
+    "corpusSha256": "43140fe70c5498b4bf6bb87e463cb2663d35d4d946c4293195e55d5ab54fa076",
+    "freezeSha256": "0b437825a148a67eeaf74b8dbb9c858e85e83bcf519aec67a1661634d2bb474a"
+  },
+  "providerCalls": 0,
+  "networkCalls": 0,
+  "originalSourceOrReferencesMutated": false,
+  "summary": {
+    "projects": 6,
+    "criteria": 6,
+    "rawReferenceAgreement": 5,
+    "applicationReferenceAgreement": 6,
+    "rawWholeAnswers": {
+      "accepted": 4,
+      "qualified": 1,
+      "rejected": 1
+    },
+    "applicationWholeAnswers": {
+      "accepted": 4,
+      "qualified": 2,
+      "rejected": 0
+    },
+    "applicationAdmitted": 6,
+    "originalJsonValid": 6,
+    "syntaxNormalizations": 0,
+    "rawCitationCount": 26,
+    "applicationCitationCount": 26,
+    "allCatalogEntriesSourceExact": true,
+    "allSlotsAndCatalogBindingValid": true,
+    "allApplicationUtf16OffsetsExact": true
+  },
+  "projects": [
+    {
+      "id": "scoped-two-pages-correct",
+      "reportFile": "cycle-15-scope-live.json",
+      "reportSha256": "6212c37de5882b9395705f677a7d857ea53a6edb967ea920507bf99b0815c780",
+      "freezeSha256": "0b437825a148a67eeaf74b8dbb9c858e85e83bcf519aec67a1661634d2bb474a",
+      "criterion": "coverage-1",
+      "rawStatus": "supported",
+      "applicationStatus": "supported",
+      "referenceStatus": "supported",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "conclusion": "Both buyer-locked files contain the complete Tea/AUD18 paragraph. The about-page duplicate is explicitly excluded from this price obligation, and both required source spans are displayed.",
+      "completeSourceFilesRead": [
+        "about.html",
+        "index.html",
+        "menu.html"
+      ],
+      "buyerLockedPlanRead": true,
+      "sourceObservations": [
+        "index.html and menu.html each contain Tea AUD18 in their own p.",
+        "No page was substituted with about.html.",
+        "No extra risks are asserted; source-only and human-decision limitations are accurate."
+      ],
+      "findings": [],
+      "transport": {
+        "name": "submit_source_assessment_v3",
+        "citationEncoding": "catalog_slots",
+        "originalJsonValid": true,
+        "normalization": "none",
+        "catalogIdMatchesFrozenRequest": true,
+        "allSlotsContiguousUniqueKnown": true,
+        "allExpandedRawAndApplicationCitationsExact": true,
+        "allUtf16OffsetsExact": true
+      },
+      "limits": "AI source-only review of controlled authored cases; no browser, backend, provider, acceptance or payment action by this reviewer."
+    },
+    {
+      "id": "scoped-target-price-wrong",
+      "reportFile": "cycle-15-scope-live.json",
+      "reportSha256": "6212c37de5882b9395705f677a7d857ea53a6edb967ea920507bf99b0815c780",
+      "freezeSha256": "0b437825a148a67eeaf74b8dbb9c858e85e83bcf519aec67a1661634d2bb474a",
+      "criterion": "coverage-1",
+      "rawStatus": "changes_suggested",
+      "applicationStatus": "changes_suggested",
+      "referenceStatus": "changes_suggested",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "conclusion": "The model and saved application correctly distinguish Tea AUD16 on the locked menu page from the expected AUD18 and the correct index/about paragraphs.",
+      "completeSourceFilesRead": [
+        "about.html",
+        "index.html",
+        "menu.html"
+      ],
+      "buyerLockedPlanRead": true,
+      "sourceObservations": [
+        "The two business checks explicitly bind Tea/AUD1800minor to index.html and menu.html.",
+        "The risk title/explanation/suggestion target the actual menu.html source mismatch; they do not claim execution or funds movement.",
+        "The additional h1 citations are unnecessary but exact and do not conceal the complete price excerpts."
+      ],
+      "findings": [],
+      "transport": {
+        "name": "submit_source_assessment_v3",
+        "citationEncoding": "catalog_slots",
+        "originalJsonValid": true,
+        "normalization": "none",
+        "catalogIdMatchesFrozenRequest": true,
+        "allSlotsContiguousUniqueKnown": true,
+        "allExpandedRawAndApplicationCitationsExact": true,
+        "allUtf16OffsetsExact": true
+      },
+      "limits": "AI source-only review of controlled authored cases; no browser, backend, provider, acceptance or payment action by this reviewer."
+    },
+    {
+      "id": "scoped-neighbour-price-borrow",
+      "reportFile": "cycle-15-scope-live.json",
+      "reportSha256": "6212c37de5882b9395705f677a7d857ea53a6edb967ea920507bf99b0815c780",
+      "freezeSha256": "0b437825a148a67eeaf74b8dbb9c858e85e83bcf519aec67a1661634d2bb474a",
+      "criterion": "coverage-1",
+      "rawStatus": "changes_suggested",
+      "applicationStatus": "changes_suggested",
+      "referenceStatus": "changes_suggested",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "conclusion": "The correct AUD18 next to Coffee and on about.html is not borrowed for Tea on menu.html. The target Tea/AUD16 paragraph is quoted and a revision is suggested for the proper item/file.",
+      "completeSourceFilesRead": [
+        "about.html",
+        "index.html",
+        "menu.html"
+      ],
+      "buyerLockedPlanRead": true,
+      "sourceObservations": [
+        "Tea and Coffee are in separate p owners; source Tea is AUD16 while Coffee is AUD18.",
+        "Both item and risk cite Tea rather than Coffee.",
+        "The expected comparison and source-only limits remain correctly scoped."
+      ],
+      "findings": [],
+      "transport": {
+        "name": "submit_source_assessment_v3",
+        "citationEncoding": "catalog_slots",
+        "originalJsonValid": true,
+        "normalization": "none",
+        "catalogIdMatchesFrozenRequest": true,
+        "allSlotsContiguousUniqueKnown": true,
+        "allExpandedRawAndApplicationCitationsExact": true,
+        "allUtf16OffsetsExact": true
+      },
+      "limits": "AI source-only review of controlled authored cases; no browser, backend, provider, acceptance or payment action by this reviewer."
+    },
+    {
+      "id": "scoped-table-row-correct",
+      "reportFile": "cycle-15-scope-live.json",
+      "reportSha256": "6212c37de5882b9395705f677a7d857ea53a6edb967ea920507bf99b0815c780",
+      "freezeSha256": "0b437825a148a67eeaf74b8dbb9c858e85e83bcf519aec67a1661634d2bb474a",
+      "criterion": "coverage-1",
+      "rawStatus": "supported",
+      "applicationStatus": "supported",
+      "referenceStatus": "supported",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "conclusion": "The complete Tea/AUD18 table row on menu.html and matching index paragraph support the finite static source check without claiming a rendered table or actual transaction.",
+      "completeSourceFilesRead": [
+        "about.html",
+        "index.html",
+        "menu.html"
+      ],
+      "buyerLockedPlanRead": true,
+      "sourceObservations": [
+        "The two td values are in the same complete unmerged tr.",
+        "The model quotes both the index paragraph and full target table row.",
+        "No speculative extra risks or broader runtime/security assurances are added."
+      ],
+      "findings": [],
+      "transport": {
+        "name": "submit_source_assessment_v3",
+        "citationEncoding": "catalog_slots",
+        "originalJsonValid": true,
+        "normalization": "none",
+        "catalogIdMatchesFrozenRequest": true,
+        "allSlotsContiguousUniqueKnown": true,
+        "allExpandedRawAndApplicationCitationsExact": true,
+        "allUtf16OffsetsExact": true
+      },
+      "limits": "AI source-only review of controlled authored cases; no browser, backend, provider, acceptance or payment action by this reviewer."
+    },
+    {
+      "id": "scoped-table-cross-row",
+      "reportFile": "cycle-15-scope-live.json",
+      "reportSha256": "6212c37de5882b9395705f677a7d857ea53a6edb967ea920507bf99b0815c780",
+      "freezeSha256": "0b437825a148a67eeaf74b8dbb9c858e85e83bcf519aec67a1661634d2bb474a",
+      "criterion": "coverage-1",
+      "rawStatus": "changes_suggested",
+      "applicationStatus": "changes_suggested",
+      "referenceStatus": "changes_suggested",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "conclusion": "The status and risk correctly preserve Tea/AUD16 versus neighbouring Coffee/AUD18, but the item explanation misstates the agreed monetary unit as AUD1800.",
+      "completeSourceFilesRead": [
+        "about.html",
+        "index.html",
+        "menu.html"
+      ],
+      "buyerLockedPlanRead": true,
+      "sourceObservations": [
+        "The Tea row is AUD16; the separate Coffee row is AUD18. No neighbour or about-page price is used to pass Tea.",
+        "The risk correctly says expected amountMinor1800 equals AUD18.",
+        "The item sentence ends not the agreed AUD1800, which is a currency/minor-unit wording error retained in the application."
+      ],
+      "findings": [
+        {
+          "severity": "P3",
+          "field": "items[0].explanation",
+          "evidence": "not the agreed AUD 1800",
+          "reason": "The buyer locked amountMinor1800 in AUD, which is AUD18 rather than AUD1800. Correct status and risk mitigate the error but do not make the whole wording error-free.",
+          "suggestion": "Describe the target as AUD18 or1800minor units consistently. Preserve this original response and its first-run score."
+        }
+      ],
+      "transport": {
+        "name": "submit_source_assessment_v3",
+        "citationEncoding": "catalog_slots",
+        "originalJsonValid": true,
+        "normalization": "none",
+        "catalogIdMatchesFrozenRequest": true,
+        "allSlotsContiguousUniqueKnown": true,
+        "allExpandedRawAndApplicationCitationsExact": true,
+        "allUtf16OffsetsExact": true
+      },
+      "limits": "AI source-only review of controlled authored cases; no browser, backend, provider, acceptance or payment action by this reviewer."
+    },
+    {
+      "id": "scoped-merged-row-uncertain",
+      "reportFile": "cycle-15-scope-live.json",
+      "reportSha256": "6212c37de5882b9395705f677a7d857ea53a6edb967ea920507bf99b0815c780",
+      "freezeSha256": "0b437825a148a67eeaf74b8dbb9c858e85e83bcf519aec67a1661634d2bb474a",
+      "criterion": "coverage-1",
+      "rawStatus": "supported",
+      "applicationStatus": "insufficient_evidence",
+      "referenceStatus": "insufficient_evidence",
+      "rawWholeAnswer": "rejected",
+      "applicationWholeAnswer": "qualified",
+      "conclusion": "The raw model says supported even though its own risk identifies an unqualified second Tea-associated price under rowspan. The application correctly withholds support as insufficient evidence, but the unchanged risk suggestion still says the Tea1800 check is met.",
+      "completeSourceFilesRead": [
+        "about.html",
+        "index.html",
+        "menu.html"
+      ],
+      "buyerLockedPlanRead": true,
+      "sourceObservations": [
+        "The merged Tea td spans both AUD18 and AUD28 rows; no size or other variant label disambiguates the second amount.",
+        "The raw item is supported, not changes_suggested. This actual batch exercises withholding a raw false-supported claim; it does not itself demonstrate the new rawchanges/businessunknown branch.",
+        "The application item becomes insufficient evidence with a fixed simple-block/complex-markup explanation.",
+        "The risk appropriately asks whether the second price is a size/stray row, but its assertion that the Tea1800 check is met conflicts with that unresolved application judgment."
+      ],
+      "findings": [
+        {
+          "severity": "P2",
+          "field": "raw.items[0].status",
+          "evidence": "supported",
+          "reason": "The complete source contains a rowspan ambiguity and a second amount under the same Tea cell. Selecting the matching first amount does not establish the unique buyer-locked item price.",
+          "suggestion": "Keep the bounded source judgment unknown pending a clarified row or additional evidence; do not infer an actual delivery defect merely from the unsupported shape."
+        },
+        {
+          "severity": "P2",
+          "field": "risks[0].suggestion",
+          "evidence": "the Tea 1800 check is met",
+          "reason": "This compliance assertion remains in the application despite its primary status being insufficient evidence. Source inference and displayed advice are not yet fully consistent.",
+          "suggestion": "Withhold a definite compliance assertion while the merged row remains unresolved. Preserve the original model risk and make any later system qualification explicit."
+        }
+      ],
+      "transport": {
+        "name": "submit_source_assessment_v3",
+        "citationEncoding": "catalog_slots",
+        "originalJsonValid": true,
+        "normalization": "none",
+        "catalogIdMatchesFrozenRequest": true,
+        "allSlotsContiguousUniqueKnown": true,
+        "allExpandedRawAndApplicationCitationsExact": true,
+        "allUtf16OffsetsExact": true
+      },
+      "limits": "AI source-only review of controlled authored cases; no browser, backend, provider, acceptance or payment action by this reviewer."
+    }
+  ],
+  "importantRemainingMisjudgments": [
+    "Cross-row model/application item uses AUD1800 rather than AUD18/1800minor units; the risk uses the correct amount.",
+    "Merged-row raw status is supported, not changes_suggested; the application withholds to unknown. Do not claim this batch specifically exercised rawchanges/businessunknown.",
+    "Merged-row risk suggestion still says the Tea1800check is met after the application status became insufficient; whole-answer advice is not fully consistent."
+  ],
+  "limits": [
+    "Synthetic controlled source relationship cases, not new customer sites or representative accuracy.",
+    "Application6/6 reference-state agreement is not six fully error-free whole answers: four accepted and two qualified here.",
+    "The merged-row shape does not prove a real business defect; unknown preserves uncertainty. No acceptance, pricing agreement, funds movement, server operation or rendered display is established.",
+    "The activeV3 slot form and exact directory addresses improve structural traceability, not semantic entailment.",
+    "Original reports, source, buyer plan, references and scores were not changed by this review."
+  ]
+}

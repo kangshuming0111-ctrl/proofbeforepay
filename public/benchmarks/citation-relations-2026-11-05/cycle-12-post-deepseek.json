@@ -1,0 +1,96 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/source-business-evidence.ts",
+      "bytes": 13716,
+      "lines": 148,
+      "sha256": "d1e3811625022a484bf06b4727d933dae88f5df035db13603ee49574db1e0af9"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 42112,
+      "lines": 339,
+      "sha256": "897583392e6639c7cb9963171debb14a1f683271451a169ef3783354f26d3e60"
+    },
+    {
+      "file": "lib/business-checks.ts",
+      "bytes": 15585,
+      "lines": 181,
+      "sha256": "5b6d6b2cfbe487aac9bf647f3cdf97f303fcec835e2479b7c7154f4708433ffd"
+    },
+    {
+      "file": "tests/source-business-catalog-witness.test.ts",
+      "bytes": 4240,
+      "lines": 31,
+      "sha256": "7a9ae60e7bf14e879f23a2acfad4652ad0f04197ae7f1ca4851fe32703cac40d"
+    },
+    {
+      "file": "tests/source-business-evidence.test.ts",
+      "bytes": 20271,
+      "lines": 245,
+      "sha256": "ade0d934eccedb0cf857ed8f22969cb690accd1fee0a0c50d502f9db0174e5dd"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Reviewed the supplied six-file packet read-only, focused on the negative-only source-business citation witness and its integration in assessDelivery. The witness logic itself holds up for the stated invariants: candidate citations must be in the locked check file, must enclose the full server excerpt span, and the inner raw slice must be byte-identical (lines 117-123); it returns not_applicable unless the whole evidence result is unchanged (line 110); it can only downgrade supported to insufficient_evidence and is reached only after the mismatch/unknown branch has already returned (delivery-assessment.ts 268-279); raw insufficient_evidence and changes_suggested are never upgraded because the witness runs inside the status===\\\"supported\\\" branch, and the tests on lines 30-31 of source-business-catalog-witness.test.ts encode that; the explanation text explicitly disclaims absence, visibility and working behavior, and neither path touches money or acceptance. I found two concrete defects. First, the witness explanation's file and check labels are clipped by length and not escaped (unescaped checked facts); because the locked file path starts with the clipped prefix, line 132 can print a string that names a different real path, which is exactly the misleading naming the comment there says it avoids. Second, the user-facing mismatch explanation prints unbounded label, file and money text, so the 600-character item explanation bound can be exceeded. The bound test at lines 133-138 writes in-memory plan fields whose label and file disagree with the criterion coverage, so it never reaches the mismatch path and cannot exercise it. I did not find an overstatement of the PHAROS_INC August 1st deterministic checks or of the AgentReceipt evidence relation: the receipt/evidence dimension is checked against the 100% span relation, the packet contains no opponent code equivalence, and the name PHAROS is not in the packet at all, so its August 1st claims cannot be verified from it. Range checks are clean: amountMinor is capped by Number.isSafeInteger, and amount() admits at most 10 digits.\",\"findings\":[{\"severity\":\"P2\",\"file\":\"lib/source-business-evidence.ts\",\"line\":132,\"title\":\"Witness explanation can print a clipped file path that names a different file\",\"evidence\":\"Line 132: `const fileLabel = first && first.file.length <= 80 ? first.file : language === \\\"zh\\\" ? \\\"锁定目标文件\\\" : \\\"the locked target file\\\";`, and line 133 applies the same rule to checkId. Then line 134 places the label in `${target}`, which goes unescaped into the template literals on lines 136-137. The excerpt comes from saved HTML source, so a file path can contain a quote or other printable characters. If the path is longer than 80 characters, it is cut at 80 characters. The comment on lines 130-131 says this exists so that \\\"a clipped path would [not] misleadingly name another file\\\". But the locked pages only need to be in the same directory (business-checks.ts line 46), so two distinct validated files CAN share their first 80 characters. The clipped label prints a string that equals an actual other file, which is the opposite of what the comment claims. The test at source-business-evidence.test.ts:233 uses 300 \\\"f\\\" characters, a path that cannot exist locally because of the 64-character segment limit used at line 134, so it only covers an impossible input.\",\"reproduction\":\"Unexecuted reasoning trace. A validated project requires index.html and `menu-<70 x 'a'>.html` (length 80). A second required page `menu-<70 x 'a'>b.html` (length 81) is saved in the delivery but is NOT a locked target. The locked check is bound to the 81-character file, and the model's citations are only for the 80-character file. That gives witness.kind === \\\"unknown\\\" with reason target_file_not_cited and detail \\\"Hmm\\\" in the check list. Line 132 then shows the full 80-character path. A buyer reading `... for business-1 (menu-aaa….html)` is shown the non-target page. If a path can contain \\\" ) — c (default requiresPages strings), it can also distort the (file) grouping wholly.\",\"suggestion\":\"When a file or check ID is over 80 characters, do not show its raw prefix. Use a fixed constant (the existing \\\"the locked target file\\\" or \\\"a locked business check\\\") instead of `first.file` / `first.checkId`. Or if identity is needed, show only a bounded suffix that cannot match another complete path. Update the test at line 233 to cover a real collision case.\"},{\"severity\":\"P3\",\"file\":\"lib/source-business-evidence.ts\",\"line\":143,\"title\":\"Mismatch explanation prints unbounded file, label and amount text and can exceed the 600-character item bound\",\"evidence\":\"Lines 142-144 build the mismatch text from `${mismatch.label}`, `${mismatch.expected}`, `${mismatch.file}` and `${mismatch.actual}`. The label is up to 80 characters (business-checks.ts line 31). The file is a validated required page path up to 300 characters (static-project path limit of 64 per segment). The money strings are short but derived from amountMinor, which can be up to MAX_SAFE_INTEGER (business-checks.ts line 30), around AUD 90071992547409.91. The English text is about 330 characters and the Chinese text about 200 UTF-16 units, so the worst case goes well past 600. delivery-assessment.ts line 271 and line 248 take that output through `text(item.explanation, 600)` for the report item. The test that claims this bound, tests/source-business-evidence.test.ts lines 133-138, passes savedPlan([...]) rows whose file does not match the criterion coverage. getBusinessCheckPlan therefore fails at business-checks.ts line 46 / 139 before any evidence is produced, for every input in that test. It has no reachable positive path and never checks the mismatch branch.\",\"reproduction\":\"Unexecuted reasoning trace. Build a valid plan through parseStaticProject where a 300-character required page path is the check file and the item label is 80 characters. The delivered source is `<p>{label} AUD 16</p>`. The change yields kind \\\"mismatch\\\" with label, file, expected AUD 90071992547409.91 and actual AUD 16.00. call sourceBusinessEvidenceExplanation in \\\"en\\\" or \\\"zh\\\": the result is over 600 characters (roughly 330 + 300 + 80 plus the amounts, in English).\",\"suggestion\":\"Bound the displayed identities in the mismatch text as the witness already does (a fixed \\\"the locked target file\\\" for long paths, a bounded label with an ellipsis). Then make the existing bound test use a plan that getBusinessCheckPlan validates: the file must be in requiredPages and the label must match the delivered paragraph. Assert `sourceBusinessEvidenceExplanation(evidence, lang).length <= 600` on evidence with kind \\\"mismatch\\\".\"}],\"limitations\":[\"Read-only review of the supplied packet only. No source files were read, no tests were run, no typecheck/build was performed, and no runtime, model or provider behaviour was observed. The stated 98 passing focused controls are reported, not verified.\",\"Files referenced only through imports or comments (exact-copy-evidence.ts, assessment-citation-catalog.ts with resolveCatalogCitations, contracts.ts, static-project.ts, assessment-label-citations.ts, text() bounds, coverage validation) were not supplied and could not be checked. Whether resolveCatalogCitations can produce a citation whose excerpt length differs from end-start, or whose excerpt is not the raw source slice, was not verified. Only lines 119-122 of the witness were confirmed to reject those.\",\"PHAROS_INC August 1st and AgentReceipt AugustMostInnovative evidence relation cannot be reassessed from this packet. There is no PHAROS or August 1st fixture or assertion in it. The receipt/evidence dimension is only represented by the negative-only witness for full file span and same-file coverage. The packet was checked for, and contains no claim that opponent code is equivalent. No award-comparison gate evidence (name of reference project, exact award, primary source) is present.\",\"The supplier's behaviour on inputs not in the packet, such as whether saved business steps can contain duplicate checkIds across criteria, was assessed only from lines 69-72 (first occurrence retained per checkId) and was not tested.\",\"No assessment was made of visual, accessibility or browser-rendered behaviour, model output quality, or live PHAROS/AgentReceipt sources.\"]}",
+  "report": {
+    "summary": "Reviewed the supplied six-file packet read-only, focused on the negative-only source-business citation witness and its integration in assessDelivery. The witness logic itself holds up for the stated invariants: candidate citations must be in the locked check file, must enclose the full server excerpt span, and the inner raw slice must be byte-identical (lines 117-123); it returns not_applicable unless the whole evidence result is unchanged (line 110); it can only downgrade supported to insufficient_evidence and is reached only after the mismatch/unknown branch has already returned (delivery-assessment.ts 268-279); raw insufficient_evidence and changes_suggested are never upgraded because the witness runs inside the status===\"supported\" branch, and the tests on lines 30-31 of source-business-catalog-witness.test.ts encode that; the explanation text explicitly disclaims absence, visibility and working behavior, and neither path touches money or acceptance. I found two concrete defects. First, the witness explanation's file and check labels are clipped by length and not escaped (unescaped checked facts); because the locked file path starts with the clipped prefix, line 132 can print a string that names a different real path, which is exactly the misleading naming the comment there says it avoids. Second, the user-facing mismatch explanation prints unbounded label, file and money text, so the 600-character item explanation bound can be exceeded. The bound test at lines 133-138 writes in-memory plan fields whose label and file disagree with the criterion coverage, so it never reaches the mismatch path and cannot exercise it. I did not find an overstatement of the PHAROS_INC August 1st deterministic checks or of the AgentReceipt evidence relation: the receipt/evidence dimension is checked against the 100% span relation, the packet contains no opponent code equivalence, and the name PHAROS is not in the packet at all, so its August 1st claims cannot be verified from it. Range checks are clean: amountMinor is capped by Number.isSafeInteger, and amount() admits at most 10 digits.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "lib/source-business-evidence.ts",
+        "line": 132,
+        "title": "Witness explanation can print a clipped file path that names a different file",
+        "evidence": "Line 132: `const fileLabel = first && first.file.length <= 80 ? first.file : language === \"zh\" ? \"锁定目标文件\" : \"the locked target file\";`, and line 133 applies the same rule to checkId. Then line 134 places the label in `${target}`, which goes unescaped into the template literals on lines 136-137. The excerpt comes from saved HTML source, so a file path can contain a quote or other printable characters. If the path is longer than 80 characters, it is cut at 80 characters. The comment on lines 130-131 says this exists so that \"a clipped path would [not] misleadingly name another file\". But the locked pages only need to be in the same directory (business-checks.ts line 46), so two distinct validated files CAN share their first 80 characters. The clipped label prints a string that equals an actual other file, which is the opposite of what the comment claims. The test at source-business-evidence.test.ts:233 uses 300 \"f\" characters, a path that cannot exist locally because of the 64-character segment limit used at line 134, so it only covers an impossible input.",
+        "reproduction": "Unexecuted reasoning trace. A validated project requires index.html and `menu-<70 x 'a'>.html` (length 80). A second required page `menu-<70 x 'a'>b.html` (length 81) is saved in the delivery but is NOT a locked target. The locked check is bound to the 81-character file, and the model's citations are only for the 80-character file. That gives witness.kind === \"unknown\" with reason target_file_not_cited and detail \"Hmm\" in the check list. Line 132 then shows the full 80-character path. A buyer reading `... for business-1 (menu-aaa….html)` is shown the non-target page. If a path can contain \" ) — c (default requiresPages strings), it can also distort the (file) grouping wholly.",
+        "suggestion": "When a file or check ID is over 80 characters, do not show its raw prefix. Use a fixed constant (the existing \"the locked target file\" or \"a locked business check\") instead of `first.file` / `first.checkId`. Or if identity is needed, show only a bounded suffix that cannot match another complete path. Update the test at line 233 to cover a real collision case."
+      },
+      {
+        "severity": "P3",
+        "file": "lib/source-business-evidence.ts",
+        "line": 143,
+        "title": "Mismatch explanation prints unbounded file, label and amount text and can exceed the 600-character item bound",
+        "evidence": "Lines 142-144 build the mismatch text from `${mismatch.label}`, `${mismatch.expected}`, `${mismatch.file}` and `${mismatch.actual}`. The label is up to 80 characters (business-checks.ts line 31). The file is a validated required page path up to 300 characters (static-project path limit of 64 per segment). The money strings are short but derived from amountMinor, which can be up to MAX_SAFE_INTEGER (business-checks.ts line 30), around AUD 90071992547409.91. The English text is about 330 characters and the Chinese text about 200 UTF-16 units, so the worst case goes well past 600. delivery-assessment.ts line 271 and line 248 take that output through `text(item.explanation, 600)` for the report item. The test that claims this bound, tests/source-business-evidence.test.ts lines 133-138, passes savedPlan([...]) rows whose file does not match the criterion coverage. getBusinessCheckPlan therefore fails at business-checks.ts line 46 / 139 before any evidence is produced, for every input in that test. It has no reachable positive path and never checks the mismatch branch.",
+        "reproduction": "Unexecuted reasoning trace. Build a valid plan through parseStaticProject where a 300-character required page path is the check file and the item label is 80 characters. The delivered source is `<p>{label} AUD 16</p>`. The change yields kind \"mismatch\" with label, file, expected AUD 90071992547409.91 and actual AUD 16.00. call sourceBusinessEvidenceExplanation in \"en\" or \"zh\": the result is over 600 characters (roughly 330 + 300 + 80 plus the amounts, in English).",
+        "suggestion": "Bound the displayed identities in the mismatch text as the witness already does (a fixed \"the locked target file\" for long paths, a bounded label with an ellipsis). Then make the existing bound test use a plan that getBusinessCheckPlan validates: the file must be in requiredPages and the label must match the delivered paragraph. Assert `sourceBusinessEvidenceExplanation(evidence, lang).length <= 600` on evidence with kind \"mismatch\"."
+      }
+    ],
+    "limitations": [
+      "Read-only review of the supplied packet only. No source files were read, no tests were run, no typecheck/build was performed, and no runtime, model or provider behaviour was observed. The stated 98 passing focused controls are reported, not verified.",
+      "Files referenced only through imports or comments (exact-copy-evidence.ts, assessment-citation-catalog.ts with resolveCatalogCitations, contracts.ts, static-project.ts, assessment-label-citations.ts, text() bounds, coverage validation) were not supplied and could not be checked. Whether resolveCatalogCitations can produce a citation whose excerpt length differs from end-start, or whose excerpt is not the raw source slice, was not verified. Only lines 119-122 of the witness were confirmed to reject those.",
+      "PHAROS_INC August 1st and AgentReceipt AugustMostInnovative evidence relation cannot be reassessed from this packet. There is no PHAROS or August 1st fixture or assertion in it. The receipt/evidence dimension is only represented by the negative-only witness for full file span and same-file coverage. The packet was checked for, and contains no claim that opponent code is equivalent. No award-comparison gate evidence (name of reference project, exact award, primary source) is present.",
+      "The supplier's behaviour on inputs not in the packet, such as whether saved business steps can contain duplicate checkIds across criteria, was assessed only from lines 69-72 (first occurrence retained per checkId) and was not tested.",
+      "No assessment was made of visual, accessibility or browser-rendered behaviour, model output quality, or live PHAROS/AgentReceipt sources."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

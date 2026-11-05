@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-05T12:32:38.417Z",
+  "generatedAt": "2026-11-05T15:02:08.010Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -38,8 +38,8 @@
     },
     {
       "file": "README.md",
-      "bytes": 91920,
-      "sha256": "c679b7b751b4b5f5874eb19b2ef0d96eea49b23c5fe2ea6e5d3bbebc47d85d69"
+      "bytes": 92690,
+      "sha256": "824d849da2ead9b54da9c7949b3f64a5f8bda4daa1c695e605d2edd321a54dbd"
     },
     {
       "file": "app/api/business-check-suggestions/route.ts",
@@ -353,8 +353,8 @@
     },
     {
       "file": "app/components/DeliveryAssessment.tsx",
-      "bytes": 17421,
-      "sha256": "28bb9c304bcddf6ce670aa5eb3e7327a07812b5aeb7408ccee84fc866d51c738"
+      "bytes": 17536,
+      "sha256": "6aac8bf1ef15de712b67bcd48ac51846baed9cce953fe11044756ff362a4f490"
     },
     {
       "file": "app/components/DeliveryComparison.tsx",
@@ -448,8 +448,8 @@
     },
     {
       "file": "app/components/RealProjectAssessmentValidation.tsx",
-      "bytes": 13640,
-      "sha256": "4d41f07ec0c6b7f3cbecfea8e1d339bcd6c9e2dcfe969d67e9eeca4e1ac5a65f"
+      "bytes": 18667,
+      "sha256": "fc345dd79ae7a0a17b3641d82062120aeee51046c400bad1ba9b95370efedb03"
     },
     {
       "file": "app/components/ReliabilityAssessmentValidation.tsx",
@@ -1157,6 +1157,11 @@
       "sha256": "e23e5fa638f1c57f47353034fb58d707bbfe20189e49245bc658987d91db05a4"
     },
     {
+      "file": "docs/ASSESSMENT-CITATION-PROTOCOL.md",
+      "bytes": 8459,
+      "sha256": "d5424203e56d755c65b4f048337f70613bc7b9d4834328c7f5e7ca88adacf20a"
+    },
+    {
       "file": "docs/BOOKING-HTTP-VERIFICATION.md",
       "bytes": 10669,
       "sha256": "af3a1f14f1b105c94d6ba2cf61ffb72c901c16c065bbc6cf8bf56023eea039b6"
@@ -1420,6 +1425,36 @@
       "file": "docs/collaboration/award-gap-cycles-2026-11-05/round4-ui-review-adjudication.md",
       "bytes": 6307,
       "sha256": "f08e29b1aa2c91136d14762f9b5d486c4ab29b867886f6260985417c79bb24f5"
+    },
+    {
+      "file": "docs/collaboration/citation-relations-2026-11-05/README.md",
+      "bytes": 3444,
+      "sha256": "2a55122665c6ed890d91f151aba48f8999f4a49dfae7a48ae175497fedfbdd81"
+    },
+    {
+      "file": "docs/collaboration/citation-relations-2026-11-05/cycle-11.md",
+      "bytes": 2221,
+      "sha256": "8839ef618fcf846afc1ae6b13266527a9fdba5cf7ffbb838e450e22d83926677"
+    },
+    {
+      "file": "docs/collaboration/citation-relations-2026-11-05/cycle-12.md",
+      "bytes": 2455,
+      "sha256": "305ca32f0e89aa4bd1ea2af4efbf1c8c2e986a1974d4ca2948de0d3b54393e1c"
+    },
+    {
+      "file": "docs/collaboration/citation-relations-2026-11-05/cycle-13.md",
+      "bytes": 2914,
+      "sha256": "69f8ecc972fdc598a380227dbf0c6060e03b46e1d9308312eb37ef2f7875d1d0"
+    },
+    {
+      "file": "docs/collaboration/citation-relations-2026-11-05/cycle-14.md",
+      "bytes": 1950,
+      "sha256": "e5d12d5d6ed219940419ba9869e7b06d19ce2650e8cb97cc4f1a2deadc2e1d93"
+    },
+    {
+      "file": "docs/collaboration/citation-relations-2026-11-05/cycle-15.md",
+      "bytes": 4600,
+      "sha256": "048b28c0ff27cec52e72b04ba176840279c57eef832a8b58ec05b3788bd54951"
     },
     {
       "file": "docs/collaboration/diagnosis-cycle-2026-11-04/remaining-gaps.md",
@@ -2272,9 +2307,19 @@
       "sha256": "8084b6a9c665abbdd887f8201d03a46f36fe4f508bb6ca45c1bbb064eb41c127"
     },
     {
+      "file": "lib/assessment-citation-catalog.ts",
+      "bytes": 9230,
+      "sha256": "3765ff500c22abd42536c64bd24a9844f7bb7de099d70b5d4f449ac9b24a7904"
+    },
+    {
+      "file": "lib/assessment-citation-selection.ts",
+      "bytes": 2748,
+      "sha256": "c192ca65a095fa7aaba5a242e3d8ba7c2a6573c6e20d41d95afcebc4578abbb0"
+    },
+    {
       "file": "lib/assessment-completion.ts",
-      "bytes": 5999,
-      "sha256": "fd7cbaf8e9a14a9525623eb2a4c973bde08cd8a5e4284a82a2661250a6614289"
+      "bytes": 9553,
+      "sha256": "18ec5c3984b06c1b62a1d1d9449746ba8f19cf2d9a9b3d23914d0b474b7a6a3e"
     },
     {
       "file": "lib/assessment-display.ts",
@@ -2283,8 +2328,8 @@
     },
     {
       "file": "lib/assessment-evidence-scope.ts",
-      "bytes": 16946,
-      "sha256": "9cb5f0624fb8cdcb8e4a94cee58bd7ebb52448f659adb95682683bbeca87b3b9"
+      "bytes": 22171,
+      "sha256": "a4e7c9c6ceca64810b51c0c9980b14950875a3d19cc4e0b68e24b6cf5b06ee13"
     },
     {
       "file": "lib/assessment-failure-presentation.ts",
@@ -2300,6 +2345,11 @@
       "file": "lib/assessment-limits.ts",
       "bytes": 262,
       "sha256": "4efb8a22faef0699431b264f6a106e7a6b15c516166830b04da7fe44ee873230"
+    },
+    {
+      "file": "lib/assessment-publication-policy.ts",
+      "bytes": 3353,
+      "sha256": "0f44723be1731bd771416eca6a0954e213f4ca6ed1c34cbc6c67d34826fe07d6"
     },
     {
       "file": "lib/assessment-response.ts",
@@ -2418,8 +2468,8 @@
     },
     {
       "file": "lib/delivery-assessment.ts",
-      "bytes": 37645,
-      "sha256": "cd84b1b3916f88bc171c2a6a9e2a3bbe4c2af8675f86c381a367fbe697dd4e7f"
+      "bytes": 50954,
+      "sha256": "93ce39c057733379f38e094a8b7f064642ca564f34c5ffc2e3482031b481b39f"
     },
     {
       "file": "lib/delivery-comparison.ts",
@@ -2918,8 +2968,8 @@
     },
     {
       "file": "lib/source-business-evidence.ts",
-      "bytes": 9404,
-      "sha256": "f0f9305b797b291cada2829c14dcfc807f3db99fcb49709599bd37861cb46dc9"
+      "bytes": 18353,
+      "sha256": "4936fba46ab28f39ec42f356987c27840d46b652f752a6011fb019d170659141"
     },
     {
       "file": "lib/source-literal-directive.ts",
@@ -3015,6 +3065,16 @@
       "file": "lib/transfer-competition.ts",
       "bytes": 22156,
       "sha256": "3dd6ef807ed4cb60af07e7a15044c0481f8ba525308efff820297acd46785172"
+    },
+    {
+      "file": "lib/universal-source-list-evidence.ts",
+      "bytes": 13177,
+      "sha256": "7f896ce3aa8070f8ac6060da07e8234f4d361be7b2d634869c79e1ca1d88b4ff"
+    },
+    {
+      "file": "lib/universal-tag-evidence.ts",
+      "bytes": 9704,
+      "sha256": "dee81d5f4e869c684903e6a40ab01f51a5014e3f99f0fd733856cb04d6a07f0c"
     },
     {
       "file": "lib/utils.ts",
@@ -3175,6 +3235,306 @@
       "file": "public/benchmarks/award-gap-cycles-2026-11-05/ui-evidence-verification.json",
       "bytes": 3978,
       "sha256": "c4f7f2e437d89468c4b8800747ff2c0312c4350273e72b50092759a81377fa9d"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/citation-relations-scope-corpus-2026-11-05.json",
+      "bytes": 15139,
+      "sha256": "43140fe70c5498b4bf6bb87e463cb2663d35d4d946c4293195e55d5ab54fa076"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/citation-relations-summary.json",
+      "bytes": 23210,
+      "sha256": "86e24c73707174188c207b7a929a5a41572462b9d53c07ec9ead3d55942fce5a"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-11-adjudication.json",
+      "bytes": 1605,
+      "sha256": "56b7a49081f09c28f0e1d607573536d061526fb43407b2f162d59054582b4a9e"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-11-pilot-freeze.json",
+      "bytes": 115248,
+      "sha256": "2e6f142c066208291f4bf5f79941d538e271e539ce8790797ef2f7a486b94bc9"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-11-pilot-live.json",
+      "bytes": 223747,
+      "sha256": "893b0947f469506a51f10e70c90dae47666a36dda932c1110b3b3d0ca3173564"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-11-plan-deepseek.json",
+      "bytes": 37187,
+      "sha256": "c659b00c2a3f1eb57415d0f8151e6d54c638a14aca1286b92b1a088a895dea5b"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-11-post-deepseek.json",
+      "bytes": 7843,
+      "sha256": "8bf7e320468e805dd6678c105c018d0effdd78451df5a9285e250fa9257eb0a0"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-12-adjudication.json",
+      "bytes": 1533,
+      "sha256": "60dbe921a81c23185399b415448e83f4845de1a471c0dac40e9e28d110ddd6cf"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-12-post-deepseek.json",
+      "bytes": 18816,
+      "sha256": "fb6584cb23763df8ef4a05064f6eeb8a1fd631cb8d2f1122aedbfa0f2e204823"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-12-scope-freeze.json",
+      "bytes": 80518,
+      "sha256": "19163550a198ba51c7189fc2c93a56e69027433f3bff6537b1b7219980a6d0f5"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-12-scope-live.json",
+      "bytes": 160787,
+      "sha256": "16a2d294a2b7f7fb78074c59c168621b2457d0fa31d78b8a9823acab18063255"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-13-adjudication.json",
+      "bytes": 1223,
+      "sha256": "f78dd8642c6434f6e81b5823dcb9824e75e2d7c11bb9c2568e111f1d340ff33f"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-13-followup-deepseek.json",
+      "bytes": 7861,
+      "sha256": "2bea309c871369d5a5a4926fb575e951ce6142fa38010301c481889dacdb388a"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-13-known-freeze.json",
+      "bytes": 1243288,
+      "sha256": "7c23f28fe1ee5801561e98ba35361c4ea11761f259f227a591fd4fc82b6310a2"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-13-known-live.json",
+      "bytes": 1804136,
+      "sha256": "5030d14e2376dc749931c790601bacf377ae9b3545e8ecf3e088686333d9eeb2"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-13-new-first-freeze.json",
+      "bytes": 510821,
+      "sha256": "3fb2ff94ece301e212def34b7b382eb9072ce547143ef2c040c8f92fa44c9b3f"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-13-new-first-live.json",
+      "bytes": 671589,
+      "sha256": "62bcb6da58a6ef93d2cdea3081d6d14fd04ae892c013c3e75416f43fe8d6fe9b"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-13-post-deepseek.json",
+      "bytes": 11867,
+      "sha256": "f32be7e97c23ec9dc26be4b6aa2f0847e98d5c13c3053c2f3279a3151cafd07e"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-13-scope-freeze.json",
+      "bytes": 164539,
+      "sha256": "fe3818d9e0cea6544c8982f6045b6d29e9de90952f11ac69a61c427944feb5c6"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-13-scope-live.json",
+      "bytes": 297095,
+      "sha256": "bd204c9c2a2529e1e3e8c1eee52b97164a70430d26fd5ecaacb735b78d119ce4"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-14-adjudication.json",
+      "bytes": 1029,
+      "sha256": "de05a060992660e4dd8f244981b6ad4ec0940e64f54c6b1f1a4b2f7385d1851c"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-14-known-freeze.json",
+      "bytes": 1588996,
+      "sha256": "e40fecd5829fffb77230fb40c18eab398f390bc422d748333e229226e7708069"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-14-known-live.json",
+      "bytes": 2112284,
+      "sha256": "da476becd8cfcb231082ceb32c64f1c2285be30a12962f1c591976ce6b69f33f"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-14-plan-deepseek.json",
+      "bytes": 14868,
+      "sha256": "a6cb5d25c68e7a05a3b05aa16442b5e0dfe76c799c1fd42687a0b4b58c84df3b"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-14-post-deepseek.json",
+      "bytes": 7235,
+      "sha256": "505dc2c2f2d683c6c537c4b23df588ac5ad6082f75e37767e65325f162cc09c2"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-14-repair-new-freeze.json",
+      "bytes": 685569,
+      "sha256": "bb7f3f99af1a195c2f9175bef579fcc790190d912ba04d267e7d6d899bd2baaa"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-14-repair-new-live.json",
+      "bytes": 828206,
+      "sha256": "075438bb6c0de5a53b0b071f28ebc87fd6e5cc08c01d33ff9acf3e2c5f9d8e99"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-14-scope-freeze.json",
+      "bytes": 176611,
+      "sha256": "fb7bd0febe68e54772ab80e145c12873d5b132be91efb001b346bfe4675c4a40"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-14-scope-live.json",
+      "bytes": 306589,
+      "sha256": "a0d2cce7ad38223aae5ae8454ed0f4e55fcd5b2f43aa1cb6d85dca63f839ff09"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-15-adjudication.json",
+      "bytes": 10565,
+      "sha256": "e3a53de9c2be6dc846686554c75662ea2c058c116e93c24eed09732677ab118a"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-15-known-freeze.json",
+      "bytes": 1742177,
+      "sha256": "76f16efa21866409c95798bc384a2eac9457ce628c92f509603ff21cfa702c8d"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-15-known-live.json",
+      "bytes": 2351439,
+      "sha256": "cad9e5cb58b39cc5ae441f952cbbe46831629abba2d89e116ac5a76bc5d5f546"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-15-plan-deepseek.json",
+      "bytes": 13648,
+      "sha256": "fe3f796b2106f06a918618a671cd347921734e93f5532533a57827402733dcb2"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-15-post-deepseek.json",
+      "bytes": 18077,
+      "sha256": "f0c2de0ff55281e4b40e175286d68f45fef658d94591b7a842ae4450529c264e"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-15-repair-new-freeze.json",
+      "bytes": 760289,
+      "sha256": "64a4237a8d31dbfa9fe63b9703fd773eb8931558a702ab90797152e76c5c95eb"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-15-repair-new-live.json",
+      "bytes": 904631,
+      "sha256": "a08a51653e77fff95981126805b2bf7d84a8351e307ffa23791f9816b982fb74"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-15-scope-freeze.json",
+      "bytes": 193307,
+      "sha256": "904489d85a038ca1c4206345b48164b499acc5a5eb4c6b67fdf225b56467d8ee"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/cycle-15-scope-live.json",
+      "bytes": 324061,
+      "sha256": "6212c37de5882b9395705f677a7d857ea53a6edb967ea920507bf99b0815c780"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/final-checks.json",
+      "bytes": 1437,
+      "sha256": "43c9379aa41395ffa872ebb9f16d066386e98582e9cea109c698d31cc6cd88e8"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/final-known-independent-whole-answer-review.json",
+      "bytes": 158794,
+      "sha256": "81943a2d6981eb3830cc93a184c136a2ec16765e042cf9578cc1250e37f781a0"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/final-publication-replay-review.json",
+      "bytes": 11294,
+      "sha256": "f023b32bc73583e5f63fdd35c1ce5b6a4df2d226ab35b634ebaf6ad53f594d07"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/final-publication-replay.json",
+      "bytes": 424091,
+      "sha256": "38eaceae6a8875e0119d032bf81b4e0264c731a3814de6ce844575acee9b3359"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/interim-independent-whole-answer-review.json",
+      "bytes": 44338,
+      "sha256": "8b7cbcc645cf8a8fcbb9b82a6a57ca08cae027f305af447b81d1699d0794a47a"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/known-corpus.json",
+      "bytes": 371237,
+      "sha256": "6b1890cfbe3aec6b9d099768c108d1b2ce41a06268659b99e710fa90efbb860d"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/new-first-independent-whole-answer-review.json",
+      "bytes": 112616,
+      "sha256": "a45bc64ac4c03eb745f64bda78148fbaf8c814d41bbc4a4d97628eecb1fbb682"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/project-assessment-corpus-citation-relations-holdout.json",
+      "bytes": 154792,
+      "sha256": "96a4f7b18a2440d9c589f2ad8d3583ea7c98aecc9eee00292db31098e036d900"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/publication-replay-wx-control.json",
+      "bytes": 944,
+      "sha256": "ef60322d979cc553b8a77a8659f71deaf7c45a8f7e657b25eff60f6328a060b5"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/publication-verified-implementation.json",
+      "bytes": 834199,
+      "sha256": "e0abd77924493c2d0672e03a9caed101e4876f2dbe88fad3176b5726bcaebdfa"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/r13-source-freeze-reproduction.json",
+      "bytes": 671,
+      "sha256": "594285eae26c4c62e2beae1a461163119fd332e37d5fa4067c1c21e3251a6606"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/r13-verified-implementation.json",
+      "bytes": 771337,
+      "sha256": "0e92a9261802fe9ffc22ce596d964ba3c80233bb6328ee581d3df003c56bcabb"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/r14-verified-implementation.json",
+      "bytes": 790199,
+      "sha256": "9c8ca503a9eb466ee03b62af2f050200c78d45a891af3b47ffd88d2a06393eb5"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/r15-known-independent-whole-answer-review.json",
+      "bytes": 163785,
+      "sha256": "d643cdba97f367c2f1bbcdb306493a01176b0c87ae51ec13412c1e55c95478cc"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/r15-new-independent-whole-answer-review.json",
+      "bytes": 81822,
+      "sha256": "ad396b662bf4b6c4e7a31c60a39019732de5417ef167622a25bb7533a8acf950"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/r15-scope-independent-whole-answer-review.json",
+      "bytes": 15258,
+      "sha256": "ebffc827d9707d8bf751833f4c9effe0cb2f63cbe7da20402b944ca415698e54"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/r15-verified-implementation.json",
+      "bytes": 814015,
+      "sha256": "f5c24220802cfda9165c4aee78b241a8470522bd411540fc37a79371ac82adb6"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/source-provenance/material-dashboard-lite-LICENSE.txt",
+      "bytes": 1076,
+      "sha256": "afc0921ef81f7b0abad5f6231f197b366c5fda16e3f1cfa444e457e305bd3d71"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/source-provenance/material-dashboard-lite-original-html.json",
+      "bytes": 81086,
+      "sha256": "8ff545ef9899d2b6f2d19f8218e936c379f82cbe9c7516773f5f9a5a87f2c1a1"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/source-provenance/provenance.json",
+      "bytes": 8098,
+      "sha256": "88e3925756fd117a0fbd13d9bc8965a0f90109565405636287c07a48b0fc214c"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/source-provenance/tavola-LICENSE.txt",
+      "bytes": 1065,
+      "sha256": "c04049285d28a25da2762f601b146f04320f6c667955818d8325494561362982"
+    },
+    {
+      "file": "public/benchmarks/citation-relations-2026-11-05/source-provenance/tavola-original-html.json",
+      "bytes": 61412,
+      "sha256": "e9806ad4c97b121f643b5f567688948c1def9ce2b0adec0f8a12d76dcefdd036"
     },
     {
       "file": "public/benchmarks/five-cycles-2026-11-04/corpus.json",
@@ -4012,14 +4372,24 @@
       "sha256": "8dd598e44e8e94da8d9889454bfbd8d8355bddd938751852a58641ca7917427f"
     },
     {
+      "file": "scripts/build-citation-relations-scope-corpus.mjs",
+      "bytes": 2904,
+      "sha256": "d183e1a46475c1f5585390efb702e73e9f82e86778202728c098b2a7a10859f6"
+    },
+    {
+      "file": "scripts/build-citation-relations-summary.py",
+      "bytes": 16905,
+      "sha256": "a421bf2d00bf0bc43b2290cd5822b01867cc4fb3c7728d4363c405a9081a7a8f"
+    },
+    {
       "file": "scripts/build-guest-lab.mjs",
       "bytes": 4729,
       "sha256": "bece9e09648a79a367ca0e09586ceb0507ad7cfa99df5da3bfbd17677eacb228"
     },
     {
       "file": "scripts/build-judge-pack.mjs",
-      "bytes": 33589,
-      "sha256": "0b79a36e4859a30e948b38407c9d22b73aeb91e5fa332d7e32b281aca15f7bba"
+      "bytes": 33734,
+      "sha256": "d46977b7672dc5fdb059230fb8bdbdbfcb9d759b45eabce3d8d872c758e28243"
     },
     {
       "file": "scripts/build-real-project-assessment-corpus-2026-11-05.mjs",
@@ -4050,6 +4420,11 @@
       "file": "scripts/build-verified.sh",
       "bytes": 661,
       "sha256": "2ae5329ac860076070c9217a43106a15cb5ecf907a0f7baeb9ef903f76b53c68"
+    },
+    {
+      "file": "scripts/citation-relations-scope-corpus-2026-11-05.json",
+      "bytes": 15139,
+      "sha256": "43140fe70c5498b4bf6bb87e463cb2663d35d4d946c4293195e55d5ab54fa076"
     },
     {
       "file": "scripts/connector-preview/connector-preview-session.mjs",
@@ -4145,6 +4520,31 @@
       "file": "scripts/evaluation-results/ai-reliability-validation-summary-2026-11-05.json",
       "bytes": 2534,
       "sha256": "7882bd0a32b488967d40ee5c4c10bf2e86afc50f18b91757e09d723d5feccee4"
+    },
+    {
+      "file": "scripts/evaluation-results/citation-relations-cycle-13-counterchecks.json",
+      "bytes": 29775,
+      "sha256": "0ca4cc7cdf418c01a3bed7b9489a38feb4bb041007abe04c868ca82a0be9bc9c"
+    },
+    {
+      "file": "scripts/evaluation-results/citation-relations-cycle-14-plan.json",
+      "bytes": 2953,
+      "sha256": "2a08d6b0498b18a9bbd9a6eee11de2d9f3f8121cbff668a07bc6673afdfea4e0"
+    },
+    {
+      "file": "scripts/evaluation-results/citation-relations-cycle-15-plan.json",
+      "bytes": 1692,
+      "sha256": "e5e8a05bfcf666286fbfa8a3a49f9b1dee157b81d7bfd1b9816a360622ad7bc5"
+    },
+    {
+      "file": "scripts/evaluation-results/citation-relations-interim-feedback.json",
+      "bytes": 902,
+      "sha256": "59a27668bacc32b0dd1f0c6be593fa191a6e8b400da93c23f7b2fca35400d2fa"
+    },
+    {
+      "file": "scripts/evaluation-results/citation-relations-plan-2026-11-05.json",
+      "bytes": 3481,
+      "sha256": "87321bd8bef551f54a274c069d8980eb600a66b84a532d53bfc9e0b8ad176487"
     },
     {
       "file": "scripts/evaluation-results/five-remediation-eight-answers-2026-11-05.json",
@@ -4262,6 +4662,11 @@
       "sha256": "a83164e344c1947053def83b546be8115deaa827314bbaead7afe6b6451c5cdf"
     },
     {
+      "file": "scripts/project-assessment-corpus-citation-relations-holdout.json",
+      "bytes": 154792,
+      "sha256": "96a4f7b18a2440d9c589f2ad8d3583ea7c98aecc9eee00292db31098e036d900"
+    },
+    {
       "file": "scripts/real-project-assessment-corpus-2026-11-05.json",
       "bytes": 170217,
       "sha256": "3704bb94e554e0f5a4454a1d4307c479752893a93ad5de0bd32284bc36eaf153"
@@ -4317,9 +4722,14 @@
       "sha256": "2dfbadd66e7df70e3cb748d0d0dee46821353e49174b23778bd39d4f21f66bc5"
     },
     {
+      "file": "scripts/replay-publication-policy-2026-11-06.mjs",
+      "bytes": 13458,
+      "sha256": "2e383bbcea67659f95832c3187fd6ce68ddabf83f275eebe39b053582522b0e2"
+    },
+    {
       "file": "scripts/replay-real-project-assessments-2026-11-05.mjs",
-      "bytes": 3873,
-      "sha256": "36969e6461025b7fc7826a2ac5ced7d83e919f062de7ce384b7183501823f5f9"
+      "bytes": 3903,
+      "sha256": "c287ea26de305a8b1e5050cb3a4529ea17076915766515fbe942e967819e799c"
     },
     {
       "file": "scripts/replay-saved-assessments.ts",
@@ -4328,8 +4738,8 @@
     },
     {
       "file": "scripts/run-assessment-evaluation.ts",
-      "bytes": 21874,
-      "sha256": "61d9119f6dd3c0efc969f93f1c34b3d38f44b3b78202a8a460241c3c217aadd7"
+      "bytes": 24404,
+      "sha256": "0e53987e15e899f5df14896aa9b7d14f1ba9afed74bc15c4acc25b7aa59362c1"
     },
     {
       "file": "scripts/run-business-suggestion-evaluation.ts",
@@ -4343,8 +4753,8 @@
     },
     {
       "file": "scripts/run-project-assessment-evaluation.ts",
-      "bytes": 40842,
-      "sha256": "42d6b2c974f77b5f2de9abc17e229a8489e763d032b3a9d84d40a680dbeaaa1c"
+      "bytes": 43807,
+      "sha256": "98bf2cb0321723e5be6cd299f12ac73093a7d0e4f5a89818048242fc77d4d5dc"
     },
     {
       "file": "scripts/seller-onboarding-preflight.mjs",
@@ -4423,23 +4833,43 @@
     },
     {
       "file": "tests/assessment-article-title-punctuation.test.ts",
-      "bytes": 6963,
-      "sha256": "1bdcc956cebb33fbbfb082ba14496fbbfb0e4c6c5d4aaf1b9d6e3bd889d0c36c"
+      "bytes": 7167,
+      "sha256": "b4c593ff65fc151fbcff749a38f784842b0d0a629409fa140961b754a9031bfd"
+    },
+    {
+      "file": "tests/assessment-bounded-citations.test.ts",
+      "bytes": 9647,
+      "sha256": "2285af7e61937ce9e5bf0114ed481d413505e6bba463708ed568988c4ab76fc3"
     },
     {
       "file": "tests/assessment-business-context.test.ts",
-      "bytes": 8710,
-      "sha256": "73fe0081e5866c0a8ed6f9dd2392e64242e9fa96c0dec3e1fdf2ba9c2bb9e2fa"
+      "bytes": 8740,
+      "sha256": "4f4fd2246c8afcbb31c011f330a231ecea1bf15a9e1501ae7b13955b6f51dc4d"
+    },
+    {
+      "file": "tests/assessment-catalog-protocol.test.ts",
+      "bytes": 6021,
+      "sha256": "6645ea572f1af116f94ff28596a4bb129027e4b7288bbefb2e08e944df592ddf"
+    },
+    {
+      "file": "tests/assessment-citation-catalog.test.ts",
+      "bytes": 15456,
+      "sha256": "3f8fa55874d9d52f808d1d306c95b930e06e39e0ec90ec5e005ac8ef8b474295"
     },
     {
       "file": "tests/assessment-citation-path.test.ts",
-      "bytes": 5634,
-      "sha256": "78a67df88f18ae6ddfb8714867dbc6fd6b8230f4f4a289f57790c9c249f4a689"
+      "bytes": 7016,
+      "sha256": "16cc5e0ff27b2818121d9a35e8226dd33dff56967bb3a6299d05421b0bd7550c"
+    },
+    {
+      "file": "tests/assessment-citation-slots.test.ts",
+      "bytes": 9003,
+      "sha256": "b0d19e0caa754308914d9efc1f0ea763bfee94dff286e2529202548f20035e6d"
     },
     {
       "file": "tests/assessment-completion-normalization.test.ts",
-      "bytes": 3208,
-      "sha256": "34185f016d5042c19e6a998a62ccbb09504381aea9860dc42ee06104dc61ad11"
+      "bytes": 3238,
+      "sha256": "7656e626883d1441c9dea698fe47aa8d33c13fc9e00a22cef816cbe0924f795e"
     },
     {
       "file": "tests/assessment-display.test.ts",
@@ -4448,8 +4878,8 @@
     },
     {
       "file": "tests/assessment-evaluation.test.ts",
-      "bytes": 13132,
-      "sha256": "0737ec14474b3c87032d7c1ce5468a6ab4b41050c971af0cedb28ce44168adcb"
+      "bytes": 20069,
+      "sha256": "b33e96eb4cab9ce3b2a111328c65b4d3fcbdf5bca42f06d10978ee3355f75dd7"
     },
     {
       "file": "tests/assessment-evidence-scope.test.ts",
@@ -4468,48 +4898,53 @@
     },
     {
       "file": "tests/assessment-label-citation-coverage.test.ts",
-      "bytes": 13897,
-      "sha256": "546ac78ca6f2b8cc9c6eed1d106d8e934e5cebbb3ed24dbee7371c9c861a28d4"
+      "bytes": 13927,
+      "sha256": "4888eef7938045028afe97898b1df9176e43347d14b49ad44955afff427a56b0"
     },
     {
       "file": "tests/assessment-literal-scope.test.ts",
-      "bytes": 4884,
-      "sha256": "2f75862d80542b59231ad51e898dad8ab2d2f3c397f756384c0dd3c2c2d36301"
+      "bytes": 4914,
+      "sha256": "4546bbdd0bb21b5df1adde84853e6cb9a64764d693f80869994bdc41aab72b4b"
+    },
+    {
+      "file": "tests/assessment-publication-policy.test.ts",
+      "bytes": 6569,
+      "sha256": "a05fa39130187cf103d4a4a397a1b3f84b91c1ae54e37fe59f7ffbe899fda558"
     },
     {
       "file": "tests/assessment-risk-fields.test.ts",
-      "bytes": 6251,
-      "sha256": "8878bdddbd8fbb5822b1ca92341e05d27598dd8347b06775254167f810a282fa"
+      "bytes": 6281,
+      "sha256": "9a5aa3982294b93207e1d603f044faff0a0f7e53b852cd20291509ceb503398d"
     },
     {
       "file": "tests/assessment-route.test.ts",
-      "bytes": 11721,
-      "sha256": "b1192d6dffdd0f5741964dd6fa74a5fd67e8c2a491ac8ddf4d054f6977d310db"
+      "bytes": 12891,
+      "sha256": "293d0ed3b635a1c25b66e07b0691ab8917d15d3f1b26e49078b8b09caa28dcac"
     },
     {
       "file": "tests/assessment-source-literal-scope.test.ts",
-      "bytes": 9317,
-      "sha256": "d3b49ee3aa31712c980c8207ca57caab4f32195280fca320a019e29993fe1137"
+      "bytes": 9347,
+      "sha256": "5567d0ebd0eba3cc926ba9bd0e20db580f7c0681548a58ec31c2b17ef04f7bc3"
     },
     {
       "file": "tests/assessment-static-markup-scope.test.ts",
-      "bytes": 6171,
-      "sha256": "f35ab606662db47ef5a66e01389e03d66f8ee0e81bd688712e2a65f7a23c526a"
+      "bytes": 12400,
+      "sha256": "1f351b0f46ffbb8ead240f6237d634876692d54f2d835a204faa0098501d77a9"
     },
     {
       "file": "tests/assessment-strict-tool.test.ts",
-      "bytes": 10447,
-      "sha256": "0e274a734368eda07a6e0f53b2538460c08c37b589ccd118b83987ffff580179"
+      "bytes": 10477,
+      "sha256": "ec37206c788a33b2eed79039e68ba70671a14a3465b6f05d664c0d686139c7dc"
     },
     {
       "file": "tests/assessment-title-punctuation.test.ts",
-      "bytes": 2452,
-      "sha256": "54adffbb94108686592703b4f70106387320bff7d8e1b6ae9d565610fbb61d44"
+      "bytes": 2482,
+      "sha256": "99396cd92d8608b80f7df4fd081e3b145eb0b73f62afc12a45792c93d35c9dfe"
     },
     {
       "file": "tests/assessment-transfer-regression.test.ts",
-      "bytes": 3328,
-      "sha256": "9d14c3cc087687ccdd78c9f23e2e9a8b06cb2162aff558fe6ce2ec87e4193611"
+      "bytes": 3358,
+      "sha256": "4452e346099e435472ce5cafb724bae3be5e710d6dc2f3256dfcc5cc0b298ca5"
     },
     {
       "file": "tests/assessment-validation-record.test.ts",
@@ -4597,6 +5032,11 @@
       "sha256": "e1c81ac7a0218d1092e8321679e2df73f6861201342bd3244f3b9716727aeda5"
     },
     {
+      "file": "tests/business-uncertain-change.test.ts",
+      "bytes": 1690,
+      "sha256": "8a0d3ec271d888bddbcf511c179282ad81aff91312430ed70eb6d96a7aee0159"
+    },
+    {
       "file": "tests/chain-coverage-api-smoke.py",
       "bytes": 17685,
       "sha256": "cedfb0732bfc7e435d990d728f0f1c27ab7afa9c5e677d798f7f311aa1c85a0a"
@@ -4628,8 +5068,8 @@
     },
     {
       "file": "tests/delivery-assessment.test.ts",
-      "bytes": 91915,
-      "sha256": "cd65b517f72c9e9b2cae34064a4ac81c627926d62f35c0e4a2d2cda6dfeade19"
+      "bytes": 92093,
+      "sha256": "b62132f5f14fef37d25cbcf98a7a6b1922bb47621940cb7c589fac16732433b1"
     },
     {
       "file": "tests/delivery-comparison.test.ts",
@@ -5253,18 +5693,18 @@
     },
     {
       "file": "tests/project-assessment-evaluation.test.ts",
-      "bytes": 19474,
-      "sha256": "0373df8a0ed8caef19a03cb8d100e384f5b2b00ef8d3af936da9d34bc1ca5aa5"
+      "bytes": 19773,
+      "sha256": "cefb693b8a54a99b8547c6074030277527631937bba364df109142066692b47a"
     },
     {
       "file": "tests/project-assessment-reliability.test.ts",
-      "bytes": 18947,
-      "sha256": "1b36d41b229efd2926069d796ef64b2921d3c36e6d759fea6cd11ca6e096221d"
+      "bytes": 19370,
+      "sha256": "8081f0bfb96d7c668c8f8d780cba69bd3362f3b41ef748fd402c746099ab0502"
     },
     {
       "file": "tests/project-assessment-strict-transport.test.ts",
-      "bytes": 5374,
-      "sha256": "015005263b7d64532efc6e9604876f9bf9bd0f75227d9f8b8567da90c3811078"
+      "bytes": 10226,
+      "sha256": "29dcdb0ca2626663cf63c33782ff5654d6888cc456500d0016d2e54f74b8eb9d"
     },
     {
       "file": "tests/project-journey-api-smoke.py",
@@ -5633,8 +6073,8 @@
     },
     {
       "file": "tests/showcase.test.ts",
-      "bytes": 3753,
-      "sha256": "76d9bbcf8c1eeff1b9e4472d9c1156761d9199185271a8a3e05e8659e62a8ade"
+      "bytes": 3783,
+      "sha256": "8f9997e724f3e79db1592448aa86acd9f5955c45311fdb14ce377f5b7a0cb249"
     },
     {
       "file": "tests/smooth-flow-api-smoke.py",
@@ -5642,14 +6082,19 @@
       "sha256": "41b3e8ff88cf1840282e7235b068409cfb9459852cdeeb98abf0b3ae779f448f"
     },
     {
+      "file": "tests/source-business-catalog-witness.test.ts",
+      "bytes": 4271,
+      "sha256": "6ae3cece25c41b5fbe10d5cc99ba800954967ec4c8ee1ef6afc3354317305639"
+    },
+    {
       "file": "tests/source-business-evidence.test.ts",
-      "bytes": 11676,
-      "sha256": "a3e764fd0f1dcfc149ef52e83e1501ea6b395b66874713b1c1665d8aa5a35aae"
+      "bytes": 26952,
+      "sha256": "1c425f46097a945cace8e819e5e8cdda93573e14463d78f600437842e34fda47"
     },
     {
       "file": "tests/source-business-scope.test.ts",
-      "bytes": 6268,
-      "sha256": "bd1c68eeeba21becb65a6a258526a8ca6dc814c9f6c22e38f6ffe5246cb694df"
+      "bytes": 6298,
+      "sha256": "83ffa091aa1f72cfbf05b98a799b8221edd6efab9eb539a2c85bf7e52fe09ed8"
     },
     {
       "file": "tests/source-visibility-api-smoke.py",
@@ -5730,6 +6175,21 @@
       "file": "tests/transfer-competition.test.ts",
       "bytes": 8463,
       "sha256": "7e44e0945f4d07577f62d12bd7ab43c15318d0c5d849f661d1e497ca1174fc23"
+    },
+    {
+      "file": "tests/universal-source-list-evidence.test.ts",
+      "bytes": 14844,
+      "sha256": "8579296b8f4fe2698cd4e00f96f635efc260b04a054ca1c2e7207c61ec6f3d5e"
+    },
+    {
+      "file": "tests/universal-tag-assessment.test.ts",
+      "bytes": 4039,
+      "sha256": "73e37b2484c57e4caafcc87b113135256579c8d6e1f8b2f55521c61bea7a694d"
+    },
+    {
+      "file": "tests/universal-tag-evidence.test.ts",
+      "bytes": 15079,
+      "sha256": "a47950d00236c1f32a2a8dbfc538dc56d11cb6d9112becb5ddbb83979736e2d7"
     },
     {
       "file": "tsconfig.json",

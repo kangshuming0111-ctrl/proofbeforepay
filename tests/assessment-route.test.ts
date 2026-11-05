@@ -24,8 +24,8 @@ async function savedInputs() {
 }
 
 /** Real action route and all assessment/workflow guards; only storage/gateway
- * and environment adapters are isolated. The provider is a saved-response
- * stand-in: no API key, outbound request, real login or payment is tested. */
+ * and environment adapters are isolated. The provider adapts saved statuses/structure into controlled catalog IDs
+ * (not an unchanged provider replay): no API key, outbound request, real login or payment is tested. */
 async function routeHarness(language: Language = "zh", changedBody?: (body: string) => string) {
   const saved = await savedInputs(), quote = projectQuote(saved.project);
   const project = parseStaticProject({title: saved.project.title, summary: saved.project.summary, amount: "1.00", requiredPages: ["index.html"], manualRequirements: saved.project.criteria.map(criterion => criterion.source)}, saved.project.language);
@@ -70,7 +70,18 @@ async function routeHarness(language: Language = "zh", changedBody?: (body: stri
       assert.equal(url.href, "https://api.deepseek.com/beta/chat/completions", "all other outbound requests are forbidden");
       assert.equal(init?.method, "POST"); assert.equal(init?.redirect, "manual");
       assert.ok(init?.signal instanceof AbortSignal);
-      return new Response(state.responseBody, {status: 200, headers: {"Content-Type": "application/json"}});
+      const request=JSON.parse(String(init?.body)),packet=JSON.parse(request.messages[1].content),old=JSON.parse(state.responseBody),out=JSON.parse(old.choices[0].message.content);
+      assert.equal(request.tool_choice.function.name,"submit_source_assessment_v3");
+      assert.equal(packet.citationEncoding,"catalog_slots");
+      out.catalogId=packet.citationCatalog.catalogId;
+      const slots=(citations:{file:string;excerpt:string}[],maximum:number)=>{
+        const ids=citations.map(c=>packet.citationCatalog.entries.find((e:{id:string;file:string;excerpt:string})=>e.file===c.file&&e.excerpt.includes(c.excerpt))?.id??"s999999");
+        return Object.fromEntries(Array.from({length:maximum},(_,i)=>[`c${i+1}`,ids[i]??""]));
+      };
+      for(const item of out.items)item.citations=slots(item.citations,6);
+      for(const risk of out.risks)risk.citations=slots(risk.citations,3);
+      const adapted={choices:[{finish_reason:"tool_calls",message:{content:null,tool_calls:[{type:"function",function:{name:"submit_source_assessment_v3",arguments:JSON.stringify(out)}}]}}]};
+      return new Response(JSON.stringify(adapted), {status: 200, headers: {"Content-Type": "application/json"}});
     }) as typeof fetch;
     async function call(overrides: Record<string, unknown> = {}, actor = "buyer") {
       const request = new Request(`https://application.example.org/api/proofs/${quote.id}/assess`, {method: "POST", headers: {"Content-Type": "application/json", "x-test-actor": actor}, body: JSON.stringify({deliveryId: state.quote.proof.delivery!.id, confirm: true, ...overrides})});
@@ -80,7 +91,7 @@ async function routeHarness(language: Language = "zh", changedBody?: (body: stri
   } catch (error) {globalThis.fetch = originalFetch; delete globals[globalKey]; await rm(dir, {recursive: true, force: true}); throw error;}
 }
 
-test("actual assess route returns a Chinese safe 502 missing diagnostic for the saved incomplete reply without saving", async () => {
+test("actual assess route returns a Chinese safe 502 missing diagnostic for the controlled missing-item catalog reply without saving", async () => {
   const h = await routeHarness();
   try {
     const before = structuredClone(h.state.quote), response = await h.call(), result = await response.json() as FailureResult;

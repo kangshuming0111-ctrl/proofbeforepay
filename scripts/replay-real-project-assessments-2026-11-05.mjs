@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
-import {assessDelivery} from '../lib/delivery-assessment.ts';
+import {assessDeliveryLegacyReplay as assessDelivery} from '../lib/delivery-assessment.ts';
 import {projectQuote, validateProjectCorpus} from './run-project-assessment-evaluation.ts';
 
 const [corpusPath, reportPath, outputPath] = process.argv.slice(2);

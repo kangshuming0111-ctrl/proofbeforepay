@@ -1,0 +1,25 @@
+{
+  "schema": "pbp-r13-archived-source-freeze-reproduction-v1",
+  "modelCalls": 0,
+  "networkCalls": 0,
+  "results": [
+    {
+      "batch": "new-first",
+      "exactFreezeMatched": true,
+      "snapshotSha256": "167a65c582e8b19265d8985de2ee928f3a5b25438f1c91fa14f35d913802ec5c",
+      "files": 32
+    },
+    {
+      "batch": "known",
+      "exactFreezeMatched": true,
+      "snapshotSha256": "8b1fd072f15ee89f969c865975c55ee5c8279e388ab64d4aae2bba1ec27fc26f",
+      "files": 32
+    },
+    {
+      "batch": "scope",
+      "exactFreezeMatched": true,
+      "snapshotSha256": "3f4a2cec115afdc673136c3453f976a58eab9fb1d3e4b8d7f5cf7298e108f4b9",
+      "files": 32
+    }
+  ]
+}

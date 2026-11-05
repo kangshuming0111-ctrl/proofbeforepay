@@ -1,0 +1,1309 @@
+{
+  "schema": "pbp-citation-relations-interim-independent-whole-answer-review-v1",
+  "reviewedAt": "2026-11-05T13:11:05.509617+00:00",
+  "reviewer": "Codex implementation/review agent; independent from DeepSeek response generation, not an independent human or blinded evaluator. Prior Business Casual references were already known.",
+  "method": "Read every raw/application item, risk and limitation against every complete frozen request source file, original criterion, locked business plan and actual catalog entries. Recomputed UTF-8 source/request hashes and checked exact UTF-16 spans, original provider arguments and selected IDs separately from restored citations. No source, model answer or reference was edited.",
+  "providerCalls": 0,
+  "networkCalls": 0,
+  "summary": {
+    "projects": 4,
+    "criteria": 11,
+    "rawWholeAnswers": {
+      "accepted": 0,
+      "qualified": 4,
+      "rejected": 0
+    },
+    "applicationWholeAnswers": {
+      "accepted": 0,
+      "qualified": 4,
+      "rejected": 0
+    },
+    "applicationAdmitted": 4,
+    "all11MainCriterionStatusesSourceJustified": true,
+    "all11RawAndApplicationCriterionIdsComplete": true,
+    "sourceSelectionFailuresObserved": 0,
+    "unqualifiedModelReliabilityClaim": false
+  },
+  "verdictDefinitions": {
+    "accepted": "All reviewed claims are supported at their declared source-only evidence layer, with no unresolved material qualification.",
+    "qualified": "Main decision is source-justified and no cross-page/field falsepass is observed, but a specific limitation/wording/citation-coverage claim needs qualification; whole answer must not be advertised as flawless.",
+    "rejected": "A material unsupported or contradictory claim invalidates the whole answer or the application correctly refuses it."
+  },
+  "projects": [
+    {
+      "id": "real-business-casual",
+      "report": "outputs/citation-relations-2026-11-05/cycle-11-pilot-live.json",
+      "reportSha256": "893b0947f469506a51f10e70c90dae47666a36dda932c1110b3b3d0ca3173564",
+      "freezeSha256": "4040240cad2ce3692f4ca0dee2eb0f2aea2a8b7840536f46a4a360372da0bf33",
+      "requestSha256": "eddffdcac2104fa8774e560f6e7e9940323f2ed45ea9dec8f1d6e6fa589d7a23",
+      "stratum": "boundary",
+      "classification": "known-source-pilot",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "applicationAdmitted": true,
+      "criterionReview": [
+        {
+          "criterionId": "manual-1",
+          "originalRequirement": "store.html 的营业时间文字须说明周一至周五 7:00 AM to 8:00 PM，且星期日 Closed。",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "verdict": "accepted",
+          "explanation": "All six cited li elements contain the named day and its own value: Sunday Closed and Monday-Friday 7:00 AM to 8:00 PM. No uncited intermediate weekday is inferred."
+        },
+        {
+          "criterionId": "manual-2",
+          "originalRequirement": "store.html 的星期六营业时间文字须写为 7:00 AM to 8:00 PM。",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "verdict": "accepted",
+          "explanation": "The unique Saturday li in store.html is 9:00 AM to 5:00 PM, directly conflicting with the explicit required 7:00 AM to 8:00 PM. Both status and explanation are supported."
+        },
+        {
+          "criterionId": "manual-3",
+          "originalRequirement": "store.html 的地址和电话须写明 1116 Orchard Street、Golden Valley, Minnesota、(317) 585-8468。",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "verdict": "accepted",
+          "explanation": "Two complete store.html paragraphs contain the exact street, city/state and telephone; no address or phone from another page is substituted."
+        },
+        {
+          "criterionId": "manual-4",
+          "originalRequirement": "about.html 的文字须说明咖啡馆由 Hernandez brothers 于 1987 年创立。",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "verdict": "accepted",
+          "explanation": "The about.html paragraph explicitly gives Founded in 1987 by the Hernandez brothers. Although store.html repeats the story, the selected citation correctly belongs to the named about.html."
+        },
+        {
+          "criterionId": "manual-5",
+          "originalRequirement": "products.html 的文字内容须包含 Coffees & Teas、Bakery & Kitchen、Bulk Speciality Blends 三类产品。",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "verdict": "accepted",
+          "explanation": "Three products.html windows contain the complete three required product category strings with literal raw ampersands. The old entity-rewritten quote failure is absent in this one known-source pilot."
+        },
+        {
+          "criterionId": "coverage-1",
+          "originalRequirement": "products.html 正文文案须包含完整句子 Please tell us about food allergies before ordering.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "verdict": "qualified",
+          "explanation": "Complete products.html contains exactly the three cited product description paragraphs and the footer paragraph; none contains the required complete allergy sentence or an equivalent warning. The explicit static body-copy omission supports changes_suggested. The phrase that other page content is only footer is imprecise: header/nav/product headings and image references also exist."
+        },
+        {
+          "criterionId": "coverage-2",
+          "originalRequirement": "四个页面的手机导航须在 375px 浏览器里展开和收起并且链接均能正常跳转。",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "verdict": "accepted",
+          "explanation": "The selected index/store windows show collapse/navigation markup only. Four-page 375px toggling and navigation are not executed. Raw correctly abstains; application preserves abstention and substitutes its fixed scope explanation."
+        },
+        {
+          "criterionId": "coverage-3",
+          "originalRequirement": "首页图片须真实展示一杯热咖啡并在手机上清晰且没有裁切杯口。",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "verdict": "accepted",
+          "explanation": "The index.html source window actually references assets/img/intro.jpg with alt=... . No raster pixels occur in inventory; hot-coffee subject, clarity and crop are correctly left unknown. Application preserves abstention."
+        }
+      ],
+      "riskReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "explanation": "Saturday mismatch and requested correction are directly witnessed by the complete Saturday row in store.html; no runtime or unrelated scope is asserted."
+        },
+        {
+          "index": 1,
+          "verdict": "qualified",
+          "explanation": "The required allergy sentence really is absent in the complete static products.html body. The three risk citations witness all product descriptions but not its asserted footer absence; the item separately cites the footer. This is partial displayed evidence, not an incorrect defect."
+        }
+      ],
+      "limitationReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "explanation": "Static markup cannot establish actual 375px toggling/navigation."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "explanation": "No image pixels were supplied, so subject/clarity/crop remain unverified."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "explanation": "Inventory has only four HTML files; css/styles.css and both external/local scripts are source references, not supplied CSS/JS bytes."
+        },
+        {
+          "index": 3,
+          "verdict": "qualified",
+          "explanation": "All four title elements are Business Casual - Start Bootstrap Theme, and headers contain template branding. Every footer actually reads Copyright Your Website 2023; the slash examples Business Casual / Start Bootstrap should not be presented as exact footer text. The conditional need for buyer approval avoids inventing an agreed rebranding defect."
+        },
+        {
+          "index": 4,
+          "verdict": "accepted",
+          "explanation": "Advisory/source-only boundary and human final acceptance are accurate."
+        }
+      ],
+      "applicationSystemNotes": {
+        "count": 3,
+        "verdict": "accepted",
+        "explanation": "The appended note names the actual catalog and exact-offset restoration without asserting semantic correctness; complete-source/no-execution and human acceptance/payment separation are accurate. No scope flaw above is silently removed."
+      },
+      "remainingIssues": [
+        {
+          "severity": "P3",
+          "kind": "partial_negative_witness",
+          "at": "risks[1].citations",
+          "message": "Risk asserts footer absence but only cites the three product paragraphs. Full-source independent inspection confirms the absence; the item includes a separate footer quote."
+        },
+        {
+          "severity": "P3",
+          "kind": "imprecise_scope_description",
+          "at": "items[coverage-1].explanation",
+          "message": "Other page content is not only a footer: header/nav/product headings and image references also exist. The required sentence is nevertheless absent from the complete static body."
+        },
+        {
+          "severity": "P3",
+          "kind": "imprecise_template_footer_description",
+          "at": "limitations[3]",
+          "message": "All titles use Business Casual - Start Bootstrap Theme, but actual footers are Copyright Your Website 2023. Treat the wording as a broad template observation, not an exact source citation."
+        }
+      ],
+      "integrity": {
+        "allOriginalToolArgumentsJsonValid": true,
+        "normalization": "none",
+        "actualFinishReason": "tool_calls",
+        "catalogIdMatchesFrozenRequest": true,
+        "everyCatalogEntryMatchesExactSourceUtf16": true,
+        "allRawSelectionsKnownAndExact": true,
+        "allApplicationCitationsEqualSelectedServerSpans": true,
+        "allCriterionIdsPresentExactlyOnce": true,
+        "originalInputComplete": true,
+        "sourceFiles": [
+          {
+            "file": "about.html",
+            "utf8Bytes": 4421,
+            "sha256": "823b275d2ee03b22baf4eb523117eb3e38543783c7fe7aa766ca4109211071e9"
+          },
+          {
+            "file": "index.html",
+            "utf8Bytes": 4813,
+            "sha256": "1004c28bb0453c2c25ad2813824710df3e7fdf74881f9198e8fc671d6d948573"
+          },
+          {
+            "file": "products.html",
+            "utf8Bytes": 6612,
+            "sha256": "2827ace4fa153bb60d9fbae14e687aa8f46db36299728b2f13eea89363a2b93c"
+          },
+          {
+            "file": "store.html",
+            "utf8Bytes": 7503,
+            "sha256": "d375e12b04e873e50967c50bba34e0bc8d39bfa1c63a67ff589443c165f00998"
+          }
+        ],
+        "catalogBindingSha256IndependentlyRecomputed": true
+      },
+      "citationChecks": [
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "citation": 0,
+          "id": "s85",
+          "file": "store.html",
+          "start": 3005,
+          "end": 3212,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "citation": 1,
+          "id": "s87",
+          "file": "store.html",
+          "start": 3245,
+          "end": 3464,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "citation": 2,
+          "id": "s88",
+          "file": "store.html",
+          "start": 3497,
+          "end": 3717,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "citation": 3,
+          "id": "s90",
+          "file": "store.html",
+          "start": 3750,
+          "end": 3972,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "citation": 4,
+          "id": "s92",
+          "file": "store.html",
+          "start": 4005,
+          "end": 4226,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "citation": 5,
+          "id": "s93",
+          "file": "store.html",
+          "start": 4259,
+          "end": 4478,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "citation": 0,
+          "id": "s95",
+          "file": "store.html",
+          "start": 4511,
+          "end": 4732,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "citation": 0,
+          "id": "s96",
+          "file": "store.html",
+          "start": 4795,
+          "end": 5104,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "citation": 1,
+          "id": "s98",
+          "file": "store.html",
+          "start": 5133,
+          "end": 5337,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "citation": 0,
+          "id": "s15",
+          "file": "about.html",
+          "start": 3137,
+          "end": 3424,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "citation": 0,
+          "id": "s57",
+          "file": "products.html",
+          "start": 2800,
+          "end": 3200,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "citation": 1,
+          "id": "s61",
+          "file": "products.html",
+          "start": 4000,
+          "end": 4400,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "citation": 2,
+          "id": "s65",
+          "file": "products.html",
+          "start": 5200,
+          "end": 5600,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 0,
+          "id": "s59",
+          "file": "products.html",
+          "start": 3242,
+          "end": 3585,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 1,
+          "id": "s63",
+          "file": "products.html",
+          "start": 4555,
+          "end": 4806,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 2,
+          "id": "s67",
+          "file": "products.html",
+          "start": 5776,
+          "end": 6099,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 3,
+          "id": "s69",
+          "file": "products.html",
+          "start": 6289,
+          "end": 6348,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "citation": 0,
+          "id": "s27",
+          "file": "index.html",
+          "start": 1200,
+          "end": 1600,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "citation": 1,
+          "id": "s28",
+          "file": "index.html",
+          "start": 1600,
+          "end": 2000,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "citation": 2,
+          "id": "s76",
+          "file": "store.html",
+          "start": 1200,
+          "end": 1600,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "citation": 3,
+          "id": "s77",
+          "file": "store.html",
+          "start": 1600,
+          "end": 2000,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "citation": 0,
+          "id": "s34",
+          "file": "index.html",
+          "start": 2400,
+          "end": 2800,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "citation": 0,
+          "id": "s95",
+          "file": "store.html",
+          "start": 4511,
+          "end": 4732,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "citation": 0,
+          "id": "s59",
+          "file": "products.html",
+          "start": 3242,
+          "end": 3585,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "citation": 1,
+          "id": "s63",
+          "file": "products.html",
+          "start": 4555,
+          "end": 4806,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "citation": 2,
+          "id": "s67",
+          "file": "products.html",
+          "start": 5776,
+          "end": 6099,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "citation": 0,
+          "id": null,
+          "file": "store.html",
+          "start": 3005,
+          "end": 3212,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "citation": 1,
+          "id": null,
+          "file": "store.html",
+          "start": 3245,
+          "end": 3464,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "citation": 2,
+          "id": null,
+          "file": "store.html",
+          "start": 3497,
+          "end": 3717,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "citation": 3,
+          "id": null,
+          "file": "store.html",
+          "start": 3750,
+          "end": 3972,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "citation": 4,
+          "id": null,
+          "file": "store.html",
+          "start": 4005,
+          "end": 4226,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-1",
+          "citation": 5,
+          "id": null,
+          "file": "store.html",
+          "start": 4259,
+          "end": 4478,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-2",
+          "citation": 0,
+          "id": null,
+          "file": "store.html",
+          "start": 4511,
+          "end": 4732,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-3",
+          "citation": 0,
+          "id": null,
+          "file": "store.html",
+          "start": 4795,
+          "end": 5104,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-3",
+          "citation": 1,
+          "id": null,
+          "file": "store.html",
+          "start": 5133,
+          "end": 5337,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-4",
+          "citation": 0,
+          "id": null,
+          "file": "about.html",
+          "start": 3137,
+          "end": 3424,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-5",
+          "citation": 0,
+          "id": null,
+          "file": "products.html",
+          "start": 2800,
+          "end": 3200,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-5",
+          "citation": 1,
+          "id": null,
+          "file": "products.html",
+          "start": 4000,
+          "end": 4400,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "manual-5",
+          "citation": 2,
+          "id": null,
+          "file": "products.html",
+          "start": 5200,
+          "end": 5600,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 0,
+          "id": null,
+          "file": "products.html",
+          "start": 3242,
+          "end": 3585,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 1,
+          "id": null,
+          "file": "products.html",
+          "start": 4555,
+          "end": 4806,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 2,
+          "id": null,
+          "file": "products.html",
+          "start": 5776,
+          "end": 6099,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 3,
+          "id": null,
+          "file": "products.html",
+          "start": 6289,
+          "end": 6348,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-2",
+          "citation": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 1200,
+          "end": 1600,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-2",
+          "citation": 1,
+          "id": null,
+          "file": "index.html",
+          "start": 1600,
+          "end": 2000,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-2",
+          "citation": 2,
+          "id": null,
+          "file": "store.html",
+          "start": 1200,
+          "end": 1600,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-2",
+          "citation": 3,
+          "id": null,
+          "file": "store.html",
+          "start": 1600,
+          "end": 2000,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-3",
+          "citation": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 2400,
+          "end": 2800,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 0,
+          "citation": 0,
+          "id": null,
+          "file": "store.html",
+          "start": 4511,
+          "end": 4732,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 1,
+          "citation": 0,
+          "id": null,
+          "file": "products.html",
+          "start": 3242,
+          "end": 3585,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 1,
+          "citation": 1,
+          "id": null,
+          "file": "products.html",
+          "start": 4555,
+          "end": 4806,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 1,
+          "citation": 2,
+          "id": null,
+          "file": "products.html",
+          "start": 5776,
+          "end": 6099,
+          "exactOriginalUtf16Span": true
+        }
+      ]
+    },
+    {
+      "id": "scoped-two-pages-correct",
+      "report": "outputs/citation-relations-2026-11-05/cycle-12-scope-live.json",
+      "reportSha256": "16a2d294a2b7f7fb78074c59c168621b2457d0fa31d78b8a9823acab18063255",
+      "freezeSha256": "f8d90928558406b67f0284338262e0b50306845bf5b3229217e139a336bca9a4",
+      "requestSha256": "6d9bce93c915caa5864532e153cef7c71bc9463d20d804849afb980144a02799",
+      "stratum": "clean",
+      "classification": "controlled-synthetic-scope-case",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "applicationAdmitted": true,
+      "criterionReview": [
+        {
+          "criterionId": "coverage-1",
+          "originalRequirement": "Display Tea prices on both agreed menu pages.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "verdict": "accepted",
+          "explanation": "Both buyer-confirmed files index.html and menu.html have the exact Tea AUD 18 paragraph, and both selected IDs witness their own whole paragraph. Identical about.html content is not used. Supported status is warranted for static copy only."
+        }
+      ],
+      "riskReview": [],
+      "limitationReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "explanation": "No rendered visibility has been observed."
+        },
+        {
+          "index": 1,
+          "verdict": "qualified",
+          "explanation": "about.html does contain Tea AUD 18, but its agreed scope is not uncertain: the locked businessChecks explicitly name only index.html and menu.html."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "explanation": "18 AUD equals 1800 minor units; no exact formatting obligation was introduced."
+        }
+      ],
+      "applicationSystemNotes": {
+        "count": 3,
+        "verdict": "accepted",
+        "explanation": "The appended note names the actual catalog and exact-offset restoration without asserting semantic correctness; complete-source/no-execution and human acceptance/payment separation are accurate. No scope flaw above is silently removed."
+      },
+      "remainingIssues": [
+        {
+          "severity": "P3",
+          "kind": "unnecessary_scope_uncertainty",
+          "at": "limitations[1]",
+          "message": "The model questions whether about.html is agreed even though the locked business check list explicitly identifies index.html and menu.html. Main support evidence uses the correct two files."
+        }
+      ],
+      "integrity": {
+        "allOriginalToolArgumentsJsonValid": true,
+        "normalization": "none",
+        "actualFinishReason": "tool_calls",
+        "catalogIdMatchesFrozenRequest": true,
+        "everyCatalogEntryMatchesExactSourceUtf16": true,
+        "allRawSelectionsKnownAndExact": true,
+        "allApplicationCitationsEqualSelectedServerSpans": true,
+        "allCriterionIdsPresentExactlyOnce": true,
+        "originalInputComplete": true,
+        "sourceFiles": [
+          {
+            "file": "about.html",
+            "utf8Bytes": 115,
+            "sha256": "f48f14e4d65641927fbe819ea6692d9b76b99d51c70fea69f6912b91decb0951"
+          },
+          {
+            "file": "index.html",
+            "utf8Bytes": 115,
+            "sha256": "f48f14e4d65641927fbe819ea6692d9b76b99d51c70fea69f6912b91decb0951"
+          },
+          {
+            "file": "menu.html",
+            "utf8Bytes": 115,
+            "sha256": "f48f14e4d65641927fbe819ea6692d9b76b99d51c70fea69f6912b91decb0951"
+          }
+        ],
+        "catalogBindingSha256IndependentlyRecomputed": true
+      },
+      "citationChecks": [
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 0,
+          "id": "s8",
+          "file": "index.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 1,
+          "id": "s12",
+          "file": "menu.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 1,
+          "id": null,
+          "file": "menu.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        }
+      ]
+    },
+    {
+      "id": "scoped-target-price-wrong",
+      "report": "outputs/citation-relations-2026-11-05/cycle-12-scope-live.json",
+      "reportSha256": "16a2d294a2b7f7fb78074c59c168621b2457d0fa31d78b8a9823acab18063255",
+      "freezeSha256": "f8d90928558406b67f0284338262e0b50306845bf5b3229217e139a336bca9a4",
+      "requestSha256": "9f769909f2d6d206b0bd68e61d0f74fab5966e2ab5e05e435d2c3d4c61a4149e",
+      "stratum": "mismatch",
+      "classification": "controlled-synthetic-scope-case",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "applicationAdmitted": true,
+      "criterionReview": [
+        {
+          "criterionId": "coverage-1",
+          "originalRequirement": "Display Tea prices on both agreed menu pages.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "verdict": "accepted",
+          "explanation": "index.html has Tea AUD 18 and menu.html has Tea AUD 16; the selected IDs show each complete paragraph. The explicit menu.html expected 1800 AUD minor units conflicts with 1600, so changes_suggested is correct. The unrelated about.html 18 is not borrowed."
+        }
+      ],
+      "riskReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "explanation": "The risk cites the actual wrong target paragraph and correct index paragraph, with explicit minor-unit context. Requested recheck stays within the locked price plan."
+        }
+      ],
+      "limitationReview": [
+        {
+          "index": 0,
+          "verdict": "qualified",
+          "explanation": "The model says it cannot confirm which two pages are agreed. This is contradicted by the explicit buyer-confirmed index.html/menu.html checks in the packet."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "explanation": "Only static HTML was inspected; no browser claim is made."
+        }
+      ],
+      "applicationSystemNotes": {
+        "count": 3,
+        "verdict": "accepted",
+        "explanation": "The appended note names the actual catalog and exact-offset restoration without asserting semantic correctness; complete-source/no-execution and human acceptance/payment separation are accurate. No scope flaw above is silently removed."
+      },
+      "remainingIssues": [
+        {
+          "severity": "P3",
+          "kind": "unnecessary_scope_uncertainty",
+          "at": "limitations[0]",
+          "message": "The packet explicitly lists the two buyer-agreed source files, so their scope is not unknown. Main mismatch and both source quotes remain correct."
+        }
+      ],
+      "integrity": {
+        "allOriginalToolArgumentsJsonValid": true,
+        "normalization": "none",
+        "actualFinishReason": "tool_calls",
+        "catalogIdMatchesFrozenRequest": true,
+        "everyCatalogEntryMatchesExactSourceUtf16": true,
+        "allRawSelectionsKnownAndExact": true,
+        "allApplicationCitationsEqualSelectedServerSpans": true,
+        "allCriterionIdsPresentExactlyOnce": true,
+        "originalInputComplete": true,
+        "sourceFiles": [
+          {
+            "file": "about.html",
+            "utf8Bytes": 115,
+            "sha256": "f48f14e4d65641927fbe819ea6692d9b76b99d51c70fea69f6912b91decb0951"
+          },
+          {
+            "file": "index.html",
+            "utf8Bytes": 115,
+            "sha256": "f48f14e4d65641927fbe819ea6692d9b76b99d51c70fea69f6912b91decb0951"
+          },
+          {
+            "file": "menu.html",
+            "utf8Bytes": 115,
+            "sha256": "463840e63518e41f45360ba6c9d588c558e9816c86a78aab2fff42367714705d"
+          }
+        ],
+        "catalogBindingSha256IndependentlyRecomputed": true
+      },
+      "citationChecks": [
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 0,
+          "id": "s8",
+          "file": "index.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 1,
+          "id": "s12",
+          "file": "menu.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "citation": 0,
+          "id": "s12",
+          "file": "menu.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "citation": 1,
+          "id": "s8",
+          "file": "index.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 1,
+          "id": null,
+          "file": "menu.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 0,
+          "citation": 0,
+          "id": null,
+          "file": "menu.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 0,
+          "citation": 1,
+          "id": null,
+          "file": "index.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        }
+      ]
+    },
+    {
+      "id": "scoped-neighbour-price-borrow",
+      "report": "outputs/citation-relations-2026-11-05/cycle-12-scope-live.json",
+      "reportSha256": "16a2d294a2b7f7fb78074c59c168621b2457d0fa31d78b8a9823acab18063255",
+      "freezeSha256": "f8d90928558406b67f0284338262e0b50306845bf5b3229217e139a336bca9a4",
+      "requestSha256": "1540cb7ed552aeebc05d4edeb0481f8bf9df90bfb5270bd80e67c7502d8fe4d0",
+      "stratum": "mismatch",
+      "classification": "controlled-synthetic-scope-case",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "applicationAdmitted": true,
+      "criterionReview": [
+        {
+          "criterionId": "coverage-1",
+          "originalRequirement": "Display Tea prices on both agreed menu pages.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "verdict": "accepted",
+          "explanation": "menu.html has Tea AUD 16 plus neighbouring Coffee AUD 18. The response correctly binds 16 to Tea, never borrows Coffee or about.html 18, and cites both paragraph witnesses plus complete index/menu source. changes_suggested is correct for the explicit two-file plan."
+        }
+      ],
+      "riskReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "explanation": "Tea mismatch is grounded in its own menu paragraph. The risk does not confuse the adjacent Coffee price with Tea."
+        }
+      ],
+      "limitationReview": [
+        {
+          "index": 0,
+          "verdict": "qualified",
+          "explanation": "No rendered state was observed, but the clause that agreed-page identity is not established is unnecessary and inconsistent with the explicit check files and the next limitation."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "explanation": "about.html really has Tea AUD 18 and is not one of the buyer-specified files; no selected ID points there."
+        }
+      ],
+      "applicationSystemNotes": {
+        "count": 3,
+        "verdict": "accepted",
+        "explanation": "The appended note names the actual catalog and exact-offset restoration without asserting semantic correctness; complete-source/no-execution and human acceptance/payment separation are accurate. No scope flaw above is silently removed."
+      },
+      "remainingIssues": [
+        {
+          "severity": "P3",
+          "kind": "contradictory_scope_uncertainty",
+          "at": "limitations[0..1]",
+          "message": "First limitation questions agreed-page identity while the next correctly states about.html is outside the two buyer-specified files. Locked checks already identify index.html/menu.html."
+        }
+      ],
+      "integrity": {
+        "allOriginalToolArgumentsJsonValid": true,
+        "normalization": "none",
+        "actualFinishReason": "tool_calls",
+        "catalogIdMatchesFrozenRequest": true,
+        "everyCatalogEntryMatchesExactSourceUtf16": true,
+        "allRawSelectionsKnownAndExact": true,
+        "allApplicationCitationsEqualSelectedServerSpans": true,
+        "allCriterionIdsPresentExactlyOnce": true,
+        "originalInputComplete": true,
+        "sourceFiles": [
+          {
+            "file": "about.html",
+            "utf8Bytes": 115,
+            "sha256": "f48f14e4d65641927fbe819ea6692d9b76b99d51c70fea69f6912b91decb0951"
+          },
+          {
+            "file": "index.html",
+            "utf8Bytes": 115,
+            "sha256": "f48f14e4d65641927fbe819ea6692d9b76b99d51c70fea69f6912b91decb0951"
+          },
+          {
+            "file": "menu.html",
+            "utf8Bytes": 135,
+            "sha256": "5efd3df4a570ffb79a338d0afe736b68c4be51c6579d40e8bc0c63beca835b94"
+          }
+        ],
+        "catalogBindingSha256IndependentlyRecomputed": true
+      },
+      "citationChecks": [
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 0,
+          "id": "s8",
+          "file": "index.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 1,
+          "id": "s12",
+          "file": "menu.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 2,
+          "id": "s5",
+          "file": "index.html",
+          "start": 0,
+          "end": 115,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 3,
+          "id": "s9",
+          "file": "menu.html",
+          "start": 0,
+          "end": 135,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "citation": 0,
+          "id": "s12",
+          "file": "menu.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "citation": 1,
+          "id": "s8",
+          "file": "index.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 0,
+          "id": null,
+          "file": "index.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 1,
+          "id": null,
+          "file": "menu.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 2,
+          "id": null,
+          "file": "index.html",
+          "start": 0,
+          "end": 115,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "items",
+          "row": "coverage-1",
+          "citation": 3,
+          "id": null,
+          "file": "menu.html",
+          "start": 0,
+          "end": 135,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 0,
+          "citation": 0,
+          "id": null,
+          "file": "menu.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        },
+        {
+          "layer": "application",
+          "kind": "risks",
+          "row": 0,
+          "citation": 1,
+          "id": null,
+          "file": "index.html",
+          "start": 84,
+          "end": 101,
+          "exactOriginalUtf16Span": true
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "These are four calls from two implementation freezes, not a final-code unseen accuracy measurement.",
+    "Business Casual is an already-inspected public source; the three scope cases are deliberately controlled synthetic inputs, not real customer projects.",
+    "No browser, target backend, rendering, seller interaction or human usability was tested.",
+    "Every selected ID is provenance only. This review separately examined whole-source meaning and field/file relationships; exact-ID validity alone was not treated as semantic correctness.",
+    "Minor ungrounded scope doubts are retained as findings even when all main status labels agree with their references."
+  ]
+}

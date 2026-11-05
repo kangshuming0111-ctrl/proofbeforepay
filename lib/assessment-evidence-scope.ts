@@ -2,6 +2,7 @@ import type { Language, ProofCriterion } from "./contracts.ts";
 import {exactCopyLiteral} from "./exact-copy-directive.ts";
 import {isSourceLiteralDirectiveCandidate, sourceLiteralDirective} from "./source-literal-directive.ts";
 import {isStaticMarkupDirectiveCandidate, staticMarkupDirective, withoutWorkingTimeUnits} from "./static-markup-directive.ts";
+import {assertStaticPath} from "./static-resources.ts";
 
 /** Source-only admission guard, not an entailment checker or execution result. */
 export type AssessmentEvidenceScope = {
@@ -80,15 +81,83 @@ function isExplicitRefundPolicyCopy(criterion: ProofCriterion): boolean {
 const RECORD_ACTION = /\b(?:record(?:s|ed|ing)?|archiv(?:e[sd]?|ing)|log(?:s|ged|ging)?|stor(?:e[sd]?|ing)|retain(?:s|ed|ing)?|writ(?:e[sd]?|ing)|queue(?:s|d|ing)?)\b[^.。；;\n]{0,180}\b(?:enquir(?:y|ies)|inquir(?:y|ies)|requests?|receipts?|records?|submissions?|transactions?|customer\s+data|audit\s+trail)\b|\b(?:enquir(?:y|ies)|inquir(?:y|ies)|requests?|receipts?|records?|submissions?|transactions?|audit\s+trail)\b[^.。；;\n]{0,120}\b(?:durab(?:le|ly|ility)|archived|logged|stored|retained|queryable|retrievable|persistently|permanently)\b|(?:询价|咨询|请求|回执|记录|交易|提交内容)[^。；;\n]{0,80}(?:落库|持久|留存|入库|可查询|可检索|重启后保留)|(?:落库|持久保存|持久记录|持久存储|留存|入库|归档|记录|存储)[^。；;\n]{0,80}(?:询价|咨询请求|回执|交易|提交内容)|\b(?:receipts?|records?|audit\s+trail)\b[^.。；;\n]{0,120}\b(?:after\s+(?:a\s+|the\s+)?(?:server\s+)?restart|survive\s+(?:a\s+)?restart)\b/iu;
 const CUSTOMER_DATA_REBOOT = /\bcustomer\s+data\s+(?:(?:must|should|shall|will)\s+)?surviv(?:e[sd]?|ing)\s+(?:(?:a|the)\s+)?(?:server\s+)?(?:reboot|restart)\b/iu;
 
+type StaticRelationDescriptor = {identity: string; files: string[]} & (
+  {kind: "label_for_id"; labels: string[]}
+  | {kind: "input_type"; label: string; inputType: string; ratherThan?: string}
+  | {kind: "radio_group"; labels: string[]; values: string[]; name: string}
+);
+const RELATION_LABEL = "[A-Z][A-Za-z0-9_-]{0,39}(?: [a-z][A-Za-z0-9_-]{0,39}){0,3}";
+const RELATION_OPERATION = /\b(?:and|or|then|also|after|before|when|while|must|shall|should|will|can|could|actual|actually|automatically|click(?:s|ed|ing)?|save|store|reload|submit|send|visible|visually|secure|security|persist|record)\b/iu;
+const INPUT_TYPES = new Set(["button", "checkbox", "color", "date", "datetime-local", "email", "file", "hidden", "image", "month", "number", "password", "radio", "range", "reset", "search", "submit", "tel", "text", "time", "url", "week"]);
+
+function relationFile(value: string): string | undefined {
+  try {const file = assertStaticPath(value); return file.endsWith(".html") ? file : undefined;} catch {return;}
+}
+function relationLabel(value: string): boolean {
+  return new RegExp(`^${RELATION_LABEL}$`, "u").test(value) && value.length <= 80 && !RELATION_OPERATION.test(value);
+}
+function relationLabels(value: string): string[] | undefined {
+  // Explicit finite lists: capital-start labels, optional lower-case words in
+  // each label, and one final "and". Do not split arbitrary natural language.
+  const parts = value.split(/\s+and\s+/u); if (parts.length !== 2 || !relationLabel(parts[1])) return;
+  const labels: string[] = []; let cursor = 0;
+  for (const match of parts[0].matchAll(new RegExp(RELATION_LABEL, "gu"))) {
+    const gap = parts[0].slice(cursor, match.index);
+    if (labels.length ? !/^(?: +|, *)$/u.test(gap) : gap !== "") return;
+    if (!relationLabel(match[0])) return;
+    labels.push(match[0]); cursor = match.index + match[0].length;
+  }
+  if (cursor !== parts[0].length) return;
+  labels.push(parts[1]);
+  return labels.length >= 2 && labels.length <= 6 && new Set(labels).size === labels.length ? labels : undefined;
+}
+function relationInputType(value: string): string | undefined {
+  const match = /^(?:"([a-z-]+)"|'([a-z-]+)'|([a-z-]+))$/u.exec(value), type = match?.slice(1).find(part => part !== undefined);
+  return type && INPUT_TYPES.has(type) ? type : undefined;
+}
+/** Admission descriptor only. Complete atomic syntax binds the named files,
+ * labels and attributes to static source data; it neither inspects delivered
+ * nodes nor establishes a for/id, tuple, input-type or runtime verdict. */
+function staticRelationDirective(source: string): StaticRelationDescriptor | undefined {
+  const text = source.trim(); if (text.length > 800 || /[\r\n]/u.test(text)) return;
+  const body = text.replace(/\.$/u, ""), identity = text.replace(/[\t ]+/gu, " ");
+  const labelPair = /^The static HTML labels (.+) on (\S+) must each target its matching input through a for and id pair$/u.exec(body);
+  if (labelPair) {
+    const labels = relationLabels(labelPair[1]), file = relationFile(labelPair[2]);
+    return labels && file ? {identity, kind: "label_for_id", files: [file], labels} : undefined;
+  }
+  const input = /^The static (.+) control markup in (.+) must use input type (\S+)(?: rather than (\S+))?$/u.exec(body);
+  if (input) {
+    if (!relationLabel(input[1])) return;
+    const pair = /^both (\S+) and (\S+)$/u.exec(input[2]), targets = pair ? pair.slice(1) : [input[2]];
+    const files = targets.map(relationFile), inputType = relationInputType(input[3]), ratherThan = input[4] === undefined ? undefined : relationInputType(input[4]);
+    if (files.some(file => file === undefined) || new Set(files).size !== files.length || !inputType || input[4] !== undefined && !ratherThan) return;
+    return {identity, kind: "input_type", files: files as string[], label: input[1], inputType, ...(ratherThan ? {ratherThan} : {})};
+  }
+  const radio = /^The (\S+) source content must pair (.+) radio labels with values (.+) under the same ([A-Za-z][A-Za-z0-9_-]{0,39}) name$/u.exec(body);
+  if (!radio) return;
+  const file = relationFile(radio[1]), labels = relationLabels(radio[2]), valueParts = radio[3].split(/\s+and\s+/u);
+  if (!file || !labels || valueParts.length !== 2) return;
+  const values = [...valueParts[0].split(/(?:,\s*| +)/u), valueParts[1]];
+  if (values.length !== labels.length || new Set(values).size !== values.length || values.some(value => !/^(?:0|[1-9]\d{0,2})$/u.test(value))) return;
+  return {identity, kind: "radio_group", files: [file], labels, values, name: radio[4]};
+}
+function isStaticRelationCandidate(source: string): boolean {
+  const text = source.trim();
+  return /^The static HTML labels /u.test(text) || /^The static [^\r\n]{1,100} control markup in /u.test(text)
+    || /^The \S+ source content must pair /u.test(text);
+}
+
 /** Admission controls do not establish whether a model's cited inference is true. */
 export function assessmentEvidenceScope(criterion: ProofCriterion): AssessmentEvidenceScope {
-  const literal = exactCopyLiteral(criterion.source), sourceDirective = sourceLiteralDirective(criterion.source), markupDirective = staticMarkupDirective(criterion.source);
+  const literal = exactCopyLiteral(criterion.source), sourceDirective = sourceLiteralDirective(criterion.source), relationDirective = staticRelationDirective(criterion.source);
+  const markupDirective = staticMarkupDirective(criterion.source) ?? relationDirective?.identity;
   // A title that repeats the same whole exact-copy directive adds no separate
   // obligation. Other titles retain their own runtime/financial/record veto.
   // In particular, do not infer a text-only scope from a truncated title.
   const repeatedLiteralTitle = literal !== undefined && exactCopyLiteral(criterion.title) === literal;
   const repeatedSourceTitle = sourceDirective !== undefined && sourceLiteralDirective(criterion.title) === sourceDirective;
-  const repeatedMarkupTitle = markupDirective !== undefined && staticMarkupDirective(criterion.title) === markupDirective;
+  const repeatedMarkupTitle = markupDirective !== undefined && (staticMarkupDirective(criterion.title) ?? staticRelationDirective(criterion.title)?.identity) === markupDirective;
   const title = repeatedLiteralTitle || repeatedSourceTitle || repeatedMarkupTitle ? "" : criterion.title;
   const sourceOnlyDirective = literal !== undefined || sourceDirective !== undefined || markupDirective !== undefined;
   // Complete quoted literals and atomic markup-property statements bind their
@@ -99,8 +168,9 @@ export function assessmentEvidenceScope(criterion: ProofCriterion): AssessmentEv
   if (FINANCIAL_ACTION.test(combined) || CARD_DEBIT_ACTION.test(combined)) return { category: "requires_observation", reason: "financial_action" };
   if (RECORD_ACTION.test(combined) || CUSTOMER_DATA_REBOOT.test(combined)) return { category: "requires_observation", reason: "durable_record" };
   if (EMAIL_DELIVERY_ACTION.test(combined)) return {category: "requires_observation", reason: "runtime_or_subjective"};
-  if (!sourceOnlyDirective && (isSourceLiteralDirectiveCandidate(criterion.source) || isStaticMarkupDirectiveCandidate(criterion.source))) return {category: "requires_observation", reason: "unclassified_requirement"};
+  if (!sourceOnlyDirective && (isSourceLiteralDirectiveCandidate(criterion.source) || isStaticMarkupDirectiveCandidate(criterion.source) || isStaticRelationCandidate(criterion.source))) return {category: "requires_observation", reason: "unclassified_requirement"};
   if (sourceOnlyDirective) return OBSERVATION_REQUIRED.test(withoutWorkingTimeUnits(title))
+    || relationDirective !== undefined && /\b(?:visib(?:le|ility)|visually|masked|masking|security|secure(?:ly)?|protection|protect(?:s|ed|ing)?)\b/iu.test(title)
     ? {category: "requires_observation", reason: "runtime_or_subjective"}
     : {category: "source_text", reason: "literal_content"};
   const policyCopy = isExplicitBookingPolicyCopy(criterion) || isExplicitRefundPolicyCopy(criterion);

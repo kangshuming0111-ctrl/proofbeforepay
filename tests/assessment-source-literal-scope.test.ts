@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {assessmentEvidenceScope} from "../lib/assessment-evidence-scope.ts";
-import {assessDelivery} from "../lib/delivery-assessment.ts";
+import {assessDeliveryLegacyReplay as assessDelivery} from "../lib/delivery-assessment.ts";
 import {projectQuote, type EvaluationProject, type EvaluationStatus} from "../scripts/run-project-assessment-evaluation.ts";
 
 const directive = (source: string, title = "Required source text", id = "manual-1") => ({id, title, source});

@@ -1,0 +1,153 @@
+{
+  "schema": "pbp-citation-relations-public-source-provenance-v1",
+  "preparedAt": "2026-11-05T13:11:40.524687+00:00",
+  "sealedReferenceMetadata": {
+    "sealedAt": "2026-11-05T13:09:29.595Z",
+    "corpusCodePath": "scripts/project-assessment-corpus-citation-relations-holdout.json",
+    "corpusSha256": "96a4f7b18a2440d9c589f2ad8d3583ea7c98aecc9eee00292db31098e036d900",
+    "modelCallsBeforeSeal": 0,
+    "sourceExecutionBeforeSeal": false,
+    "criteriaAndReferencesChangedAfterModelOutput": false,
+    "author": "Codex child AI independently authored source-reference labels; not a human gold-standard evaluator",
+    "disclosure": "Parent knew candidate repository names and task families before sealing but had not read final questions/reference labels. This provenance contains no per-question answers."
+  },
+  "sources": [
+    {
+      "id": "citation-relations-holdout-tavola",
+      "repository": "https://github.com/ColorlibHQ/bootstrap-templates",
+      "commit": "feebd4716ef5c9149613b3c5a78030c34cbf846d",
+      "commitUrl": "https://github.com/ColorlibHQ/bootstrap-templates/commit/feebd4716ef5c9149613b3c5a78030c34cbf846d",
+      "license": "MIT",
+      "licenseFile": "tavola-LICENSE.txt",
+      "selectedSourceFile": "tavola-original-html.json",
+      "sourceRoot": "tavola/",
+      "requiredPages": [
+        "index.html",
+        "menu.html"
+      ],
+      "sourceFiles": [
+        {
+          "path": "LICENSE",
+          "sourceUrl": "https://raw.githubusercontent.com/ColorlibHQ/bootstrap-templates/feebd4716ef5c9149613b3c5a78030c34cbf846d/LICENSE",
+          "bytes": 1065,
+          "sha256": "c04049285d28a25da2762f601b146f04320f6c667955818d8325494561362982",
+          "license": true,
+          "publicCopy": "tavola-LICENSE.txt"
+        },
+        {
+          "path": "tavola/index.html",
+          "sourceUrl": "https://raw.githubusercontent.com/ColorlibHQ/bootstrap-templates/feebd4716ef5c9149613b3c5a78030c34cbf846d/tavola/index.html",
+          "bytes": 25388,
+          "sha256": "467ca3c28a632d9791e04f95f64570a117054b37af3ffb61442731ec4a931937",
+          "deliveryPath": "index.html"
+        },
+        {
+          "path": "tavola/menu.html",
+          "sourceUrl": "https://raw.githubusercontent.com/ColorlibHQ/bootstrap-templates/feebd4716ef5c9149613b3c5a78030c34cbf846d/tavola/menu.html",
+          "bytes": 14865,
+          "sha256": "eeaaadc790743dccc2cbb4f4277eb39d9e1e01ce5168b747c35ad8075e3f14f4",
+          "deliveryPath": "menu.html"
+        },
+        {
+          "path": "tavola/assets/css/base.css",
+          "sourceUrl": "https://raw.githubusercontent.com/ColorlibHQ/bootstrap-templates/feebd4716ef5c9149613b3c5a78030c34cbf846d/tavola/assets/css/base.css",
+          "bytes": 12208,
+          "sha256": "84662d517b2d223427a0d403a347cb8edf1a834ecaf160e5f4c8f8627c78b56c",
+          "deliveryPath": "assets/css/base.css"
+        },
+        {
+          "path": "tavola/assets/css/style.css",
+          "sourceUrl": "https://raw.githubusercontent.com/ColorlibHQ/bootstrap-templates/feebd4716ef5c9149613b3c5a78030c34cbf846d/tavola/assets/css/style.css",
+          "bytes": 5530,
+          "sha256": "d1cdc65f1fdb90045f631c4dfcae79d814a316df48fcc21c32b25cc93aa5706a",
+          "deliveryPath": "assets/css/style.css"
+        }
+      ],
+      "sourceBytesUnmodified": true,
+      "sourceKind": "Official Colorlib public restaurant template; not a customer site",
+      "excludedDependencies": "Bootstrap6 CSS is381199bytes; vendor JS, images/fonts excluded. Source-only task, no rendered/dynamic/runtime evidence.",
+      "codeExecuted": false
+    },
+    {
+      "id": "citation-relations-holdout-material-dashboard-lite",
+      "repository": "https://github.com/CreativeIT/material-dashboard-lite",
+      "commit": "65f510e1bc127877b7d52087d4334b8764583404",
+      "commitUrl": "https://github.com/CreativeIT/material-dashboard-lite/commit/65f510e1bc127877b7d52087d4334b8764583404",
+      "license": "MIT",
+      "licenseFile": "material-dashboard-lite-LICENSE.txt",
+      "selectedSourceFile": "material-dashboard-lite-original-html.json",
+      "sourceRoot": "dist/",
+      "requiredPages": [
+        "index.html",
+        "forms.html",
+        "login.html",
+        "sign-up.html"
+      ],
+      "sourceFiles": [
+        {
+          "path": "LICENSE",
+          "sourceUrl": "https://raw.githubusercontent.com/CreativeIT/material-dashboard-lite/65f510e1bc127877b7d52087d4334b8764583404/LICENSE",
+          "bytes": 1076,
+          "sha256": "afc0921ef81f7b0abad5f6231f197b366c5fda16e3f1cfa444e457e305bd3d71",
+          "license": true,
+          "publicCopy": "material-dashboard-lite-LICENSE.txt"
+        },
+        {
+          "path": "dist/index.html",
+          "sourceUrl": "https://raw.githubusercontent.com/CreativeIT/material-dashboard-lite/65f510e1bc127877b7d52087d4334b8764583404/dist/index.html",
+          "bytes": 32826,
+          "sha256": "9e19ce8908f6d12af9b307aec7a2e6cd2441cb7f2d1438bbbe92184db6750cdc",
+          "deliveryPath": "index.html"
+        },
+        {
+          "path": "dist/forms.html",
+          "sourceUrl": "https://raw.githubusercontent.com/CreativeIT/material-dashboard-lite/65f510e1bc127877b7d52087d4334b8764583404/dist/forms.html",
+          "bytes": 33727,
+          "sha256": "c39c4632ddd42038c9d6792555bb27cbbbf015ec89344211c39489e1abf68c23",
+          "deliveryPath": "forms.html"
+        },
+        {
+          "path": "dist/login.html",
+          "sourceUrl": "https://raw.githubusercontent.com/CreativeIT/material-dashboard-lite/65f510e1bc127877b7d52087d4334b8764583404/dist/login.html",
+          "bytes": 5015,
+          "sha256": "28dd1e4608f2c23abbda43a52eda576f714788371b3557df763e46b66805edd9",
+          "deliveryPath": "login.html"
+        },
+        {
+          "path": "dist/sign-up.html",
+          "sourceUrl": "https://raw.githubusercontent.com/CreativeIT/material-dashboard-lite/65f510e1bc127877b7d52087d4334b8764583404/dist/sign-up.html",
+          "bytes": 5262,
+          "sha256": "82ec18e7ebe9f635b7f09ed8c2617b2235d9bb86b1364c343531791cc1f1ff7d",
+          "deliveryPath": "sign-up.html"
+        },
+        {
+          "path": "dist/css/lib/getmdl-select.min.css",
+          "sourceUrl": "https://raw.githubusercontent.com/CreativeIT/material-dashboard-lite/65f510e1bc127877b7d52087d4334b8764583404/dist/css/lib/getmdl-select.min.css",
+          "bytes": 570,
+          "sha256": "3cebc29f3ea8692615087fc3041c090d14b9033e5c2dd3190424a4742ad1c71c",
+          "deliveryPath": "css/lib/getmdl-select.min.css"
+        }
+      ],
+      "sourceBytesUnmodified": true,
+      "sourceKind": "Official CreativeIT public MDL dashboard template; not a customer site",
+      "excludedDependencies": "application.min.css195136bytes and JS/widgets/images excluded. dist HTML already compiled; no build run.",
+      "codeExecuted": false
+    }
+  ],
+  "priorExposureAudit": {
+    "trackedBaselineCommit": "99b62c91a1b5968735e5fbe601b0f486229ab44f",
+    "method": "Case-insensitive git grep of exact repository names and distinctive slugs across every tracked baseline path",
+    "matchedTrackedPaths": [],
+    "matches": 0,
+    "rerunAgainstFixedBaselineOnPreparation": true
+  },
+  "artifactPreparationProviderCalls": 0,
+  "thirdPartyCodeExecuted": false,
+  "limits": [
+    "Original public MIT templates plus newly authored research acceptance tasks, not original customer requirements, private contracts or customer deployments.",
+    "New to our recorded tracked test history is not unknown to model training and not proof of no unrecorded prior use.",
+    "These two repositories are from different publishers and types; both remain a small convenience sample rather than representative customer evidence.",
+    "Selected original HTML/CSS bytes and full MIT licenses are preserved. Unsupported large CSS, external scripts, images, fonts, browser behavior and backend were excluded and not executed.",
+    "Sealed references are independently authored by an AI agent, not a blinded human study; source parsing/citation identity is separate from semantic correctness and buyer acceptance."
+  ]
+}

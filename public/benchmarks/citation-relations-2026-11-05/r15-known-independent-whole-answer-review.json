@@ -1,0 +1,3580 @@
+{
+  "schema": "pbp-citation-relations-r15-known-independent-whole-answer-review-v1",
+  "reviewedAt": "2026-11-05T14:22:57.240697+00:00",
+  "reviewer": "Codex implementation/review agent, independent of DeepSeek response generation, not independent human or blinded evaluator. All six source repositories were previously known.",
+  "method": "Read every new raw/application item, risk and limitation; compare with unchanged complete R13 sources/criteria/inventory and the prior full-source review. Independently recompute all source/request/catalog-binding hashes, validate each original V3 slot object and exact UTF16 source span, and compare saved application quotes with selected server entries. Original provider slots and answers remain unchanged.",
+  "providerCalls": 0,
+  "networkCalls": 0,
+  "input": {
+    "report": "outputs/citation-relations-2026-11-05/cycle-15-known-live.json",
+    "reportSha256": "cad9e5cb58b39cc5ae441f952cbbe46831629abba2d89e116ac5a76bc5d5f546",
+    "corpus": "outputs/citation-relations-2026-11-05/cycle-13-known-corpus.json",
+    "corpusSha256": "6b1890cfbe3aec6b9d099768c108d1b2ce41a06268659b99e710fa90efbb860d",
+    "freezeSha256": "ac16a8957122fc5f94cbc4a30e09ac8342c2851088ecb0b4515c6c459c21863e",
+    "implementationFiles": 35
+  },
+  "summary": {
+    "projects": 7,
+    "sourceRepositories": 6,
+    "criteria": 64,
+    "rawReferenceStatusAgreement": {
+      "count": 64,
+      "total": 64
+    },
+    "applicationReferenceStatusAgreement": {
+      "count": 63,
+      "total": 64
+    },
+    "applicationAdmitted": 7,
+    "wholeRawAnswers": {
+      "accepted": 3,
+      "qualified": 4,
+      "rejected": 0
+    },
+    "wholeApplicationAnswers": {
+      "accepted": 3,
+      "qualified": 4,
+      "rejected": 0
+    },
+    "rawExactItemCitations": 139,
+    "rawExactRiskCitations": 49,
+    "applicationExactItemCitationsAndOffsets": 139,
+    "applicationExactRiskCitationsAndOffsets": 49,
+    "allSevenOriginalJsonsAndSlotContractsValid": true,
+    "all64CriterionIdsReturnedExactlyOnce": true,
+    "applicationStatusChanges": 1,
+    "unqualifiedReliabilityClaim": false
+  },
+  "comparisonWithEarlierReplies": {
+    "businessCasual": "All six required days have complete witnesses and literal ampersands remain correct. Interim footer-brand/only-footer wording remains absent.",
+    "modernBusiness": "All three plan associations and four for/id groups are witnessed. FAQ risk still overgeneralizes beyond selected examples; declared-hidden wording is not a visibility observation.",
+    "cleanBlog": "All three risk slots obey the contract, so the prior R13/R14 whole-report citation overflow no longer occurs in this actual reply. The article comma is supported without a negative override. MainNav supported is correctly downgraded because chosen entries miss two labels per page.",
+    "longCorona": "The earlier no-client-script, inventory-only-raster and actual-terms-link misstatements are absent. Actual declared attributes/row tuples remain correct and runtime states remain unknown.",
+    "scopeSynthetic": "This known-seven batch does not rerun the earlier synthetic scope calls. Do not claim their scope wording was retested or fixed here."
+  },
+  "remainingCapabilityBoundary": {
+    "mainNav": "This is candidate granularity/selection loss, not missing source or an absolute six-slot impossibility. On each of four pages Home through Contact is an original370-unit span1802..2172; four such exact candidates could fit six slots, but are not available in this current catalog. The actual saved unknown response is safe and retained.",
+    "visibilityAndRelationships": "A correct source class/token or ID does not establish rendered visibility or general semantic entailment. Whole-source association was independently checked for the observed examples only."
+  },
+  "projects": [
+    {
+      "id": "real-business-casual",
+      "sourceStratum": "known-source-regression",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "applicationAdmitted": true,
+      "allSourceFilesByteIdenticalToR13": true,
+      "integrity": {
+        "sourceRequestHashesMatchFreeze": true,
+        "catalogBindingSha256IndependentlyRecomputed": true,
+        "allCatalogSpansMatchUtf16Source": true,
+        "originalArgumentJsonValid": true,
+        "normalization": "none",
+        "actualToolName": "submit_source_assessment_v3",
+        "actualFinishReason": "tool_calls",
+        "originalSlotsPreserved": true,
+        "allSlotsHaveExactKeysTypesContinuousPrefixDistinctIds": true,
+        "allRawIdsKnown": true,
+        "allApplicationCitationsEqualChosenServerSpans": true,
+        "allCriterionIdsPresentExactlyOnce": true,
+        "originalNamedToolEnvelopeIndependentlyValidated": true,
+        "catalogBudgetAndSpanBoundsIndependentlyValidated": true,
+        "allCriteriaAndReferencesUnchangedFromR13": true
+      },
+      "criterionReview": [
+        {
+          "criterionId": "manual-1",
+          "source": "store.html 的营业时间文字须说明周一至周五 7:00 AM to 8:00 PM，且星期日 Closed。",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "All six named weekdays/Sunday have their own complete store li citation. No intermediate weekday was inferred from endpoints.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-2",
+          "source": "store.html 的星期六营业时间文字须写为 7:00 AM to 8:00 PM。",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Saturday is 9:00 AM to 5:00 PM in its own row, not the required 7:00 AM to 8:00 PM; both cited windows contain that actual row.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-3",
+          "source": "store.html 的地址和电话须写明 1116 Orchard Street、Golden Valley, Minnesota、(317) 585-8468。",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The store address and telephone paragraphs contain all three exact required values on the named page.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-4",
+          "source": "about.html 的文字须说明咖啡馆由 Hernandez brothers 于 1987 年创立。",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "about.html itself contains Founded in 1987 by the Hernandez brothers; the duplicate story in store.html was not substituted.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-5",
+          "source": "products.html 的文字内容须包含 Coffees & Teas、Bakery & Kitchen、Bulk Speciality Blends 三类产品。",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Three products.html heading windows contain complete category strings and preserve literal raw ampersands.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-1",
+          "source": "products.html 正文文案须包含完整句子 Please tell us about food allergies before ordering.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Full products.html static body has no required allergy sentence. Three product paragraphs are accurately represented; unlike the interim report, this answer does not invent a footer brand or claim other page content is only footer.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-2",
+          "source": "四个页面的手机导航须在 375px 浏览器里展开和收起并且链接均能正常跳转。",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Correctly unknown for actual four-page 375px interactions. Source navigation markup is present; no navigation operation is claimed successful.",
+          "appExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-3",
+          "source": "首页图片须真实展示一杯热咖啡并在手机上清晰且没有裁切杯口。",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The cited intro img path/alt are real, inventory has no pixels, so subject/clarity/crop correctly remain unknown.",
+          "appExplanationChanged": true
+        }
+      ],
+      "riskReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "The Saturday row is fully quoted; the limited hours correction follows the explicit requirement."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "All three actual product descriptions are quoted; complete static body lacks the exact allergy sentence. No footer-brand fabrication remains."
+        }
+      ],
+      "limitationReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "No375px/nav execution."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "No pixels; all supplied img alt values really are placeholder dots."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "CSS/local script bytes absent, so effects unverified."
+        },
+        {
+          "index": 3,
+          "verdict": "accepted",
+          "note": "Human final acceptance remains separate."
+        }
+      ],
+      "appendedSystemLimitationsReview": {
+        "verdict": "accepted",
+        "count": 3,
+        "note": "Correct catalog_slots protocol identity, no semantic guarantee from ID validity, complete input versus understanding, no execution and separate human acceptance/payment."
+      },
+      "remainingIssues": [],
+      "citationChecks": [
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c1",
+          "id": "s134",
+          "file": "store.html",
+          "start": 3005,
+          "end": 3212,
+          "excerpt": "<li class=\"list-unstyled-item list-hours-item d-flex\">\n                                    Sunday\n                                    <span class=\"ms-auto\">Closed</span>\n                                </li>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c2",
+          "id": "s137",
+          "file": "store.html",
+          "start": 3245,
+          "end": 3464,
+          "excerpt": "<li class=\"list-unstyled-item list-hours-item d-flex\">\n                                    Monday\n                                    <span class=\"ms-auto\">7:00 AM to 8:00 PM</span>\n                                </li>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c3",
+          "id": "s139",
+          "file": "store.html",
+          "start": 3497,
+          "end": 3717,
+          "excerpt": "<li class=\"list-unstyled-item list-hours-item d-flex\">\n                                    Tuesday\n                                    <span class=\"ms-auto\">7:00 AM to 8:00 PM</span>\n                                </li>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c4",
+          "id": "s142",
+          "file": "store.html",
+          "start": 3750,
+          "end": 3972,
+          "excerpt": "<li class=\"list-unstyled-item list-hours-item d-flex\">\n                                    Wednesday\n                                    <span class=\"ms-auto\">7:00 AM to 8:00 PM</span>\n                                </li>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c5",
+          "id": "s145",
+          "file": "store.html",
+          "start": 4005,
+          "end": 4226,
+          "excerpt": "<li class=\"list-unstyled-item list-hours-item d-flex\">\n                                    Thursday\n                                    <span class=\"ms-auto\">7:00 AM to 8:00 PM</span>\n                                </li>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c6",
+          "id": "s147",
+          "file": "store.html",
+          "start": 4259,
+          "end": 4478,
+          "excerpt": "<li class=\"list-unstyled-item list-hours-item d-flex\">\n                                    Friday\n                                    <span class=\"ms-auto\">7:00 AM to 8:00 PM</span>\n                                </li>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "slot": "c1",
+          "id": "s150",
+          "file": "store.html",
+          "start": 4511,
+          "end": 4732,
+          "excerpt": "<li class=\"list-unstyled-item list-hours-item d-flex\">\n                                    Saturday\n                                    <span class=\"ms-auto\">9:00 AM to 5:00 PM</span>\n                                </li>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "slot": "c2",
+          "id": "s151",
+          "file": "store.html",
+          "start": 4647,
+          "end": 4694,
+          "excerpt": "<span class=\"ms-auto\">9:00 AM to 5:00 PM</span>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "slot": "c1",
+          "id": "s152",
+          "file": "store.html",
+          "start": 4795,
+          "end": 5104,
+          "excerpt": "<p class=\"address mb-5\">\n                                <em>\n                                    <strong>1116 Orchard Street</strong>\n                                    <br />\n                                    Golden Valley, Minnesota\n                                </em>\n                            </p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "slot": "c2",
+          "id": "s154",
+          "file": "store.html",
+          "start": 5133,
+          "end": 5337,
+          "excerpt": "<p class=\"mb-0\">\n                                <small><em>Call Anytime</em></small>\n                                <br />\n                                (317) 585-8468\n                            </p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "slot": "c1",
+          "id": "s21",
+          "file": "about.html",
+          "start": 3137,
+          "end": 3424,
+          "excerpt": "<p>Founded in 1987 by the Hernandez brothers, our establishment has been serving up rich coffee sourced from artisan farmers in various regions of South and Central America. We are dedicated to travelling the world, finding the best coffee, and bringing back to you here in our cafe.</p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "slot": "c1",
+          "id": "s83",
+          "file": "products.html",
+          "start": 2818,
+          "end": 2875,
+          "excerpt": "<span class=\"section-heading-lower\">Coffees & Teas</span>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "slot": "c2",
+          "id": "s94",
+          "file": "products.html",
+          "start": 4129,
+          "end": 4188,
+          "excerpt": "<span class=\"section-heading-lower\">Bakery & Kitchen</span>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "slot": "c3",
+          "id": "s105",
+          "file": "products.html",
+          "start": 5344,
+          "end": 5409,
+          "excerpt": "<span class=\"section-heading-lower\">Bulk Speciality Blends</span>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "slot": "c1",
+          "id": "s87",
+          "file": "products.html",
+          "start": 3242,
+          "end": 3585,
+          "excerpt": "<p class=\"mb-0\">We take pride in our work, and it shows. Every time you order a beverage from us, we guarantee that it will be an experience worth having. Whether it's our world famous Venezuelan Cappuccino, a refreshing iced herbal tea, or something as simple as a cup of speciality sourced black coffee, you will be coming back for more.</p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "slot": "c2",
+          "id": "s98",
+          "file": "products.html",
+          "start": 4555,
+          "end": 4806,
+          "excerpt": "<p class=\"mb-0\">Our seasonal menu features delicious snacks, baked goods, and even full meals perfect for breakfast or lunchtime. We source our ingredients from local, oragnic farms whenever possible, alongside premium vendors for specialty goods.</p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "slot": "c3",
+          "id": "s109",
+          "file": "products.html",
+          "start": 5776,
+          "end": 6099,
+          "excerpt": "<p class=\"mb-0\">Travelling the world for the very best quality coffee is something take pride in. When you visit us, you'll always find new blends from around the world, mainly from regions in Central and South America. We sell our blends in smaller to large bulk quantities. Please visit us in person for more details.</p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "slot": "c1",
+          "id": "s8",
+          "file": "about.html",
+          "start": 1200,
+          "end": 1600,
+          "excerpt": "vbar-expand-lg navbar-dark py-lg-4\" id=\"mainNav\">\n            <div class=\"container\">\n                <a class=\"navbar-brand text-uppercase fw-bold d-lg-none\" href=\"index.html\">Start Bootstrap</a>\n                <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"To",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "slot": "c2",
+          "id": "s36",
+          "file": "index.html",
+          "start": 1200,
+          "end": 1600,
+          "excerpt": "vbar-expand-lg navbar-dark py-lg-4\" id=\"mainNav\">\n            <div class=\"container\">\n                <a class=\"navbar-brand text-uppercase fw-bold d-lg-none\" href=\"index.html\">Start Bootstrap</a>\n                <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"To",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "slot": "c3",
+          "id": "s69",
+          "file": "products.html",
+          "start": 1200,
+          "end": 1600,
+          "excerpt": "vbar-expand-lg navbar-dark py-lg-4\" id=\"mainNav\">\n            <div class=\"container\">\n                <a class=\"navbar-brand text-uppercase fw-bold d-lg-none\" href=\"index.html\">Start Bootstrap</a>\n                <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"To",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "slot": "c4",
+          "id": "s121",
+          "file": "store.html",
+          "start": 1200,
+          "end": 1600,
+          "excerpt": "vbar-expand-lg navbar-dark py-lg-4\" id=\"mainNav\">\n            <div class=\"container\">\n                <a class=\"navbar-brand text-uppercase fw-bold d-lg-none\" href=\"index.html\">Start Bootstrap</a>\n                <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarSupportedContent\" aria-expanded=\"false\" aria-label=\"To",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "slot": "c1",
+          "id": "s44",
+          "file": "index.html",
+          "start": 2400,
+          "end": 2800,
+          "excerpt": "age-section clearfix\">\n            <div class=\"container\">\n                <div class=\"intro\">\n                    <img class=\"intro-img img-fluid mb-3 mb-lg-0 rounded\" src=\"assets/img/intro.jpg\" alt=\"...\" />\n                    <div class=\"intro-text left-0 text-center bg-faded p-5 rounded\">\n                        <h2 class=\"section-heading mb-4\">\n                            <span class=\"section",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "slot": "c1",
+          "id": "s150",
+          "file": "store.html",
+          "start": 4511,
+          "end": 4732,
+          "excerpt": "<li class=\"list-unstyled-item list-hours-item d-flex\">\n                                    Saturday\n                                    <span class=\"ms-auto\">9:00 AM to 5:00 PM</span>\n                                </li>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "slot": "c1",
+          "id": "s87",
+          "file": "products.html",
+          "start": 3242,
+          "end": 3585,
+          "excerpt": "<p class=\"mb-0\">We take pride in our work, and it shows. Every time you order a beverage from us, we guarantee that it will be an experience worth having. Whether it's our world famous Venezuelan Cappuccino, a refreshing iced herbal tea, or something as simple as a cup of speciality sourced black coffee, you will be coming back for more.</p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "slot": "c2",
+          "id": "s98",
+          "file": "products.html",
+          "start": 4555,
+          "end": 4806,
+          "excerpt": "<p class=\"mb-0\">Our seasonal menu features delicious snacks, baked goods, and even full meals perfect for breakfast or lunchtime. We source our ingredients from local, oragnic farms whenever possible, alongside premium vendors for specialty goods.</p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "slot": "c3",
+          "id": "s109",
+          "file": "products.html",
+          "start": 5776,
+          "end": 6099,
+          "excerpt": "<p class=\"mb-0\">Travelling the world for the very best quality coffee is something take pride in. When you visit us, you'll always find new blends from around the world, mainly from regions in Central and South America. We sell our blends in smaller to large bulk quantities. Please visit us in person for more details.</p>",
+          "exactOriginalUtf16": true
+        }
+      ]
+    },
+    {
+      "id": "real-modern-business",
+      "sourceStratum": "known-source-regression",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "applicationAdmitted": true,
+      "allSourceFilesByteIdenticalToR13": true,
+      "integrity": {
+        "sourceRequestHashesMatchFreeze": true,
+        "catalogBindingSha256IndependentlyRecomputed": true,
+        "allCatalogSpansMatchUtf16Source": true,
+        "originalArgumentJsonValid": true,
+        "normalization": "none",
+        "actualToolName": "submit_source_assessment_v3",
+        "actualFinishReason": "tool_calls",
+        "originalSlotsPreserved": true,
+        "allSlotsHaveExactKeysTypesContinuousPrefixDistinctIds": true,
+        "allRawIdsKnown": true,
+        "allApplicationCitationsEqualChosenServerSpans": true,
+        "allCriterionIdsPresentExactlyOnce": true,
+        "originalNamedToolEnvelopeIndependentlyValidated": true,
+        "catalogBudgetAndSpanBoundsIndependentlyValidated": true,
+        "allCriteriaAndReferencesUnchangedFromR13": true
+      },
+      "criterionReview": [
+        {
+          "criterionId": "manual-1",
+          "source": "Pricing page content must list Free at $0/mo, Pro at $9/mo, and Enterprise at $49/mo.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Three unique card-body owners at pricing.html 3985..6644, 6908..9728 and 9986..12762 bind Free/$0, Pro/$9 and Enterprise/$49. The two adjacent Pro windows concatenate across 7200 and preserve its name/value association.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-2",
+          "source": "Home page content must state: We care about privacy, and will never share your data.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The complete newsletter aside quotation contains the exact privacy sentence in index.html.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-3",
+          "source": "Contact form source content must label Full name, Email address, Phone number, and Message.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "All four quoted labels occur in the same contact form, with exact capitalization and raw source spans.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-4",
+          "source": "Contact page source copy must include the exact notice: Form submission successful!",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The success string is in source under class d-none; support is correctly limited to notice text, with display explicitly unverified.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-5",
+          "source": "FAQ page content must include the exact question: Can I cancel my plan within 30 days?",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The complete FAQ static source contains template accordion placeholders and lacks the exact cancellation question. This does not prove what an omitted external script would render.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-1",
+          "source": "FAQ page contact details must include support@domain.com.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The FAQ contact paragraph actually includes support@domain.com in the cited local card.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-2",
+          "source": "The contact form must send a real email only after valid submission and show success after delivery.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Email sending/order needs runtime evidence. API_TOKEN and success div are source indications only; no email success is claimed.",
+          "appExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-3",
+          "source": "Choosing Pro must actually charge $9 per month and retain a queryable subscription record.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Pro price and href=#! are source facts; no charging/persistence operation was observed. Unknown is correct and the former broad absence-of-logic assertion is absent.",
+          "appExplanationChanged": true
+        }
+      ],
+      "riskReview": [
+        {
+          "index": 0,
+          "verdict": "qualified",
+          "note": "Both FAQ groups really contain placeholders, but risk citations only show first-group #1/#3 and the second-group heading, not every #1-#3/body claim. Treat as examples, not complete quoted coverage."
+        },
+        {
+          "index": 1,
+          "verdict": "qualified",
+          "note": "API_TOKEN/activation text and class d-none are real. The title calling the notice hidden should mean declared source class; actual visibility was never observed. The conditional next check does not prove a runtime defect."
+        }
+      ],
+      "limitationReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "No rendering/visibility/click/script observations."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "No script bodies or real form execution supplied."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "Actual charging/storage are unverified backend capabilities."
+        },
+        {
+          "index": 3,
+          "verdict": "accepted",
+          "note": "Visual/responsive/subjective quality untested."
+        },
+        {
+          "index": 4,
+          "verdict": "accepted",
+          "note": "Human final acceptance remains separate."
+        }
+      ],
+      "appendedSystemLimitationsReview": {
+        "verdict": "accepted",
+        "count": 3,
+        "note": "Correct catalog_slots protocol identity, no semantic guarantee from ID validity, complete input versus understanding, no execution and separate human acceptance/payment."
+      },
+      "remainingIssues": [
+        {
+          "severity": "P3",
+          "kind": "partial_faq_risk_witness",
+          "at": "risks[0].citations",
+          "message": "Both-group/all#1-#3/body claim is broader than selected first-group#1/#3 plus Website Issues heading. Full source confirms the content; risk quotations are examples only."
+        },
+        {
+          "severity": "P3",
+          "kind": "source_class_versus_visibility",
+          "at": "risks[1].title",
+          "message": "Hidden is shorthand for class d-none, not a browser observation. Body/limitations correctly qualify the declared class and untested display."
+        }
+      ],
+      "citationChecks": [
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c1",
+          "id": "s290",
+          "file": "pricing.html",
+          "start": 4000,
+          "end": 4400,
+          "excerpt": "d-body p-5\">\n                                    <div class=\"small text-uppercase fw-bold text-muted\">Free</div>\n                                    <div class=\"mb-3\">\n                                        <span class=\"display-4 fw-bold\">$0</span>\n                                        <span class=\"text-muted\">/ mo.</span>\n                                    </div>\n                             ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c2",
+          "id": "s310",
+          "file": "pricing.html",
+          "start": 6800,
+          "end": 7200,
+          "excerpt": "lg-6 col-xl-4\">\n                            <div class=\"card mb-5 mb-xl-0\">\n                                <div class=\"card-body p-5\">\n                                    <div class=\"small text-uppercase fw-bold\">\n                                        <i class=\"bi bi-star-fill text-warning\"></i>\n                                        Pro\n                                    </div>\n             ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c3",
+          "id": "s312",
+          "file": "pricing.html",
+          "start": 7200,
+          "end": 7600,
+          "excerpt": "                       <div class=\"mb-3\">\n                                        <span class=\"display-4 fw-bold\">$9</span>\n                                        <span class=\"text-muted\">/ mo.</span>\n                                    </div>\n                                    <ul class=\"list-unstyled mb-4\">\n                                        <li class=\"mb-2\">\n                             ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c4",
+          "id": "s331",
+          "file": "pricing.html",
+          "start": 10000,
+          "end": 10400,
+          "excerpt": "rd-body p-5\">\n                                    <div class=\"small text-uppercase fw-bold text-muted\">Enterprise</div>\n                                    <div class=\"mb-3\">\n                                        <span class=\"display-4 fw-bold\">$49</span>\n                                        <span class=\"text-muted\">/ mo.</span>\n                                    </div>\n                     ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c5",
+          "id": "s333",
+          "file": "pricing.html",
+          "start": 10156,
+          "end": 10378,
+          "excerpt": "<div class=\"mb-3\">\n                                        <span class=\"display-4 fw-bold\">$49</span>\n                                        <span class=\"text-muted\">/ mo.</span>\n                                    </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "slot": "c1",
+          "id": "s257",
+          "file": "index.html",
+          "start": 15399,
+          "end": 15492,
+          "excerpt": "<div class=\"small text-white-50\">We care about privacy, and will never share your data.</div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "slot": "c2",
+          "id": "s256",
+          "file": "index.html",
+          "start": 15200,
+          "end": 15600,
+          "excerpt": "                                    <button class=\"btn btn-outline-light\" id=\"button-newsletter\" type=\"button\">Sign up</button>\n                                </div>\n                                <div class=\"small text-white-50\">We care about privacy, and will never share your data.</div>\n                            </div>\n                        </div>\n                    </aside>\n            ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "slot": "c1",
+          "id": "s28",
+          "file": "contact.html",
+          "start": 4794,
+          "end": 5231,
+          "excerpt": "<div class=\"form-floating mb-3\">\n                                        <input class=\"form-control\" id=\"name\" type=\"text\" placeholder=\"Enter your name...\" data-sb-validations=\"required\" />\n                                        <label for=\"name\">Full name</label>\n                                        <div class=\"invalid-feedback\" data-sb-feedback=\"name:required\">A name is required.</div>\n                                    </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "slot": "c2",
+          "id": "s33",
+          "file": "contact.html",
+          "start": 5200,
+          "end": 5600,
+          "excerpt": "                         </div>\n                                    <!-- Email address input-->\n                                    <div class=\"form-floating mb-3\">\n                                        <input class=\"form-control\" id=\"email\" type=\"email\" placeholder=\"name@example.com\" data-sb-validations=\"required,email\" />\n                                        <label for=\"email\">Email address",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "slot": "c3",
+          "id": "s40",
+          "file": "contact.html",
+          "start": 6010,
+          "end": 6456,
+          "excerpt": "<div class=\"form-floating mb-3\">\n                                        <input class=\"form-control\" id=\"phone\" type=\"tel\" placeholder=\"(123) 456-7890\" data-sb-validations=\"required\" />\n                                        <label for=\"phone\">Phone number</label>\n                                        <div class=\"invalid-feedback\" data-sb-feedback=\"phone:required\">A phone number is required.</div>\n                                    </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "slot": "c4",
+          "id": "s45",
+          "file": "contact.html",
+          "start": 6551,
+          "end": 7040,
+          "excerpt": "<div class=\"form-floating mb-3\">\n                                        <textarea class=\"form-control\" id=\"message\" type=\"text\" placeholder=\"Enter your message here...\" style=\"height: 10rem\" data-sb-validations=\"required\"></textarea>\n                                        <label for=\"message\">Message</label>\n                                        <div class=\"invalid-feedback\" data-sb-feedback=\"message:required\">A message is required.</div>\n                                    </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "slot": "c1",
+          "id": "s49",
+          "file": "contact.html",
+          "start": 7200,
+          "end": 7600,
+          "excerpt": " what your users will see when the form-->\n                                    <!-- has successfully submitted-->\n                                    <div class=\"d-none\" id=\"submitSuccessMessage\">\n                                        <div class=\"text-center mb-3\">\n                                            <div class=\"fw-bolder\">Form submission successful!</div>\n                               ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "slot": "c2",
+          "id": "s51",
+          "file": "contact.html",
+          "start": 7512,
+          "end": 7568,
+          "excerpt": "<div class=\"fw-bolder\">Form submission successful!</div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "slot": "c3",
+          "id": "s50",
+          "file": "contact.html",
+          "start": 7437,
+          "end": 7902,
+          "excerpt": "<div class=\"text-center mb-3\">\n                                            <div class=\"fw-bolder\">Form submission successful!</div>\n                                            To activate this form, sign up at\n                                            <br />\n                                            <a href=\"https://startbootstrap.com/solution/contact-forms\">https://startbootstrap.com/solution/contact-forms</a>\n                                        </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "slot": "c1",
+          "id": "s114",
+          "file": "faq.html",
+          "start": 4114,
+          "end": 4342,
+          "excerpt": "<h3 class=\"accordion-header\" id=\"headingOne\"><button class=\"accordion-button\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseOne\" aria-expanded=\"true\" aria-controls=\"collapseOne\">Accordion Item #1</button></h3>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "slot": "c2",
+          "id": "s118",
+          "file": "faq.html",
+          "start": 5471,
+          "end": 5710,
+          "excerpt": "<h3 class=\"accordion-header\" id=\"headingTwo\"><button class=\"accordion-button collapsed\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseTwo\" aria-expanded=\"false\" aria-controls=\"collapseTwo\">Accordion Item #2</button></h3>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "slot": "c3",
+          "id": "s123",
+          "file": "faq.html",
+          "start": 6836,
+          "end": 7081,
+          "excerpt": "<h3 class=\"accordion-header\" id=\"headingThree\"><button class=\"accordion-button collapsed\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseThree\" aria-expanded=\"false\" aria-controls=\"collapseThree\">Accordion Item #3</button></h3>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "slot": "c4",
+          "id": "s127",
+          "file": "faq.html",
+          "start": 8228,
+          "end": 8274,
+          "excerpt": "<h2 class=\"fw-bolder mb-3\">Website Issues</h2>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "slot": "c1",
+          "id": "s144",
+          "file": "faq.html",
+          "start": 13031,
+          "end": 13308,
+          "excerpt": "<p class=\"text-muted mb-4\">\n                                                Contact us at\n                                                <br />\n                                                <a href=\"#!\">support@domain.com</a>\n                                            </p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "slot": "c2",
+          "id": "s145",
+          "file": "faq.html",
+          "start": 13200,
+          "end": 13600,
+          "excerpt": "                        <a href=\"#!\">support@domain.com</a>\n                                            </p>\n                                            <div class=\"h6 fw-bolder\">Follow us</div>\n                                            <a class=\"fs-5 px-2 link-dark\" href=\"#!\"><i class=\"bi-twitter\"></i></a>\n                                            <a class=\"fs-5 px-2 link-dark\" href=\"#!\"><i c",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "slot": "c1",
+          "id": "s114",
+          "file": "faq.html",
+          "start": 4114,
+          "end": 4342,
+          "excerpt": "<h3 class=\"accordion-header\" id=\"headingOne\"><button class=\"accordion-button\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseOne\" aria-expanded=\"true\" aria-controls=\"collapseOne\">Accordion Item #1</button></h3>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "slot": "c2",
+          "id": "s123",
+          "file": "faq.html",
+          "start": 6836,
+          "end": 7081,
+          "excerpt": "<h3 class=\"accordion-header\" id=\"headingThree\"><button class=\"accordion-button collapsed\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapseThree\" aria-expanded=\"false\" aria-controls=\"collapseThree\">Accordion Item #3</button></h3>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "slot": "c3",
+          "id": "s127",
+          "file": "faq.html",
+          "start": 8228,
+          "end": 8274,
+          "excerpt": "<h2 class=\"fw-bolder mb-3\">Website Issues</h2>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "slot": "c1",
+          "id": "s49",
+          "file": "contact.html",
+          "start": 7200,
+          "end": 7600,
+          "excerpt": " what your users will see when the form-->\n                                    <!-- has successfully submitted-->\n                                    <div class=\"d-none\" id=\"submitSuccessMessage\">\n                                        <div class=\"text-center mb-3\">\n                                            <div class=\"fw-bolder\">Form submission successful!</div>\n                               ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "slot": "c2",
+          "id": "s50",
+          "file": "contact.html",
+          "start": 7437,
+          "end": 7902,
+          "excerpt": "<div class=\"text-center mb-3\">\n                                            <div class=\"fw-bolder\">Form submission successful!</div>\n                                            To activate this form, sign up at\n                                            <br />\n                                            <a href=\"https://startbootstrap.com/solution/contact-forms\">https://startbootstrap.com/solution/contact-forms</a>\n                                        </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "slot": "c3",
+          "id": "s27",
+          "file": "contact.html",
+          "start": 4400,
+          "end": 4800,
+          "excerpt": "            <!-- To make this form functional, sign up at-->\n                                <!-- https://startbootstrap.com/solution/contact-forms-->\n                                <!-- to get an API token!-->\n                                <form id=\"contactForm\" data-sb-form-api-token=\"API_TOKEN\">\n                                    <!-- Name input-->\n                                    <div c",
+          "exactOriginalUtf16": true
+        }
+      ]
+    },
+    {
+      "id": "real-corona-admin",
+      "sourceStratum": "known-source-regression",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "applicationAdmitted": true,
+      "allSourceFilesByteIdenticalToR13": true,
+      "integrity": {
+        "sourceRequestHashesMatchFreeze": true,
+        "catalogBindingSha256IndependentlyRecomputed": true,
+        "allCatalogSpansMatchUtf16Source": true,
+        "originalArgumentJsonValid": true,
+        "normalization": "none",
+        "actualToolName": "submit_source_assessment_v3",
+        "actualFinishReason": "tool_calls",
+        "originalSlotsPreserved": true,
+        "allSlotsHaveExactKeysTypesContinuousPrefixDistinctIds": true,
+        "allRawIdsKnown": true,
+        "allApplicationCitationsEqualChosenServerSpans": true,
+        "allCriterionIdsPresentExactlyOnce": true,
+        "originalNamedToolEnvelopeIndependentlyValidated": true,
+        "catalogBudgetAndSpanBoundsIndependentlyValidated": true,
+        "allCriteriaAndReferencesUnchangedFromR13": true
+      },
+      "criterionReview": [
+        {
+          "criterionId": "manual-1",
+          "source": "Dashboard page source copy must include the exact table headings Payment Mode and Payment Status.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The quoted Order Status header has both exact th names in the same table.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-2",
+          "source": "Dashboard page content must show Transfer to Paypal with the amount $236 in Transaction History.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Transfer to Paypal and $236 share the unique dashboard transaction owner 25347..25927, witnessed by adjacent windows.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-3",
+          "source": "Login page source content must include the labels Username or email * and Password *.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The two exact login labels, including asterisks, are in its one supplied form.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-4",
+          "source": "404 page content must say The page you’re looking for was not found. and Back to home.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The 404 heading has the curly-apostrophe sentence and the quoted Back to home anchor text.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-5",
+          "source": "Register page body copy must contain the exact sentence We never sell your personal information.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "qualified",
+          "applicationExplanationVerdict": "qualified",
+          "note": "The complete registration body lacks the required privacy sentence. Only a Terms line is imprecise if read as all body copy: labels, buttons and other prose also exist.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-1",
+          "source": "Login must authenticate correct credentials and reject incorrect passwords while keeping different users isolated.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "No authentication or user-isolation execution was supplied. Static form evidence does not prove either success or actual backend absence.",
+          "appExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-2",
+          "source": "Transfer to Paypal must actually execute a $236 payment and verify its provider transaction status.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The $236 entry is static sample copy, not a real provider transaction; unknown is warranted.",
+          "appExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-3",
+          "source": "Registration must persist a new account and keep that account queryable after a server restart.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The supplied four HTML files contain no backend persistence service or restart observations; durability remains unknown.",
+          "appExplanationChanged": true
+        }
+      ],
+      "riskReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "Only policy text is a more precise qualification than R13 body-only wording. The required privacy sentence really is absent in the complete source."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "Register heading and its Login submit button are precisely quoted. Intended text is a conditional buyer question, not an invented new formal requirement."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "The login Password group is type=text and the register group is type=password, both precisely quoted. Masking is posed as a buyer question without claiming a rendered leak."
+        }
+      ],
+      "limitationReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "No browser/backend/provider execution."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "No rendered/mobile/visual observation."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "HTML references scripts, but their bytes are absent; unlike the R13 long reply this does not claim no scripts exist."
+        },
+        {
+          "index": 3,
+          "verdict": "accepted",
+          "note": "Size/pixel reports were not measured; no false delivered-raster inventory claim is made."
+        },
+        {
+          "index": 4,
+          "verdict": "accepted",
+          "note": "The independent transaction owner25347..25927 really binds heading/date/amount. Adjacency is precisely qualified, not payment execution."
+        },
+        {
+          "index": 5,
+          "verdict": "accepted",
+          "note": "Human final acceptance."
+        }
+      ],
+      "appendedSystemLimitationsReview": {
+        "verdict": "accepted",
+        "count": 3,
+        "note": "Correct catalog_slots protocol identity, no semantic guarantee from ID validity, complete input versus understanding, no execution and separate human acceptance/payment."
+      },
+      "remainingIssues": [
+        {
+          "severity": "P3",
+          "kind": "imprecise_body_only_wording",
+          "at": "items[manual-5].explanation",
+          "message": "Body contains multiple labels/buttons/social/account copy in addition to Terms acceptance. Required privacy sentence is truly absent; risk narrows this more accurately to policy text."
+        }
+      ],
+      "citationChecks": [
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c1",
+          "id": "s320",
+          "file": "index.html",
+          "start": 36000,
+          "end": 36400,
+          "excerpt": "                      <th> Client Name </th>\n                            <th> Order No </th>\n                            <th> Product Cost </th>\n                            <th> Project </th>\n                            <th> Payment Mode </th>\n                            <th> Start Date </th>\n                            <th> Payment Status </th>\n                          </tr>\n                    ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c2",
+          "id": "s325",
+          "file": "index.html",
+          "start": 36220,
+          "end": 36243,
+          "excerpt": "<th> Payment Mode </th>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c3",
+          "id": "s327",
+          "file": "index.html",
+          "start": 36322,
+          "end": 36347,
+          "excerpt": "<th> Payment Status </th>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "slot": "c1",
+          "id": "s231",
+          "file": "index.html",
+          "start": 25200,
+          "end": 25600,
+          "excerpt": "\"card-title\">Transaction History</h4>\n                    <canvas id=\"transaction-history\" class=\"transaction-chart\"></canvas>\n                    <div class=\"bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3\">\n                      <div class=\"text-md-center text-xl-left\">\n                        <h6 class=\"mb-1\">Transfer to Paypal</h6>\n                     ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "slot": "c2",
+          "id": "s232",
+          "file": "index.html",
+          "start": 25472,
+          "end": 25683,
+          "excerpt": "<div class=\"text-md-center text-xl-left\">\n                        <h6 class=\"mb-1\">Transfer to Paypal</h6>\n                        <p class=\"text-muted mb-0\">07 Jan 2019, 09:12AM</p>\n                      </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "slot": "c3",
+          "id": "s233",
+          "file": "index.html",
+          "start": 25600,
+          "end": 26000,
+          "excerpt": "   <p class=\"text-muted mb-0\">07 Jan 2019, 09:12AM</p>\n                      </div>\n                      <div class=\"align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0\">\n                        <h6 class=\"font-weight-bold mb-0\">$236</h6>\n                      </div>\n                    </div>\n                    <div class=\"bg-gray-dark d-flex d-md-block d-xl-flex",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "slot": "c4",
+          "id": "s235",
+          "file": "index.html",
+          "start": 25706,
+          "end": 25900,
+          "excerpt": "<div class=\"align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0\">\n                        <h6 class=\"font-weight-bold mb-0\">$236</h6>\n                      </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "slot": "c1",
+          "id": "s557",
+          "file": "pages/samples/login.html",
+          "start": 1200,
+          "end": 1600,
+          "excerpt": "     <form>\n                  <div class=\"form-group\">\n                    <label>Username or email *</label>\n                    <input type=\"text\" class=\"form-control p_input\">\n                  </div>\n                  <div class=\"form-group\">\n                    <label>Password *</label>\n                    <input type=\"text\" class=\"form-control p_input\">\n                  </div>\n             ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "slot": "c2",
+          "id": "s559",
+          "file": "pages/samples/login.html",
+          "start": 1275,
+          "end": 1309,
+          "excerpt": "<label>Username or email *</label>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "slot": "c3",
+          "id": "s562",
+          "file": "pages/samples/login.html",
+          "start": 1467,
+          "end": 1492,
+          "excerpt": "<label>Password *</label>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "slot": "c1",
+          "id": "s543",
+          "file": "pages/samples/error-404.html",
+          "start": 1420,
+          "end": 1497,
+          "excerpt": "<h3 class=\"font-weight-light\">The page you’re looking for was not found.</h3>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "slot": "c2",
+          "id": "s544",
+          "file": "pages/samples/error-404.html",
+          "start": 1556,
+          "end": 1779,
+          "excerpt": "<div class=\"row mt-5\">\n                <div class=\"col-12 text-center mt-xl-2\">\n                  <a class=\"text-white font-weight-medium\" href=\"../../index.html\">Back to home</a>\n                </div>\n              </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "slot": "c3",
+          "id": "s545",
+          "file": "pages/samples/error-404.html",
+          "start": 1595,
+          "end": 1758,
+          "excerpt": "<div class=\"col-12 text-center mt-xl-2\">\n                  <a class=\"text-white font-weight-medium\" href=\"../../index.html\">Back to home</a>\n                </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "slot": "c1",
+          "id": "s601",
+          "file": "pages/samples/register.html",
+          "start": 2798,
+          "end": 2898,
+          "excerpt": "<p class=\"terms\">By creating an account you are accepting our<a href=\"#\"> Terms & Conditions</a></p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "slot": "c2",
+          "id": "s600",
+          "file": "pages/samples/register.html",
+          "start": 2696,
+          "end": 2779,
+          "excerpt": "<p class=\"sign-up text-center\">Already have an Account?<a href=\"#\"> Sign Up</a></p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "slot": "c1",
+          "id": "s601",
+          "file": "pages/samples/register.html",
+          "start": 2798,
+          "end": 2898,
+          "excerpt": "<p class=\"terms\">By creating an account you are accepting our<a href=\"#\"> Terms & Conditions</a></p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "slot": "c2",
+          "id": "s600",
+          "file": "pages/samples/register.html",
+          "start": 2696,
+          "end": 2779,
+          "excerpt": "<p class=\"sign-up text-center\">Already have an Account?<a href=\"#\"> Sign Up</a></p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "slot": "c1",
+          "id": "s597",
+          "file": "pages/samples/register.html",
+          "start": 2189,
+          "end": 2340,
+          "excerpt": "<div class=\"text-center\">\n                    <button type=\"submit\" class=\"btn btn-primary btn-block enter-btn\">Login</button>\n                  </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "slot": "c2",
+          "id": "s580",
+          "file": "pages/samples/register.html",
+          "start": 1140,
+          "end": 1191,
+          "excerpt": "<h3 class=\"card-title text-left mb-3\">Register</h3>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "slot": "c1",
+          "id": "s561",
+          "file": "pages/samples/login.html",
+          "start": 1422,
+          "end": 1586,
+          "excerpt": "<div class=\"form-group\">\n                    <label>Password *</label>\n                    <input type=\"text\" class=\"form-control p_input\">\n                  </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "slot": "c2",
+          "id": "s563",
+          "file": "pages/samples/login.html",
+          "start": 1513,
+          "end": 1561,
+          "excerpt": "<input type=\"text\" class=\"form-control p_input\">",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "slot": "c3",
+          "id": "s588",
+          "file": "pages/samples/register.html",
+          "start": 1593,
+          "end": 1759,
+          "excerpt": "<div class=\"form-group\">\n                    <label>Password</label>\n                    <input type=\"password\" class=\"form-control p_input\">\n                  </div>",
+          "exactOriginalUtf16": true
+        }
+      ]
+    },
+    {
+      "id": "real-personal-supplemental",
+      "sourceStratum": "known-source-regression",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "applicationAdmitted": true,
+      "allSourceFilesByteIdenticalToR13": true,
+      "integrity": {
+        "sourceRequestHashesMatchFreeze": true,
+        "catalogBindingSha256IndependentlyRecomputed": true,
+        "allCatalogSpansMatchUtf16Source": true,
+        "originalArgumentJsonValid": true,
+        "normalization": "none",
+        "actualToolName": "submit_source_assessment_v3",
+        "actualFinishReason": "tool_calls",
+        "originalSlotsPreserved": true,
+        "allSlotsHaveExactKeysTypesContinuousPrefixDistinctIds": true,
+        "allRawIdsKnown": true,
+        "allApplicationCitationsEqualChosenServerSpans": true,
+        "allCriterionIdsPresentExactlyOnce": true,
+        "originalNamedToolEnvelopeIndependentlyValidated": true,
+        "catalogBudgetAndSpanBoundsIndependentlyValidated": true,
+        "allCriteriaAndReferencesUnchangedFromR13": true
+      },
+      "criterionReview": [
+        {
+          "criterionId": "manual-1",
+          "source": "Each page's HTML title content must identify Personal rather than Modern Business.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "All four title elements are separately quoted: index/resume identify Personal, contact/projects identify Modern Business, establishing the explicit every-page counterexample.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-2",
+          "source": "Resume page content must list Web Developer at Stark Industries for 2019 - Present.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The first resume experience card contains 2019 - Present, Web Developer and Stark Industries together.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-3",
+          "source": "Resume page content must include a Master's in Web Development and an Undergraduate entry in Computer Science.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Two distinct education cards correctly pair Masters/Web Development and Undergraduate/Computer Science; adjacent raw windows retain the second pair.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-4",
+          "source": "Projects page content must not retain the placeholder titles Project Name 1 and Project Name 2.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Both placeholder project headings are actually present on projects.html; negative literal requirement is violated.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-5",
+          "source": "Contact page source content must contain the literal labels Full name and Email address.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Full name and Email address labels are both actual contact form labels, not navigation/attribute strings.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-1",
+          "source": "Contact page copy must state that a reply is normally provided within two working days.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Complete contact copy includes the introductory phrases and template form messages, with no two-working-day reply commitment; source-copy changes are justified without asserting actual email behavior.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-2",
+          "source": "Download Resume must retrieve a valid PDF containing the current experience and education.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The Download Resume href is #!; a real source comment at3146 mentions setting a PDF target, and no PDF is inventoried. Unknown is correct, although the selected3200..3600 quote omits that preceding comment.",
+          "appExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-3",
+          "source": "The portrait must depict the portfolio owner and remain uncropped at 375px on a phone.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The profile.png reference and alt are accurate; no raster pixels or 375px observations were supplied.",
+          "appExplanationChanged": false
+        }
+      ],
+      "riskReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "Two wrong title elements are quoted; original requirements still identify Personal."
+        },
+        {
+          "index": 1,
+          "verdict": "qualified",
+          "note": "Placeholder headings/lorem ipsum are actual source. Replacing body descriptions is additional advice beyond the explicitly locked placeholder-title obligation."
+        },
+        {
+          "index": 2,
+          "verdict": "qualified",
+          "note": "The reply-time promise is absent in complete source, but this risk only quotes the lead paragraph while its explanation also names the heading; displayed witness is partial."
+        }
+      ],
+      "limitationReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "No PDF/document in inventory."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "No profile pixels or375px observations."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "Only source review; responsive layout unknown."
+        },
+        {
+          "index": 3,
+          "verdict": "qualified",
+          "note": "Actual SB Forms configuration/token was not supplied; the literal API_TOKEN placeholder nevertheless exists in HTML. Distinguish missing real configuration from absent source placeholder."
+        }
+      ],
+      "appendedSystemLimitationsReview": {
+        "verdict": "accepted",
+        "count": 3,
+        "note": "Correct catalog_slots protocol identity, no semantic guarantee from ID validity, complete input versus understanding, no execution and separate human acceptance/payment."
+      },
+      "remainingIssues": [
+        {
+          "severity": "P3",
+          "kind": "extra_acceptance_scope",
+          "at": "risks[1].suggestion",
+          "message": "Default body descriptions are real, but replacing them is additional advice beyond the explicit placeholder-title requirement."
+        },
+        {
+          "severity": "P3",
+          "kind": "partial_reply_statement_witness",
+          "at": "risks[2].citations",
+          "message": "Risk names Get in touch and Lets work together but selected s19 only quotes the latter lead paragraph. Whole source confirms absence of the agreed reply-time copy."
+        },
+        {
+          "severity": "P3",
+          "kind": "placeholder_token_precision",
+          "at": "limitations[3]",
+          "message": "A real configured SB Forms token was not supplied; the literal API_TOKEN string is part of the supplied HTML. Do not describe that placeholder itself as absent."
+        }
+      ],
+      "citationChecks": [
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c1",
+          "id": "s62",
+          "file": "index.html",
+          "start": 271,
+          "end": 318,
+          "excerpt": "<title>Personal - Start Bootstrap Theme</title>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c2",
+          "id": "s194",
+          "file": "resume.html",
+          "start": 271,
+          "end": 321,
+          "excerpt": "<title>Personal - Start Bootstrap Template</title>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c3",
+          "id": "s2",
+          "file": "contact.html",
+          "start": 265,
+          "end": 322,
+          "excerpt": "<title>Modern Business - Start Bootstrap Template</title>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c4",
+          "id": "s154",
+          "file": "projects.html",
+          "start": 271,
+          "end": 328,
+          "excerpt": "<title>Modern Business - Start Bootstrap Template</title>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "slot": "c1",
+          "id": "s215",
+          "file": "resume.html",
+          "start": 3896,
+          "end": 4391,
+          "excerpt": "<div class=\"bg-light p-4 rounded-4\">\n                                                <div class=\"text-primary fw-bolder mb-2\">2019 - Present</div>\n                                                <div class=\"small fw-bolder\">Web Developer</div>\n                                                <div class=\"small text-muted\">Stark Industries</div>\n                                                <div class=\"small text-muted\">Los Angeles, CA</div>\n                                            </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "slot": "c2",
+          "id": "s217",
+          "file": "resume.html",
+          "start": 4000,
+          "end": 4400,
+          "excerpt": "imary fw-bolder mb-2\">2019 - Present</div>\n                                                <div class=\"small fw-bolder\">Web Developer</div>\n                                                <div class=\"small text-muted\">Stark Industries</div>\n                                                <div class=\"small text-muted\">Los Angeles, CA</div>\n                                            </div>\n        ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "slot": "c1",
+          "id": "s243",
+          "file": "resume.html",
+          "start": 7359,
+          "end": 7639,
+          "excerpt": "<div class=\"fst-italic\">\n                                                    <div class=\"small text-muted\">Master's</div>\n                                                    <div class=\"small text-muted\">Web Development</div>\n                                                </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "slot": "c2",
+          "id": "s256",
+          "file": "resume.html",
+          "start": 9075,
+          "end": 9361,
+          "excerpt": "<div class=\"fst-italic\">\n                                                    <div class=\"small text-muted\">Undergraduate</div>\n                                                    <div class=\"small text-muted\">Computer Science</div>\n                                                </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "slot": "c1",
+          "id": "s173",
+          "file": "projects.html",
+          "start": 3207,
+          "end": 3248,
+          "excerpt": "<h2 class=\"fw-bolder\">Project Name 1</h2>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "slot": "c2",
+          "id": "s178",
+          "file": "projects.html",
+          "start": 4175,
+          "end": 4216,
+          "excerpt": "<h2 class=\"fw-bolder\">Project Name 2</h2>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "slot": "c1",
+          "id": "s25",
+          "file": "contact.html",
+          "start": 4048,
+          "end": 4083,
+          "excerpt": "<label for=\"name\">Full name</label>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-5",
+          "slot": "c2",
+          "id": "s29",
+          "file": "contact.html",
+          "start": 4592,
+          "end": 4632,
+          "excerpt": "<label for=\"email\">Email address</label>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "slot": "c1",
+          "id": "s19",
+          "file": "contact.html",
+          "start": 2883,
+          "end": 2949,
+          "excerpt": "<p class=\"lead fw-normal text-muted mb-0\">Let's work together!</p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "slot": "c2",
+          "id": "s22",
+          "file": "contact.html",
+          "start": 3818,
+          "end": 4255,
+          "excerpt": "<div class=\"form-floating mb-3\">\n                                        <input class=\"form-control\" id=\"name\" type=\"text\" placeholder=\"Enter your name...\" data-sb-validations=\"required\" />\n                                        <label for=\"name\">Full name</label>\n                                        <div class=\"invalid-feedback\" data-sb-feedback=\"name:required\">A name is required.</div>\n                                    </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "slot": "c3",
+          "id": "s44",
+          "file": "contact.html",
+          "start": 6461,
+          "end": 6926,
+          "excerpt": "<div class=\"text-center mb-3\">\n                                            <div class=\"fw-bolder\">Form submission successful!</div>\n                                            To activate this form, sign up at\n                                            <br />\n                                            <a href=\"https://startbootstrap.com/solution/contact-forms\">https://startbootstrap.com/solution/contact-forms</a>\n                                        </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "slot": "c1",
+          "id": "s212",
+          "file": "resume.html",
+          "start": 3200,
+          "end": 3600,
+          "excerpt": "                      <a class=\"btn btn-primary px-4 py-3\" href=\"#!\">\n                                    <div class=\"d-inline-block bi bi-download me-2\"></div>\n                                    Download Resume\n                                </a>\n                            </div>\n                            <!-- Experience Card 1-->\n                            <div class=\"card shadow border-0 ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "slot": "c1",
+          "id": "s84",
+          "file": "index.html",
+          "start": 4000,
+          "end": 4400,
+          "excerpt": "arent background like the demo example below-->\n                                    <!-- Watch a tutorial on how to do this on YouTube (link)-->\n                                    <img class=\"profile-img\" src=\"assets/profile.png\" alt=\"...\" />\n                                    <div class=\"dots-1\">\n                                        <!-- SVG Dots-->\n                                        <s",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "slot": "c1",
+          "id": "s2",
+          "file": "contact.html",
+          "start": 265,
+          "end": 322,
+          "excerpt": "<title>Modern Business - Start Bootstrap Template</title>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "slot": "c2",
+          "id": "s154",
+          "file": "projects.html",
+          "start": 271,
+          "end": 328,
+          "excerpt": "<title>Modern Business - Start Bootstrap Template</title>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "slot": "c1",
+          "id": "s173",
+          "file": "projects.html",
+          "start": 3207,
+          "end": 3248,
+          "excerpt": "<h2 class=\"fw-bolder\">Project Name 1</h2>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "slot": "c2",
+          "id": "s178",
+          "file": "projects.html",
+          "start": 4175,
+          "end": 4216,
+          "excerpt": "<h2 class=\"fw-bolder\">Project Name 2</h2>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "slot": "c1",
+          "id": "s19",
+          "file": "contact.html",
+          "start": 2883,
+          "end": 2949,
+          "excerpt": "<p class=\"lead fw-normal text-muted mb-0\">Let's work together!</p>",
+          "exactOriginalUtf16": true
+        }
+      ]
+    },
+    {
+      "id": "real-holdout-clean-blog",
+      "sourceStratum": "known-source-regression",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "applicationAdmitted": true,
+      "allSourceFilesByteIdenticalToR13": true,
+      "integrity": {
+        "sourceRequestHashesMatchFreeze": true,
+        "catalogBindingSha256IndependentlyRecomputed": true,
+        "allCatalogSpansMatchUtf16Source": true,
+        "originalArgumentJsonValid": true,
+        "normalization": "none",
+        "actualToolName": "submit_source_assessment_v3",
+        "actualFinishReason": "tool_calls",
+        "originalSlotsPreserved": true,
+        "allSlotsHaveExactKeysTypesContinuousPrefixDistinctIds": true,
+        "allRawIdsKnown": true,
+        "allApplicationCitationsEqualChosenServerSpans": true,
+        "allCriterionIdsPresentExactlyOnce": true,
+        "originalNamedToolEnvelopeIndependentlyValidated": true,
+        "catalogBudgetAndSpanBoundsIndependentlyValidated": true,
+        "allCriteriaAndReferencesUnchangedFromR13": true
+      },
+      "criterionReview": [
+        {
+          "criterionId": "coverage-1",
+          "source": "Text content in mainNav on all four pages must include Home and About and Sample Post and Contact",
+          "rawStatus": "supported",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "qualified",
+          "applicationExplanationVerdict": "accepted",
+          "note": "All four complete mainNav lists really have all four labels, but each selected window1600..2000 only witnesses Home/About, not Sample Post/Contact. Application correctly changes supported to unknown with an evidence-gap explanation, without calling content missing. A raw370-unit slice1802..2172 would cover all four labels per page, but the current catalog has no such candidate.",
+          "appExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-2",
+          "source": "The website content must not advertise the template brand Start Bootstrap anywhere in current page copy",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Current literal template branding is actually present; unlike R13, no observed-visible-success claim is made. The success signup link is explicitly treated as conditional/unobserved in limitations.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-3",
+          "source": "The text content of the four delivered HTML title elements must be distinct",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Four separate complete title citations correctly show identical Clean Blog - Start Bootstrap Theme metadata.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-4",
+          "source": "The contact page content must name Email address and Phone Number and Message",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Email address, Phone Number and Message are exact contact labels in one form; capital N is preserved.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-5",
+          "source": "The static contact HTML copy must explain privacy retention as 30 days and deletion on request",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Complete static contact body has no 30-day/deletion-on-request policy. This is a static-copy omission, not proof that storage/deletion behavior exists or fails.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-6",
+          "source": "Sending a message must actually email the owner and preserve a receipt retrievable after restart",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Email receipt/restart persistence correctly remain unknown; placeholder token and activation text do not establish execution.",
+          "appExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-7",
+          "source": "The delivered website must display no horizontal overflow at 375px and allow all mobile menu items",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "375px overflow/menu behavior correctly remain unknown without browser output.",
+          "appExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-8",
+          "source": "The post page content must contain the article title Man must explore and this is exploration at its greatest",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The full post h1 title differs only by editorial comma before and. Supported source-copy advice is reasonable for this non-exact content criterion; no R9 negative override was needed in this raw answer.",
+          "appExplanationChanged": false
+        }
+      ],
+      "riskReview": [
+        {
+          "index": 0,
+          "verdict": "qualified",
+          "note": "The brand/subheading/byline facts are true, but these three risk citations show index examples, not every navbar and every post byline asserted. Full-source inspection confirms the wider statement."
+        },
+        {
+          "index": 1,
+          "verdict": "qualified",
+          "note": "All four titles are genuinely equal. Three slots now keep the risk valid, but contact.html title is omitted from its own citations; the separate item quotes all four. Scope of risk assertion exceeds its local displayed witnesses."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "Complete static contact main section has no 30-day/deletion-on-request notice. The source-only correction does not claim actual storage/deletion behavior was tested."
+        }
+      ],
+      "limitationReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "No email/restart/receipt execution."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "No CSS or375px menu observations."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "No visibility/rendering observations."
+        },
+        {
+          "index": 3,
+          "verdict": "accepted",
+          "note": "Success signup text is real; conditional display explicitly unobserved, fixing R13 visible wording."
+        }
+      ],
+      "appendedSystemLimitationsReview": {
+        "verdict": "accepted",
+        "count": 3,
+        "note": "Correct catalog_slots protocol identity, no semantic guarantee from ID validity, complete input versus understanding, no execution and separate human acceptance/payment."
+      },
+      "remainingIssues": [
+        {
+          "severity": "P3",
+          "kind": "catalog_granularity_evidence_gap",
+          "at": "items[coverage-1]",
+          "message": "Raw selects one1600..2000 window per page; each lacks Sample Post/Contact. Application correctly returns insufficient evidence. Do not claim six-slot capacity intrinsically prevents this proof: all four raw label texts fit in370 units per page1802..2172, but such a candidate is unavailable in current catalog.",
+          "evidence": {
+            "files": [
+              "about.html",
+              "contact.html",
+              "index.html",
+              "post.html"
+            ],
+            "minimalRawSpan": [
+              1802,
+              2172
+            ],
+            "spanUnits": 370,
+            "potentialQuotes": 4,
+            "itemSlotLimit": 6
+          }
+        },
+        {
+          "severity": "P3",
+          "kind": "partial_all_pages_brand_witness",
+          "at": "risks[0].citations",
+          "message": "Index brand/subheading/meta examples do not individually witness every navbar/byline asserted, although full input confirms those true facts."
+        },
+        {
+          "severity": "P3",
+          "kind": "partial_four_titles_risk_witness",
+          "at": "risks[1].citations",
+          "message": "Three valid risk slots omit contact title while claiming four pages. The separate item has all4 complete title quotes. Risk is no longer structurally invalid, but its local citation coverage is partial."
+        }
+      ],
+      "citationChecks": [
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "slot": "c1",
+          "id": "s107",
+          "file": "index.html",
+          "start": 1600,
+          "end": 2000,
+          "excerpt": "collapse\" id=\"navbarResponsive\">\n                    <ul class=\"navbar-nav ms-auto py-4 py-lg-0\">\n                        <li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"index.html\">Home</a></li>\n                        <li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"about.html\">About</a></li>\n                        <li class=\"nav-item\"><a class=\"nav-link p",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "slot": "c2",
+          "id": "s43",
+          "file": "contact.html",
+          "start": 1600,
+          "end": 2000,
+          "excerpt": "collapse\" id=\"navbarResponsive\">\n                    <ul class=\"navbar-nav ms-auto py-4 py-lg-0\">\n                        <li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"index.html\">Home</a></li>\n                        <li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"about.html\">About</a></li>\n                        <li class=\"nav-item\"><a class=\"nav-link p",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "slot": "c3",
+          "id": "s6",
+          "file": "about.html",
+          "start": 1600,
+          "end": 2000,
+          "excerpt": "collapse\" id=\"navbarResponsive\">\n                    <ul class=\"navbar-nav ms-auto py-4 py-lg-0\">\n                        <li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"index.html\">Home</a></li>\n                        <li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"about.html\">About</a></li>\n                        <li class=\"nav-item\"><a class=\"nav-link p",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "slot": "c4",
+          "id": "s159",
+          "file": "post.html",
+          "start": 1600,
+          "end": 2000,
+          "excerpt": "collapse\" id=\"navbarResponsive\">\n                    <ul class=\"navbar-nav ms-auto py-4 py-lg-0\">\n                        <li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"index.html\">Home</a></li>\n                        <li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"about.html\">About</a></li>\n                        <li class=\"nav-item\"><a class=\"nav-link p",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "slot": "c1",
+          "id": "s106",
+          "file": "index.html",
+          "start": 1200,
+          "end": 1600,
+          "excerpt": "ar-brand\" href=\"index.html\">Start Bootstrap</a>\n                <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarResponsive\" aria-controls=\"navbarResponsive\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n                    Menu\n                    <i class=\"fas fa-bars\"></i>\n                </button>\n                <div class=\"collapse navbar-",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "slot": "c2",
+          "id": "s119",
+          "file": "index.html",
+          "start": 2709,
+          "end": 2772,
+          "excerpt": "<span class=\"subheading\">A Blog Theme by Start Bootstrap</span>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "slot": "c3",
+          "id": "s124",
+          "file": "index.html",
+          "start": 3493,
+          "end": 3692,
+          "excerpt": "<p class=\"post-meta\">\n                            Posted by\n                            <a href=\"#!\">Start Bootstrap</a>\n                            on September 24, 2023\n                        </p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "slot": "c4",
+          "id": "s42",
+          "file": "contact.html",
+          "start": 1200,
+          "end": 1600,
+          "excerpt": "ar-brand\" href=\"index.html\">Start Bootstrap</a>\n                <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarResponsive\" aria-controls=\"navbarResponsive\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n                    Menu\n                    <i class=\"fas fa-bars\"></i>\n                </button>\n                <div class=\"collapse navbar-",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "slot": "c5",
+          "id": "s166",
+          "file": "post.html",
+          "start": 2606,
+          "end": 3101,
+          "excerpt": "<div class=\"post-heading\">\n                            <h1>Man must explore, and this is exploration at its greatest</h1>\n                            <h2 class=\"subheading\">Problems look mighty small from 150 miles up</h2>\n                            <span class=\"meta\">\n                                Posted by\n                                <a href=\"#!\">Start Bootstrap</a>\n                                on August 24, 2023\n                            </span>\n                        </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "slot": "c6",
+          "id": "s81",
+          "file": "contact.html",
+          "start": 6308,
+          "end": 6753,
+          "excerpt": "<div class=\"text-center mb-3\">\n                                        <div class=\"fw-bolder\">Form submission successful!</div>\n                                        To activate this form, sign up at\n                                        <br />\n                                        <a href=\"https://startbootstrap.com/solution/contact-forms\">https://startbootstrap.com/solution/contact-forms</a>\n                                    </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "slot": "c1",
+          "id": "s103",
+          "file": "index.html",
+          "start": 271,
+          "end": 320,
+          "excerpt": "<title>Clean Blog - Start Bootstrap Theme</title>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "slot": "c2",
+          "id": "s2",
+          "file": "about.html",
+          "start": 271,
+          "end": 320,
+          "excerpt": "<title>Clean Blog - Start Bootstrap Theme</title>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "slot": "c3",
+          "id": "s39",
+          "file": "contact.html",
+          "start": 271,
+          "end": 320,
+          "excerpt": "<title>Clean Blog - Start Bootstrap Theme</title>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "slot": "c4",
+          "id": "s155",
+          "file": "post.html",
+          "start": 271,
+          "end": 320,
+          "excerpt": "<title>Clean Blog - Start Bootstrap Theme</title>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-4",
+          "slot": "c1",
+          "id": "s67",
+          "file": "contact.html",
+          "start": 4607,
+          "end": 4647,
+          "excerpt": "<label for=\"email\">Email address</label>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-4",
+          "slot": "c2",
+          "id": "s73",
+          "file": "contact.html",
+          "start": 5195,
+          "end": 5234,
+          "excerpt": "<label for=\"phone\">Phone Number</label>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-4",
+          "slot": "c3",
+          "id": "s78",
+          "file": "contact.html",
+          "start": 5690,
+          "end": 5726,
+          "excerpt": "<label for=\"message\">Message</label>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "slot": "c1",
+          "id": "s57",
+          "file": "contact.html",
+          "start": 3156,
+          "end": 3277,
+          "excerpt": "<p>Want to get in touch? Fill out the form below to send me a message and I will get back to you as soon as possible!</p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "slot": "c2",
+          "id": "s59",
+          "file": "contact.html",
+          "start": 3600,
+          "end": 4000,
+          "excerpt": "                          <!-- To make this form functional, sign up at-->\n                            <!-- https://startbootstrap.com/solution/contact-forms-->\n                            <!-- to get an API token!-->\n                            <form id=\"contactForm\" data-sb-form-api-token=\"API_TOKEN\">\n                                <div class=\"form-floating\">\n                                   ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "slot": "c3",
+          "id": "s76",
+          "file": "contact.html",
+          "start": 5440,
+          "end": 5896,
+          "excerpt": "<div class=\"form-floating\">\n                                    <textarea class=\"form-control\" id=\"message\" placeholder=\"Enter your message here...\" style=\"height: 12rem\" data-sb-validations=\"required\"></textarea>\n                                    <label for=\"message\">Message</label>\n                                    <div class=\"invalid-feedback\" data-sb-feedback=\"message:required\">A message is required.</div>\n                                </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "slot": "c4",
+          "id": "s87",
+          "file": "contact.html",
+          "start": 7200,
+          "end": 7600,
+          "excerpt": "v>\n                                <!-- Submit Button-->\n                                <button class=\"btn btn-primary text-uppercase disabled\" id=\"submitButton\" type=\"submit\">Send</button>\n                            </form>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </main>\n        <!-- Footer-->\n        <footer class=\"border-top\"",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-6",
+          "slot": "c1",
+          "id": "s59",
+          "file": "contact.html",
+          "start": 3600,
+          "end": 4000,
+          "excerpt": "                          <!-- To make this form functional, sign up at-->\n                            <!-- https://startbootstrap.com/solution/contact-forms-->\n                            <!-- to get an API token!-->\n                            <form id=\"contactForm\" data-sb-form-api-token=\"API_TOKEN\">\n                                <div class=\"form-floating\">\n                                   ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-6",
+          "slot": "c2",
+          "id": "s101",
+          "file": "contact.html",
+          "start": 10000,
+          "end": 10169,
+          "excerpt": "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->\n        <script src=\"https://cdn.startbootstrap.com/sb-forms-latest.js\"></script>\n    </body>\n</html>\n",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-7",
+          "slot": "c1",
+          "id": "s106",
+          "file": "index.html",
+          "start": 1200,
+          "end": 1600,
+          "excerpt": "ar-brand\" href=\"index.html\">Start Bootstrap</a>\n                <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarResponsive\" aria-controls=\"navbarResponsive\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n                    Menu\n                    <i class=\"fas fa-bars\"></i>\n                </button>\n                <div class=\"collapse navbar-",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-8",
+          "slot": "c1",
+          "id": "s167",
+          "file": "post.html",
+          "start": 2661,
+          "end": 2727,
+          "excerpt": "<h1>Man must explore, and this is exploration at its greatest</h1>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "slot": "c1",
+          "id": "s106",
+          "file": "index.html",
+          "start": 1200,
+          "end": 1600,
+          "excerpt": "ar-brand\" href=\"index.html\">Start Bootstrap</a>\n                <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#navbarResponsive\" aria-controls=\"navbarResponsive\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n                    Menu\n                    <i class=\"fas fa-bars\"></i>\n                </button>\n                <div class=\"collapse navbar-",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "slot": "c2",
+          "id": "s119",
+          "file": "index.html",
+          "start": 2709,
+          "end": 2772,
+          "excerpt": "<span class=\"subheading\">A Blog Theme by Start Bootstrap</span>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "slot": "c3",
+          "id": "s124",
+          "file": "index.html",
+          "start": 3493,
+          "end": 3692,
+          "excerpt": "<p class=\"post-meta\">\n                            Posted by\n                            <a href=\"#!\">Start Bootstrap</a>\n                            on September 24, 2023\n                        </p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "slot": "c1",
+          "id": "s103",
+          "file": "index.html",
+          "start": 271,
+          "end": 320,
+          "excerpt": "<title>Clean Blog - Start Bootstrap Theme</title>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "slot": "c2",
+          "id": "s2",
+          "file": "about.html",
+          "start": 271,
+          "end": 320,
+          "excerpt": "<title>Clean Blog - Start Bootstrap Theme</title>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "slot": "c3",
+          "id": "s155",
+          "file": "post.html",
+          "start": 271,
+          "end": 320,
+          "excerpt": "<title>Clean Blog - Start Bootstrap Theme</title>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "slot": "c1",
+          "id": "s57",
+          "file": "contact.html",
+          "start": 3156,
+          "end": 3277,
+          "excerpt": "<p>Want to get in touch? Fill out the form below to send me a message and I will get back to you as soon as possible!</p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "slot": "c2",
+          "id": "s76",
+          "file": "contact.html",
+          "start": 5440,
+          "end": 5896,
+          "excerpt": "<div class=\"form-floating\">\n                                    <textarea class=\"form-control\" id=\"message\" placeholder=\"Enter your message here...\" style=\"height: 12rem\" data-sb-validations=\"required\"></textarea>\n                                    <label for=\"message\">Message</label>\n                                    <div class=\"invalid-feedback\" data-sb-feedback=\"message:required\">A message is required.</div>\n                                </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "slot": "c3",
+          "id": "s87",
+          "file": "contact.html",
+          "start": 7200,
+          "end": 7600,
+          "excerpt": "v>\n                                <!-- Submit Button-->\n                                <button class=\"btn btn-primary text-uppercase disabled\" id=\"submitButton\" type=\"submit\">Send</button>\n                            </form>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </main>\n        <!-- Footer-->\n        <footer class=\"border-top\"",
+          "exactOriginalUtf16": true
+        }
+      ]
+    },
+    {
+      "id": "real-holdout-html5-boilerplate",
+      "sourceStratum": "known-source-regression",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "applicationAdmitted": true,
+      "allSourceFilesByteIdenticalToR13": true,
+      "integrity": {
+        "sourceRequestHashesMatchFreeze": true,
+        "catalogBindingSha256IndependentlyRecomputed": true,
+        "allCatalogSpansMatchUtf16Source": true,
+        "originalArgumentJsonValid": true,
+        "normalization": "none",
+        "actualToolName": "submit_source_assessment_v3",
+        "actualFinishReason": "tool_calls",
+        "originalSlotsPreserved": true,
+        "allSlotsHaveExactKeysTypesContinuousPrefixDistinctIds": true,
+        "allRawIdsKnown": true,
+        "allApplicationCitationsEqualChosenServerSpans": true,
+        "allCriterionIdsPresentExactlyOnce": true,
+        "originalNamedToolEnvelopeIndependentlyValidated": true,
+        "catalogBudgetAndSpanBoundsIndependentlyValidated": true,
+        "allCriteriaAndReferencesUnchangedFromR13": true
+      },
+      "criterionReview": [
+        {
+          "criterionId": "coverage-1",
+          "source": "The 404 page text content must contain Page Not Found and the missing page apology",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The exact 404 heading and apology are both cited as complete elements.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-2",
+          "source": "Home page content must say Hello world and identify HTML5 Boilerplate",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The complete home paragraph contains Hello world! and HTML5 Boilerplate.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-3",
+          "source": "The page content must declare English in a nonempty html lang attribute on both delivered pages",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Both opening html tags are quoted: 404 lang=en versus empty index lang, so the explicit both-page metadata condition fails.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-4",
+          "source": "Home page content must have a nonempty document title identifying a business name",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "index title is the exact empty title element and identifies no business.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-5",
+          "source": "Home page copy must state a 48 hour cancellation notice rule and a refund eligibility policy",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The complete static homepage body only contains the boilerplate paragraph plus a script reference, with no cancellation/refund copy. This is not an assertion about actual refund execution.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-6",
+          "source": "A request for a nonexistent route must return HTTP 404 and render the delivered 404 page",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "A 404 file does not establish routing/status. No server execution was supplied; unknown is warranted even with empty citations.",
+          "appExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-7",
+          "source": "Mobile visitors at 375px must read the 404 page without clipped content",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Inline 280px media-query source is real, but measured 375px clipping is unknown.",
+          "appExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-8",
+          "source": "The 404 page content must include a linked Return home phrase targeting index.html",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The complete standalone 404 body has only h1 and apology, with no anchor or Return home phrase; exact source changes are justified.",
+          "appExplanationChanged": false
+        }
+      ],
+      "riskReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "Both index empty lang and404 English attributes are now cited, fixing the R13 partial comparison witness."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "The exact empty home title is quoted; the requested copy fix is scoped."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "The complete home body is quoted across adjacent windows and lacks the agreed cancellation/refund copy."
+        },
+        {
+          "index": 3,
+          "verdict": "accepted",
+          "note": "The complete404 body has no anchor. Suggested exact anchor stays at markup/content scope."
+        }
+      ],
+      "limitationReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "No HTTP/server routing execution."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "No375px rendering/clipping observations."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "Omitted scripts/CSS may affect rendering; no browser observation asserted."
+        },
+        {
+          "index": 3,
+          "verdict": "accepted",
+          "note": "Advisory report does not accept work."
+        },
+        {
+          "index": 4,
+          "verdict": "accepted",
+          "note": "Inventory truly lists zero raster files; this precise statement fixes the earlier generic inventory-only ambiguity."
+        }
+      ],
+      "appendedSystemLimitationsReview": {
+        "verdict": "accepted",
+        "count": 3,
+        "note": "Correct catalog_slots protocol identity, no semantic guarantee from ID validity, complete input versus understanding, no execution and separate human acceptance/payment."
+      },
+      "remainingIssues": [],
+      "citationChecks": [
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "slot": "c1",
+          "id": "s5",
+          "file": "404.html",
+          "start": 818,
+          "end": 841,
+          "excerpt": "<h1>Page Not Found</h1>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "slot": "c2",
+          "id": "s6",
+          "file": "404.html",
+          "start": 844,
+          "end": 910,
+          "excerpt": "<p>Sorry, but the page you were trying to view does not exist.</p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "slot": "c1",
+          "id": "s23",
+          "file": "index.html",
+          "start": 750,
+          "end": 796,
+          "excerpt": "<p>Hello world! This is HTML5 Boilerplate.</p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "slot": "c1",
+          "id": "s1",
+          "file": "404.html",
+          "start": 0,
+          "end": 400,
+          "excerpt": "<!doctype html>\n<html lang=\"en\">\n\n<head>\n  <meta charset=\"utf-8\">\n  <title>Page Not Found</title>\n  <meta name=\"viewport\" content=\"width=device-width\">\n  <style>\n    * {\n      line-height: 1.2;\n      margin: 0;\n    }\n\n    html {\n      color: #888;\n      display: table;\n      font-family: sans-serif;\n      height: 100%;\n      text-align: center;\n      width: 100%;\n    }\n\n    body {\n      display: t",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "slot": "c2",
+          "id": "s20",
+          "file": "index.html",
+          "start": 0,
+          "end": 400,
+          "excerpt": "<!doctype html>\n<html lang=\"\">\n\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width\">\n  <title></title>\n  <link rel=\"stylesheet\" href=\"css/style.css\">\n  <meta name=\"description\" content=\"\">\n\n  <meta property=\"og:title\" content=\"\">\n  <meta property=\"og:type\" content=\"\">\n  <meta property=\"og:url\" content=\"\">\n  <meta property=\"og:image\" content=\"\">\n  <meta property=\"og",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-4",
+          "slot": "c1",
+          "id": "s21",
+          "file": "index.html",
+          "start": 120,
+          "end": 135,
+          "excerpt": "<title></title>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-4",
+          "slot": "c2",
+          "id": "s20",
+          "file": "index.html",
+          "start": 0,
+          "end": 400,
+          "excerpt": "<!doctype html>\n<html lang=\"\">\n\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width\">\n  <title></title>\n  <link rel=\"stylesheet\" href=\"css/style.css\">\n  <meta name=\"description\" content=\"\">\n\n  <meta property=\"og:title\" content=\"\">\n  <meta property=\"og:type\" content=\"\">\n  <meta property=\"og:url\" content=\"\">\n  <meta property=\"og:image\" content=\"\">\n  <meta property=\"og",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "slot": "c1",
+          "id": "s22",
+          "file": "index.html",
+          "start": 400,
+          "end": 800,
+          "excerpt": ":image:alt\" content=\"\">\n\n  <link rel=\"icon\" href=\"/favicon.ico\" sizes=\"any\">\n  <link rel=\"icon\" href=\"/icon.svg\" type=\"image/svg+xml\">\n  <link rel=\"apple-touch-icon\" href=\"icon.png\">\n\n  <link rel=\"manifest\" href=\"site.webmanifest\">\n  <meta name=\"theme-color\" content=\"#fafafa\">\n</head>\n\n<body>\n\n  <!-- Add your site or application content here -->\n  <p>Hello world! This is HTML5 Boilerplate.</p>\n  <",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "slot": "c2",
+          "id": "s24",
+          "file": "index.html",
+          "start": 800,
+          "end": 851,
+          "excerpt": "script src=\"js/app.js\"></script>\n\n</body>\n\n</html>\n",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-8",
+          "slot": "c1",
+          "id": "s4",
+          "file": "404.html",
+          "start": 800,
+          "end": 1037,
+          "excerpt": "</head>\n\n<body>\n  <h1>Page Not Found</h1>\n  <p>Sorry, but the page you were trying to view does not exist.</p>\n</body>\n\n</html>\n<!-- IE needs 512+ bytes: https://docs.microsoft.com/archive/blogs/ieinternals/friendly-http-error-pages -->\n",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "slot": "c1",
+          "id": "s20",
+          "file": "index.html",
+          "start": 0,
+          "end": 400,
+          "excerpt": "<!doctype html>\n<html lang=\"\">\n\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width\">\n  <title></title>\n  <link rel=\"stylesheet\" href=\"css/style.css\">\n  <meta name=\"description\" content=\"\">\n\n  <meta property=\"og:title\" content=\"\">\n  <meta property=\"og:type\" content=\"\">\n  <meta property=\"og:url\" content=\"\">\n  <meta property=\"og:image\" content=\"\">\n  <meta property=\"og",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "slot": "c2",
+          "id": "s1",
+          "file": "404.html",
+          "start": 0,
+          "end": 400,
+          "excerpt": "<!doctype html>\n<html lang=\"en\">\n\n<head>\n  <meta charset=\"utf-8\">\n  <title>Page Not Found</title>\n  <meta name=\"viewport\" content=\"width=device-width\">\n  <style>\n    * {\n      line-height: 1.2;\n      margin: 0;\n    }\n\n    html {\n      color: #888;\n      display: table;\n      font-family: sans-serif;\n      height: 100%;\n      text-align: center;\n      width: 100%;\n    }\n\n    body {\n      display: t",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "slot": "c1",
+          "id": "s21",
+          "file": "index.html",
+          "start": 120,
+          "end": 135,
+          "excerpt": "<title></title>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "slot": "c2",
+          "id": "s20",
+          "file": "index.html",
+          "start": 0,
+          "end": 400,
+          "excerpt": "<!doctype html>\n<html lang=\"\">\n\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width\">\n  <title></title>\n  <link rel=\"stylesheet\" href=\"css/style.css\">\n  <meta name=\"description\" content=\"\">\n\n  <meta property=\"og:title\" content=\"\">\n  <meta property=\"og:type\" content=\"\">\n  <meta property=\"og:url\" content=\"\">\n  <meta property=\"og:image\" content=\"\">\n  <meta property=\"og",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "slot": "c1",
+          "id": "s22",
+          "file": "index.html",
+          "start": 400,
+          "end": 800,
+          "excerpt": ":image:alt\" content=\"\">\n\n  <link rel=\"icon\" href=\"/favicon.ico\" sizes=\"any\">\n  <link rel=\"icon\" href=\"/icon.svg\" type=\"image/svg+xml\">\n  <link rel=\"apple-touch-icon\" href=\"icon.png\">\n\n  <link rel=\"manifest\" href=\"site.webmanifest\">\n  <meta name=\"theme-color\" content=\"#fafafa\">\n</head>\n\n<body>\n\n  <!-- Add your site or application content here -->\n  <p>Hello world! This is HTML5 Boilerplate.</p>\n  <",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "slot": "c2",
+          "id": "s24",
+          "file": "index.html",
+          "start": 800,
+          "end": 851,
+          "excerpt": "script src=\"js/app.js\"></script>\n\n</body>\n\n</html>\n",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 3,
+          "slot": "c1",
+          "id": "s4",
+          "file": "404.html",
+          "start": 800,
+          "end": 1037,
+          "excerpt": "</head>\n\n<body>\n  <h1>Page Not Found</h1>\n  <p>Sorry, but the page you were trying to view does not exist.</p>\n</body>\n\n</html>\n<!-- IE needs 512+ bytes: https://docs.microsoft.com/archive/blogs/ieinternals/friendly-http-error-pages -->\n",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 3,
+          "slot": "c2",
+          "id": "s5",
+          "file": "404.html",
+          "start": 818,
+          "end": 841,
+          "excerpt": "<h1>Page Not Found</h1>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 3,
+          "slot": "c3",
+          "id": "s6",
+          "file": "404.html",
+          "start": 844,
+          "end": 910,
+          "excerpt": "<p>Sorry, but the page you were trying to view does not exist.</p>",
+          "exactOriginalUtf16": true
+        }
+      ]
+    },
+    {
+      "id": "known-corona-sixteen-checklist",
+      "sourceStratum": "known-source-regression",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "applicationAdmitted": true,
+      "allSourceFilesByteIdenticalToR13": true,
+      "integrity": {
+        "sourceRequestHashesMatchFreeze": true,
+        "catalogBindingSha256IndependentlyRecomputed": true,
+        "allCatalogSpansMatchUtf16Source": true,
+        "originalArgumentJsonValid": true,
+        "normalization": "none",
+        "actualToolName": "submit_source_assessment_v3",
+        "actualFinishReason": "tool_calls",
+        "originalSlotsPreserved": true,
+        "allSlotsHaveExactKeysTypesContinuousPrefixDistinctIds": true,
+        "allRawIdsKnown": true,
+        "allApplicationCitationsEqualChosenServerSpans": true,
+        "allCriterionIdsPresentExactlyOnce": true,
+        "originalNamedToolEnvelopeIndependentlyValidated": true,
+        "catalogBudgetAndSpanBoundsIndependentlyValidated": true,
+        "allCriteriaAndReferencesUnchangedFromR13": true
+      },
+      "criterionReview": [
+        {
+          "criterionId": "manual-1",
+          "source": "In the delivered dashboard HTML the Order Status table must contain the literal headings Payment Mode and Payment Status.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The Order Status table is named and its Payment Mode/Payment Status th elements are quoted.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-2",
+          "source": "In the delivered login HTML the input immediately under Password * must use type=\"password\" rather than type=\"text\".",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The input immediately following Password * is type=text in the same form group, contrary to the explicit source-attribute requirement.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-3",
+          "source": "In the delivered register HTML the primary submit button text must read Create account rather than Login.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The actual primary register submit button is Login rather than Create account.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "manual-4",
+          "source": "The delivered 404 HTML document title must be Not found - Corona Admin rather than the generic Corona Admin.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The actual error-404 title element is Corona Admin, not the required Not found - Corona Admin.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-1",
+          "source": "Dashboard source copy must pair Transfer to Paypal with $236.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The adjacent transaction windows correctly pair Transfer to Paypal with $236 in one owner.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-2",
+          "source": "Dashboard source copy must spell the second transfer label Transfer to Stripe.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The second transaction label really is Tranfer to Stripe, missing the required s.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-3",
+          "source": "Henry Klein must have Credit card and Approved in his source table row.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The unique Henry Klein tr at 36471..37493 contains Credit card and Approved; the two windows are adjacent across 37200, not borrowed from another row.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-4",
+          "source": "Dashboard source text must not contain Cash on delivered.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The forbidden Cash on delivered literal occurs in Estella Bryan row at 37520..38547, not another field or requirement text.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-5",
+          "source": "Login source labels must include Username or email * and Password *.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The actual same-form login labels include both exact requested strings.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-6",
+          "source": "Register source email input must have type=\"email\".",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The Email form group in register.html contains type=email; the property is associated with the correct label.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-7",
+          "source": "Register source Terms & Conditions link href must be terms.html.",
+          "rawStatus": "changes_suggested",
+          "applicationStatus": "changes_suggested",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The actual register Terms anchor href is #, not terms.html; source and required path are kept distinct in the item.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-8",
+          "source": "404 source Back to home link href must be ../../index.html.",
+          "rawStatus": "supported",
+          "applicationStatus": "supported",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "The actual Back to home anchor href is ../../index.html, without implying observed navigation success.",
+          "appExplanationChanged": false
+        },
+        {
+          "criterionId": "coverage-9",
+          "source": "Login must authenticate correct credentials and reject incorrect passwords.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "No handler or authentication execution was supplied. Unlike R13, the reply does not deny the script tags that really exist in the HTML.",
+          "appExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-10",
+          "source": "Paypal transfer must actually pay $236 and confirm provider status.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Actual payment/provider status are unknown. Static sample transaction copy is not payment execution.",
+          "appExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-11",
+          "source": "New accounts must persist and remain queryable after a server restart.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "No backend/storage/restart evidence is supplied. Unknown is correct without asserting an actual deployed server is absent.",
+          "appExplanationChanged": true
+        },
+        {
+          "criterionId": "coverage-12",
+          "source": "At 375px the dashboard table must remain readable without page overflow.",
+          "rawStatus": "insufficient_evidence",
+          "applicationStatus": "insufficient_evidence",
+          "rawExplanationVerdict": "accepted",
+          "applicationExplanationVerdict": "accepted",
+          "note": "Table-responsive class is real; observed readability/overflow at375px remains unknown.",
+          "appExplanationChanged": true
+        }
+      ],
+      "riskReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "The Password* label/input group has the wrong declared type. Unlike R13, no observed masking behavior is asserted."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "Primary register submit source text contradicts Create account."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "Actual second transaction label is Tranfer to Stripe, missing s."
+        },
+        {
+          "index": 3,
+          "verdict": "accepted",
+          "note": "Estella Bryan row and its own exact Cash on delivered cell are quoted; no neighbouring-row substitution."
+        },
+        {
+          "index": 4,
+          "verdict": "accepted",
+          "note": "Actual Terms href is# rather than terms.html. Any requirement removal remains conditional on buyer agreement, not an action performed by AI."
+        }
+      ],
+      "limitationReview": [
+        {
+          "index": 0,
+          "verdict": "accepted",
+          "note": "Authentication/payment/persistence/layout untested."
+        },
+        {
+          "index": 1,
+          "verdict": "accepted",
+          "note": "Inventory has fourHTML and noCSS."
+        },
+        {
+          "index": 2,
+          "verdict": "accepted",
+          "note": "Inventory actually has no raster entries; unlike R13 it does not invent delivered inventory-only images."
+        },
+        {
+          "index": 3,
+          "verdict": "accepted",
+          "note": "HTML contains script references, but script bytes/behaviour were not inspected; no false no-client-script statement remains."
+        }
+      ],
+      "appendedSystemLimitationsReview": {
+        "verdict": "accepted",
+        "count": 3,
+        "note": "Correct catalog_slots protocol identity, no semantic guarantee from ID validity, complete input versus understanding, no execution and separate human acceptance/payment."
+      },
+      "remainingIssues": [],
+      "citationChecks": [
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c1",
+          "id": "s314",
+          "file": "index.html",
+          "start": 35200,
+          "end": 35600,
+          "excerpt": "    </div>\n              </div>\n            </div>\n            <div class=\"row \">\n              <div class=\"col-12 grid-margin\">\n                <div class=\"card\">\n                  <div class=\"card-body\">\n                    <h4 class=\"card-title\">Order Status</h4>\n                    <div class=\"table-responsive\">\n                      <table class=\"table\">\n                        <thead>\n      ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c2",
+          "id": "s320",
+          "file": "index.html",
+          "start": 36000,
+          "end": 36400,
+          "excerpt": "                      <th> Client Name </th>\n                            <th> Order No </th>\n                            <th> Product Cost </th>\n                            <th> Project </th>\n                            <th> Payment Mode </th>\n                            <th> Start Date </th>\n                            <th> Payment Status </th>\n                          </tr>\n                    ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c3",
+          "id": "s325",
+          "file": "index.html",
+          "start": 36220,
+          "end": 36243,
+          "excerpt": "<th> Payment Mode </th>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-1",
+          "slot": "c4",
+          "id": "s327",
+          "file": "index.html",
+          "start": 36322,
+          "end": 36347,
+          "excerpt": "<th> Payment Status </th>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "slot": "c1",
+          "id": "s561",
+          "file": "pages/samples/login.html",
+          "start": 1422,
+          "end": 1586,
+          "excerpt": "<div class=\"form-group\">\n                    <label>Password *</label>\n                    <input type=\"text\" class=\"form-control p_input\">\n                  </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "slot": "c2",
+          "id": "s562",
+          "file": "pages/samples/login.html",
+          "start": 1467,
+          "end": 1492,
+          "excerpt": "<label>Password *</label>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-2",
+          "slot": "c3",
+          "id": "s563",
+          "file": "pages/samples/login.html",
+          "start": 1513,
+          "end": 1561,
+          "excerpt": "<input type=\"text\" class=\"form-control p_input\">",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "slot": "c1",
+          "id": "s596",
+          "file": "pages/samples/register.html",
+          "start": 2000,
+          "end": 2400,
+          "excerpt": "class=\"form-check-input\"> Remember me </label>\n                    </div>\n                    <a href=\"#\" class=\"forgot-pass\">Forgot password</a>\n                  </div>\n                  <div class=\"text-center\">\n                    <button type=\"submit\" class=\"btn btn-primary btn-block enter-btn\">Login</button>\n                  </div>\n                  <div class=\"d-flex\">\n                    ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-3",
+          "slot": "c2",
+          "id": "s597",
+          "file": "pages/samples/register.html",
+          "start": 2189,
+          "end": 2340,
+          "excerpt": "<div class=\"text-center\">\n                    <button type=\"submit\" class=\"btn btn-primary btn-block enter-btn\">Login</button>\n                  </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "slot": "c1",
+          "id": "s533",
+          "file": "pages/samples/error-404.html",
+          "start": 0,
+          "end": 400,
+          "excerpt": "<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <!-- Required meta tags -->\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n    <title>Corona Admin</title>\n    <!-- plugins:css -->\n    <link rel=\"stylesheet\" href=\"../../assets/vendors/mdi/css/materialdesignicons.min.css\">\n    <link rel=\"stylesheet\" href=\"../../assets/vendors/css/v",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "manual-4",
+          "slot": "c2",
+          "id": "s534",
+          "file": "pages/samples/error-404.html",
+          "start": 196,
+          "end": 223,
+          "excerpt": "<title>Corona Admin</title>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "slot": "c1",
+          "id": "s232",
+          "file": "index.html",
+          "start": 25472,
+          "end": 25683,
+          "excerpt": "<div class=\"text-md-center text-xl-left\">\n                        <h6 class=\"mb-1\">Transfer to Paypal</h6>\n                        <p class=\"text-muted mb-0\">07 Jan 2019, 09:12AM</p>\n                      </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "slot": "c2",
+          "id": "s235",
+          "file": "index.html",
+          "start": 25706,
+          "end": 25900,
+          "excerpt": "<div class=\"align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0\">\n                        <h6 class=\"font-weight-bold mb-0\">$236</h6>\n                      </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-1",
+          "slot": "c3",
+          "id": "s233",
+          "file": "index.html",
+          "start": 25600,
+          "end": 26000,
+          "excerpt": "   <p class=\"text-muted mb-0\">07 Jan 2019, 09:12AM</p>\n                      </div>\n                      <div class=\"align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0\">\n                        <h6 class=\"font-weight-bold mb-0\">$236</h6>\n                      </div>\n                    </div>\n                    <div class=\"bg-gray-dark d-flex d-md-block d-xl-flex",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "slot": "c1",
+          "id": "s236",
+          "file": "index.html",
+          "start": 26000,
+          "end": 26400,
+          "excerpt": " flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3\">\n                      <div class=\"text-md-center text-xl-left\">\n                        <h6 class=\"mb-1\">Tranfer to Stripe</h6>\n                        <p class=\"text-muted mb-0\">07 Jan 2019, 09:12AM</p>\n                      </div>\n                      <div class=\"align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-2",
+          "slot": "c2",
+          "id": "s237",
+          "file": "index.html",
+          "start": 26073,
+          "end": 26283,
+          "excerpt": "<div class=\"text-md-center text-xl-left\">\n                        <h6 class=\"mb-1\">Tranfer to Stripe</h6>\n                        <p class=\"text-muted mb-0\">07 Jan 2019, 09:12AM</p>\n                      </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "slot": "c1",
+          "id": "s333",
+          "file": "index.html",
+          "start": 36800,
+          "end": 37200,
+          "excerpt": "    </div>\n                            </td>\n                            <td>\n                              <img src=\"assets/images/faces/face1.jpg\" alt=\"image\" />\n                              <span class=\"ps-2\">Henry Klein</span>\n                            </td>\n                            <td> 02312 </td>\n                            <td> $14,500 </td>\n                            <td> Dashboard",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "slot": "c2",
+          "id": "s339",
+          "file": "index.html",
+          "start": 37200,
+          "end": 37600,
+          "excerpt": " </td>\n                            <td> Credit card </td>\n                            <td> 04 Dec 2019 </td>\n                            <td>\n                              <div class=\"badge badge-outline-success\">Approved</div>\n                            </td>\n                          </tr>\n                          <tr>\n                            <td>\n                              <div class=\"",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "slot": "c3",
+          "id": "s340",
+          "file": "index.html",
+          "start": 37235,
+          "end": 37257,
+          "excerpt": "<td> Credit card </td>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-3",
+          "slot": "c4",
+          "id": "s343",
+          "file": "index.html",
+          "start": 37372,
+          "end": 37427,
+          "excerpt": "<div class=\"badge badge-outline-success\">Approved</div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-4",
+          "slot": "c1",
+          "id": "s350",
+          "file": "index.html",
+          "start": 38000,
+          "end": 38400,
+          "excerpt": "t=\"image\" />\n                              <span class=\"ps-2\">Estella Bryan</span>\n                            </td>\n                            <td> 02312 </td>\n                            <td> $14,500 </td>\n                            <td> Website </td>\n                            <td> Cash on delivered </td>\n                            <td> 04 Dec 2019 </td>\n                            <td>\n   ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-4",
+          "slot": "c2",
+          "id": "s355",
+          "file": "index.html",
+          "start": 38284,
+          "end": 38312,
+          "excerpt": "<td> Cash on delivered </td>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "slot": "c1",
+          "id": "s557",
+          "file": "pages/samples/login.html",
+          "start": 1200,
+          "end": 1600,
+          "excerpt": "     <form>\n                  <div class=\"form-group\">\n                    <label>Username or email *</label>\n                    <input type=\"text\" class=\"form-control p_input\">\n                  </div>\n                  <div class=\"form-group\">\n                    <label>Password *</label>\n                    <input type=\"text\" class=\"form-control p_input\">\n                  </div>\n             ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "slot": "c2",
+          "id": "s559",
+          "file": "pages/samples/login.html",
+          "start": 1275,
+          "end": 1309,
+          "excerpt": "<label>Username or email *</label>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-5",
+          "slot": "c3",
+          "id": "s562",
+          "file": "pages/samples/login.html",
+          "start": 1467,
+          "end": 1492,
+          "excerpt": "<label>Password *</label>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-6",
+          "slot": "c1",
+          "id": "s585",
+          "file": "pages/samples/register.html",
+          "start": 1414,
+          "end": 1574,
+          "excerpt": "<div class=\"form-group\">\n                    <label>Email</label>\n                    <input type=\"email\" class=\"form-control p_input\">\n                  </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-6",
+          "slot": "c2",
+          "id": "s587",
+          "file": "pages/samples/register.html",
+          "start": 1500,
+          "end": 1549,
+          "excerpt": "<input type=\"email\" class=\"form-control p_input\">",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-7",
+          "slot": "c1",
+          "id": "s601",
+          "file": "pages/samples/register.html",
+          "start": 2798,
+          "end": 2898,
+          "excerpt": "<p class=\"terms\">By creating an account you are accepting our<a href=\"#\"> Terms & Conditions</a></p>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-8",
+          "slot": "c1",
+          "id": "s544",
+          "file": "pages/samples/error-404.html",
+          "start": 1556,
+          "end": 1779,
+          "excerpt": "<div class=\"row mt-5\">\n                <div class=\"col-12 text-center mt-xl-2\">\n                  <a class=\"text-white font-weight-medium\" href=\"../../index.html\">Back to home</a>\n                </div>\n              </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "items",
+          "row": "coverage-8",
+          "slot": "c2",
+          "id": "s545",
+          "file": "pages/samples/error-404.html",
+          "start": 1595,
+          "end": 1758,
+          "excerpt": "<div class=\"col-12 text-center mt-xl-2\">\n                  <a class=\"text-white font-weight-medium\" href=\"../../index.html\">Back to home</a>\n                </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "slot": "c1",
+          "id": "s561",
+          "file": "pages/samples/login.html",
+          "start": 1422,
+          "end": 1586,
+          "excerpt": "<div class=\"form-group\">\n                    <label>Password *</label>\n                    <input type=\"text\" class=\"form-control p_input\">\n                  </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 0,
+          "slot": "c2",
+          "id": "s563",
+          "file": "pages/samples/login.html",
+          "start": 1513,
+          "end": 1561,
+          "excerpt": "<input type=\"text\" class=\"form-control p_input\">",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "slot": "c1",
+          "id": "s596",
+          "file": "pages/samples/register.html",
+          "start": 2000,
+          "end": 2400,
+          "excerpt": "class=\"form-check-input\"> Remember me </label>\n                    </div>\n                    <a href=\"#\" class=\"forgot-pass\">Forgot password</a>\n                  </div>\n                  <div class=\"text-center\">\n                    <button type=\"submit\" class=\"btn btn-primary btn-block enter-btn\">Login</button>\n                  </div>\n                  <div class=\"d-flex\">\n                    ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 1,
+          "slot": "c2",
+          "id": "s597",
+          "file": "pages/samples/register.html",
+          "start": 2189,
+          "end": 2340,
+          "excerpt": "<div class=\"text-center\">\n                    <button type=\"submit\" class=\"btn btn-primary btn-block enter-btn\">Login</button>\n                  </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "slot": "c1",
+          "id": "s236",
+          "file": "index.html",
+          "start": 26000,
+          "end": 26400,
+          "excerpt": " flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3\">\n                      <div class=\"text-md-center text-xl-left\">\n                        <h6 class=\"mb-1\">Tranfer to Stripe</h6>\n                        <p class=\"text-muted mb-0\">07 Jan 2019, 09:12AM</p>\n                      </div>\n                      <div class=\"align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 2,
+          "slot": "c2",
+          "id": "s237",
+          "file": "index.html",
+          "start": 26073,
+          "end": 26283,
+          "excerpt": "<div class=\"text-md-center text-xl-left\">\n                        <h6 class=\"mb-1\">Tranfer to Stripe</h6>\n                        <p class=\"text-muted mb-0\">07 Jan 2019, 09:12AM</p>\n                      </div>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 3,
+          "slot": "c1",
+          "id": "s350",
+          "file": "index.html",
+          "start": 38000,
+          "end": 38400,
+          "excerpt": "t=\"image\" />\n                              <span class=\"ps-2\">Estella Bryan</span>\n                            </td>\n                            <td> 02312 </td>\n                            <td> $14,500 </td>\n                            <td> Website </td>\n                            <td> Cash on delivered </td>\n                            <td> 04 Dec 2019 </td>\n                            <td>\n   ",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 3,
+          "slot": "c2",
+          "id": "s355",
+          "file": "index.html",
+          "start": 38284,
+          "end": 38312,
+          "excerpt": "<td> Cash on delivered </td>",
+          "exactOriginalUtf16": true
+        },
+        {
+          "layer": "raw",
+          "kind": "risks",
+          "row": 4,
+          "slot": "c1",
+          "id": "s601",
+          "file": "pages/samples/register.html",
+          "start": 2798,
+          "end": 2898,
+          "excerpt": "<p class=\"terms\">By creating an account you are accepting our<a href=\"#\"> Terms & Conditions</a></p>",
+          "exactOriginalUtf16": true
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Seven packets comprise six previously inspected repositories: Corona appears at eight and sixteen requirements. No unseen-source generalization score is claimed.",
+    "All source files remain byte-identical to R13; full-source semantics inspection is reused only after hash equality is proved, while every new answer and selection is independently reviewed.",
+    "No source, response, reference, acceptance, permission or payment was altered. No browser or backend was run.",
+    "Status agreement and seven report admissions do not make all whole answers flawless. The four qualified answers retain specific citation/scope/wording limits.",
+    "R13/R14 failures remain original artifacts; this new V3 result does not rewrite them."
+  ]
+}

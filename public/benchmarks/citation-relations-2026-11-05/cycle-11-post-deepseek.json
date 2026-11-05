@@ -1,0 +1,78 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/assessment-citation-catalog.ts",
+      "bytes": 8893,
+      "lines": 142,
+      "sha256": "4d05becdf4b71c2055e5a3599acd07dcf26b1cbb0b58e10c8fb457d095996b7e"
+    },
+    {
+      "file": "lib/assessment-completion.ts",
+      "bytes": 7643,
+      "lines": 100,
+      "sha256": "5c65713e317114620b67de562adda9467fffdfdefb02ca6e8fbc204e403a65f0"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 41570,
+      "lines": 330,
+      "sha256": "b13bbd3fa0da089acb301c2d604d03c81b5b25f47ed7e3de6e42486e10b4eb1a"
+    },
+    {
+      "file": "scripts/run-project-assessment-evaluation.ts",
+      "bytes": 42254,
+      "lines": 399,
+      "sha256": "41cb80f06c118249003aceecd92e76bbcb01f92ba735cb106aad84820769d1b4"
+    },
+    {
+      "file": "tests/assessment-catalog-protocol.test.ts",
+      "bytes": 4064,
+      "lines": 50,
+      "sha256": "a388cb126d5166d11df78363cabe42c984ee0526a9cc562da4d1e4d2cc9afbfc"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Reviewed the supplied packet read-only for the Cycle 11 advisory: exact raw-source preservation, repeated-occurrence offsets, stale/mixed/duplicate IDs, expansion and the 30000 request admission, raw-capture accuracy, and the August 'Most Innovative' receipt replay dimension. The active production path (assessDelivery → catalog_ids) and the split from assessDeliveryLegacyReplay are consistent with the packet's stated scope. The catalog design correctly keys spans by file plus start/end (not by text), so repeated identical text maps to distinct IDs. The expansion budget is computed before semantic guards, and both the 30,000-unit wire check and the request-byte admission fail closed. No actionable correctness or product-flow defect was established in catalog construction, ID resolution, or raw capture. This is not approval by test results: the test file was not executed, and its repeated-span assertion is weaker than its title suggests (it cites only the last catalog entry and does not exercise two identical text spans). That test gap is reported as a limitation, not as a source defect.\",\"findings\":[],\"limitations\":[\"Read-only, static review of the six supplied files only. No typecheck, tests, builds, provider calls, browser runs, or runtime checks were executed, and no files, credentials, or other context were inspected.\",\"The August Agent Receipt 'Most Innovative' evidence replay could not be evaluated beyond what the packet contains: the receipt, its primary evidence URL, and any prior award-comparison record are not in the packet. The packet supports only a check of how an evidence packet is replayed through the V2 catalog and raw capture, not the receipt's strengths or any winner-superiority comparison.\",\"Dependency contracts were not checked: requireAssessmentItemCoverage, canonicalAssessmentRisk, parseStaticProject, validateStaticFiles, STATIC_RESOURCE_LIMITS, and the official strict-enum documentation. Acceptance of the official enum behavior (alternatives listed, not all required) follows the packet's instruction and was not independently verified.\",\"The 30,000-limit accounting at scripts/run-project-assessment-evaluation.ts:229 counts UTF-16 units of JSON.stringify after citation expansion. Expanded citation text is bounded by the catalog's own 384 KiB serialized cap at assessment-citation-catalog.ts:118, but the maximum wire output size is not directly pinned by the 30,000 limit. This is a budget observation, not a demonstrated defect.\",\"tests/assessment-catalog-protocol.test.ts:46-49 is titled as proving distinct identical source spans but asserts only that the last catalog entry's start is >= 0, so it gives no regression protection for repeated-occurrence offset disambiguation. Treat catalog coverage as source-reviewed, not test-proven.\",\"No assessment was made of legacy_quotes replay equivalence, payment, acceptance, or persisted-report compatibility, because the corresponding contracts, routes, and storage code are outside the packet.\"]}",
+  "report": {
+    "summary": "Reviewed the supplied packet read-only for the Cycle 11 advisory: exact raw-source preservation, repeated-occurrence offsets, stale/mixed/duplicate IDs, expansion and the 30000 request admission, raw-capture accuracy, and the August 'Most Innovative' receipt replay dimension. The active production path (assessDelivery → catalog_ids) and the split from assessDeliveryLegacyReplay are consistent with the packet's stated scope. The catalog design correctly keys spans by file plus start/end (not by text), so repeated identical text maps to distinct IDs. The expansion budget is computed before semantic guards, and both the 30,000-unit wire check and the request-byte admission fail closed. No actionable correctness or product-flow defect was established in catalog construction, ID resolution, or raw capture. This is not approval by test results: the test file was not executed, and its repeated-span assertion is weaker than its title suggests (it cites only the last catalog entry and does not exercise two identical text spans). That test gap is reported as a limitation, not as a source defect.",
+    "findings": [],
+    "limitations": [
+      "Read-only, static review of the six supplied files only. No typecheck, tests, builds, provider calls, browser runs, or runtime checks were executed, and no files, credentials, or other context were inspected.",
+      "The August Agent Receipt 'Most Innovative' evidence replay could not be evaluated beyond what the packet contains: the receipt, its primary evidence URL, and any prior award-comparison record are not in the packet. The packet supports only a check of how an evidence packet is replayed through the V2 catalog and raw capture, not the receipt's strengths or any winner-superiority comparison.",
+      "Dependency contracts were not checked: requireAssessmentItemCoverage, canonicalAssessmentRisk, parseStaticProject, validateStaticFiles, STATIC_RESOURCE_LIMITS, and the official strict-enum documentation. Acceptance of the official enum behavior (alternatives listed, not all required) follows the packet's instruction and was not independently verified.",
+      "The 30,000-limit accounting at scripts/run-project-assessment-evaluation.ts:229 counts UTF-16 units of JSON.stringify after citation expansion. Expanded citation text is bounded by the catalog's own 384 KiB serialized cap at assessment-citation-catalog.ts:118, but the maximum wire output size is not directly pinned by the 30,000 limit. This is a budget observation, not a demonstrated defect.",
+      "tests/assessment-catalog-protocol.test.ts:46-49 is titled as proving distinct identical source spans but asserts only that the last catalog entry's start is >= 0, so it gives no regression protection for repeated-occurrence offset disambiguation. Treat catalog coverage as source-reviewed, not test-proven.",
+      "No assessment was made of legacy_quotes replay equivalence, payment, acceptance, or persisted-report compatibility, because the corresponding contracts, routes, and storage code are outside the packet."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

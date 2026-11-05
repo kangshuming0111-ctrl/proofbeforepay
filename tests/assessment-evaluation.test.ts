@@ -4,7 +4,9 @@ import { readFileSync } from "node:fs";
 import { runEvaluation, VERIFIED_PRICE, type EvaluationCase } from "../scripts/run-assessment-evaluation.ts";
 import {assessmentOutputTokenLimit} from "../lib/delivery-assessment.ts";
 import type { Fetcher } from "../lib/providers.ts";
+import type {AssessmentCitationCatalog} from "../lib/assessment-citation-catalog.ts";
 
+const slots = (ids: readonly unknown[], maximum = 6) => Object.fromEntries(Array.from({length: Math.max(maximum, ids.length)}, (_, i) => [`c${i + 1}`, ids[i] ?? ""]));
 const html = '<!doctype html><html><head><title>Florist</title></head><body><p>Opening hours: 11am–8pm.</p></body></html>';
 const env = { DEEPSEEK_API_KEY: "synthetic-evaluation-key", DEEPSEEK_MODEL: "deepseek-flash" };
 function fixture(id = "hours-correct", stratum: EvaluationCase["evaluationStratum"] = "complete-literal", expectedStatus: EvaluationCase["reference"]["expectedStatus"] = "supported"): EvaluationCase {
@@ -15,7 +17,10 @@ function provider(status = "supported", includeUsage = true, excerpt = "Opening 
   const bodies: string[] = [];
   const fetcher: Fetcher = async (_url, init) => {
     bodies.push(String(init?.body));
-    return new Response(JSON.stringify({ model: "deepseek-flash", choices: [{ finish_reason: "stop", message: { content: JSON.stringify({ items: [{ criterionId: "manual-1", status, explanation: "Synthetic controlled response.", citations: [{ file: "index.html", excerpt }] }], risks: [], limitations: [] }) } }],
+    const request = JSON.parse(String(init?.body)), packet = JSON.parse(request.messages[1].content), catalog = packet.citationCatalog as AssessmentCitationCatalog;
+    const id = catalog.entries.find(entry => entry.file === "index.html" && entry.excerpt === excerpt)?.id
+      ?? catalog.entries.find(entry => entry.file === "index.html" && entry.excerpt.includes(excerpt))?.id ?? "not-in-the-current-catalog";
+    return new Response(JSON.stringify({ model: "deepseek-flash", choices: [{ finish_reason: "tool_calls", message: { content: null, tool_calls: [{type: "function", function: {name: "submit_source_assessment_v3", arguments: JSON.stringify({catalogId: catalog.catalogId, items: [{ criterionId: "manual-1", status, explanation: "Synthetic controlled response.", citations: slots([id]) }], risks: [], limitations: [] })}}] } }],
       ...(includeUsage ? { usage: { prompt_tokens: 1000, completion_tokens: 100, total_tokens: 1100 } } : {}) }), { status: 200 });
   };
   return { bodies, fetcher };
@@ -71,6 +76,7 @@ test("the corpus reference labels never enter the real application request", asy
   assert.equal(report.results[0].raw?.status, "supported");
   assert.equal(report.results[0].application?.status, "supported");
   assert.equal(report.results[0].raw?.citationValidity, "valid");
+  assert.equal(report.results[0].raw?.finishReason, "tool_calls");
   assert.equal(report.results[0].networkAttempted, true);
   assert.equal(report.results[0].httpError, false);
   assert.equal(report.results[0].usageExceededReservation, false);
@@ -198,4 +204,81 @@ test("the separate complete-source corpus covers late correct copy, wrong copy, 
   assert.ok(group.cases.every((item: EvaluationCase) => item.files["index.html"].length > 6000));
   assert.ok(report.results.every(item => item.plan.outputTokenLimit > 1980 && item.plan.outputTokenLimit <= 6400));
   assert.ok(group.protocolCounterexamples.invalidStatuses.some(Array.isArray));
+});
+
+type ControlledCitationOutput = {catalogId: string; items: {criterionId: string; status: string; explanation: string; citations: unknown[]}[]; risks: unknown[]; limitations: unknown[]};
+function modifiedProvider(change: (output: ControlledCitationOutput, catalog: AssessmentCitationCatalog) => void, suffix = "") {
+  const base = provider(); let calls = 0;
+  const fetcher: Fetcher = async (url, init) => {
+    calls++;
+    const response = await base.fetcher(url, init), packet = JSON.parse(JSON.parse(String(init?.body)).messages[1].content);
+    const data = await response.json() as {choices: {message: {tool_calls: {function: {arguments: string}}[]}}[]};
+    const fn = data.choices[0].message.tool_calls[0].function, output = JSON.parse(fn.arguments) as ControlledCitationOutput;
+    for (const item of output.items) item.citations = Object.values(item.citations).filter(id => id !== "");
+    change(output, packet.citationCatalog);
+    const wire={...output,items:output.items.map(item=>({...item,citations:slots(item.citations)}))};
+    fn.arguments = JSON.stringify(wire) + suffix;
+    return Response.json(data);
+  };
+  return {fetcher, calls: () => calls};
+}
+
+test("single-case V3 capture retains selected IDs separately from exact restored source spans", async () => {
+  const c = fixture(), excerpt = "<p>Opening hours: 11am–8pm.</p>";
+  c.files["index.html"] = html.replace(excerpt, excerpt + "<p>🙂 Between sections</p>" + excerpt);
+  let chosen = "";
+  const p = modifiedProvider((output, catalog) => {
+    const repeated = catalog.entries.filter(entry => entry.excerpt === excerpt); assert.equal(repeated.length, 2);
+    chosen = repeated[1].id; output.items[0].citations = [chosen];
+  });
+  const report = await runEvaluation([c], {live: true, env, maxCalls: 1, maxUsd: .1, fetcher: p.fetcher}), raw = report.results[0].raw!;
+  assert.equal(p.calls(), 1); assert.equal(raw.citationEncoding, "catalog_slots"); assert.equal(raw.catalogIdMatched, true);
+  assert.deepEqual(raw.citationIds, [chosen]); assert.equal(raw.finishReason, "tool_calls"); assert.equal(raw.citationValidity, "valid");
+  assert.equal(raw.citations[0].start, c.files["index.html"].lastIndexOf(excerpt));
+  assert.deepEqual(raw.citations, report.results[0].application!.citations);
+  assert.equal(raw.originalJsonValid, true); assert.equal(raw.contentNormalization, "none");
+  assert.deepEqual(JSON.parse(raw.originalArgumentText!).items[0].citations, raw.citationSelection); assert.deepEqual(raw.citationSelection,slots([chosen]));
+});
+
+test("wrong catalog binding preserves raw advice but admits no restored citations or application report", async () => {
+  const p = modifiedProvider(output => {output.catalogId = "0".repeat(64);});
+  const report = await runEvaluation([fixture()], {live: true, env, maxCalls: 1, maxUsd: .1, fetcher: p.fetcher}), raw = report.results[0].raw!;
+  assert.equal(p.calls(), 1); assert.equal(raw.jsonValid, true); assert.equal(raw.status, "supported");
+  assert.equal(raw.catalogIdMatched, false); assert.equal(raw.citationValidity, "invalid"); assert.deepEqual(raw.citations, []);
+  assert.equal(report.results[0].application?.status, "error"); assert.equal(report.accounting.calls, 1);
+});
+
+test("duplicate IDs and legacy quotation objects cannot silently become V3 evidence", async () => {
+  for (const mixed of [false, true]) {
+    const p = modifiedProvider(output => {
+      output.items[0].citations = mixed ? [{file: "index.html", excerpt: "Opening hours: 11am–8pm."}] : [output.items[0].citations[0], output.items[0].citations[0]];
+    });
+    const report = await runEvaluation([fixture()], {live: true, env, maxCalls: 1, maxUsd: .1, fetcher: p.fetcher}), raw = report.results[0].raw!;
+    assert.equal(p.calls(), 1); assert.equal(raw.catalogIdMatched, true); assert.equal(raw.citationValidity, "invalid");
+    assert.deepEqual(raw.citations, []); assert.equal(report.results[0].application?.status, "error");
+    assert.equal(raw.citationIds,null);assert.equal(Object.values(raw.citationSelection as Record<string,unknown>).filter(value=>value!=="").length,mixed?1:2);
+  }
+});
+
+test("strict V3 framing normalization is recorded without relabelling provider finish or editing selected IDs", async () => {
+  const p = modifiedProvider(() => {}, "}");
+  const report = await runEvaluation([fixture()], {live: true, env, maxCalls: 1, maxUsd: .1, fetcher: p.fetcher}), raw = report.results[0].raw!;
+  assert.equal(p.calls(), 1); assert.equal(raw.finishReason, "tool_calls"); assert.equal(raw.originalJsonValid, false);
+  assert.equal(raw.contentNormalization, "one_trailing_brace"); assert.equal(raw.jsonValid, true); assert.equal(raw.citationValidity, "valid");
+  assert.throws(() => JSON.parse(raw.originalArgumentText!));
+  assert.deepEqual(JSON.parse(raw.originalArgumentText!.slice(0, -1)).items[0].citations, raw.citationSelection);
+  assert.deepEqual(Object.values(raw.citationSelection as Record<string,string>).filter(Boolean),raw.citationIds);
+  assert.equal(report.results[0].application?.status, "supported");
+});
+
+test("active single-case capture refuses a legacy envelope instead of fabricating V3 raw metrics", async () => {
+  let calls = 0;
+  const fetcher: Fetcher = async () => {
+    calls++;
+    return Response.json({choices: [{finish_reason: "stop", message: {content: JSON.stringify({items: [{criterionId: "manual-1", status: "supported", explanation: "Old shape", citations: [{file: "index.html", excerpt: "Opening hours: 11am–8pm."}]}], risks: [], limitations: []})}}], usage: {prompt_tokens: 1000, completion_tokens: 100, total_tokens: 1100}});
+  };
+  const report = await runEvaluation([fixture()], {live: true, env, maxCalls: 1, maxUsd: .1, fetcher}), raw = report.results[0].raw!;
+  assert.equal(calls, 1); assert.equal(raw.finishReason, "stop"); assert.equal(raw.jsonValid, false); assert.equal(raw.status, "invalid");
+  assert.equal(raw.citationValidity, "unavailable"); assert.equal(raw.originalArgumentText, null); assert.equal(raw.catalogIdMatched, false);
+  assert.equal(report.results[0].application?.status, "error");
 });

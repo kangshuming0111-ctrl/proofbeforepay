@@ -1,0 +1,44 @@
+{
+  "cycle": 14,
+  "reason": "Actual sealed-source first attempts exposed issues; first artifacts immutable, now known repair cases.",
+  "facts": {
+    "newFirstRawAgreement": "11/12",
+    "newFirstApplicationAgreement": "6/12",
+    "knownRawAgreement": "64/64",
+    "knownApplicationAgreement": "56/64",
+    "knownRejected": "CleanBlog optionalrisk4IDs exceedsrisk3 cap; no missing suggestion.",
+    "actualFalsePass": {
+      "criterion": "Both pages attach GF tag to Whipped cod roe",
+      "raw": {
+        "criterionId": "coverage-3",
+        "status": "supported",
+        "explanation": "Homepage lunch pane marks Whipped cod roe with a GF tag; menu.html lists Whipped cod roe without any dish-tag span.",
+        "citations": [
+          "s77",
+          "s202",
+          "s204"
+        ]
+      }
+    },
+    "staticMarkupFalseAbstention": [
+      "static HTML label for/id pairs",
+      "static radio name/value/label",
+      "static input type password on two named files",
+      "static input type email"
+    ]
+  },
+  "proposal": [
+    "Add bounded complete original div/span/input/h2/h3/td/th catalog addresses, no source serialization or semantic promotion; source/window/count budgets unchanged.",
+    "Recognize clearly source-only HTML attribute/control relationships as source_content; actual login/click/rendered/security/persistence and mixed claims remain observation-required.",
+    "Negative-only consistency guard: source-content positive ALL/BOTH/EACH requirement plus explicit source missing-label/tag/field/amount statement in raw supported explanation ->insufficient_evidence, never automaticchanges. Finite parser not a semantic oracle, preserve original quote and limitation; near-neighbor tests to avoid treating no-browser evidence or negative requirements as contradictions.",
+    "Strengthen status/ALL-conjunct reconciliation, complete name/value owner selection, risk3-vs-item6 budgets, and source hidden markup visibility language. Retain hard rejection of malformed/oversized risks, never trim or invent.",
+    "Tavola Updateddaily exact p is conservative unknown under omitted CSS/script uncertainty. Do not relax global uncertainty merely to increase referenceagreement. Independently check if that is current agreed conservative scope, report separately.",
+    "Rerun known7 + revealednew2 as known repair, do not count another cold test. Fresh first labels and rejected whole answers preserved."
+  ],
+  "awardEvidence": {
+    "url": "https://www.bemyapp.com/insights/ai-builders-challenge-with-ibm-bob-2026-winners.html",
+    "AgentReceipt": "August MostInnovative evidence-linked replay, not overallChampion",
+    "PHAROS_INC": "August1st deterministicrules/clearreport",
+    "comparison": "R13 source addressing improved but whole-answer contradictions and overabstention remain concrete gap. R14 tests must show safe consistency+usable static decisions; no overall opponent score or winning guarantee."
+  }
+}

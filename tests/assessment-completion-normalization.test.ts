@@ -3,7 +3,7 @@ import test from "node:test";
 import {readFile} from "node:fs/promises";
 import {assessmentReportJson} from "../lib/assessment-completion.ts";
 import {AssessmentResponseError} from "../lib/assessment-response.ts";
-import {assessDelivery} from "../lib/delivery-assessment.ts";
+import {assessDeliveryLegacyReplay as assessDelivery} from "../lib/delivery-assessment.ts";
 import {projectQuote,validateProjectCorpus} from "../scripts/run-project-assessment-evaluation.ts";
 
 test("strict syntax compatibility removes only one orphan brace after an otherwise complete JSON object",()=>{

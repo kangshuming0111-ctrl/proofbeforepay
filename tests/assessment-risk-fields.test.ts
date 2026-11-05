@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {assessDelivery} from "../lib/delivery-assessment.ts";
+import {assessDeliveryLegacyReplay as assessDelivery} from "../lib/delivery-assessment.ts";
 import {AssessmentResponseError} from "../lib/assessment-response.ts";
 import {assessmentFailureResponse} from "../lib/assessment-failure-presentation.ts";
 import {canonicalAssessmentRisk} from "../lib/assessment-risk-fields.ts";

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { SHOWCASE_REQUIREMENTS, showcaseFiles } from "../scripts/build-showcase.mjs";
 import { createUploadedDelivery, parseStaticProject } from "../lib/static-project.ts";
-import { assessDelivery } from "../lib/delivery-assessment.ts";
+import { assessDeliveryLegacyReplay as assessDelivery } from "../lib/delivery-assessment.ts";
 import type { ProofQuote } from "../lib/contracts.ts";
 
 test("the standalone showcase uploads expose a genuine missing target and retain unknown human checks after repair", () => {

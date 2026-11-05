@@ -1,0 +1,322 @@
+{
+  "schema": "pbp-publication-replay-independent-diff-review-v1",
+  "reviewedAt": "2026-11-05T14:36:42.549338+00:00",
+  "mode": "controlled_application_replay_review",
+  "providerCalls": 0,
+  "networkCalls": 0,
+  "inputSha256": "95bd38d5a5d81d2fd8f9e974cd5a203764010521c6412a12a28bfc29dff5001f",
+  "harnessSha256Verified": true,
+  "originalNineInputFilesUnchanged": true,
+  "summary": {
+    "projects": 15,
+    "criteria": 82,
+    "all15RequestBodiesByteIdentical": true,
+    "allProjectQuoteHashesIdenticalAndInputsUnmutated": true,
+    "all82ItemStatusesPreserved": true,
+    "allPublishedSourceCitationsExact": true,
+    "sourceMismatchNarrativesCanonicalized": 3,
+    "optionalRiskRowsTemporarilyWithheld": 6,
+    "withheldCases": [
+      "real-holdout-clean-blog",
+      "citation-relations-holdout-tavola",
+      "scoped-merged-row-uncertain"
+    ],
+    "allSystemInventoryCountsIndependentlyCorrect": true,
+    "allModelSelfLimitationCountsCorrect": true
+  },
+  "canonicalMismatchChanges": [
+    {
+      "id": "scoped-target-price-wrong",
+      "criterionId": "coverage-1",
+      "old": "index.html paragraph shows Tea AUD 18 (amountMinor 1800), but menu.html paragraph shows Tea AUD 16 (1600), not the agreed AUD 18.",
+      "current": "A confirmed business check expects \"Tea\" at AUD 18.00, but the unique simple source block in menu.html states AUD 16.00. This is a limited source mismatch with an exact quotation, not rendered visibility or backend execution. All 2 confirmed checks for this criterion were inspected; any unknowns still need review."
+    },
+    {
+      "id": "scoped-neighbour-price-borrow",
+      "criterionId": "coverage-1",
+      "old": "index.html contains Tea AUD 18 (1800 minor units), but menu.html, the second agreed page, contains Tea AUD 16 (1600), not the agreed 1800.",
+      "current": "A confirmed business check expects \"Tea\" at AUD 18.00, but the unique simple source block in menu.html states AUD 16.00. This is a limited source mismatch with an exact quotation, not rendered visibility or backend execution. All 2 confirmed checks for this criterion were inspected; any unknowns still need review."
+    },
+    {
+      "id": "scoped-table-cross-row",
+      "criterionId": "coverage-1",
+      "old": "index.html shows Tea AUD 18 (1800 minor units), but menu.html's Tea row declares AUD 16 (1600), not the agreed AUD 1800.",
+      "current": "A confirmed business check expects \"Tea\" at AUD 18.00, but the unique simple source block in menu.html states AUD 16.00. This is a limited source mismatch with an exact quotation, not rendered visibility or backend execution. All 2 confirmed checks for this criterion were inspected; any unknowns still need review."
+    }
+  ],
+  "rows": [
+    {
+      "group": "known",
+      "id": "real-business-casual",
+      "requestIdentical": true,
+      "quoteIdenticalAndUnmutated": true,
+      "statusesUnchanged": true,
+      "inventoryCountsVerified": {
+        "html": 4,
+        "css": 0,
+        "raster": 0
+      },
+      "modelLimitationCountVerified": 4,
+      "oldRiskCount": 2,
+      "publishedRiskCount": 2,
+      "notesVerdict": "accepted",
+      "riskGateNotePresent": null
+    },
+    {
+      "group": "known",
+      "id": "real-modern-business",
+      "requestIdentical": true,
+      "quoteIdenticalAndUnmutated": true,
+      "statusesUnchanged": true,
+      "inventoryCountsVerified": {
+        "html": 4,
+        "css": 0,
+        "raster": 0
+      },
+      "modelLimitationCountVerified": 5,
+      "oldRiskCount": 2,
+      "publishedRiskCount": 2,
+      "notesVerdict": "accepted",
+      "riskGateNotePresent": null
+    },
+    {
+      "group": "known",
+      "id": "real-corona-admin",
+      "requestIdentical": true,
+      "quoteIdenticalAndUnmutated": true,
+      "statusesUnchanged": true,
+      "inventoryCountsVerified": {
+        "html": 4,
+        "css": 0,
+        "raster": 0
+      },
+      "modelLimitationCountVerified": 6,
+      "oldRiskCount": 3,
+      "publishedRiskCount": 3,
+      "notesVerdict": "accepted",
+      "riskGateNotePresent": null
+    },
+    {
+      "group": "known",
+      "id": "real-personal-supplemental",
+      "requestIdentical": true,
+      "quoteIdenticalAndUnmutated": true,
+      "statusesUnchanged": true,
+      "inventoryCountsVerified": {
+        "html": 4,
+        "css": 0,
+        "raster": 0
+      },
+      "modelLimitationCountVerified": 4,
+      "oldRiskCount": 3,
+      "publishedRiskCount": 3,
+      "notesVerdict": "accepted",
+      "riskGateNotePresent": null
+    },
+    {
+      "group": "known",
+      "id": "real-holdout-clean-blog",
+      "requestIdentical": true,
+      "quoteIdenticalAndUnmutated": true,
+      "statusesUnchanged": true,
+      "inventoryCountsVerified": {
+        "html": 4,
+        "css": 0,
+        "raster": 0
+      },
+      "modelLimitationCountVerified": 4,
+      "oldRiskCount": 3,
+      "publishedRiskCount": 0,
+      "notesVerdict": "accepted",
+      "riskGateNotePresent": true
+    },
+    {
+      "group": "known",
+      "id": "real-holdout-html5-boilerplate",
+      "requestIdentical": true,
+      "quoteIdenticalAndUnmutated": true,
+      "statusesUnchanged": true,
+      "inventoryCountsVerified": {
+        "html": 2,
+        "css": 1,
+        "raster": 0
+      },
+      "modelLimitationCountVerified": 5,
+      "oldRiskCount": 4,
+      "publishedRiskCount": 4,
+      "notesVerdict": "accepted",
+      "riskGateNotePresent": null
+    },
+    {
+      "group": "known",
+      "id": "known-corona-sixteen-checklist",
+      "requestIdentical": true,
+      "quoteIdenticalAndUnmutated": true,
+      "statusesUnchanged": true,
+      "inventoryCountsVerified": {
+        "html": 4,
+        "css": 0,
+        "raster": 0
+      },
+      "modelLimitationCountVerified": 4,
+      "oldRiskCount": 5,
+      "publishedRiskCount": 5,
+      "notesVerdict": "accepted",
+      "riskGateNotePresent": null
+    },
+    {
+      "group": "repair-new",
+      "id": "citation-relations-holdout-tavola",
+      "requestIdentical": true,
+      "quoteIdenticalAndUnmutated": true,
+      "statusesUnchanged": true,
+      "inventoryCountsVerified": {
+        "html": 2,
+        "css": 2,
+        "raster": 0
+      },
+      "modelLimitationCountVerified": 4,
+      "oldRiskCount": 2,
+      "publishedRiskCount": 0,
+      "notesVerdict": "accepted",
+      "riskGateNotePresent": true
+    },
+    {
+      "group": "repair-new",
+      "id": "citation-relations-holdout-material-dashboard-lite",
+      "requestIdentical": true,
+      "quoteIdenticalAndUnmutated": true,
+      "statusesUnchanged": true,
+      "inventoryCountsVerified": {
+        "html": 4,
+        "css": 1,
+        "raster": 0
+      },
+      "modelLimitationCountVerified": 4,
+      "oldRiskCount": 2,
+      "publishedRiskCount": 2,
+      "notesVerdict": "accepted",
+      "riskGateNotePresent": null
+    },
+    {
+      "group": "scope",
+      "id": "scoped-two-pages-correct",
+      "requestIdentical": true,
+      "quoteIdenticalAndUnmutated": true,
+      "statusesUnchanged": true,
+      "inventoryCountsVerified": {
+        "html": 3,
+        "css": 0,
+        "raster": 0
+      },
+      "modelLimitationCountVerified": 3,
+      "oldRiskCount": 0,
+      "publishedRiskCount": 0,
+      "notesVerdict": "accepted",
+      "riskGateNotePresent": null
+    },
+    {
+      "group": "scope",
+      "id": "scoped-target-price-wrong",
+      "requestIdentical": true,
+      "quoteIdenticalAndUnmutated": true,
+      "statusesUnchanged": true,
+      "inventoryCountsVerified": {
+        "html": 3,
+        "css": 0,
+        "raster": 0
+      },
+      "modelLimitationCountVerified": 2,
+      "oldRiskCount": 1,
+      "publishedRiskCount": 1,
+      "notesVerdict": "accepted",
+      "riskGateNotePresent": null
+    },
+    {
+      "group": "scope",
+      "id": "scoped-neighbour-price-borrow",
+      "requestIdentical": true,
+      "quoteIdenticalAndUnmutated": true,
+      "statusesUnchanged": true,
+      "inventoryCountsVerified": {
+        "html": 3,
+        "css": 0,
+        "raster": 0
+      },
+      "modelLimitationCountVerified": 2,
+      "oldRiskCount": 1,
+      "publishedRiskCount": 1,
+      "notesVerdict": "accepted",
+      "riskGateNotePresent": null
+    },
+    {
+      "group": "scope",
+      "id": "scoped-table-row-correct",
+      "requestIdentical": true,
+      "quoteIdenticalAndUnmutated": true,
+      "statusesUnchanged": true,
+      "inventoryCountsVerified": {
+        "html": 3,
+        "css": 0,
+        "raster": 0
+      },
+      "modelLimitationCountVerified": 1,
+      "oldRiskCount": 0,
+      "publishedRiskCount": 0,
+      "notesVerdict": "accepted",
+      "riskGateNotePresent": null
+    },
+    {
+      "group": "scope",
+      "id": "scoped-table-cross-row",
+      "requestIdentical": true,
+      "quoteIdenticalAndUnmutated": true,
+      "statusesUnchanged": true,
+      "inventoryCountsVerified": {
+        "html": 3,
+        "css": 0,
+        "raster": 0
+      },
+      "modelLimitationCountVerified": 3,
+      "oldRiskCount": 1,
+      "publishedRiskCount": 1,
+      "notesVerdict": "accepted",
+      "riskGateNotePresent": null
+    },
+    {
+      "group": "scope",
+      "id": "scoped-merged-row-uncertain",
+      "requestIdentical": true,
+      "quoteIdenticalAndUnmutated": true,
+      "statusesUnchanged": true,
+      "inventoryCountsVerified": {
+        "html": 3,
+        "css": 0,
+        "raster": 0
+      },
+      "modelLimitationCountVerified": 2,
+      "oldRiskCount": 1,
+      "publishedRiskCount": 0,
+      "notesVerdict": "accepted",
+      "riskGateNotePresent": true
+    }
+  ],
+  "validationOrderReview": {
+    "verdict": "accepted",
+    "evidence": "delivery-assessment.ts validates every risk required field, bounded text, fixed-slot selection and exact source citation before publishSourceAssessmentNotes; model limitations are text-validated before their count is published. Withholding does not admit malformed risk data."
+  },
+  "residuals": [
+    "This is publication-policy replay of15 retained responses, not15 new model calls or improved model accuracy. Original model/old application records remain linked by hashes and full side-by-side reports.",
+    "Status preservation means known mainNav citation evidence remains safely unknown. It does not close the catalog granularity gap or upgrade supported/unknown references.",
+    "Temporarily withholding6 optional risks preserves item-level evidence and reports actual counts; it reduces published optional-risk coverage rather than proving those risks were false or resolved.",
+    "Unaffected optional risks still retain the citation/scope qualifications in the original independent reviews; deterministic inventory notes do not certify all free-form model reasoning."
+  ],
+  "publicationCopy": {
+    "kind": "public copy with explicit provenance note",
+    "originalArtifactSha256": "836c5f903ee5b6f75e63a70c06b2d67814ee6cd00ab43a3cd2c8423a057e1a24",
+    "sanitizedMetadataFields": [],
+    "originalReplaySha256": "95bd38d5a5d81d2fd8f9e974cd5a203764010521c6412a12a28bfc29dff5001f",
+    "sanitizedPublicReplaySha256": "38eaceae6a8875e0119d032bf81b4e0264c731a3814de6ce844575acee9b3359",
+    "note": "Any original inputSha256 identifies the retained original replay. The sanitized public replay has the separate hash above; no audit result or wx control was changed."
+  }
+}

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {assessDelivery} from "../lib/delivery-assessment.ts";
+import {assessDeliveryLegacyReplay as assessDelivery} from "../lib/delivery-assessment.ts";
 import {projectQuote,type EvaluationProject} from "../scripts/run-project-assessment-evaluation.ts";
 
 test("nonverbatim title advice and the existing exact-string guard remain separate without changing source punctuation",async()=>{

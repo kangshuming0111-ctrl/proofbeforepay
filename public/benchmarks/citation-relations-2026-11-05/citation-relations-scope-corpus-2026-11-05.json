@@ -1,0 +1,428 @@
+{
+  "schema": "proofbeforepay-frozen-project-corpus-v1",
+  "cohort": "citation-relations-controlled-scope-2026-11-05",
+  "scope": "Six authored controlled multi-page source relation cases. Not real customer tasks or new repositories.",
+  "referenceMethod": "Production-confirmed file/label/currency/cents, direct original source inspection, no rendered execution; separate raw and negative-only application outcomes.",
+  "projects": [
+    {
+      "id": "scoped-two-pages-correct",
+      "stratum": "clean",
+      "language": "en",
+      "title": "Scoped menu evidence",
+      "summary": "Display Tea prices on both agreed menu pages.",
+      "requiredPages": [
+        "index.html",
+        "menu.html"
+      ],
+      "businessChecks": {
+        "confirmed": true,
+        "items": [
+          {
+            "id": "business-1",
+            "criterionId": "coverage-1",
+            "file": "index.html",
+            "source": {
+              "start": 0,
+              "end": 45,
+              "excerpt": "Display Tea prices on both agreed menu pages."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "currency": "AUD",
+              "amountMinor": 1800
+            }
+          },
+          {
+            "id": "business-2",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 45,
+              "excerpt": "Display Tea prices on both agreed menu pages."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "currency": "AUD",
+              "amountMinor": 1800
+            }
+          }
+        ]
+      },
+      "files": {
+        "index.html": "<!doctype html><html><head><title>Menu board</title></head><body><h1>Menu board</h1><p>Tea AUD 18</p></body></html>",
+        "menu.html": "<!doctype html><html><head><title>Menu board</title></head><body><h1>Menu board</h1><p>Tea AUD 18</p></body></html>",
+        "about.html": "<!doctype html><html><head><title>Menu board</title></head><body><h1>Menu board</h1><p>Tea AUD 18</p></body></html>"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "Display Tea prices on both agreed menu pages.",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "Synthetic controlled source relationship case; exact buyer-confirmed file and price, not rendered/runtime correctness. A merged cell remains outside the bounded recognizer.",
+            "relevantFiles": [
+              "index.html",
+              "menu.html",
+              "about.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "scoped-target-price-wrong",
+      "stratum": "mismatch",
+      "language": "en",
+      "title": "Scoped menu evidence",
+      "summary": "Display Tea prices on both agreed menu pages.",
+      "requiredPages": [
+        "index.html",
+        "menu.html"
+      ],
+      "businessChecks": {
+        "confirmed": true,
+        "items": [
+          {
+            "id": "business-1",
+            "criterionId": "coverage-1",
+            "file": "index.html",
+            "source": {
+              "start": 0,
+              "end": 45,
+              "excerpt": "Display Tea prices on both agreed menu pages."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "currency": "AUD",
+              "amountMinor": 1800
+            }
+          },
+          {
+            "id": "business-2",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 45,
+              "excerpt": "Display Tea prices on both agreed menu pages."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "currency": "AUD",
+              "amountMinor": 1800
+            }
+          }
+        ]
+      },
+      "files": {
+        "index.html": "<!doctype html><html><head><title>Menu board</title></head><body><h1>Menu board</h1><p>Tea AUD 18</p></body></html>",
+        "menu.html": "<!doctype html><html><head><title>Menu board</title></head><body><h1>Menu board</h1><p>Tea AUD 16</p></body></html>",
+        "about.html": "<!doctype html><html><head><title>Menu board</title></head><body><h1>Menu board</h1><p>Tea AUD 18</p></body></html>"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "Display Tea prices on both agreed menu pages.",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "Synthetic controlled source relationship case; exact buyer-confirmed file and price, not rendered/runtime correctness. A merged cell remains outside the bounded recognizer.",
+            "relevantFiles": [
+              "index.html",
+              "menu.html",
+              "about.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "scoped-neighbour-price-borrow",
+      "stratum": "mismatch",
+      "language": "en",
+      "title": "Scoped menu evidence",
+      "summary": "Display Tea prices on both agreed menu pages.",
+      "requiredPages": [
+        "index.html",
+        "menu.html"
+      ],
+      "businessChecks": {
+        "confirmed": true,
+        "items": [
+          {
+            "id": "business-1",
+            "criterionId": "coverage-1",
+            "file": "index.html",
+            "source": {
+              "start": 0,
+              "end": 45,
+              "excerpt": "Display Tea prices on both agreed menu pages."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "currency": "AUD",
+              "amountMinor": 1800
+            }
+          },
+          {
+            "id": "business-2",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 45,
+              "excerpt": "Display Tea prices on both agreed menu pages."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "currency": "AUD",
+              "amountMinor": 1800
+            }
+          }
+        ]
+      },
+      "files": {
+        "index.html": "<!doctype html><html><head><title>Menu board</title></head><body><h1>Menu board</h1><p>Tea AUD 18</p></body></html>",
+        "menu.html": "<!doctype html><html><head><title>Menu board</title></head><body><h1>Menu board</h1><p>Tea AUD 16</p><p>Coffee AUD 18</p></body></html>",
+        "about.html": "<!doctype html><html><head><title>Menu board</title></head><body><h1>Menu board</h1><p>Tea AUD 18</p></body></html>"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "Display Tea prices on both agreed menu pages.",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "Synthetic controlled source relationship case; exact buyer-confirmed file and price, not rendered/runtime correctness. A merged cell remains outside the bounded recognizer.",
+            "relevantFiles": [
+              "index.html",
+              "menu.html",
+              "about.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "scoped-table-row-correct",
+      "stratum": "clean",
+      "language": "en",
+      "title": "Scoped menu evidence",
+      "summary": "Display Tea prices on both agreed menu pages.",
+      "requiredPages": [
+        "index.html",
+        "menu.html"
+      ],
+      "businessChecks": {
+        "confirmed": true,
+        "items": [
+          {
+            "id": "business-1",
+            "criterionId": "coverage-1",
+            "file": "index.html",
+            "source": {
+              "start": 0,
+              "end": 45,
+              "excerpt": "Display Tea prices on both agreed menu pages."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "currency": "AUD",
+              "amountMinor": 1800
+            }
+          },
+          {
+            "id": "business-2",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 45,
+              "excerpt": "Display Tea prices on both agreed menu pages."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "currency": "AUD",
+              "amountMinor": 1800
+            }
+          }
+        ]
+      },
+      "files": {
+        "index.html": "<!doctype html><html><head><title>Menu board</title></head><body><h1>Menu board</h1><p>Tea AUD 18</p></body></html>",
+        "menu.html": "<!doctype html><html><head><title>Menu board</title></head><body><h1>Menu board</h1><table><tbody><tr><td>Tea</td><td>AUD 18</td></tr></tbody></table></body></html>",
+        "about.html": "<!doctype html><html><head><title>Menu board</title></head><body><h1>Menu board</h1><p>Tea AUD 18</p></body></html>"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "Display Tea prices on both agreed menu pages.",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "Synthetic controlled source relationship case; exact buyer-confirmed file and price, not rendered/runtime correctness. A merged cell remains outside the bounded recognizer.",
+            "relevantFiles": [
+              "index.html",
+              "menu.html",
+              "about.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "scoped-table-cross-row",
+      "stratum": "mismatch",
+      "language": "en",
+      "title": "Scoped menu evidence",
+      "summary": "Display Tea prices on both agreed menu pages.",
+      "requiredPages": [
+        "index.html",
+        "menu.html"
+      ],
+      "businessChecks": {
+        "confirmed": true,
+        "items": [
+          {
+            "id": "business-1",
+            "criterionId": "coverage-1",
+            "file": "index.html",
+            "source": {
+              "start": 0,
+              "end": 45,
+              "excerpt": "Display Tea prices on both agreed menu pages."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "currency": "AUD",
+              "amountMinor": 1800
+            }
+          },
+          {
+            "id": "business-2",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 45,
+              "excerpt": "Display Tea prices on both agreed menu pages."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "currency": "AUD",
+              "amountMinor": 1800
+            }
+          }
+        ]
+      },
+      "files": {
+        "index.html": "<!doctype html><html><head><title>Menu board</title></head><body><h1>Menu board</h1><p>Tea AUD 18</p></body></html>",
+        "menu.html": "<!doctype html><html><head><title>Menu board</title></head><body><h1>Menu board</h1><table><tbody><tr><td>Tea</td><td>AUD 16</td></tr><tr><td>Coffee</td><td>AUD 18</td></tr></tbody></table></body></html>",
+        "about.html": "<!doctype html><html><head><title>Menu board</title></head><body><h1>Menu board</h1><p>Tea AUD 18</p></body></html>"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "Display Tea prices on both agreed menu pages.",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "Synthetic controlled source relationship case; exact buyer-confirmed file and price, not rendered/runtime correctness. A merged cell remains outside the bounded recognizer.",
+            "relevantFiles": [
+              "index.html",
+              "menu.html",
+              "about.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "scoped-merged-row-uncertain",
+      "stratum": "boundary",
+      "language": "en",
+      "title": "Scoped menu evidence",
+      "summary": "Display Tea prices on both agreed menu pages.",
+      "requiredPages": [
+        "index.html",
+        "menu.html"
+      ],
+      "businessChecks": {
+        "confirmed": true,
+        "items": [
+          {
+            "id": "business-1",
+            "criterionId": "coverage-1",
+            "file": "index.html",
+            "source": {
+              "start": 0,
+              "end": 45,
+              "excerpt": "Display Tea prices on both agreed menu pages."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "currency": "AUD",
+              "amountMinor": 1800
+            }
+          },
+          {
+            "id": "business-2",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 45,
+              "excerpt": "Display Tea prices on both agreed menu pages."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "currency": "AUD",
+              "amountMinor": 1800
+            }
+          }
+        ]
+      },
+      "files": {
+        "index.html": "<!doctype html><html><head><title>Menu board</title></head><body><h1>Menu board</h1><p>Tea AUD 18</p></body></html>",
+        "menu.html": "<!doctype html><html><head><title>Menu board</title></head><body><h1>Menu board</h1><table><tbody><tr><td rowspan=\"2\">Tea</td><td>AUD 18</td></tr><tr><td>AUD 28</td></tr></tbody></table></body></html>",
+        "about.html": "<!doctype html><html><head><title>Menu board</title></head><body><h1>Menu board</h1><p>Tea AUD 18</p></body></html>"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "Display Tea prices on both agreed menu pages.",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "Synthetic controlled source relationship case; exact buyer-confirmed file and price, not rendered/runtime correctness. A merged cell remains outside the bounded recognizer.",
+            "relevantFiles": [
+              "index.html",
+              "menu.html",
+              "about.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    }
+  ]
+}

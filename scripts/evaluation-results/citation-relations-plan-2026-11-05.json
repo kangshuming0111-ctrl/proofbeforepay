@@ -1,0 +1,38 @@
+{
+  "scope": "Three bounded revisions after livev73 source99b62c91a1b5968735e5fbe601b0f486229ab44f. Synthetic inputs and public licensed source only. No acceptance/payment/access changes.",
+  "awardEvidence": {
+    "verifiedOn": "2026-11-05",
+    "url": "https://www.bemyapp.com/insights/ai-builders-challenge-with-ibm-bob-2026-winners.html",
+    "PHAROS_INC": "IBM Bob2026 August Challenge1st: live data + deterministic rules + clear reporting. Official description only, no opponent tests.",
+    "Agent Receipt": "August Most Innovative: evidence-linked receipts with reviewable/replayable actions. Not Grand Prize."
+  },
+  "observedGaps": [
+    "R8 BusinessCasual2 quotes rewrote raw & as &amp;, whole report rightly rejected.",
+    "Locked menu.html Tea AUD18 correct, about.html same: model citing only about still supported. menu wrong16/about18 already correctly changes.",
+    "Existing form checker blocks cross-form拼接 but does not prove buyer-designated page identity.",
+    "Current price guard simple p/li only; split or complex card/row conservatively unknown, not an existing falsepass."
+  ],
+  "cycle1": {
+    "goal": "Let actual new live request choose source IDs rather than rewrite source.",
+    "proposal": [
+      "Server catalog stable source chunks <=500 plus bounded exact h1/title/label/p/li/tr semantic spans; full original HTML/CSS still included, no source truncation. Request byte850000/context bound still enforces full-packet admission.",
+      "One catalogId hash binds exact source, delivery and locked scope. Short entry IDs; strict new named function v2 returns catalogId and citations as entry-ID arrays. Invalid/duplicate/mixed/stale ID or wrong catalogId rejects. Server resolves exact file/start/end/excerpt directly, never indexOf rebinds repeated copy.",
+      "Preserve saved ProofAssessment schema. Original wire IDs/envelope, freeze catalog and resolved offsets remain separate. Legacy strict/JSON quote decoder remains explicit compatibility with exact-source validation; actual live schema requests v2. No auto fallback request/retry. Add catalog-format note only on ID reports.",
+      "Materialized equivalent quote payload capped30000; item6/risk3/required fields/criterion coverage remain; IDs are provenance not semantic proof."
+    ]
+  },
+  "cycle2": {
+    "goal": "For existing confirmed businesschecks, require supported evidence to witness every locked file/block.",
+    "proposal": "No promotion of rawunknown/changes. Localmismatch continues currentchanges + exactsource. Localunchanged but model cites wrongpage/product/header/only2of3locked pages =>unknown with evidence-gap explanation, not missing delivery claim."
+  },
+  "cycle3": {
+    "goal": "Handle bounded two-cell table price rows and explicit every-file scope without cross-row/cross-form guessing.",
+    "proposal": "Use confirmed file + unique label + one semantic tr owner, explicit ISO money. Ambiguous/repeated/nested/hidden/dynamic/omittedCSS staysunknown. Do not infer AUD from $. Crosspageevery follows saved businesscheck list, not generic semantic page-name guessing."
+  },
+  "acceptance": [
+    "No source quote is invented/normalized from model text.",
+    "Correct valid IDs selecting wrong scope must not create supported result.",
+    "Original failure/first heldout vs known regression separated; no frozen reference rewritten.",
+    "Each cycle sends selected source review, independent adjudication and before/after award-gap record."
+  ]
+}

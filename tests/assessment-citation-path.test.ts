@@ -1,11 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {assessDelivery} from "../lib/delivery-assessment.ts";
+import {assessDeliveryLegacyReplay as assessDelivery} from "../lib/delivery-assessment.ts";
 import {DomainError} from "../lib/domain.ts";
 import {ProviderError,type Fetcher} from "../lib/providers.ts";
 import {assertStaticPath,STATIC_RESOURCE_LIMITS} from "../lib/static-resources.ts";
 import {caseQuote,runEvaluation,type EvaluationCase} from "../scripts/run-assessment-evaluation.ts";
+import type {AssessmentCitationCatalog} from "../lib/assessment-citation-catalog.ts";
 
+const slots = (ids: readonly unknown[], maximum = 6) => Object.fromEntries(Array.from({length: Math.max(maximum, ids.length)}, (_, i) => [`c${i + 1}`, ids[i] ?? ""]));
 const env={DEEPSEEK_API_KEY:"synthetic-path-test",DEEPSEEK_MODEL:"deepseek-flash"};
 const excerpt="<p>Visitor address: 47 Elm Parade, Carlton VIC 3053.</p>";
 const contents=`<!doctype html><html><head><title>Visitor information</title></head><body>🌿${excerpt}</body></html>`;
@@ -30,9 +32,17 @@ test("legal 120/121/132/160-character paths retain exact item and risk citations
 
 test("raw single-case scoring shares the valid upload path contract instead of labelling long exact citations invalid",async()=>{
  for(const length of [120,121,132,160]){
-  const file=pathOfLength(length),input=fixture(file),before=structuredClone(input),fake=controlled(response(file));
-  const report=await runEvaluation([input],{live:true,maxCalls:1,maxUsd:.1,env,fetcher:fake.fetcher}),result=report.results[0];
-  assert.equal(fake.calls,1);assert.equal(result.raw?.citationValidity,"valid");assert.equal(result.raw?.citations[0].file,file);assert.equal(result.application?.status,"supported");assert.equal(result.application?.citations[0].file,file);assert.deepEqual(input,before);
+  const file=pathOfLength(length),input=fixture(file),before=structuredClone(input);let calls=0;
+  const fetcher:Fetcher=async(_url,init)=>{
+   calls++;const request=JSON.parse(String(init?.body)),packet=JSON.parse(request.messages[1].content),catalog=packet.citationCatalog as AssessmentCitationCatalog;
+   const selected=catalog.entries.find(entry=>entry.file===file&&entry.excerpt===excerpt);assert.ok(selected);
+   const original=response(file),output={...original,catalogId:catalog.catalogId,items:original.items.map(item=>({...item,citations:slots([selected.id])})),risks:original.risks.map(risk=>({...risk,citations:slots([selected.id],3)}))};
+   assert.equal(request.tool_choice.function.name,"submit_source_assessment_v3");
+   return Response.json({choices:[{finish_reason:"tool_calls",message:{content:null,tool_calls:[{type:"function",function:{name:"submit_source_assessment_v3",arguments:JSON.stringify(output)}}]}}],usage:{prompt_tokens:1000,completion_tokens:100,total_tokens:1100}});
+  };
+  const report=await runEvaluation([input],{live:true,maxCalls:1,maxUsd:.1,env,fetcher}),result=report.results[0];
+  assert.equal(calls,1);assert.equal(result.raw?.citationValidity,"valid");assert.equal(result.raw?.citations[0].file,file);assert.equal(result.application?.status,"supported");assert.equal(result.application?.citations[0].file,file);assert.deepEqual(input,before);
+  assert.equal(result.raw?.citations[0].start,contents.indexOf(excerpt));assert.equal(result.raw?.citations[0].end,contents.indexOf(excerpt)+excerpt.length);assert.deepEqual(result.raw?.citations,result.application?.citations);
  }
 });
 

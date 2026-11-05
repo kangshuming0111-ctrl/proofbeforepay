@@ -5,7 +5,7 @@ import {createSourceBusinessEvidenceCheck} from "../lib/source-business-evidence
 import {getBusinessCheckPlan} from "../lib/business-checks.ts";
 import {summaryCoverageUnits} from "../lib/requirement-coverage.ts";
 import {createUploadedDelivery, parseStaticProject} from "../lib/static-project.ts";
-import {assessDelivery} from "../lib/delivery-assessment.ts";
+import {assessDeliveryLegacyReplay as assessDelivery} from "../lib/delivery-assessment.ts";
 
 const html = (body: string, head = "") => `<!doctype html><html><head><title>Source fixture</title>${head}</head><body>${body}</body></html>`;
 const price: ProofBusinessExpected = {kind: "item_price", label: "Noodles", currency: "AUD", amountMinor: 1800};

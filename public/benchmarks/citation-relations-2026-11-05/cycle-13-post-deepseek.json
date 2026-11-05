@@ -1,0 +1,69 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/source-business-evidence.ts",
+      "bytes": 18353,
+      "lines": 219,
+      "sha256": "4936fba46ab28f39ec42f356987c27840d46b652f752a6011fb019d170659141"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 43546,
+      "lines": 342,
+      "sha256": "5983795c17aa64b32f3573d5b146c85ba6fd2b69a662d56ba5e191d08f328301"
+    },
+    {
+      "file": "lib/assessment-citation-catalog.ts",
+      "bytes": 8945,
+      "lines": 143,
+      "sha256": "594fdc8da4e248dfdf7f98bc255cfd0ce837b7d46e69d002186fda24a47fd54c"
+    },
+    {
+      "file": "tests/source-business-evidence.test.ts",
+      "bytes": 26952,
+      "lines": 340,
+      "sha256": "1c425f46097a945cace8e819e5e8cdda93573e14463d78f600437842e34fda47"
+    },
+    {
+      "file": "scripts/evaluation-results/citation-relations-interim-feedback.json",
+      "bytes": 902,
+      "lines": 15,
+      "sha256": "59a27668bacc32b0dd1f0c6be593fa191a6e8b400da93c23f7b2fca35400d2fa"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Read-only review of the four source files, the table/price tests, the interim feedback file, and the delivery skill. I found two concrete defects in lib/source-business-evidence.ts. First, a two-cell price row is read as though a cell could contain any number of text nodes, and paragraph and list-item owners are matched by normalized text without a uniqueness check. So a compound cell or a paragraph that contains the expected label plus an unrelated second amount can be reported as a definite 'mismatch', or as 'unchanged' for a label the check never locked. Second, the HTML with no <body> yields an undefined value instead of an explicit unknown, so checks on such a file can still return 'unchanged' without the body-scope restrictions the code claims. In delivery-assessment.ts, the business-check section of the prompt does not define how a check relates to a normal criterion, so supported items about a different page can be downgraded to insufficient_evidence. The feedback record only mentions the three interim problems the task lists (page IDs, footer context, qualifying whole answers); its code does not establish that the prompt changes fix them. PHAROS and AgentReceipt evidence is not in the packet, so I make no award comparison. I did not run tests, typecheck, or any runtime check.\",\"findings\":[{\"severity\":\"P2\",\"file\":\"lib/source-business-evidence.ts\",\"line\":46,\"title\":\"Multi-text-node price cells and compound paragraph/list-item prices are read as a single literal amount\",\"evidence\":\"Line 46-49 loops over every text child of a td/th and concatenates them (text += …value), with no requirement that there be exactly one text node. Line 50 then normalizes the result. The same concatenation happens at lines 103-104 for p/li. When the price-like text is the last segment, tail = leaf.text.slice(label.length) yields a valid amount(). For example, <p>Beef noodles AUD16 <em>frozen</em></p> parses as text 'Beef noodles AUD16 ' + em + text ' frozen'. Because 'Beef noodles' occurs exactly once, leaf.text equals 'Beef noodles AUD16 frozen' and leaf.citation points at the whole <p>. The check then returns 'mismatch' (reason explicit_iso_price_differs) and line 275 of delivery-assessment.ts replaces the explanation with sourceBusinessEvidenceExplanation. That explanation says the cell/block 'states' AUD 16.00 as the item's price. This contradicts the test title at tests/source-business-evidence.test.ts line 69 ('compound … abstain rather than allege a wrong price') and the text-only guarantee in the comment at lines 22-23 and 41-43. Compared with the supported '<p>Beef noodles <span>AUD16</span></p>' form, which is unknown, the check also treats markup shape inconsistently.\",\"reproduction\":\"Unexecuted reasoning trace: locked plan expects item_price 'Beef noodles' AUD 1800. Delivery index.html body contains <p>Beef noodles AUD16 <em>frozen</em></p>. parse5 gives the p three children (two text nodes, one em). Lines 102-103 accept the p only when node.childNodes.every(child => child.nodeName === '#text'), so this p is skipped. Table rows/cells reach the concatenation instead: e.g. <table><tr><td>Beef noodles AUD16</td><td><b>x</b></td></tr></table> style rows, or <td>Beef noodles AUD16<wbr></td>. For a td, line 44 also rejects any cell whose raw content contains '<'. So only rows without markup in either cell stay in scope. A p/li compound case is closer to the risk once the children loop accepts markup (for example, a change from every() to some()). In other words, the defect is latent in the current table path unless a cell contains entity-encoded, non-price text such as <td>Beef noodles AUD16&nbsp;</td>, which normalize turns into 'Beef noodles AUD16'. That still tests amount() on the last segment. The actionable problem is that lines 46-50 and 103-104 are written to accept any number of text nodes, and the test suite has no case for a compound p/li or cell whose label prefix is unique and whose final segment is a bare amount.\",\"suggestion\":\"Require exactly one #text child for td/th (node.childNodes.length === 1) and exactly one text-node run at the end of p/li. Alternatively, reject any p/li whose children include element children and require the raw content to contain no '<'. Add a regression case such as <td>Beef noodles AUD16<wbr></td>-style markup and a p/li with a trailing <em>. Both should evaluate to 'unknown', not 'mismatch'.\"},{\"severity\":\"P2\",\"file\":\"lib/source-business-evidence.ts\",\"line\":96,\"title\":\"HTML with no explicit <body> lets price checks succeed without any body-scope restriction\",\"evidence\":\"Line 96 sets inside ||= node.tagName === 'body'. Line 92 only collects bodyText text when body is true. Lines 98-109 run the price and paragraph parsing only when inside is true. With parse5 and scriptingEnabled: true, an HTML file without an explicit <body> (for example, content placed after </head> or placed before the parser's implicit body creation) never sets inside. The bodyText is then ''. At line 156, occurrences(source.bodyText, label) is 0, not 1, so the item_price check returns unknown 'label_not_unique_or_not_located'. However, line 149 for visible_copy also uses bodyText and returns the same unknown. So a missing explicit <body> silently disables the full-source checks. The code never returns an explicit parse_or_budget failure for it. More importantly, when the document does contain <body> only as part of a template or head-like construct, the 'hidden/nested/inert' scoping in lines 95-97 applies only under <body>, which is the intended boundary. The defect is that the function does not enforce it: an HTML file with no body is not reported as unparseable, so callers cannot tell an unparseable page from a page that genuinely lacks the label, and the existing test set has no no-body case.\",\"reproduction\":\"Unexecuted: call createSourceBusinessEvidenceCheck({'index.html':'<!doctype html><html><head><title>Menu</title></head><tr><td>Beef noodles</td><td>AUD18</td></tr></html>'}, savedPlan()()). With scriptingEnabled parse5 inserts tbody/tr or drops table content into the implicit body. If any text is placed after </head> before the implicit body, inside is still false until a body element is visited. Line 156 then yields 0 and returns unknown. Line 105-108 of tests/source-business-evidence.test.ts only cover complete documents built by the html() helper, which always includes <body>.\",\"suggestion\":\"After parsing, require that the document has exactly one body element with a source location inside the html element, and return undefined (parse_or_budget) when it does not. Otherwise document the implicit-body behavior and add a test for a no-body page that asserts an explicit unknown reason.\"},{\"severity\":\"P3\",\"file\":\"lib/delivery-assessment.ts\",\"line\":171,\"title\":\"Business-check prompt does not limit checks to the linked page for ordinary criteria, which invites the interim phantom 'unknown page' limitation\",\"evidence\":\"Line 171 says the plan is exact for the linked criterionId, and line 172 says it names the agreed targets. The prompt never says that a normal criterion's support is decided from the criterion's cited source across the delivered files, or that a check bound to one page (for example menu.html) does not make other pages' evidence for the same criterion unknown. Lines 173-174 only give per-check coverage rules. The interim feedback (scripts/evaluation-results/citation-relations-interim-feedback.json lines 5-7) records exactly this failure mode: all4 whole answers were qualified, and all3 scope reports claimed uncertainty over agreed pages despite an explicit saved file list. The feedback's listed response (lines 10-13) adds wording but does not establish behavior. Lines 171-173 as written still allow a model to treat a single-page check as a scope constraint for the whole criterion.\",\"reproduction\":\"Unexecuted: one criterion 'Menu prices', two business checks both bound to menu.html, and the model supports it with a correct index.html citation plus menu.html. assessSourceBusinessCitationWitness only runs against business.checks for the linked criterion (line 271-282). It downgrades to insufficient_evidence when menu.html is not cited, even if the criterion's locked text has no page constraint. So an ordinary criterion can be forced to abstain by a check that only names another agreed page.\",\"suggestion\":\"Add one sentence to the plan sentence at line 171: a business check's file is the agreed target for that check only; for the criterion item itself, support comes from any cited delivered source that shows the criterion text. Do not add a page obligation the locked criterion does not state. Cover it with an offline fixture; do not claim the change is verified until the frozen rerun.\"}]}\n, third field here\n{\"limitations\":[\"Read-only review of the supplied packet only. No files changed and no tests, typecheck, build, or runtime/provider check was run.\",\"Exact behaviour of parse5 in the no-body and multi-text-node cases was reasoned from source, not executed.\",\"lib/exact-copy-evidence.ts, lib/business-checks.ts, lib/contracts.ts, and lib/assessment-risk-fields.ts were not in the packet, so hasUncertainSourceBodyCopyAtFile, getBusinessCheckPlan, the ProofBusinessExpected shapes, and canonicalAssessmentRisk were not verified.\",\"The interim-independent-whole-answer-review.json output referenced at citation-relations-interim-feedback.json line 3 was not supplied, so the all11/11 versus all4 claim could only be checked against the feedback summary text, not the raw answers.\",\"No evidence is supplied for PHAROS_INC August 1st deterministic rules or AgentReceipt August Most Innovative, so no award comparison or superiority judgment was made.\",\"The readability 567/370 versus 600 claim cannot be checked because the prior text is not in the packet. I make no claim about it.\",\"The prompt changes' effect on the sealed2repos and known7 reruns is unverified pending the final freeze run.\"]}",
+  "report": null,
+  "reportValid": false,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": false,
+  "errors": [
+    "report_not_json"
+  ]
+}

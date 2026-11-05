@@ -2,10 +2,13 @@ import { createHash } from "node:crypto";
 import { readFile, writeFile, stat, lstat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import type { ProofAssessment, ProofCriterion, ProofQuote } from "../lib/contracts.ts";
+import type { ProofAssessment, ProofCriterion, ProofQuote, ProofBusinessCheck } from "../lib/contracts.ts";
 import { assessDelivery,assessmentOutputTokenLimit } from "../lib/delivery-assessment.ts";
 import {AssessmentResponseError,requireAssessmentItemCoverage,type AssessmentFailureReason,type AssessmentCoverageDiagnostic} from "../lib/assessment-response.ts";
-import {assessmentCompletionText,assessmentReportJson} from "../lib/assessment-completion.ts";
+import {assessmentCompletionText,assessmentReportJson,type AssessmentCitationEncoding} from "../lib/assessment-completion.ts";
+import {assessmentCitationSelection,assessmentItemsForValidation} from "../lib/assessment-citation-selection.ts";
+import {ASSESSMENT_ITEM_CITATION_LIMIT,ASSESSMENT_RISK_CITATION_LIMIT} from "../lib/assessment-limits.ts";
+import type {AssessmentCitationCatalog} from "../lib/assessment-citation-catalog.ts";
 import { createUploadedDelivery, parseStaticProject } from "../lib/static-project.ts";
 import {summaryCoverageUnits} from "../lib/requirement-coverage.ts";
 import { DEFAULT_DEEPSEEK_MODEL, type Fetcher, type ProviderEnv } from "../lib/providers.ts";
@@ -14,10 +17,10 @@ export type EvaluationStatus = "supported" | "changes_suggested" | "insufficient
 type Stratum = "clean" | "mismatch" | "untrusted" | "boundary";
 type Reference = { expectedStatus: EvaluationStatus; rationale: string; relevantFiles: string[]; requiresSemanticReview: true };
 export type EvaluationProject = { id: string; stratum: Stratum; language: "en" | "zh"; title: string; summary: string;
-  files: Record<string, string>; criteria: (ProofCriterion & { reference: Reference })[] };
+  files: Record<string, string>; requiredPages?:string[]; businessChecks?:{confirmed:true;items:ProofBusinessCheck[]}; criteria: (ProofCriterion & { reference: Reference })[] };
 export type ProjectCorpus = { schema: "proofbeforepay-frozen-project-corpus-v1"; cohort: string; scope: string; referenceMethod: string; projects: EvaluationProject[] };
 type Usage = { promptTokens: number; completionTokens: number };
-type Packet = { criteria: ProofCriterion[]; files: Record<string, string>; coverage: ProofAssessment["coverage"]; fileInventory: unknown[] };
+type Packet = { citationEncoding?:AssessmentCitationEncoding; citationCatalog?:AssessmentCitationCatalog; criteria: ProofCriterion[]; files: Record<string, string>; coverage: ProofAssessment["coverage"]; fileInventory: unknown[] };
 type Plan = { requestSha256: string; requestUtf8Bytes: number; promptTokenUpperEstimate: number; outputTokenLimit: number; reservedCostUsd: number; coverage: ProofAssessment["coverage"] };
 type Prepared = { project: EvaluationProject; quote: ProofQuote; body: string; packet: Packet; plan: Plan };
 export type ProjectFreeze = { schema: "proofbeforepay-project-evaluation-freeze-v1"; createdAt: string; snapshotSha256: string;
@@ -29,7 +32,7 @@ type CriterionResult = { id: string; referenceStatus: EvaluationStatus; rawStatu
   rawCitationValidity: "valid" | "invalid" | "none" | "unavailable"; semanticReview: "pending_independent_adjudication" };
 type RawCapture = { httpStatus: number; bodyText: string | null; bodyPrefixText: string | null; bodyComplete: boolean; bodyUtf8Bytes: number; bodyByteCountIsComplete: boolean; utf8Valid: boolean; providerBody: unknown;
   contentText: string | null; originalContentText: string | null; originalJsonValid: boolean | null; contentNormalization: "none" | "one_trailing_brace"; transport: "strict_tool" | "legacy_json" | null; completion: unknown; items: unknown; risks: unknown; limitations: unknown; finishReason: unknown; model: unknown;
-  riskCitationChecks: CitationCheck[][] };
+  riskCitationChecks: CitationCheck[][]; citationEncoding:AssessmentCitationEncoding|null; catalogIdValid:boolean|null };
 export type RawItemDiagnostics={expectedCriterionIds:string[];returnedKnownCriterionIds:string[];missingCriterionIds:string[];duplicateCriterionIds:string[];unknownCriterionCount:number;invalidItemCount:number;contentParsed:boolean;idProfileParsed:boolean;profileSource:"original_json"|"normalized_strict_arguments"|"unavailable";completeItemCoverage:boolean;finishReason:"stop"|"tool_calls"|"length"|"other"|"unavailable"};
 export type ProjectEvaluationResult = { id: string; stratum: Stratum; reference: { criterionId: string; label: Reference }[]; plan: Plan;
   attempted: boolean; networkAttempted: boolean; elapsedMilliseconds?: number; raw?: RawCapture; usage?: Usage | null;
@@ -54,11 +57,11 @@ const bounded = (value: unknown, max: number): value is string => typeof value =
 /** Preserve historical two-manual provider packets. New shapes must come from
  * the real intake, including its five-manual/twelve-coverage limits and titles. */
 function projectIntake(project:EvaluationProject){
- const manual=project.criteria.filter(c=>/^manual-/u.test(c.id)),coverage=project.criteria.filter(c=>/^coverage-/u.test(c.id)),legacy=project.criteria.length===2&&project.criteria.every((c,i)=>c.id===`manual-${i+1}`);
+ const manual=project.criteria.filter(c=>/^manual-/u.test(c.id)),coverage=project.criteria.filter(c=>/^coverage-/u.test(c.id)),legacy=!project.businessChecks&&project.criteria.length===2&&project.criteria.every((c,i)=>c.id===`manual-${i+1}`);
  if(manual.length+coverage.length!==project.criteria.length||manual.length>5||coverage.length>12||!project.criteria.length||project.criteria.length>17)throw new Error("Project criteria exceed supported production intake families or limits.");
  const units=coverage.length?summaryCoverageUnits(project.summary):[];
  if(coverage.length&&units.length!==coverage.length)throw new Error("Project coverage count does not match the original summary groups.");
- const parsed=parseStaticProject({title:project.title,summary:project.summary,amount:"1.00",requiredPages:["index.html"],manualRequirements:manual.map(c=>c.source),...(coverage.length?{coverage:{version:1,sourceText:project.summary,confirmed:true,decisions:units.map(u=>({id:u.id,disposition:"include"}))}}:{})},project.language);
+ const parsed=parseStaticProject({title:project.title,summary:project.summary,amount:"1.00",requiredPages:project.requiredPages??["index.html"],...(project.businessChecks?{businessChecks:project.businessChecks}:{}),manualRequirements:manual.map(c=>c.source),...(coverage.length?{coverage:{version:1,sourceText:project.summary,confirmed:true,decisions:units.map(u=>({id:u.id,disposition:"include"}))}}:{})},project.language);
  // The real intake creates a current confirmation timestamp. This isolated
  // authored fixture pins it just like delivery/review time, without changing
  // the parsed source spans, decisions, criterion derivation or input limits.
@@ -155,12 +158,28 @@ export async function freezeProjectEvaluation(input: unknown, options: Pick<Opti
   return { schema: "proofbeforepay-project-evaluation-freeze-v1", createdAt: new Date().toISOString(), snapshotSha256: preparation.snapshotSha256, snapshot: preparation.snapshot };
 }
 
-function citations(value: unknown, packet: Packet): CitationCheck[] {
+const packetEncoding = (packet: Packet): AssessmentCitationEncoding => packet.citationEncoding ?? (packet.citationCatalog ? "catalog_ids" : "legacy_quotes");
+function citations(value: unknown, packet: Packet, catalogIdValid = true, materialized = false, maximum = ASSESSMENT_ITEM_CITATION_LIMIT): CitationCheck[] {
+  if (value === undefined) return [];
+  if (!materialized) {
+    try {value = assessmentCitationSelection(value, maximum, packetEncoding(packet));}
+    catch {return [{file:null,excerpt:null,start:null,end:null,valid:false}];}
+  }
   if (!Array.isArray(value)) return [];
+  const selected=new Set<string>();
   return value.map(entry => {
+    if(packet.citationCatalog && !materialized && typeof entry !== "string") return {file:null,excerpt:null,start:null,end:null,valid:false};
+    if(typeof entry === "string") {
+      const span=packet.citationCatalog?.entries.find(row=>row.id===entry);
+      const valid=!!span&&catalogIdValid&&!selected.has(entry)&&packet.files[span.file]?.slice(span.start,span.end)===span.excerpt;
+      selected.add(entry);
+      return {file:span?.file??null,excerpt:span?.excerpt??null,start:span?.start??null,end:span?.end??null,valid};
+    }
     const c = object(entry), file = typeof c?.file === "string" ? c.file : null, excerpt = typeof c?.excerpt === "string" ? c.excerpt : null;
     const source = file !== null && Object.hasOwn(packet.files, file) ? packet.files[file] : null;
-    const start = source !== null && excerpt !== null && excerpt.length > 0 && excerpt.length <= 500 ? source.indexOf(excerpt) : -1;
+    const suppliedStart=c?.start,suppliedEnd=c?.end;
+    const start = source !== null && excerpt !== null && excerpt.length > 0 && excerpt.length <= 500
+      ? materialized ? Number.isSafeInteger(suppliedStart)&&Number.isSafeInteger(suppliedEnd)&&Number(suppliedStart)>=0&&Number(suppliedEnd)===Number(suppliedStart)+excerpt.length&&source.slice(Number(suppliedStart),Number(suppliedEnd))===excerpt ? Number(suppliedStart):-1 : source.indexOf(excerpt) : -1;
     return { file, excerpt, valid: start >= 0, start: start >= 0 ? start : null, end: start >= 0 ? start + excerpt!.length : null };
   });
 }
@@ -173,7 +192,7 @@ function reportedUsage(data: unknown, outputLimit: number): Usage | null {
   return { promptTokens: Number(u.prompt_tokens), completionTokens: Number(u.completion_tokens) };
 }
 
-async function capture(response: Response, packet: Packet): Promise<RawCapture> {
+export async function captureProjectAssessmentResponse(response: Response, packet: Packet): Promise<RawCapture> {
   const reader = response.clone().body?.getReader(), chunks: Uint8Array[] = [];
   let bytes = 0, saved = 0, bodyComplete = true;
   if (reader) while (true) {
@@ -196,9 +215,10 @@ async function capture(response: Response, packet: Packet): Promise<RawCapture> 
   // the first arbitrary tool argument. The raw provider finish remains intact.
   let contentText = typeof message?.content === "string" ? message.content : null;
   let transport: RawCapture["transport"] = contentText !== null ? "legacy_json" : null;
-  if (choice?.finish_reason === "tool_calls" || message?.tool_calls !== undefined) {
+  const expectedEncoding = packetEncoding(packet);
+  if (expectedEncoding !== "legacy_quotes" || choice?.finish_reason === "tool_calls" || message?.tool_calls !== undefined) {
     contentText = null; transport = null;
-    try { const decoded = assessmentCompletionText(providerBody); contentText = decoded.text; transport = decoded.transport; }
+    try { const decoded = assessmentCompletionText(providerBody,expectedEncoding); contentText = decoded.text; transport = decoded.transport; }
     catch { /* Exact original envelope retained, but no trusted tool ID profile. */ }
   }
   const originalContentText = contentText;
@@ -211,10 +231,12 @@ async function capture(response: Response, packet: Packet): Promise<RawCapture> 
     }catch{/* Original malformed arguments remain in originalContentText and providerBody. */}
   }
   const output = object(completion);
+  const citationEncoding=transport==="strict_tool"?expectedEncoding:transport==="legacy_json"?"legacy_quotes":null;
+  const catalogIdValid=citationEncoding!==null&&citationEncoding!=="legacy_quotes"?output?.catalogId===packet.citationCatalog?.catalogId:null;
   return { httpStatus: response.status, bodyText: bodyComplete && utf8Valid ? text : null,
-    bodyPrefixText: bodyComplete && utf8Valid ? null : new TextDecoder().decode(retained), bodyComplete, bodyUtf8Bytes: bytes, bodyByteCountIsComplete: bodyComplete, utf8Valid, providerBody, contentText, originalContentText, originalJsonValid, contentNormalization, transport, completion,
+    bodyPrefixText: bodyComplete && utf8Valid ? null : new TextDecoder().decode(retained), bodyComplete, bodyUtf8Bytes: bytes, bodyByteCountIsComplete: bodyComplete, utf8Valid, providerBody, contentText, originalContentText, originalJsonValid, contentNormalization, transport, citationEncoding,catalogIdValid, completion,
     items: output?.items ?? null, risks: output?.risks ?? null, limitations: output?.limitations ?? null, finishReason: choice?.finish_reason ?? null, model: root?.model ?? null,
-    riskCitationChecks: Array.isArray(output?.risks) ? output.risks.map(risk => citations(object(risk)?.citations, packet)) : [] };
+    riskCitationChecks: Array.isArray(output?.risks) ? output.risks.map(risk => citations(object(risk)?.citations, packet,catalogIdValid!==false,false,ASSESSMENT_RISK_CITATION_LIMIT)) : [] };
 }
 
 /** Diagnostics expose only locked IDs and aggregate counts. Raw upstream
@@ -223,7 +245,10 @@ function rawItemDiagnostics(raw:RawCapture|undefined,expectedCriterionIds:string
  let contentParsed=false;if(typeof raw?.contentText==="string")try{JSON.parse(raw.contentText);contentParsed=true;}catch{/* Preserve the raw malformed text without deriving an ID profile. */}
  const idProfileParsed=contentParsed&&!!object(raw?.completion)&&Array.isArray(raw?.items),items=idProfileParsed?raw!.items as unknown[]:[],known=new Set(expectedCriterionIds),counts=new Map<string,number>();let unknownCriterionCount=0,invalidItemCount=0;
  for(const item of items){const value=object(item),id=value?.criterionId;if(typeof id==="string"){if(known.has(id))counts.set(id,(counts.get(id)??0)+1);else unknownCriterionCount++;}
-  try{requireAssessmentItemCoverage([item],expectedCriterionIds);}catch(error){if(!(error instanceof AssessmentResponseError)||error.reason==="structure")invalidItemCount++;}
+  let normalized:unknown;
+  try{normalized=assessmentItemsForValidation([item],raw?.citationEncoding??"legacy_quotes");}
+  catch{invalidItemCount++;continue;}
+  try{requireAssessmentItemCoverage(normalized,expectedCriterionIds);}catch(error){if(!(error instanceof AssessmentResponseError)||error.reason==="structure")invalidItemCount++;}
  }
  const returnedKnownCriterionIds=expectedCriterionIds.filter(id=>counts.has(id)),missingCriterionIds=idProfileParsed?expectedCriterionIds.filter(id=>!counts.has(id)):[],duplicateCriterionIds=expectedCriterionIds.filter(id=>(counts.get(id)??0)>1),finishReason=raw?.finishReason==="stop"?"stop":raw?.finishReason==="tool_calls"&&raw.transport==="strict_tool"?"tool_calls":raw?.finishReason==="length"?"length":raw?.finishReason===undefined||raw.finishReason===null?"unavailable":"other";
  const profileSource:RawItemDiagnostics["profileSource"]=!idProfileParsed?"unavailable":raw?.contentNormalization==="one_trailing_brace"?"normalized_strict_arguments":"original_json";
@@ -235,12 +260,13 @@ function score(result: ProjectEvaluationResult, packet: Packet) {
   for (const row of result.criteria) {
     const matches = items.filter(item => item?.criterionId === row.id), item = matches.length === 1 ? matches[0] : null;
     row.rawStatus = matches.length === 1 && STATUSES.includes(item?.status as EvaluationStatus) ? item!.status as EvaluationStatus : "invalid";
-    row.rawCitations = citations(item?.citations, packet);
-    row.rawCitationValidity = !Array.isArray(item?.citations) ? "unavailable" : row.rawCitations.some(c => !c.valid) ? "invalid" : row.rawCitations.length ? "valid" : "none";
+    row.rawCitations = citations(item?.citations, packet,result.raw?.catalogIdValid!==false);
+    let selection:unknown,invalidSelection=false;
+    try{selection=assessmentCitationSelection(item?.citations,ASSESSMENT_ITEM_CITATION_LIMIT,packetEncoding(packet));}catch{invalidSelection=true;}
+    row.rawCitationValidity = !item||!Object.hasOwn(item,"citations") ? "unavailable" : invalidSelection ? "invalid" : !Array.isArray(selection) ? "unavailable" : row.rawCitations.some(c => !c.valid) ? "invalid" : row.rawCitations.length ? "valid" : "none";
     const app = result.application?.report?.items.find(item => item.criterionId === row.id);
     row.applicationStatus = app?.status ?? "error";
-    row.applicationCitations = app ? citations(app.citations, packet).map((checked, i) => ({ ...checked,
-      valid: checked.valid && checked.start === app.citations[i].start && checked.end === app.citations[i].end })) : [];
+    row.applicationCitations = app ? citations(app.citations, packet, true, true) : [];
   }
 }
 
@@ -309,7 +335,7 @@ export async function runProjectEvaluation(input: unknown, options: Options = {}
       if (String(url) !== "https://api.deepseek.com/beta/chat/completions" || hash(String(init?.body ?? "")) !== p.plan.requestSha256 || result.networkAttempted) throw new Error("Unexpected or repeated evaluation request.");
       result.attempted = true; result.networkAttempted = true; calls++;
       const response = await (options.fetcher ?? fetch)(url, init);
-      result.raw = await capture(response, p.packet); result.usage = reportedUsage(result.raw.providerBody, p.plan.outputTokenLimit);
+      result.raw = await captureProjectAssessmentResponse(response, p.packet); result.usage = reportedUsage(result.raw.providerBody, p.plan.outputTokenLimit);
       result.reportedUsageCostUsd = result.usage ? cost(result.usage) : null;
       result.usageExceededReservation = !!result.usage && result.usage.promptTokens > p.plan.promptTokenUpperEstimate;
       if (!result.raw.bodyComplete || !result.raw.utf8Valid) {

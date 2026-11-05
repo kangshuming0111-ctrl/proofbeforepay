@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {assessDelivery} from "../lib/delivery-assessment.ts";
+import {assessDeliveryLegacyReplay as assessDelivery} from "../lib/delivery-assessment.ts";
 import {AssessmentResponseError} from "../lib/assessment-response.ts";
 import {projectQuote, type EvaluationProject} from "../scripts/run-project-assessment-evaluation.ts";
 import type {ProofQuote} from "../lib/contracts.ts";

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {readFile} from "node:fs/promises";
 import {validateProjectCorpus,projectQuote} from "../scripts/run-project-assessment-evaluation.ts";
-import {assessDelivery} from "../lib/delivery-assessment.ts";
+import {assessDeliveryLegacyReplay as assessDelivery} from "../lib/delivery-assessment.ts";
 import {ProviderError} from "../lib/providers.ts";
 const corpus=validateProjectCorpus(JSON.parse(await readFile(new URL("../scripts/assessment-transfer-corpus-2026-11-04.json",import.meta.url),"utf8")));
 const response=(items:unknown)=>async()=>new Response(JSON.stringify({choices:[{finish_reason:"stop",message:{content:JSON.stringify({items,risks:[],limitations:["Offline controlled response; no runtime or payment checked."]})}}]}),{headers:{"Content-Type":"application/json"}});

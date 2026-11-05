@@ -8,24 +8,23 @@ import type { Fetcher } from "../lib/providers.ts";
 import { validateProjectCorpus, projectQuote, freezeProjectEvaluation, prepareProjectEvaluation, runProjectEvaluation,
   summarizeProjectEvaluation, type ProjectCorpus, type EvaluationStatus } from "../scripts/run-project-assessment-evaluation.ts";
 
+const slots = (ids: readonly unknown[], maximum = 6) => Object.fromEntries(Array.from({length: Math.max(maximum, ids.length)}, (_, i) => [`c${i + 1}`, ids[i] ?? ""]));
 const ROOT = path.resolve(import.meta.dirname, "..");
 const corpusText = await readFile(path.join(ROOT, "scripts/assessment-project-corpus-2026-11-04.json"), "utf8");
 const corpus = validateProjectCorpus(JSON.parse(corpusText));
 const env = { DEEPSEEK_API_KEY: "synthetic-process-key", DEEPSEEK_MODEL: "deepseek-flash" };
 function subset(...indices: number[]): ProjectCorpus { return { ...structuredClone(corpus), projects: indices.map(i => structuredClone(corpus.projects[i])) }; }
-type Packet = { criteria: { id: string }[]; files: Record<string, string> };
+type Packet = { citationCatalog:{catalogId:string;entries:{id:string}[]}; criteria: { id: string }[]; files: Record<string, string> };
 function provider(options: { statuses?: EvaluationStatus[]; usage?: boolean; invalidCitation?: boolean; extraRisk?: boolean; malformed?: boolean; httpStatus?: number } = {}) {
   const bodies: string[] = [], rawBodies: string[] = [];
   const fetcher: Fetcher = async (_url, init) => {
     bodies.push(String(init?.body));
     const packet = JSON.parse(JSON.parse(String(init?.body)).messages[1].content) as Packet;
-    const [file, source] = Object.entries(packet.files)[0];
-    const quote = options.invalidCitation ? "This exact string never occurs in the file." : source.slice(0, 80);
-    const output = { items: packet.criteria.map((criterion, i) => ({ criterionId: criterion.id, status: options.statuses?.[i] ?? "supported",
-      explanation: i === 0 ? "A deliberately questionable semantic explanation retained for independent review." : "Synthetic source finding.", citations: [{ file, excerpt: quote }] })),
-      risks: options.extraRisk ? [{ title: "A synthetic risk", explanation: "This potentially mistaken inference must remain available to the independent adjudicator.", suggestion: "Compare all source and requirement wording.", citations: [{ file, excerpt: quote }] }] : [],
+    const output = { catalogId:packet.citationCatalog.catalogId, items: packet.criteria.map((criterion, i) => ({ criterionId: criterion.id, status: options.statuses?.[i] ?? "supported",
+      explanation: i === 0 ? "A deliberately questionable semantic explanation retained for independent review." : "Synthetic source finding.", citations: slots([options.invalidCitation?"s999999":packet.citationCatalog.entries[0].id]) })),
+      risks: options.extraRisk ? [{ title: "A synthetic risk", explanation: "This potentially mistaken inference must remain available to the independent adjudicator.", suggestion: "Compare all source and requirement wording.", citations: slots([options.invalidCitation?"s999999":packet.citationCatalog.entries[0].id], 3) }] : [],
       limitations: ["Synthetic model limitation remains verbatim."] };
-    const body = JSON.stringify({ model: "DeepSeek-V4.1-Flash-1017", choices: [{ finish_reason: "stop", message: { content: options.malformed ? "{invalid model JSON" : JSON.stringify(output) } }],
+    const body = JSON.stringify({ model: "DeepSeek-V4.1-Flash-1017", choices: [{ finish_reason: "tool_calls", message: { content:null,tool_calls:[{type:"function",function:{name:"submit_source_assessment_v3",arguments:options.malformed?"{invalid model JSON":JSON.stringify(output)}}] } }],
       ...(options.usage === false ? {} : { usage: { prompt_tokens: 1000, completion_tokens: 100, total_tokens: 1100 } }) });
     rawBodies.push(body); return new Response(body, { status: options.httpStatus ?? 200 });
   };

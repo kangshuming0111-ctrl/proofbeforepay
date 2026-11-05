@@ -1,0 +1,16 @@
+{
+  "control": "existing output wx refusal",
+  "exitCode": 1,
+  "outputSha256Unchanged": true,
+  "providerCalls": 0,
+  "networkCalls": 0,
+  "stderr": "Publication replay stopped. Check input/freeze hashes, unchanged request bytes, status invariants and a new output path. No provider request was sent; no input or prior output was overwritten.",
+  "publicationCopy": {
+    "kind": "public copy with explicit provenance note",
+    "originalArtifactSha256": "4c58835715d410a3c6ed90848210e0fd59b355bf5eadfd6964472b9bcc88a24f",
+    "sanitizedMetadataFields": [],
+    "originalReplaySha256": "95bd38d5a5d81d2fd8f9e974cd5a203764010521c6412a12a28bfc29dff5001f",
+    "sanitizedPublicReplaySha256": "38eaceae6a8875e0119d032bf81b4e0264c731a3814de6ce844575acee9b3359",
+    "note": "Any original inputSha256 identifies the retained original replay. The sanitized public replay has the separate hash above; no audit result or wx control was changed."
+  }
+}

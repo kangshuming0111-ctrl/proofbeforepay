@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {assessDelivery} from "../lib/delivery-assessment.ts";
+import {assessDeliveryLegacyReplay as assessDelivery} from "../lib/delivery-assessment.ts";
 import {projectQuote, type EvaluationProject} from "../scripts/run-project-assessment-evaluation.ts";
 import {parseStaticProject, createUploadedDelivery} from "../lib/static-project.ts";
 import {summaryCoverageUnits} from "../lib/requirement-coverage.ts";
@@ -68,7 +68,7 @@ test("an appended runtime obligation and authoritative rule failure keep their e
   const item = await run(q); assert.equal(item.status, "changes_suggested"); assert.match(item.explanation, /Server rules/u);
 });
 
-test("a linked buyer-confirmed content check prevents this non-literal-title allowance", async () => {
+test("a linked buyer-confirmed content check retains its stricter source uncertainty instead of the comma allowance", async () => {
   const q = fixture(), unit = summaryCoverageUnits(SOURCE)[0], at = "2026-11-05T00:00:00.000Z";
   const parsed = parseStaticProject({title: q.title, summary: SOURCE, amount: "1.00", requiredPages: ["index.html", "post.html"], manualRequirements: [],
     coverage: {version: 1, sourceText: SOURCE, confirmed: true, decisions: [{id: unit.id, disposition: "include"}]},
@@ -76,5 +76,8 @@ test("a linked buyer-confirmed content check prevents this non-literal-title all
   q.summary = SOURCE; q.proof.project = parsed.project; q.proof.criteria = parsed.criteria;
   q.proof.delivery = createUploadedDelivery(q.proof.delivery!.files!, parsed.project, "en", 1);
   q.proof.review = {deliveryId: q.proof.delivery.id, reviewedAt: at, mode: "demo", summary: "Controlled source-only fixture."};
-  assert.equal((await run(q)).status, "changes_suggested");
+  const item = await run(q);
+  assert.equal(item.status, "insufficient_evidence");
+  assert.match(item.explanation, /confirmed business checks/u);
+  assert.doesNotMatch(item.explanation, /comma before/u);
 });

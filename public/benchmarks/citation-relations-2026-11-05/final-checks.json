@@ -1,0 +1,41 @@
+{
+  "fullTests": 1415,
+  "fullPassed": 1415,
+  "fullFailed": 0,
+  "packageTests": 11,
+  "packagePassed": 11,
+  "packageFailed": 0,
+  "typecheckExit": 0,
+  "lintErrors": 0,
+  "source": "Full suite1415 from root-run final-publication-suite.log (counts independently read); this summary pass independently ran TypeScript, packaging11 and scoped UI lint. No redundant full-suite run.",
+  "evidence": {
+    "fullSuite": {
+      "log": "final-publication-suite.log",
+      "sha256": "6ecb07134b5b0e34ff0311ab3e2df7cfa554a145625f3cd6f234674d188f38dd",
+      "executedBy": "root; independently read and counted here"
+    },
+    "typecheck": {
+      "log": "final-publication-summary-tsc.log",
+      "exitCode": 0,
+      "executedBy": "summary packaging agent"
+    },
+    "packaging": {
+      "log": "final-publication-summary-pack.log",
+      "sha256": "7b6f8d2a13d89250aa6aaa6284dc4d5ce3350b8fa5c95d291b22d2a011b81cbf",
+      "passed": 11,
+      "total": 11,
+      "executedBy": "summary packaging agent"
+    },
+    "uiScopedLint": {
+      "log": "final-publication-summary-ui-lint.log",
+      "exitCode": 0,
+      "errors": 0,
+      "target": "app/components/RealProjectAssessmentValidation.tsx",
+      "executedBy": "summary packaging agent"
+    }
+  },
+  "previousMutableChecksPreserved": {
+    "artifact": "final-checks-before-summary-publication.json",
+    "sha256": "2d26ea666508aff31cbf20b5a6b11e77f32cc3bb4b8742884d26ce5d400d5611"
+  }
+}

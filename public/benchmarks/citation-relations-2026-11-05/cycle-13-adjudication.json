@@ -1,0 +1,40 @@
+{
+  "cycle": 13,
+  "firstPost": "cycle-13-post-deepseek.json",
+  "firstPostValid": false,
+  "counterchecks": "cycle-13-review-counterchecks.json",
+  "followup": "cycle-13-followup-deepseek.json",
+  "followupValid": true,
+  "adjudication": [
+    "Prior3allegations not reproduced by20+1 productionchecks; wrong-business-scope recommendation rejected.",
+    "Followup established no reachable current defect in bounded row/source-witness seam, no approval or model-quality guarantee.",
+    "New first calls exposed independent real falsepass and static-scope abstention. Passing tests/source critique did not establish whole-answer quality."
+  ],
+  "actual": {
+    "newFirst": {
+      "projects": 2,
+      "criteria": 12,
+      "raw": 11,
+      "app": 6,
+      "wholeAccepted": 0,
+      "wholeRejected": 2
+    },
+    "known": {
+      "projects": 7,
+      "criteria": 64,
+      "raw": 64,
+      "app": 56,
+      "admitted": 6,
+      "wholeAccepted": 1,
+      "wholeQualified": 5,
+      "wholeRejected": 1
+    },
+    "scope": {
+      "projects": 6,
+      "criteria": 6,
+      "raw": 5,
+      "app": 6
+    }
+  },
+  "next": "Cycle14 added because actual failures persisted, not counted as finished/superior to award projects."
+}

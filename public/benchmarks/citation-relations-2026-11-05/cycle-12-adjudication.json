@@ -1,0 +1,37 @@
+{
+  "cycle": 12,
+  "review": "cycle-12-post-deepseek.json",
+  "advisoryOnly": true,
+  "accepted": [
+    "Negative-only per-check file/whole-owner witness, mismatch priority and no unknown promotion.",
+    "Scope-gap explanation must not imply absent delivery or runtime evidence."
+  ],
+  "rejected": [
+    {
+      "claim": "Witness prints truncated filename prefixes.",
+      "reason": "Actual ternary uses a fixed target-file label when >80, not a prefix; source-reading claim contradicted supplied code."
+    },
+    {
+      "claim": "Existing mismatch explanation exceeds600 for legal input.",
+      "reason": "Independent real parseStaticProject/getBusinessCheckPlan with legal maxPathLength160/label80/MAX_SAFE_INTEGER produced567 English/370Chinese; no legal-boundary breach reproduced."
+    }
+  ],
+  "defensiveChange": [
+    "Mismatch explanations now also replace long displayed file identity with fixed target-file wording; original full identity/citation unchanged. Readability improvement, not a reproduced bound fix."
+  ],
+  "tests": {
+    "focused": 98,
+    "sourceUnit": 20,
+    "typecheck": "0",
+    "realScopeCalls": 3,
+    "rawReferenceAgreement": 3,
+    "applicationReferenceAgreement": 3,
+    "reportAdmission": 3,
+    "usdEstimate": 0.0056322
+  },
+  "remaining": [
+    "Bounded simple p/li owner only; complex rows not yet supported.",
+    "One complete source span required, multi-fragment union not treated as full owner.",
+    "No inference of page identity from generic names or new buyer expectations."
+  ]
+}

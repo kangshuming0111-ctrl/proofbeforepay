@@ -4,10 +4,12 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import type { ProofAssessment, ProofAssessmentCitation, ProofCriterion, ProofQuote } from "../lib/contracts.ts";
 import { assessDelivery } from "../lib/delivery-assessment.ts";
-import {assessmentCompletionText,assessmentReportJson} from "../lib/assessment-completion.ts";
+import {assessmentCompletionText,assessmentReportJson,type AssessmentCitationEncoding} from "../lib/assessment-completion.ts";
+import {assessmentCitationSelection} from "../lib/assessment-citation-selection.ts";
 import {ASSESSMENT_ITEM_CITATION_LIMIT} from "../lib/assessment-limits.ts";
+import {resolveCatalogCitations, type AssessmentCitationCatalog} from "../lib/assessment-citation-catalog.ts";
 import { createUploadedDelivery, parseStaticProject } from "../lib/static-project.ts";
-import { STATIC_RESOURCE_LIMITS } from "../lib/static-resources.ts";
+import {STATIC_RESOURCE_LIMITS} from "../lib/static-resources.ts";
 import { DEFAULT_DEEPSEEK_MODEL, type Fetcher, type ProviderEnv } from "../lib/providers.ts";
 
 type Status = "supported" | "changes_suggested" | "insufficient_evidence";
@@ -18,13 +20,15 @@ export type EvaluationCase = {
   reference: { expectedStatus: Status; rationale: string; requiresHumanSemanticReview: boolean };
 };
 type Usage = { promptTokens: number; completionTokens: number };
-type Packet = { criteria: ProofCriterion[]; files: Record<string, string>; coverage: ProofAssessment["coverage"] };
+type Packet = { criteria: ProofCriterion[]; files: Record<string, string>; coverage: ProofAssessment["coverage"]; citationCatalog?: AssessmentCitationCatalog; citationEncoding?:AssessmentCitationEncoding };
 type RequestBody = { model: string; max_tokens: number; messages: { role: string; content: string }[] };
 type Plan = { requestSha256: string; requestUtf8Bytes: number; promptTokenUpperEstimate: number; outputTokenLimit: number; reservedCostUsd: number; coverage: ProofAssessment["coverage"] };
 type RawResult = {
   httpStatus: number; model: string | null; finishReason: string | null; jsonValid: boolean;
   status: Status | "invalid"; citationValidity: "valid" | "invalid" | "none" | "unavailable";
-  citations: { file: string; excerpt: string }[]; explanation: string | null;
+  citationEncoding: AssessmentCitationEncoding|null; catalogIdMatched: boolean; citationIds: unknown[] | null; citationSelection:unknown;
+  originalArgumentText: string | null; originalJsonValid: boolean | null; contentNormalization: "none" | "one_trailing_brace";
+  citations: ProofAssessmentCitation[]; explanation: string | null;
 };
 type CaseResult = {
   id: string; category: string; stratum: Stratum; referenceStatus: Status;
@@ -107,30 +111,48 @@ function parseUsage(value: unknown, outputTokenLimit: number): Usage | null {
 function rawResult(data: unknown, status: number, packet: Packet, criterionId: string, outputTokenLimit: number): { raw: RawResult; usage: Usage | null } {
   const root = object(data);
   const choice = root && Array.isArray(root.choices) ? object(root.choices[0]) : null;
-  const message = object(choice?.message);
   let output: Record<string, unknown> | null = null;
-  let content = typeof message?.content === "string" ? message.content : null;
-  if (choice?.finish_reason === "tool_calls" || message?.tool_calls !== undefined) {
-    content = null;
-    try {const decoded=assessmentCompletionText(data);content=decoded.transport==="strict_tool"?assessmentReportJson(decoded).canonicalText:decoded.text;} catch {/* Retain invalid strict envelopes as invalid evaluations. */}
-  }
-  if (content !== null && content.length <= 30_000) { try { output = object(JSON.parse(content)); } catch { /* Invalid JSON is itself an evaluation result. */ } }
+  let originalArgumentText: string | null = null;
+  let originalJsonValid: boolean | null = null, contentNormalization: RawResult["contentNormalization"] = "none";
+  const expectedEncoding = packet.citationEncoding ?? (packet.citationCatalog ? "catalog_ids" : "legacy_quotes");
+  let citationEncoding: AssessmentCitationEncoding|null = null;
+  try {
+    const decoded = assessmentCompletionText(data, expectedEncoding); citationEncoding = expectedEncoding;
+    if (decoded.text.length <= 30_000) {
+      originalArgumentText = decoded.text;
+      try {JSON.parse(decoded.text); originalJsonValid = true;} catch {originalJsonValid = false;}
+    }
+    const parsed = assessmentReportJson(decoded);
+    output = object(parsed.value); contentNormalization = parsed.repairedTrailingBrace ? "one_trailing_brace" : "none";
+  } catch { /* Invalid or legacy envelopes stay invalid; no fallback decoding. */ }
   const items = output && Array.isArray(output.items) ? output.items.map(object) : [];
-  const item = items.find(i => i?.criterionId === criterionId);
-  const citations = Array.isArray(item?.citations) ? item.citations : null;
-  const safeCitations: { file: string; excerpt: string }[] = [];
-  let valid = citations !== null && citations.length <= ASSESSMENT_ITEM_CITATION_LIMIT;
-  for (const value of citations ?? []) {
-    const c = object(value);
-    if (!c || typeof c.file !== "string" || c.file.length > STATIC_RESOURCE_LIMITS.maxPathLength || typeof c.excerpt !== "string" || !c.excerpt || c.excerpt.length > 500) { valid = false; continue; }
-    safeCitations.push({ file: c.file, excerpt: c.excerpt });
-    if (!Object.hasOwn(packet.files, c.file) || !packet.files[c.file].includes(c.excerpt)) valid = false;
+  const matching = items.filter(i => i?.criterionId === criterionId), item = matching.length === 1 ? matching[0] : null;
+  const hasCitations = !!item&&Object.hasOwn(item,"citations"), citationSelection = hasCitations ? item!.citations : null;
+  let citations:unknown, invalidSelection=false;
+  try{citations=assessmentCitationSelection(citationSelection,ASSESSMENT_ITEM_CITATION_LIMIT,expectedEncoding);}catch{invalidSelection=true;}
+  let safeCitations: ProofAssessmentCitation[] = [];
+  const catalogIdMatched = !!output && !!packet.citationCatalog && output.catalogId === packet.citationCatalog.catalogId;
+  let valid = false;
+  if (Array.isArray(citations) && !invalidSelection && (catalogIdMatched || expectedEncoding === "legacy_quotes")) {
+    try {
+      const resolved = packet.citationCatalog ? resolveCatalogCitations(citations, packet.citationCatalog, ASSESSMENT_ITEM_CITATION_LIMIT) : citations.map(value => {
+        const c=object(value),file=c?.file,excerpt=c?.excerpt;
+        if(typeof file!=="string"||file.length>STATIC_RESOURCE_LIMITS.maxPathLength||typeof excerpt!=="string"||!excerpt.trim()||excerpt.length>500||!Object.hasOwn(packet.files,file))throw new Error("Invalid historical quote");
+        const start=packet.files[file].indexOf(excerpt);if(start<0)throw new Error("Invalid historical quote");
+        return{file,start,end:start+excerpt.length,excerpt};
+      });
+      // Do not repeat indexOf: the chosen second occurrence has its own offset.
+      valid = resolved.every(c => Object.hasOwn(packet.files, c.file) && Number.isSafeInteger(c.start) && Number.isSafeInteger(c.end)
+        && c.start >= 0 && c.end > c.start && c.end <= packet.files[c.file].length && packet.files[c.file].slice(c.start, c.end) === c.excerpt);
+      if (valid) safeCitations = resolved;
+    } catch { /* Preserve the original IDs, never fabricate a replacement quote. */ }
   }
   return {
     raw: { httpStatus: status, model: typeof root?.model === "string" ? root.model.slice(0, 120) : null,
       finishReason: typeof choice?.finish_reason === "string" ? choice.finish_reason.slice(0, 60) : null,
       jsonValid: !!output, status: STATUSES.includes(item?.status as Status) ? item!.status as Status : "invalid",
-      citationValidity: !citations ? "unavailable" : !valid ? "invalid" : citations.length ? "valid" : "none", citations: safeCitations,
+      citationValidity: !hasCitations ? "unavailable" : invalidSelection || !valid ? "invalid" : Array.isArray(citations)&&citations.length ? "valid" : "none", citations: safeCitations,
+      citationEncoding, catalogIdMatched, citationIds:expectedEncoding!=="legacy_quotes"&&Array.isArray(citations)?citations:null, citationSelection, originalArgumentText, originalJsonValid, contentNormalization,
       explanation: typeof item?.explanation === "string" && item.explanation.length <= 600 ? item.explanation : null },
     usage: parseUsage(root?.usage, outputTokenLimit),
   };
@@ -215,7 +237,7 @@ export async function runEvaluation(input: unknown, options: EvaluationOptions =
     pricing: VERIFIED_PRICE, limits: { maxCalls: options.live ? options.maxCalls : 0, maxUsd: options.live ? options.maxUsd : 0,
       maximumOutputTokensPerCall: VERIFIED_PRICE.maxOutputTokens, actualOutputTokenLimits: [...new Set(prepared.map(item => item.plan.outputTokenLimit))], applicationRequestTimeoutMilliseconds: 30_000, automaticRetries: 0 },
     accounting: { calls, conservativeReportedUsageCostUsd: reportedCost, unknownUsageReservedUsd: unaccountedReservedCost, stopReason },
-    measurementNotes: ["Reference labels never enter a provider request.", "Raw model and application policy statuses are reported separately; application abstention does not prove the model abstained.", "Four strata are reported separately; do not pool coverage-limited cases into complete-literal error rates.", "A legacy coverage-limited reference with complete current HTML input is marked reference_scope_mismatch, skipped before network and excluded from accuracy denominators; its original label is preserved.", "Status agreement is not a human semantic accuracy result; every case still needs human review.", "Input reservation uses request UTF-8 byte count plus 4096 tokens for template overhead and the actual request output limit; it is a deliberately conservative estimate, not tokenizer output or a provider-enforced spending cap.", "Missing/invalid usage or network ambiguity stops further calls and records that call's reserved estimate.", "No payment, database writes, customer data or application credentials are included in this evaluation."],
+    measurementNotes: ["Reference labels never enter a provider request.", "Raw model and application policy statuses are reported separately; application abstention does not prove the model abstained.", "Active requests use the strict V3 fixed-slot catalog-ID protocol. Original argument text and slot objects are retained separately from selected IDs and resolved exact UTF-16 source citations. A valid ID establishes a source location, not semantic support.", "Four strata are reported separately; do not pool coverage-limited cases into complete-literal error rates.", "A legacy coverage-limited reference with complete current HTML input is marked reference_scope_mismatch, skipped before network and excluded from accuracy denominators; its original label is preserved.", "Status agreement is not a human semantic accuracy result; every case still needs human review.", "Input reservation uses request UTF-8 byte count plus 4096 tokens for template overhead and the actual request output limit; it is a deliberately conservative estimate, not tokenizer output or a provider-enforced spending cap.", "Missing/invalid usage or network ambiguity stops further calls and records that call's reserved estimate.", "No payment, database writes, customer data or application credentials are included in this evaluation."],
     summaryByStratum: summarize(results), results };
 }
 

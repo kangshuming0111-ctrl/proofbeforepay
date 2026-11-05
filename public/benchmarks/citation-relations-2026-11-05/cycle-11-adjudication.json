@@ -1,0 +1,31 @@
+{
+  "cycle": 11,
+  "advisoryOnly": true,
+  "planReview": "cycle-11-plan-deepseek.json",
+  "postReview": "cycle-11-post-deepseek.json",
+  "accepted": [
+    "Reject active legacy envelopes; explicit historical replay separate.",
+    "Direct server-owned offsets, never first-occurrence rebind.",
+    "Expanded report budget and complete request admission.",
+    "Catalog identity binding and reject unknown/mixed/duplicate IDs.",
+    "Postreview test limitation: strengthen actual protocol duplicate occurrence test."
+  ],
+  "rejected": [
+    {
+      "claim": "Strict enum requires every alternative or forbids unused IDs; set strict false.",
+      "reason": "Official DeepSeek strict docs support enum as alternatives, no all-enum requirement. Actual strict V2 pilot succeeded."
+    },
+    {
+      "claim": "Existing business-check dedup can drop an independent saved check simply by page.",
+      "reason": "Dedup uses validated unique checkId, not page; same check repeats only for two viewport widths. Scope witness remains a real separate gap."
+    }
+  ],
+  "unverified": [
+    "Large enum/schema capacity beyond tested source; bounded1536 admission is engineering limit, not provider guarantee.",
+    "Catalog IDs do not prove semantic entailment; next cycle must validate page/block witness."
+  ],
+  "evidence": {
+    "focusedTests": "49/49 before stronger duplicate protocol assertion; later retest retained",
+    "pilot": "1 real known BC report, 8 raw/app reference agreements,26 exact selected source citations incl4risk,original strict JSON valid,no normalization,$0.0079692usage-derived"
+  }
+}

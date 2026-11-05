@@ -1,0 +1,82 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "scripts/evaluation-results/citation-relations-cycle-15-plan.json",
+      "bytes": 1692,
+      "lines": 26,
+      "sha256": "e5e8a05bfcf666286fbfa8a3a49f9b1dee157b81d7bfd1b9816a360622ad7bc5"
+    },
+    {
+      "file": "lib/assessment-completion.ts",
+      "bytes": 9553,
+      "lines": 125,
+      "sha256": "18ec5c3984b06c1b62a1d1d9449746ba8f19cf2d9a9b3d23914d0b474b7a6a3e"
+    },
+    {
+      "file": "lib/assessment-citation-selection.ts",
+      "bytes": 2748,
+      "lines": 43,
+      "sha256": "c192ca65a095fa7aaba5a242e3d8ba7c2a6573c6e20d41d95afcebc4578abbb0"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 48864,
+      "lines": 368,
+      "sha256": "32bc32269b551901df639df723cb76533597ed2a095d2b9a250e08ef63c92ffe"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"I reviewed the supplied packet only: the Cycle 15 plan, the V3 slot schema builder, the slot decoder, and the delivery-assessment orchestration that uses them. No tools ran, no code executed, and no tests or typechecks were performed. Cardinality is indeed fixed by construction: each item citation object is built with exactly c1..c6 and each risk citation object with exactly c1..c3, all six or three keys are required with additionalProperties false, and there is no maxItems. A first risk slot is restricted to catalog IDs, so a risk must cite evidence. Empty trailing slots are encoded as enum [\\\"\\\", ...ids]. Decoding checks the exact key set and own value descriptors, rejects duplicates and gaps, and returns only the selected prefix. Unknown IDs are not repaired; they remain for resolveCatalogCitations to check. Old wire formats are reachable only through the explicitly named catalog_ids/legacy_quotes replay functions, and the default assessDelivery is V3-only. Items are validated on a derived selector view, while risks are rebuilt from their canonical field view. Raw output.items and output.risks are retained. An item with trailing empty slots passes the validation view but keeps an overflowing raw slot object; that object is not rejected later, so an overflow reaches the public report and bypasses the intended cardinality guarantee. This is the one concrete defect I established. The strict-tool completion path enforces the V3 envelope, there is no retry, and the business-unknown guard changes only changes_suggested/supported outcomes. I did not approve anything and make no claim of overall superiority or of any runtime behavior.\",\"findings\":[{\"severity\":\"P2\",\"file\":\"lib/delivery-assessment.ts\",\"line\":241,\"title\":\"Item slots with a trailing gap or overflow pass the validation view, keep an oversized raw object, and are never rejected\",\"evidence\":\"After slot decoding, delivery-assessment.ts#241 rebinds `responseItems` to the raw `output.items` when encoding is catalog_slots, so the trimmed and gap-checked view from `assessmentItemsForValidation` is used only by `requireAssessmentItemCoverage` at line 240. In assessment-citation-selection.ts#25-29, `assessmentCitationSelection` drops empty slots before checking order (`slots.filter(slot => slot !== \\\"\\\")`, then the first-empty/gap check on the original array). A trailing gap therefore removes the empty keys from the result; for example {c1:X, c2:X, c3:\\\"\\\", c4:Y, c5:\\\"\\\", c6:\\\"\\\"} becomes [X,X,Y]. Slot objects are all fixed-size, and expanded length is bounded only by the 30,000-unit check at delivery-assessment.ts#250. In the item mapper (delivery-assessment.ts#257-265), `checkedCitations` from `resolve(item.citations, ASSESSMENT_ITEM_CITATION_LIMIT)` is used for the status guards but is not assigned back to the item. The returned item at line 329 keeps `checkedCitations` through `citations: checkedCitations`, and replays are forced through the same live route at line 110.\",\"reproduction\":\"This check was not executed. Reasoning trace: for an item {\\\"citations\\\":{\\\"c1\\\":\\\"s1\\\",\\\"c2\\\":\\\"s2\\\",\\\"c3\\\":\\\"\\\",\\\"c4\\\":\\\"s3\\\",\\\"c5\\\":\\\"\\\",\\\"c6\\\":\\\"\\\"}}, the validation view returns [\\\"s1\\\",\\\"s2\\\",\\\"s3\\\"] and passes coverage and the item checks. Line 241 then returns the raw object as-is. The gap was silently removed rather than rejected, and three selected IDs that exceed nothing here still contradict the documented contiguous-prefix rule. If no line 241 raw rebinding existed, this would be rejected or normalized. A malformed provider slot object therefore becomes the public report citation set.\",\"suggestion\":\"Validate and publish the same per-item citations: either replace the raw objects with the validated items (for example use checkedItems when they carry the decoded citations, or rebuild each output item with resolve(item.citations) in the returned map), or in assessmentCitationSelection reject any empty slot followed by a non-empty slot on the unfiltered slots array before filtering. Then keep line 241's view and the returned citations identical.\"}],\"limitations\":[\"Only lib/assessment-completion.ts, lib/assessment-citation-selection.ts, lib/delivery-assessment.ts and the plan JSON were supplied. resolveCatalogCitations, requireAssessmentItemCoverage, canonicalAssessmentRisk, the catalog builder and all limit constants were not available, so their exact ID, duplicate and size behavior is inferred from call sites and comments only.\",\"assessmentCompletionText was checked by reading only: strict_tool transport requires finish_reason tool_calls, exactly one call to the V3 name, and nonempty arguments. A legacy JSON 'stop' answer is rejected for V3. No runtime or fixture was available to confirm this.\",\"The business-unknown change guard (lines 283-303) was checked by reading only. It rewrites only changes_suggested to insufficient_evidence on unknown evidence and supported to changes_suggested/insufficient_evidence on mismatch/unknown. It does not promote any status to supported, and rule-fail handling at lines 268-270 is unaffected. The behavior of sourceBusinessEvidenceExplanation and of the witness checks was not inspected.\",\"The catalog 30,000-unit expanded check at line 250 uses JSON.stringify length, which spans all items, risks and limitations with no truncation. I cannot confirm against missing code that no other limit or overflow path exists outside this packet.\",\"No cardinally broken V3 raw slot object can produce more than the fixed six/three keys per object, so the risk-side 'no fourth citation' claim holds structurally. Whether the model fills slots faithfully is untestable here.\",\"I make no claim of overall superiority over any challenge project, of source visibility, of acceptance or of payment behavior, and I state no approval. The award dimension assessed was narrow source provenance/replay and deterministic slot-count checks only.\"]}",
+  "report": {
+    "summary": "I reviewed the supplied packet only: the Cycle 15 plan, the V3 slot schema builder, the slot decoder, and the delivery-assessment orchestration that uses them. No tools ran, no code executed, and no tests or typechecks were performed. Cardinality is indeed fixed by construction: each item citation object is built with exactly c1..c6 and each risk citation object with exactly c1..c3, all six or three keys are required with additionalProperties false, and there is no maxItems. A first risk slot is restricted to catalog IDs, so a risk must cite evidence. Empty trailing slots are encoded as enum [\"\", ...ids]. Decoding checks the exact key set and own value descriptors, rejects duplicates and gaps, and returns only the selected prefix. Unknown IDs are not repaired; they remain for resolveCatalogCitations to check. Old wire formats are reachable only through the explicitly named catalog_ids/legacy_quotes replay functions, and the default assessDelivery is V3-only. Items are validated on a derived selector view, while risks are rebuilt from their canonical field view. Raw output.items and output.risks are retained. An item with trailing empty slots passes the validation view but keeps an overflowing raw slot object; that object is not rejected later, so an overflow reaches the public report and bypasses the intended cardinality guarantee. This is the one concrete defect I established. The strict-tool completion path enforces the V3 envelope, there is no retry, and the business-unknown guard changes only changes_suggested/supported outcomes. I did not approve anything and make no claim of overall superiority or of any runtime behavior.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "lib/delivery-assessment.ts",
+        "line": 241,
+        "title": "Item slots with a trailing gap or overflow pass the validation view, keep an oversized raw object, and are never rejected",
+        "evidence": "After slot decoding, delivery-assessment.ts#241 rebinds `responseItems` to the raw `output.items` when encoding is catalog_slots, so the trimmed and gap-checked view from `assessmentItemsForValidation` is used only by `requireAssessmentItemCoverage` at line 240. In assessment-citation-selection.ts#25-29, `assessmentCitationSelection` drops empty slots before checking order (`slots.filter(slot => slot !== \"\")`, then the first-empty/gap check on the original array). A trailing gap therefore removes the empty keys from the result; for example {c1:X, c2:X, c3:\"\", c4:Y, c5:\"\", c6:\"\"} becomes [X,X,Y]. Slot objects are all fixed-size, and expanded length is bounded only by the 30,000-unit check at delivery-assessment.ts#250. In the item mapper (delivery-assessment.ts#257-265), `checkedCitations` from `resolve(item.citations, ASSESSMENT_ITEM_CITATION_LIMIT)` is used for the status guards but is not assigned back to the item. The returned item at line 329 keeps `checkedCitations` through `citations: checkedCitations`, and replays are forced through the same live route at line 110.",
+        "reproduction": "This check was not executed. Reasoning trace: for an item {\"citations\":{\"c1\":\"s1\",\"c2\":\"s2\",\"c3\":\"\",\"c4\":\"s3\",\"c5\":\"\",\"c6\":\"\"}}, the validation view returns [\"s1\",\"s2\",\"s3\"] and passes coverage and the item checks. Line 241 then returns the raw object as-is. The gap was silently removed rather than rejected, and three selected IDs that exceed nothing here still contradict the documented contiguous-prefix rule. If no line 241 raw rebinding existed, this would be rejected or normalized. A malformed provider slot object therefore becomes the public report citation set.",
+        "suggestion": "Validate and publish the same per-item citations: either replace the raw objects with the validated items (for example use checkedItems when they carry the decoded citations, or rebuild each output item with resolve(item.citations) in the returned map), or in assessmentCitationSelection reject any empty slot followed by a non-empty slot on the unfiltered slots array before filtering. Then keep line 241's view and the returned citations identical."
+      }
+    ],
+    "limitations": [
+      "Only lib/assessment-completion.ts, lib/assessment-citation-selection.ts, lib/delivery-assessment.ts and the plan JSON were supplied. resolveCatalogCitations, requireAssessmentItemCoverage, canonicalAssessmentRisk, the catalog builder and all limit constants were not available, so their exact ID, duplicate and size behavior is inferred from call sites and comments only.",
+      "assessmentCompletionText was checked by reading only: strict_tool transport requires finish_reason tool_calls, exactly one call to the V3 name, and nonempty arguments. A legacy JSON 'stop' answer is rejected for V3. No runtime or fixture was available to confirm this.",
+      "The business-unknown change guard (lines 283-303) was checked by reading only. It rewrites only changes_suggested to insufficient_evidence on unknown evidence and supported to changes_suggested/insufficient_evidence on mismatch/unknown. It does not promote any status to supported, and rule-fail handling at lines 268-270 is unaffected. The behavior of sourceBusinessEvidenceExplanation and of the witness checks was not inspected.",
+      "The catalog 30,000-unit expanded check at line 250 uses JSON.stringify length, which spans all items, risks and limitations with no truncation. I cannot confirm against missing code that no other limit or overflow path exists outside this packet.",
+      "No cardinally broken V3 raw slot object can produce more than the fixed six/three keys per object, so the risk-side 'no fourth citation' claim holds structurally. Whether the model fills slots faithfully is untestable here.",
+      "I make no claim of overall superiority over any challenge project, of source visibility, of acceptance or of payment behavior, and I state no approval. The award dimension assessed was narrow source provenance/replay and deterministic slot-count checks only."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}
