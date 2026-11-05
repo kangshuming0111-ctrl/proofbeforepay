@@ -4,7 +4,7 @@ import {assertAcceptedEvidenceReference} from "./acceptance-evidence.ts";
 
 /** Shared with the payment controls. An unfinished observation lease never
  * becomes permission to authorize/capture, even after an earlier acceptance. */
-export function hasPendingEvidenceRun(quote:ProofQuote):boolean{return !!(quote.proof.delivery?.runtimeRun||quote.proof.delivery?.journeyRun||quote.proof.delivery?.modelRun||quote.proof.delivery?.transferCompetitionRun);}
+export function hasPendingEvidenceRun(quote:ProofQuote):boolean{return !!(quote.proof.delivery?.runtimeRun||quote.proof.delivery?.journeyRun||quote.proof.delivery?.modelRun||quote.proof.delivery?.transferCompetitionRun||quote.proof.delivery?.enquiryRun);}
 export function hasFrozenCaptureEvidence(quote:ProofQuote):boolean{
  const delivery=quote.proof.delivery,id=quote.proof.acceptedEvidenceSnapshotId??quote.proof.collaboration?.acceptance?.evidenceSnapshotId;
  if(!id||!delivery?.acceptanceEvidence?.some(row=>row.id===id&&row.deliveryId===delivery.id))return false;
@@ -16,13 +16,13 @@ export function captureEvidenceReady(quote:ProofQuote):boolean{
  const needsSnapshot=!!(quote.proof.acceptedEvidenceSnapshotId||quote.proof.collaboration?.stage==="accepted"||quote.proof.paymentOperation==="capture");
  return !needsSnapshot||hasFrozenCaptureEvidence(quote);
 }
-const reportKeys=["browserReportId","layoutReportId","assessmentId","businessReportId","runtimeReportId","journeyReportId","modelReportId"] as const;
+const reportKeys=["browserReportId","layoutReportId","assessmentId","businessReportId","runtimeReportId","journeyReportId","modelReportId","enquiryReportId"] as const;
 export function proofReadiness(quote:ProofQuote,role:ProofRole,now=Date.now()){
  const delivery=quote.proof.delivery,basis=delivery?acceptanceBasis(quote):null;
  const snapshotId=quote.proof.collaboration?.acceptance?.evidenceSnapshotId??quote.proof.acceptedEvidenceSnapshotId;
  const snapshot=delivery?.acceptanceEvidence?.find(row=>row.id===snapshotId&&row.deliveryId===delivery.id);
  const frozenValid=hasFrozenCaptureEvidence(quote);
- const differences=basis&&snapshot?reportKeys.filter(key=>(snapshot[key]??null)!==basis[key]).map(kind=>({kind,acceptedReportId:snapshot[kind]??null,currentReportId:basis[kind]})):[];
+ const differences=basis&&snapshot?reportKeys.filter(key=>(snapshot[key]??null)!==(basis[key]??null)).map(kind=>({kind,acceptedReportId:snapshot[kind]??null,currentReportId:basis[kind]??null})):[];
  const manualIds=new Set(delivery?.evidence.filter(row=>row.finding==="needs_human").map(row=>row.criterionId)??[]);
  const manualItems=quote.proof.criteria.filter(row=>manualIds.has(row.id)).map(row=>({criterionId:row.id,title:row.title,source:row.source,confirmationRecorded:frozenValid&&!!snapshot?.manualChecks.includes(row.id)}));
  const running=hasPendingEvidenceRun(quote),pending=quote.proof.paymentOperation??null;

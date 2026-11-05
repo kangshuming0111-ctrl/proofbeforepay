@@ -1,3 +1,4 @@
+import {validateProjectEnquiryDecisionSync,validateEnquiryReportDecision,projectEnquiryReportsFor} from "./project-enquiry.ts";
 import type { ProofAcceptanceEvidence, ProofBrowserCheckReport, ProofBusinessCheckReport, ProofDelivery, ProofLayoutReport, ProofQuote } from "./contracts.ts";
 import { validateBusinessDecision, type BusinessDecision } from "./business-decision.ts";
 import { getBusinessCheckPlan } from "./business-checks.ts";
@@ -74,13 +75,14 @@ export function withLayoutReport(delivery: ProofDelivery, report: ProofLayoutRep
 
 /** Freeze the evidence that actually exists at this explicit acceptance. The
  * references point to retained reports; absent older evidence stays absent. */
-export function createAcceptanceEvidence(quote: ProofQuote, manualChecks: string[], at: string, businessDecision?: BusinessDecision, runtimeInput?: unknown, journeyInput?: unknown,modelInput?:unknown): ProofAcceptanceEvidence {
+export function createAcceptanceEvidence(quote: ProofQuote, manualChecks: string[], at: string, businessDecision?: BusinessDecision, runtimeInput?: unknown, journeyInput?: unknown,modelInput?:unknown,enquiryInput?:unknown): ProofAcceptanceEvidence {
   const delivery = quote.proof.delivery;
   if (!delivery || !Number.isFinite(Date.parse(at))) throw new DomainError("Acceptance evidence needs the exact current delivery and a valid time.", 409);
   const decision = validateBusinessDecision(quote, businessDecision);
   const runtimeDecision=validateRuntimeDecision(quote,runtimeInput),runtime=delivery.runtimeReport;
   const journeyDecision = validateProjectJourneyDecision(quote, journeyInput), journey = delivery.journeyReport;
   const modelDecision=validateModelDecision(quote,modelInput),model=delivery.modelReport;
+  const enquiryDecision=validateProjectEnquiryDecisionSync(quote,enquiryInput),enquiry=delivery.enquiryReport;
   const browser = delivery.browserChecks;
   const layout = delivery.layoutReport;
   const assessment = delivery.assessment;
@@ -93,6 +95,7 @@ export function createAcceptanceEvidence(quote: ProofQuote, manualChecks: string
     ...(journeyDecision && journey ? {journeyReportId:journey.id, journeyDeliveryDigest:journey.deliveryDigest,
       journeyPlanDigest:journey.planDigest, journeyRegistration:journey.registration, journeyClientObservationAcknowledged:true as const,
       ...(journeyDecision.exceptionReason ? {journeyExceptionReason:journeyDecision.exceptionReason,journeyAcknowledgedSteps:journeyDecision.acknowledgedSteps}: {})} : {}),
+    ...(enquiryDecision&&enquiry?{enquiryReportId:enquiry.id,enquiryDeliveryDigest:enquiry.deliveryDigest,enquiryDecision}:{}),
     ...(modelDecision&&model?{modelReportId:model.id,modelSpecDigest:model.modelSpecDigest,modelDeliveryDigest:model.deliveryDigest,modelDecision}:{}),
     browserReportId: browser?.id ?? null, layoutReportId: layout?.id ?? null, assessmentId: assessment?.id ?? null,
     manualChecks, criteria: quote.proof.criteria, evidence: delivery.evidence,
@@ -114,6 +117,9 @@ export function withAcceptanceEvidence(delivery: ProofDelivery, snapshot: ProofA
   const runtime=delivery.runtimeReport;
   const journey=delivery.journeyReport;
   const model=delivery.modelReport;
+  const enquiry=delivery.enquiryReport;
+  if(delivery.enquiryPlan){if(!enquiry||snapshot.enquiryReportId!==enquiry.id||snapshot.enquiryDeliveryDigest!==enquiry.deliveryDigest)throw new DomainError("Acceptance must retain the exact enquiry backend evidence.",409);validateEnquiryReportDecision(enquiry,snapshot.enquiryDecision);}
+  else if(snapshot.enquiryReportId!==undefined||snapshot.enquiryDeliveryDigest!==undefined||snapshot.enquiryDecision!==undefined)throw new DomainError("Enquiry acceptance requires its separate confirmed plan and report.",409);
   if((snapshot.modelReportId??null)!==(model?.id??null)||model&&(snapshot.modelSpecDigest!==model.modelSpecDigest||snapshot.modelDeliveryDigest!==model.deliveryDigest))throw new DomainError("Acceptance must retain the exact current model report.",409);
   if(model)validateModelReportDecision(model,snapshot.modelDecision);
   else if(snapshot.modelSpecDigest!==undefined||snapshot.modelDeliveryDigest!==undefined||snapshot.modelDecision!==undefined)throw new DomainError("Model acceptance metadata requires its current report.",409);
@@ -167,11 +173,12 @@ export function assertAcceptedEvidenceReference(quote: ProofQuote): void {
   const financialId = quote.proof.acceptedEvidenceSnapshotId;
   if (collaborationId && financialId && collaborationId !== financialId) throw new DomainError("The payment consent and delivery acceptance reference different evidence snapshots.", 409);
   const id = financialId ?? collaborationId;
-  if (!id && (getBusinessCheckPlan(quote).length || savedRuntimePlan(quote) || savedProjectJourneyPlan(quote))) throw new DomainError("The accepted evidence snapshot is unavailable.", 409);
+  if (!id && (getBusinessCheckPlan(quote).length || savedRuntimePlan(quote) || savedProjectJourneyPlan(quote)||delivery?.enquiryPlan)) throw new DomainError("The accepted evidence snapshot is unavailable.", 409);
   if (!id) return; // Pre-upgrade acceptance remains explicitly unknown.
   const snapshot = delivery?.acceptanceEvidence?.find(item => item.id === id && item.deliveryId === delivery.id);
   if (!delivery || !snapshot) throw new DomainError("The saved acceptance evidence snapshot could not be found. Refresh before confirming payment.", 409);
   assertModelAcceptanceReference(quote,snapshot);
+  if(snapshot.enquiryReportId){const report=projectEnquiryReportsFor(delivery).find(row=>row.id===snapshot.enquiryReportId);if(!report||snapshot.enquiryDeliveryDigest!==report.deliveryDigest)throw new DomainError("Frozen enquiry report is missing or differs.",409);validateEnquiryReportDecision(report,snapshot.enquiryDecision);}else if(delivery.enquiryPlan)throw new DomainError("Frozen acceptance omits the agreed enquiry report.",409);
   if(savedRuntimePlan(quote)) {
     const runtime=runtimeReportsFor(delivery).find(row=>row.id===snapshot.runtimeReportId);
     if(!runtime || runtime.deliveryDigest!==snapshot.runtimeDeliveryDigest || runtime.target.id!==snapshot.runtimeTargetId || runtime.deliveryDigest!==delivery.runtimeDeliveryDigest || !sameRegistration(snapshot.runtimeRegistration,runtime.target.registration) || !sameRegistration(delivery.runtimeRegistration,runtime.target.registration))throw new DomainError("The backend evidence accepted for payment is unavailable or has changed.",409);
@@ -192,7 +199,7 @@ export function assertAcceptedEvidenceReference(quote: ProofQuote): void {
 /** Called only after normal financial-domain validation and before the provider.
  * A collaborative acceptance keeps its earlier snapshot, even if a later
  * browser run exists. Legacy collaborative acceptances stay explicitly unknown. */
-export function recordCaptureConsent(quote: ProofQuote, manualChecks: string[], at: string, businessDecision?: BusinessDecision,runtimeInput?:unknown, journeyInput?:unknown,modelInput?:unknown): ProofQuote {
+export function recordCaptureConsent(quote: ProofQuote, manualChecks: string[], at: string, businessDecision?: BusinessDecision,runtimeInput?:unknown, journeyInput?:unknown,modelInput?:unknown,enquiryInput?:unknown): ProofQuote {
   const delivery = quote.proof.delivery;
   if (!delivery || !Number.isFinite(Date.parse(at))) throw new DomainError("Capture consent needs the current delivery and a valid time.", 409);
   if (quote.proof.paymentOperation) throw new DomainError("Capture consent was already saved; reuse the existing pending operation.", 409);
@@ -206,7 +213,7 @@ export function recordCaptureConsent(quote: ProofQuote, manualChecks: string[], 
     if (snapshotId && !(delivery.acceptanceEvidence ?? []).some(item => item.id === snapshotId && item.deliveryId === delivery.id)) throw new DomainError("The accepted evidence snapshot could not be found. Refresh before confirming payment.", 409);
   } else {
     if (quote.proof.acceptedEvidenceSnapshotId) throw new DomainError("A saved capture consent has no pending operation. Reconcile this payment before recording another consent.", 409);
-    const snapshot = createAcceptanceEvidence(quote, manualChecks, at, businessDecision,runtimeInput,journeyInput,modelInput);
+    const snapshot = createAcceptanceEvidence(quote, manualChecks, at, businessDecision,runtimeInput,journeyInput,modelInput,enquiryInput);
     next.proof.delivery = withAcceptanceEvidence(delivery, snapshot);
     snapshotId = snapshot.id;
   }

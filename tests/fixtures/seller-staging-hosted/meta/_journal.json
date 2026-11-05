@@ -43,6 +43,13 @@
       "when": 1793760000000,
       "tag": "0007_time_policy",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1793850000000,
+      "tag": "0008_enquiry_control",
+      "breakpoints": true
     }
   ]
 }

@@ -10,6 +10,7 @@ import {handleCapacityRequest} from "../../examples/seller-capacity-staging/work
 import {handleLifecycleRequest} from "../../examples/seller-lifecycle-staging/worker/lifecycle-service.mjs";
 import {handleTimePolicyRequest} from "../../examples/seller-time-policy-staging/worker/time-policy-service.mjs";
 import {runTimePolicyLab} from "../../lib/time-policy-lab.ts";
+import {handleEnquiryLabRequest,ENQUIRY_LAB_BASE,ENQUIRY_LAB_REVISION} from "../../lib/enquiry-lab.ts";
 const headers={"Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer"};
 function json(value:unknown,status=200){return Response.json(value,{status,headers});}
 async function body(request:Request){
@@ -22,6 +23,7 @@ async function body(request:Request){
 }
 export default {async fetch(request:Request,env:{DB?:D1Database;LAB_ALLOW_LOOPBACK?:string} & Record<string,unknown>):Promise<Response>{
   const url=new URL(request.url);
+  const enquiry=await handleEnquiryLabRequest(request,{ENQUIRY_DB:env.DB});if(enquiry)return enquiry;
   const timePolicy=await handleTimePolicyRequest(request,env);if(timePolicy)return timePolicy;
   if(url.pathname==="/api/time-policy-lab"){
     if(request.method!=="POST")return json({error:"POST required"},405);
@@ -96,7 +98,7 @@ export default {async fetch(request:Request,env:{DB?:D1Database;LAB_ALLOW_LOOPBA
   }
   const fixture=await handleBookingRequest(request,env);if(fixture)return fixture;
   const policyFixture=await handlePolicyBookingRequest(request,env);if(policyFixture)return policyFixture;
-  if(url.pathname==="/health")return json({service:"proofbeforepay-isolated-lab",protocols:["booking-http-v1","booking-http-v2","booking-http-v3","booking-http-v4"],privateProjects:false,modelCredentials:false,realPayments:false,referenceStaging:{handler:"separate-native-business-handler",syntheticOnly:true,sharesPhysicalLabDatabase:true},capacityStaging:{handler:"native-aggregate-capacity-sql",syntheticOnly:true,sharesPhysicalLabDatabase:true},sellerJourneyReference:{protocol:"booking-lifecycle-http-v1",bridge:"pbp-seller-bridge-v1",developerOperated:true,independentSeller:false,syntheticOnly:true,sharesPhysicalLabDatabase:true}});
+  if(url.pathname==="/health")return json({service:"proofbeforepay-isolated-lab",protocols:["booking-http-v1","booking-http-v2","booking-http-v3","booking-http-v4"],privateProjects:false,modelCredentials:false,realPayments:false,referenceStaging:{handler:"separate-native-business-handler",syntheticOnly:true,sharesPhysicalLabDatabase:true},capacityStaging:{handler:"native-aggregate-capacity-sql",syntheticOnly:true,sharesPhysicalLabDatabase:true},sellerJourneyReference:{protocol:"booking-lifecycle-http-v1",bridge:"pbp-seller-bridge-v1",developerOperated:true,independentSeller:false,syntheticOnly:true,sharesPhysicalLabDatabase:true},enquiryControl:{protocol:"enquiry-http-v1",basePath:ENQUIRY_LAB_BASE,revision:ENQUIRY_LAB_REVISION,teamOwned:true,independentSeller:false,syntheticOnly:true,sharesPhysicalLabDatabase:true,websiteFormVerified:false,emailDelivery:false}});
   if(url.pathname==="/api/lab-check"){
     if(request.method!=="POST")return json({error:"POST required"},405);
     if(request.headers.get("origin")!==url.origin)return json({error:"Same-origin request required"},403);

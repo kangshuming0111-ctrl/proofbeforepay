@@ -2,6 +2,7 @@ import {readFile,writeFile,mkdir,readdir,lstat,cp} from "node:fs/promises";
 import {createRequire} from "node:module";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
+import {createHash} from "node:crypto";
 import {buildGuestLab} from "./build-guest-lab.mjs";
 const root=fileURLToPath(new URL("../",import.meta.url));
 const args=process.argv.slice(2);
@@ -18,6 +19,8 @@ await mkdir(path.join(output,"worker"),{recursive:true});
 await esbuild.build({entryPoints:[path.join(root,"app/guest-lab/server.ts")],bundle:true,platform:"browser",format:"esm",target:"es2022",outfile:path.join(output,"worker/index.js"),plugins:[{name:"guest-assets",setup(build){build.onResolve({filter:/^pbp-guest-assets$/},()=>({path:"assets",namespace:"guest"}));build.onLoad({filter:/.*/,namespace:"guest"},()=>({contents:`export default ${JSON.stringify(assets)}`,loader:"js"}));}}]});
 await cp(path.join(root,"tests/fixtures/booking-backend/drizzle"),path.join(output,"drizzle"),{recursive:true});
 const sellerMigrations=path.join(root,"tests/fixtures/seller-staging-hosted");
+const enquiryMigration=await readFile(path.join(sellerMigrations,"0008_enquiry_control.sql"),"utf8"),nativeEnquiryMigration=await readFile(path.join(root,"examples/seller-enquiry-staging/migrations/0001_enquiries.sql"),"utf8");
+if(enquiryMigration.split("\n").filter(line=>line!=="--> statement-breakpoint").join("\n")!==nativeEnquiryMigration)throw new Error("The hosted enquiry migration must preserve the native example SQL exactly apart from statement breakpoints.");
 for(const name of (await readdir(sellerMigrations)).filter(name=>/^\d+.*\.sql$/u.test(name)).sort())await cp(path.join(sellerMigrations,name),path.join(output,"drizzle",name));
 const journalPath=path.join(output,"drizzle/meta/_journal.json"),journal=JSON.parse(await readFile(journalPath,"utf8"));
 const sellerJournal=JSON.parse(await readFile(path.join(sellerMigrations,"meta/_journal.json"),"utf8"));
@@ -26,5 +29,5 @@ for(const entry of sellerJournal.entries){
   journal.entries.push(entry);
 }
 await writeFile(journalPath,JSON.stringify(journal,null,2)+"\n");
-await writeFile(path.join(output,"lab-build.json"),JSON.stringify({schema:"isolated-lab-build-v1",scope:"Synthetic-only public fixture and browser-local roleplay; no main application environment, provider credentials or project records copied.",assets:Object.keys(assets)},null,2)+"\n");
+await writeFile(path.join(output,"lab-build.json"),JSON.stringify({schema:"isolated-lab-build-v1",scope:"Synthetic-only public fixture and browser-local roleplay; no main application environment, provider credentials or project records copied.",assets:Object.keys(assets),enquiryControl:{teamOwned:true,independentSeller:false,basePath:"/enquiry/pbp/",protocol:"enquiry-http-v1",revision:"team-owned-enquiry-fixed-v1",migration:"0008_enquiry_control.sql",nativeMigrationSha256:createHash("sha256").update(nativeEnquiryMigration).digest("hex"),hostedMigrationSha256:createHash("sha256").update(enquiryMigration).digest("hex")}},null,2)+"\n");
 process.stdout.write(JSON.stringify({output,worker:path.join(output,"worker/index.js"),assets:Object.keys(assets).length})+"\n");

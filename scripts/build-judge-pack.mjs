@@ -1,19 +1,77 @@
 import { createHash } from "node:crypto";
-import { lstat, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { lstat, mkdir, open, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
+import { gunzipSync } from "node:zlib";
 
 // Build a local reviewable export. This never reads runtime credentials, publishes
 // a repository, changes Site access, starts a provider call or installs packages.
 const ROOT_FILES = ["README.md", "LICENSE", "AGENTS.md", "package.json", "pnpm-lock.yaml", "pnpm-workspace.yaml", "tsconfig.json", "next.config.ts", "vite.config.ts", "postcss.config.mjs", "eslint.config.mjs", "drizzle.config.ts", "cloudflare-env.d.ts", "components.json", ".gitignore", ".agents/skills/proofbeforepay-delivery/SKILL.md", ".agents/skills/proofbeforepay-delivery/references/code-map.md"];
-const SOURCE_DIRS = ["app", "lib", "db", "drizzle", "components", "hooks", "worker", "vendor", "public", "scripts", "tests", "docs", "examples/seller-staging", "examples/seller-capacity-staging", "examples/seller-lifecycle-staging", "examples/seller-workshop-python", "examples/seller-dom-staging", "examples/seller-time-policy-staging", "examples/seller-onboarding"];
+const SOURCE_DIRS = ["app", "lib", "db", "drizzle", "components", "hooks", "worker", "vendor", "public", "scripts", "tests", "docs", "examples/seller-staging", "examples/seller-capacity-staging", "examples/seller-lifecycle-staging", "examples/seller-workshop-python", "examples/seller-dom-staging", "examples/seller-time-policy-staging", "examples/seller-onboarding", "examples/seller-enquiry-staging"];
 const EXTENSIONS = new Set([".html", ".ts", ".tsx", ".mts", ".cts", ".js", ".mjs", ".cjs", ".css", ".json", ".sql", ".md", ".yaml", ".yml", ".svg", ".py", ".sh", ".csv", ".LICENSE"]);
 // Exact attribution files for the three licensed evaluator-template sources.
 // Do not broaden this to arbitrary TXT documents or owner notes.
 const LICENSE_TEXT_FILES = new Set(["bootstrap", "florist", "html5up"].map(name => `docs/fixtures/assessment-transfer-2026-11-04/${name}-LICENSE.txt`));
+// One immutable benchmark source archive, not a general binary/archive allowance.
+// Its members must also match the exact 20 pre-call implementation hashes.
+const PINNED_SOURCE_ARCHIVES = new Map([["public/benchmarks/five-remediation-2026-11-05/first-implementation.tar.gz", {
+  bytes: 175703, sha256: "08b9d92412311119119bea36d86ee4e403087d83fe535e33719f432269617139",
+  maxCompressedBytes: 256 * 1024, maxUncompressedBytes: 1024 * 1024, files: 20,
+  freeze: "public/benchmarks/five-remediation-2026-11-05/first-freeze.json",
+}]]);
 const DENIED_PART = /^(?:\.git|node_modules|dist|\.next|\.wrangler|\.sites-runtime|outputs|work|\.codex|__pycache__|\.env(?:\..*)?|\.dev\.vars(?:\..*)?|credentials?|cookies?|secrets?|private[-_]?keys?|auth[-_]?state|storage[-_]?state)$/iu;
 const SECRET_LIKE = /\bBearer\s+[A-Za-z0-9._~+/=-]{24,}|\bsk-[A-Za-z0-9_-]{24,}|-----BEGIN [A-Z ]*PRIVATE KEY-----/u;
+
+async function boundedSourceRead(file, maxBytes) {
+  const handle = await open(file, "r");
+  try {
+    if (!(await handle.stat()).isFile()) throw new Error("Pinned archive inputs must be regular files.");
+    const buffer = Buffer.alloc(maxBytes + 1); let size = 0;
+    while (size < buffer.length) {const {bytesRead} = await handle.read(buffer, size, buffer.length - size, null); if (!bytesRead) break; size += bytesRead;}
+    if (size > maxBytes) throw new Error("Pinned archive input exceeds its bounded read allowance.");
+    return buffer.subarray(0, size);
+  } finally {await handle.close();}
+}
+
+async function validatePinnedArchive(root, relative, bytes, pin) {
+  const reject = () => {throw new Error(`Pinned benchmark archive validation failed: ${relative}`);};
+  if (bytes.length !== pin.bytes || bytes.length > pin.maxCompressedBytes || createHash("sha256").update(bytes).digest("hex") !== pin.sha256) reject();
+  const freezePath = path.join(root, pin.freeze);
+  if ((await lstat(freezePath)).size > 4 * 1024 * 1024) reject();
+  const freeze = JSON.parse(new TextDecoder("utf-8", {fatal: true}).decode(await sourceFile(root, pin.freeze)));
+  const expected = new Map();
+  for (const row of freeze?.snapshot?.implementation ?? []) {
+    if (!row || typeof row.file !== "string" || row.file.startsWith("/") || row.file.split("/").some(part => part === ".." || DENIED_PART.test(part)) || !/^[a-f0-9]{64}$/u.test(row.sha256) || expected.has(row.file)) reject();
+    expected.set(row.file, row.sha256);
+  }
+  if (expected.size !== pin.files) reject();
+  const tar = gunzipSync(bytes, {maxOutputLength: pin.maxUncompressedBytes}), seen = new Set();
+  const number = field => {const value = field.toString("ascii").replace(/\0.*$/u, "").trim(); if (!/^[0-7]+$/u.test(value)) reject(); return Number.parseInt(value, 8);};
+  const string = field => new TextDecoder("utf-8", {fatal: true}).decode(field.subarray(0, field.indexOf(0) < 0 ? field.length : field.indexOf(0)));
+  let at = 0, pendingMtime = false;
+  while (at + 512 <= tar.length) {
+    const header = tar.subarray(at, at + 512);
+    if (header.every(byte => byte === 0)) break;
+    const checksum = [...header].reduce((sum, byte, i) => sum + (i >= 148 && i < 156 ? 32 : byte), 0);
+    if (number(header.subarray(148, 156)) !== checksum || string(header.subarray(257, 263)) !== "ustar" || string(header.subarray(345, 500))) reject();
+    const name = string(header.subarray(0, 100)), size = number(header.subarray(124, 136)), type = header[156], start = at + 512, end = start + size;
+    if (end > tar.length) reject();
+    const data = tar.subarray(start, end);
+    if (type === 120) {
+      const text = new TextDecoder("utf-8", {fatal: true}).decode(data);
+      if (pendingMtime || name !== "././@PaxHeader" || size > 80 || !/^\d{1,3} mtime=\d+(?:\.\d+)?\n$/u.test(text) || Number(text.split(" ", 1)[0]) !== size) reject();
+      pendingMtime = true;
+    } else {
+      if (type !== 48 || !expected.has(name) || seen.has(name) || string(header.subarray(157, 257)) || number(header.subarray(100, 108)) !== 0o644 || createHash("sha256").update(data).digest("hex") !== expected.get(name)) reject();
+      const text = new TextDecoder("utf-8", {fatal: true}).decode(data);
+      if (text.includes("\0") || SECRET_LIKE.test(text)) reject();
+      seen.add(name); pendingMtime = false;
+    }
+    at = start + Math.ceil(size / 512) * 512;
+  }
+  if (pendingMtime || seen.size !== expected.size || tar.length - at < 1024 || !tar.subarray(at).every(byte => byte === 0)) reject();
+}
 
 async function sourceFile(root, relative) {
   if (path.isAbsolute(relative) || relative.split(/[\\/]/u).some(part => part === ".." || DENIED_PART.test(part))) throw new Error(`Disallowed source path: ${relative}`);
@@ -22,8 +80,13 @@ async function sourceFile(root, relative) {
     current = path.join(current, part);
     if ((await lstat(current)).isSymbolicLink()) throw new Error(`Symlink source rejected: ${relative}`);
   }
-  if (!(await lstat(current)).isFile()) throw new Error(`Non-file source rejected: ${relative}`);
-  const bytes = await readFile(current);
+  const info = await lstat(current);
+  if (!info.isFile()) throw new Error(`Non-file source rejected: ${relative}`);
+  const pin = PINNED_SOURCE_ARCHIVES.get(relative);
+  if (pin && (info.size !== pin.bytes || info.size > pin.maxCompressedBytes)) throw new Error(`Pinned benchmark archive validation failed: ${relative}`);
+  const boundedBytes = pin?.maxCompressedBytes ?? ([...PINNED_SOURCE_ARCHIVES.values()].some(value => value.freeze === relative) ? 4 * 1024 * 1024 : undefined);
+  const bytes = boundedBytes === undefined ? await readFile(current) : await boundedSourceRead(current, boundedBytes);
+  if (pin) {await validatePinnedArchive(root, relative, bytes, pin); return bytes;}
   const text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
   if (text.includes("\0") || SECRET_LIKE.test(text)) throw new Error(`Source export needs manual review: ${relative}`);
   return bytes;
@@ -44,7 +107,7 @@ export async function collectPublicSource(root) {
       const name = `${relative}/${entry.name}`;
       if (entry.isSymbolicLink()) throw new Error(`Symlink source rejected: ${name}`);
       if (entry.isDirectory()) await walk(name);
-      else if (entry.isFile() && (EXTENSIONS.has(path.extname(entry.name)) || LICENSE_TEXT_FILES.has(name))) names.push(name);
+      else if (entry.isFile() && (EXTENSIONS.has(path.extname(entry.name)) || LICENSE_TEXT_FILES.has(name) || PINNED_SOURCE_ARCHIVES.has(name))) names.push(name);
     }
   }
   for (const directory of SOURCE_DIRS) {

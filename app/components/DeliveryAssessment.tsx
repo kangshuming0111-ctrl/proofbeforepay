@@ -6,6 +6,7 @@ import type { Language, ProofAssessment, ProofAssessmentCitation, ProofCriterion
 import { criterionDisplayTitle } from "@/lib/delivery-overview";
 import "../assessment.css";
 import { RiskReviewPanel } from "./RiskReviewPanel";
+import {RiskFeedbackAction, type RiskFeedbackDraft} from "./RiskRepairPanel";
 import { AssessmentValidationPanel } from "./AssessmentValidationPanel";
 import { assessmentCriterionSource, buildAssessmentFeedbackDraft } from "./assessment-feedback";
 import type { RiskReviewInput } from "@/lib/risk-reviews";
@@ -20,7 +21,7 @@ export type DeliveryAssessmentProps = {
   busy?: boolean;
   configured?: boolean;
   onRun?: () => void;
-  onPrepareFeedback?: (input: { deliveryId: string; criterionId: string; comment: string }) => void;
+  onPrepareFeedback?: (input: { deliveryId: string; criterionId: string; comment: string } | RiskFeedbackDraft) => void;
   readOnly?: boolean;
   riskReviews?: ProofRiskReview[];
   actorRole?: ProofRole;
@@ -132,7 +133,7 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
               return <article className="assessment-risk" key={`${risk.title}-${index}`} data-evidence-kind={reading.kind}>
                 <span className="assessment-risk-basis">{reading.label}</span><h4>{reading.title}</h4><p className="assessment-risk-notice">{reading.explanation}</p>
                 {reading.kind === "image_evidence_gap" ? <details className="assessment-original-risk"><summary>{tr("查看原始模型措辞", "Inspect original model wording")}</summary><strong>{risk.title}</strong><p>{risk.explanation}</p><p>{risk.suggestion}</p></details> : <p>{risk.explanation}</p>}
-                <p className="assessment-risk-suggestion">{tr("下一步核对：", "Next check: ")}{reading.nextStep}</p><Citations citations={risk.citations} language={language} /><RiskReviewPanel key={`${report.deliveryId}-${report.id}-${index}-${actorRole ?? ""}`} deliveryId={report.deliveryId} assessmentId={report.id} riskIndex={index} reviews={riskReviews} role={actorRole} language={language} busy={busy} readOnly={readOnly} onSave={onSaveRiskReview}/>
+                <p className="assessment-risk-suggestion">{tr("下一步核对：", "Next check: ")}{reading.nextStep}</p><Citations citations={risk.citations} language={language} /><RiskReviewPanel key={`${report.deliveryId}-${report.id}-${index}-${actorRole ?? ""}`} deliveryId={report.deliveryId} assessmentId={report.id} riskIndex={index} reviews={riskReviews} role={actorRole} language={language} busy={busy} readOnly={readOnly} onSave={onSaveRiskReview}/>{!readOnly && onPrepareFeedback && <RiskFeedbackAction report={report} index={index} criteria={criteria} language={language} disabled={busy} onPrepare={onPrepareFeedback}/>}
               </article>;
             })}{report.risks.length > 5 && <p className="assessment-risk-notice">{tr("此处展示前 5 项；完整报告保留在交付记录中。", "Showing the first 5 issues; the full report remains in the delivery record.")}</p>}</> : <p className="assessment-empty">{tr("此报告没有列出潜在问题，不代表网站没有缺陷。", "This report lists no potential issues. This does not establish that the website is free of defects.")}</p>}</div>
         </details>

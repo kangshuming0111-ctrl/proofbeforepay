@@ -42,6 +42,23 @@ test("judge export preserves explicit TypeScript module sources needed by clean-
   }
 });
 
+test("judge export includes the enquiry native-service modules and migration without broadly admitting other examples", async t => {
+  const {root,base}=await fixture(t),directory="examples/seller-enquiry-staging";
+  const sources=new Map([
+    [`${directory}/worker/enquiry-service.mjs`,"export const syntheticEnquiryService = true;\n"],
+    [`${directory}/worker/index.js`,"export {syntheticEnquiryService} from './enquiry-service.mjs';\n"],
+    [`${directory}/migrations/0001_enquiries.sql`,"CREATE TABLE synthetic_enquiries (id TEXT PRIMARY KEY);\n"],
+    [`${directory}/README.md`,"# Synthetic enquiry staging reference\n"],
+  ]);
+  for(const [name,text]of sources){await mkdir(path.dirname(path.join(root,name)),{recursive:true});await writeFile(path.join(root,name),text);}
+  await mkdir(path.join(root,"examples/unrelated-private"),{recursive:true});await writeFile(path.join(root,"examples/unrelated-private/client-notes.md"),"outside the exact source allowlist\n");
+  const result=await buildJudgePack(root,path.join(base,"enquiry-export")),manifest=JSON.parse(await readFile(result.manifest,"utf8")),archive=spawnSync("tar",["-tzf",result.archive],{encoding:"utf8"});
+  assert.equal(archive.status,0);
+  for(const [name,text]of sources){assert.ok(manifest.files.some(entry=>entry.file===name));assert.ok(archive.stdout.split("\n").includes(`./${name}`));assert.equal(await readFile(path.join(result.sourceDirectory,name),"utf8"),text);}
+  assert.ok(!manifest.files.some(entry=>entry.file.includes("unrelated-private")));
+  assert.ok(!archive.stdout.includes("unrelated-private"));
+});
+
 test("template licences are copied byte-for-byte without admitting other TXT or similarly named notes", async t => {
   const {root,base}=await fixture(t),directory=path.join(root,"docs/fixtures/assessment-transfer-2026-11-04");
   await mkdir(directory,{recursive:true});
@@ -51,6 +68,35 @@ test("template licences are copied byte-for-byte without admitting other TXT or 
   const copied=manifest.files.map(item=>item.file).filter(name=>name.endsWith(".txt"));
   assert.deepEqual(copied,["bootstrap","florist","html5up"].map(name=>`docs/fixtures/assessment-transfer-2026-11-04/${name}-LICENSE.txt`));
   for(const file of copied)assert.deepEqual(await readFile(path.join(result.sourceDirectory,file)),await readFile(path.join(root,file)));
+});
+
+test("the single pinned benchmark source archive exports byte-for-byte with all frozen member hashes validated", async t => {
+  const {root,base}=await fixture(t),relative="public/benchmarks/five-remediation-2026-11-05",actual=new URL(`../${relative}/`,import.meta.url);
+  await mkdir(path.join(root,relative),{recursive:true});
+  const archiveBytes=await readFile(new URL("first-implementation.tar.gz",actual)),freezeBytes=await readFile(new URL("first-freeze.json",actual));
+  await writeFile(path.join(root,relative,"first-implementation.tar.gz"),archiveBytes);await writeFile(path.join(root,relative,"first-freeze.json"),freezeBytes);
+  for(const name of["arbitrary.tar.gz","first-implementation.tar.gz.bak","private.bin"])await writeFile(path.join(root,relative,name),"not a permitted binary source\n");
+  const result=await buildJudgePack(root,path.join(base,"archive-export")),manifest=JSON.parse(await readFile(result.manifest,"utf8")),entry=manifest.files.find(item=>item.file===`${relative}/first-implementation.tar.gz`);
+  assert.equal(entry.bytes,175703);assert.equal(entry.sha256,"08b9d92412311119119bea36d86ee4e403087d83fe535e33719f432269617139");
+  assert.deepEqual(await readFile(path.join(result.sourceDirectory,entry.file)),archiveBytes);
+  assert.deepEqual(manifest.files.filter(item=>/\.(?:gz|bin)$/u.test(item.file)).map(item=>item.file),[`${relative}/first-implementation.tar.gz`]);
+  const listed=spawnSync("tar",["-tzf",result.archive],{encoding:"utf8"});assert.equal(listed.status,0);assert.ok(listed.stdout.split("\n").includes(`./${entry.file}`));
+});
+
+test("tampered, oversized or frozen-source-mismatched baseline archives block export before output creation", async t => {
+  const {root,base}=await fixture(t),relative="public/benchmarks/five-remediation-2026-11-05",actual=new URL(`../${relative}/`,import.meta.url);
+  await mkdir(path.join(root,relative),{recursive:true});
+  const original=await readFile(new URL("first-implementation.tar.gz",actual)),freeze=JSON.parse(await readFile(new URL("first-freeze.json",actual),"utf8"));
+  await writeFile(path.join(root,relative,"first-freeze.json"),JSON.stringify(freeze));
+  for(const [name,bytes]of[["tampered",Buffer.from(original)],["oversized",Buffer.alloc(256*1024+1)]]){
+    if(name==="tampered")bytes[20]^=1;
+    await writeFile(path.join(root,relative,"first-implementation.tar.gz"),bytes);
+    const output=path.join(base,`reject-${name}`);await assert.rejects(buildJudgePack(root,output),/Pinned benchmark archive validation failed/u);assert.ok(!(await readdir(base)).includes(`reject-${name}`));
+  }
+  await writeFile(path.join(root,relative,"first-implementation.tar.gz"),original);freeze.snapshot.implementation[0].sha256="0".repeat(64);await writeFile(path.join(root,relative,"first-freeze.json"),JSON.stringify(freeze));
+  await assert.rejects(buildJudgePack(root,path.join(base,"reject-frozen-mismatch")),/Pinned benchmark archive validation failed/u);assert.ok(!(await readdir(base)).includes("reject-frozen-mismatch"));
+  await writeFile(path.join(root,relative,"first-freeze.json"),Buffer.alloc(4*1024*1024+1,32));
+  await assert.rejects(buildJudgePack(root,path.join(base,"reject-frozen-size")),/Pinned (?:benchmark archive validation failed|archive input exceeds its bounded read allowance)/u);assert.ok(!(await readdir(base)).includes("reject-frozen-size"));
 });
 
 test("judge export refuses a source symlink instead of following it outside the source tree", async t => {

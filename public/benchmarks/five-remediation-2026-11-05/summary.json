@@ -1,0 +1,58 @@
+{
+  "schema": "pbp-five-remediation-validation-v1",
+  "date": "2026-11-05",
+  "first": {
+    "projects": 8,
+    "criteria": 16,
+    "rawAgreement": 15,
+    "applicationAgreement": 15,
+    "falseSupported": 1,
+    "calls": 8,
+    "wholeAnswers": {
+      "accepted": 6,
+      "qualified": 1,
+      "rejected": 1
+    }
+  },
+  "knownRegression": {
+    "projects": 2,
+    "criteria": 4,
+    "calls": 2,
+    "rawAgreement": 2,
+    "applicationAgreement": 2,
+    "rejectedIncompleteReports": 1,
+    "falseSupported": 0,
+    "additionalIndependentProjects": 0
+  },
+  "humanFirstUse": {
+    "buyerSessions": 0,
+    "technicalSellerSessions": 0,
+    "status": "not-yet-observed"
+  },
+  "artifacts": [
+    "corpus.json",
+    "first-freeze.json",
+    "first-attempts.json",
+    "independent-whole-answer-review.json",
+    "known-replay.json",
+    "known-retest.json",
+    "known-retest-freeze.json",
+    "known-regression-corpus.json",
+    "baseline-replay.json",
+    "first-implementation.tar.gz"
+  ],
+  "limits": [
+    "Authored synthetic source projects, not independently acquired customer handovers.",
+    "Main-status agreement and exact citations do not establish whole-answer correctness.",
+    "First attempts and known-case regressions remain separate; old cohorts and qualified answers are not replaced.",
+    "No unfamiliar human or external technical-seller result was collected."
+  ],
+  "savedReplyReplay": {
+    "networkRequests": 0,
+    "providerCalls": 0,
+    "replies": 8,
+    "statusAgreement": 16,
+    "criteria": 16,
+    "additionalIndependentProjects": 0
+  }
+}

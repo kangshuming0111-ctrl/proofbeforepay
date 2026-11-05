@@ -1,0 +1,7 @@
+{
+ "name":"replace-with-your-disposable-enquiry-staging",
+ "main":"worker/index.mjs",
+ "compatibility_date":"2026-11-01",
+ "vars":{"ENQUIRY_PROFILE":"fixed","ENQUIRY_REVISION":"seller-enquiry-v1"},
+ "d1_databases":[{"binding":"DB","database_name":"replace-with-synthetic-only-database","database_id":"REPLACE_WITH_DISPOSABLE_DATABASE_ID","migrations_dir":"migrations"}]
+}

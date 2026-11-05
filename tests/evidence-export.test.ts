@@ -11,6 +11,8 @@ import {createUploadedDelivery,parseStaticProject} from "../lib/static-project.t
 import {createProofDelivery,proofCriteria} from "../lib/proof-evidence.ts";
 
 import {recordCaptureConsent} from "../lib/acceptance-evidence.ts";
+import {requestChanges} from "../lib/proof-workflow.ts";
+import {recordRiskRepair} from "../lib/risk-repairs.ts";
 import {recordBrowserChecks,getBrowserCheckPlan} from "../lib/browser-check-report.ts";
 import {recordLayoutReport} from "../lib/layout-report.ts";
 import {createBusinessCheckReport,getBusinessCheckPlan} from "../lib/business-checks.ts";
@@ -34,6 +36,25 @@ function annotatedFixture():ProofQuote{
   return accepted(q);
 }
 const failedCheck=(report:Awaited<ReturnType<typeof verifyEvidenceExport>>,id:string)=>report.checks.find(row=>row.id===id)?.status==="inconsistent";
+
+test("risk return retains its agreed source and explicit later-version human review in offline export",async()=>{
+  const q=fixture(),d=q.proof.delivery!,excerpt='<a href="contact.html#booking">Book</a>',start=d.files!["index.html"].indexOf(excerpt);
+  d.assessment={id:"risk-assessment",deliveryId:d.id,method:"source-ai-v1",mode:"live",model:"synthetic-no-call",assessedAt:at,items:[],risks:[{title:"Inspect link behavior",explanation:"The source alone does not verify the destination interaction.",suggestion:"Inspect the agreed local link.",citations:[{file:"index.html",start,end:start+excerpt.length,excerpt}]}],limitations:["Synthetic response"],coverage:{includedFiles:["index.html","contact.html"],truncatedFiles:[],omittedFiles:[]}};
+  const returned=requestChanges(q,{deliveryId:d.id,feedback:[{criterionId:"link",comment:"Please inspect the agreed link destination behavior.",riskSource:{assessmentId:d.assessment.id,riskIndex:0}}]},at);
+  const feedbackId=returned.proof.collaboration!.feedback[0].id;
+  returned.proof.delivery=createUploadedDelivery(d.files,returned.proof.project!,"en",2);
+  const current=returned.proof.delivery;
+  returned.proof.review={deliveryId:current.id,reviewedAt:at,mode:"demo",summary:"Current source reviewed"};
+  returned.proof.collaboration!.stage="submitted";returned.proof.collaboration!.submission={deliveryId:current.id,at,note:"New delivery for inspection"};
+  const proposed=recordRiskRepair(returned,"seller",{action:"propose",feedbackId,deliveryId:current.id,expectedEventId:null,reason:"Inspected the new link and destination in the supplied source."},at);
+  const proposal=proposed.proof.collaboration!.riskRepairEvents![0];
+  const reviewed=recordRiskRepair(proposed,"buyer",{action:"review",feedbackId,deliveryId:current.id,expectedEventId:proposal.id,proposalId:proposal.id,outcome:"repaired",reason:"Buyer inspected this new version against the original agreed link."},at);
+  const bundle=await createEvidenceExport(JSON.parse(JSON.stringify(reviewed)) as ProofQuote);
+  assert.equal(bundle.riskRepairs!.feedback[0].riskSource!.assessmentId,"risk-assessment");
+  assert.equal(bundle.riskRepairs!.events.length,2);assert.equal((await verifyEvidenceExport(bundle)).consistency,"consistent");
+  assert.equal(reviewed.proof.acceptedDeliveryId,undefined);assert.equal(reviewed.proof.paymentState,"unfunded");
+  for(const patch of ["criterion","actor","proposal","sequence"]){const changed=structuredClone(bundle);if(patch==="criterion")changed.riskRepairs!.feedback[0].riskSource!.criterion.source="Invented additional obligation";if(patch==="actor")Object.assign(changed.riskRepairs!.events[1],{actorRole:"seller"});if(patch==="proposal")Object.assign(changed.riskRepairs!.events[1],{proposalId:"foreign-proposal"});if(patch==="sequence")changed.riskRepairs!.events.reverse();assert.ok(failedCheck(await verifyEvidenceExport(changed),"risk-repair-chain"),patch);}
+});
 
 test("allowlisted current-delivery export omits identity/payment fields and has explicit verification limits",async()=>{
   const quote=accepted(),before=structuredClone(quote),bundle=await createEvidenceExport(quote),report=await verifyEvidenceExport(JSON.parse(JSON.stringify(bundle)));

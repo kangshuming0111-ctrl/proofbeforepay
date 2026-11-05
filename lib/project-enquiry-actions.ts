@@ -1,0 +1,40 @@
+import type {ProofQuote,ProofRole} from "./contracts.ts";
+import {DomainError} from "./domain.ts";
+import {runtimeDeliveryDigest} from "./runtime-project.ts";
+import {ENQUIRY_SCOPE,ENQUIRY_STEP_IDS,type EnquiryObservation,type EnquiryStepId} from "./enquiry-checks.ts";
+import {ENQUIRY_AGREEMENT,ENQUIRY_HISTORY_LIMIT,ENQUIRY_REPORT_BYTES,currentEnquiryDelivery,enquiryPlain,projectEnquiryReportsFor,validateEnquiryRegistration,validateProjectEnquiryPlan,validateProjectEnquiryReport,type EnquiryDelivery,type EnquiryRegistration,type ProjectEnquiryReport,type ProjectEnquiryRun} from "./project-enquiry.ts";
+
+function mutable(q:ProofQuote){if(q.status!=="approved"||q.proof.paymentOperation||["captured","voided","closed_unpaid"].includes(q.proof.paymentState)||q.proof.acceptedDeliveryId||q.proof.collaboration?.stage==="accepted")throw new DomainError("This delivery is closed to new enquiry checks.",409);}
+function member(role:ProofRole){if(role!=="buyer"&&role!=="seller")throw new DomainError("Only project members may run enquiry checks.",403);}
+export async function confirmProjectEnquiryPlan(quote:ProofQuote,role:ProofRole,input:Record<string,unknown>,at=new Date().toISOString()):Promise<ProofQuote>{
+ enquiryPlain(input,["action","deliveryId","confirmBackendOnly"]);if(input.action!=="confirm-plan"||role!=="buyer")throw new DomainError("Only the buyer can confirm optional enquiry tests.",403);if(input.confirmBackendOnly!==true)throw new DomainError("Explicitly confirm the backend-only synthetic test scope.");mutable(quote);const delivery=currentEnquiryDelivery(quote,input.deliveryId);if(delivery.enquiryPlan)return quote;
+ const next=structuredClone(quote),d=next.proof.delivery as EnquiryDelivery;d.enquiryPlan=validateProjectEnquiryPlan({protocol:"enquiry-http-v1",agreement:ENQUIRY_AGREEMENT,deliveryId:d.id,deliveryDigest:await runtimeDeliveryDigest(d.files),confirmedAt:at,provenance:"buyer-confirmed-technical-agreement"});return next;
+}
+export async function beginProjectEnquiryRun(quote:ProofQuote,role:ProofRole,input:Record<string,unknown>,registration:EnquiryRegistration,now=Date.now()):Promise<ProofQuote>{
+ enquiryPlain(input,["action","deliveryId","targetId","confirmSyntheticMutations"]);member(role);mutable(quote);const d=currentEnquiryDelivery(quote,input.deliveryId),plan=validateProjectEnquiryPlan(d.enquiryPlan),target=validateEnquiryRegistration(registration),digest=await runtimeDeliveryDigest(d.files);
+ if(input.action!=="start"||input.confirmSyntheticMutations!==true||target.id!==input.targetId||target.projectId!==quote.id||target.deliveryDigest!==digest||plan.deliveryId!==d.id||plan.deliveryDigest!==digest||Date.parse(target.expiresAt)<=now)throw new DomainError("Approve this exact version and registered synthetic test scope before starting.",409);
+ if(d.enquiryRun||d.runtimeRun||d.journeyRun||d.modelRun||d.transferCompetitionRun)throw new DomainError("Finish or close the current backend test before another run.",409);if(projectEnquiryReportsFor(d).length>=ENQUIRY_HISTORY_LIMIT)throw new DomainError("Enquiry report history is full; replace the delivery to test a new version.",409);
+ const next=structuredClone(quote),out=next.proof.delivery as EnquiryDelivery,id=crypto.randomUUID();out.enquiryRun={id,deliveryId:d.id,deliveryDigest:digest,plan,registration:target,startedAt:new Date(now).toISOString(),expiresAt:new Date(Math.min(now+20*60*1000,Date.parse(target.expiresAt))).toISOString(),reportedByRole:role,observations:[]};out.enquiryEvidenceReservation={runId:id,reportBytes:ENQUIRY_REPORT_BYTES,acceptanceBytes:ENQUIRY_REPORT_BYTES+2048};return next;
+}
+export function boundEnquiryRun(quote:ProofQuote,input:Record<string,unknown>):ProjectEnquiryRun{
+ const d=currentEnquiryDelivery(quote,input.deliveryId),run=d.enquiryRun,plan=validateProjectEnquiryPlan(d.enquiryPlan);if(!run||run.id!==input.runId||run.deliveryId!==d.id||run.deliveryDigest!==plan.deliveryDigest||JSON.stringify(run.plan)!==JSON.stringify(plan)||run.registration.projectId!==quote.id)throw new DomainError("Enquiry run no longer matches the current delivery.",409);return run;
+}
+export function beginProjectEnquiryStep(quote:ProofQuote,role:ProofRole,input:Record<string,unknown>,now=Date.now()):{quote:ProofQuote;run:ProjectEnquiryRun;leaseId:string;stepId:EnquiryStepId}{
+ enquiryPlain(input,["action","deliveryId","runId","stepId","confirmOriginalKeyRetry"],["action","deliveryId","runId","stepId"]);member(role);mutable(quote);const run=boundEnquiryRun(quote,input),stepId=ENQUIRY_STEP_IDS[run.observations.length];
+ if(input.action!=="advance"||!stepId||input.stepId!==stepId||run.inFlight||Date.parse(run.expiresAt)<=now)throw new DomainError("This enquiry step changed, expired, finished or is unresolved; refresh without replaying requests.",409);
+ if(stepId==="retry_original"&&input.confirmOriginalKeyRetry!==true)throw new DomainError("Explicitly confirm one replay of the original enquiry key after readback.");if(stepId!=="retry_original"&&input.confirmOriginalKeyRetry!==undefined)throw new DomainError("Retry confirmation belongs only to the original-key retry step.");
+ const next=structuredClone(quote),copy=(next.proof.delivery as EnquiryDelivery).enquiryRun!,leaseId=crypto.randomUUID();copy.inFlight={id:leaseId,stepId};return{quote:next,run:structuredClone(copy),leaseId,stepId};
+}
+export function finishProjectEnquiryStep(quote:ProofQuote,runId:string,leaseId:string,observation:EnquiryObservation):ProofQuote{
+ const d=currentEnquiryDelivery(quote),run=d.enquiryRun;if(!run||run.id!==runId||run.inFlight?.id!==leaseId||run.inFlight.stepId!==observation.id||ENQUIRY_STEP_IDS[run.observations.length]!==observation.id)throw new DomainError("Enquiry step lease changed; prior evidence was retained.",409);
+ const next=structuredClone(quote),copy=(next.proof.delivery as EnquiryDelivery).enquiryRun!;copy.observations.push(structuredClone(observation));delete copy.inFlight;
+ if(new TextEncoder().encode(JSON.stringify(copy)).byteLength>ENQUIRY_REPORT_BYTES-4096)copy.observations[copy.observations.length-1]={id:observation.id,readings:[],unavailableReason:"evidence_size_limit; original request may have committed"};return next;
+}
+export function finishProjectEnquiryRun(quote:ProofQuote,role:ProofRole,input:Record<string,unknown>,at=new Date().toISOString()):ProofQuote{
+ enquiryPlain(input,["action","deliveryId","runId","confirmAbandonInFlight"],["action","deliveryId","runId"]);member(role);const run=boundEnquiryRun(quote,input),abort=input.action==="abort";if(!abort&&(input.action!=="finish"||run.inFlight||run.observations.length!==ENQUIRY_STEP_IDS.length))throw new DomainError("Complete every enquiry step or close the run with unknowns.",409);
+ if(abort&&run.inFlight&&input.confirmAbandonInFlight!==true)throw new DomainError("Explicitly acknowledge the unresolved in-flight enquiry step before closing; it may have committed and will never be replayed.",409);
+ if(input.confirmAbandonInFlight!==undefined&&(!abort||!run.inFlight))throw new DomainError("In-flight abandonment confirmation applies only to closing an unresolved enquiry step.");
+ const observations=structuredClone(run.observations);if(abort)for(const id of ENQUIRY_STEP_IDS.slice(observations.length))observations.push({id,readings:[],unavailableReason:run.inFlight?.stepId===id?`in_flight_at_close:${id}; may have committed; never replayed`:"not_attempted_after_close"});
+ const report:ProjectEnquiryReport={id:crypto.randomUUID(),runId:run.id,deliveryId:run.deliveryId,deliveryDigest:run.deliveryDigest,plan:run.plan,registration:run.registration,startedAt:run.startedAt,finishedAt:at,reportedByRole:run.reportedByRole,scope:ENQUIRY_SCOPE,observations};validateProjectEnquiryReport(report,{deliveryId:run.deliveryId,deliveryDigest:run.deliveryDigest,plan:run.plan,projectId:quote.id});
+ const next=structuredClone(quote),d=next.proof.delivery as EnquiryDelivery;d.enquiryHistory=[...projectEnquiryReportsFor(d),report];d.enquiryReport=report;delete d.enquiryRun;delete d.enquiryEvidenceReservation;return next;
+}

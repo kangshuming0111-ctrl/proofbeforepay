@@ -8,6 +8,7 @@ import { assertCoverageForAcceptance } from "./requirement-coverage.ts";
 import { savedProjectJourneyPlan, validateStoredProjectJourneyReport } from "./project-journey.ts";
 import {assertAcceptanceBasis} from "./acceptance-basis.ts";
 import {validateStoredModelCheckReport} from "./model-checks.ts";
+import {snapshotRiskFeedbackSource, replayRiskRepairs} from "./risk-repairs.ts";
 
 export type ProofWorkflowAction = "approve" | "checkout" | "authorize" | "delivery" | "review" | "assess" | "layout" | "capture" | "void" | "reconcile" | "return" | "accept_delivery" | "invite" | "submit_delivery";
 
@@ -49,7 +50,7 @@ function collaboration(quote: ProofQuote) {
 
 /** Freeze deliverables while a payment is pending, terminal, or past its acceptance window. */
 function requireUnlockedDelivery(quote: ProofQuote, approved = true) {
-  if (quote.proof.delivery?.runtimeRun || quote.proof.delivery?.journeyRun||quote.proof.delivery?.modelRun||quote.proof.delivery?.transferCompetitionRun) conflict("Finish the pending backend run before changing delivery, acceptance or payment.");
+  if (quote.proof.delivery?.runtimeRun || quote.proof.delivery?.journeyRun||quote.proof.delivery?.modelRun||quote.proof.delivery?.transferCompetitionRun||quote.proof.delivery?.enquiryRun) conflict("Finish the pending backend run before changing delivery, acceptance or payment.");
   if (approved && quote.status !== "approved") conflict("Approve the exact scope before changing the delivery workflow.");
   if (quote.status === "paid" || ["captured", "voided", "closed_unpaid"].includes(quote.proof.paymentState)) conflict("This payment outcome has closed the delivery workflow.");
   if (quote.proof.paymentOperation) conflict("Finish the pending payment operation before changing the delivery workflow.");
@@ -173,11 +174,13 @@ export function requestChanges(quote: ProofQuote, value: Record<string, unknown>
       const report=delivery.modelReport;if(!report||!journeyPlan||entry.modelReportId!==report.id)throw new DomainError("Model change requests must reference this delivery's current model report.",409);
       validateStoredModelCheckReport(report,{deliveryId:delivery.id,deliveryDigest:report.deliveryDigest,journeyPlanDigest:journeyPlan.planDigest,projectId:quote.id});
     }else if(entry.modelReportId!==undefined)throw new DomainError("A model report belongs to the separate model agreement, not an original requirement or journey finding.");
+    const riskSource = entry.riskSource === undefined ? undefined : snapshotRiskFeedbackSource(quote, entry.criterionId, entry.riskSource);
     seen.add(entry.criterionId);
-    return { id: crypto.randomUUID(), deliveryId: delivery.id, criterionId: entry.criterionId, comment: text(entry.comment, "Feedback comment", 1000), at, ...(technical ? {journeyReportId: entry.journeyReportId as string} : {}),...(modelTechnical?{modelReportId:entry.modelReportId as string}:{}) };
+    return { id: crypto.randomUUID(), deliveryId: delivery.id, criterionId: entry.criterionId, comment: text(entry.comment, "Feedback comment", 1000), at, ...(technical ? {journeyReportId: entry.journeyReportId as string} : {}),...(modelTechnical?{modelReportId:entry.modelReportId as string}:{}), ...(riskSource ? {riskSource} : {}) };
   });
   const next = structuredClone(quote);
   next.proof.collaboration = { ...next.proof.collaboration!, stage: "changes_requested", acceptance: undefined, feedback: [...next.proof.collaboration!.feedback, ...feedback] };
+  if (next.proof.collaboration.feedback.some(item => item.riskSource !== undefined) || next.proof.collaboration.riskRepairEvents?.length) replayRiskRepairs(next.proof.collaboration.feedback, next.proof.collaboration.riskRepairEvents, next.proof.criteria);
   next.proof.acceptedDeliveryId = undefined;
   next.proof.acceptedAt = undefined;
   next.proof.acceptedEvidenceSnapshotId = undefined;
@@ -204,7 +207,7 @@ export function acceptDelivery(quote: ProofQuote, value: Record<string, unknown>
   assertAcceptanceBasis(quote, input.expectedEvidence);
   const at = timestamp(now);
   const next = structuredClone(quote);
-  const snapshot = createAcceptanceEvidence(quote, required, at, validateBusinessDecision(quote, input.businessDecision), input.runtimeDecision, input.journeyDecision,input.modelDecision);
+  const snapshot = createAcceptanceEvidence(quote, required, at, validateBusinessDecision(quote, input.businessDecision), input.runtimeDecision, input.journeyDecision,input.modelDecision,input.enquiryDecision);
   next.proof.delivery = withAcceptanceEvidence(delivery, snapshot);
   next.proof.collaboration = { ...next.proof.collaboration!, stage: "accepted", acceptance: { deliveryId: delivery.id, at, manualChecks: required, evidenceSnapshotId: snapshot.id } };
   next.proof.audit.push({kind: "delivery_accepted", at, deliveryId: delivery.id, evidenceSnapshotId: snapshot.id});
@@ -231,6 +234,7 @@ export function prepareReplacement(quote: ProofQuote, newDelivery: ProofDelivery
   delete next.proof.delivery.riskReviews;
   delete next.proof.delivery.runtimeReport;
   delete next.proof.delivery.runtimeHistory;
+  for(const key of ["enquiryPlan","enquiryRun","enquiryReport","enquiryHistory","enquiryEvidenceReservation"] as const)delete next.proof.delivery[key];
   delete next.proof.delivery.runtimeRun;
   delete next.proof.delivery.journeyRun;
   delete next.proof.delivery.journeyPlan;

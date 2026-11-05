@@ -61,10 +61,19 @@ test("rendered bilingual guide starts with local input, keeps advanced mapping c
   const source=await readFile(path.join(root,"app/components/SellerDomAdapterGuide.tsx"),"utf8");
   let output=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.ESNext,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022}}).outputText;
   const file=(p:string)=>pathToFileURL(path.join(root,p)).href;
-  output=output.replace('import "./seller-onboarding.css";','').replaceAll('"react"',JSON.stringify(pathToFileURL(require.resolve("react")).href)).replaceAll('"react/jsx-runtime"',JSON.stringify(pathToFileURL(require.resolve("react/jsx-runtime")).href)).replaceAll('"@/lib/seller-onboarding"',JSON.stringify(file("lib/seller-onboarding.ts"))).replaceAll('"@/lib/seller-control-discovery"',JSON.stringify(file("lib/seller-control-discovery.ts"))).replaceAll('"./seller-onboarding-state"',JSON.stringify(file("app/components/seller-onboarding-state.ts")));
+  output=output.replace('import "./seller-onboarding.css";','').replaceAll('"react"',JSON.stringify(pathToFileURL(require.resolve("react")).href)).replaceAll('"react/jsx-runtime"',JSON.stringify(pathToFileURL(require.resolve("react/jsx-runtime")).href)).replaceAll('"@/lib/seller-onboarding"',JSON.stringify(file("lib/seller-onboarding.ts"))).replaceAll('"@/lib/seller-onboarding-kit"',JSON.stringify(file("lib/seller-onboarding-kit.ts"))).replaceAll('"@/lib/seller-control-discovery"',JSON.stringify(file("lib/seller-control-discovery.ts"))).replaceAll('"./seller-onboarding-state"',JSON.stringify(file("app/components/seller-onboarding-state.ts")));
   const modulePath=path.join(dir,"guide.mjs");await writeFile(modulePath,output);const {SellerDomAdapterGuide}=await import(pathToFileURL(modulePath).href);
   for(const language of["en","zh"]){const html=renderToStaticMarkup(createElement(SellerDomAdapterGuide,{language}));assert.match(html,/type="file"/u);assert.doesNotMatch(html,/\[name=guests\]/u);assert.match(html,/<details class="seller-onboarding-advanced"><summary>/u);assert.doesNotMatch(html,/<details[^>]*\bopen/u);assert.ok(html.indexOf('type="file"')<html.indexOf("seller-onboarding-advanced"));}
   const english=renderToStaticMarkup(createElement(SellerDomAdapterGuide,{language:"en"}));assert.match(english,/Preparation files/u);assert.match(english,/Manual preparation works without HTML/u);assert.match(english,/no upload, scripts or URL requests/u);assert.doesNotMatch(english,/automatically connected|backend verified|booking-protocol\.md/u);
+  // Seed only the reducer's initial state to inspect the real download step;
+  // the production guide, dependency builder and download controls stay intact.
+  const seeded=output.replace(/useReducer\(sellerOnboardingReducer, undefined, createSellerOnboardingState\)/u,'useReducer(sellerOnboardingReducer, undefined, () => { const config = defaultSellerOnboardingConfig(); return {...createSellerOnboardingState(), step: 2, config, report: checkSellerOnboarding(config)}; })')+`\nimport {defaultSellerOnboardingConfig} from ${JSON.stringify(file("lib/seller-onboarding.ts"))};\n`;
+  assert.notEqual(seeded,output);
+  const downloadPath=path.join(dir,"guide-downloads.mjs");await writeFile(downloadPath,seeded);const {SellerDomAdapterGuide:DownloadGuide}=await import(pathToFileURL(downloadPath).href);
+  const downloads=renderToStaticMarkup(createElement(DownloadGuide,{language:"en"}));
+  assert.match(downloads,/<button type="button">Download complete preparation kit \(ZIP\)<\/button>/u);assert.match(downloads,/Individual templates \(dependencies excluded\)/u);assert.match(downloads,/SDK, bridge and SHA-256 manifest/u);
+  for(const name of["pbp-onboarding.json","pbp-connect.mjs","PBP-SETUP.md","pbp-protocol-checklist.md"])assert.ok(downloads.includes(`>${name}</button>`));
+  assert.match(renderToStaticMarkup(createElement(DownloadGuide,{language:"zh"})),/下载完整接入准备包（ZIP）/u);
  }finally{await rm(dir,{recursive:true,force:true});}
 });
 

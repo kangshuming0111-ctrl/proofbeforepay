@@ -1,21 +1,40 @@
 "use client";
-import {useReducer,useRef} from "react";
+import {useEffect,useReducer,useRef,useState} from "react";
 import type {Language} from "@/lib/contracts";
 import {buildSellerOnboardingFiles,checkSellerOnboarding,ONBOARDING_SELECTOR_FIELDS} from "@/lib/seller-onboarding";
 import {discoverSellerControls,SELLER_ONBOARDING_DOCUMENT_LIMITS,type SellerControlReason} from "@/lib/seller-control-discovery";
-import {confirmedOnboardingCount,createSellerOnboardingState,decodeSellerOnboardingHtml,onboardingFieldValue,sellerOnboardingReducer,withOnboardingField} from "./seller-onboarding-state";
+import {confirmedOnboardingCount,createSellerOnboardingState,decodeSellerOnboardingHtml,onboardingFieldValue,sellerOnboardingReducer,withOnboardingField,type SellerOnboardingAction} from "./seller-onboarding-state";
+import {buildSellerOnboardingKit} from "@/lib/seller-onboarding-kit";
 import "./seller-onboarding.css";
 
 const fieldNames:Record<string,[string,string]>={"create.partySize":["预约人数","Party size"],"create.slot":["预约时段","Booking slot"],"create.requestOperation":["预约测试指令","Create instruction"],"create.submit":["预约按钮","Create button"],"cancel.bookingId":["待取消预约","Booking to cancel"],"cancel.requestOperation":["取消测试指令","Cancel instruction"],"cancel.submit":["取消按钮","Cancel button"],"move.bookingId":["待改期预约","Booking to move"],"move.slot":["改期时段","New slot"],"move.requestOperation":["改期测试指令","Move instruction"],"move.submit":["改期按钮","Move button"],"retry.submit":["原键重试按钮","Original-key retry button"],"result":["结果区域","Result region"]};
 const explanations:Record<string,[string,string]>={configuration_valid:["配置格式正确；尚未连接后台。","Configuration shape is valid; no backend connection was made."],configuration_shape:["配置缺少字段或含额外字段，请恢复完整配置。","A field is missing or extra; restore the complete configuration."],protocol_unsupported:["只支持当前预约协议。","Only the current booking protocol is supported."],parent_origin_invalid:["填写实际主站 HTTPS 来源，不含路径、末尾斜杠、账号或查询参数。","Use the actual HTTPS main-site origin without a path, trailing slash, credentials or query."],backend_path_invalid:["填写同源目录，如 /pbp/，不填完整网址。","Use a same-origin directory such as /pbp/, not a full URL."],revision_invalid:["版本名使用 1–80 个字母、数字、点、短横线或下划线。","Use a 1–80 character revision with letters, numbers, dots, hyphens or underscores."],selector_invalid:["选择器为空、过长或含禁止内容。","The selector is empty, too long or contains prohibited content."],selector_unsupported:["选择器超出支持范围，请给控件加稳定 ID 或 data 属性。","Use stable IDs or data attributes; this selector exceeds the supported subset."],html_not_supplied:["选择本地 HTML 后可检查控件匹配；文件不会上传。","Choose local HTML to check selectors. The file is not uploaded."],html_size_or_encoding:["HTML 需为 UTF-8，大小不超过 256 KiB。","Use UTF-8 HTML no larger than 256 KiB."],selector_matches:["唯一匹配，静态控件类型兼容。","One match with a compatible static control type."],selector_missing:["没有匹配。修正选择器；动态生成的控件需在浏览器另验。","No match. Correct the selector; runtime-created controls need browser verification."],selector_ambiguous:["匹配多个控件。缩小范围到一个。","More than one match. Scope the selector to exactly one control."],control_type_invalid:["此字段需要 input/select/textarea，按钮需要 button 或按钮型 input。","Use input/select/textarea for fields and a button or button input for actions."],control_statically_unavailable:["HTML 中已禁用、隐藏或只读；需在对应动作前显示并启用，静态检查无法确认。","Initially disabled, hidden or readonly. Make it operable before its action; static checking cannot confirm this."],input_type_not_compatible:["该输入类型不能保留协议值；请使用文本、数字或含完整值的 select。","This input type cannot retain protocol values. Use text, number or a select with complete values."],operation_options_missing:["测试指令 select 缺少固定动作值；参照协议清单补全。","The instruction select lacks fixed operation values. Follow the protocol checklist."],html_node_limit:["HTML 超过 4096 个节点。请导出只包含预约流程的精简测试页。","HTML exceeds 4096 nodes. Export a smaller staging page containing only the booking flow."],html_depth_limit:["HTML 嵌套超过 64 层。请简化包装结构后重新选择文件。","HTML nesting exceeds 64 levels. Simplify wrappers, then choose the file again."],html_parse_unavailable:["无法解析 HTML。请重新导出 UTF-8 测试页面。","Could not parse HTML. Export the staging page again as UTF-8."],runtime_and_backend_not_executed:["未执行页面脚本、原生请求或后台；还需要实际运行与授权审核。","Page scripts, native requests and backend were not executed. Runtime testing and authorised review are still required."]};
 const reasons:Record<SellerControlReason,[string,string]>={label_match:["关联标签","Associated label"],aria_match:["ARIA 标签","ARIA label"],name_match:["name 属性","name attribute"],id_match:["稳定 ID","Stable ID"],form_context:["所属表单","Form context"],control_type:["控件类型","Control type"],protocol_options:["固定协议选项","Fixed protocol options"],result_role:["结果语义","Result semantics"]};
 function download(name:string,content:string,type:string){const url=URL.createObjectURL(new Blob([content],{type}));const link=document.createElement("a");link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+function downloadKitBytes(name:string,bytes:Uint8Array){const url=URL.createObjectURL(new Blob([new Uint8Array(bytes).buffer],{type:"application/zip"}));const link=document.createElement("a");link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 export function SellerDomAdapterGuide({language}:{language:Language}){
  const tr=(zh:string,en:string)=>language==="zh"?zh:en;
- const [state,dispatch]=useReducer(sellerOnboardingReducer,undefined,createSellerOnboardingState);
+ const [state,rawDispatch]=useReducer(sellerOnboardingReducer,undefined,createSellerOnboardingState);
+ const [kitBusy,setKitBusy]=useState(false),[kitNotice,setKitNotice]=useState("");
+ const kitGeneration=useRef(0),kitAbort=useRef<AbortController|null>(null);
+ useEffect(()=>()=>{++kitGeneration.current;kitAbort.current?.abort();},[]);
+ function dispatch(action:SellerOnboardingAction){
+  if(["step","report","config","select","confirm","example","file-start","file-ready","file-error"].includes(action.type)){++kitGeneration.current;kitAbort.current?.abort();kitAbort.current=null;setKitBusy(false);setKitNotice("");}
+  rawDispatch(action);
+ }
  const fileGeneration=useRef(0),fileInput=useRef<HTMLInputElement>(null);
  const {step,config,html,filename,report,notice,discovery,reading}=state;
  const confirmedCount=confirmedOnboardingCount(state);
+ async function downloadCompleteKit(){
+  if(kitBusy||reading||!report?.configurationValid)return;
+  const generation=++kitGeneration.current,controller=new AbortController();kitAbort.current?.abort();kitAbort.current=controller;setKitBusy(true);setKitNotice("");
+  try{
+   const kit=await buildSellerOnboardingKit(structuredClone(config),{origin:location.origin,signal:controller.signal});
+   if(generation!==kitGeneration.current||controller.signal.aborted)return;
+   downloadKitBytes(kit.name,kit.bytes);setKitNotice(tr("完整准备包已生成并交给浏览器下载。ZIP SHA-256：","The complete preparation kit was generated and sent to your browser for download. ZIP SHA-256: ")+kit.sha256);
+  }catch{if(generation===kitGeneration.current&&!controller.signal.aborted)setKitNotice(tr("准备包未生成。依赖下载或校验未通过，请重试；当前控件映射已保留。","The kit was not generated. Dependency download or verification failed. Retry; your current control mappings are retained."));}
+  finally{if(generation===kitGeneration.current){setKitBusy(false);kitAbort.current=null;}}
+ }
  function setField(key:string,value:string){dispatch({type:"config",config:withOnboardingField(config,key,value),field:key});}
  async function readHtml(file?:File){
   const generation=++fileGeneration.current;dispatch({type:"file-start",generation});
@@ -67,8 +86,10 @@ export function SellerDomAdapterGuide({language}:{language:Language}){
     <p className="seller-onboarding-note">{tr("预检只解析本地 HTML。CSS 可见性、框架状态、按钮结果、原生 POST 请求与后台保存仍需实际运行验证。","Preflight only parses local HTML. CSS visibility, framework state, button results, native POST requests and backend storage still need runtime verification.")}</p>
    </div>}
    {step===2&&<div>
-    <p>{tr("四个文件是未验证的接入准备模板。按 PBP-SETUP.md 对接原生处理；它们不会自动完成 POST、后台保存、测试站注册或审核。","These four files are unverified preparation templates. Connect native handlers using PBP-SETUP.md. They do not automatically perform POST requests, save backend records, register or approve staging.")}</p>
-    <div className="seller-onboarding-actions">{["pbp-onboarding.json","pbp-connect.mjs","PBP-SETUP.md","pbp-protocol-checklist.md"].map(name=><button key={name} type="button" disabled={!report?.configurationValid||reading} onClick={()=>{try{const file=buildSellerOnboardingFiles(config).find(file=>file.name===name)!;download(file.name,file.content,file.type);}catch{dispatch({type:"notice",message:tr("配置已失效，请返回重新预检。","Configuration is no longer valid. Run preflight again.")});}}}>{name}</button>)}</div>
+    <p>{tr("下载一个完整 ZIP：包含当前配置、连接代码、SDK、桥接模块与 SHA-256 校验清单。按 PBP-SETUP.md 对接原生处理；生成文件不会自动完成 POST、后台保存、测试站注册或审核。","Download one complete ZIP with your current configuration, connector, SDK, bridge and SHA-256 manifest. Connect native handlers using PBP-SETUP.md. Generating these files does not perform POST requests, save backend records, register or approve staging.")}</p>
+    <div className="seller-onboarding-actions"><button type="button" disabled={!report?.configurationValid||reading||kitBusy} onClick={()=>void downloadCompleteKit()}>{kitBusy?tr("正在下载并校验依赖…","Downloading and verifying dependencies…"):tr("下载完整接入准备包（ZIP）","Download complete preparation kit (ZIP)")}</button></div>
+    {kitNotice&&<p className="seller-onboarding-state" role="status">{kitNotice}</p>}
+    <details><summary>{tr("只下载配置模板（不含依赖）","Individual templates (dependencies excluded)")}</summary><div className="seller-onboarding-actions">{["pbp-onboarding.json","pbp-connect.mjs","PBP-SETUP.md","pbp-protocol-checklist.md"].map(name=><button key={name} type="button" disabled={!report?.configurationValid||reading||kitBusy} onClick={()=>{try{const file=buildSellerOnboardingFiles(config).find(file=>file.name===name)!;download(file.name,file.content,file.type);}catch{dispatch({type:"notice",message:tr("配置已失效，请返回重新预检。","Configuration is no longer valid. Run preflight again.")});}}}>{name}</button>)}</div></details>
     {!report?.configurationValid&&<p role="status">{tr("先到第二步检查当前配置，再下载。","Check the current configuration in step 2 before downloading.")}</p>}
     <p><small>{tr("接入后仍须验证原生完成通知、实际后台协议和授权审核。预检不代表接入完成；买家另行验收和付款。","After integration, native completion, the real backend protocol and authorised review still need verification. Preflight does not mean integration is complete. The buyer separately accepts and pays.")}</small></p>
    </div>}

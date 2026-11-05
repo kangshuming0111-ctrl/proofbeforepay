@@ -40,7 +40,7 @@ test("shared fence validates quote/project/perspective, ignores unrelated contex
  assert.equal((await fence.receive(ticket,{quote:{...q,id:"wrong"}})).kind,"invalid-response");assert.equal((await fence.receive(ticket,{quote:q,role:"seller"})).kind,"invalid-response");assert.equal(applied,0);view={...view,role:"seller"};assert.equal((await fence.receive(ticket,{quote:q})).kind,"ignored-context");assert.equal(reads,0);
 });
 test("page uses one persistent fence and all independent quote callbacks retain their render ticket",()=>{
- assert.equal((pageSource.match(/const quoteResponseFence = useRef/gu)??[]).length,1);assert.equal((pageSource.match(/onQuote=\{onConcurrentQuote\}/gu)??[]).length,2);assert.equal((pageSource.match(/onApply=\{onConcurrentQuote\}/gu)??[]).length,2);assert.match(pageSource,/const ticket=renderedQuoteResponseTicket;[\s\S]{0,150}await getQuoteResponseFence\(\).receive\(ticket/u);assert.match(pageSource,/currentBrowserContext.current = quoteResponseContext\(currentQuoteView.current\)/u);
+ assert.equal((pageSource.match(/const quoteResponseFence = useRef/gu)??[]).length,1);assert.equal((pageSource.match(/onQuote=\{onConcurrentQuote\}/gu)??[]).length,3);assert.equal((pageSource.match(/onApply=\{onConcurrentQuote\}/gu)??[]).length,3);assert.match(pageSource,/const ticket=renderedQuoteResponseTicket;[\s\S]{0,150}await getQuoteResponseFence\(\).receive\(ticket/u);assert.match(pageSource,/currentBrowserContext.current = quoteResponseContext\(currentQuoteView.current\)/u);
 });
 
 test("actual workspace role commit synchronously invalidates an independent pending callback",async()=>{

@@ -1,4 +1,5 @@
-import type {Language, ProofAssessment, ProofCriterion, ProofDelivery, ProofEvidence, ProofQuote, StaticProjectSpec} from "./contracts.ts";
+import {validateSavedEnquiryEvidence,validateEnquiryReportDecision,projectEnquiryReportsFor} from "./project-enquiry.ts";
+import type {Language, ProofAssessment, ProofCriterion, ProofDelivery, ProofEvidence, ProofQuote, ProofFeedback, StaticProjectSpec} from "./contracts.ts";
 import {DomainError} from "./domain.ts";
 import {createUploadedDelivery, parseStaticProject, validateStaticFiles} from "./static-project.ts";
 import {getProofFixture, inspectProofFiles, proofCriteria} from "./proof-evidence.ts";
@@ -17,18 +18,20 @@ import {createBusinessCheckReport} from "./business-checks.ts";
 import {createLayoutReport} from "./layout-report.ts";
 import {assertModelAcceptanceReference,modelReportsFor} from "./model-check-actions.ts";
 import {MODEL_SPEC_DIGEST,modelCheckReportFromTrace,validateStoredModelCheckReport} from "./model-checks.ts";
+import {validateRiskRepairRecords,type RiskRepairEvent} from "./risk-repairs.ts";
 import {validateModelArchive} from "./model-report-archive.ts";
 
 export const EVIDENCE_EXPORT_SCHEMA = "proofbeforepay-evidence-export-v1";
 export const EVIDENCE_EXPORT_RULES = "pbp-static-source-v2";
 export const EVIDENCE_EXPORT_BYTE_LIMIT = 4 * 1024 * 1024;
-const DELIVERY_KEYS = ["id","variant","sequence","label","submittedAt","files","evidence","resources","layoutReport","layoutHistory","browserChecks","browserCheckHistory","businessChecks","businessCheckHistory","assessment","riskReviews","acceptanceEvidence","backendTargetId","runtimeDeliveryDigest","runtimeRegistration","runtimeReport","runtimeHistory","runtimeRun","journeyPlan","journeyReport","journeyHistory","journeyPlanSuggestions","journeyPlanAdoption","journeyExplanation","modelRun","modelReport","modelHistory","modelArchiveRefs","modelArchive","modelExplanation"] as const;
-const SNAPSHOT_KEYS = ["id","deliveryId","at","browserReportId","layoutReportId","assessmentId","businessReportId","businessExceptionReason","runtimeReportId","runtimeExceptionReason","runtimeAcknowledgedSteps","runtimeDeliveryDigest","runtimeTargetId","runtimeRegistration","journeyReportId","journeyDeliveryDigest","journeyPlanDigest","journeyRegistration","journeyExceptionReason","journeyAcknowledgedSteps","journeyClientObservationAcknowledged","modelReportId","modelSpecDigest","modelDeliveryDigest","modelDecision","criteria","evidence","manualChecks","review","assessment","riskReviews"];
+const DELIVERY_KEYS = ["id","variant","sequence","label","submittedAt","files","evidence","resources","layoutReport","layoutHistory","browserChecks","browserCheckHistory","businessChecks","businessCheckHistory","assessment","riskReviews","acceptanceEvidence","backendTargetId","runtimeDeliveryDigest","runtimeRegistration","runtimeReport","runtimeHistory","runtimeRun","journeyPlan","journeyReport","journeyHistory","journeyPlanSuggestions","journeyPlanAdoption","journeyExplanation","modelRun","modelReport","modelHistory","modelArchiveRefs","modelArchive","modelExplanation","enquiryPlan","enquiryRun","enquiryReport","enquiryHistory"] as const;
+const SNAPSHOT_KEYS = ["id","deliveryId","at","browserReportId","layoutReportId","assessmentId","businessReportId","businessExceptionReason","runtimeReportId","runtimeExceptionReason","runtimeAcknowledgedSteps","runtimeDeliveryDigest","runtimeTargetId","runtimeRegistration","journeyReportId","journeyDeliveryDigest","journeyPlanDigest","journeyRegistration","journeyExceptionReason","journeyAcknowledgedSteps","journeyClientObservationAcknowledged","modelReportId","modelSpecDigest","modelDeliveryDigest","modelDecision","enquiryReportId","enquiryDeliveryDigest","enquiryDecision","criteria","evidence","manualChecks","review","assessment","riskReviews"];
 type AcceptanceReference = {kind:"delivery-acceptance"|"capture-consent";deliveryId:string;evidenceSnapshotId:string|null};
 export type EvidenceExport = {
   schema:typeof EVIDENCE_EXPORT_SCHEMA; verificationRules:typeof EVIDENCE_EXPORT_RULES; scope:"current-delivery-only";
   project:{id:string;reference:string;title:string;summary:string;language:Language;criteria:ProofCriterion[];spec?:StaticProjectSpec;requirements?:{sourceText:string;sourceRefs:{criterionId:string;source:{start:number;end:number;excerpt:string}}[]}};
   delivery:ProofDelivery; fileDigest:string; acceptanceReferences:AcceptanceReference[];
+  riskRepairs?:{schema:"pbp-risk-repairs-v1";feedback:ProofFeedback[];events:RiskRepairEvent[]};
 };
 export type EvidenceVerification = {
   schema:"proofbeforepay-evidence-verification-v1";consistency:"consistent"|"inconsistent"|"unsupported";
@@ -142,7 +145,8 @@ export async function createEvidenceExport(quote:ProofQuote):Promise<EvidenceExp
   const result:EvidenceExport={schema:EVIDENCE_EXPORT_SCHEMA,verificationRules:EVIDENCE_EXPORT_RULES,scope:"current-delivery-only",
     project:{id:quote.id,reference:quote.reference,title:quote.title,summary:quote.summary,language:quote.language,criteria:structuredClone(quote.proof.criteria),
       ...(quote.proof.project?{spec:structuredClone(quote.proof.project)}:{}),...(requirements?{requirements:structuredClone({sourceText:requirements.sourceText,sourceRefs:requirements.sourceRefs})}:{})},
-    delivery,fileDigest:await runtimeDeliveryDigest(exportFiles(delivery,!!quote.proof.project)),acceptanceReferences};
+    delivery,fileDigest:await runtimeDeliveryDigest(exportFiles(delivery,!!quote.proof.project)),acceptanceReferences,
+    ...(quote.proof.collaboration?.feedback.some(row=>row.riskSource)?{riskRepairs:{schema:"pbp-risk-repairs-v1" as const,feedback:structuredClone(quote.proof.collaboration.feedback.filter(row=>row.riskSource)),events:structuredClone(quote.proof.collaboration.riskRepairEvents??[])}}:{})};
   boundedJson(result);dataShapes(result);
   const verification=await verifyEvidenceExport(result);
   requireValue(verification.consistency==="consistent",`This record cannot produce a consistent versioned evidence export (${verification.checks.filter(row=>row.status==="inconsistent").map(row=>row.id).join(", ")}). Retain the original record for inspection; missing historical evidence is not reconstructed.`);
@@ -216,7 +220,7 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
   // JSON serialization internally; equivalent metadata key order must not fail.
   const bundle=canonical(input) as EvidenceExport;let structure=false;
   await check("structure",()=>{
-    object(bundle,["schema","verificationRules","scope","project","delivery","fileDigest","acceptanceReferences"],"Export");requireValue(bundle.scope==="current-delivery-only","Unsupported export scope.");
+    object(bundle,["schema","verificationRules","scope","project","delivery","fileDigest","acceptanceReferences","riskRepairs"],"Export");requireValue(bundle.scope==="current-delivery-only","Unsupported export scope.");
     object(bundle.project,["id","reference","title","summary","language","criteria","spec","requirements"],"Project");
     text(bundle.project.id,100);text(bundle.project.reference,100);text(bundle.project.title,500);text(bundle.project.summary,3000);requireValue(["zh","en"].includes(bundle.project.language),"Unsupported language.");criteria(bundle.project.criteria);
     object(bundle.delivery,DELIVERY_KEYS,"Delivery");text(bundle.delivery.id,100);text(bundle.delivery.label,500);requireValue(["upload","flawed","fixed"].includes(bundle.delivery.variant)&&Number.isFinite(Date.parse(bundle.delivery.submittedAt)),"Delivery identity is invalid.");
@@ -261,6 +265,20 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
     for(const report of reports)assessment(report,bundle.delivery,bundle.project.criteria);
     riskBindings(bundle.delivery.riskReviews,bundle.delivery.id,reports);
   },"Included AI citations resolve to source and risk annotations reference their recorded delivery/report/risk; model judgment, human identity and provider execution are not proven.");
+  if(bundle.riskRepairs)await check("risk-repair-chain",()=>{
+    const records=object(bundle.riskRepairs,["schema","feedback","events"],"Risk repair chain");
+    requireValue(records.schema==="pbp-risk-repairs-v1","Unsupported risk repair chain schema.");
+    const feedback=array(records.feedback,200,"Risk-linked feedback");
+    for(const item of feedback){const row=object(item,["id","deliveryId","criterionId","comment","at","riskSource"],"Risk feedback");requireValue(!!row.riskSource,"Every exported repair feedback needs its source snapshot.");}
+    const tasks=validateRiskRepairRecords(feedback as ProofFeedback[],array(records.events,100,"Risk repair events") as RiskRepairEvent[],bundle.project.criteria);
+    for(const task of tasks){
+      if(task.source.deliveryId===bundle.delivery.id){
+        const report=bundle.delivery.assessment;
+        requireValue(report?.id===task.source.assessmentId&&same(report.risks[task.source.riskIndex],task.source.risk),"Current risk repair source differs from its saved report.");
+      }
+    }
+  },"Risk feedback retains its exact agreed criterion and source report identity; event roles, sequence and explicit proposal reviews replay consistently. Old source files and human/model truth are not authenticated by this current-delivery bundle.");
+  if(bundle.delivery.enquiryPlan||bundle.delivery.enquiryReport||bundle.delivery.enquiryRun||bundle.delivery.enquiryHistory)await check("enquiry-bindings",()=>{validateSavedEnquiryEvidence({...bundle.delivery,...(bundle.delivery.enquiryRun?{enquiryEvidenceReservation:{runId:bundle.delivery.enquiryRun.id,reportBytes:24576,acceptanceBytes:26624}}:{})},bundle.project.id,bundle.fileDigest);},"The optional enquiry agreement, backend observations and retained reports bind to this exact delivery; form operation, email delivery and backend authenticity are not proven.");
   const quote=quoteFor(bundle);
   if(bundle.delivery.journeyPlanSuggestions||bundle.delivery.journeyPlanAdoption||bundle.delivery.journeyExplanation)await check("journey-plan-source-mapping",async()=>{
     await validateSavedJourneySuggestions(quote);await validateSavedJourneyAdoption(quote);
@@ -332,6 +350,7 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
       const checks=array(snapshot.manualChecks,33,"Manual checks");requireValue(new Set(checks).size===checks.length&&checks.every(id=>criteriaIds.includes(id as string))&&delivery.evidence.filter(row=>row.finding==="needs_human").every(row=>checks.includes(row.criterionId))&&!delivery.evidence.some(row=>row.finding==="fail"),"Acceptance human/source checks are invalid.");
       for(const [key,reports] of [["browserReportId",browser],["businessReportId",business],["layoutReportId",layout]] as const){const ref=snapshot[key];requireValue(ref===null||ref===undefined||reports.some(row=>row.id===ref),"A historical report reference is missing.");}
       requireValue(snapshot.assessmentId===(snapshot.assessment as ProofAssessment|undefined)?.id||snapshot.assessmentId===null&&snapshot.assessment===undefined,"Historical AI reference is invalid.");
+      if(snapshot.enquiryReportId){const report=projectEnquiryReportsFor(delivery).find(row=>row.id===snapshot.enquiryReportId);requireValue(report&&snapshot.enquiryDeliveryDigest===bundle.fileDigest,"Frozen enquiry report is missing or has another file digest.");validateEnquiryReportDecision(report,snapshot.enquiryDecision);}else requireValue(!delivery.enquiryPlan&&snapshot.enquiryDeliveryDigest===undefined&&snapshot.enquiryDecision===undefined,"Acceptance omits its optional enquiry agreement/report.");
       if(snapshot.assessment)assessment(snapshot.assessment,delivery,bundle.project.criteria);
       riskBindings(snapshot.riskReviews,delivery.id,snapshot.assessment?[snapshot.assessment as ProofAssessment]:[]);
       if(snapshot.review){const review=snapshot.review as Record<string,unknown>;requireValue(review.deliveryId===snapshot.deliveryId&&["demo","live"].includes(review.mode as string)&&typeof review.reviewedAt==="string"&&Number.isFinite(Date.parse(review.reviewedAt)),"Historical rule review references another delivery.");text(review.summary,5000);}

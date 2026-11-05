@@ -1,0 +1,46 @@
+{
+  "schema": "pbp-frozen-baseline-replay-v1",
+  "networkRequests": 0,
+  "providerCalls": 0,
+  "frozenImplementationFiles": 20,
+  "exactSourceHashesVerified": true,
+  "reportContentMatches": 8,
+  "replies": 8,
+  "firstStatusAgreement": 15,
+  "criteria": 16,
+  "sourceNote": "Bytes reconstructed after calls and verified against every hash frozen before calls. Not a full website snapshot.",
+  "cases": [
+    {
+      "id": "bramble-florist-policy",
+      "savedReportReproducedExceptGeneratedIdentityAndTime": true
+    },
+    {
+      "id": "copper-bowl-prices",
+      "savedReportReproducedExceptGeneratedIdentityAndTime": true
+    },
+    {
+      "id": "spoke-repair-records",
+      "savedReportReproducedExceptGeneratedIdentityAndTime": true
+    },
+    {
+      "id": "kiln-table-refunds",
+      "savedReportReproducedExceptGeneratedIdentityAndTime": true
+    },
+    {
+      "id": "clear-sill-hours",
+      "savedReportReproducedExceptGeneratedIdentityAndTime": true
+    },
+    {
+      "id": "hearth-crumb-archive",
+      "savedReportReproducedExceptGeneratedIdentityAndTime": true
+    },
+    {
+      "id": "little-light-photographs",
+      "savedReportReproducedExceptGeneratedIdentityAndTime": true
+    },
+    {
+      "id": "elm-drain-scope-injection",
+      "savedReportReproducedExceptGeneratedIdentityAndTime": true
+    }
+  ]
+}

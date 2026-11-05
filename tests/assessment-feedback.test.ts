@@ -52,6 +52,10 @@ async function componentModule(){
  for(const name of["react","react/jsx-runtime","lucide-react"])output=output.replaceAll(JSON.stringify(name),JSON.stringify(pathToFileURL(require.resolve(name)).href));
  for(const name of["delivery-overview","assessment-display"])output=output.replaceAll(JSON.stringify("@/lib/"+name),JSON.stringify(file("lib/"+name+".ts")));
  output=output.replaceAll('"./assessment-feedback"',JSON.stringify(file("app/components/assessment-feedback.ts")));
+ let riskOutput=ts.transpileModule(await readFile(path.join(root,"app/components/RiskRepairPanel.tsx"),"utf8"),{compilerOptions:{module:ts.ModuleKind.ESNext,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022}}).outputText.replace('import "../risk-repairs.css";','');
+ for(const name of["react","react/jsx-runtime"])riskOutput=riskOutput.replaceAll(JSON.stringify(name),JSON.stringify(pathToFileURL(require.resolve(name)).href));
+ riskOutput=riskOutput.replaceAll('"@/lib/risk-repairs"',JSON.stringify(file("lib/risk-repairs.ts")));
+ await writeFile(path.join(dir,"risk-repair.mjs"),riskOutput);output=output.replaceAll('"./RiskRepairPanel"','"./risk-repair.mjs"');
  const modulePath=path.join(dir,"assessment.mjs");await writeFile(modulePath,output);
  const loadedModule=await import(pathToFileURL(modulePath).href);return{Component:loadedModule.DeliveryAssessment,cleanup:()=>rm(dir,{recursive:true,force:true})};
 }

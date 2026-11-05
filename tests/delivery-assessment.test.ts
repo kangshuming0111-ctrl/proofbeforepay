@@ -220,6 +220,168 @@ test("actual backend behavior and subjective design cannot become supported from
   }
 });
 
+test("explicit exact-copy false support is corrected without editing the raw provider answer or the delivery", async () => {
+  const quote = agreement({ "index.html": source.replace("</body>", "<p>Every family, in every season.</p></body>") });
+  const criterion = quote.proof.criteria.find(row => row.id === "manual-1")!;
+  criterion.title = "Exact tagline copy"; criterion.source = 'The page copy must include the exact wording "Families, in every season."';
+  const before = structuredClone(quote), output = proposal(quote), item = output.items.find(row => row.criterionId === criterion.id)!;
+  item.status = "supported"; item.explanation = 'The source says "Every family", which differs from the required "Families".';
+  item.citations = [{ file: "index.html", excerpt: "<p>Every family, in every season.</p>" }];
+  output.risks = []; const raw = structuredClone(output);
+  const result = await assessDelivery(quote, env, mock(output).fetcher), actual = result.items.find(row => row.criterionId === criterion.id)!;
+  assert.equal(actual.status, "changes_suggested");
+  assert.match(actual.explanation, /agreed exact wording "Families, in every season\."/u);
+  assert.match(actual.explanation, /not a rendered-visibility or runtime result/u);
+  assert.deepEqual(actual.citations.map(({ file, excerpt }) => ({ file, excerpt })), item.citations);
+  assert.deepEqual(output, raw); assert.deepEqual(quote, before);
+});
+
+test("exact-copy guard never promotes changes/unknown, and preserves literal entities/inline/hidden body text as source presence only", async () => {
+  for (const addition of ["<p>Another phrase.</p>", "<p>Families,&nbsp;<em>in every</em> season.</p>", '<p hidden>Families, in every season.</p>']) {
+    for (const status of ["changes_suggested", "insufficient_evidence"] as const) {
+      const quote = agreement({ "index.html": source.replace("</body>", `${addition}</body>`) });
+      Object.assign(quote.proof.criteria.find(row => row.id === "manual-1")!, { title: "Exact tagline copy", source: 'The page copy must include the exact wording "Families, in every season."' });
+      const output = proposal(quote), item = output.items.find(row => row.criterionId === "manual-1")!; item.status = status;
+      const result = await assessDelivery(quote, env, mock(output).fetcher), actual = result.items.find(row => row.criterionId === "manual-1")!;
+      assert.equal(actual.status, status); assert.equal(actual.explanation, item.explanation);
+    }
+  }
+  const quote = agreement({ "index.html": source.replace("</body>", "<p>Families,&nbsp;<em>in every</em> season.</p></body>") });
+  Object.assign(quote.proof.criteria.find(row => row.id === "manual-1")!, { title: "Exact tagline copy", source: 'The page copy must include the exact wording "Families, in every season."' });
+  const output = proposal(quote), item = output.items.find(row => row.criterionId === "manual-1")!;
+  item.status = "supported"; item.explanation = "The cited static body copy contains the exact wording.";
+  item.citations = [{ file: "index.html", excerpt: "<p>Families,&nbsp;<em>in every</em> season.</p>" }];
+  const actual = (await assessDelivery(quote, env, mock(output).fetcher)).items.find(row => row.criterionId === "manual-1")!;
+  assert.equal(actual.status, "supported"); assert.equal(actual.explanation, item.explanation);
+});
+
+test("exact wording supplied only by dynamic/unsupported sources stays unknown rather than being declared absent", async () => {
+  for (const addition of [
+    '<script>document.body.textContent="Families, in every season."</script>',
+    '<template><p>Families, in every season.</p></template>',
+    '<style>p::before{content:"Families, in every season."}</style>',
+    '<link rel="stylesheet" href="unknown.css">',
+    '<svg><text>Families, in every season.</text></svg>',
+  ]) {
+    const quote = agreement({ "index.html": source.replace("</body>", `${addition}</body>`) });
+    Object.assign(quote.proof.criteria.find(row => row.id === "manual-1")!, { title: "Exact tagline copy", source: 'The page copy must include the exact wording "Families, in every season."' });
+    const before = structuredClone(quote), output = proposal(quote); output.items.find(row => row.criterionId === "manual-1")!.status = "supported";
+    const actual = (await assessDelivery(quote, env, mock(output).fetcher)).items.find(row => row.criterionId === "manual-1")!;
+    assert.equal(actual.status, "insufficient_evidence", addition);
+    assert.match(actual.explanation, /prevent a missing-copy conclusion/u); assert.deepEqual(quote, before);
+  }
+});
+
+test("exact-copy checks preserve case/punctuation, exclude comments/alt, and keep unsupported compound grammar advisory", async () => {
+  for (const addition of [
+    "<p>families, in every season.</p>", "<p>Families in every season.</p>",
+    '<!-- Families, in every season. --><img alt="Families, in every season." src="missing.png">',
+  ]) {
+    const quote = agreement({ "index.html": source.replace("</body>", `${addition}</body>`) });
+    Object.assign(quote.proof.criteria.find(row => row.id === "manual-1")!, { title: "Exact tagline copy", source: 'The page copy must include the exact wording "Families, in every season."' });
+    const output = proposal(quote); output.items.find(row => row.criterionId === "manual-1")!.status = "supported";
+    assert.equal((await assessDelivery(quote, env, mock(output).fetcher)).items.find(row => row.criterionId === "manual-1")!.status, "changes_suggested", addition);
+  }
+  const split = agreement({ "index.html": source.replace("</body>", "<p>Families,</p><p>in every season.</p></body>") });
+  Object.assign(split.proof.criteria.find(row => row.id === "manual-1")!, { title: "Exact tagline copy", source: 'The page copy must include the exact wording "Families, in every season."' });
+  const splitOutput = proposal(split); splitOutput.items.find(row => row.criterionId === "manual-1")!.status = "supported";
+  assert.equal((await assessDelivery(split, env, mock(splitOutput).fetcher)).items.find(row => row.criterionId === "manual-1")!.status, "insufficient_evidence");
+  for (const requirement of ['The page copy must include "Families, in every season."', 'The page copy must include the exact wording "Families, in every season." and add a footer.']) {
+    const quote = agreement(); Object.assign(quote.proof.criteria.find(row => row.id === "manual-1")!, { title: "Copy", source: requirement });
+    const output = proposal(quote); output.items.find(row => row.criterionId === "manual-1")!.status = "supported";
+    assert.equal((await assessDelivery(quote, env, mock(output).fetcher)).items.find(row => row.criterionId === "manual-1")!.status, "supported");
+  }
+});
+
+test("exact-copy guard preserves observation/rule precedence and cannot create uncited changes", async () => {
+  const quote = agreement(); Object.assign(quote.proof.criteria.find(row => row.id === "manual-1")!, { title: "Mobile layout and copy", source: 'The page copy must include the exact wording "Families, in every season."' });
+  const output = proposal(quote); output.items.find(row => row.criterionId === "manual-1")!.status = "supported";
+  assert.equal((await assessDelivery(quote, env, mock(output).fetcher)).items.find(row => row.criterionId === "manual-1")!.status, "insufficient_evidence");
+  quote.proof.delivery!.evidence.find(row => row.criterionId === "manual-1")!.finding = "fail";
+  assert.equal((await assessDelivery(quote, env, mock(output).fetcher)).items.find(row => row.criterionId === "manual-1")!.status, "changes_suggested");
+  quote.proof.delivery!.evidence.find(row => row.criterionId === "manual-1")!.finding = "needs_human";
+  quote.proof.criteria.find(row => row.id === "manual-1")!.title = "Exact tagline copy";
+  output.items.find(row => row.criterionId === "manual-1")!.citations = [];
+  const actual = (await assessDelivery(quote, env, mock(output).fetcher)).items.find(row => row.criterionId === "manual-1")!;
+  assert.equal(actual.status, "insufficient_evidence"); assert.match(actual.explanation, /No verifiable delivery-source citation/u);
+});
+
+test("bounded Chinese exact-copy directives reject missing literal copy without rewriting the original", async () => {
+  for (const requirement of ['页面文案必须逐字包含：“每个家庭，每个季节。”', '网页文案须包含完全一致的文字「每个家庭，每个季节。」']) {
+    const quote = agreement(); quote.language = "zh";
+    Object.assign(quote.proof.criteria.find(row => row.id === "manual-1")!, { title: "逐字文案", source: requirement });
+    const before = structuredClone(quote), output = proposal(quote); output.items.find(row => row.criterionId === "manual-1")!.status = "supported";
+    const actual = (await assessDelivery(quote, env, mock(output).fetcher)).items.find(row => row.criterionId === "manual-1")!;
+    assert.equal(actual.status, "changes_suggested"); assert.match(actual.explanation, /源码文案差异/u); assert.deepEqual(quote, before);
+  }
+});
+
+test("record, archive and receipt claims cannot borrow a source-copy verdict, including paraphrases and compound titles", async () => {
+  const cases = [
+    ["Durable enquiry record", "The site must record every enquiry durably and display its receipt copy."],
+    ["Request log", "Log every customer request and display a copy of the receipt."],
+    ["Archive receipts", "Archive each enquiry and show its receipt copy."],
+    ["Durable receipts", "Each receipt must remain queryable after a server restart and contain the address copy."],
+    ["Request audit trail", "Retain a durable audit trail for every request and display the page copy."],
+    ["Stored enquiries", "Every enquiry must be stored permanently alongside the page copy."],
+    ["Receipt content", "The receipt record must survive a restart and contain the shop name."],
+    ["咨询回执", "每条询价都必须落库，并提供可查询的回执文案。"],
+    ["记录留存", "持久记录每条回执，并显示店名文案。"],
+    ["预约政策文案", "网页文案须明确说明：咨询必须事先安排，不接待未约定时间的访客。此外还必须记录每条回执。"],
+    ["Stored request log and hours copy", "The page copy must display Monday to Friday 09:00–17:00."],
+    ["Booking policy copy", "The page copy must state: Consultations must be arranged beforehand. Visitors without an appointment cannot be accommodated. Archive each request."],
+  ];
+  for (const [title, requirement] of cases) for (const modelStatus of ["supported", "changes_suggested"] as const) {
+    const quote = agreement(), criterion = quote.proof.criteria.find(item => item.id === "manual-1")!;
+    Object.assign(criterion, { title, source: requirement });
+    const before = structuredClone(quote), output = proposal(quote), item = output.items.find(entry => entry.criterionId === criterion.id)!;
+    item.status = modelStatus;
+    const result = await assessDelivery(quote, env, mock(output).fetcher), assessed = result.items.find(entry => entry.criterionId === criterion.id)!;
+    assert.equal(assessed.status, "insufficient_evidence", `${title}: ${requirement}`);
+    assert.match(assessed.explanation, /independent record-readback evidence/u);
+    assert.equal(assessed.citations[0].excerpt, item.citations[0].excerpt);
+    assert.deepEqual(quote, before);
+  }
+});
+
+test("new bounded appointment-copy paraphrases preserve all model verdicts and exact locked wording", async () => {
+  for (const [title, requirement, excerpt, language] of [
+    ["Booking policy copy", "The page copy must state: Consultations must be arranged beforehand. Visitors without an appointment cannot be accommodated.", "<p>Consultations must be arranged beforehand. Visitors without an appointment cannot be accommodated.</p>", "en"],
+    ["Consultation policy text", "The page text must explain consultations must be arranged in advance.", "<p>Arrange every consultation ahead of your visit.</p>", "en"],
+    ["咨询政策文案", "网页文案须明确说明：咨询必须事先安排，不接待未约定时间的访客。", "<p>请提前约定咨询时间，未约定时间的到访恕不接待。</p>", "zh"],
+    ["预约政策文字", "页面文字必须写明：所有咨询都需要提前安排，不接待未预约的访客。", "<p>每次咨询请事先预约。</p>", "zh"],
+  ] as const) for (const status of ["supported", "changes_suggested", "insufficient_evidence"] as const) {
+    const quote = agreement({ "index.html": source.replace("</body>", `${excerpt}</body>`) }); quote.language = language;
+    Object.assign(quote.proof.criteria.find(item => item.id === "manual-1")!, { title, source: requirement });
+    const before = structuredClone(quote), output = proposal(quote), item = output.items.find(entry => entry.criterionId === "manual-1")!;
+    item.status = status; item.citations = [{ file: "index.html", excerpt }];
+    const fake = mock(output), result = await assessDelivery(quote, env, fake.fetcher);
+    assert.equal(result.items.find(entry => entry.criterionId === "manual-1")!.status, status, `${title}: ${status}`);
+    assert.equal(JSON.parse(JSON.parse(String(fake.calls[0].init.body)).messages[1].content).criteria.find((entry: {id: string}) => entry.id === "manual-1").source, requirement);
+    assert.deepEqual(quote, before);
+  }
+});
+
+test("new appointment text-only allowance cannot cover an operational title, mixed action, rule failure or bad citation", async () => {
+  const copy = "The page copy must state: Consultations must be arranged beforehand. Visitors without an appointment cannot be accommodated.";
+  for (const [title, requirement] of [
+    ["Working reservation service", copy],
+    ["Booking policy copy", `${copy} The website must accept reservations.`],
+    ["Booking policy copy", `${copy} The form must submit successfully.`],
+    ["预约功能", "网页文案须明确说明：咨询必须事先安排，不接待未约定时间的访客。"],
+  ]) {
+    const quote = agreement(); Object.assign(quote.proof.criteria.find(item => item.id === "manual-1")!, { title, source: requirement });
+    const output = proposal(quote); output.items.find(item => item.criterionId === "manual-1")!.status = "supported";
+    assert.equal((await assessDelivery(quote, env, mock(output).fetcher)).items.find(item => item.criterionId === "manual-1")!.status, "insufficient_evidence", title);
+  }
+  const quote = agreement(); Object.assign(quote.proof.criteria.find(item => item.id === "manual-1")!, { title: "Booking policy copy", source: copy });
+  quote.proof.delivery!.evidence.find(item => item.criterionId === "manual-1")!.finding = "fail";
+  const output = proposal(quote); output.items.find(item => item.criterionId === "manual-1")!.status = "supported";
+  assert.equal((await assessDelivery(quote, env, mock(output).fetcher)).items.find(item => item.criterionId === "manual-1")!.status, "changes_suggested");
+  output.items.find(item => item.criterionId === "manual-1")!.citations[0].excerpt = "Invented policy quotation";
+  await assert.rejects(assessDelivery(quote, env, mock(output).fetcher), ProviderError);
+});
+
 test("manual requirements default to insufficient and interaction or style exclusions override content keywords", async () => {
   const withForm = source.replace("</body>", '<form><input name="booking"><button>Submit</button></form></body>');
   const requirements = [

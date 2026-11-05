@@ -17,6 +17,7 @@ export type AcceptanceBasis = {
   journeyPlanDigest: string | null;
   modelReportId: string | null;
   supplementalCatalogDigest?: string;
+  riskRepairEventIds?:string[]; enquiryConfirmedAt?:string; enquiryReportId?:string|null;
 };
 const KEYS = ["deliveryId", "reviewReviewedAt", "browserReportId", "layoutReportId", "assessmentId", "riskReviewIds", "businessReportId", "runtimeReportId", "journeyReportId", "journeyPlanDigest", "modelReportId"] as const;
 const CONTROL = /[\u0000-\u001f\u007f]/u;
@@ -42,6 +43,8 @@ export function acceptanceBasis(quote: ProofQuote): AcceptanceBasis {
     journeyReportId: delivery.journeyReport?.id ?? null,
     journeyPlanDigest: delivery.journeyPlan?.planDigest ?? null,
     modelReportId: delivery.modelReport?.id ?? null,
+    ...(quote.proof.collaboration?.feedback.some(item=>item.riskSource)?{riskRepairEventIds:(quote.proof.collaboration.riskRepairEvents??[]).map(event=>event.id)}:{}),
+    ...(delivery.enquiryPlan?{enquiryConfirmedAt:delivery.enquiryPlan.confirmedAt,enquiryReportId:delivery.enquiryReport?.id??null}:{}),
     ...(supplementalCatalogRequiresDecision(delivery.supplementalCatalog)?{supplementalCatalogDigest:delivery.supplementalCatalog!.catalogDigest}:{}),
   };
 }
@@ -51,7 +54,7 @@ export function acceptanceBasis(quote: ProofQuote): AcceptanceBasis {
 export function assertAcceptanceBasis(quote: ProofQuote, value: unknown): void {
   if (!value || typeof value !== "object" || Array.isArray(value) || ![Object.prototype, null].includes(Object.getPrototypeOf(value))) schema("Supply the complete expectedEvidence from the delivery view before accepting it.");
   const input = value as Record<string, unknown>;
-  const expected = acceptanceBasis(quote),keys:string[]=[...KEYS,...(expected.supplementalCatalogDigest?["supplementalCatalogDigest"]:[])];
+  const expected = acceptanceBasis(quote),keys:string[]=[...KEYS,...(expected.supplementalCatalogDigest?["supplementalCatalogDigest"]:[]),...(expected.riskRepairEventIds?["riskRepairEventIds"]:[]),...(expected.enquiryConfirmedAt?["enquiryConfirmedAt","enquiryReportId"]:[])];
   if (Reflect.ownKeys(input).length !== keys.length || keys.some(key => !Object.hasOwn(input, key))) schema("expectedEvidence must include every current report identity, using explicit null for a missing report.");
   for (const key of Reflect.ownKeys(input)) if (typeof key !== "string" || !keys.includes(key) || !("value" in Object.getOwnPropertyDescriptor(input, key)!)) schema("expectedEvidence contains unsupported fields or accessors.");
   if (!identifier(input.deliveryId)) schema("expectedEvidence needs a bounded delivery identifier.");
@@ -59,7 +62,9 @@ export function assertAcceptanceBasis(quote: ProofQuote, value: unknown): void {
   for (const key of ["browserReportId", "layoutReportId", "assessmentId", "businessReportId", "runtimeReportId", "journeyReportId", "modelReportId"] as const) if (input[key] !== null && !identifier(input[key])) schema("expectedEvidence report identities must be bounded strings or null.");
   if (input.journeyPlanDigest !== null && (typeof input.journeyPlanDigest !== "string" || !/^[a-f0-9]{64}$/u.test(input.journeyPlanDigest))) schema("expectedEvidence needs the saved journey-plan digest or null.");
   if (!Array.isArray(input.riskReviewIds) || input.riskReviewIds.length > 100 || input.riskReviewIds.some(id => !identifier(id)) || new Set(input.riskReviewIds).size !== input.riskReviewIds.length) schema("expectedEvidence needs unique bounded risk-review identifiers.");
-  if (keys.some(key => key === "riskReviewIds" ? JSON.stringify([...input.riskReviewIds as string[]].sort()) !== JSON.stringify(expected.riskReviewIds) : input[key] !== expected[key as keyof AcceptanceBasis])) stale();
+  if(expected.riskRepairEventIds&&(!Array.isArray(input.riskRepairEventIds)||input.riskRepairEventIds.length>100||input.riskRepairEventIds.some(id=>!identifier(id))||new Set(input.riskRepairEventIds).size!==input.riskRepairEventIds.length))schema("Risk repair acceptance references must be unique bounded event identifiers.");
+  if(expected.enquiryConfirmedAt&&(input.enquiryConfirmedAt!==expected.enquiryConfirmedAt||input.enquiryReportId!==expected.enquiryReportId))stale();
+  if (keys.some(key => (key === "riskReviewIds" || key === "riskRepairEventIds") ? JSON.stringify([...input[key] as string[]].sort()) !== JSON.stringify([...(expected[key as "riskReviewIds"|"riskRepairEventIds"]??[])].sort()) : input[key] !== expected[key as keyof AcceptanceBasis])) stale();
 }
 
 /** Capture refers to the already accepted snapshot, including pending retries.
