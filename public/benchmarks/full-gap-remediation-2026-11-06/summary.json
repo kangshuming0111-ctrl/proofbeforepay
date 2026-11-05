@@ -1,0 +1,390 @@
+{
+  "schema": "pbp-full-gap-remediation-validation-v1",
+  "createdAt": "2026-11-05T18:41:24.241567+00:00",
+  "scope": {
+    "cycles": [
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26
+    ],
+    "authoredSyntheticProjects": 8,
+    "criteria": 9,
+    "newThirdPartyProjects": 1,
+    "customerProjects": 0,
+    "independentHumanParticipants": 0,
+    "knownRepairReusesSameEightCases": true,
+    "prospectiveMeaning": "References sealed before first provider answers for this authored cohort; familiar counterexample families and known repair are not an independent unseen population.",
+    "noOverallAwardSuperiorityClaim": true,
+    "finalSourceClosureFiles": 41
+  },
+  "live": {
+    "first": {
+      "phase": "first_actual_provider_batch",
+      "reports": 8,
+      "criteria": 9,
+      "admittedReports": 8,
+      "completeRawReports": 8,
+      "actualProjectAssessmentCalls": 8,
+      "rawStatusReferenceAgreement": {
+        "count": 7,
+        "total": 9
+      },
+      "applicationStatusReferenceAgreement": {
+        "count": 9,
+        "total": 9
+      },
+      "wholeAnswerReview": {
+        "reviewer": "Independent Codex AI agent, not the reference author or human tester",
+        "raw": {
+          "accepted": 3,
+          "qualified": 2,
+          "rejected": 3
+        },
+        "application": {
+          "accepted": 4,
+          "qualified": 3,
+          "rejected": 1
+        }
+      },
+      "citations": {
+        "rawItemCitations": 23,
+        "rawRiskCitations": 15,
+        "applicationItemCitations": 21,
+        "activeRiskCitations": 11,
+        "withheldRiskCitations": 4,
+        "withheldRisks": 2
+      },
+      "usageBasedEstimateUsd": 0.0191097,
+      "snapshotSha256": "88e67dd039aa17714027356b7ec36dbf33eeddf98333fd1013da3b2a41365574"
+    },
+    "knownRepair": {
+      "phase": "same_eight_known_repair_actual_provider_batch",
+      "reports": 8,
+      "criteria": 9,
+      "admittedReports": 8,
+      "completeRawReports": 8,
+      "actualProjectAssessmentCalls": 8,
+      "rawStatusReferenceAgreement": {
+        "count": 7,
+        "total": 9
+      },
+      "applicationStatusReferenceAgreement": {
+        "count": 9,
+        "total": 9
+      },
+      "wholeAnswerReview": {
+        "reviewer": "Independent Codex AI agent, not the reference author or human tester",
+        "raw": {
+          "accepted": 2,
+          "qualified": 3,
+          "rejected": 3
+        },
+        "application": {
+          "accepted": 8,
+          "qualified": 0,
+          "rejected": 0
+        }
+      },
+      "citations": {
+        "rawItemCitations": 24,
+        "rawRiskCitations": 12,
+        "applicationItemCitations": 20,
+        "activeRiskCitations": 2,
+        "withheldRiskCitations": 10,
+        "withheldRisks": 6
+      },
+      "usageBasedEstimateUsd": 0.018990899999999998,
+      "snapshotSha256": "7d6583c30e905f4c766778be08ab615e0422524ab36a3efe729fdbd125046526"
+    },
+    "actualProjectAssessmentCalls": 16,
+    "sameEightCompleteRequestBodies": true,
+    "usageBasedEstimateUsd": 0.0381006,
+    "costIsEstimateNotInvoice": true,
+    "harnessCodeReviewsCountedSeparately": true,
+    "hostedPostPublicationAssessmentNotIncluded": true
+  },
+  "firstOriginalBodyReplay": {
+    "file": "cycle-24-original-eight-body-replay.json",
+    "projects": 8,
+    "criteria": 9,
+    "modelCalls": 0,
+    "networkCalls": 0,
+    "allStatusesUnchanged": true,
+    "referenceAgreement": 9,
+    "canonicalItemChanges": 5,
+    "rawRequestsSourcesReferencesUnchanged": true,
+    "totals": {
+      "canonicalItemChanges": 5,
+      "itemCitations": 20,
+      "publishedRiskCitations": 2,
+      "withheldRiskCitations": 13,
+      "withheldEntries": 6,
+      "statusAdjustments": 2,
+      "v2ScopeReports": 3,
+      "originSaves": 14,
+      "originRetries": 14,
+      "originRefusals": 56
+    }
+  },
+  "retained15": {
+    "historicalBefore26": {
+      "file": "retained15-cycle24-additive-replay.json",
+      "projects": 15,
+      "criteria": 82,
+      "modelCalls": 0,
+      "networkCalls": 0,
+      "referenceAgreement": 78,
+      "coreUnchangedReports": 15,
+      "newObligationsValidated": 82,
+      "historical79To78StrictFailureRetained": true,
+      "remainingReferenceDisagreements": {
+        "file": "retained82-four-reference-disagreements.json",
+        "allFourCurrentStatuses": "insufficient_evidence",
+        "wrongDefinitePasses": 0,
+        "wrongDefiniteChanges": 0,
+        "completeCitationGap": 1,
+        "unconfirmedRoleMapping": 2,
+        "overconservativeAffirmativeStaticLiteralGate": 1
+      },
+      "totals": {
+        "obligationsValidated": 82,
+        "coreUnchangedReports": 15,
+        "presenceDeltas": 0,
+        "itemCitations": 174,
+        "publishedRiskCitations": 48,
+        "withheldRiskCitations": 15,
+        "withheldEntries": 6,
+        "wireStatusAdjustments": 5,
+        "originSaves": 60,
+        "originRetries": 60,
+        "originRefusals": 248
+      }
+    },
+    "after26": {
+      "reports": 15,
+      "criteria": 82,
+      "strictlyUnchangedReports": 14,
+      "explicitReconstructedItemChanges": 1,
+      "referenceAgreement": 79,
+      "referenceTotal": 82,
+      "remainingUnknownReferences": 3,
+      "remainingKinds": [
+        "one complete citation coverage gap",
+        "two unconfirmed page-role mappings"
+      ]
+    },
+    "historicalStrict79To78FailureNotRewritten": true
+  },
+  "dynamicEvidence": {
+    "authoredReference": {
+      "projects": 1,
+      "profiles": 4,
+      "allProfilesMatchPrerunOracle": true,
+      "correctProfile": {
+        "matched": 4,
+        "mismatch": 0
+      },
+      "noStoreProfile": {
+        "matched": 2,
+        "mismatch": 2
+      },
+      "wrongReadbackProfile": {
+        "matched": 3,
+        "mismatch": 1
+      },
+      "noEmailProfile": {
+        "matched": 3,
+        "mismatch": 1
+      },
+      "mailEvidence": "Local test sink only, not external mailbox delivery."
+    },
+    "thirdPartyFlask": {
+      "projects": 1,
+      "upstream": "https://github.com/pallets/flask",
+      "tag": "3.1.2",
+      "commit": "2c1b30d0503cfb064f1cb252e6614a06915a362a",
+      "originalFiles": 22,
+      "originalSourceUnchanged": true,
+      "baselineFrozenTasks": 6,
+      "baselineMatchedExpectations": 6,
+      "baselineLogicalHttpOperations": 6,
+      "baselineActualHttpRequests": 10,
+      "publicReusableAdapterHttpRequests": 5,
+      "publicReusableAdapterNativeQueries": 2,
+      "applicationRestarts": 1,
+      "stageResult": {
+        "matched": 3,
+        "mismatch": 0,
+        "unknown": 0,
+        "unsupported": 1
+      },
+      "email": "unsupported by original upstream tutorial",
+      "initialAdapterSyntaxAndSelectorFailuresRetained": true,
+      "modelCalls": 0,
+      "browserRuns": 0,
+      "humanParticipants": 0
+    }
+  },
+  "revisionAudit": {
+    "boundedCompleteVersionSourceAndReports": true,
+    "serverIssuerAndPinnedPublicVerificationImplemented": true,
+    "issuedEnvelopeCliNoUnsignedFallback": true,
+    "invalidInnerAuditReason": "audit_inconsistent",
+    "issuerSyntheticPreflight": "issuer-preflight-public-result.json",
+    "hostedSignedDownloadAndPublicSourcePublication": "Reported separately in the final release ledger, after this source/evidence packet is frozen.",
+    "limits": [
+      "A trusted issuer signature attests to the signed bytes and issuer record, not the truth of model judgment, user identity, independent backend execution or legal consent."
+    ]
+  },
+  "verification": {
+    "applicationSuite": {
+      "tests": 1606,
+      "passed": 1606,
+      "failed": 0,
+      "durationMilliseconds": 9036.544458,
+      "log": "cycle26-final-suite-tests.json"
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "diagnostics": 0,
+      "log": "cycle26-final-typescript-check.json",
+      "completion": "Root confirmed terminal exit0; diagnostic log is empty."
+    },
+    "publicSourcePackager": {
+      "tests": 12,
+      "passed": 12,
+      "failed": 0,
+      "log": "final-public-packager-tests.json",
+      "separateFromApplicationDenominator": true
+    },
+    "earlierFullSuiteFailure": {
+      "tests": 1583,
+      "passed": 1582,
+      "failed": 1,
+      "file": "earlier-suite-additive-comparator-failure.json"
+    },
+    "exactCatalogsRebuilt": 31,
+    "exactSourceFileVersionsVerified": 130,
+    "privacyAudit": "packaging-audit.json",
+    "historical19To25ApplicationSuite": {
+      "tests": 1588,
+      "passed": 1588,
+      "failed": 0,
+      "log": "final-suite-tests.json"
+    },
+    "historicalActualBatchCatalogsRebuilt": 16
+  },
+  "publicationBoundary": {
+    "mainBaselineVersion": 76,
+    "mainVersionNotAssumedInThisPrepublicationPacket": true,
+    "labLatestReportedVersion": 25,
+    "labSourceCommit": "3ca95eed56c62538e54d6fe0eada9894f1797946",
+    "labEnvironmentRevision": 4,
+    "labAudience": "public",
+    "finalMainDeploymentAndHostedProof": "See separately retained release verification; local checks are not a production claim."
+  },
+  "artifactManifest": {
+    "file": "artifact-manifest.json",
+    "sha256": "7b9fe21611167192c045b49e0d8bd2a9b33acf431931a403a168a330e88139d0",
+    "artifacts": 129,
+    "totalArtifactBytes": 12809618,
+    "publicJsonFiles": 131
+  },
+  "limits": [
+    "Raw/app status agreement, exact citations, whole-answer judgment and execution evidence are different measurements.",
+    "The first application batch included one rejected whole answer; original wrong wording/optional risks are not overwritten by known repair.",
+    "Raw known-batch answers still contain overclaims; deterministic application guards and scoped withholding remain necessary.",
+    "The finite contact-scope gate can also withhold a valid named-page original lead; the actionable per-criterion change suggestion remains. Withholding does not establish falsity or resolution.",
+    "No new independent external developer onboarding study, customer production project or human first-use result exists.",
+    "The stage-report UI imports cooperative JSON locally; it does not execute adapters or bind the data to current-project acceptance.",
+    "No real external email, real-funds transfer or payment execution was performed in these tests.",
+    "Original source, provider bodies, frozen references and earlier failures are retained. Only explicitly listed metadata local prefixes change in public copies.",
+    "After the separately retained cycle26 recall correction, three old references remain unknown: one incomplete citation coverage and two unconfirmed roles. Earlier 78/82 records and old strict failures remain historical; current 79/82 is an explicit legitimate single-item delta, not an oracle edit."
+  ],
+  "cycle26Supplement": {
+    "file": "cycle-26-original31-body-replay.json",
+    "implementationSha256": "8d70feac19081b8c639d5216fe66d9fd6893fb0e56dbc973d2f496c1a441e0e4",
+    "apiCalls": 0,
+    "networkCalls": 0,
+    "savedWireReplies": 31,
+    "criterionObservations": 100,
+    "uniqueProjectInputs": 23,
+    "cohorts": [
+      {
+        "cohort": "old15",
+        "projects": 15,
+        "criteria": 82,
+        "strictlyUnchangedReports": 14,
+        "explicitReconstructedItemChanges": 1,
+        "referenceAgreement": 79,
+        "rawReferenceAgreement": 81
+      },
+      {
+        "cohort": "first8",
+        "projects": 8,
+        "criteria": 9,
+        "strictlyUnchangedReports": 8,
+        "explicitReconstructedItemChanges": 0,
+        "referenceAgreement": 9,
+        "rawReferenceAgreement": 7
+      },
+      {
+        "cohort": "knownRepair8",
+        "projects": 8,
+        "criteria": 9,
+        "strictlyUnchangedReports": 8,
+        "explicitReconstructedItemChanges": 0,
+        "referenceAgreement": 9,
+        "rawReferenceAgreement": 7
+      }
+    ],
+    "totals": {
+      "itemCitations": 214,
+      "activeRiskCitations": 52,
+      "withheldRiskCitations": 38,
+      "withheldEntries": 18,
+      "wireStatusAdjustments": 8,
+      "originSaves": 88,
+      "originRetries": 88,
+      "originRefusals": 380
+    },
+    "explicitChange": "Only old Tavola coverage-2 unknown -> supported under raw-supported activeV3, buyer-confirmed typed file/literal and complete same-owner quotation; original source/wire/reference unchanged. Other 14 old reports and both eight-case cohorts remain strict unchanged.",
+    "ordinaryCanonicalCopy": "A separate ordinary business branch only rewrites prose after the existing citation witness is covered, without status changes or bypass.",
+    "scope": "Finite full-menu grammar requires a buyer-confirmed typed file and original source/literal binding; unconfirmed aliases, raw unknown/negative promotion, visibility and execution are unsupported."
+  },
+  "historicalCheckpoint": {
+    "cycles": [
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25
+    ],
+    "rawFilesPreservedLocally": [
+      {
+        "file": "summary.json",
+        "sha256": "a6047f32d392293972964982c5d1d238b2e5a44fe7b6cb1b07b0d5f806a16b98",
+        "bytes": 9778
+      },
+      {
+        "file": "artifact-manifest.json",
+        "sha256": "ad42037a0b755da31f8990c014606a342f4c4a0e4cfd2d12ee54d8d2b8955938",
+        "bytes": 68495
+      },
+      {
+        "file": "packaging-audit.json",
+        "sha256": "ddd42878640ba165152e017b96faaccfee977ca4c6d212cfa325ed49580d2ce8",
+        "bytes": 1681
+      }
+    ],
+    "localIndex": "cycles19-25-checkpoint/checkpoint-index.json",
+    "notASeparatePublishedRelease": true
+  }
+}

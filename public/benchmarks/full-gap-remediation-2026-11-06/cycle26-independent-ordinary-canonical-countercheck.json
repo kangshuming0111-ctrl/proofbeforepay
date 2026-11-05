@@ -1,0 +1,52 @@
+{
+  "schema": "pbp-cycle26-independent-ordinary-canonical-countercheck-v1",
+  "actualModelCalls": 0,
+  "networkCalls": 0,
+  "controlledProviderResponses": 1,
+  "sourceHashes": {
+    "lib/delivery-assessment.ts": "13820b695ffa3bc6620999c45398e5d3eaea623791f1986f6a0fca78437e6e16",
+    "lib/positive-literal-source-witness.ts": "955be85760b0a52cc8e8eed29e16842cd2be315bff4ac249ad1f83bed468fdba"
+  },
+  "rawExplanation": "The menu refreshes daily and is visible to all visitors.",
+  "result": {
+    "criterionId": "coverage-1",
+    "status": "supported",
+    "explanation": "The complete original source block in locked file menu.html contains \"Updated daily\", and the citation matches that exact block. This confirms submitted source copy only; rendered visibility, actual updates and runtime behavior are unverified. It does not accept work or trigger payment.",
+    "citations": [
+      {
+        "file": "menu.html",
+        "start": 59,
+        "end": 100,
+        "excerpt": "<p class=\"eyebrow-rule\">Updated daily</p>"
+      }
+    ],
+    "ruleEvidenceIds": [
+      "eval-evidence-1"
+    ],
+    "obligations": {
+      "schema": "source-obligations-v1",
+      "coverage": "bounded_detection",
+      "sourceLength": 69,
+      "clauses": [
+        {
+          "start": 0,
+          "end": 69,
+          "excerpt": "The full menu page copy must include the literal phrase Updated daily"
+        }
+      ],
+      "items": [
+        {
+          "id": "obligation-1",
+          "kind": "source_content",
+          "clauseIndex": 0,
+          "state": "source_review_required"
+        }
+      ]
+    }
+  },
+  "quoteUnchanged": true,
+  "limits": [
+    "Controlled provider response, not a real model output.",
+    "Submitted source literal only; no rendered visibility, actual updating or runtime execution established."
+  ]
+}

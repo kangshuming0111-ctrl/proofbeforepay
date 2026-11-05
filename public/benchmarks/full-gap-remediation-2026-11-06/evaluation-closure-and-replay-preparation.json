@@ -1,0 +1,27 @@
+{
+  "schema": "pbp-evaluation-import-closure-audit-v1",
+  "runtimeFinal": false,
+  "apiCalls": 0,
+  "networkCalls": 0,
+  "sourceFreezeFile": "outputs/full-gap-remediation-2026-11-06/prospective-eight-v2-provisional-freeze.json",
+  "implementationFiles": 39,
+  "requiredNewModules": [
+    {
+      "file": "lib/assessment-obligations.ts",
+      "sha256": "39d58e3c3168c4f689876d1ab88f5285a96499e05e8cd9af4f8f3ee6c0b82810"
+    },
+    {
+      "file": "lib/source-presence-evidence.ts",
+      "sha256": "0524783ded914e8cb80020321ca6d86857f2e8fb8bcea92d2907757a9d7d8147"
+    }
+  ],
+  "dynamicRelativeImportClosureAlreadySupported": true,
+  "toolSourceChanged": false,
+  "preparedReplayHarness": "outputs/full-gap-remediation-2026-11-06/retained15-v77-additive-replay.mjs",
+  "harnessSha256": "7c616358ade15f4082c906ed5114f1077eb198f43347f3595a6309630f1930ab",
+  "replayExecuted": false,
+  "limits": [
+    "The provisional freeze is not final runtime evidence. Root must authorize final replay and a new freeze after source changes settle.",
+    "Original strict replayer and historical failing result were not changed."
+  ]
+}

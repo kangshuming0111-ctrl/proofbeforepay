@@ -1,0 +1,9 @@
+{
+  "schema": "pbp-retained-text-artifact-v1",
+  "originalFile": "outputs/full-gap-remediation-2026-11-06/final-public-packager-tests.log",
+  "originalSha256": "3d46578700b7768de56ca443a14d4f7c38ed2283e5d3e028761fea8e329615e6",
+  "text": "✔ judge export uses an allowlist and never copies runtime state or pre-existing outputs (10.457334ms)\n✔ judge export preserves explicit TypeScript module sources needed by clean-checkout imports (17.357083ms)\n✔ judge export includes the enquiry native-service modules and migration without broadly admitting other examples (15.928042ms)\n✔ the delivery-stage handoff includes both runnable examples and excludes their runtime state (17.52575ms)\n✔ template licences are copied byte-for-byte without admitting other TXT or similarly named notes (12.939958ms)\n✔ real-project source exports retain the six exact upstream licences and exclude neighbouring owner notes (18.123917ms)\n✔ the single pinned benchmark source archive exports byte-for-byte with all frozen member hashes validated (26.872416ms)\n✔ tampered, oversized or frozen-source-mismatched baseline archives block export before output creation (16.996ms)\n✔ judge export refuses a source symlink instead of following it outside the source tree (1.6825ms)\n✔ an allowlisted root document symlink is rejected before its external contents can be copied (4.585042ms)\n✔ a credential-like value in otherwise allowed source blocks export before writing output (2.312375ms)\n✔ judge export strips owner Site identity, emits placeholders and refuses overwriting an existing package (10.84675ms)\nℹ tests 12\nℹ suites 0\nℹ pass 12\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 202.78625\n",
+  "limits": [
+    "Twelve separate public-source packaging tests; not added to the 1588 application test denominator."
+  ]
+}

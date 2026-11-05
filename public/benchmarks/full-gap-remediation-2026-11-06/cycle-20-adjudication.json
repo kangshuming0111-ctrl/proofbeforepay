@@ -1,0 +1,33 @@
+{
+  "cycle": 20,
+  "plan": "cycle-20-plan-deepseek.json",
+  "post": "cycle-20-post-deepseek.json",
+  "followup": "cycle-20-followup-deepseek.json",
+  "accepted": [
+    {
+      "finding": "English separate subjective sentence could be hidden in one recognized-operation clause",
+      "fix": "finite sentence boundary preserves distinct exact clauses; common abbreviations/file/email/URL/decimal safeguards; new tests"
+    },
+    {
+      "finding": "Quoted ordinary data could invent operation direction",
+      "fix": "mask quoted data only for detection; keep all originalrefs; actual operations outside quotes retained"
+    }
+  ],
+  "rejected": [
+    {
+      "finding": "Class-instance validator bypass",
+      "reason": "The finding itself concludes every class/foreign prototype fails. Existing strict prototype/accessor checks preserved and explicitcountertests pass."
+    }
+  ],
+  "knownLimits": [
+    "Quoted actualoperations can remain visibleunclassified, no falseexecutionpass; post P3 preserved.",
+    "Not an exhaustive parser or realuser study."
+  ],
+  "reviewPacketDrift": {
+    "files": [
+      "lib/assessment-obligations.ts",
+      "tests/assessment-obligations.test.ts"
+    ],
+    "change": "One prefreeze possessivequote opener predicate + one countertest, sharedsource no longer masks operations after customers apostrophe/owner possessive. Root reviewed conservative detectionfix; finalfulltests coverit. Followup report corresponds priorpacket sourceSHA, not finalexactSHA."
+  }
+}

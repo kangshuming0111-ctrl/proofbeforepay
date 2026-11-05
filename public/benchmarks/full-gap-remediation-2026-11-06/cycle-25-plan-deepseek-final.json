@@ -1,0 +1,81 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/source-business-evidence.ts",
+      "bytes": 18353,
+      "lines": 219,
+      "sha256": "4936fba46ab28f39ec42f356987c27840d46b652f752a6011fb019d170659141"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Source-only pre-implementation review of the proposed bounded helper for a known 2-row merged Tea table (one label cell with rowspan=2, followed by two ISO-price cells). No runtime checks were run. Design guidance: implement the helper as a separate, additive path selected only when the saved expectation exactly identifies the merged-supply case, and leave the existing typed business checker untouched. Current code (lib/source-business-evidence.ts:32-34, :65, :157-160) rejects any attrs, any non-2-cell row, and requires exactly one matching price leaf; so today such a check falls to unknown and should remain unknown, not become a verdict. Requirements I would accept: preserve the stated boundaries (raw-byte/AST/whole-owner accounting, unique exact label, dynamic-source veto, whole owner <=500 chars, exactly 2 consecutive 2-cell text-only rows, second-row cell count 1, no attrs/hidden/nested/extra rows, no ambiguity); return kind unknown with reason merged_price_options_unconfirmed plus label and both AUD amounts (18 and 28 in the exemplar, taken from a canonical amount()/money() round-trip); emit a citable table citation only when it fully validates; explanation must say the label-to-both-rows association is established but which price maps to which size option is not, and that the source does not pick a price, pass or mismatch. Do not infer which option applies, do not guess scope, never emit unchanged/mismatch from this path. If adopting the proposed business.citations cap of 3, keep it consistent with the existing slice(0, 3) at line 166 and derive context citations only when every evidence check is unknown and every unknown check's context citation covers the same span; otherwise use a generic citation. Keep the contrast with PHAROS reports limited to clear and accurate static-source reporting; make no overall-superiority claim. Because the helper does not exist in the packet, absence is not reported as a current bug.\",\"findings\":[{\"severity\":\"P2\",\"file\":\"lib/source-business-evidence.ts\",\"line\":156,\"title\":\"A single body-label uniqueness test cannot recognize the merged Tea label for the proposed helper's association step\",\"evidence\":\"Line 156 returns unknown(\\\"label_not_unique_or_not_located\\\") when occurrences(source.bodyText, label) !== 1. For a rowspan=2 Tea table, the label text appears once in the source while its row cell spans two prices, so body-label uniqueness alone is not what an eventual merged helper needs to show that the label card is connected to both price cells. The proposed helper must therefore do its own raw-boundary and AST checks and must not reuse this test to infer a single applicable price.\",\"reproduction\":\"Unverified reasoning trace (not executed): supply an HTML file with <table><tr><td rowspan=\\\"2\\\">Tea</td><td>AUD 18</td></tr><tr><td>AUD 28</td></tr></table> and a visible_copy or price expectation for Tea. The current code returns unknown from line 156 or from line 157/158 (the leaf label 'Tea' has tail 'AUD 18', but the second row is rejected at line 33 and line 65), and the proposed helper must return unknown(merged_price_options_unconfirmed) with both amounts instead of treating the label as resolving to one price.\",\"suggestion\":\"Keep the typed checker's unknown result unchanged. Have the merged-path helper independently validate the two consecutive rows and the rowspan label cell, return kind unknown with reason merged_price_options_unconfirmed, the label, and both ISO amounts, and issue pass/mismatch only through the existing single-price path.\"},{\"severity\":\"P3\",\"file\":\"lib/source-business-evidence.ts\",\"line\":33,\"title\":\"Merged-label designs (rowspan on the label cell) are rejected together with every other attribute by the strict table owner\",\"evidence\":\"Line 33 rejects any element with an attribute named rowspan, colspan, hidden, inert or style, or with any namespaced attribute. The design calls for a td rowspan=2 label cell, so the proposed helper must be a separate owner scan keyed on the exact merged shape (one attribute, exact value, controlled position) rather than a relaxation of tablePriceLeaves, which would also start accepting colspan, hidden and style tables and change the semantics of existing checks.\",\"reproduction\":\"Unverified reasoning trace (not executed): the same example table is rejected at line 33 for the td rowspan=\\\"2\\\" attribute, and line 65 rejects the 1-cell second row. If rowspan were removed from the exclusion list, colspan/hidden/style tables would also start producing price leaves that today return unknown.\",\"suggestion\":\"Add a dedicated, labeled predicate for the merged case that permits only rowspan=\\\"2\\\" on the first cell of the first row, requires exactly two consecutive 2-cell rows followed by one 1-cell row, and leaves tablePriceLeaves and its attribute exclusion unchanged.\"},{\"severity\":\"P3\",\"file\":\"lib/source-business-evidence.ts\",\"line\":160,\"title\":\"Unknown results produced by the merged path cannot carry the amounts or evidence the proposed explanation needs\",\"evidence\":\"SourceBusinessCheckResult has no field for extra amounts, and SourceBusinessEvidence.citations is populated only from mismatches (line 166). If the merged helper returns a plain unknown through the existing pipeline, the two AUD amounts and the citable table span will be dropped, and the explanation returned at lines 216-218 will not say that the label-to-both-rows association is established or why the specific price or option is unknown.\",\"reproduction\":\"Unverified reasoning trace (not executed): return unknown(\\\"merged_price_options_unconfirmed\\\") from the merged path. The result object carries checkId, file, kind and reason only, and the citations array stays empty because no mismatch exists, so the downstream explanation and citation-cap logic have no amounts or span to render.\",\"suggestion\":\"Extend the unknown result additively (optional actual/amounts/evidence fields plus an optional verified table citation), and add an explanation branch for merged_price_options_unconfirmed that names the label, both amounts and the established association, while stating that no price, pass or mismatch is chosen. Keep the context-citation cap of 3 consistent with line 166.\"}],\"limitations\":[\"Review is based only on the two supplied files; tests, call sites and the citation-context module were not provided, so import, protocol and test-harness interactions are unverified.\",\"The helper, the merged_price_options_unconfirmed reason and type extensions do not exist in the packet; findings describe design gaps and risks for the proposed addition, not defects in current behavior.\",\"No parsing, typecheck, build or runtime execution was performed; the example table and all reproduction traces are reasoned, not executed.\",\"Champion/award comparison could not be verified from the packet (no docs/CHAMPION-CYCLE-PROTOCOL.md or PHAROS evidence supplied); the summary keeps to clear and accurate static-source reporting and makes no overall-superiority claim.\",\"Confirming whether the existing source_span_unavailable_or_too_long typing (line 152) and the citation witness (lines 177-194, which pass only for unchanged) would need adaptation for an unknown-with-citation merged result requires files outside the packet.\"]}",
+  "report": {
+    "summary": "Source-only pre-implementation review of the proposed bounded helper for a known 2-row merged Tea table (one label cell with rowspan=2, followed by two ISO-price cells). No runtime checks were run. Design guidance: implement the helper as a separate, additive path selected only when the saved expectation exactly identifies the merged-supply case, and leave the existing typed business checker untouched. Current code (lib/source-business-evidence.ts:32-34, :65, :157-160) rejects any attrs, any non-2-cell row, and requires exactly one matching price leaf; so today such a check falls to unknown and should remain unknown, not become a verdict. Requirements I would accept: preserve the stated boundaries (raw-byte/AST/whole-owner accounting, unique exact label, dynamic-source veto, whole owner <=500 chars, exactly 2 consecutive 2-cell text-only rows, second-row cell count 1, no attrs/hidden/nested/extra rows, no ambiguity); return kind unknown with reason merged_price_options_unconfirmed plus label and both AUD amounts (18 and 28 in the exemplar, taken from a canonical amount()/money() round-trip); emit a citable table citation only when it fully validates; explanation must say the label-to-both-rows association is established but which price maps to which size option is not, and that the source does not pick a price, pass or mismatch. Do not infer which option applies, do not guess scope, never emit unchanged/mismatch from this path. If adopting the proposed business.citations cap of 3, keep it consistent with the existing slice(0, 3) at line 166 and derive context citations only when every evidence check is unknown and every unknown check's context citation covers the same span; otherwise use a generic citation. Keep the contrast with PHAROS reports limited to clear and accurate static-source reporting; make no overall-superiority claim. Because the helper does not exist in the packet, absence is not reported as a current bug.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "lib/source-business-evidence.ts",
+        "line": 156,
+        "title": "A single body-label uniqueness test cannot recognize the merged Tea label for the proposed helper's association step",
+        "evidence": "Line 156 returns unknown(\"label_not_unique_or_not_located\") when occurrences(source.bodyText, label) !== 1. For a rowspan=2 Tea table, the label text appears once in the source while its row cell spans two prices, so body-label uniqueness alone is not what an eventual merged helper needs to show that the label card is connected to both price cells. The proposed helper must therefore do its own raw-boundary and AST checks and must not reuse this test to infer a single applicable price.",
+        "reproduction": "Unverified reasoning trace (not executed): supply an HTML file with <table><tr><td rowspan=\"2\">Tea</td><td>AUD 18</td></tr><tr><td>AUD 28</td></tr></table> and a visible_copy or price expectation for Tea. The current code returns unknown from line 156 or from line 157/158 (the leaf label 'Tea' has tail 'AUD 18', but the second row is rejected at line 33 and line 65), and the proposed helper must return unknown(merged_price_options_unconfirmed) with both amounts instead of treating the label as resolving to one price.",
+        "suggestion": "Keep the typed checker's unknown result unchanged. Have the merged-path helper independently validate the two consecutive rows and the rowspan label cell, return kind unknown with reason merged_price_options_unconfirmed, the label, and both ISO amounts, and issue pass/mismatch only through the existing single-price path."
+      },
+      {
+        "severity": "P3",
+        "file": "lib/source-business-evidence.ts",
+        "line": 33,
+        "title": "Merged-label designs (rowspan on the label cell) are rejected together with every other attribute by the strict table owner",
+        "evidence": "Line 33 rejects any element with an attribute named rowspan, colspan, hidden, inert or style, or with any namespaced attribute. The design calls for a td rowspan=2 label cell, so the proposed helper must be a separate owner scan keyed on the exact merged shape (one attribute, exact value, controlled position) rather than a relaxation of tablePriceLeaves, which would also start accepting colspan, hidden and style tables and change the semantics of existing checks.",
+        "reproduction": "Unverified reasoning trace (not executed): the same example table is rejected at line 33 for the td rowspan=\"2\" attribute, and line 65 rejects the 1-cell second row. If rowspan were removed from the exclusion list, colspan/hidden/style tables would also start producing price leaves that today return unknown.",
+        "suggestion": "Add a dedicated, labeled predicate for the merged case that permits only rowspan=\"2\" on the first cell of the first row, requires exactly two consecutive 2-cell rows followed by one 1-cell row, and leaves tablePriceLeaves and its attribute exclusion unchanged."
+      },
+      {
+        "severity": "P3",
+        "file": "lib/source-business-evidence.ts",
+        "line": 160,
+        "title": "Unknown results produced by the merged path cannot carry the amounts or evidence the proposed explanation needs",
+        "evidence": "SourceBusinessCheckResult has no field for extra amounts, and SourceBusinessEvidence.citations is populated only from mismatches (line 166). If the merged helper returns a plain unknown through the existing pipeline, the two AUD amounts and the citable table span will be dropped, and the explanation returned at lines 216-218 will not say that the label-to-both-rows association is established or why the specific price or option is unknown.",
+        "reproduction": "Unverified reasoning trace (not executed): return unknown(\"merged_price_options_unconfirmed\") from the merged path. The result object carries checkId, file, kind and reason only, and the citations array stays empty because no mismatch exists, so the downstream explanation and citation-cap logic have no amounts or span to render.",
+        "suggestion": "Extend the unknown result additively (optional actual/amounts/evidence fields plus an optional verified table citation), and add an explanation branch for merged_price_options_unconfirmed that names the label, both amounts and the established association, while stating that no price, pass or mismatch is chosen. Keep the context-citation cap of 3 consistent with line 166."
+      }
+    ],
+    "limitations": [
+      "Review is based only on the two supplied files; tests, call sites and the citation-context module were not provided, so import, protocol and test-harness interactions are unverified.",
+      "The helper, the merged_price_options_unconfirmed reason and type extensions do not exist in the packet; findings describe design gaps and risks for the proposed addition, not defects in current behavior.",
+      "No parsing, typecheck, build or runtime execution was performed; the example table and all reproduction traces are reasoned, not executed.",
+      "Champion/award comparison could not be verified from the packet (no docs/CHAMPION-CYCLE-PROTOCOL.md or PHAROS evidence supplied); the summary keeps to clear and accurate static-source reporting and makes no overall-superiority claim.",
+      "Confirming whether the existing source_span_unavailable_or_too_long typing (line 152) and the citation witness (lines 177-194, which pass only for unchanged) would need adaptation for an unknown-with-citation merged result requires files outside the packet."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

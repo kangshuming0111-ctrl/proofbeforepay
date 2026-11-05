@@ -1,0 +1,114 @@
+{
+  "schema": "pbp-cycle24-post-prose-reproduction-v1",
+  "apiCalls": 0,
+  "networkCalls": 0,
+  "cases": [
+    {
+      "source": "The page content must list the shop phone number.",
+      "files": {
+        "index.html": "<!doctype html><html><head><title>Contact</title></head><body><h1>Home</h1></body></html>",
+        "contact.html": "<!doctype html><html><head><title>Contact</title></head><body><p>Phone: +61 3 7010 2244</p></body></html>",
+        "site.css": "body{}"
+      },
+      "controlledProviderCallbacks": 1,
+      "realApiCalls": 0,
+      "reportItem": {
+        "criterionId": "coverage-1",
+        "status": "insufficient_evidence",
+        "explanation": "The current citations do not cover a complete phone or email text witness in the locked scope, so this simple content requirement is not established. Check the exact source and complete owner; comments, scripts, attributes or another scoped page cannot substitute for that evidence. Visibility and delivery are not proven.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 27,
+            "end": 49,
+            "excerpt": "<title>Contact</title>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-1"
+        ],
+        "obligations": {
+          "schema": "source-obligations-v1",
+          "coverage": "bounded_detection",
+          "sourceLength": 49,
+          "clauses": [
+            {
+              "start": 0,
+              "end": 49,
+              "excerpt": "The page content must list the shop phone number."
+            }
+          ],
+          "items": [
+            {
+              "id": "obligation-1",
+              "kind": "source_content",
+              "clauseIndex": 0,
+              "state": "source_review_required"
+            }
+          ]
+        },
+        "evidenceNeed": {
+          "schema": "source-evidence-need-v1",
+          "reason": "page_citations",
+          "targetFiles": [
+            "contact.html",
+            "index.html"
+          ]
+        }
+      }
+    },
+    {
+      "source": "index.html must list the shop phone number.",
+      "files": {
+        "index.html": "<!doctype html><html><head><title>Contact</title></head><body><h1>Home</h1></body></html>",
+        "contact.html": "<!doctype html><html><head><title>Contact</title></head><body><p>Phone: +61 3 7010 2244</p></body></html>",
+        "site.css": "body{}"
+      },
+      "controlledProviderCallbacks": 1,
+      "realApiCalls": 0,
+      "reportItem": {
+        "criterionId": "coverage-1",
+        "status": "insufficient_evidence",
+        "explanation": "The current citations do not cover a complete phone or email text witness in the locked scope, so this simple content requirement is not established. Check the exact source and complete owner; comments, scripts, attributes or another scoped page cannot substitute for that evidence. Visibility and delivery are not proven.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 27,
+            "end": 49,
+            "excerpt": "<title>Contact</title>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-1"
+        ],
+        "obligations": {
+          "schema": "source-obligations-v1",
+          "coverage": "bounded_detection",
+          "sourceLength": 43,
+          "clauses": [
+            {
+              "start": 0,
+              "end": 43,
+              "excerpt": "index.html must list the shop phone number."
+            }
+          ],
+          "items": [
+            {
+              "id": "obligation-1",
+              "kind": "source_content",
+              "clauseIndex": 0,
+              "state": "source_review_required"
+            }
+          ]
+        },
+        "evidenceNeed": {
+          "schema": "source-evidence-need-v1",
+          "reason": "source_ambiguity",
+          "targetFiles": [
+            "index.html"
+          ]
+        }
+      }
+    }
+  ]
+}

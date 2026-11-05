@@ -63,6 +63,10 @@ async function componentModule(inspectKeys=false){
  let reviewOutput=ts.transpileModule(await readFile(path.join(root,"app/components/RiskReviewPanel.tsx"),"utf8"),{compilerOptions:{module:ts.ModuleKind.ESNext,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022}}).outputText.replace("import '../risk-reviews.css';","");
  for(const name of["react","react/jsx-runtime"])reviewOutput=reviewOutput.replaceAll(JSON.stringify(name),JSON.stringify(pathToFileURL(require.resolve(name)).href)).replaceAll("'"+name+"'",JSON.stringify(pathToFileURL(require.resolve(name)).href));
  await writeFile(path.join(dir,"risk-review.mjs"),reviewOutput);output=output.replaceAll('"./RiskReviewPanel"','"./risk-review.mjs"');
+ let obligationOutput=ts.transpileModule(await readFile(path.join(root,"app/components/AssessmentObligations.tsx"),"utf8"),{compilerOptions:{module:ts.ModuleKind.ESNext,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022}}).outputText;
+ for(const name of["react","react/jsx-runtime"])obligationOutput=obligationOutput.replaceAll(JSON.stringify(name),JSON.stringify(pathToFileURL(require.resolve(name)).href));
+ obligationOutput=obligationOutput.replaceAll('"@/lib/assessment-obligations"',JSON.stringify(file("lib/assessment-obligations.ts")));
+ await writeFile(path.join(dir,"assessment-obligations.mjs"),obligationOutput);output=output.replaceAll('"./AssessmentObligations"','"./assessment-obligations.mjs"');
  for(const name of["react","react/jsx-runtime","lucide-react"])output=output.replaceAll(JSON.stringify(name),JSON.stringify(pathToFileURL(require.resolve(name)).href));
  for(const name of["delivery-overview","assessment-display","assessment-evidence-needs"])output=output.replaceAll(JSON.stringify("@/lib/"+name),JSON.stringify(file("lib/"+name+".ts")));
  output=output.replaceAll('"./assessment-feedback"',JSON.stringify(file("app/components/assessment-feedback.ts")));
@@ -192,6 +196,27 @@ test("unsupported withholding metadata shows a record warning without guessing c
  const {Component,cleanup}=await componentModule();try{
   const html=renderToStaticMarkup(createElement(Component,{report:{...report,withheldRisks:{version:99,reason:"invented",adjustedCriteria:[],entries:[]}},criteria:[criterion],language:"en",readOnly:true}));
   assert.match(html,/record format cannot be checked/u);assert.ok(!html.includes("invented"));
+ }finally{await cleanup();}
+});
+
+test("v2 source-scope originals show their own reason without claiming an item status adjustment",async()=>{
+ const {Component,cleanup}=await componentModule();try{
+  const original={title:"Original extra-page lead",explanation:"An original, unverified model lead.",suggestion:"Inspect the locked scope before deciding.",citations:[{file:"index.html",start:0,end:4,excerpt:"Home"}]};
+  const scope:ProofAssessmentWithheldRisks={version:2,reason:"source_scope_unestablished",scopeCriterionIds:[criterion.id],adjustedCriteria:[],entries:[{originalRiskIndex:0,risk:original}]};
+  const saved={...report,items:[{...item,status:"supported" as const}],risks:[],withheldRisks:scope};
+  for(const language of["zh","en"] as const)for(const readOnly of[false,true]){
+   const html=renderToStaticMarkup(createElement(Component,{report:saved,criteria:[criterion],language,readOnly,actorRole:"buyer",onSaveRiskReview:async()=>true,onPrepareFeedback:()=>{}}));
+   const pool=html.slice(html.indexOf('<details class="assessment-withheld-risks"'),html.indexOf('<details class="assessment-coverage"'));
+   assert.match(pool,language==="zh"?/独立约定范围未建立 · 逐项状态未调整/u:/Agreed indication scope unestablished · item statuses unchanged/u);
+   assert.match(pool,language==="zh"?/按电话／邮箱文字自定义范围单独暂缓/u:/under the custom phone\/email text scope/u);
+   assert.match(pool,language==="zh"?/也不认定其他页面、链接或手机要求通过/u:/other page, link or mobile requirements are not declared passed/u);
+   assert.match(pool,language==="zh"?/这里没有状态调整记录/u:/There is no status-adjustment record/u);
+   assert.ok(pool.includes(escape(original.title)));assert.ok(pool.includes(escape(criterion.title)));
+   assert.ok(!pool.includes('class="assessment-withheld-adjustments"'));assert.ok(!pool.includes('class="risk-repair-draft"'));
+   assert.equal(pool.includes('class="risk-review-form'),!readOnly);
+  }
+  const invalid=structuredClone(saved);delete (invalid.withheldRisks as unknown as Record<string,unknown>).scopeCriterionIds;
+  assert.match(renderToStaticMarkup(createElement(Component,{report:invalid,criteria:[criterion],language:"en"})),/withholding record format cannot be checked/u);
  }finally{await cleanup();}
 });
 

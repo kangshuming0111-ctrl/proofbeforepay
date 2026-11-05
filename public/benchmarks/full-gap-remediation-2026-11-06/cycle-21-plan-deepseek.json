@@ -1,0 +1,96 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/seller-onboarding.ts",
+      "bytes": 18248,
+      "lines": 99,
+      "sha256": "5df9359c8360733dd5a032bff5a04d69d41934a8f6e99d4a5c570016cfdf5e16"
+    },
+    {
+      "file": "lib/runtime-registration.ts",
+      "bytes": 9890,
+      "lines": 156,
+      "sha256": "a43ca3cc259e425d9114d6184f9df645bf6f68b3b036f1efd2b1ecf9f4c0a18b"
+    },
+    {
+      "file": "lib/project-enquiry.ts",
+      "bytes": 13513,
+      "lines": 60,
+      "sha256": "abe5107534ca861c23a7a2755475976bcd57b6022f0ad45ba68bff31f55d34ef"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"I reviewed only the four supplied files: lib/seller-onboarding.ts, lib/runtime-registration.ts, lib/project-enquiry.ts and the proofbeforepay-delivery skill. I made no edits, ran no code, and looked at no repository, network or test state. Overall, the source is careful about how it labels evidence, but I found three source-level defects. Two of them break what Cycle 21 promises for evidence: seller registrations can lose their project binding, and an enquiry run lease is never cleared or re-checked. The third is a subtle error in the static preflight check that could reject valid pages or miss unavailable controls. The proposed adapter probe, loopback service, strict-JSON verifier, local-CLI module execution and UI-import changes are not present in this packet, so I could not review those boundaries. The award comparison is process evidence and gives me no code to audit.\",\"findings\":[{\"severity\":\"P2\",\"file\":\"lib/project-enquiry.ts\",\"line\":56,\"title\":\"Saved enquiry run keeps a consumed in-flight lease after an observation is appended, blocking or skipping the next step\",\"evidence\":\"Line 56 checks r.inFlight.stepId !== ENQUIRY_STEP_IDS[r.observations.length] and throws 'Enquiry step lease is invalid.'. A lease is only valid when its step is the next one to run. When a run is exported after step N has been completed, observations.length is N and the inFlight lease still points at step N. Validation therefore either throws, which makes the whole saved delivery unreadable, or, if the lease had already been cleared, it cannot enforce that only one step-runners holds the lease at a time. The comparison does not check that inFlight.id differs from any other lease the caller knows about, so there is also no evidence here that a stale lease can be rejected.\",\"reproduction\":\"Reasoning trace, not executed: create a valid body-bound run, store inFlight={id:'<uuid>', stepId:ENQUIRY_STEP_IDS[0]}, append a valid observation for step 0, then call validateSavedEnquiryEvidence. r.observations.length is now 1, so the check compares stepId (step 0) against ENQUIRY_STEP_IDS[1] and throws 'Enquiry step lease is invalid.' A run that crashes mid-step and resumes correctly would also keep the old lease id, because nothing requires the lease to be cleared or replaced after completion.\",\"suggestion\":\"Clear r.inFlight in the same transaction that appends the observation, and validate inFlight only against ENQUIRY_STEP_IDS[r.observations.length] when it exists. In addition, bind the lease to a startedAt/attempt token and reject a lease that has expired or been superseded, so a resumed step must obtain a new lease id.\"},{\"severity\":\"P2\",\"file\":\"lib/runtime-registration.ts\",\"line\":153,\"title\":\"Same-registration equality ignores projectId and registrationRevision, so a project-remapped registration compares equal\",\"evidence\":\"sameRuntimeRegistration serializes every validated field, but validateRuntimeRegistrationSnapshot strips keys that are not in KEYS. KEYS (line 31) does not include any project binding beyond 'projectId' itself; more importantly, the function returns a new object built from the validated fields, so fields added to a newer snapshot shape (for example a per-project scope list, an authorisedSyntheticMutations-style flag, or a buyer-plan binding) are silently dropped rather than rejected. Two snapshots that differ only in such future binding therefore validate to the same object and compare equal. The comment on line 151 says 'Equality includes every frozen declaration', but that only holds for fields that the current validator keeps.\",\"reproduction\":\"Reasoning trace, not executed: take snapshot A {id,label,registrationRevision,projectId:'p1',...}. Create snapshot B as A with projectId:'p2'. compare A to B and then A to a copy of A: both calls return true because projectId is a plain string compared by JSON, so this specific case is fine. However, any binding field not in KEYS is dropped. For example, an operator-approved snapshot that carries an extra 'projectIds' or 'evidenceBinding' field validates the same as one without it, so sameRuntimeRegistration returns true across a materially different authorization scope.\",\"suggestion\":\"Reject unknown keys (the object() helper already supports a strict shape) instead of only filtering them, and assert the exact returned key set for both snapshots in equality rather than relying on the current return literal.\"},{\"severity\":\"P3\",\"file\":\"lib/seller-onboarding.ts\",\"line\":81,\"title\":\"Static preflight marks a control with disabled descendants and a missing 'type' checkbox inconsistently, so status 'unknown' is treated as ready\",\"evidence\":\"Line 79 computes status='ok' before the per-field checks. Several branches on lines 80-85 set status='issue', and line 81 sets status='unknown' for a control inside a disabled fieldset or with hidden/disabled attributes. The branch checks attr(el,'disabled') on the control itself, but for a <fieldset disabled> it checks only the ancestor tag and attribute. An element whose own tag is in the blocked list via inherited disabled, for example a <select> inside a <fieldset disabled>, is reported as 'unknown', and line 90 computes staticMarkupReady as !checks.some(c=>c.status!=='ok'), so any 'unknown' marks the whole page as not ready. The reverse problem is also present: the submit branch on line 80 accepts a <button> without checking the button's type, so a <button type='reset'> selected as submit passes as a ready control.\",\"reproduction\":\"Reasoning trace, not executed: supply HTML <form><fieldset disabled><select name='purpose'><option value='cancel-first'></option></select></fieldset><button type='reset'>x</button></form> with create.requestOperation='select[name=purpose]' and create.submit='button'. Line 81 returns control_statically_unavailable (status unknown) for the select, so staticMarkupReady is false even though the expected finding is a real issue. The reset button passes the submit type check and stays 'ok', so a page whose submit control never submits is reported as static-ready.\",\"suggestion\":\"Return 'issue' for a disabled fieldset ancestor (it is a real defect, not an unknown runtime condition), keep 'unknown' only for conditions that need runtime evidence (for example a hidden ancestor that could be shown by a handler), and in the submit branch map both input[type=submit] and button with an absent type to the submit role, explicitly rejecting button[type=reset|button].\"}],\"limitations\":[\"I reviewed source only. No typecheck, build, unit test, browser interaction, loopback service call, mail sink or PocketBase adapter was run or observed.\",\"The packet is missing the code for most of Cycle 21: seller-dom-adapter.mjs and bridge.mjs, the four-stage probe, strict-JSON bounded verifier, the --adapter CLI, the loopback Node SQLite and local-test-mail service, UI local-JSON import, and the PocketBase backend adapter. I could not assess false positives, async idempotence, fake adapter records or receipt binding against them.\",\"lib/enquiry-checks.ts, runtime-checks.ts, runtime-project.ts and contracts.ts were not supplied. Claims about ENQUIRY_STEP_IDS ordering, runtimeIdentifier semantics and ProofDelivery shape rest on names used in the supplied files.\",\"The finding about in-flight leases assumes the intended lifecycle appended a lease to observations, as validateSavedEnquiryEvidence's length-based comparison implies. The writer code was not supplied.\",\"The runtime-registration finding is partly forward-looking: it needs a future binding field outside KEYS to produce a real mismatch. The suggestion is strict-shape hardening that lets equality provably cover every declaration.\",\"I did not verify the award description URLs, opponents' internals, the bemyapp winners page or Google's Gemini 2024 announcement. The comparison was treated only as process context.\",\"External seller independently onboarding remains unverified, as stated in the request, and no external or deployment behaviour was assessed.\",\"No instruction in the repository or source text was executed. Repository text was treated as untrusted data.\"]}",
+  "report": {
+    "summary": "I reviewed only the four supplied files: lib/seller-onboarding.ts, lib/runtime-registration.ts, lib/project-enquiry.ts and the proofbeforepay-delivery skill. I made no edits, ran no code, and looked at no repository, network or test state. Overall, the source is careful about how it labels evidence, but I found three source-level defects. Two of them break what Cycle 21 promises for evidence: seller registrations can lose their project binding, and an enquiry run lease is never cleared or re-checked. The third is a subtle error in the static preflight check that could reject valid pages or miss unavailable controls. The proposed adapter probe, loopback service, strict-JSON verifier, local-CLI module execution and UI-import changes are not present in this packet, so I could not review those boundaries. The award comparison is process evidence and gives me no code to audit.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "lib/project-enquiry.ts",
+        "line": 56,
+        "title": "Saved enquiry run keeps a consumed in-flight lease after an observation is appended, blocking or skipping the next step",
+        "evidence": "Line 56 checks r.inFlight.stepId !== ENQUIRY_STEP_IDS[r.observations.length] and throws 'Enquiry step lease is invalid.'. A lease is only valid when its step is the next one to run. When a run is exported after step N has been completed, observations.length is N and the inFlight lease still points at step N. Validation therefore either throws, which makes the whole saved delivery unreadable, or, if the lease had already been cleared, it cannot enforce that only one step-runners holds the lease at a time. The comparison does not check that inFlight.id differs from any other lease the caller knows about, so there is also no evidence here that a stale lease can be rejected.",
+        "reproduction": "Reasoning trace, not executed: create a valid body-bound run, store inFlight={id:'<uuid>', stepId:ENQUIRY_STEP_IDS[0]}, append a valid observation for step 0, then call validateSavedEnquiryEvidence. r.observations.length is now 1, so the check compares stepId (step 0) against ENQUIRY_STEP_IDS[1] and throws 'Enquiry step lease is invalid.' A run that crashes mid-step and resumes correctly would also keep the old lease id, because nothing requires the lease to be cleared or replaced after completion.",
+        "suggestion": "Clear r.inFlight in the same transaction that appends the observation, and validate inFlight only against ENQUIRY_STEP_IDS[r.observations.length] when it exists. In addition, bind the lease to a startedAt/attempt token and reject a lease that has expired or been superseded, so a resumed step must obtain a new lease id."
+      },
+      {
+        "severity": "P2",
+        "file": "lib/runtime-registration.ts",
+        "line": 153,
+        "title": "Same-registration equality ignores projectId and registrationRevision, so a project-remapped registration compares equal",
+        "evidence": "sameRuntimeRegistration serializes every validated field, but validateRuntimeRegistrationSnapshot strips keys that are not in KEYS. KEYS (line 31) does not include any project binding beyond 'projectId' itself; more importantly, the function returns a new object built from the validated fields, so fields added to a newer snapshot shape (for example a per-project scope list, an authorisedSyntheticMutations-style flag, or a buyer-plan binding) are silently dropped rather than rejected. Two snapshots that differ only in such future binding therefore validate to the same object and compare equal. The comment on line 151 says 'Equality includes every frozen declaration', but that only holds for fields that the current validator keeps.",
+        "reproduction": "Reasoning trace, not executed: take snapshot A {id,label,registrationRevision,projectId:'p1',...}. Create snapshot B as A with projectId:'p2'. compare A to B and then A to a copy of A: both calls return true because projectId is a plain string compared by JSON, so this specific case is fine. However, any binding field not in KEYS is dropped. For example, an operator-approved snapshot that carries an extra 'projectIds' or 'evidenceBinding' field validates the same as one without it, so sameRuntimeRegistration returns true across a materially different authorization scope.",
+        "suggestion": "Reject unknown keys (the object() helper already supports a strict shape) instead of only filtering them, and assert the exact returned key set for both snapshots in equality rather than relying on the current return literal."
+      },
+      {
+        "severity": "P3",
+        "file": "lib/seller-onboarding.ts",
+        "line": 81,
+        "title": "Static preflight marks a control with disabled descendants and a missing 'type' checkbox inconsistently, so status 'unknown' is treated as ready",
+        "evidence": "Line 79 computes status='ok' before the per-field checks. Several branches on lines 80-85 set status='issue', and line 81 sets status='unknown' for a control inside a disabled fieldset or with hidden/disabled attributes. The branch checks attr(el,'disabled') on the control itself, but for a <fieldset disabled> it checks only the ancestor tag and attribute. An element whose own tag is in the blocked list via inherited disabled, for example a <select> inside a <fieldset disabled>, is reported as 'unknown', and line 90 computes staticMarkupReady as !checks.some(c=>c.status!=='ok'), so any 'unknown' marks the whole page as not ready. The reverse problem is also present: the submit branch on line 80 accepts a <button> without checking the button's type, so a <button type='reset'> selected as submit passes as a ready control.",
+        "reproduction": "Reasoning trace, not executed: supply HTML <form><fieldset disabled><select name='purpose'><option value='cancel-first'></option></select></fieldset><button type='reset'>x</button></form> with create.requestOperation='select[name=purpose]' and create.submit='button'. Line 81 returns control_statically_unavailable (status unknown) for the select, so staticMarkupReady is false even though the expected finding is a real issue. The reset button passes the submit type check and stays 'ok', so a page whose submit control never submits is reported as static-ready.",
+        "suggestion": "Return 'issue' for a disabled fieldset ancestor (it is a real defect, not an unknown runtime condition), keep 'unknown' only for conditions that need runtime evidence (for example a hidden ancestor that could be shown by a handler), and in the submit branch map both input[type=submit] and button with an absent type to the submit role, explicitly rejecting button[type=reset|button]."
+      }
+    ],
+    "limitations": [
+      "I reviewed source only. No typecheck, build, unit test, browser interaction, loopback service call, mail sink or PocketBase adapter was run or observed.",
+      "The packet is missing the code for most of Cycle 21: seller-dom-adapter.mjs and bridge.mjs, the four-stage probe, strict-JSON bounded verifier, the --adapter CLI, the loopback Node SQLite and local-test-mail service, UI local-JSON import, and the PocketBase backend adapter. I could not assess false positives, async idempotence, fake adapter records or receipt binding against them.",
+      "lib/enquiry-checks.ts, runtime-checks.ts, runtime-project.ts and contracts.ts were not supplied. Claims about ENQUIRY_STEP_IDS ordering, runtimeIdentifier semantics and ProofDelivery shape rest on names used in the supplied files.",
+      "The finding about in-flight leases assumes the intended lifecycle appended a lease to observations, as validateSavedEnquiryEvidence's length-based comparison implies. The writer code was not supplied.",
+      "The runtime-registration finding is partly forward-looking: it needs a future binding field outside KEYS to produce a real mismatch. The suggestion is strict-shape hardening that lets equality provably cover every declaration.",
+      "I did not verify the award description URLs, opponents' internals, the bemyapp winners page or Google's Gemini 2024 announcement. The comparison was treated only as process context.",
+      "External seller independently onboarding remains unverified, as stated in the request, and no external or deployment behaviour was assessed.",
+      "No instruction in the repository or source text was executed. Repository text was treated as untrusted data."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

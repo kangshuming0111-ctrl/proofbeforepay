@@ -1,0 +1,353 @@
+{
+  "id": "full-gap-missing-phone",
+  "stratum": "mismatch",
+  "reference": [
+    {
+      "criterionId": "coverage-1",
+      "label": {
+        "expectedStatus": "changes_suggested",
+        "rationale": "Both complete plain static HTML bodies lack telephone text and contain no image, script, template or hidden alternative. The limited source-copy omission is established; no live browser or business contact validity is claimed.",
+        "relevantFiles": [
+          "index.html",
+          "contact.html"
+        ],
+        "requiresSemanticReview": true
+      }
+    }
+  ],
+  "plan": {
+    "requestSha256": "6d10c7cd05b9ed16d2d9274c24baf8265dd473bf803c539642ef0bd314696e6e",
+    "requestUtf8Bytes": 27621,
+    "promptTokenUpperEstimate": 31717,
+    "outputTokenLimit": 3360,
+    "reservedCostUsd": 0.013547100000000001,
+    "coverage": {
+      "includedFiles": [
+        "contact.html",
+        "index.html",
+        "site.css"
+      ],
+      "truncatedFiles": [],
+      "omittedFiles": []
+    }
+  },
+  "attempted": true,
+  "networkAttempted": true,
+  "criteria": [
+    {
+      "id": "coverage-1",
+      "referenceStatus": "changes_suggested",
+      "rawStatus": "changes_suggested",
+      "applicationStatus": "changes_suggested",
+      "rawCitations": [
+        {
+          "file": "contact.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>We are a fictional design shop.</p><p>Open weekdays.</p></main></body></html>",
+          "start": 0,
+          "end": 259,
+          "valid": true
+        },
+        {
+          "file": "index.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Visit the contact page for our story.</p></main></body></html>",
+          "start": 0,
+          "end": 236,
+          "valid": true
+        }
+      ],
+      "applicationCitations": [
+        {
+          "file": "contact.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>We are a fictional design shop.</p><p>Open weekdays.</p></main></body></html>",
+          "valid": true,
+          "start": 0,
+          "end": 259
+        },
+        {
+          "file": "index.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Visit the contact page for our story.</p></main></body></html>",
+          "valid": true,
+          "start": 0,
+          "end": 236
+        }
+      ],
+      "rawCitationValidity": "valid",
+      "semanticReview": "pending_independent_adjudication"
+    }
+  ],
+  "wholeAnswerSemanticReview": "pending_independent_adjudication",
+  "raw": {
+    "httpStatus": 200,
+    "bodyText": "{\"id\":\"59f66a0f-1432-4bbc-b346-8f48f11ec895\",\"object\":\"chat.completion\",\"created\":1793902489,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"index\":0,\"id\":\"call_00_q8oWk4sq3aJvDmQA3kPp6297\",\"type\":\"function\",\"function\":{\"name\":\"submit_source_assessment_v3\",\"arguments\":\"{\\\"catalogId\\\": \\\"288ec91f294e11680ef4b078b42b89c165bc04c46fdd8b1b87ee69b720126b70\\\", \\\"items\\\": [{\\\"criterionId\\\": \\\"coverage-1\\\", \\\"status\\\": \\\"changes_suggested\\\", \\\"explanation\\\": \\\"Neither supplied HTML page contains a telephone number; contact.html gives heading, shop description and 'Open weekdays' only, and index.html has no phone number either.\\\", \\\"citations\\\": {\\\"c1\\\": \\\"s1\\\", \\\"c2\\\": \\\"s6\\\", \\\"c3\\\": \\\"\\\", \\\"c4\\\": \\\"\\\", \\\"c5\\\": \\\"\\\", \\\"c6\\\": \\\"\\\"}}], \\\"risks\\\": [{\\\"title\\\": \\\"Shop telephone number is absent from delivered page copy\\\", \\\"explanation\\\": \\\"contact.html's visible content (heading, one-line description, 'Open weekdays') lists no phone number, and index.html's body likewise shows only a heading and a pointer to the contact page.\\\", \\\"suggestion\\\": \\\"Add the shop telephone number to the page copy (e.g., contact.html) and re-check the complete HTML for any phone value.\\\", \\\"citations\\\": {\\\"c1\\\": \\\"s1\\\", \\\"c2\\\": \\\"s6\\\", \\\"c3\\\": \\\"\\\"}}], \\\"limitations\\\": [\\\"No telephone number is supplied in the brief or files, so the correct value cannot be verified; only its absence in delivered static copy is established.\\\", \\\"Rendered appearance and any script-driven content were not observed; only supplied HTML and CSS text was reviewed.\\\"]}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":6190,\"completion_tokens\":393,\"total_tokens\":6583,\"prompt_tokens_details\":{\"cached_tokens\":6016},\"prompt_cache_hit_tokens\":6016,\"prompt_cache_miss_tokens\":174},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "bodyPrefixText": null,
+    "bodyComplete": true,
+    "bodyUtf8Bytes": 1888,
+    "bodyByteCountIsComplete": true,
+    "utf8Valid": true,
+    "providerBody": {
+      "id": "59f66a0f-1432-4bbc-b346-8f48f11ec895",
+      "object": "chat.completion",
+      "created": 1793902489,
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+              {
+                "index": 0,
+                "id": "call_00_q8oWk4sq3aJvDmQA3kPp6297",
+                "type": "function",
+                "function": {
+                  "name": "submit_source_assessment_v3",
+                  "arguments": "{\"catalogId\": \"288ec91f294e11680ef4b078b42b89c165bc04c46fdd8b1b87ee69b720126b70\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"changes_suggested\", \"explanation\": \"Neither supplied HTML page contains a telephone number; contact.html gives heading, shop description and 'Open weekdays' only, and index.html has no phone number either.\", \"citations\": {\"c1\": \"s1\", \"c2\": \"s6\", \"c3\": \"\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [{\"title\": \"Shop telephone number is absent from delivered page copy\", \"explanation\": \"contact.html's visible content (heading, one-line description, 'Open weekdays') lists no phone number, and index.html's body likewise shows only a heading and a pointer to the contact page.\", \"suggestion\": \"Add the shop telephone number to the page copy (e.g., contact.html) and re-check the complete HTML for any phone value.\", \"citations\": {\"c1\": \"s1\", \"c2\": \"s6\", \"c3\": \"\"}}], \"limitations\": [\"No telephone number is supplied in the brief or files, so the correct value cannot be verified; only its absence in delivered static copy is established.\", \"Rendered appearance and any script-driven content were not observed; only supplied HTML and CSS text was reviewed.\"]}"
+                }
+              }
+            ]
+          },
+          "logprobs": null,
+          "finish_reason": "tool_calls"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 6190,
+        "completion_tokens": 393,
+        "total_tokens": 6583,
+        "prompt_tokens_details": {
+          "cached_tokens": 6016
+        },
+        "prompt_cache_hit_tokens": 6016,
+        "prompt_cache_miss_tokens": 174
+      },
+      "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+    },
+    "contentText": "{\"catalogId\": \"288ec91f294e11680ef4b078b42b89c165bc04c46fdd8b1b87ee69b720126b70\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"changes_suggested\", \"explanation\": \"Neither supplied HTML page contains a telephone number; contact.html gives heading, shop description and 'Open weekdays' only, and index.html has no phone number either.\", \"citations\": {\"c1\": \"s1\", \"c2\": \"s6\", \"c3\": \"\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [{\"title\": \"Shop telephone number is absent from delivered page copy\", \"explanation\": \"contact.html's visible content (heading, one-line description, 'Open weekdays') lists no phone number, and index.html's body likewise shows only a heading and a pointer to the contact page.\", \"suggestion\": \"Add the shop telephone number to the page copy (e.g., contact.html) and re-check the complete HTML for any phone value.\", \"citations\": {\"c1\": \"s1\", \"c2\": \"s6\", \"c3\": \"\"}}], \"limitations\": [\"No telephone number is supplied in the brief or files, so the correct value cannot be verified; only its absence in delivered static copy is established.\", \"Rendered appearance and any script-driven content were not observed; only supplied HTML and CSS text was reviewed.\"]}",
+    "originalContentText": "{\"catalogId\": \"288ec91f294e11680ef4b078b42b89c165bc04c46fdd8b1b87ee69b720126b70\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"changes_suggested\", \"explanation\": \"Neither supplied HTML page contains a telephone number; contact.html gives heading, shop description and 'Open weekdays' only, and index.html has no phone number either.\", \"citations\": {\"c1\": \"s1\", \"c2\": \"s6\", \"c3\": \"\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [{\"title\": \"Shop telephone number is absent from delivered page copy\", \"explanation\": \"contact.html's visible content (heading, one-line description, 'Open weekdays') lists no phone number, and index.html's body likewise shows only a heading and a pointer to the contact page.\", \"suggestion\": \"Add the shop telephone number to the page copy (e.g., contact.html) and re-check the complete HTML for any phone value.\", \"citations\": {\"c1\": \"s1\", \"c2\": \"s6\", \"c3\": \"\"}}], \"limitations\": [\"No telephone number is supplied in the brief or files, so the correct value cannot be verified; only its absence in delivered static copy is established.\", \"Rendered appearance and any script-driven content were not observed; only supplied HTML and CSS text was reviewed.\"]}",
+    "originalJsonValid": true,
+    "contentNormalization": "none",
+    "transport": "strict_tool",
+    "citationEncoding": "catalog_slots",
+    "catalogIdValid": true,
+    "completion": {
+      "catalogId": "288ec91f294e11680ef4b078b42b89c165bc04c46fdd8b1b87ee69b720126b70",
+      "items": [
+        {
+          "criterionId": "coverage-1",
+          "status": "changes_suggested",
+          "explanation": "Neither supplied HTML page contains a telephone number; contact.html gives heading, shop description and 'Open weekdays' only, and index.html has no phone number either.",
+          "citations": {
+            "c1": "s1",
+            "c2": "s6",
+            "c3": "",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          }
+        }
+      ],
+      "risks": [
+        {
+          "title": "Shop telephone number is absent from delivered page copy",
+          "explanation": "contact.html's visible content (heading, one-line description, 'Open weekdays') lists no phone number, and index.html's body likewise shows only a heading and a pointer to the contact page.",
+          "suggestion": "Add the shop telephone number to the page copy (e.g., contact.html) and re-check the complete HTML for any phone value.",
+          "citations": {
+            "c1": "s1",
+            "c2": "s6",
+            "c3": ""
+          }
+        }
+      ],
+      "limitations": [
+        "No telephone number is supplied in the brief or files, so the correct value cannot be verified; only its absence in delivered static copy is established.",
+        "Rendered appearance and any script-driven content were not observed; only supplied HTML and CSS text was reviewed."
+      ]
+    },
+    "items": [
+      {
+        "criterionId": "coverage-1",
+        "status": "changes_suggested",
+        "explanation": "Neither supplied HTML page contains a telephone number; contact.html gives heading, shop description and 'Open weekdays' only, and index.html has no phone number either.",
+        "citations": {
+          "c1": "s1",
+          "c2": "s6",
+          "c3": "",
+          "c4": "",
+          "c5": "",
+          "c6": ""
+        }
+      }
+    ],
+    "risks": [
+      {
+        "title": "Shop telephone number is absent from delivered page copy",
+        "explanation": "contact.html's visible content (heading, one-line description, 'Open weekdays') lists no phone number, and index.html's body likewise shows only a heading and a pointer to the contact page.",
+        "suggestion": "Add the shop telephone number to the page copy (e.g., contact.html) and re-check the complete HTML for any phone value.",
+        "citations": {
+          "c1": "s1",
+          "c2": "s6",
+          "c3": ""
+        }
+      }
+    ],
+    "limitations": [
+      "No telephone number is supplied in the brief or files, so the correct value cannot be verified; only its absence in delivered static copy is established.",
+      "Rendered appearance and any script-driven content were not observed; only supplied HTML and CSS text was reviewed."
+    ],
+    "finishReason": "tool_calls",
+    "model": "deepseek-flash",
+    "riskCitationChecks": [
+      [
+        {
+          "file": "contact.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>We are a fictional design shop.</p><p>Open weekdays.</p></main></body></html>",
+          "start": 0,
+          "end": 259,
+          "valid": true
+        },
+        {
+          "file": "index.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Visit the contact page for our story.</p></main></body></html>",
+          "start": 0,
+          "end": 236,
+          "valid": true
+        }
+      ]
+    ]
+  },
+  "usage": {
+    "promptTokens": 6190,
+    "completionTokens": 393
+  },
+  "reportedUsageCostUsd": 0.0023286,
+  "usageExceededReservation": false,
+  "application": {
+    "accepted": true,
+    "report": {
+      "id": "f85aea22-46e6-4bed-ac85-8a0f5a5052d1",
+      "deliveryId": "eval-full-gap-missing-phone",
+      "method": "source-ai-v1",
+      "mode": "live",
+      "model": "deepseek-flash",
+      "assessedAt": "2026-11-05T18:14:52.193Z",
+      "items": [
+        {
+          "criterionId": "coverage-1",
+          "status": "changes_suggested",
+          "explanation": "The bounded static-text check did not locate a complete recognizable phone witness, so this remains a change suggestion for human review. Check equivalent wording and other content sources within the locked scope before making changes. This is not a page-count, browser-display or contact-validity finding.",
+          "citations": [
+            {
+              "file": "contact.html",
+              "start": 0,
+              "end": 259,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>We are a fictional design shop.</p><p>Open weekdays.</p></main></body></html>"
+            },
+            {
+              "file": "index.html",
+              "start": 0,
+              "end": 236,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Visit the contact page for our story.</p></main></body></html>"
+            }
+          ],
+          "ruleEvidenceIds": [
+            "eval-evidence-1"
+          ],
+          "obligations": {
+            "schema": "source-obligations-v1",
+            "coverage": "bounded_detection",
+            "sourceLength": 53,
+            "clauses": [
+              {
+                "start": 0,
+                "end": 53,
+                "excerpt": "The page content must list the shop telephone number."
+              }
+            ],
+            "items": [
+              {
+                "id": "obligation-1",
+                "kind": "source_content",
+                "clauseIndex": 0,
+                "state": "source_review_required"
+              }
+            ]
+          }
+        }
+      ],
+      "risks": [],
+      "limitations": [
+        "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+        "The model supplied 2 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+        "The independent agreed scope of 1 optional model indication(s) is not established, so originals are withheld under the custom phone/email text scope. All item findings are unchanged; other page, link or mobile requirements are not declared passed. No status-adjustment record was invented. Human opinions do not release the gate, accept work or make a payment.",
+        "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog 288ec91f294e11680ef4b078b42b89c165bc04c46fdd8b1b87ee69b720126b70. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+        "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+        "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+      ],
+      "coverage": {
+        "includedFiles": [
+          "contact.html",
+          "index.html",
+          "site.css"
+        ],
+        "truncatedFiles": [],
+        "omittedFiles": []
+      },
+      "withheldRisks": {
+        "version": 2,
+        "reason": "source_scope_unestablished",
+        "scopeCriterionIds": [
+          "coverage-1"
+        ],
+        "adjustedCriteria": [],
+        "entries": [
+          {
+            "originalRiskIndex": 0,
+            "risk": {
+              "title": "Shop telephone number is absent from delivered page copy",
+              "explanation": "contact.html's visible content (heading, one-line description, 'Open weekdays') lists no phone number, and index.html's body likewise shows only a heading and a pointer to the contact page.",
+              "suggestion": "Add the shop telephone number to the page copy (e.g., contact.html) and re-check the complete HTML for any phone value.",
+              "citations": [
+                {
+                  "file": "contact.html",
+                  "start": 0,
+                  "end": 259,
+                  "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>We are a fictional design shop.</p><p>Open weekdays.</p></main></body></html>"
+                },
+                {
+                  "file": "index.html",
+                  "start": 0,
+                  "end": 236,
+                  "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Visit the contact page for our story.</p></main></body></html>"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "usage": {
+        "promptTokens": 6190,
+        "completionTokens": 393
+      }
+    },
+    "error": null
+  },
+  "elapsedMilliseconds": 2571,
+  "rawDiagnostics": {
+    "expectedCriterionIds": [
+      "coverage-1"
+    ],
+    "returnedKnownCriterionIds": [
+      "coverage-1"
+    ],
+    "missingCriterionIds": [],
+    "duplicateCriterionIds": [],
+    "unknownCriterionCount": 0,
+    "invalidItemCount": 0,
+    "contentParsed": true,
+    "idProfileParsed": true,
+    "profileSource": "original_json",
+    "completeItemCoverage": true,
+    "finishReason": "tool_calls"
+  }
+}

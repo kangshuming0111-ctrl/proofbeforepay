@@ -1,0 +1,55 @@
+{
+  "schema": "pbp-cycle22-cli-post-adjudication-v1",
+  "createdAt": "2026-11-05T18:17:29.192028+00:00",
+  "review": "cycle-22-cli-post-deepseek.json",
+  "reviewSha256": "2ebcff7ef1cd27a6932036ed6d22621e5b7c8cde59b89e1c51d73dea797c7610",
+  "reportValid": true,
+  "findingCount": 1,
+  "adjudication": [
+    {
+      "severity": "P3",
+      "title": "Receipt verification is skipped when base audit is inconsistent, collapsing specific reasons and making 'digest_mismatch' a false label",
+      "decision": "partially_accepted_and_fixed",
+      "accepted": "When inner audit validation failed, wrapper skipped receipt verification but labeled the result digest_mismatch. That causal diagnostic was unsupported by an actual digest comparison. Root changed the reason to audit_inconsistent.",
+      "rejected": "Consistent-audit cases do not all collapse to invalid_receipt: actual execution returns signature_invalid for a forged known-key signature, unknown_key for an unknown key, and invalid_receipt for absent/malformed receipt. Missing and malformed structure intentionally share a bounded invalid-receipt result.",
+      "securityImpact": "Every reproduced invalid case already rejected and exposed no verified audit; no unsigned fallback, acceptance or payment behavior was affected.",
+      "beforeFixReproduction": "cycle22-cli-post-reproduction.json",
+      "runtimeFixOwner": "root",
+      "fixFiles": [
+        "lib/evidence-issuer.ts",
+        "lib/issued-revision-audit.ts"
+      ],
+      "permanentChecks": [
+        "Receipt verifier spy remains uncalled for inconsistent inner audit and reason is audit_inconsistent.",
+        "Actual CLI subprocess rejects unknown key, forged signature, missing receipt, disguised schema and inconsistent inner audit with precise reasons.",
+        "Explicit unsigned core remains exit0 and issuance unproven.",
+        "Child process network API is blocked for these CLI cases."
+      ]
+    }
+  ],
+  "actualModelCallsForReproductions": 0,
+  "networkCallsForReproductions": 0,
+  "deepseekReviewCalls": 1,
+  "verification": {
+    "log": "cycle22-cli-post-correction-tests.log",
+    "sha256": "1094ca65c4de86d765ecebeded019f0825f00a79e67ef20474839fa964f70e0e",
+    "typeLog": "cycle22-cli-post-correction-type.log",
+    "typeDiagnostics": 0,
+    "productionSignedCliHappyPath": "root hosted verification pending",
+    "tests": 40,
+    "passed": 40,
+    "failed": 0
+  },
+  "sourceAtAdjudication": {
+    "scripts/verify-revision-audit.mjs": "ecc9c1700ce76d68f9a131f753e860a94dc352450368a3a8335778d4d96805b8",
+    "lib/issued-revision-audit.ts": "a07024d87ecbd86a772067ba3e7ff64f4196884b829c17f004d0dd720b146d6f",
+    "lib/evidence-issuer.ts": "4c3a699e9673ab0147b22fd6b4474e09b9aa2fb4a209c04fb253dba889d768a9",
+    "tests/revision-audit.test.ts": "318ff7fcc7b22c52341f40578d4dd37660f5fc31a14e6222b0e751513da5c6dc",
+    "tests/evidence-revision-viewer.test.ts": "83615420804bb8166ff7cd32e6dd0ce3431bd7914239d5ffb5b82141d2df9508"
+  },
+  "limits": [
+    "DeepSeek source review is advisory; executable reproductions determine this decision.",
+    "The retained earlier Lab v24 cohort uses its original bytes/reason. It must not be rewritten as the corrected cohort.",
+    "Official issuance verifies the exact application export, not model judgment, backend truth, human identity or payment."
+  ]
+}

@@ -7,8 +7,11 @@ import { assertCoverageForAcceptance, validateSavedCoverage } from "./requiremen
 import { getBusinessCheckPlan } from "./business-checks.ts";
 import { assessmentEvidenceScope, assessmentObservationExplanation } from "./assessment-evidence-scope.ts";
 import { createExactCopyEvidenceCheck, exactCopyEvidenceExplanation } from "./exact-copy-evidence.ts";
+import {createSourcePresenceEvidenceCheck, sourcePresenceExplanation, sourcePresenceSupportedExplanation, sourcePresenceMissingAdvice, sourcePresenceUnresolvedExplanation} from "./source-presence-evidence.ts";
+import {deriveAssessmentObligations} from "./assessment-obligations.ts";
+import {createPositiveLiteralSourceWitnessCheck, positiveLiteralSourceWitnessExplanation} from "./positive-literal-source-witness.ts";
 import {AssessmentResponseError, requireAssessmentItemCoverage, type AssessmentFailureReason} from "./assessment-response.ts";
-import {createSourceBusinessEvidenceCheck, sourceBusinessEvidenceExplanation, assessSourceBusinessCitationWitness, sourceBusinessCitationWitnessExplanation} from "./source-business-evidence.ts";
+import {createSourceBusinessEvidenceCheck, sourceBusinessEvidenceExplanation, assessSourceBusinessCitationWitness, sourceBusinessCitationWitnessExplanation, completeMergedUnknownCitations} from "./source-business-evidence.ts";
 import {assessmentCompletionText, assessmentReportJson, assessmentToolDefinition, assessmentCatalogToolDefinition, assessmentSlotsToolDefinition, SOURCE_ASSESSMENT_TOOL_NAME, SOURCE_ASSESSMENT_CATALOG_TOOL_NAME, SOURCE_ASSESSMENT_SLOTS_TOOL_NAME, type AssessmentCitationEncoding} from "./assessment-completion.ts";
 import {assessmentCitationSelection, assessmentItemsForValidation} from "./assessment-citation-selection.ts";
 import {ASSESSMENT_ITEM_CITATION_LIMIT, ASSESSMENT_RISK_CITATION_LIMIT} from "./assessment-limits.ts";
@@ -254,7 +257,9 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
     }
     const seen = new Set<string>();
     const exactCopyCheck = createExactCopyEvidenceCheck(sent);
+    const presenceCheck = createSourcePresenceEvidenceCheck(sent);
     const businessEvidenceCheck = createSourceBusinessEvidenceCheck(sent, savedBusinessSteps);
+    const positiveLiteralCheck = createPositiveLiteralSourceWitnessCheck(sent, savedBusinessSteps);
     const labelCitationCheck = createAssessmentLabelCitationCheck(sent);
     const universalTagCheck = createUniversalTagEvidenceCheck(sent, quote.proof.project?.requiredPages ?? []);
     const universalListCheck = createUniversalSourceListEvidenceCheck(sent, quote.proof.project?.requiredPages ?? []);
@@ -282,6 +287,15 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
         need(scope.reason === "mobile" ? "browser_observation" : scope.reason === "financial_action" ? "financial_execution"
           : scope.reason === "durable_record" ? "record_readback" : scope.reason === "unclassified_requirement" ? "requirement_clarification" : "direct_observation");
       } else {
+        if (encoding === "catalog_slots" && item.status === "insufficient_evidence" && status === "insufficient_evidence") {
+          const presence = presenceCheck(criterion);
+          if (presence.kind !== "not_applicable") {
+            explanation = sourcePresenceUnresolvedExplanation(presence, quote.language);
+            if (presence.kind === "present") checkedCitations = presence.citations;
+            // The model itself was unresolved; no status adjustment occurred.
+            need("model_unresolved", presence.files);
+          }
+        }
         if (item.status === "changes_suggested" && status === "changes_suggested"
           && !savedBusinessSteps.some(step => step.criterionId === criterion.id)
           && hasUnestablishedArticleTitleCommaChange(criterion, sent, checkedCitations)) {
@@ -296,10 +310,24 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
           if (business.kind === "unknown") {
             status = "insufficient_evidence";
             explanation = sourceBusinessEvidenceExplanation(business, quote.language);
+            const context = completeMergedUnknownCitations(business);
+            if (context) checkedCitations = context;
             need("source_ambiguity", business.checks.filter(check => check.kind === "unknown").map(check => check.file));
           } else if (business.kind === "mismatch") {
             explanation = sourceBusinessEvidenceExplanation(business, quote.language);
             checkedCitations = business.citations;
+          }
+        }
+        if (encoding === "catalog_slots" && item.status === "changes_suggested" && status === "changes_suggested"
+          && businessEvidenceCheck(criterion.id).kind !== "mismatch") {
+          const presence = presenceCheck(criterion);
+          if (presence.kind === "present" || presence.kind === "unknown" && presence.files.length > 0) {
+            status = "insufficient_evidence";
+            explanation = sourcePresenceExplanation(presence, quote.language);
+            if (presence.kind === "present") checkedCitations = presence.citations;
+            need(presence.kind === "present" ? "manual_interpretation" : "source_ambiguity", presence.files);
+          } else if (presence.kind === "absent") {
+            explanation = sourcePresenceMissingAdvice(presence, quote.language);
           }
         }
         if (item.status === "changes_suggested" && status === "changes_suggested") {
@@ -315,11 +343,23 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
         }
         if (status === "supported") {
           const business = businessEvidenceCheck(criterion.id);
-          if (business.kind === "mismatch" || business.kind === "unknown") {
+          const literal = encoding === "catalog_slots" && item.status === "supported" && business.kind === "unknown"
+            && business.checks.length > 0 && business.checks.every(check => check.kind === "unknown" && check.reason === "dynamic_or_unsupported_source")
+            ? positiveLiteralCheck(criterion, checkedCitations) : undefined;
+          if (literal?.kind === "covered" && business.kind === "unknown" && business.checks.every(check => check.file === literal.file)) {
+            // A complete quoted source owner is an affirmative source-copy
+            // witness. Unrelated page scripts do not establish its rendered
+            // state. All subsequent source checks still run independently.
+            explanation = positiveLiteralSourceWitnessExplanation(literal, quote.language);
+          } else if (business.kind === "mismatch" || business.kind === "unknown") {
             status = business.kind === "mismatch" ? "changes_suggested" : "insufficient_evidence";
             explanation = sourceBusinessEvidenceExplanation(business, quote.language);
             if (business.kind === "mismatch") checkedCitations = business.citations;
-            else need("source_ambiguity", business.checks.filter(check => check.kind === "unknown").map(check => check.file));
+            else {
+              const context = completeMergedUnknownCitations(business);
+              if (context) checkedCitations = context;
+              need("source_ambiguity", business.checks.filter(check => check.kind === "unknown").map(check => check.file));
+            }
           } else {
             const witness = assessSourceBusinessCitationWitness(business, checkedCitations);
             if (witness.kind === "unknown") {
@@ -327,6 +367,26 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
               explanation = sourceBusinessCitationWitnessExplanation(witness, quote.language);
               need(witness.checks.some(check => check.reason === "target_file_not_cited") ? "page_citations" : "field_relationship",
                 witness.checks.filter(check => check.kind === "unknown").map(check => check.file));
+            } else if (encoding === "catalog_slots" && item.status === "supported" && witness.kind === "covered") {
+              const literal = positiveLiteralCheck(criterion, checkedCitations);
+              if (literal.kind === "covered") explanation = positiveLiteralSourceWitnessExplanation(literal, quote.language);
+            }
+          }
+        }
+        if (encoding === "catalog_slots" && status === "supported") {
+          const presence = presenceCheck(criterion);
+          if (presence.kind !== "not_applicable") {
+            const witness = presence.kind === "present" ? presence.citations[0] : undefined;
+            const covered = witness && checkedCitations.some(c => c.file === witness.file && c.start <= witness.start && c.end >= witness.end
+              && c.excerpt.slice(witness.start-c.start,witness.end-c.start) === witness.excerpt);
+            if (!covered) {
+              status = "insufficient_evidence";
+              need(witness ? "page_citations" : "source_ambiguity", presence.files);
+              explanation = words(quote,
+                "当前引用尚未覆盖锁定范围内完整的电话或邮箱文字依据，不能确认这条简单内容要求符合。请核对对应原文与完整内容块；明确点名文件时不得用别页替代，泛指网页文字时可从任一约定 HTML 提供完整依据。注释、脚本或属性不能替代内容文字，也不证明可见性或实际送达。",
+                "The current citations do not cover a complete phone or email text witness in the locked scope, so this simple content requirement is not established. Check the exact source and complete owner. An explicitly named file cannot borrow another page; a generic page-copy requirement may use any scoped HTML file. Comments, scripts and attributes cannot substitute for content text. Visibility and delivery are not proven.");
+            } else {
+              explanation = sourcePresenceSupportedExplanation(presence, quote.language);
             }
           }
         }
@@ -376,6 +436,7 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
         }
       }
       return { criterionId: criterion.id, status, explanation, citations: checkedCitations, ruleEvidenceIds: related.map(entry => entry.id),
+        ...(encoding === "catalog_slots" ? {obligations: deriveAssessmentObligations(criterion)} : {}),
         ...(encoding === "catalog_slots" && status === "insufficient_evidence" ? {evidenceNeed: evidenceNeed ?? makeAssessmentEvidenceNeed("model_unresolved", [], sent)} : {}) };
     });
     // Keep the report in the agreed order regardless of model output order.
@@ -401,7 +462,7 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
     const modelLimitations = output.limitations.map(value => text(value, 300).trim());
     const originalStatuses = new Map(responseItems.map(value => {const item=record(value);return [String(item.criterionId),String(item.status)] as const;}));
     const publication: ReturnType<typeof publishSourceAssessmentNotes> = encoding === "catalog_slots"
-      ? publishSourceAssessmentNotes(quote.language, items, originalStatuses, risks, modelLimitations.length, files)
+      ? publishSourceAssessmentNotes(quote.language, items, originalStatuses, risks, modelLimitations.length, files, criteria)
       : {risks, limitations: [...modelLimitations], statusAdjustedCount: 0};
     const limitations = publication.limitations;
     limitations.push(catalog ? words(quote,

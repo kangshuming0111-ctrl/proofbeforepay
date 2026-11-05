@@ -1,0 +1,199 @@
+{
+  "schema": "pbp-cycle24-final-adjudication-v1",
+  "createdAt": "2026-11-05T18:20:05.324162+00:00",
+  "adjudicator": "Codex agent; independently judges DeepSeek findings, not a human user study",
+  "scope": "Cycle24 finite contact-copy canonical wording and explicit custom-scope withholding. Final measured runtime also includes cycle25 merged-row clarification; whole-cohort improvement is not attributed solely to cycle24.",
+  "inputs": [
+    {
+      "file": "cycle-24-post-deepseek.json",
+      "sha256": "83726574175cbeb0c0398291c2d9a0b7400dc3eca9e9567573ac2d32b775c018"
+    },
+    {
+      "file": "cycle-24-post-agent-adjudication.json",
+      "sha256": "f1e563e369668d15263a1ab00ed0aec1150065e668d34e38e6fa4f08767328e0"
+    },
+    {
+      "file": "cycle-24-post-prose-controlled-reproduction.json",
+      "sha256": "3b72f298691ca01b9e905f20198d9f4c73022f618e0dbbd5972f9b1c12efcec4"
+    },
+    {
+      "file": "cycle-24-scope-copy-followup-deepseek.json",
+      "sha256": "24043f418ef7b7c6f4b3e338496f1f25da1a53213592b0f49ae19194d2c3aead"
+    },
+    {
+      "file": "prospective-eight-first-independent-whole-answer-review.json",
+      "sha256": "52678e63184723e11488da9440eb6901802379657042cbe48365e9024f4bc8b1"
+    },
+    {
+      "file": "known-repair-eight-independent-whole-answer-review.json",
+      "sha256": "45bb9bfbb6afaa55cff46640f6ab3f0ece3a3287f0d36db53c664c4733efc6b0"
+    },
+    {
+      "file": "known-repair-eight-source-audit.json",
+      "sha256": "316190c4fcc0519cf75e6672c6fdf97f5e976327c8e9906b243fd23f0bfdd95c"
+    },
+    {
+      "file": "cycle-24-original-eight-body-replay.json",
+      "sha256": "0ef65be0a837a4af3e69c5dd4d24962b1af9a36122510371a63e18e6b1a33d3b"
+    },
+    {
+      "file": "retained15-cycle24-additive-replay.json",
+      "sha256": "a2f89f5be139c281907f53f2b63bc6d6ccafc60795a92f386b43e677e56687cb"
+    },
+    {
+      "file": "known-repair-eight-final-freeze.json",
+      "sha256": "88258be7721ac25060e6b79d7642300029c084621fd51d405f4df05c717de247"
+    },
+    {
+      "file": "known-repair-eight-final-runtime-inert-source.json",
+      "sha256": "7a09e211804714b5b203534e06cc676cca6844ac5a87e1d84ee475a01ad73363"
+    }
+  ],
+  "deepseekPost": {
+    "valid": true,
+    "p1p2Findings": 0,
+    "p3Findings": 1,
+    "accepted": "Narrow unsupported-positive-citation copy ambiguity: named file and generic page-copy scopes need distinct wording.",
+    "rootFix": "Bilingual text now says named file cannot borrow another page, while generic page-copy may use any scoped HTML, with complete-owner citations and no rendering/delivery claim.",
+    "rejectedPortion": "No promotion from unsupported supported/unknown to changes was authorized by the finding. Unknown status and reason remain intentional.",
+    "controlledReproductionApiCalls": 0
+  },
+  "followup": {
+    "valid": true,
+    "findings": [],
+    "claimBoundary": "Source review only, not executed tests or award superiority."
+  },
+  "firstVsKnownRepair": {
+    "firstIndependent": {
+      "projects": 8,
+      "criteria": 9,
+      "rawStatusReferenceAgreement": 7,
+      "applicationStatusReferenceAgreement": 9,
+      "rawWholeAnswers": {
+        "accepted": 3,
+        "qualified": 2,
+        "rejected": 3
+      },
+      "applicationWholeAnswers": {
+        "accepted": 4,
+        "qualified": 3,
+        "rejected": 1
+      },
+      "rawItemCitations": 23,
+      "rawRiskCitations": 15,
+      "applicationItemCitations": 21,
+      "activeRiskCitations": 11,
+      "withheldRiskCitations": 4,
+      "withheldRisks": 2
+    },
+    "knownRepairIndependent": {
+      "projects": 8,
+      "criteria": 9,
+      "rawStatusReferenceAgreement": 7,
+      "applicationStatusReferenceAgreement": 9,
+      "rawWholeAnswers": {
+        "accepted": 2,
+        "qualified": 3,
+        "rejected": 3
+      },
+      "applicationWholeAnswers": {
+        "accepted": 8,
+        "qualified": 0,
+        "rejected": 0
+      },
+      "rawItemCitations": 24,
+      "rawRiskCitations": 12,
+      "applicationItemCitations": 20,
+      "activeRiskCitations": 2,
+      "withheldRiskCitations": 10,
+      "withheldRisks": 6
+    },
+    "sameKnownEightCases": true,
+    "oldReferencesUnchanged": true,
+    "sameRequestBodies": true,
+    "firstRepliesPreserved": true
+  },
+  "originalBodyReplay": {
+    "apiCalls": 0,
+    "networkCalls": 0,
+    "allNineStatusesUnchanged": true,
+    "canonicalItemChanges": 5,
+    "cycle24ContactItemChanges": 4,
+    "cycle25MergedContextChanges": 1,
+    "v2ScopeReports": 3,
+    "totals": {
+      "canonicalItemChanges": 5,
+      "itemCitations": 20,
+      "publishedRiskCitations": 2,
+      "withheldRiskCitations": 13,
+      "withheldEntries": 6,
+      "statusAdjustments": 2,
+      "v2ScopeReports": 3,
+      "originSaves": 14,
+      "originRetries": 14,
+      "originRefusals": 56
+    }
+  },
+  "retained15": {
+    "apiCalls": 0,
+    "networkCalls": 0,
+    "projects": 15,
+    "criteria": 82,
+    "coreUnchangedReportsAfterRemovingOnlyValidatedObligations": 15,
+    "validatedObligations": 82,
+    "presenceDeltas": 0,
+    "referenceAgreement": 78,
+    "referenceTotal": 82,
+    "historicStrictComparisonPassed": false,
+    "historicReferenceAgreementBefore": 79,
+    "historicReferenceAgreementAfter": 78,
+    "allOriginalInputsPreserved": true,
+    "totals": {
+      "obligationsValidated": 82,
+      "coreUnchangedReports": 15,
+      "presenceDeltas": 0,
+      "itemCitations": 174,
+      "publishedRiskCitations": 48,
+      "withheldRiskCitations": 15,
+      "withheldEntries": 6,
+      "wireStatusAdjustments": 5,
+      "originSaves": 60,
+      "originRetries": 60,
+      "originRefusals": 248
+    }
+  },
+  "actualAssessmentCalls": {
+    "first": 8,
+    "knownRepair": 8,
+    "total": 16,
+    "automaticRetries": 0,
+    "usageEstimateUsd": 0.0381006,
+    "estimateNotInvoice": true,
+    "recharge": false,
+    "harnessReviewsCountedSeparately": true
+  },
+  "knownRepairAudit": {
+    "projects": 8,
+    "criteria": 9,
+    "rawReferenceAgreement": 7,
+    "applicationReferenceAgreement": 9,
+    "rawItemCitations": 24,
+    "rawRiskCitations": 12,
+    "applicationItemCitations": 20,
+    "activeRiskCitations": 2,
+    "withheldRiskCitations": 10,
+    "withheldRisks": 6,
+    "obligationsValidated": 9,
+    "statusAdjustments": 2,
+    "admittedReports": 8,
+    "completeRawReports": 8
+  },
+  "runtimeSnapshotSha256": "7d6583c30e905f4c766778be08ab615e0422524ab36a3efe729fdbd125046526",
+  "limits": [
+    "Eight authored synthetic cases with nine criteria; not third-party projects, customers, blinded testing or general accuracy.",
+    "Independent whole-answer reviewer did not author the references, but had already reviewed the first batch; known repair is not blind.",
+    "V2 conservatively withholds every optional lead under its explicit finite custom scope, including potentially legitimate leads. It does not individually prove each lead false or out of scope.",
+    "Other custom price, operational or unfamiliar requirements do not borrow this contact scope. Structural findings remain independently actionable and are not declared passed.",
+    "Human opinions never release the gate or change acceptance/payment. Current/history bindings are local tests; external seller and human onboarding remain separately unverified."
+  ]
+}

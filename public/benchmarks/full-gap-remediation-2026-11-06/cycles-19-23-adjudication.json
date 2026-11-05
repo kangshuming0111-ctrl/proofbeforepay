@@ -1,0 +1,45 @@
+{
+  "19-presence": {
+    "post": "cycle-19-presence-followup-deepseek.json",
+    "rejected": [
+      "P3 img absence premise is explicitly false: read() marks img uncertainty and permanenttests prove unknown; affirmative rawsupported with no actualowner must remainunknown, not pass. Source visibility is not asserted."
+    ],
+    "limits": [
+      "Finite phone/emailfamily only, not a general semanticproof."
+    ]
+  },
+  "21": {
+    "post": "cycle-21-post-deepseek.json",
+    "accepted": "No reachablefindings; rootindependentactualfourprofile/Flaskresults retained; participantrecordsnottrustedbackendidentity.",
+    "tests": 22
+  },
+  "22": {
+    "post": "cycle-22-post-deepseek-final.json",
+    "invalid": [
+      "cycle-22-post-deepseek.json"
+    ],
+    "accepted": "No reachable core/store/route findings; original full archives and guarded exactversion reads.",
+    "issuerPost": "cycle-22-issuer-post-deepseek.json",
+    "issuerP3": [
+      "Mutationtest alreadycatcheslatecallerread; adopted stronger explicitdeferred-keyimportcountertest anyway.",
+      "Actualpinnedkeypublicreceipt alreadyretained; addedpublicfixtureverificationwithoutprivatekey."
+    ],
+    "tests": 25,
+    "limits": [
+      "Trustedverifier publickey verifies officialappissuance only, not modeltruth/execution/participantidentity/payment or thirdpartytimestamp.",
+      "Historicalcore omits unretained quotelevelconsent/repairhistory/fullsupplementalcatalog; no reconstruction."
+    ]
+  },
+  "23-plan": {
+    "accepted": [
+      "Bind monotonicelapsed toonecapturedwallanchor; keepstrictsharedv1sessionprotocol."
+    ],
+    "rejected": [
+      "An extra selfdeclared operatorstring cannot prove realhumanidentity. Newguide therefore alwaysoperator_walkthrough andexcludedfromhumanaggregates.",
+      "No conversion fromguestLab T01-T05schema; reuseexistingmainv1buyer/seller taskIDs directly."
+    ],
+    "limits": [
+      "No independent humanstudy completed; code cannot create participant evidence."
+    ]
+  }
+}

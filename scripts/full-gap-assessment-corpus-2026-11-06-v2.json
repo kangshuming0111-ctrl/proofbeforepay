@@ -1,0 +1,335 @@
+{
+  "schema": "proofbeforepay-frozen-project-corpus-v1",
+  "cohort": "full-gap-eight-prospective-authored-boundaries-2026-11-06-v2",
+  "scope": "Eight newly authored prospective synthetic source-assessment cases (nine criteria), not third-party projects, customers, independent human users or a claim of unseen model training data. They cover contact-field presence, scoped negatives, inert decoys, cross-page owners, compound operations, quoted copy and merged-row meaning.",
+  "referenceMethod": "Per-criterion source references and qualitative limits are authored and sealed before any provider answer for this cohort. Use the unchanged real production intake validation. Preserve first answers, raw/application differences and reference-policy disagreements; do not retune references after inspection.",
+  "projects": [
+    {
+      "id": "full-gap-present-phone",
+      "stratum": "clean",
+      "language": "en",
+      "title": "Prospective synthetic present phone",
+      "summary": "The page content must list the shop telephone number.",
+      "requiredPages": [
+        "index.html",
+        "contact.html"
+      ],
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Telephone: +61 3 7010 2244</p><p>Enquiries welcome during business hours.</p></main></body></html>",
+        "contact.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>",
+        "site.css": "body{font-family:serif;margin:1rem}address{font-style:normal}\n"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The page content must list the shop telephone number.",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "The complete static index.html body contains a labelled telephone in one p owner. This establishes source copy only, not visibility, phone ownership or connection.",
+            "relevantFiles": [
+              "index.html",
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "full-gap-missing-phone",
+      "stratum": "mismatch",
+      "language": "en",
+      "title": "Prospective synthetic missing phone",
+      "summary": "The page content must list the shop telephone number.",
+      "requiredPages": [
+        "index.html",
+        "contact.html"
+      ],
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Visit the contact page for our story.</p></main></body></html>",
+        "contact.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>We are a fictional design shop.</p><p>Open weekdays.</p></main></body></html>",
+        "site.css": "body{font-family:serif;margin:1rem}address{font-style:normal}\n"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The page content must list the shop telephone number.",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "Both complete plain static HTML bodies lack telephone text and contain no image, script, template or hidden alternative. The limited source-copy omission is established; no live browser or business contact validity is claimed.",
+            "relevantFiles": [
+              "index.html",
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "full-gap-body-email-with-decoys",
+      "stratum": "untrusted",
+      "language": "en",
+      "title": "Prospective synthetic body email with decoys",
+      "summary": "The page content must list the shop email address.",
+      "requiredPages": [
+        "index.html",
+        "contact.html"
+      ],
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><address>Email: orders@maple.example.test</address><!-- Email: retired@maple.example.test --><script type=\"application/json\">{\"debugEmail\":\"diagnostic@maple.example.test\"}</script></main></body></html>",
+        "contact.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>",
+        "site.css": "body{font-family:serif;margin:1rem}address{font-style:normal}\n"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The page content must list the shop email address.",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "An address owner in the actual static body contains orders@maple.example.test. Comment and script strings are decoys and cannot replace that body witness. The source-copy fact does not establish delivery.",
+            "relevantFiles": [
+              "index.html",
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "full-gap-inert-email-only",
+      "stratum": "untrusted",
+      "language": "en",
+      "title": "Prospective synthetic inert email only",
+      "summary": "The page content must list the shop email address.",
+      "requiredPages": [
+        "index.html",
+        "contact.html"
+      ],
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>Please use the enquiry channel.</p><!-- Email: archived@maple.example.test --><script type=\"application/json\">{\"email\":\"debug@maple.example.test\",\"note\":\"diagnostic data only\"}</script><script src=\"https://widget.example.test/contact-card.js\"></script></main></body></html>",
+        "contact.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>",
+        "site.css": "body{font-family:serif;margin:1rem}address{font-style:normal}\n"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The page content must list the shop email address.",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "The only supplied email strings occur in an HTML comment and inert script data, not body contact copy. An external contact-card script is referenced but its code and output are not supplied. That concrete dynamic alternative leaves email page-content presence unverified; no browser absence, delivery failure or script execution is claimed.",
+            "relevantFiles": [
+              "index.html",
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "full-gap-named-page-phone",
+      "stratum": "mismatch",
+      "language": "en",
+      "title": "Prospective synthetic named page phone",
+      "summary": "index.html must list the shop phone number.",
+      "requiredPages": [
+        "index.html",
+        "contact.html"
+      ],
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Our seasonal collections are made to order.</p></main></body></html>",
+        "contact.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact</h1><p>Phone: +61 3 7010 3388</p></main></body></html>",
+        "site.css": "body{font-family:serif;margin:1rem}address{font-style:normal}\n"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "index.html must list the shop phone number.",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "The explicitly named index.html is a complete plain static document without phone text. A telephone on contact.html is real source copy but cannot satisfy this named-page requirement.",
+            "relevantFiles": [
+              "index.html",
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "full-gap-cross-page-price-owner",
+      "stratum": "mismatch",
+      "language": "en",
+      "title": "Prospective synthetic cross page price owner",
+      "summary": "The index.html and menu.html source content must both list Tea at AUD 18.",
+      "requiredPages": [
+        "index.html",
+        "menu.html"
+      ],
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Menu</h1><p>Tea AUD 18</p><p>Coffee AUD 24</p></main></body></html>",
+        "menu.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Full menu</h1><p>Tea AUD 24</p><p>Coffee AUD 18</p></main></body></html>",
+        "site.css": "body{font-family:serif;margin:1rem}address{font-style:normal}\n"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The index.html and menu.html source content must both list Tea at AUD 18.",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "index.html pairs Tea with AUD18. menu.html pairs Tea with AUD24 and Coffee with AUD18. The neighboring Coffee amount and correct first page cannot substitute for the wrong Tea owner on menu.html.",
+            "relevantFiles": [
+              "index.html",
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ],
+      "businessChecks": {
+        "confirmed": true,
+        "items": [
+          {
+            "id": "business-1",
+            "criterionId": "coverage-1",
+            "file": "index.html",
+            "source": {
+              "start": 0,
+              "end": 73,
+              "excerpt": "The index.html and menu.html source content must both list Tea at AUD 18."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            }
+          },
+          {
+            "id": "business-2",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 73,
+              "excerpt": "The index.html and menu.html source content must both list Tea at AUD 18."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "full-gap-compound-and-quoted-copy",
+      "stratum": "boundary",
+      "language": "en",
+      "title": "Prospective synthetic compound and quoted copy",
+      "summary": "The page copy must include the exact wording \"Submission\".",
+      "requiredPages": [
+        "index.html",
+        "contact.html"
+      ],
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Submission</h1><form action=\"#\"><label>Name<input name=\"name\"></label><button type=\"submit\">Send enquiry</button></form><p class=\"status\">Your enquiry is saved and emailed.</p></main></body></html>",
+        "contact.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact</h1><p>This is fictional source-only test copy.</p></main></body></html>",
+        "site.css": "body{font-family:serif;margin:1rem}address{font-style:normal}\n"
+      },
+      "criteria": [
+        {
+          "id": "manual-1",
+          "title": "Manual requirement 1",
+          "source": "After enquiry submission the site must email the owner and preserve a receipt retrievable after restart.",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "Form and fixed success text cannot establish actual submission, owner email delivery, durable writes or independent restart readback. Each operation remains unverified; do not promote the quoted label into an execution claim.",
+            "relevantFiles": [
+              "index.html",
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The page copy must include the exact wording \"Submission\".",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "The h1 contains the complete requested literal Submission. The word is copy data, not a requirement to execute a submission.",
+            "relevantFiles": [
+              "index.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "full-gap-merged-row-price-meaning",
+      "stratum": "boundary",
+      "language": "en",
+      "title": "Prospective synthetic merged row price meaning",
+      "summary": "The menu.html source content must identify the price for the agreed Tea order.",
+      "requiredPages": [
+        "index.html",
+        "menu.html"
+      ],
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Welcome</h1><p>See the menu for the available Tea choices.</p></main></body></html>",
+        "menu.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Tea choices</h1><table><tr><td rowspan=\"2\">Tea</td><td>AUD 18</td></tr><tr><td>AUD 28</td></tr></table></main></body></html>",
+        "site.css": "body{font-family:serif;margin:1rem}address{font-style:normal}\n"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The menu.html source content must identify the price for the agreed Tea order.",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "The rowspan explicitly associates Tea with both AUD18 and AUD28 rows. No size, option or other meaning identifies which amount applies to the agreed order. Unknown business meaning must not be described as an unknown Tea-to-row relationship; no definite price defect or successful order execution is established.",
+            "relevantFiles": [
+              "index.html",
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ],
+      "businessChecks": {
+        "confirmed": true,
+        "items": [
+          {
+            "id": "business-1",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 78,
+              "excerpt": "The menu.html source content must identify the price for the agreed Tea order."
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Tea",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

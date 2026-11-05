@@ -1,0 +1,9 @@
+{
+  "schema": "pbp-retained-text-artifact-v1",
+  "originalFile": "outputs/full-gap-remediation-2026-11-06/final-type.log",
+  "originalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "text": "",
+  "limits": [
+    "Developer test artifact; no independent human result or whole-product correctness claim."
+  ]
+}

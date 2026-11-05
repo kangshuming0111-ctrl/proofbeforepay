@@ -1,0 +1,112 @@
+{
+  "schema": "pbp-delivery-stage-report-v1",
+  "evidenceLevel": "cooperative_adapter_observations",
+  "plan": {
+    "schema": "pbp-delivery-stage-plan-v1",
+    "runId": "stage-reference-profile-2",
+    "syntheticOnly": true,
+    "scope": {
+      "projectId": "synthetic-enquiry",
+      "deliveryId": "reference-2",
+      "criterionId": "manual-stage-1",
+      "sourceRevision": "enquiry-wrong-readback-v1",
+      "requirement": "Submit an enquiry, store its actual fields, read the same record through a fresh connection, and retain its receipt in the local test inbox."
+    },
+    "payloadDigest": "b219470c065d3f47d9f3ad6db5d70ef7aab485bad300667f6cec76758af27fa2",
+    "stages": [
+      {
+        "stage": "submit",
+        "coverage": "adapter"
+      },
+      {
+        "stage": "stored_record",
+        "coverage": "adapter"
+      },
+      {
+        "stage": "fresh_readback",
+        "coverage": "adapter"
+      },
+      {
+        "stage": "email_receipt",
+        "coverage": "adapter"
+      }
+    ]
+  },
+  "rows": [
+    {
+      "stage": "submit",
+      "observation": {
+        "outcome": "observed",
+        "stage": "submit",
+        "runId": "stage-reference-profile-2",
+        "sourceRevision": "enquiry-wrong-readback-v1",
+        "accepted": true,
+        "operationId": "native-enquiry-post",
+        "record": {
+          "recordId": "enquiry-1",
+          "payloadDigest": "b219470c065d3f47d9f3ad6db5d70ef7aab485bad300667f6cec76758af27fa2"
+        }
+      },
+      "status": "matched",
+      "reason": "cooperative_record_matches"
+    },
+    {
+      "stage": "stored_record",
+      "observation": {
+        "outcome": "observed",
+        "stage": "stored_record",
+        "runId": "stage-reference-profile-2",
+        "sourceRevision": "enquiry-wrong-readback-v1",
+        "connectionId": "writer-native-connection",
+        "reader": "native_store",
+        "record": {
+          "recordId": "enquiry-1",
+          "payloadDigest": "b219470c065d3f47d9f3ad6db5d70ef7aab485bad300667f6cec76758af27fa2"
+        }
+      },
+      "status": "matched",
+      "reason": "cooperative_record_matches"
+    },
+    {
+      "stage": "fresh_readback",
+      "observation": {
+        "outcome": "observed",
+        "stage": "fresh_readback",
+        "runId": "stage-reference-profile-2",
+        "sourceRevision": "enquiry-wrong-readback-v1",
+        "connectionId": "fresh-7f7979c6-7e2b-475a-b61c-8795f87951a4",
+        "reader": "fresh_connection",
+        "record": {
+          "recordId": "different-enquiry",
+          "payloadDigest": "b219470c065d3f47d9f3ad6db5d70ef7aab485bad300667f6cec76758af27fa2"
+        }
+      },
+      "status": "mismatch",
+      "reason": "record_identity_differs"
+    },
+    {
+      "stage": "email_receipt",
+      "observation": {
+        "outcome": "observed",
+        "stage": "email_receipt",
+        "runId": "stage-reference-profile-2",
+        "sourceRevision": "enquiry-wrong-readback-v1",
+        "transport": "test_sink",
+        "receipt": {
+          "receiptId": "mail-1",
+          "recordId": "enquiry-1",
+          "payloadDigest": "b219470c065d3f47d9f3ad6db5d70ef7aab485bad300667f6cec76758af27fa2"
+        }
+      },
+      "status": "matched",
+      "reason": "cooperative_test_receipt_matches"
+    }
+  ],
+  "summary": {
+    "matched": 3,
+    "mismatch": 1,
+    "unknown": 0,
+    "unsupported": 0
+  },
+  "digest": "68d043a40186ab96b495aed96575faeb2ebf31f49e8ae22b8b672400f61b8d29"
+}

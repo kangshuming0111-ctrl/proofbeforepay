@@ -1,0 +1,15 @@
+{
+  "schema": "pbp-derived-test-log-summary-v1",
+  "originalFile": "outputs/full-gap-remediation-2026-11-06/earlier-suite-before-additive-comparator-fix.log",
+  "originalSha256": "2a91e3b6cb2f01db256373aec40f552cc05a6eaef5e0fd0226b96f9d305b3c2d",
+  "counts": {
+    "tests": 1583,
+    "pass": 1582,
+    "fail": 1
+  },
+  "failedTest": "retained replay remains runnable in an exported tree with public fixtures and no ignored outputs",
+  "failureMessage": "Evidence-actions replay stopped: A field other than evidenceNeed/withheldRisks changed from the published baseline.. No provider request or overwrite was allowed.",
+  "rawTextIncluded": false,
+  "rawTextOmissionReason": "Original stack contains a local user path. Full raw bytes remain in the ignored original file; this JSON contains exact extracted test counts, test name and assertion message, not a rewritten raw log.",
+  "status": "earlier_failure_preserved_not_final_pass"
+}

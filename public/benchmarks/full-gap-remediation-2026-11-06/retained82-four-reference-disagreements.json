@@ -1,0 +1,589 @@
+{
+  "schema": "pbp-retained82-four-reference-disagreements-readonly-v1",
+  "apiCalls": 0,
+  "networkCalls": 0,
+  "newModelCalls": 0,
+  "referenceAgreement": 78,
+  "referenceTotal": 82,
+  "sourceReferencesBodiesAndStatusUnchanged": true,
+  "inputs": [
+    {
+      "file": "outputs/full-gap-remediation-2026-11-06/retained15-cycle24-additive-replay.json",
+      "sha256": "a2f89f5be139c281907f53f2b63bc6d6ccafc60795a92f386b43e677e56687cb"
+    },
+    {
+      "file": "outputs/evidence-actions-2026-11-06/retained-replay-inputs.json",
+      "sha256": "62243cad4cfe38beaff49a3c742bb7b5028af36bfdb7a3211d70c2596827a25c"
+    },
+    {
+      "file": "outputs/citation-relations-2026-11-05/cycle-13-known-corpus.json",
+      "sha256": "6b1890cfbe3aec6b9d099768c108d1b2ce41a06268659b99e710fa90efbb860d"
+    },
+    {
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-known-live.json",
+      "sha256": "cad9e5cb58b39cc5ae441f952cbbe46831629abba2d89e116ac5a76bc5d5f546"
+    },
+    {
+      "file": "scripts/project-assessment-corpus-citation-relations-holdout.json",
+      "sha256": "96a4f7b18a2440d9c589f2ad8d3583ea7c98aecc9eee00292db31098e036d900"
+    },
+    {
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-repair-new-live.json",
+      "sha256": "a08a51653e77fff95981126805b2bf7d84a8351e307ffa23791f9816b982fb74"
+    },
+    {
+      "file": "scripts/citation-relations-scope-corpus-2026-11-05.json",
+      "sha256": "43140fe70c5498b4bf6bb87e463cb2663d35d4d946c4293195e55d5ab54fa076"
+    },
+    {
+      "file": "outputs/citation-relations-2026-11-05/cycle-15-scope-live.json",
+      "sha256": "6212c37de5882b9395705f677a7d857ea53a6edb967ea920507bf99b0815c780"
+    }
+  ],
+  "rows": [
+    {
+      "group": "known",
+      "projectId": "real-holdout-clean-blog",
+      "criterionId": "coverage-1",
+      "requirement": "Text content in mainNav on all four pages must include Home and About and Sample Post and Contact",
+      "reference": {
+        "expectedStatus": "supported",
+        "rationale": "All four unchanged HTML pages contain these four labelled navigation anchors. This establishes markup and labels only and does not prove navigation was clicked or mobile expansion worked.",
+        "relevantFiles": [
+          "index.html",
+          "about.html",
+          "contact.html",
+          "post.html"
+        ],
+        "requiresSemanticReview": true
+      },
+      "raw": {
+        "status": "supported",
+        "explanation": "Each of the four pages has an identical mainNav list with Home, About, Sample Post and Contact links.",
+        "citationSlots": {
+          "c1": "s107",
+          "c2": "s43",
+          "c3": "s6",
+          "c4": "s159",
+          "c5": "",
+          "c6": ""
+        }
+      },
+      "application": {
+        "status": "insufficient_evidence",
+        "explanation": "The citations do not witness every required literal within the named source region on all specified pages, or the page scope is unconfirmed. Check each page; if one item exceeds its citation budget, add per-page human checks. This is incomplete evidence, not proof of missing content, working navigation, visibility or acceptance. Requirements and citations are unchanged.",
+        "evidenceNeed": {
+          "schema": "source-evidence-need-v1",
+          "reason": "page_citations",
+          "targetFiles": [
+            "about.html",
+            "contact.html",
+            "index.html",
+            "post.html"
+          ]
+        },
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 1600,
+            "end": 2000,
+            "excerpt": "collapse\" id=\"navbarResponsive\">\n                    <ul class=\"navbar-nav ms-auto py-4 py-lg-0\">\n                        <li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"index.html\">Home</a></li>\n                        <li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"about.html\">About</a></li>\n                        <li class=\"nav-item\"><a class=\"nav-link p",
+            "exact": true,
+            "sourceSha256": "20e87ae8660b3f3d298a0a71364f4f7afda6a586070a65ddf2caedcd934466d8"
+          },
+          {
+            "file": "contact.html",
+            "start": 1600,
+            "end": 2000,
+            "excerpt": "collapse\" id=\"navbarResponsive\">\n                    <ul class=\"navbar-nav ms-auto py-4 py-lg-0\">\n                        <li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"index.html\">Home</a></li>\n                        <li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"about.html\">About</a></li>\n                        <li class=\"nav-item\"><a class=\"nav-link p",
+            "exact": true,
+            "sourceSha256": "02784423b73d7d6fcf017b7fe8a043f2920ea9489b1283b71dca410be22517dc"
+          },
+          {
+            "file": "about.html",
+            "start": 1600,
+            "end": 2000,
+            "excerpt": "collapse\" id=\"navbarResponsive\">\n                    <ul class=\"navbar-nav ms-auto py-4 py-lg-0\">\n                        <li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"index.html\">Home</a></li>\n                        <li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"about.html\">About</a></li>\n                        <li class=\"nav-item\"><a class=\"nav-link p",
+            "exact": true,
+            "sourceSha256": "fd00d01f5a66f96b820b090775ebc3986f483d65be1f1eee407f767198dbcdd7"
+          },
+          {
+            "file": "post.html",
+            "start": 1600,
+            "end": 2000,
+            "excerpt": "collapse\" id=\"navbarResponsive\">\n                    <ul class=\"navbar-nav ms-auto py-4 py-lg-0\">\n                        <li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"index.html\">Home</a></li>\n                        <li class=\"nav-item\"><a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"about.html\">About</a></li>\n                        <li class=\"nav-item\"><a class=\"nav-link p",
+            "exact": true,
+            "sourceSha256": "d6885dd13e734e5315bc4cb36ba2406307812f54376dedfa776931023e0d1d56"
+          }
+        ]
+      },
+      "guard": {
+        "kind": "unknown",
+        "reason": "literal_not_witnessed"
+      },
+      "sourceFacts": [
+        {
+          "file": "index.html",
+          "sourceSha256": "20e87ae8660b3f3d298a0a71364f4f7afda6a586070a65ddf2caedcd934466d8",
+          "labels": [
+            {
+              "label": "Home",
+              "start": 1743,
+              "end": 1810,
+              "excerpt": "<a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"index.html\">Home</a>",
+              "containedInPublishedCitation": true
+            },
+            {
+              "label": "About",
+              "start": 1861,
+              "end": 1929,
+              "excerpt": "<a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"about.html\">About</a>",
+              "containedInPublishedCitation": true
+            },
+            {
+              "label": "Sample Post",
+              "start": 1980,
+              "end": 2053,
+              "excerpt": "<a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"post.html\">Sample Post</a>",
+              "containedInPublishedCitation": false
+            },
+            {
+              "label": "Contact",
+              "start": 2104,
+              "end": 2176,
+              "excerpt": "<a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"contact.html\">Contact</a>",
+              "containedInPublishedCitation": false
+            }
+          ]
+        },
+        {
+          "file": "about.html",
+          "sourceSha256": "fd00d01f5a66f96b820b090775ebc3986f483d65be1f1eee407f767198dbcdd7",
+          "labels": [
+            {
+              "label": "Home",
+              "start": 1743,
+              "end": 1810,
+              "excerpt": "<a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"index.html\">Home</a>",
+              "containedInPublishedCitation": true
+            },
+            {
+              "label": "About",
+              "start": 1861,
+              "end": 1929,
+              "excerpt": "<a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"about.html\">About</a>",
+              "containedInPublishedCitation": true
+            },
+            {
+              "label": "Sample Post",
+              "start": 1980,
+              "end": 2053,
+              "excerpt": "<a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"post.html\">Sample Post</a>",
+              "containedInPublishedCitation": false
+            },
+            {
+              "label": "Contact",
+              "start": 2104,
+              "end": 2176,
+              "excerpt": "<a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"contact.html\">Contact</a>",
+              "containedInPublishedCitation": false
+            }
+          ]
+        },
+        {
+          "file": "contact.html",
+          "sourceSha256": "02784423b73d7d6fcf017b7fe8a043f2920ea9489b1283b71dca410be22517dc",
+          "labels": [
+            {
+              "label": "Home",
+              "start": 1743,
+              "end": 1810,
+              "excerpt": "<a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"index.html\">Home</a>",
+              "containedInPublishedCitation": true
+            },
+            {
+              "label": "About",
+              "start": 1861,
+              "end": 1929,
+              "excerpt": "<a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"about.html\">About</a>",
+              "containedInPublishedCitation": true
+            },
+            {
+              "label": "Sample Post",
+              "start": 1980,
+              "end": 2053,
+              "excerpt": "<a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"post.html\">Sample Post</a>",
+              "containedInPublishedCitation": false
+            },
+            {
+              "label": "Contact",
+              "start": 2104,
+              "end": 2176,
+              "excerpt": "<a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"contact.html\">Contact</a>",
+              "containedInPublishedCitation": false
+            }
+          ]
+        },
+        {
+          "file": "post.html",
+          "sourceSha256": "d6885dd13e734e5315bc4cb36ba2406307812f54376dedfa776931023e0d1d56",
+          "labels": [
+            {
+              "label": "Home",
+              "start": 1743,
+              "end": 1810,
+              "excerpt": "<a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"index.html\">Home</a>",
+              "containedInPublishedCitation": true
+            },
+            {
+              "label": "About",
+              "start": 1861,
+              "end": 1929,
+              "excerpt": "<a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"about.html\">About</a>",
+              "containedInPublishedCitation": true
+            },
+            {
+              "label": "Sample Post",
+              "start": 1980,
+              "end": 2053,
+              "excerpt": "<a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"post.html\">Sample Post</a>",
+              "containedInPublishedCitation": false
+            },
+            {
+              "label": "Contact",
+              "start": 2104,
+              "end": 2176,
+              "excerpt": "<a class=\"nav-link px-lg-3 py-3 py-lg-4\" href=\"contact.html\">Contact</a>",
+              "containedInPublishedCitation": false
+            }
+          ]
+        }
+      ],
+      "adjudication": "Intentional negative-only citation-completeness boundary. The complete source does satisfy the authored static requirement, but each retained model quote stops before Sample Post and Contact; refusing supported is evidentially justified for this exact response.",
+      "remainingGap": "Model citation selection / complete evidence packaging still limits recall. Correctness of the static reference does not justify silently replacing old model citations or upgrading the retained answer.",
+      "unsafeDefiniteVerdict": false,
+      "originalProviderBodySha256": "152b583c3628d12b851816f7465e4dbf688fe1b19fc64b0175df5ea35d6845ca",
+      "originalRequestSha256": "34927dc418d4b6b07ddfe2c43bdd5ab9f2d480b5c2f81171cffd32552f4daead"
+    },
+    {
+      "group": "repair-new",
+      "projectId": "citation-relations-holdout-tavola",
+      "criterionId": "coverage-1",
+      "requirement": "The homepage lunch menu and full menu source content must each pair Cacio e pepe with the V tag and advertised price £14",
+      "reference": {
+        "expectedStatus": "supported",
+        "rationale": "Both original HTML files have the Cacio e pepe dish-name span with V tag and the same adjacent &pound;14 dish-price span in the same dish row. This establishes published source content and row association only, not the correctness of the food label or payment. No AUD or USD is inferred from the pound symbol.",
+        "relevantFiles": [
+          "index.html",
+          "menu.html"
+        ],
+        "requiresSemanticReview": true
+      },
+      "raw": {
+        "status": "supported",
+        "explanation": "index.html lunch pane pairs Cacio e pepe with V tag and £14; menu.html Pasta card does the same. Both required pairings are in source.",
+        "citationSlots": {
+          "c1": "s104",
+          "c2": "s400",
+          "c3": "",
+          "c4": "",
+          "c5": "",
+          "c6": ""
+        }
+      },
+      "application": {
+        "status": "insufficient_evidence",
+        "explanation": "The source and citations do not establish the required name/tag/price relationship within a complete owner on every specified page. Page-role aliases cannot substitute for a confirmed file mapping. Review the exact targets and complete blocks. This is insufficient relationship evidence, not proof of absent delivery, visibility or working behavior. Requirements and citations are unchanged.",
+        "evidenceNeed": {
+          "schema": "source-evidence-need-v1",
+          "reason": "page_scope",
+          "targetFiles": []
+        },
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 6797,
+            "end": 7000,
+            "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Cacio e pepe<span class=\"dish-tags\"><span class=\"dish-tag\">V</span></span></span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;14</span></div>",
+            "exact": true,
+            "sourceSha256": "467ca3c28a632d9791e04f95f64570a117054b37af3ffb61442731ec4a931937"
+          },
+          {
+            "file": "menu.html",
+            "start": 6318,
+            "end": 6521,
+            "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Cacio e pepe<span class=\"dish-tags\"><span class=\"dish-tag\">V</span></span></span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;14</span></div>",
+            "exact": true,
+            "sourceSha256": "eeaaadc790743dccc2cbb4f4277eb39d9e1e01ce5168b747c35ad8075e3f14f4"
+          }
+        ]
+      },
+      "guard": {
+        "kind": "unknown",
+        "reason": "unconfirmed_page_scope"
+      },
+      "sourceFacts": {
+        "requiredFileList": [
+          "index.html",
+          "menu.html"
+        ],
+        "roleToFileMappingPresent": false,
+        "quotedCompleteDishRows": [
+          {
+            "file": "index.html",
+            "start": 6797,
+            "end": 7000,
+            "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Cacio e pepe<span class=\"dish-tags\"><span class=\"dish-tag\">V</span></span></span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;14</span></div>",
+            "exact": true,
+            "sourceSha256": "467ca3c28a632d9791e04f95f64570a117054b37af3ffb61442731ec4a931937"
+          },
+          {
+            "file": "menu.html",
+            "start": 6318,
+            "end": 6521,
+            "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Cacio e pepe<span class=\"dish-tags\"><span class=\"dish-tag\">V</span></span></span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;14</span></div>",
+            "exact": true,
+            "sourceSha256": "eeaaadc790743dccc2cbb4f4277eb39d9e1e01ce5168b747c35ad8075e3f14f4"
+          }
+        ]
+      },
+      "adjudication": "Intentional role-scope boundary. The requirement names homepage/full menu, while the saved project contains required filenames but no buyer-confirmed role-to-file mapping. These exact source rows support the authored oracle only after its role interpretation; filenames alone do not confirm that interpretation in the saved agreement.",
+      "remainingGap": "Static relationship ability remains bounded by explicit scope; a required-file list cannot substitute for saved role confirmation.",
+      "unsafeDefiniteVerdict": false,
+      "originalProviderBodySha256": "dbf14aecb645a1d57b1ed97d672ea13164ed421a6840c5ff704e6d8b2e369940",
+      "originalRequestSha256": "a13b02b00c13bb25e5716b11628efc27090e32d38790c5c91f86e3c1fb8ae702"
+    },
+    {
+      "group": "repair-new",
+      "projectId": "citation-relations-holdout-tavola",
+      "criterionId": "coverage-2",
+      "requirement": "The full menu page copy must include the literal phrase Updated daily",
+      "reference": {
+        "expectedStatus": "supported",
+        "rationale": "menu.html has a simple text-only p containing Updated daily. The source phrase is present. It is an authored static-copy task; it does not establish that a daily update actually runs or that the real menu is current.",
+        "relevantFiles": [
+          "menu.html"
+        ],
+        "requiresSemanticReview": true
+      },
+      "raw": {
+        "status": "supported",
+        "explanation": "menu.html contains the literal string \"Updated daily\" in the sub-head eyebrow paragraph.",
+        "citationSlots": {
+          "c1": "s349",
+          "c2": "",
+          "c3": "",
+          "c4": "",
+          "c5": "",
+          "c6": ""
+        }
+      },
+      "application": {
+        "status": "insufficient_evidence",
+        "explanation": "Not all confirmed business checks can be reliably matched within the limited static simple-block format. Duplicate or unlocated content, complex markup or dynamic sources need other evidence. Source suggestions cannot establish compliance; the locked agreement is unchanged.",
+        "evidenceNeed": {
+          "schema": "source-evidence-need-v1",
+          "reason": "source_ambiguity",
+          "targetFiles": [
+            "menu.html"
+          ]
+        },
+        "citations": [
+          {
+            "file": "menu.html",
+            "start": 3877,
+            "end": 3923,
+            "excerpt": "<p class=\"eyebrow-rule mb-4\">Updated daily</p>",
+            "exact": true,
+            "sourceSha256": "eeaaadc790743dccc2cbb4f4277eb39d9e1e01ce5168b747c35ad8075e3f14f4"
+          }
+        ]
+      },
+      "guard": {
+        "kind": "unknown",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "menu.html",
+            "kind": "unknown",
+            "reason": "dynamic_or_unsupported_source"
+          }
+        ],
+        "citations": []
+      },
+      "sourceFacts": {
+        "file": "menu.html",
+        "sourceSha256": "eeaaadc790743dccc2cbb4f4277eb39d9e1e01ce5168b747c35ad8075e3f14f4",
+        "literal": {
+          "start": 3877,
+          "end": 3923,
+          "excerpt": "<p class=\"eyebrow-rule mb-4\">Updated daily</p>"
+        },
+        "lockedPlan": [
+          {
+            "criterionId": "coverage-2",
+            "file": "menu.html",
+            "source": {
+              "start": 121,
+              "end": 190,
+              "excerpt": "The full menu page copy must include the literal phrase Updated daily"
+            },
+            "expected": {
+              "kind": "visible_copy",
+              "text": "Updated daily"
+            },
+            "checkId": "business-1",
+            "stepId": "business:375:business-1",
+            "viewportWidth": 375
+          },
+          {
+            "criterionId": "coverage-2",
+            "file": "menu.html",
+            "source": {
+              "start": 121,
+              "end": 190,
+              "excerpt": "The full menu page copy must include the literal phrase Updated daily"
+            },
+            "expected": {
+              "kind": "visible_copy",
+              "text": "Updated daily"
+            },
+            "checkId": "business-1",
+            "stepId": "business:900:business-1",
+            "viewportWidth": 900
+          }
+        ],
+        "scriptTags": [
+          {
+            "start": 714,
+            "excerpt": "<script type=\"importmap\">"
+          },
+          {
+            "start": 14780,
+            "excerpt": "<script type=\"module\" src=\"assets/js/main.js\">"
+          }
+        ],
+        "stylesheetLinks": [
+          {
+            "start": 636,
+            "excerpt": "<link rel=\"stylesheet\" href=\"assets/vendor/bootstrap6/css/bootstrap.min.css\">"
+          },
+          {
+            "start": 832,
+            "excerpt": "<link rel=\"stylesheet\" href=\"assets/css/base.css\">"
+          },
+          {
+            "start": 883,
+            "excerpt": "<link rel=\"stylesheet\" href=\"assets/css/style.css\">"
+          }
+        ]
+      },
+      "adjudication": "Documented conservative implementation limit, not a demonstrated absence of the requested phrase. Both locked menu.html source and retained exact model quote contain the phrase. The source-business gate rejects the entire page before matching the simple block because the page has dynamic/unsupported source or resources.",
+      "remainingGap": "This is a real static-source recall/completion limitation: a present simple literal is not admitted. It is not an unsafe false positive or a proven incorrect definite changes verdict. Do not present all four disagreements as zero product gap; a future separately frozen cycle could distinguish affirmative source fact from runtime visibility without editing these references.",
+      "unsafeDefiniteVerdict": false,
+      "originalProviderBodySha256": "dbf14aecb645a1d57b1ed97d672ea13164ed421a6840c5ff704e6d8b2e369940",
+      "originalRequestSha256": "a13b02b00c13bb25e5716b11628efc27090e32d38790c5c91f86e3c1fb8ae702"
+    },
+    {
+      "group": "repair-new",
+      "projectId": "citation-relations-holdout-tavola",
+      "criterionId": "coverage-3",
+      "requirement": "The homepage and full menu source content must both attach the GF tag to Whipped cod roe",
+      "reference": {
+        "expectedStatus": "changes_suggested",
+        "rationale": "The homepage Whipped cod roe dish row contains a GF tag, whereas the full-menu Whipped cod roe row has no dietary tag. Other full-menu GF tags belong to other dish rows and cannot establish this item. The requirement checks source consistency, not actual allergen safety or rendered visibility.",
+        "relevantFiles": [
+          "index.html",
+          "menu.html"
+        ],
+        "requiresSemanticReview": true
+      },
+      "raw": {
+        "status": "changes_suggested",
+        "explanation": "index.html attaches GF to Whipped cod roe, but menu.html lists Whipped cod roe with no tags at all — the required GF tag is missing there.",
+        "citationSlots": {
+          "c1": "s88",
+          "c2": "s371",
+          "c3": "",
+          "c4": "",
+          "c5": "",
+          "c6": ""
+        }
+      },
+      "application": {
+        "status": "insufficient_evidence",
+        "explanation": "The agreed page roles have no confirmed mapping to delivered files. A filename guess does not establish a defect in the intended page. Ask the buyer to confirm the exact role-to-file mapping, then recheck the source. Original wording and citations are unchanged; this is insufficient scope evidence, not a proven missing or incorrect tag.",
+        "evidenceNeed": {
+          "schema": "source-evidence-need-v1",
+          "reason": "page_scope",
+          "targetFiles": []
+        },
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 6055,
+            "end": 6261,
+            "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Whipped cod roe<span class=\"dish-tags\"><span class=\"dish-tag\">GF</span></span></span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;9</span></div>",
+            "exact": true,
+            "sourceSha256": "467ca3c28a632d9791e04f95f64570a117054b37af3ffb61442731ec4a931937"
+          },
+          {
+            "file": "menu.html",
+            "start": 5105,
+            "end": 5248,
+            "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Whipped cod roe</span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;9</span></div>",
+            "exact": true,
+            "sourceSha256": "eeaaadc790743dccc2cbb4f4277eb39d9e1e01ce5168b747c35ad8075e3f14f4"
+          }
+        ]
+      },
+      "guard": {
+        "kind": "unknown",
+        "reason": "unconfirmed_page_scope"
+      },
+      "sourceFacts": {
+        "requiredFileList": [
+          "index.html",
+          "menu.html"
+        ],
+        "roleToFileMappingPresent": false,
+        "quotedCompleteDishRows": [
+          {
+            "file": "index.html",
+            "start": 6055,
+            "end": 6261,
+            "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Whipped cod roe<span class=\"dish-tags\"><span class=\"dish-tag\">GF</span></span></span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;9</span></div>",
+            "exact": true,
+            "sourceSha256": "467ca3c28a632d9791e04f95f64570a117054b37af3ffb61442731ec4a931937"
+          },
+          {
+            "file": "menu.html",
+            "start": 5105,
+            "end": 5248,
+            "excerpt": "<div class=\"dish\"><span class=\"dish-name\">Whipped cod roe</span><span class=\"dish-leader\"></span><span class=\"dish-price\">&pound;9</span></div>",
+            "exact": true,
+            "sourceSha256": "eeaaadc790743dccc2cbb4f4277eb39d9e1e01ce5168b747c35ad8075e3f14f4"
+          }
+        ]
+      },
+      "adjudication": "Intentional role-scope boundary. The requirement names homepage/full menu, while the saved project contains required filenames but no buyer-confirmed role-to-file mapping. These exact source rows support the authored oracle only after its role interpretation; filenames alone do not confirm that interpretation in the saved agreement.",
+      "remainingGap": "A correct missing-GF counterexample for menu.html cannot become an agreed full-menu defect from guessed role mapping; keep insufficient evidence until scope is confirmed.",
+      "unsafeDefiniteVerdict": false,
+      "originalProviderBodySha256": "dbf14aecb645a1d57b1ed97d672ea13164ed421a6840c5ff704e6d8b2e369940",
+      "originalRequestSha256": "a13b02b00c13bb25e5716b11628efc27090e32d38790c5c91f86e3c1fb8ae702"
+    }
+  ],
+  "summary": {
+    "allFourCurrentStatuses": "insufficient_evidence",
+    "wrongDefinitePasses": 0,
+    "wrongDefiniteChanges": 0,
+    "completeCitationGap": 1,
+    "unconfirmedRoleMapping": 2,
+    "overconservativeAffirmativeStaticLiteralGate": 1
+  },
+  "limits": [
+    "Read-only adjudication of already retained source and model response. No runtime, reference or corpus changes.",
+    "Unknown is deliberately not scored as reference agreement. Historical 79→78 strict regression remains a failure.",
+    "An intentional safety boundary can still represent a recall/completion/product gap. These observations do not establish no remaining bug or overall award superiority."
+  ]
+}

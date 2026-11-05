@@ -1,7 +1,7 @@
 import "./evidence-viewer.css";
 import recordedV1 from "../../tests/fixtures/recorded-seller-staging/v1-evidence.json";
 import recordedV2 from "../../tests/fixtures/recorded-seller-staging/v2-evidence.json";
-import {createEvidenceViewerController,runtimeEvidenceForViewer,type EvidenceViewerState,type EvidenceViewerError} from "./evidence-controller.ts";
+import {createEvidenceViewerController,runtimeEvidenceForViewer,currentEvidenceChecks,type EvidenceViewerState,type EvidenceViewerError} from "./evidence-controller.ts";
 import type {EvidenceExport} from "../../lib/evidence-export.ts";
 import {getModuleDependencyFindings} from "../../lib/module-dependencies.ts";
 import type {DeploymentSourceSession} from "../../lib/deployment-source.ts";
@@ -9,13 +9,19 @@ import type {RuntimeCheckReport} from "../../lib/runtime-checks.ts";
 import {runtimeStepName,runtimeReasonLabel} from "../../lib/runtime-feedback.ts";
 
 type Language="zh"|"en";
-let language:Language="zh",state:EvidenceViewerState={phase:"empty"},selectedFile="",detailTab:"gates"|"runtime"|"source"|"supplemental"="gates";
+let language:Language="zh",state:EvidenceViewerState={phase:"empty"},selectedFile="",selectedRevisionId="",detailTab:"gates"|"runtime"|"source"|"supplemental"|"revisions"="gates";
 const root=document.querySelector<HTMLDivElement>("#evidence-app")!;
 const tr=(zh:string,en:string)=>language==="zh"?zh:en;
 const node=<T extends keyof HTMLElementTagNameMap>(tag:T,className="",text?:string)=>{const item=document.createElement(tag);item.className=className;if(text!==undefined)item.textContent=text;return item;};
 const append=(parent:Node,...children:Node[])=>children.forEach(child=>parent.appendChild(child));
-const controller=createEvidenceViewerController(next=>{state=next;selectedFile="";render();});
+const controller=createEvidenceViewerController(next=>{state=next;selectedFile="";selectedRevisionId="";render();});
 const gates:Record<string,[string,string,string,string]>={
+  "bounded-json":["完整文件范围","Complete file budget","整份记录保持有界普通 JSON；没有略过超限版本。","The entire record remains bounded plain JSON; oversized revisions are not omitted."],
+  "revision-inventory":["所选修订与原始约定","Selected revisions and original agreement","按保存序号核对所选版本、唯一身份与同一锁定原文；当前版在最后。","Check saved sequences, unique identities and the same locked original scope; the current delivery is last."],
+  "revision-source-and-record-digests":["各版完整源码与记录摘要","Complete revision source and record digests","逐版重新计算完整文件和证据对象摘要。","Recompute complete file and evidence-record digests for each selected revision."],
+  "revision-file-differences":["所选版本的文件变化","Selected revision file changes","从完整文件重算新增、删除、变化和未变化路径，不据此自动认定返工成功。","Recompute added, removed, changed and unchanged paths; a change does not establish a successful repair."],
+  "issuer-envelope":["应用签发包格式","Application-issued envelope","签发包格式与完整预算必须有效，失败时不会退回未签名核对。","The complete issued envelope must be valid; failure does not fall back to unsigned verification."],
+  "issuer-receipt":["应用签发记录","Application issuance receipt","使用本核验器固定的公钥核对这份包的签发与精确内容，不证明网站、后台或付款。","Use the verifier's pinned public key to check application issuance of these exact records, not website behavior, backend truth or payment."],
   "bundle-structure":["统一证据包范围","Unified bundle scope","原 v1 核心与新增报告均有明确上限；没有省略超限记录。","The unchanged v1 core and supplemental reports have explicit bounds; oversized records are not silently omitted."],
   "module-observation-rules":["补充证据规则版本","Supplemental rule revision","明确区分旧记录与新版模块观察／返工上下文；不按新规则改写旧报告。","Distinguish legacy records from bounded module observations and contextual repair bindings without reinterpreting historical records."],
   "module-observations":["已保存的有限模块关系","Retained bounded module relationships","重算保存的导入观察、清单及读取结果之间的关系；没有原始 JS，不重新解析或执行代码。","Recalculate relationships among retained import observations, manifests and readings. Original JS is absent; it is neither parsed again nor executed."],
@@ -51,6 +57,29 @@ function labelledValue(label:string,value:string){const row=node("div");append(r
 function statusLabel(value:"consistent"|"inconsistent"|"unsupported"){
   return value==="consistent"?tr("记录内部一致","Internally consistent"):value==="inconsistent"?tr("记录存在不一致","Inconsistency found"):tr("不支持此格式","Unsupported format");
 }
+function issuancePanel(){
+  const issuance=state.phase==="ready"?state.issuance:undefined;
+  if(issuance?.status==="verified")return node("p","ev-callout",tr("应用签发已验证 · 只证明本应用签发了这份精确记录，不证明网站合格、后台真实或付款。","Application issuance verified · This establishes application issuance of these exact records, not website correctness, backend truth or payment."));
+  if(issuance?.status==="invalid")return node("p","ev-callout issue",tr("应用签发未通过验证 · 没有退回未签名核对，也没有展示未验证的修订源码。","Application issuance could not be verified · No unsigned fallback or unverified revision source is shown."));
+  return node("p","ev-note",tr("未签名历史格式 · 可核对内部一致性，签发者尚未证明。","Unsigned historical format · Internal consistency can be checked; issuance is unproven."));
+}
+
+function revisionPanel(){
+ const section=node("section","ev-runtime");section.setAttribute("aria-label",tr("所选修订对照","Selected revision comparison"));
+ const audit=state.phase==="ready"&&state.issuance?.status==="verified"?state.revisionAudit:undefined;
+ if(!audit){append(section,node("p","ev-empty-note",tr("没有通过签发验证的修订包可展示。旧格式的核对范围保持原样。","No verified issued revision audit is available. Older formats retain their existing scope.")));return section;}
+ append(section,node("p","ev-callout",tr(`已核对所选 ${audit.versions.length} 版完整源码；不代表所有历史。文件变化不自动等于问题已修复。`,`Complete source for ${audit.versions.length} selected revisions was checked; this is not all history. File changes do not automatically establish successful repair.`)));
+ for(const v of audit.versions){
+  const row=node("article","ev-runtime-step"),head=node("div","ev-gate-heading");append(head,node("h3","",`v${v.sequence} · ${v.isCurrent?tr("当前版","Current"):tr("历史版","Archived")}`),node("span","ev-step-state",`${v.files.length} ${tr("份文件","files")}`));append(row,head,node("p","ev-note",v.scope==="archived-core"?tr("历史范围：完整保存源码与核心报告；旧版补充报告及项目级资金同意／返工事件不包含。","Archived scope: complete retained source and core reports; historical supplemental reports and quote-level financial consent/repair events are excluded."):tr("当前范围：完整统一证据包；没有重新执行网站、模型或接口。","Current scope: full unified evidence bundle; the website, model and endpoints were not rerun.")));
+  const verification=state.phase==="ready"&&state.verification.schema==="proofbeforepay-issued-revision-audit-verification-v1"?state.verification.versions.find(item=>item.deliveryId===v.deliveryId)?.verification:undefined;
+  const checks=node("details");append(checks,node("summary","",tr(`查看这版的 ${verification?.checks.length??0} 项核对`,`Inspect ${verification?.checks.length??0} checks for this revision`)));const list=node("ul");for(const check of verification?.checks??[]){const copy=gates[check.id];append(list,node("li","",`${copy?tr(copy[0],copy[1]):check.id} · ${check.status==="consistent"?tr("一致","Consistent"):tr("不一致","Inconsistent")}`));}append(checks,list);append(row,checks);append(section,row);
+ }
+ for(const diff of audit.differences){
+  const detail=node("details","ev-inventory");append(detail,node("summary","",tr(`v${diff.fromSequence} → v${diff.toSequence}：新增 ${diff.added.length}，删除 ${diff.removed.length}，变化 ${diff.changed.length}，未变 ${diff.unchanged.length}`,`v${diff.fromSequence} → v${diff.toSequence}: ${diff.added.length} added, ${diff.removed.length} removed, ${diff.changed.length} changed, ${diff.unchanged.length} unchanged`)));
+  for(const [label,names]of [[tr("新增","Added"),diff.added],[tr("删除","Removed"),diff.removed],[tr("变化","Changed"),diff.changed],[tr("未变化","Unchanged"),diff.unchanged]]as const){if(!names.length)continue;append(detail,node("h4","",label));const list=node("ul");for(const path of names)append(list,node("li","",path));append(detail,list);}append(section,detail);
+ }
+ append(section,node("p","ev-note",tr("在“查看原文”中选择具体修订，可查看那一版保存的源码；不会借用当前版替代旧版。","Select a revision in Retained source to inspect that exact saved source; current files are never substituted for older files.")));return section;
+}
 function displayTime(value:string){return value.replace("T"," ").replace(".000Z"," UTC");}
 
 function inputPanel(){
@@ -58,7 +87,7 @@ function inputPanel(){
   label.htmlFor="evidence-file";
   const input=node("input","ev-file-input");input.id="evidence-file";input.type="file";input.accept=".json,application/json";input.dataset.evFocus="local-file";
   input.addEventListener("change",()=>{const file=input.files?.[0];if(file){detailTab="gates";void controller.openFile(file);}});
-  append(side,label,input,node("p","ev-note",tr("单个 UTF-8 JSON，最多 8 MiB。兼容原 v1 和统一 v2 证据包。只在本页内存读取；刷新或清除后不保留。","One UTF-8 JSON, up to 8 MiB. Supports legacy v1 and unified v2 evidence. Read in this page’s memory; cleared on reset or refresh.")));
+  append(side,label,input,node("p","ev-note",tr("单个 UTF-8 JSON，最多 8 MiB。支持原 v1、统一 v2 和应用签发的修订审计包。只在本页内存读取；刷新或清除后不保留。","One UTF-8 JSON, up to 8 MiB. Supports legacy v1, unified v2 and application-issued revision audits. Read in this page’s memory; cleared on reset or refresh.")));
   const sampleGroup=node("div","ev-samples");append(sampleGroup,node("h2","",tr("先核对一份已记录的样例","Try a recorded example")));
   const sample=(version:1|2)=>{
     const b=button(tr(`记录的 v${version}`,`Recorded v${version}`),()=>{detailTab="gates";return controller.openRecorded(version===1?recordedV1:recordedV2,`ProofBeforePay-recorded-v${version}.json`);},"ev-sample");
@@ -75,7 +104,7 @@ function gatePanel(){
   const list=node("ol");
   for(const [id,copy] of Object.entries(gates)){
     const check=checks.find(row=>row.id===id);
-    if(!check&&["journey-plan-source-mapping","model-evidence-explanation","model-archive-integrity","bundle-structure","module-observation-rules","module-observations","supplemental-objects","supplemental-bindings","supplemental-catalog","supplemental-acceptance","followup-records","followup-bindings"].includes(id))continue;
+    if(!check&&(state.phase==="ready"&&state.issuance?.status!==undefined&&state.issuance.status!=="unproven"||["bounded-json","revision-inventory","revision-source-and-record-digests","revision-file-differences","issuer-envelope","issuer-receipt","journey-plan-source-mapping","model-evidence-explanation","model-archive-integrity","bundle-structure","module-observation-rules","module-observations","supplemental-objects","supplemental-bindings","supplemental-catalog","supplemental-acceptance","followup-records","followup-bindings"].includes(id)))continue;
     const outcome=check?.status??"not_checked",row=node("li",`ev-gate ${outcome}`),heading=node("div","ev-gate-heading");
     append(heading,node("h3","",tr(copy[0],copy[1])),node("span","ev-gate-status",outcome==="consistent"?tr("一致","Consistent"):outcome==="inconsistent"?tr("不一致","Inconsistent"):tr("未核对","Not checked")));
     append(row,heading,node("p","",tr(copy[2],copy[3])));
@@ -112,6 +141,14 @@ function runtimePanel(packet:EvidenceExport|undefined){
 function sourcePanel(packet:EvidenceExport|undefined){
   const section=node("section","ev-source");
   if(!packet){append(section,node("p","ev-empty-note",tr("文件结构尚未核对，暂不显示来源。","Sources are hidden until the file structure has been checked.")));return section;}
+  const audit=state.phase==="ready"?state.revisionAudit:undefined;
+  if(audit){
+    const selected=audit.versions.find(v=>v.deliveryId===selectedRevisionId)??audit.versions.at(-1)!;selectedRevisionId=selected.deliveryId;
+    const label=node("label","ev-source-label",tr("源码所属修订","Source revision")),select=node("select");select.id="retained-revision";select.dataset.evFocus="revision-choice";label.htmlFor=select.id;
+    for(const v of audit.versions){const option=node("option","",`v${v.sequence} · ${v.isCurrent?tr("当前完整证据","Current full evidence"):tr("历史核心报告","Archived core reports")}`);option.value=v.deliveryId;option.selected=v.deliveryId===selectedRevisionId;append(select,option);}
+    select.addEventListener("change",()=>{selectedRevisionId=select.value;selectedFile="";render();});append(section,label,select);
+    packet=selected.evidence.schema==="proofbeforepay-evidence-export-v1"?selected.evidence:selected.evidence.core;
+  }
   const files=Object.keys(packet.delivery.files??{}).sort((a,b)=>a.localeCompare(b,"en"));
   const textFiles=files.filter(file=>/\.(?:html|css)$/iu.test(file)||file==="delivery-manifest.json");
   const choices=["@requirements",...textFiles];if(!choices.includes(selectedFile))selectedFile=choices[0];
@@ -126,11 +163,12 @@ function sourcePanel(packet:EvidenceExport|undefined){
 
 function limitsPanel(){
   const section=node("details","ev-limits");append(section,node("summary","",tr("一致究竟证明了什么？","What does consistency establish?")));
+  const audit=state.phase==="ready"?state.revisionAudit:undefined,issued=state.phase==="ready"&&state.issuance?.status==="verified";
   const list=node("ul");for(const line of [
-    tr("仅核对当前交付文件及其保留的报告、验收关联；更早交付版本不在同一个包内。","Only this delivery’s files, retained reports and acceptance references are checked; earlier deliveries are outside this package."),
+    audit?tr("只核对包内所选修订，不代表全部历史。历史版仅含留存源码与核心报告；历史补充报告、项目级资金同意和返工事件不包含。","Only the selected revisions are checked, not all history. Archived revisions retain source and core reports, excluding historical supplemental reports, quote-level financial consent and repair events."):tr("仅核对当前交付文件及其保留的报告、验收关联；更早交付版本不在同一个包内。","Only this delivery’s files, retained reports and acceptance references are checked; earlier deliveries are outside this package."),
     tr("模块依赖只重算包内保存的有限观察关系；没有原始 JS 供重新解析，不验证运行时加载或执行。","Module diagnostics recalculate only the packaged bounded observations. Original JS is absent; parsing, runtime loading and execution are not repeated."),
-    tr("没有可信签名或外部锚点。完全伪造但内部自洽的文件也可能通过。","There is no trusted signature or external anchor. A fully fabricated but internally coherent file can pass."),
-    tr("不证明签发者、真实身份、实际 HTTP 或模型调用、网站全部合格、法律结论或付款。","This does not prove issuance, identity, actual HTTP or model execution, complete website correctness, a legal conclusion or payment."),
+    issued?tr("固定公钥验证了本应用对这份精确记录的签发；这不是独立后台观测或来源构建证明。","The pinned key verifies this application's issuance of these exact records, not independent backend observations or build provenance."):tr("没有通过可信签发验证。完全伪造但内部自洽的未签名文件也可能通过一致性检查。","Trusted issuance has not been established. A fully fabricated but internally coherent unsigned file can pass consistency checks."),
+    tr("不证明真实身份、实际 HTTP 或模型调用、网站全部合格、法律结论或付款。","This does not prove identity, actual HTTP or model execution, complete website correctness, a legal conclusion or payment."),
     tr("原始要求和源文件可能包含个人文字。本页不上传、不存储到浏览器持久空间，也不是自动匿名化工具。","Requirements and source files may contain personal text. This page does not upload them or persist them in browser storage, and is not an automatic anonymiser."),
   ])append(list,node("li","",line));append(section,list);return section;
 }
@@ -148,7 +186,7 @@ function supplementalPanel(){
   const object=evidence.objects.find(o=>o.ref.payloadSha256===row.ref.payloadSha256&&o.ref.id===row.ref.id&&o.ref.family===row.ref.family&&o.ref.version===row.ref.version);
   if(object?.ref.family==="deployment-source"&&(object.record as DeploymentSourceSession).plan.version===3){
    const moduleDetails=node("details","ev-inventory");append(moduleDetails,node("summary","",tr("有限模块依赖观察","Bounded module observations")),node("p","ev-note",tr("这里只重算已保存的导入观察与声明清单的关系，没有原始 JS 可供重新解析，没有执行代码或跟随依赖发出请求。完整运行时加载仍未验证。","Only retained import observations and declared-file relationships are recalculated. Original JS is absent, no code is executed, and no dependency is fetched. Arbitrary runtime loading remains unverified.")));
-   if(state.phase==="ready"&&state.verification.checks.some(c=>c.id==="module-observations"&&c.status==="consistent")){
+   if(currentEvidenceChecks(state).some(c=>c.id==="module-observations"&&c.status==="consistent")){
     const modules=node("ul");for(const finding of getModuleDependencyFindings(object.record as DeploymentSourceSession)){
      const module=node("li");append(module,node("strong","",finding.file),node("p","",tr(`声明范围关系：${finding.outcome}；直接引用 ${finding.references}，可达模块 ${finding.reachableModules}，漏声明 ${finding.missing}，未知 ${finding.unknown}。`,`Declared-scope relationships: ${finding.outcome}; ${finding.references} direct references, ${finding.reachableModules} reachable modules, ${finding.missing} missing declarations, ${finding.unknown} unknowns.`)));
      const details=node("ul");for(const d of finding.details.slice(0,20))append(details,node("li","",`${d.outcome} · ${d.from}${d.target?` → ${d.target}`:""} · ${d.reason}${d.offset===undefined?"":` · offset ${d.offset}`}`));if(finding.details.length>20)append(module,node("p","ev-note",tr("这里只展示前20个诊断；核对使用完整有界记录。","Only the first 20 diagnostics are displayed; verification used the full bounded record.")));append(module,details);append(modules,module);
@@ -190,6 +228,7 @@ function render(){
   else if(state.phase==="error")append(summary,node("h2","ev-error",tr("这份文件尚未完成核对","This file has not been checked")),node("p","",tr(...errors[state.error])),node("p","ev-filename",state.label));
   else{
     append(summary,node("h2",`ev-verdict ${state.verification.consistency}`,statusLabel(state.verification.consistency)),node("p","ev-filename",state.label));
+    append(summary,issuancePanel());
     append(summary,node("p","ev-summary-limit",tr("一致性不等于网站已全部合格，也不等于已验收或已付款。","Consistency is not a fully correct website, acceptance or payment.")));
     if(state.recorded)append(summary,node("p","ev-recorded-label",tr("已记录的虚构样例 · 没有发起新的 HTTP 请求","Recorded fictional example · no new HTTP requests")));
     const runtime=runtimeEvidenceForViewer(state);
@@ -197,8 +236,8 @@ function render(){
     if(runtime.state==="recorded")append(summary,recordedOutcome(runtime.report));
   }
   append(results,summary);
-  const tabs=node("nav","ev-tabs");tabs.setAttribute("aria-label",tr("核对视图","Check views"));for(const [key,zh,en] of [["gates","核对项目","Evidence checks"],["runtime","接口记录","HTTP evidence"],["supplemental","补充证据","Supplemental"],["source","查看原文","Retained source"]] as const){const b=button(tr(zh,en),()=>{detailTab=key;render();},detailTab===key?"active":"");b.setAttribute("aria-pressed",String(detailTab===key));append(tabs,b);}append(results,tabs);
-  const pane=node("div","ev-detail-pane"),packet=state.phase==="ready"?state.packet:undefined;append(pane,detailTab==="gates"?gatePanel():detailTab==="runtime"?runtimePanel(packet):detailTab==="supplemental"?supplementalPanel():sourcePanel(packet));append(results,pane,limitsPanel());
+  const tabs=node("nav","ev-tabs");tabs.style.flexWrap="wrap";tabs.setAttribute("aria-label",tr("核对视图","Check views"));for(const [key,zh,en] of [["gates","核对项目","Evidence checks"],["runtime","接口记录","HTTP evidence"],["supplemental","补充证据","Supplemental"],["source","查看原文","Retained source"],["revisions","修订对照","Revisions"]] as const){if(key==="revisions"&&!(state.phase==="ready"&&state.revisionAudit))continue;const b=button(tr(zh,en),()=>{detailTab=key;render();},detailTab===key?"active":"");b.setAttribute("aria-pressed",String(detailTab===key));append(tabs,b);}append(results,tabs);
+  const pane=node("div","ev-detail-pane"),packet=state.phase==="ready"?state.packet:undefined;append(pane,detailTab==="gates"?gatePanel():detailTab==="runtime"?runtimePanel(packet):detailTab==="supplemental"?supplementalPanel():detailTab==="revisions"?revisionPanel():sourcePanel(packet));append(results,pane,limitsPanel());
   append(workbench,inputPanel(),results);append(main,intro,privacy,workbench);append(root,header,main);
   if(focused)[...root.querySelectorAll<HTMLElement>("[data-ev-focus]")].find(item=>item.dataset.evFocus===focused)?.focus({preventScroll:true});
 }

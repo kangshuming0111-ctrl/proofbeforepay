@@ -1,0 +1,107 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/assessment-publication-policy.ts",
+      "bytes": 8840,
+      "lines": 105,
+      "sha256": "283bdb65f24c262916132d4fb04ec4bb051f27a2e58827fbdcbdd91ef7984e40"
+    },
+    {
+      "file": "lib/risk-reviews.ts",
+      "bytes": 4280,
+      "lines": 35,
+      "sha256": "c00d4d874ccf4842ceef0bb2f78b4fd06098a6523857eceb3ad1f0108743970d"
+    },
+    {
+      "file": "lib/evidence-export.ts",
+      "bytes": 52538,
+      "lines": 429,
+      "sha256": "ef9439b47add7a1a0873dcc219f9cc0c845a636f7d25cb96517a16ba5a287c4b"
+    },
+    {
+      "file": "lib/contracts.ts",
+      "bytes": 16393,
+      "lines": 243,
+      "sha256": "fd4633e593e1ffacca0fb77991463f71b36ba353849cf5efaff776cd55ba1a67"
+    },
+    {
+      "file": "app/components/DeliveryAssessment.tsx",
+      "bytes": 26328,
+      "lines": 207,
+      "sha256": "b02a9980aeab745fc590750e126bfc2c1be58127e9f18dddda4668539fb8c321"
+    },
+    {
+      "file": "lib/source-presence-evidence.ts",
+      "bytes": 10946,
+      "lines": 107,
+      "sha256": "0d1edb0fca4923fe7f578c4ace2b63f4981c51dce69d9c5acd492d0403310e67"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 58385,
+      "lines": 473,
+      "sha256": "f31b3d9801a35409556a2a2642a678a5a468e150b126efbd3572cd07a962811f"
+    },
+    {
+      "file": "tests/assessment-scope-withholding.test.ts",
+      "bytes": 15355,
+      "lines": 140,
+      "sha256": "61d008fae16ceff5aa1f956804214b16adc09f26a6981f59b327ccf9161014d1"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Reviewed the implemented source for the Cycle24 contact-presence scope gate: how the finite custom phone/email scope is derived, v1/v2 withholding priority, import/replay of current and historical assessments, risk-review namespacing, and the withheld-risk UI. The core invariants appear sound in these files: the V2 gate derives scope solely from code (lines 27-39 of assessment-publication-policy.ts) and is taken only when statusAdjustedCount is 0 (line 91); the V1 status-adjustment path retains priority (lines 83-90); mixed price/runtime or unknown custom criteria make the derivation return undefined (line 37), so no scope is borrowed. Import re-derives the exact scope and checks its shape (evidence-export.ts:214-226), and historical snapshots are validated with their own assessment (evidence-export.ts:398-399). Risk reviews keep the withheld and published indices in separate namespaces (risk-reviews.ts:19-25). The UI requires a valid V2 shape before it renders withheld items (DeliveryAssessment.tsx:60-65). One concrete P3 defect was found in the canonical evidence wording below. No runtime, browser, provider or award checks were performed.\",\"findings\":[{\"severity\":\"P3\",\"file\":\"lib/delivery-assessment.ts\",\"line\":373,\"title\":\"Missing-evidence prose tells users to look for phone/email text only in the wrong file shape, and contradicts the fact that no witness was found\",\"evidence\":\"When a catalog_slots item is supported, the server resolves the criterion with presenceCheck(criterion) at lines 364-368. For a custom phone/email directive, the finite scope covers every supplied *.html file, sorted (source-presence-evidence.ts:65). The support test passes only when the model's citations fully cover a complete owner citation (c.end >= witness.end). If they do not, the code goes to line 369, sets status to insufficient_evidence, and builds the explanation from the fixed string at line 373: '请核对对应原文与完整内容块；注释、脚本、属性或其他页面的文字不能替代本项依据' / 'Check the exact source and complete owner; comments, scripts, attributes or another scoped page cannot substitute for that evidence.' The derivation treats every HTML page as being in scope. So 'another scoped page' is a valid place for the witness, yet the text says text in another page cannot substitute. The same branch also runs when no witness exists at all (presence.kind === 'absent' or 'unknown'). For a simple requirement like 'The page content must list the shop phone number.', the server sets insufficient_evidence even though the deterministic missing-evidence explanation (sourcePresenceMissingAdvice, source-presence-evidence.ts:91-95) says the requirement is a change suggestion for human review. The visible prose also comes close to stating that the requirement was missed without either witness evidence or human review.\",\"reproduction\":\"Unexecuted, from the code. Files: index.html with '<p>Phone: +61 3 7010 2244</p>' and contact.html with only a description. Criterion manual-1: 'The page content must list the shop phone number.' Model returns status 'supported' for manual-1 with citations to <title> only. presenceCheck finds a witness in index.html (candidates.length > 0, kind 'present'). The covered check at lines 367-368 fails because the citation does not cover the <p> owner. Line 370 sets insufficient_evidence; line 373 renders 'another scoped page cannot substitute', although index.html (a scoped page) is exactly where the witness is. In the variant where neither page contains a phone line, presence.kind = 'absent', no witness exists, and the same line 373 text is shown.\",\"suggestion\":\"In the !covered branch, call sourcePresenceExplanation(presence, quote.language), or reuse sourcePresenceMissingAdvice for 'absent', so the message says which files are in the locked scope and does not claim another scoped page is outside it. Keep need() as page_citations when a witness exists and source_ambiguity otherwise.\"}],\"limitations\":[\"This was a static review of the supplied packet only. No code was executed and no tests were run, including tests/assessment-scope-withholding.test.ts.\",\"The packet does not include parseStaticProject, createUploadedDelivery, sourceVisibilityPlan, createEvidenceBundle, source-visibility.ts, risk-repairs.ts, static-project.ts, acceptance-evidence.ts, or project-*-resolution helpers. Their behavior was inferred only from the supplied import lines and call sites.\",\"For historical acceptance snapshots, evidence-export.ts:398-399 validate the assessment against bundle.project.criteria and delivery.files. Whether the criteria or files of an accepted snapshot could later differ from the current project is outside those lines and was not verified here.\",\"No browser rendering or accessibility-tree audit was done. UI observations are from the JSX only.\",\"Award comparison is description-only, with no opponent source or tests. The primary official winners page was not fetched, and no claim of superiority or of verified opponent behavior is made.\",\"Product-shape and UI-copy consistency with existing components was not checked, since the surrounding components were not supplied.\",\"Any issue about model behavior, provider authenticity, or whether the live DeepSeek path produces these inputs was not reviewed.\"]}",
+  "report": {
+    "summary": "Reviewed the implemented source for the Cycle24 contact-presence scope gate: how the finite custom phone/email scope is derived, v1/v2 withholding priority, import/replay of current and historical assessments, risk-review namespacing, and the withheld-risk UI. The core invariants appear sound in these files: the V2 gate derives scope solely from code (lines 27-39 of assessment-publication-policy.ts) and is taken only when statusAdjustedCount is 0 (line 91); the V1 status-adjustment path retains priority (lines 83-90); mixed price/runtime or unknown custom criteria make the derivation return undefined (line 37), so no scope is borrowed. Import re-derives the exact scope and checks its shape (evidence-export.ts:214-226), and historical snapshots are validated with their own assessment (evidence-export.ts:398-399). Risk reviews keep the withheld and published indices in separate namespaces (risk-reviews.ts:19-25). The UI requires a valid V2 shape before it renders withheld items (DeliveryAssessment.tsx:60-65). One concrete P3 defect was found in the canonical evidence wording below. No runtime, browser, provider or award checks were performed.",
+    "findings": [
+      {
+        "severity": "P3",
+        "file": "lib/delivery-assessment.ts",
+        "line": 373,
+        "title": "Missing-evidence prose tells users to look for phone/email text only in the wrong file shape, and contradicts the fact that no witness was found",
+        "evidence": "When a catalog_slots item is supported, the server resolves the criterion with presenceCheck(criterion) at lines 364-368. For a custom phone/email directive, the finite scope covers every supplied *.html file, sorted (source-presence-evidence.ts:65). The support test passes only when the model's citations fully cover a complete owner citation (c.end >= witness.end). If they do not, the code goes to line 369, sets status to insufficient_evidence, and builds the explanation from the fixed string at line 373: '请核对对应原文与完整内容块；注释、脚本、属性或其他页面的文字不能替代本项依据' / 'Check the exact source and complete owner; comments, scripts, attributes or another scoped page cannot substitute for that evidence.' The derivation treats every HTML page as being in scope. So 'another scoped page' is a valid place for the witness, yet the text says text in another page cannot substitute. The same branch also runs when no witness exists at all (presence.kind === 'absent' or 'unknown'). For a simple requirement like 'The page content must list the shop phone number.', the server sets insufficient_evidence even though the deterministic missing-evidence explanation (sourcePresenceMissingAdvice, source-presence-evidence.ts:91-95) says the requirement is a change suggestion for human review. The visible prose also comes close to stating that the requirement was missed without either witness evidence or human review.",
+        "reproduction": "Unexecuted, from the code. Files: index.html with '<p>Phone: +61 3 7010 2244</p>' and contact.html with only a description. Criterion manual-1: 'The page content must list the shop phone number.' Model returns status 'supported' for manual-1 with citations to <title> only. presenceCheck finds a witness in index.html (candidates.length > 0, kind 'present'). The covered check at lines 367-368 fails because the citation does not cover the <p> owner. Line 370 sets insufficient_evidence; line 373 renders 'another scoped page cannot substitute', although index.html (a scoped page) is exactly where the witness is. In the variant where neither page contains a phone line, presence.kind = 'absent', no witness exists, and the same line 373 text is shown.",
+        "suggestion": "In the !covered branch, call sourcePresenceExplanation(presence, quote.language), or reuse sourcePresenceMissingAdvice for 'absent', so the message says which files are in the locked scope and does not claim another scoped page is outside it. Keep need() as page_citations when a witness exists and source_ambiguity otherwise."
+      }
+    ],
+    "limitations": [
+      "This was a static review of the supplied packet only. No code was executed and no tests were run, including tests/assessment-scope-withholding.test.ts.",
+      "The packet does not include parseStaticProject, createUploadedDelivery, sourceVisibilityPlan, createEvidenceBundle, source-visibility.ts, risk-repairs.ts, static-project.ts, acceptance-evidence.ts, or project-*-resolution helpers. Their behavior was inferred only from the supplied import lines and call sites.",
+      "For historical acceptance snapshots, evidence-export.ts:398-399 validate the assessment against bundle.project.criteria and delivery.files. Whether the criteria or files of an accepted snapshot could later differ from the current project is outside those lines and was not verified here.",
+      "No browser rendering or accessibility-tree audit was done. UI observations are from the JSX only.",
+      "Award comparison is description-only, with no opponent source or tests. The primary official winners page was not fetched, and no claim of superiority or of verified opponent behavior is made.",
+      "Product-shape and UI-copy consistency with existing components was not checked, since the surrounding components were not supplied.",
+      "Any issue about model behavior, provider authenticity, or whether the live DeepSeek path produces these inputs was not reviewed."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

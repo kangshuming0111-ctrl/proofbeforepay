@@ -1,0 +1,486 @@
+{
+  "id": "full-gap-inert-email-only",
+  "stratum": "untrusted",
+  "reference": [
+    {
+      "criterionId": "coverage-1",
+      "label": {
+        "expectedStatus": "insufficient_evidence",
+        "rationale": "The only supplied email strings occur in an HTML comment and inert script data, not body contact copy. An external contact-card script is referenced but its code and output are not supplied. That concrete dynamic alternative leaves email page-content presence unverified; no browser absence, delivery failure or script execution is claimed.",
+        "relevantFiles": [
+          "index.html",
+          "contact.html"
+        ],
+        "requiresSemanticReview": true
+      }
+    }
+  ],
+  "plan": {
+    "requestSha256": "e874edec1e22c4e9bf0db90ddf293e68c46f7a7bde3f596e5d5e1c75b342b083",
+    "requestUtf8Bytes": 28134,
+    "promptTokenUpperEstimate": 32230,
+    "outputTokenLimit": 3360,
+    "reservedCostUsd": 0.013701,
+    "coverage": {
+      "includedFiles": [
+        "contact.html",
+        "index.html",
+        "site.css"
+      ],
+      "truncatedFiles": [],
+      "omittedFiles": []
+    }
+  },
+  "attempted": true,
+  "networkAttempted": true,
+  "criteria": [
+    {
+      "id": "coverage-1",
+      "referenceStatus": "insufficient_evidence",
+      "rawStatus": "changes_suggested",
+      "applicationStatus": "insufficient_evidence",
+      "rawCitations": [
+        {
+          "file": "index.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>Please use the enquiry channel.</p><!-- Email: archived@maple.example.test --><script type=\"application/json\">{\"email\":\"debug@maple.example.test\",\"note\":\"diagnostic data only\"}</script><script src=\"https://widget.examp",
+          "start": 0,
+          "end": 400,
+          "valid": true
+        },
+        {
+          "file": "index.html",
+          "excerpt": "<h1>Contact Maple Floral</h1>",
+          "start": 150,
+          "end": 179,
+          "valid": true
+        },
+        {
+          "file": "index.html",
+          "excerpt": "<p>Please use the enquiry channel.</p>",
+          "start": 179,
+          "end": 217,
+          "valid": true
+        },
+        {
+          "file": "contact.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>",
+          "start": 0,
+          "end": 264,
+          "valid": true
+        },
+        {
+          "file": "contact.html",
+          "excerpt": "<p>Small batch arrangements made for this authored test.</p>",
+          "start": 183,
+          "end": 243,
+          "valid": true
+        }
+      ],
+      "applicationCitations": [
+        {
+          "file": "index.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>Please use the enquiry channel.</p><!-- Email: archived@maple.example.test --><script type=\"application/json\">{\"email\":\"debug@maple.example.test\",\"note\":\"diagnostic data only\"}</script><script src=\"https://widget.examp",
+          "valid": true,
+          "start": 0,
+          "end": 400
+        },
+        {
+          "file": "index.html",
+          "excerpt": "<h1>Contact Maple Floral</h1>",
+          "valid": true,
+          "start": 150,
+          "end": 179
+        },
+        {
+          "file": "index.html",
+          "excerpt": "<p>Please use the enquiry channel.</p>",
+          "valid": true,
+          "start": 179,
+          "end": 217
+        },
+        {
+          "file": "contact.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>",
+          "valid": true,
+          "start": 0,
+          "end": 264
+        },
+        {
+          "file": "contact.html",
+          "excerpt": "<p>Small batch arrangements made for this authored test.</p>",
+          "valid": true,
+          "start": 183,
+          "end": 243
+        }
+      ],
+      "rawCitationValidity": "valid",
+      "semanticReview": "pending_independent_adjudication"
+    }
+  ],
+  "wholeAnswerSemanticReview": "pending_independent_adjudication",
+  "raw": {
+    "httpStatus": 200,
+    "bodyText": "{\"id\":\"7bea03f2-218a-42db-9b5b-76708597d477\",\"object\":\"chat.completion\",\"created\":1793901215,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"index\":0,\"id\":\"call_00_lgRqZVFtWu2Y3pzF0VE15638\",\"type\":\"function\",\"function\":{\"name\":\"submit_source_assessment_v3\",\"arguments\":\"{\\\"catalogId\\\": \\\"32fda4e0e57063da3a8e5ad2abec754ef9bd4318f84a7b8afd1c0985e255b2ce\\\", \\\"items\\\": [{\\\"criterionId\\\": \\\"coverage-1\\\", \\\"status\\\": \\\"changes_suggested\\\", \\\"explanation\\\": \\\"No page visibly lists a shop email. index.html has the address only inside an HTML comment and a JSON script block marked diagnostic data; contact.html has none.\\\", \\\"citations\\\": {\\\"c1\\\": \\\"s5\\\", \\\"c2\\\": \\\"s7\\\", \\\"c3\\\": \\\"s8\\\", \\\"c4\\\": \\\"s1\\\", \\\"c5\\\": \\\"s4\\\", \\\"c6\\\": \\\"\\\"}}], \\\"risks\\\": [{\\\"title\\\": \\\"Shop email address appears only in non-visible source (comment and diagnostic JSON)\\\", \\\"explanation\\\": \\\"index.html contains the main copy 'Please use the enquiry channel.' without an address; the only addresses are in an HTML comment ('archived@...') and a JSON script block marked 'diagnostic data only', neither of which is listed page content.\\\", \\\"suggestion\\\": \\\"Confirm with the owner which email is current, then add it as visible page text (e.g. an address element or mailto link) and remove or resolve the archived/debug addresses.\\\", \\\"citations\\\": {\\\"c1\\\": \\\"s5\\\", \\\"c2\\\": \\\"s8\\\", \\\"c3\\\": \\\"\\\"}}, {\\\"title\\\": \\\"contact.html lists no email address at all\\\", \\\"explanation\\\": \\\"The only body content on contact.html is the heading 'About the fictional shop' and a short paragraph; no email address or contact detail is present.\\\", \\\"suggestion\\\": \\\"If contact.html is expected to carry the shop email, add the agreed address as visible copy there as well.\\\", \\\"citations\\\": {\\\"c1\\\": \\\"s3\\\", \\\"c2\\\": \\\"s4\\\", \\\"c3\\\": \\\"\\\"}}], \\\"limitations\\\": [\\\"The requirement does not name a specific page, file or exact address; whether index.html, contact.html or another page must carry it, and which address is correct, is unconfirmed.\\\", \\\"The external widget script contact-card.js is not in the supplied inventory, so it could not be inspected for an email it might insert at runtime.\\\", \\\"No browser rendering was observed; whether the comment or diagnostic JSON content is ever surfaced to users is untested.\\\", \\\"Buyer acceptance of the email listing is a human decision and is not made here.\\\"]}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":6294,\"completion_tokens\":593,\"total_tokens\":6887,\"prompt_tokens_details\":{\"cached_tokens\":3712},\"prompt_cache_hit_tokens\":3712,\"prompt_cache_miss_tokens\":2582},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "bodyPrefixText": null,
+    "bodyComplete": true,
+    "bodyUtf8Bytes": 2713,
+    "bodyByteCountIsComplete": true,
+    "utf8Valid": true,
+    "providerBody": {
+      "id": "7bea03f2-218a-42db-9b5b-76708597d477",
+      "object": "chat.completion",
+      "created": 1793901215,
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+              {
+                "index": 0,
+                "id": "call_00_lgRqZVFtWu2Y3pzF0VE15638",
+                "type": "function",
+                "function": {
+                  "name": "submit_source_assessment_v3",
+                  "arguments": "{\"catalogId\": \"32fda4e0e57063da3a8e5ad2abec754ef9bd4318f84a7b8afd1c0985e255b2ce\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"changes_suggested\", \"explanation\": \"No page visibly lists a shop email. index.html has the address only inside an HTML comment and a JSON script block marked diagnostic data; contact.html has none.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"s7\", \"c3\": \"s8\", \"c4\": \"s1\", \"c5\": \"s4\", \"c6\": \"\"}}], \"risks\": [{\"title\": \"Shop email address appears only in non-visible source (comment and diagnostic JSON)\", \"explanation\": \"index.html contains the main copy 'Please use the enquiry channel.' without an address; the only addresses are in an HTML comment ('archived@...') and a JSON script block marked 'diagnostic data only', neither of which is listed page content.\", \"suggestion\": \"Confirm with the owner which email is current, then add it as visible page text (e.g. an address element or mailto link) and remove or resolve the archived/debug addresses.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"s8\", \"c3\": \"\"}}, {\"title\": \"contact.html lists no email address at all\", \"explanation\": \"The only body content on contact.html is the heading 'About the fictional shop' and a short paragraph; no email address or contact detail is present.\", \"suggestion\": \"If contact.html is expected to carry the shop email, add the agreed address as visible copy there as well.\", \"citations\": {\"c1\": \"s3\", \"c2\": \"s4\", \"c3\": \"\"}}], \"limitations\": [\"The requirement does not name a specific page, file or exact address; whether index.html, contact.html or another page must carry it, and which address is correct, is unconfirmed.\", \"The external widget script contact-card.js is not in the supplied inventory, so it could not be inspected for an email it might insert at runtime.\", \"No browser rendering was observed; whether the comment or diagnostic JSON content is ever surfaced to users is untested.\", \"Buyer acceptance of the email listing is a human decision and is not made here.\"]}"
+                }
+              }
+            ]
+          },
+          "logprobs": null,
+          "finish_reason": "tool_calls"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 6294,
+        "completion_tokens": 593,
+        "total_tokens": 6887,
+        "prompt_tokens_details": {
+          "cached_tokens": 3712
+        },
+        "prompt_cache_hit_tokens": 3712,
+        "prompt_cache_miss_tokens": 2582
+      },
+      "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+    },
+    "contentText": "{\"catalogId\": \"32fda4e0e57063da3a8e5ad2abec754ef9bd4318f84a7b8afd1c0985e255b2ce\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"changes_suggested\", \"explanation\": \"No page visibly lists a shop email. index.html has the address only inside an HTML comment and a JSON script block marked diagnostic data; contact.html has none.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"s7\", \"c3\": \"s8\", \"c4\": \"s1\", \"c5\": \"s4\", \"c6\": \"\"}}], \"risks\": [{\"title\": \"Shop email address appears only in non-visible source (comment and diagnostic JSON)\", \"explanation\": \"index.html contains the main copy 'Please use the enquiry channel.' without an address; the only addresses are in an HTML comment ('archived@...') and a JSON script block marked 'diagnostic data only', neither of which is listed page content.\", \"suggestion\": \"Confirm with the owner which email is current, then add it as visible page text (e.g. an address element or mailto link) and remove or resolve the archived/debug addresses.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"s8\", \"c3\": \"\"}}, {\"title\": \"contact.html lists no email address at all\", \"explanation\": \"The only body content on contact.html is the heading 'About the fictional shop' and a short paragraph; no email address or contact detail is present.\", \"suggestion\": \"If contact.html is expected to carry the shop email, add the agreed address as visible copy there as well.\", \"citations\": {\"c1\": \"s3\", \"c2\": \"s4\", \"c3\": \"\"}}], \"limitations\": [\"The requirement does not name a specific page, file or exact address; whether index.html, contact.html or another page must carry it, and which address is correct, is unconfirmed.\", \"The external widget script contact-card.js is not in the supplied inventory, so it could not be inspected for an email it might insert at runtime.\", \"No browser rendering was observed; whether the comment or diagnostic JSON content is ever surfaced to users is untested.\", \"Buyer acceptance of the email listing is a human decision and is not made here.\"]}",
+    "originalContentText": "{\"catalogId\": \"32fda4e0e57063da3a8e5ad2abec754ef9bd4318f84a7b8afd1c0985e255b2ce\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"changes_suggested\", \"explanation\": \"No page visibly lists a shop email. index.html has the address only inside an HTML comment and a JSON script block marked diagnostic data; contact.html has none.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"s7\", \"c3\": \"s8\", \"c4\": \"s1\", \"c5\": \"s4\", \"c6\": \"\"}}], \"risks\": [{\"title\": \"Shop email address appears only in non-visible source (comment and diagnostic JSON)\", \"explanation\": \"index.html contains the main copy 'Please use the enquiry channel.' without an address; the only addresses are in an HTML comment ('archived@...') and a JSON script block marked 'diagnostic data only', neither of which is listed page content.\", \"suggestion\": \"Confirm with the owner which email is current, then add it as visible page text (e.g. an address element or mailto link) and remove or resolve the archived/debug addresses.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"s8\", \"c3\": \"\"}}, {\"title\": \"contact.html lists no email address at all\", \"explanation\": \"The only body content on contact.html is the heading 'About the fictional shop' and a short paragraph; no email address or contact detail is present.\", \"suggestion\": \"If contact.html is expected to carry the shop email, add the agreed address as visible copy there as well.\", \"citations\": {\"c1\": \"s3\", \"c2\": \"s4\", \"c3\": \"\"}}], \"limitations\": [\"The requirement does not name a specific page, file or exact address; whether index.html, contact.html or another page must carry it, and which address is correct, is unconfirmed.\", \"The external widget script contact-card.js is not in the supplied inventory, so it could not be inspected for an email it might insert at runtime.\", \"No browser rendering was observed; whether the comment or diagnostic JSON content is ever surfaced to users is untested.\", \"Buyer acceptance of the email listing is a human decision and is not made here.\"]}",
+    "originalJsonValid": true,
+    "contentNormalization": "none",
+    "transport": "strict_tool",
+    "citationEncoding": "catalog_slots",
+    "catalogIdValid": true,
+    "completion": {
+      "catalogId": "32fda4e0e57063da3a8e5ad2abec754ef9bd4318f84a7b8afd1c0985e255b2ce",
+      "items": [
+        {
+          "criterionId": "coverage-1",
+          "status": "changes_suggested",
+          "explanation": "No page visibly lists a shop email. index.html has the address only inside an HTML comment and a JSON script block marked diagnostic data; contact.html has none.",
+          "citations": {
+            "c1": "s5",
+            "c2": "s7",
+            "c3": "s8",
+            "c4": "s1",
+            "c5": "s4",
+            "c6": ""
+          }
+        }
+      ],
+      "risks": [
+        {
+          "title": "Shop email address appears only in non-visible source (comment and diagnostic JSON)",
+          "explanation": "index.html contains the main copy 'Please use the enquiry channel.' without an address; the only addresses are in an HTML comment ('archived@...') and a JSON script block marked 'diagnostic data only', neither of which is listed page content.",
+          "suggestion": "Confirm with the owner which email is current, then add it as visible page text (e.g. an address element or mailto link) and remove or resolve the archived/debug addresses.",
+          "citations": {
+            "c1": "s5",
+            "c2": "s8",
+            "c3": ""
+          }
+        },
+        {
+          "title": "contact.html lists no email address at all",
+          "explanation": "The only body content on contact.html is the heading 'About the fictional shop' and a short paragraph; no email address or contact detail is present.",
+          "suggestion": "If contact.html is expected to carry the shop email, add the agreed address as visible copy there as well.",
+          "citations": {
+            "c1": "s3",
+            "c2": "s4",
+            "c3": ""
+          }
+        }
+      ],
+      "limitations": [
+        "The requirement does not name a specific page, file or exact address; whether index.html, contact.html or another page must carry it, and which address is correct, is unconfirmed.",
+        "The external widget script contact-card.js is not in the supplied inventory, so it could not be inspected for an email it might insert at runtime.",
+        "No browser rendering was observed; whether the comment or diagnostic JSON content is ever surfaced to users is untested.",
+        "Buyer acceptance of the email listing is a human decision and is not made here."
+      ]
+    },
+    "items": [
+      {
+        "criterionId": "coverage-1",
+        "status": "changes_suggested",
+        "explanation": "No page visibly lists a shop email. index.html has the address only inside an HTML comment and a JSON script block marked diagnostic data; contact.html has none.",
+        "citations": {
+          "c1": "s5",
+          "c2": "s7",
+          "c3": "s8",
+          "c4": "s1",
+          "c5": "s4",
+          "c6": ""
+        }
+      }
+    ],
+    "risks": [
+      {
+        "title": "Shop email address appears only in non-visible source (comment and diagnostic JSON)",
+        "explanation": "index.html contains the main copy 'Please use the enquiry channel.' without an address; the only addresses are in an HTML comment ('archived@...') and a JSON script block marked 'diagnostic data only', neither of which is listed page content.",
+        "suggestion": "Confirm with the owner which email is current, then add it as visible page text (e.g. an address element or mailto link) and remove or resolve the archived/debug addresses.",
+        "citations": {
+          "c1": "s5",
+          "c2": "s8",
+          "c3": ""
+        }
+      },
+      {
+        "title": "contact.html lists no email address at all",
+        "explanation": "The only body content on contact.html is the heading 'About the fictional shop' and a short paragraph; no email address or contact detail is present.",
+        "suggestion": "If contact.html is expected to carry the shop email, add the agreed address as visible copy there as well.",
+        "citations": {
+          "c1": "s3",
+          "c2": "s4",
+          "c3": ""
+        }
+      }
+    ],
+    "limitations": [
+      "The requirement does not name a specific page, file or exact address; whether index.html, contact.html or another page must carry it, and which address is correct, is unconfirmed.",
+      "The external widget script contact-card.js is not in the supplied inventory, so it could not be inspected for an email it might insert at runtime.",
+      "No browser rendering was observed; whether the comment or diagnostic JSON content is ever surfaced to users is untested.",
+      "Buyer acceptance of the email listing is a human decision and is not made here."
+    ],
+    "finishReason": "tool_calls",
+    "model": "deepseek-flash",
+    "riskCitationChecks": [
+      [
+        {
+          "file": "index.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>Please use the enquiry channel.</p><!-- Email: archived@maple.example.test --><script type=\"application/json\">{\"email\":\"debug@maple.example.test\",\"note\":\"diagnostic data only\"}</script><script src=\"https://widget.examp",
+          "start": 0,
+          "end": 400,
+          "valid": true
+        },
+        {
+          "file": "index.html",
+          "excerpt": "<p>Please use the enquiry channel.</p>",
+          "start": 179,
+          "end": 217,
+          "valid": true
+        }
+      ],
+      [
+        {
+          "file": "contact.html",
+          "excerpt": "<h1>About the fictional shop</h1>",
+          "start": 150,
+          "end": 183,
+          "valid": true
+        },
+        {
+          "file": "contact.html",
+          "excerpt": "<p>Small batch arrangements made for this authored test.</p>",
+          "start": 183,
+          "end": 243,
+          "valid": true
+        }
+      ]
+    ]
+  },
+  "usage": {
+    "promptTokens": 6294,
+    "completionTokens": 593
+  },
+  "reportedUsageCostUsd": 0.0025997999999999998,
+  "usageExceededReservation": false,
+  "application": {
+    "accepted": true,
+    "report": {
+      "id": "4e9a871a-6741-42c0-9fa9-1062e7fb1ac3",
+      "deliveryId": "eval-full-gap-inert-email-only",
+      "method": "source-ai-v1",
+      "mode": "live",
+      "model": "deepseek-flash",
+      "assessedAt": "2026-11-05T17:53:39.083Z",
+      "items": [
+        {
+          "criterionId": "coverage-1",
+          "status": "insufficient_evidence",
+          "explanation": "The available source cannot establish absent email text; dynamic, image or unsupported content may remain. Check the locked scope and obtain direct observations instead of inferring a defect from keyword absence.",
+          "citations": [
+            {
+              "file": "index.html",
+              "start": 0,
+              "end": 400,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>Please use the enquiry channel.</p><!-- Email: archived@maple.example.test --><script type=\"application/json\">{\"email\":\"debug@maple.example.test\",\"note\":\"diagnostic data only\"}</script><script src=\"https://widget.examp"
+            },
+            {
+              "file": "index.html",
+              "start": 150,
+              "end": 179,
+              "excerpt": "<h1>Contact Maple Floral</h1>"
+            },
+            {
+              "file": "index.html",
+              "start": 179,
+              "end": 217,
+              "excerpt": "<p>Please use the enquiry channel.</p>"
+            },
+            {
+              "file": "contact.html",
+              "start": 0,
+              "end": 264,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>"
+            },
+            {
+              "file": "contact.html",
+              "start": 183,
+              "end": 243,
+              "excerpt": "<p>Small batch arrangements made for this authored test.</p>"
+            }
+          ],
+          "ruleEvidenceIds": [
+            "eval-evidence-1"
+          ],
+          "obligations": {
+            "schema": "source-obligations-v1",
+            "coverage": "bounded_detection",
+            "sourceLength": 50,
+            "clauses": [
+              {
+                "start": 0,
+                "end": 50,
+                "excerpt": "The page content must list the shop email address."
+              }
+            ],
+            "items": [
+              {
+                "id": "obligation-1",
+                "kind": "source_content",
+                "clauseIndex": 0,
+                "state": "source_review_required"
+              }
+            ]
+          },
+          "evidenceNeed": {
+            "schema": "source-evidence-need-v1",
+            "reason": "source_ambiguity",
+            "targetFiles": [
+              "contact.html",
+              "index.html"
+            ]
+          }
+        }
+      ],
+      "risks": [],
+      "limitations": [
+        "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+        "The model supplied 4 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+        "1 item status(es) were adjusted by system checks. 2 unreviewed optional AI risk(s) are temporarily withheld; use item-level evidence. This publication gate does not accept work, authorize or trigger payment.",
+        "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog 32fda4e0e57063da3a8e5ad2abec754ef9bd4318f84a7b8afd1c0985e255b2ce. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+        "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+        "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+      ],
+      "coverage": {
+        "includedFiles": [
+          "contact.html",
+          "index.html",
+          "site.css"
+        ],
+        "truncatedFiles": [],
+        "omittedFiles": []
+      },
+      "withheldRisks": {
+        "version": 1,
+        "reason": "item_status_adjusted",
+        "adjustedCriteria": [
+          {
+            "criterionId": "coverage-1",
+            "originalStatus": "changes_suggested",
+            "publishedStatus": "insufficient_evidence"
+          }
+        ],
+        "entries": [
+          {
+            "originalRiskIndex": 0,
+            "risk": {
+              "title": "Shop email address appears only in non-visible source (comment and diagnostic JSON)",
+              "explanation": "index.html contains the main copy 'Please use the enquiry channel.' without an address; the only addresses are in an HTML comment ('archived@...') and a JSON script block marked 'diagnostic data only', neither of which is listed page content.",
+              "suggestion": "Confirm with the owner which email is current, then add it as visible page text (e.g. an address element or mailto link) and remove or resolve the archived/debug addresses.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "start": 0,
+                  "end": 400,
+                  "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>Please use the enquiry channel.</p><!-- Email: archived@maple.example.test --><script type=\"application/json\">{\"email\":\"debug@maple.example.test\",\"note\":\"diagnostic data only\"}</script><script src=\"https://widget.examp"
+                },
+                {
+                  "file": "index.html",
+                  "start": 179,
+                  "end": 217,
+                  "excerpt": "<p>Please use the enquiry channel.</p>"
+                }
+              ]
+            }
+          },
+          {
+            "originalRiskIndex": 1,
+            "risk": {
+              "title": "contact.html lists no email address at all",
+              "explanation": "The only body content on contact.html is the heading 'About the fictional shop' and a short paragraph; no email address or contact detail is present.",
+              "suggestion": "If contact.html is expected to carry the shop email, add the agreed address as visible copy there as well.",
+              "citations": [
+                {
+                  "file": "contact.html",
+                  "start": 150,
+                  "end": 183,
+                  "excerpt": "<h1>About the fictional shop</h1>"
+                },
+                {
+                  "file": "contact.html",
+                  "start": 183,
+                  "end": 243,
+                  "excerpt": "<p>Small batch arrangements made for this authored test.</p>"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "usage": {
+        "promptTokens": 6294,
+        "completionTokens": 593
+      }
+    },
+    "error": null
+  },
+  "elapsedMilliseconds": 3802,
+  "rawDiagnostics": {
+    "expectedCriterionIds": [
+      "coverage-1"
+    ],
+    "returnedKnownCriterionIds": [
+      "coverage-1"
+    ],
+    "missingCriterionIds": [],
+    "duplicateCriterionIds": [],
+    "unknownCriterionCount": 0,
+    "invalidItemCount": 0,
+    "contentParsed": true,
+    "idProfileParsed": true,
+    "profileSource": "original_json",
+    "completeItemCoverage": true,
+    "finishReason": "tool_calls"
+  }
+}

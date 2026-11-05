@@ -1,0 +1,73 @@
+{
+  "schema": "pbp-prospective-preregistration-amendment-v1",
+  "amendedAt": "2026-11-05T17:40:31.261012+00:00",
+  "apiCalls": 0,
+  "providerAnswersSeenForEitherRevision": 0,
+  "oldFiles": [
+    {
+      "file": "scripts/full-gap-assessment-corpus-2026-11-06.json",
+      "sha256": "1075514a591788b8ebfd8ca65b8e0eaaec599881ac7cba2212d5e8d525e865ee"
+    },
+    {
+      "file": "scripts/full-gap-assessment-references-2026-11-06.json",
+      "sha256": "a5712a525287b03e1d2c400c95fc445a4d916185a29ec91c2eb962ef81ec7913"
+    }
+  ],
+  "newFiles": [
+    {
+      "file": "scripts/full-gap-assessment-corpus-2026-11-06-v2.json",
+      "sha256": "4661031db8ce070775f8fcd00d002cf4fc0b1dc8d976bd6b1bed10555e580fc3"
+    },
+    {
+      "file": "scripts/full-gap-assessment-references-2026-11-06-v2.json",
+      "sha256": "d76748c817e287024793bebfaef830deec7c1efa6670cd46e9a8e644037901ab"
+    }
+  ],
+  "changedProject": "full-gap-inert-email-only",
+  "changedFiles": [
+    "index.html"
+  ],
+  "previousSourceSha256": "d226c763eb1b6c2ac669d8e63a4908533d3df877697192c4b662f7a5266e6465",
+  "newSourceSha256": "25f5f60949644254a53873a07396cb0c24eab3333d635a37779a8b1f516f032e",
+  "goldStatusBefore": "insufficient_evidence",
+  "goldStatusAfter": "insufficient_evidence",
+  "reason": "The v1 pure inert JSON/comment case could reasonably establish a static body-copy omission. Before any provider answer, v2 adds an external contact-card script whose source/output is not supplied, making dynamic uncertainty concrete. The old corpus and references remain byte-for-byte unchanged, and neither revision has been tested live.",
+  "unchangedOtherProjects": [
+    {
+      "id": "full-gap-present-phone",
+      "canonicalProjectSha256": "c8f9c37fecba69ffe600b3b707426a92ec6c9b6932837ac9eb6889940715e442",
+      "allFileBytesAndReferenceLabelsUnchanged": true
+    },
+    {
+      "id": "full-gap-missing-phone",
+      "canonicalProjectSha256": "e279a9d9a33d7361a5b2ec6e82514dd213144efcab8525614514a59a0cedca8b",
+      "allFileBytesAndReferenceLabelsUnchanged": true
+    },
+    {
+      "id": "full-gap-body-email-with-decoys",
+      "canonicalProjectSha256": "b1960382a11bf7754a6d2e841257a249126dcf0294751e991597e75bef3645c4",
+      "allFileBytesAndReferenceLabelsUnchanged": true
+    },
+    {
+      "id": "full-gap-named-page-phone",
+      "canonicalProjectSha256": "69e605ffbcb956e2d4f2d1558bf428419839ef8615d77733111540ee930d049d",
+      "allFileBytesAndReferenceLabelsUnchanged": true
+    },
+    {
+      "id": "full-gap-cross-page-price-owner",
+      "canonicalProjectSha256": "736562606599d3004220329e2e719477371b77acafd63db29c4b563d812b583d",
+      "allFileBytesAndReferenceLabelsUnchanged": true
+    },
+    {
+      "id": "full-gap-compound-and-quoted-copy",
+      "canonicalProjectSha256": "480dc44bef81d3f59e461f62a2fa31aa745338dd6f9f27bbe3b72e3f455ac7f2",
+      "allFileBytesAndReferenceLabelsUnchanged": true
+    },
+    {
+      "id": "full-gap-merged-row-price-meaning",
+      "canonicalProjectSha256": "5c26a84f909e5659e2ef9a4a42abbac1d8c3ddc1d266684240220ba25af41e22",
+      "allFileBytesAndReferenceLabelsUnchanged": true
+    }
+  ],
+  "livePolicy": "Use v2 only after final-runtime freeze and root GO; never select a revision based on provider responses."
+}

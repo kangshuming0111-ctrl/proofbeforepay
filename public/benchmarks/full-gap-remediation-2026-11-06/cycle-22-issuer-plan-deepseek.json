@@ -1,0 +1,70 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/evidence-bundle.ts",
+      "bytes": 25955,
+      "lines": 183,
+      "sha256": "129d4283a8fce2f72ac5a285dc2dd56b1d037fa8be032a6f607884302d5f098f"
+    },
+    {
+      "file": "app/guest-lab/evidence-viewer.ts",
+      "bytes": 31989,
+      "lines": 205,
+      "sha256": "5c9ed29c1cf574ae4887b9526cd70b243e7d5e6e40cafb5068783c4467f6bfbb"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Reviewed the supplied three-file packet (lib/evidence-bundle.ts, app/guest-lab/evidence-viewer.ts, proofbeforepay-delivery SKILL.md) against the Cycle 22 supplemental plan. The plan itself (origin-issued Ed25519 receipt over the canonical bundle SHA-256, pinned SPKI, fail-closed signing config, wrong-key/tamper/digest tests) is consistent with the product boundaries: it keeps judgement, backend execution, human acceptance and payment unproven, and makes no third-party timestamp claim. One current defect is reachable and conflicts with the plan's fail-closed requirement: the offline viewer treats any internally consistent bundle as an acceptable result and never checks for an origin-issued receipt, so a stripped or substituted unsigned/re-signed-by-another-key file still produces a 'ready' state with 'Internally consistent'. That gives the UI no fail-closed path, and the plan's 'invalid/foreign signature, no silent removal/unsigned fallback' rule has no enforcement point. Design suggestions (not findings): add a receipt field (schema, keyId, issuer=mainSiteURL, issuedAt, optional digest, signature) re-verified against the pinned SPKI before 'ready'; keep the legacy unsigned result truthfully labelled ('unsigned, authenticity unproven'), and make it independently verifiable offline for old packets only. Add explicit receipt checks in the viewer gate list. Key-rotation should allow multiple pinned keyIds with an explicit retired-key policy, or old receipts become unverifiable. Say plainly that the pinned key makes the origin the trust anchor, not a third-party timestamp, and that a compromised or leaked main-app secret defeats the guarantee.\",\"findings\":[{\"severity\":\"P2\",\"file\":\"app/guest-lab/evidence-viewer.ts\",\"line\":192,\"title\":\"Viewer reports 'Internally consistent' ready state without any origin-receipt check, so a stripped or foreign-signed file is not treated as fail-closed\",\"evidence\":\"Line 192 renders the verdict from `state.verification.consistency` only, which comes from verifyEvidenceBundle. That function (lib/evidence-bundle.ts line 109) hardcodes `authenticity:\\\"not-proven\\\"` and has no signature input or check; lines 132-133 say 'There is no trusted signature or external anchor' and 'does not prove issuance'. The viewer's state machine (state.phase==='ready') never distinguishes a bundle that carries a valid origin receipt from one with a missing, tampered or foreign signature. Line 61 advertises v1/v2 support with no receipt, and line 140 shows legacy files as normal. The proposed receipt verifier therefore has no existing enforcement point in the current flow, and the plan's 'invalid/foreign signature is an invalid receipt, no silent removal or unsigned fallback' cannot hold for this viewer without a new check path.\",\"reproduction\":\"Reasoning trace (not executed): export a v2 bundle, remove any receipt, or re-sign it with an attacker key and re-run the same offline verify; verifyEvidenceBundle returns consistency 'consistent' (lines 112-118 and the check chain) and the viewer reaches line 191-192 showing the 'Internally consistent' verdict with no distinction from an official export. A buyer cannot tell from the UI that issuance is unproven.\",\"suggestion\":\"Add a gated unsigned-vs-signed state: when `verification.receipt` is absent, render an explicit 'unsigned export, issuance unproven' label separate from 'Internally consistent' (and have legacy v1 continue to do so). When a receipt is present but its signature/digest/keyId/issuer fails against the pinned SPKI, render a distinct 'invalid receipt' verdict. Never fall back to the unsigned verdict for a failed signature. Render the 'Internally consistent' verdict only in the signed-and-verified case. Add viewer/receipt tests for missing receipt, wrong pinned key and tampered digest.\"}],\"limitations\":[\"Read-only design review of a three-file packet; no files were modified and no commands, tests, typecheck, build or runtime checks were run.\",\"The proposed source verifier, receipt schema, main-app signing code, Lab/repo public-key publication and test files are not in the packet, so their correctness and the reachability of signing-config fail-closed behavior cannot be assessed.\",\"Only defects reachable in the current supplied code are reported; the absence of receipt verification elsewhere is treated as design guidance in the summary, not a finding outside the cited files.\",\"SKILL.md was reviewed only as project guidance; it contains no runtime logic.\",\"Trust-scope, key-rotation and compromised-secret limits are critique items for the design, not current-code findings.\",\"The claim 'private PKCS8 only in existingSites main appsecret' cannot be verified here; no environment, secrets or app config were inspected.\"]}",
+  "report": {
+    "summary": "Reviewed the supplied three-file packet (lib/evidence-bundle.ts, app/guest-lab/evidence-viewer.ts, proofbeforepay-delivery SKILL.md) against the Cycle 22 supplemental plan. The plan itself (origin-issued Ed25519 receipt over the canonical bundle SHA-256, pinned SPKI, fail-closed signing config, wrong-key/tamper/digest tests) is consistent with the product boundaries: it keeps judgement, backend execution, human acceptance and payment unproven, and makes no third-party timestamp claim. One current defect is reachable and conflicts with the plan's fail-closed requirement: the offline viewer treats any internally consistent bundle as an acceptable result and never checks for an origin-issued receipt, so a stripped or substituted unsigned/re-signed-by-another-key file still produces a 'ready' state with 'Internally consistent'. That gives the UI no fail-closed path, and the plan's 'invalid/foreign signature, no silent removal/unsigned fallback' rule has no enforcement point. Design suggestions (not findings): add a receipt field (schema, keyId, issuer=mainSiteURL, issuedAt, optional digest, signature) re-verified against the pinned SPKI before 'ready'; keep the legacy unsigned result truthfully labelled ('unsigned, authenticity unproven'), and make it independently verifiable offline for old packets only. Add explicit receipt checks in the viewer gate list. Key-rotation should allow multiple pinned keyIds with an explicit retired-key policy, or old receipts become unverifiable. Say plainly that the pinned key makes the origin the trust anchor, not a third-party timestamp, and that a compromised or leaked main-app secret defeats the guarantee.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "app/guest-lab/evidence-viewer.ts",
+        "line": 192,
+        "title": "Viewer reports 'Internally consistent' ready state without any origin-receipt check, so a stripped or foreign-signed file is not treated as fail-closed",
+        "evidence": "Line 192 renders the verdict from `state.verification.consistency` only, which comes from verifyEvidenceBundle. That function (lib/evidence-bundle.ts line 109) hardcodes `authenticity:\"not-proven\"` and has no signature input or check; lines 132-133 say 'There is no trusted signature or external anchor' and 'does not prove issuance'. The viewer's state machine (state.phase==='ready') never distinguishes a bundle that carries a valid origin receipt from one with a missing, tampered or foreign signature. Line 61 advertises v1/v2 support with no receipt, and line 140 shows legacy files as normal. The proposed receipt verifier therefore has no existing enforcement point in the current flow, and the plan's 'invalid/foreign signature is an invalid receipt, no silent removal or unsigned fallback' cannot hold for this viewer without a new check path.",
+        "reproduction": "Reasoning trace (not executed): export a v2 bundle, remove any receipt, or re-sign it with an attacker key and re-run the same offline verify; verifyEvidenceBundle returns consistency 'consistent' (lines 112-118 and the check chain) and the viewer reaches line 191-192 showing the 'Internally consistent' verdict with no distinction from an official export. A buyer cannot tell from the UI that issuance is unproven.",
+        "suggestion": "Add a gated unsigned-vs-signed state: when `verification.receipt` is absent, render an explicit 'unsigned export, issuance unproven' label separate from 'Internally consistent' (and have legacy v1 continue to do so). When a receipt is present but its signature/digest/keyId/issuer fails against the pinned SPKI, render a distinct 'invalid receipt' verdict. Never fall back to the unsigned verdict for a failed signature. Render the 'Internally consistent' verdict only in the signed-and-verified case. Add viewer/receipt tests for missing receipt, wrong pinned key and tampered digest."
+      }
+    ],
+    "limitations": [
+      "Read-only design review of a three-file packet; no files were modified and no commands, tests, typecheck, build or runtime checks were run.",
+      "The proposed source verifier, receipt schema, main-app signing code, Lab/repo public-key publication and test files are not in the packet, so their correctness and the reachability of signing-config fail-closed behavior cannot be assessed.",
+      "Only defects reachable in the current supplied code are reported; the absence of receipt verification elsewhere is treated as design guidance in the summary, not a finding outside the cited files.",
+      "SKILL.md was reviewed only as project guidance; it contains no runtime logic.",
+      "Trust-scope, key-rotation and compromised-secret limits are critique items for the design, not current-code findings.",
+      "The claim 'private PKCS8 only in existingSites main appsecret' cannot be verified here; no environment, secrets or app config were inspected."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

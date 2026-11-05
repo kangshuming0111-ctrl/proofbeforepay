@@ -1,0 +1,315 @@
+{
+  "schema": "pbp-full-gap-prospective-source-reference-v1",
+  "frozenBeforeProviderInspection": true,
+  "apiCalls": 0,
+  "modelCalls": 0,
+  "networkCalls": 0,
+  "authoredSyntheticProjects": 8,
+  "criteria": 9,
+  "thirdPartyRepositories": 0,
+  "customerProjects": 0,
+  "independentHumanUsers": 0,
+  "corpusFile": "full-gap-assessment-corpus-2026-11-06.json",
+  "corpusSha256": "1075514a591788b8ebfd8ca65b8e0eaaec599881ac7cba2212d5e8d525e865ee",
+  "referencePolicy": "Small authored source-only cohort. Unknown is a conservative source-evidence policy, not a demonstrated runtime failure. Exact citations, status agreement, full-answer semantic quality and execution are different measurements.",
+  "cases": [
+    {
+      "id": "full-gap-present-phone",
+      "criteria": [
+        {
+          "criterionId": "coverage-1",
+          "source": "The page content must list the shop telephone number.",
+          "expectedStatus": "supported",
+          "rationale": "The complete static index.html body contains a labelled telephone in one p owner. This establishes source copy only, not visibility, phone ownership or connection.",
+          "relevantFiles": [
+            "index.html",
+            "contact.html"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "file": "index.html",
+          "sha256": "3bfa628b7131912995ea606fd211624ec8aec8985a5a0b3bcf3e8e46dab36672",
+          "utf8Bytes": 272,
+          "utf16Units": 272
+        },
+        {
+          "file": "contact.html",
+          "sha256": "7095c36faa8b6cf7255774867e6aea86d5be970e1ccd2ad06d8bee11f3266694",
+          "utf8Bytes": 264,
+          "utf16Units": 264
+        },
+        {
+          "file": "site.css",
+          "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b",
+          "utf8Bytes": 62,
+          "utf16Units": 62
+        }
+      ]
+    },
+    {
+      "id": "full-gap-missing-phone",
+      "criteria": [
+        {
+          "criterionId": "coverage-1",
+          "source": "The page content must list the shop telephone number.",
+          "expectedStatus": "changes_suggested",
+          "rationale": "Both complete plain static HTML bodies lack telephone text and contain no image, script, template or hidden alternative. The limited source-copy omission is established; no live browser or business contact validity is claimed.",
+          "relevantFiles": [
+            "index.html",
+            "contact.html"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "file": "index.html",
+          "sha256": "d5506d84fcc69b296b104f2f51567c3517cd645929fc2b13035937fe2d543977",
+          "utf8Bytes": 236,
+          "utf16Units": 236
+        },
+        {
+          "file": "contact.html",
+          "sha256": "4a48044a6bdb99e1da6d43bbf9fa1109d1ac736864d48c4bd22e6b451cd6da55",
+          "utf8Bytes": 259,
+          "utf16Units": 259
+        },
+        {
+          "file": "site.css",
+          "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b",
+          "utf8Bytes": 62,
+          "utf16Units": 62
+        }
+      ]
+    },
+    {
+      "id": "full-gap-body-email-with-decoys",
+      "criteria": [
+        {
+          "criterionId": "coverage-1",
+          "source": "The page content must list the shop email address.",
+          "expectedStatus": "supported",
+          "rationale": "An address owner in the actual static body contains orders@maple.example.test. Comment and script strings are decoys and cannot replace that body witness. The source-copy fact does not establish delivery.",
+          "relevantFiles": [
+            "index.html",
+            "contact.html"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "file": "index.html",
+          "sha256": "319b3a3a98faa6fdbc429c5b029ca67a329141ec3187387070b32379bbd61a42",
+          "utf8Bytes": 372,
+          "utf16Units": 372
+        },
+        {
+          "file": "contact.html",
+          "sha256": "7095c36faa8b6cf7255774867e6aea86d5be970e1ccd2ad06d8bee11f3266694",
+          "utf8Bytes": 264,
+          "utf16Units": 264
+        },
+        {
+          "file": "site.css",
+          "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b",
+          "utf8Bytes": 62,
+          "utf16Units": 62
+        }
+      ]
+    },
+    {
+      "id": "full-gap-inert-email-only",
+      "criteria": [
+        {
+          "criterionId": "coverage-1",
+          "source": "The page content must list the shop email address.",
+          "expectedStatus": "insufficient_evidence",
+          "rationale": "The only email strings occur in an HTML comment and inert script data, not body contact copy. They cannot support the requested page-content relationship. Dynamic content remains an explicit uncertainty, so do not assert browser absence or delivery failure.",
+          "relevantFiles": [
+            "index.html",
+            "contact.html"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "file": "index.html",
+          "sha256": "d226c763eb1b6c2ac669d8e63a4908533d3df877697192c4b662f7a5266e6465",
+          "utf8Bytes": 388,
+          "utf16Units": 388
+        },
+        {
+          "file": "contact.html",
+          "sha256": "7095c36faa8b6cf7255774867e6aea86d5be970e1ccd2ad06d8bee11f3266694",
+          "utf8Bytes": 264,
+          "utf16Units": 264
+        },
+        {
+          "file": "site.css",
+          "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b",
+          "utf8Bytes": 62,
+          "utf16Units": 62
+        }
+      ]
+    },
+    {
+      "id": "full-gap-named-page-phone",
+      "criteria": [
+        {
+          "criterionId": "coverage-1",
+          "source": "index.html must list the shop phone number.",
+          "expectedStatus": "changes_suggested",
+          "rationale": "The explicitly named index.html is a complete plain static document without phone text. A telephone on contact.html is real source copy but cannot satisfy this named-page requirement.",
+          "relevantFiles": [
+            "index.html",
+            "contact.html"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "file": "index.html",
+          "sha256": "b3206c15f432be03d7c0f449866cb9b218495f8f26ec96e3d505d17ac9b67568",
+          "utf8Bytes": 242,
+          "utf16Units": 242
+        },
+        {
+          "file": "contact.html",
+          "sha256": "98727395321dbdac50db5e487c461596128a8f7ce84a839524bcc8cec70892a6",
+          "utf8Bytes": 216,
+          "utf16Units": 216
+        },
+        {
+          "file": "site.css",
+          "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b",
+          "utf8Bytes": 62,
+          "utf16Units": 62
+        }
+      ]
+    },
+    {
+      "id": "full-gap-cross-page-price-owner",
+      "criteria": [
+        {
+          "criterionId": "coverage-1",
+          "source": "The index.html and menu.html source content must both list Tea at AUD 18.",
+          "expectedStatus": "changes_suggested",
+          "rationale": "index.html pairs Tea with AUD18. menu.html pairs Tea with AUD24 and Coffee with AUD18. The neighboring Coffee amount and correct first page cannot substitute for the wrong Tea owner on menu.html.",
+          "relevantFiles": [
+            "index.html",
+            "menu.html"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "file": "index.html",
+          "sha256": "d32baba41e9e914640b24110ccfcecf39302219804ca29476b2d814f5f53c98a",
+          "utf8Bytes": 221,
+          "utf16Units": 221
+        },
+        {
+          "file": "menu.html",
+          "sha256": "bc17e596ebe3c04a47232a5410b6dbb7eaa1b397488a7e4e9a085f99e81a291d",
+          "utf8Bytes": 226,
+          "utf16Units": 226
+        },
+        {
+          "file": "site.css",
+          "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b",
+          "utf8Bytes": 62,
+          "utf16Units": 62
+        }
+      ]
+    },
+    {
+      "id": "full-gap-compound-and-quoted-copy",
+      "criteria": [
+        {
+          "criterionId": "manual-1",
+          "source": "After enquiry submission the site must email the owner and preserve a receipt retrievable after restart.",
+          "expectedStatus": "insufficient_evidence",
+          "rationale": "Form and fixed success text cannot establish actual submission, owner email delivery, durable writes or independent restart readback. Each operation remains unverified; do not promote the quoted label into an execution claim.",
+          "relevantFiles": [
+            "index.html",
+            "contact.html"
+          ]
+        },
+        {
+          "criterionId": "coverage-1",
+          "source": "The page copy must include the exact wording \"Submission\".",
+          "expectedStatus": "supported",
+          "rationale": "The h1 contains the complete requested literal Submission. The word is copy data, not a requirement to execute a submission.",
+          "relevantFiles": [
+            "index.html"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "file": "index.html",
+          "sha256": "388f938ce897a9cab099f2b4d003368960de39b7bb982419adbc592cb5bbdf78",
+          "utf8Bytes": 351,
+          "utf16Units": 351
+        },
+        {
+          "file": "contact.html",
+          "sha256": "dd2ab3e475247d079b55f5a1379861017da50b46cf524f9de9de61326bd22a93",
+          "utf8Bytes": 234,
+          "utf16Units": 234
+        },
+        {
+          "file": "site.css",
+          "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b",
+          "utf8Bytes": 62,
+          "utf16Units": 62
+        }
+      ]
+    },
+    {
+      "id": "full-gap-merged-row-price-meaning",
+      "criteria": [
+        {
+          "criterionId": "coverage-1",
+          "source": "The menu.html source content must identify the price for the agreed Tea order.",
+          "expectedStatus": "insufficient_evidence",
+          "rationale": "The rowspan explicitly associates Tea with both AUD18 and AUD28 rows. No size, option or other meaning identifies which amount applies to the agreed order. Unknown business meaning must not be described as an unknown Tea-to-row relationship; no definite price defect or successful order execution is established.",
+          "relevantFiles": [
+            "index.html",
+            "menu.html"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "file": "index.html",
+          "sha256": "bb4192f5cb65cb2165c5c7429473816208bc9860dfc71d4a134a5fde33cdd97b",
+          "utf8Bytes": 237,
+          "utf16Units": 237
+        },
+        {
+          "file": "menu.html",
+          "sha256": "a4a294dca00834921b3456520de8f6408d661aa87cd4b68ab53731edd16bb6b5",
+          "utf8Bytes": 278,
+          "utf16Units": 278
+        },
+        {
+          "file": "site.css",
+          "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b",
+          "utf8Bytes": 62,
+          "utf16Units": 62
+        }
+      ]
+    }
+  ],
+  "qualitativeGates": [
+    "All claims must remain tied to the exact page and complete content owner.",
+    "Comments and script literals are not body contact text.",
+    "Cross-page or neighboring-field evidence cannot substitute for a named target.",
+    "For compound operations preserve distinct unverified directions and the complete locked wording.",
+    "Quoted Submission is data and does not request execution.",
+    "For the rowspan case Tea is already associated with both rows; unresolved meaning is which amount applies to the agreed order.",
+    "Do not infer rendering, contact validity, email delivery, backend persistence or restart success from source."
+  ]
+}

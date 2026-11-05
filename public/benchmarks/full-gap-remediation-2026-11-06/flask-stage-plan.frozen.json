@@ -1,0 +1,31 @@
+{
+  "schema": "pbp-delivery-stage-plan-v1",
+  "runId": "stage-flask-tutorial-v1",
+  "syntheticOnly": true,
+  "scope": {
+    "projectId": "thirdparty-pallets-flask",
+    "deliveryId": "flask-tutorial-3.1.2",
+    "criterionId": "manual-native-post",
+    "sourceRevision": "2c1b30d0503cfb064f1cb252e6614a06915a362a",
+    "requirement": "Create an authenticated post through the native Flask tutorial route, store exact title and body, and read the same record after application restart. Email receipt is outside the upstream capability."
+  },
+  "payloadDigest": "94c5ef6b7e92358cee28eb256a85f23a823425f3ee951bd03a5a7cf28b1f5455",
+  "stages": [
+    {
+      "stage": "submit",
+      "coverage": "adapter"
+    },
+    {
+      "stage": "stored_record",
+      "coverage": "adapter"
+    },
+    {
+      "stage": "fresh_readback",
+      "coverage": "adapter"
+    },
+    {
+      "stage": "email_receipt",
+      "coverage": "unsupported"
+    }
+  ]
+}

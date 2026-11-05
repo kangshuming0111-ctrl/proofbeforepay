@@ -1,0 +1,85 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/delivery-stage-evidence.ts",
+      "bytes": 10208,
+      "lines": 124,
+      "sha256": "7d217073d879000dff0b043a1094ffb999f9004694c3549b66e434c4379726dc"
+    },
+    {
+      "file": "lib/delivery-stage-probe.ts",
+      "bytes": 2941,
+      "lines": 33,
+      "sha256": "b05c64ea8f2e4d959cf5fde4b391bc44417ab90187b6249b550e701a17f17e45"
+    },
+    {
+      "file": "scripts/run-delivery-stage-probe.mjs",
+      "bytes": 2412,
+      "lines": 29,
+      "sha256": "f14ef213637a5ef5c27c052c823ff4bb2ec0c2689b3635cc13d77ae9c022b831"
+    },
+    {
+      "file": "app/components/DeliveryStageEvidence.tsx",
+      "bytes": 8227,
+      "lines": 38,
+      "sha256": "938a4e05abe2e6c3f5733f693ba12eb21edc13cbc37e3d8c1eb16e2002598616"
+    },
+    {
+      "file": "tests/delivery-stage-probe.test.ts",
+      "bytes": 3235,
+      "lines": 23,
+      "sha256": "945bb821cb5ceced6e816eb1294fb7e0bb70e3767de374eec0658ead1567cef0"
+    },
+    {
+      "file": "examples/delivery-stage-flask/adapter.mjs",
+      "bytes": 5334,
+      "lines": 51,
+      "sha256": "4a072d5546e8177b044cceb82639baddf9b5314d8a246f336924a7fa6094832e"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"The packet implements a cooperative four-stage delivery probe in which shared strict data validation is separated from an explicitly trusted local adapter. The evidence verifier recomputes report rows and digests and never executes code. The CLI reserves a new output file before importing the adapter, withholds exception text, and reserves only new reports (never the plan or the already-created output). The Flask adapter checks the pinned commit, a clean tutorial tree, Flask 3.1.2 and an absolute interpreter, drives actual HTTP and SQLite, and reads back through a restarted process. After a close reading of every supplied file, I found no actionable P1/P2/P3 defect that the sources prove. The targeted risks mostly hold up: timeout and adapter errors leave the run closed so later stages are recorded as prior_result_unknown; late writes cannot leak into a report, because each run uses a new adapter, report and connection ID. The submitted observation's runId, sourceRevision and stage are checked against the plan. Digests, record IDs and connection freshness are enforced, and submit's record is never shown as a matched record without accepted===true. Missing stage functions become unsupported observations rather than crashes. CredentialError messages are reduced to adapter_error, and the CLI's catch-all message whitelist prevents raw error text from leaking. Non-200 GET responses after /create cause accepted===false, which correctly yields mismatch. No tests or runtime checks were executed.\",\"findings\":[],\"limitations\":[\"Read-only review of the supplied packet only. No files were changed, nothing was executed, and no tests were run. All findings are based on static source reasoning.\",\"examples/delivery-stage-staging/adapter.mjs referenced by tests/delivery-stage-probe.test.ts, examples/delivery-stage-flask/serve.py and the tutorial templates are not in the packet. Claims about profiles fixed/no-store/wrong-readback/no-email, the 5 seconds default timeout, exact 127.0.0.1 binding of serve.py, the SQLite schema (unique title), and that the pinned tutorial source is not modified therefore remain unverified.\",\"The tester cannot confirm that plan.scope.sourceRevision equals PINNED_COMMIT in the Flask profile, because that profile's test file is not supplied. The adapter rejects any other revision with FLASK_PINNED_SOURCE_REQUIRED, so a missing-plan-field failure would be reported as adapter_error (unknown), not as a false match.\",\"The 22 focused tests and the 'first selector bug' regression claim cannot be checked; they were not run.\",\"Minor robustness observations that are not clear defects and are not listed as findings: (a) in lib/delivery-stage-probe.ts line 22, structuredClone(observations) could throw for a prototype-bearing observation, which would produce unknown/adapter_error rather than a crash; (b) in examples/delivery-stage-flask/adapter.mjs lines 18/32, if serve.py exits after printing its port line, the startup promise rejects but the background serve.py process's exit is not awaited (resource only); (c) the adapter trusts any response body, where subprocess environment or output escaping could change the recorded digest. These stay within the declared cooperative, seller-controlled trust boundary.\",\"The prior-lease writer finding is not assessed because that writer code is not in the packet. Future-binding issues are out of scope per the task instructions.\",\"The UI is a local viewer. Nothing in it proves server authenticity, acceptance or payment, and this review does not claim otherwise.\"]}",
+  "report": {
+    "summary": "The packet implements a cooperative four-stage delivery probe in which shared strict data validation is separated from an explicitly trusted local adapter. The evidence verifier recomputes report rows and digests and never executes code. The CLI reserves a new output file before importing the adapter, withholds exception text, and reserves only new reports (never the plan or the already-created output). The Flask adapter checks the pinned commit, a clean tutorial tree, Flask 3.1.2 and an absolute interpreter, drives actual HTTP and SQLite, and reads back through a restarted process. After a close reading of every supplied file, I found no actionable P1/P2/P3 defect that the sources prove. The targeted risks mostly hold up: timeout and adapter errors leave the run closed so later stages are recorded as prior_result_unknown; late writes cannot leak into a report, because each run uses a new adapter, report and connection ID. The submitted observation's runId, sourceRevision and stage are checked against the plan. Digests, record IDs and connection freshness are enforced, and submit's record is never shown as a matched record without accepted===true. Missing stage functions become unsupported observations rather than crashes. CredentialError messages are reduced to adapter_error, and the CLI's catch-all message whitelist prevents raw error text from leaking. Non-200 GET responses after /create cause accepted===false, which correctly yields mismatch. No tests or runtime checks were executed.",
+    "findings": [],
+    "limitations": [
+      "Read-only review of the supplied packet only. No files were changed, nothing was executed, and no tests were run. All findings are based on static source reasoning.",
+      "examples/delivery-stage-staging/adapter.mjs referenced by tests/delivery-stage-probe.test.ts, examples/delivery-stage-flask/serve.py and the tutorial templates are not in the packet. Claims about profiles fixed/no-store/wrong-readback/no-email, the 5 seconds default timeout, exact 127.0.0.1 binding of serve.py, the SQLite schema (unique title), and that the pinned tutorial source is not modified therefore remain unverified.",
+      "The tester cannot confirm that plan.scope.sourceRevision equals PINNED_COMMIT in the Flask profile, because that profile's test file is not supplied. The adapter rejects any other revision with FLASK_PINNED_SOURCE_REQUIRED, so a missing-plan-field failure would be reported as adapter_error (unknown), not as a false match.",
+      "The 22 focused tests and the 'first selector bug' regression claim cannot be checked; they were not run.",
+      "Minor robustness observations that are not clear defects and are not listed as findings: (a) in lib/delivery-stage-probe.ts line 22, structuredClone(observations) could throw for a prototype-bearing observation, which would produce unknown/adapter_error rather than a crash; (b) in examples/delivery-stage-flask/adapter.mjs lines 18/32, if serve.py exits after printing its port line, the startup promise rejects but the background serve.py process's exit is not awaited (resource only); (c) the adapter trusts any response body, where subprocess environment or output escaping could change the recorded digest. These stay within the declared cooperative, seller-controlled trust boundary.",
+      "The prior-lease writer finding is not assessed because that writer code is not in the packet. Future-binding issues are out of scope per the task instructions.",
+      "The UI is a local viewer. Nothing in it proves server authenticity, acceptance or payment, and this review does not claim otherwise."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

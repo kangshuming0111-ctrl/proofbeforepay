@@ -5,7 +5,8 @@ import {tmpdir} from "node:os";
 import path from "node:path";
 import {spawnSync} from "node:child_process";
 import {fileURLToPath} from "node:url";
-import {evidenceReplayImplementationSnapshot,hashEvidenceReplay,stripEvidenceActionMetadata,verifyAdjustedCriteriaLineage,verifyWithheldRiskLineage,writeEvidenceReplay} from "../scripts/replay-evidence-actions-2026-11-06.mjs";
+import {evidenceReplayImplementationSnapshot,hashEvidenceReplay,stripEvidenceActionMetadata,verifyAdditiveObligationsBaseline,verifyAdjustedCriteriaLineage,verifyWithheldRiskLineage,writeEvidenceReplay} from "../scripts/replay-evidence-actions-2026-11-06.mjs";
+import {deriveAssessmentObligations} from "../lib/assessment-obligations.ts";
 import {validateProjectCorpus} from "../scripts/run-project-assessment-evaluation.ts";
 
 const root=fileURLToPath(new URL("..",import.meta.url));
@@ -87,11 +88,23 @@ test("retained replay remains runnable in an exported tree with public fixtures 
   const report=JSON.parse(await readFile(output,"utf8"));
   assert.equal(report.projects,6);assert.equal(report.criteria,6);assert.equal(report.apiCalls,0);assert.equal(report.networkCalls,0);assert.equal(report.blockedNetworkAttempts,0);
   assert.ok(report.rows.every((row:{publishedFieldsUnchanged:boolean;acceptanceAndPaymentUnchanged:boolean})=>row.publishedFieldsUnchanged&&row.acceptanceAndPaymentUnchanged));
+  assert.ok(report.rows.every((row:{obligationsComparison:{validated:number;additions:number;exactLockedWording:boolean}})=>row.obligationsComparison.validated===1&&row.obligationsComparison.additions===1&&row.obligationsComparison.exactLockedWording));
   assert.equal(report.runtimeClosureSha256.length,64);
   const retainedOutputHash=hashEvidenceReplay(await readFile(output));
   await assert.rejects(writeEvidenceReplay(output,{changed:true}),/EEXIST/u);
   assert.equal(hashEvidenceReplay(await readFile(output)),retainedOutputHash);
  }finally{await rm(dir,{recursive:true,force:true});}
+});
+
+test("additive obligation baseline comparison rejects altered metadata and every non-metadata core change",()=>{
+ const criteria=[{id:"coverage-1",title:"Original requirement 1",source:"The page content must list the shop telephone number."}];
+ const old={items:[{criterionId:"coverage-1",status:"supported",explanation:"Retained source-only suggestion.",citations:[],ruleEvidenceIds:[]}],risks:[],limitations:["Retained limits."]};
+ const report={...structuredClone(old),items:old.items.map(item=>({...item,obligations:deriveAssessmentObligations(criteria[0])}))};
+ assert.deepEqual(verifyAdditiveObligationsBaseline(report,old,criteria),{validated:1,additions:1,alreadyRetainedUnchanged:0,exactLockedWording:true,publishedCoreFieldsUnchanged:true});
+ assert.equal(verifyAdditiveObligationsBaseline(report,structuredClone(report),criteria).alreadyRetainedUnchanged,1);
+ for(const mutate of[(v:any)=>{v.items[0].obligations.items[0].state="passed";},(v:any)=>{v.items[0].obligations.clauses[0].excerpt="different requirement";},(v:any)=>{v.items[0].status="changes_suggested";},(v:any)=>{v.items[0].explanation="revised model conclusion";},(v:any)=>{v.items[0].extra="unapproved additive field";},(v:any)=>{v.risks.push({title:"invented"});}]){const changed=structuredClone(report);mutate(changed);assert.throws(()=>verifyAdditiveObligationsBaseline(changed,old,criteria));}
+ const badBaseline=structuredClone(report);badBaseline.items[0].obligations.items[0].kind="unclassified";assert.throws(()=>verifyAdditiveObligationsBaseline(report,badBaseline,criteria));
+ assert.throws(()=>verifyAdditiveObligationsBaseline(report,old,[{...criteria[0],source:"The site must submit a form."}]));
 });
 
 test("eight authored boundary sources and independent references stay frozen and are not customer samples",async()=>{

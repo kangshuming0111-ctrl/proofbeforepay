@@ -1,5 +1,8 @@
 import {type EvidenceExport,type EvidenceVerification} from "../../lib/evidence-export.ts";
-import {EVIDENCE_BUNDLE_BYTE_LIMIT,EVIDENCE_BUNDLE_SCHEMA,verifyEvidenceBundle,type EvidenceBundle} from "../../lib/evidence-bundle.ts";
+import {EVIDENCE_BUNDLE_BYTE_LIMIT,EVIDENCE_BUNDLE_SCHEMA,verifyEvidenceBundle,assertEvidenceBundleBudget,type EvidenceBundle} from "../../lib/evidence-bundle.ts";
+import {ISSUED_REVISION_AUDIT_SCHEMA,verifyIssuedRevisionAudit,type IssuedRevisionAuditVerification} from "../../lib/issued-revision-audit.ts";
+import type {EvidenceIssuerVerification} from "../../lib/evidence-issuer.ts";
+import type {RevisionAudit} from "../../lib/revision-audit.ts";
 import type {RuntimeCheckReport} from "../../lib/runtime-checks.ts";
 
 export type EvidenceInput = {name?:string;size:number;arrayBuffer:()=>Promise<ArrayBuffer>};
@@ -8,12 +11,17 @@ export type EvidenceViewerState =
   | {phase:"empty"}
   | {phase:"checking";label:string;recorded:boolean}
   | {phase:"error";label:string;recorded:boolean;error:EvidenceViewerError}
-  | {phase:"ready";label:string;recorded:boolean;verification:EvidenceVerification;packet?:EvidenceExport;supplemental?:EvidenceBundle["supplemental"];followups?:EvidenceBundle["followups"]};
+  | {phase:"ready";label:string;recorded:boolean;verification:EvidenceVerification|IssuedRevisionAuditVerification;issuance?:EvidenceIssuerVerification|{status:"unproven";reason:"unsigned_legacy"};revisionAudit?:RevisionAudit;packet?:EvidenceExport;supplemental?:EvidenceBundle["supplemental"];followups?:EvidenceBundle["followups"]};
 export type RuntimeViewerEvidence={state:"unavailable"}|{state:"missing"}|{state:"pending";previousReport?:RuntimeCheckReport}|{state:"recorded";report:RuntimeCheckReport};
+export function currentEvidenceChecks(state:EvidenceViewerState){
+ if(state.phase!=="ready")return[];
+ if(state.revisionAudit&&state.issuance?.status==="verified"&&state.verification.schema==="proofbeforepay-issued-revision-audit-verification-v1")return state.verification.versions.find(v=>v.deliveryId===state.packet?.delivery.id)?.verification.checks??[];
+ return state.verification.checks;
+}
 
 /** A retained older report must not stand in for an unfinished run. */
 export function runtimeEvidenceForViewer(state:EvidenceViewerState):RuntimeViewerEvidence {
-  if(state.phase!=="ready"||!state.packet||!state.verification.checks.some(row=>row.id==="runtime-bindings"&&row.status==="consistent"))return{state:"unavailable"};
+  if(state.phase!=="ready"||!state.packet||!currentEvidenceChecks(state).some(row=>row.id==="runtime-bindings"&&row.status==="consistent"))return{state:"unavailable"};
   const delivery=state.packet.delivery;
   if(delivery.runtimeRun)return{state:"pending",...(delivery.runtimeReport?{previousReport:delivery.runtimeReport}:{})};
   return delivery.runtimeReport?{state:"recorded",report:delivery.runtimeReport}:{state:"missing"};
@@ -43,6 +51,7 @@ function checkedPacket(value:unknown,report:EvidenceVerification):EvidenceExport
 export function createEvidenceViewerController(
   onChange:(state:EvidenceViewerState)=>void=()=>{},
   verifier:(value:unknown)=>Promise<EvidenceVerification>=verifyEvidenceBundle,
+  issuedVerifier:(value:unknown)=>Promise<IssuedRevisionAuditVerification>=verifyIssuedRevisionAudit,
 ) {
   let generation=0,state:EvidenceViewerState={phase:"empty"};
   const publish=(next:EvidenceViewerState)=>{state=next;onChange(next);};
@@ -51,12 +60,24 @@ export function createEvidenceViewerController(
   async function check(value:unknown,context:ReturnType<typeof begin>) {
     if(context.token!==generation)return;
     try{
+      // Recognizable signed envelopes never fall back to unsigned verification,
+      // including an envelope whose schema has been removed or overwritten.
+      const row=value&&typeof value==="object"?value as Record<string,unknown>:undefined;
+      if(row&&(row.schema===ISSUED_REVISION_AUDIT_SCHEMA||Object.hasOwn(row,"audit")||Object.hasOwn(row,"receipt"))){
+        const verification=await issuedVerifier(value);if(context.token!==generation)return;
+        const audit=verification.consistency==="consistent"&&verification.issuance.status==="verified"?verification.audit:undefined,current=audit?.versions.at(-1),evidence=current?.evidence;
+        const packet=evidence?.schema===EVIDENCE_BUNDLE_SCHEMA?evidence.core:undefined;
+        const checks=packet?verification.versions.find(v=>v.deliveryId===packet.delivery.id)?.verification.checks??[]:[];
+        const supplemental=evidence?.schema===EVIDENCE_BUNDLE_SCHEMA&&checks.some(c=>c.id==="supplemental-catalog"&&c.status==="consistent")&&checks.some(c=>c.id==="supplemental-objects"&&c.status==="consistent")?evidence.supplemental:undefined;
+        const followups=supplemental&&checks.some(c=>c.id==="followup-bindings"&&c.status==="consistent")&&evidence?.schema===EVIDENCE_BUNDLE_SCHEMA?evidence.followups:undefined;
+        publish({phase:"ready",label:context.label,recorded:context.recorded,verification,issuance:verification.issuance,...(audit&&packet?{revisionAudit:audit,packet}:{}),...(supplemental?{supplemental}:{}),...(followups?{followups}:{})});return;
+      }
       const verification=await verifier(value);
       if(context.token!==generation)return;
       const packet=checkedPacket(value,verification);
       const supplemental=(value as {schema?:unknown})?.schema===EVIDENCE_BUNDLE_SCHEMA&&verification.checks.some(row=>row.id==="supplemental-catalog"&&row.status==="consistent")&&(verification.checks.some(row=>row.id==="supplemental-objects"&&row.status==="consistent"))?(value as EvidenceBundle).supplemental:undefined;
       const followups=supplemental&&verification.checks.some(row=>row.id==="followup-bindings"&&row.status==="consistent")?(value as EvidenceBundle).followups:undefined;
-      publish({phase:"ready",label:context.label,recorded:context.recorded,verification,...(packet?{packet}:{}),...(supplemental?{supplemental}:{}),...(followups?{followups}:{})});
+      publish({phase:"ready",label:context.label,recorded:context.recorded,verification,issuance:{status:"unproven",reason:"unsigned_legacy"},...(packet?{packet}:{}),...(supplemental?{supplemental}:{}),...(followups?{followups}:{})});
     }catch{failed(context,"verification_failed");}
   }
   return {
@@ -72,7 +93,7 @@ export function createEvidenceViewerController(
       const context=begin(name,true);
       // The shipped synthetic objects are copied before hashing; later caller
       // changes cannot mix another sample into this result.
-      try{await check(structuredClone(value),context);}catch{failed(context,"verification_failed");}
+      try{assertEvidenceBundleBudget(value);await check(structuredClone(value),context);}catch{failed(context,"verification_failed");}
     },
   };
 }

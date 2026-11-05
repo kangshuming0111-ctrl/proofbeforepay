@@ -59,6 +59,17 @@ test("judge export includes the enquiry native-service modules and migration wit
   assert.ok(!archive.stdout.includes("unrelated-private"));
 });
 
+test("the delivery-stage handoff includes both runnable examples and excludes their runtime state", async t => {
+  const {root,base}=await fixture(t);
+  const names=["examples/delivery-stage-staging/server.mjs","examples/delivery-stage-staging/adapter.mjs","examples/delivery-stage-staging/README.md","examples/delivery-stage-flask/adapter.mjs","examples/delivery-stage-flask/serve.py","examples/delivery-stage-flask/README.md"];
+  for(const name of names){await mkdir(path.dirname(path.join(root,name)),{recursive:true});await writeFile(path.join(root,name),await readFile(new URL(`../${name}`,import.meta.url)));}
+  for(const directory of ["examples/delivery-stage-staging/outputs","examples/delivery-stage-flask/.venv","examples/unlisted-private"]){await mkdir(path.join(root,directory),{recursive:true});await writeFile(path.join(root,directory,"private.md"),"excluded runtime state\n");}
+  const result=await buildJudgePack(root,path.join(base,"stage-export")),manifest=JSON.parse(await readFile(result.manifest,"utf8")),archive=spawnSync("tar",["-tzf",result.archive],{encoding:"utf8"});
+  assert.equal(archive.status,0);
+  for(const name of names){assert.ok(manifest.files.some(entry=>entry.file===name));assert.ok(archive.stdout.split("\n").includes(`./${name}`));assert.deepEqual(await readFile(path.join(result.sourceDirectory,name)),await readFile(path.join(root,name)));}
+  assert.ok(!archive.stdout.includes("private.md"));
+});
+
 test("template licences are copied byte-for-byte without admitting other TXT or similarly named notes", async t => {
   const {root,base}=await fixture(t),directory=path.join(root,"docs/fixtures/assessment-transfer-2026-11-04");
   await mkdir(directory,{recursive:true});

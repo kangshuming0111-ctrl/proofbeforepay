@@ -73,3 +73,12 @@ test("conflicting immutable assessment metadata is rejected while unsupported ac
   const accessor=structuredClone(bundle);let executed=false;Object.defineProperty((accessor.delivery.assessment!.items[0] as unknown as Record<string,unknown>).evidenceNeed,"reason",{get(){executed=true;return need().reason;},enumerable:true});
   assert.equal((await verifyEvidenceExport(accessor)).consistency,"inconsistent");assert.equal(executed,false);
 });
+
+test('saved obligation metadata binds to original wording in current and frozen acceptance reports',async()=>{
+ const {deriveAssessmentObligations}=await import('../lib/assessment-obligations.ts');
+ const q=fixture();for(const entry of q.proof.delivery!.assessment!.items)entry.obligations=deriveAssessmentObligations(q.proof.criteria.find(c=>c.id===entry.criterionId)!);
+ const before=structuredClone(q),bundle=await createEvidenceExport(q);assert.equal((await verifyEvidenceExport(bundle)).consistency,'consistent');assert.deepEqual(q,before);
+ const changed=structuredClone(bundle);changed.delivery.assessment!.items[0].obligations!.items[0].state='execution_not_verified';assert.ok(aiRejected(await verifyEvidenceExport(changed)));
+ const d=q.proof.delivery!,accepted=acceptDelivery(q,{confirm:true,deliveryId:d.id,manualChecks:d.evidence.filter(e=>e.finding==='needs_human').map(e=>e.criterionId)},at),frozen=await createEvidenceExport(accepted);
+ assert.equal((await verifyEvidenceExport(frozen)).consistency,'consistent');frozen.delivery.acceptanceEvidence![0].assessment!.items[0].obligations!.clauses[0].excerpt+=' altered';assert.ok(aiRejected(await verifyEvidenceExport(frozen)));
+});

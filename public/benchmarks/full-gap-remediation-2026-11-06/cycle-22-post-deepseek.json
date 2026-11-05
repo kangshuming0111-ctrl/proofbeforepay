@@ -1,0 +1,69 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/revision-audit.ts",
+      "bytes": 12348,
+      "lines": 70,
+      "sha256": "e0a6350eba94222a3c6884e5aaecae9ed7338d12bfab73850b7146a685be9d4f"
+    },
+    {
+      "file": "lib/revision-audit-store.ts",
+      "bytes": 4086,
+      "lines": 33,
+      "sha256": "aa7e5d5ba1407052f51d569fa5e8860e634eb5d8068454319457a02644795e9f"
+    },
+    {
+      "file": "app/api/proofs/[id]/revision-audit/route.ts",
+      "bytes": 1274,
+      "lines": 15,
+      "sha256": "32e27524854407f13c42c974f2b4211dd55891256765e7330505e46169166d3b"
+    },
+    {
+      "file": "app/components/EvidenceDownloads.tsx",
+      "bytes": 4649,
+      "lines": 48,
+      "sha256": "af42c4bce65465fa1577228578505c60b99461b64ae63c4b0b4a443baf77d111"
+    },
+    {
+      "file": "tests/revision-audit-route.test.ts",
+      "bytes": 9770,
+      "lines": 53,
+      "sha256": "1fb6be11f77e7548a0c1de52f971abf980d395400c09f24851ad43a618cf49da"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"The selected-revision audit core, the store, the GET route, the export UI and the SQLite route test are coherent overall. The GET route authenticates the actor, then guards membership, then checks config, then exports; the SQLite test covers auth, outsider, config-503, filters and CAS. However, this source packet does not support several of the stated claims. First, the route's members/report-heads case is not visible in reviewable source, because readProofCase/readProofVersions/supplementalGuard are controlled test adapters. Second, the UI primary revision action is offered for any delivery with sequence>=2, but the store treats every version with a sequence lower than the current one as archived source. The packet does not show how a prior version is classified after real repo version cycles. Third, the 'partial caps' rule is not clearly complete: if more than five versions lack full file source, verifyRevisionAudit reports consistency 'inconsistent' but does not surface the specific per-version cause. The 'inconsistent' status is correct, but that cause only appears in each version's verification object. Fourth, the actual next step (the single canonical, issuer-wrapped audit) is described, but the packet does not show whether the real request path is D1-backed.\",\"findings\":[{\"severity\":\"P2\",\"file\":\"app/components/EvidenceDownloads.tsx\",\"line\":42,\"title\":\"UI enables the signed revision-audit download for any delivery with sequence>=2, but the store requires an archived source export for every older version\",\"evidence\":\"Line 42 enables the revision button when quote.proof.delivery.sequence>=2. Line 28 calls GET /api/proofs/:id/revision-audit without explicit deliveryId, so the store auto-selects the newest prior version (revision-audit-store.ts:21) and classifies it as archived-core: it calls archivedRevisionQuote(record.quote,v) (v.isCurrent false) and createEvidenceExport (revision-audit-store.ts:25). For the current version it calls exportEvidenceBundle (line 27), the full v2 bundle. The test confirms that the old revision must be evidence-export-v1 (tests/revision-audit-route.test.ts:44). The store only marks a version as current if v.delivery.id===current.id (line 25). Every version with a lower sequence goes through the export (v1) path; nothing in the packet shows how an older v2 bundle is normalized. Therefore a real current-only or prior-v2-only project can offer an action that consistently fails with 409.\",\"reproduction\":\"Unexecuted reasoning: a project with a saved current delivery at sequence 2, whose only retained prior row is a v2 bundle or a metadata-only row without delivery.files, shows an enabled 'Download the last two revisions' button (sequence>=2) but has no explicit deliveryId selection. On click, exportRevisionAudit builds entries where every non-current version is scope 'archived-core', so archivedRevisionQuote throws when v.isCurrent is set (revision-audit.ts:38). createEvidenceExport also rejects a v2 bundle. The route returns 409 with 'A historical revision cannot produce a consistent source-and-report export.'\",\"suggestion\":\"Either make the eligibility shown in the UI match what the store can actually produce (for example, have the server expose a revision-audit availability flag, or count only versions with retained full source and a supported format of at least 2) or make the store handle the top-level v2 evidence of an older version as archived-core. In both cases, change the condition that enables the button.\"},{\"severity\":\"P3\",\"file\":\"lib/revision-audit-store.ts\",\"line\":25,\"title\":\"The store decides whether a version counts as the current one by comparing its delivery id with the current delivery, not by its isCurrent/archived state\",\"evidence\":\"Line 25 decides with `if(v.delivery.id===current.id)continue;` which versions are historical. Everything else is forced to isCurrent:false and scope \\\"archived-core\\\" (line 25, passed to archivedRevisionQuote). The inputs() guard in revision-audit.ts:31 requires a current-full entry to have isCurrent true and non-export schema, and an archived-core entry to have isCurrent false and export schema. Consequently, a version row that the store keeps as isCurrent:true (for example, a stale current row) but that is not record.quote.proof.delivery is treated as archived. That only works if the row contains export-compatible data; otherwise it hard-fails with 409. The packet does not show that readProofVersion normalizes bundle-format rows in older slots.\",\"reproduction\":\"Unexecuted reasoning: supply a selected id that resolves to a row with isCurrent:true and evidence schema v2. Line 25 overrides it to isCurrent:false/archived-core, and createEvidenceExport over a v2 object fails. The 409 message names 'incompatible history', not the precise cause.\",\"suggestion\":\"Normalize historical evidence explicitly: if the retained row is already a full bundle, extract its core or treat it as supported archived evidence. Alternatively, refuse earlier selection and report a precise error. Document the classification rule (delivery id vs. sequence) in the type or comment.\"}],\"limitations\":[\"The review was static only: no source files were executed and no typecheck, build or test run was performed. Statements about 14 core tests, 5 issuer tests and the SQLite route test passing were not verified here.\",\"readProofCase/listProofVersions/readProofVersion and supplementalGuard are hidden behind proof-store.ts, which is not in the packet. The members and report_heads read guards are therefore reviewed only through the controlled test adapters (tests/revision-audit-route.test.ts:27-29) and the final CAS SQL (revision-audit-store.ts:30). The actual D1/store semantics are unverified.\",\"evidence-bundle.ts, evidence-export.ts, evidence-bundle-store.ts, issued-revision-audit.ts, proof-workflow.ts and the fixtures (bundleFixture, snapshotVersion) are not in the packet. Budget enforcement (8 MiB), verifyEvidenceBundle semantics, Ed25519 signing/verification and the schema normalizations are taken on trust.\",\"ArchivedRevisionQuote intentionally omits supplemental catalog, decisions, repair events, accepted snapshots and historical acceptances/reports, and accuracy against the real archived shape is not testable from the packet.\",\"The test file creates no report_heads references or ordering data beyond head=1, and only exercises membership, report and quote CAS together. Gaps in individual guards cannot be ruled out.\",\"The user's 'award AgentReceipt replay not complete' point concerns a comparison outside this packet and was not assessed.\"}",
+  "report": null,
+  "reportValid": false,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": false,
+  "errors": [
+    "report_not_json"
+  ]
+}

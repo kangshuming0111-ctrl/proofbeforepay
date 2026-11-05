@@ -1,0 +1,60 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "scripts/build-judge-pack.mjs",
+      "bytes": 34473,
+      "lines": 263,
+      "sha256": "2989e5f7836900aa4410a75f02f6b758e279acdc9decdaaa279ae0b5660047c5"
+    },
+    {
+      "file": "tests/judge-pack.test.mjs",
+      "bytes": 13872,
+      "lines": 164,
+      "sha256": "64a68d05ef75a4d74c7d5ec59fd5bb5046f3cef83ff18efb058da8217e8c8033"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Advisory source-only postreview of the packaging allowlist change in scripts/build-judge-pack.mjs and the new functional test in tests/judge-pack.test.mjs. I found no concrete reachable defect in export completeness or runtime/private exclusion. The two new SOURCE_DIRS entries are walked by the same allowlist walker, so their .mjs/.py/.md files are exported. The DENIED_PART and dot-filters still exclude outputs, .venv, __pycache__, .env, dependency and secret-named paths at any depth. Unlisted examples stay out because only exact directories are walked. The test is internal to the packet and does not exercise production.\",\"findings\":[],\"limitations\":[\"I did not execute any tool other than the required proofbeforepay-delivery skill. The change and its tests were not run or reproduced; the advisory review considered only the three supplied files and the reported tests12 outcome.\",\"The packet contains only scripts/build-judge-pack.mjs, tests/judge-pack.test.mjs and the skill file. It does not contain the actual examples/delivery-stage-staging or examples/delivery-stage-flask trees. I therefore could not verify that those directories hold the expected file set and extensions, that they have no credentials or fixtures of other kinds, or that no other output, dependency or symlink material appears there.\",\"The test at tests/judge-pack.test.mjs line 65 copies the real example files from the checkout. Whether those sources exist and are readable at test time, and whether they pass the SECRET_LIKE or NUL-content check in sourceFile (scripts/build-judge-pack.mjs lines 94-95), remains unverified.\",\"The exclusion assertions check that archive listing output lacks the string private.md and unrelated-private. They do not directly check the path prefixes themselves. Separate allowlist-walk tests in the same file cover unlisted directories, so this is covered indirectly.\",\"Not reviewed: .openai/hosting.json or .env.example generation (lines 243-244), the pinned-archive validator, tar-command availability and external publication. These are outside the focused allowlist change.\",\"No credential-shaped values, authentication headers or credential-like test literals are reproduced here. Fixtures are referred to by file and line only.\"]}",
+  "report": {
+    "summary": "Advisory source-only postreview of the packaging allowlist change in scripts/build-judge-pack.mjs and the new functional test in tests/judge-pack.test.mjs. I found no concrete reachable defect in export completeness or runtime/private exclusion. The two new SOURCE_DIRS entries are walked by the same allowlist walker, so their .mjs/.py/.md files are exported. The DENIED_PART and dot-filters still exclude outputs, .venv, __pycache__, .env, dependency and secret-named paths at any depth. Unlisted examples stay out because only exact directories are walked. The test is internal to the packet and does not exercise production.",
+    "findings": [],
+    "limitations": [
+      "I did not execute any tool other than the required proofbeforepay-delivery skill. The change and its tests were not run or reproduced; the advisory review considered only the three supplied files and the reported tests12 outcome.",
+      "The packet contains only scripts/build-judge-pack.mjs, tests/judge-pack.test.mjs and the skill file. It does not contain the actual examples/delivery-stage-staging or examples/delivery-stage-flask trees. I therefore could not verify that those directories hold the expected file set and extensions, that they have no credentials or fixtures of other kinds, or that no other output, dependency or symlink material appears there.",
+      "The test at tests/judge-pack.test.mjs line 65 copies the real example files from the checkout. Whether those sources exist and are readable at test time, and whether they pass the SECRET_LIKE or NUL-content check in sourceFile (scripts/build-judge-pack.mjs lines 94-95), remains unverified.",
+      "The exclusion assertions check that archive listing output lacks the string private.md and unrelated-private. They do not directly check the path prefixes themselves. Separate allowlist-walk tests in the same file cover unlisted directories, so this is covered indirectly.",
+      "Not reviewed: .openai/hosting.json or .env.example generation (lines 243-244), the pinned-archive validator, tar-command availability and external publication. These are outside the focused allowlist change.",
+      "No credential-shaped values, authentication headers or credential-like test literals are reproduced here. Fixtures are referred to by file and line only."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

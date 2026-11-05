@@ -1,0 +1,22 @@
+{
+  "cycle": 19,
+  "planReview": "cycle-19-plan-deepseek-final.json",
+  "invalidReviews": [
+    "cycle-19-plan-deepseek.json",
+    "cycle-19-plan-deepseek-authorized-skill.json"
+  ],
+  "accepted": [
+    "Finite whole-clause grammar; no role/visibility inference; complete bounded witnesses; canonical bilingual explanation; keep failures/mismatches and oldencoding priority."
+  ],
+  "postReview": "cycle-19-post-deepseek.json",
+  "rejected": [
+    {
+      "finding": "presence override affects legacy/V2",
+      "reason": "The exact supplied condition explicitly requires encoding === catalog_slots. Review quotes that condition then incorrectly declares it irrelevant. Actual V2/legacy controlled replay countertests retain changes and no newmetadata."
+    }
+  ],
+  "limits": [
+    "Generic natural-language semantic correctness is not proven; this finite phone/email presence family fixes the reproduced contradiction.",
+    "No automatic acceptance or payment; source witnesses do not prove visibility/contactvalidity."
+  ]
+}

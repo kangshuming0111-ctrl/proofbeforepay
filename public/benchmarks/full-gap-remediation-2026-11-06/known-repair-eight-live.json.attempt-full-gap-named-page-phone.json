@@ -1,0 +1,395 @@
+{
+  "id": "full-gap-named-page-phone",
+  "stratum": "mismatch",
+  "reference": [
+    {
+      "criterionId": "coverage-1",
+      "label": {
+        "expectedStatus": "changes_suggested",
+        "rationale": "The explicitly named index.html is a complete plain static document without phone text. A telephone on contact.html is real source copy but cannot satisfy this named-page requirement.",
+        "relevantFiles": [
+          "index.html",
+          "contact.html"
+        ],
+        "requiresSemanticReview": true
+      }
+    }
+  ],
+  "plan": {
+    "requestSha256": "8c1d9547f95bdd73d98bd2273b7beff1d78868faa53a6c07ecbb9c4d5d584bd7",
+    "requestUtf8Bytes": 27330,
+    "promptTokenUpperEstimate": 31426,
+    "outputTokenLimit": 3360,
+    "reservedCostUsd": 0.0134598,
+    "coverage": {
+      "includedFiles": [
+        "contact.html",
+        "index.html",
+        "site.css"
+      ],
+      "truncatedFiles": [],
+      "omittedFiles": []
+    }
+  },
+  "attempted": true,
+  "networkAttempted": true,
+  "criteria": [
+    {
+      "id": "coverage-1",
+      "referenceStatus": "changes_suggested",
+      "rawStatus": "changes_suggested",
+      "applicationStatus": "changes_suggested",
+      "rawCitations": [
+        {
+          "file": "index.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Our seasonal collections are made to order.</p></main></body></html>",
+          "start": 0,
+          "end": 242,
+          "valid": true
+        },
+        {
+          "file": "index.html",
+          "excerpt": "<h1>Maple Floral</h1>",
+          "start": 150,
+          "end": 171,
+          "valid": true
+        },
+        {
+          "file": "index.html",
+          "excerpt": "<p>Our seasonal collections are made to order.</p>",
+          "start": 171,
+          "end": 221,
+          "valid": true
+        },
+        {
+          "file": "contact.html",
+          "excerpt": "<p>Phone: +61 3 7010 3388</p>",
+          "start": 166,
+          "end": 195,
+          "valid": true
+        }
+      ],
+      "applicationCitations": [
+        {
+          "file": "index.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Our seasonal collections are made to order.</p></main></body></html>",
+          "valid": true,
+          "start": 0,
+          "end": 242
+        },
+        {
+          "file": "index.html",
+          "excerpt": "<h1>Maple Floral</h1>",
+          "valid": true,
+          "start": 150,
+          "end": 171
+        },
+        {
+          "file": "index.html",
+          "excerpt": "<p>Our seasonal collections are made to order.</p>",
+          "valid": true,
+          "start": 171,
+          "end": 221
+        },
+        {
+          "file": "contact.html",
+          "excerpt": "<p>Phone: +61 3 7010 3388</p>",
+          "valid": true,
+          "start": 166,
+          "end": 195
+        }
+      ],
+      "rawCitationValidity": "valid",
+      "semanticReview": "pending_independent_adjudication"
+    }
+  ],
+  "wholeAnswerSemanticReview": "pending_independent_adjudication",
+  "raw": {
+    "httpStatus": 200,
+    "bodyText": "{\"id\":\"2a3d19ce-a5af-41a0-93c5-15b93b0b4d21\",\"object\":\"chat.completion\",\"created\":1793902498,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"index\":0,\"id\":\"call_00_ujrCj90oM97ddY0Q5qqh1507\",\"type\":\"function\",\"function\":{\"name\":\"submit_source_assessment_v3\",\"arguments\":\"{\\\"catalogId\\\": \\\"3649282cd1be2e66b616623c9f24f0dcf2c9b6e8d064b435cfdc7967375cafb8\\\", \\\"items\\\": [{\\\"criterionId\\\": \\\"coverage-1\\\", \\\"status\\\": \\\"changes_suggested\\\", \\\"explanation\\\": \\\"index.html contains only the shop name and a collections sentence; no phone number appears. A phone number (+61 3 7010 3388) exists only in contact.html, not on the required page.\\\", \\\"citations\\\": {\\\"c1\\\": \\\"s5\\\", \\\"c2\\\": \\\"s7\\\", \\\"c3\\\": \\\"s8\\\", \\\"c4\\\": \\\"s4\\\", \\\"c5\\\": \\\"\\\", \\\"c6\\\": \\\"\\\"}}], \\\"risks\\\": [{\\\"title\\\": \\\"Shop phone number missing from index.html\\\", \\\"explanation\\\": \\\"The complete index.html markup has a heading and one paragraph with no phone number; the only phone number in the delivery is in contact.html.\\\", \\\"suggestion\\\": \\\"Add the shop phone number to index.html and confirm with the buyer which number is correct.\\\", \\\"citations\\\": {\\\"c1\\\": \\\"s5\\\", \\\"c2\\\": \\\"s4\\\", \\\"c3\\\": \\\"\\\"}}], \\\"limitations\\\": [\\\"Static source only: no browser rendering, scripts or navigation were exercised.\\\", \\\"Whether +61 3 7010 3388 is the buyer's intended shop number is not stated in the source.\\\", \\\"No raster image pixels were supplied, so any phone number shown only in images cannot be assessed.\\\"]}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":6120,\"completion_tokens\":399,\"total_tokens\":6519,\"prompt_tokens_details\":{\"cached_tokens\":5888},\"prompt_cache_hit_tokens\":5888,\"prompt_cache_miss_tokens\":232},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "bodyPrefixText": null,
+    "bodyComplete": true,
+    "bodyUtf8Bytes": 1816,
+    "bodyByteCountIsComplete": true,
+    "utf8Valid": true,
+    "providerBody": {
+      "id": "2a3d19ce-a5af-41a0-93c5-15b93b0b4d21",
+      "object": "chat.completion",
+      "created": 1793902498,
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+              {
+                "index": 0,
+                "id": "call_00_ujrCj90oM97ddY0Q5qqh1507",
+                "type": "function",
+                "function": {
+                  "name": "submit_source_assessment_v3",
+                  "arguments": "{\"catalogId\": \"3649282cd1be2e66b616623c9f24f0dcf2c9b6e8d064b435cfdc7967375cafb8\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"changes_suggested\", \"explanation\": \"index.html contains only the shop name and a collections sentence; no phone number appears. A phone number (+61 3 7010 3388) exists only in contact.html, not on the required page.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"s7\", \"c3\": \"s8\", \"c4\": \"s4\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [{\"title\": \"Shop phone number missing from index.html\", \"explanation\": \"The complete index.html markup has a heading and one paragraph with no phone number; the only phone number in the delivery is in contact.html.\", \"suggestion\": \"Add the shop phone number to index.html and confirm with the buyer which number is correct.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"s4\", \"c3\": \"\"}}], \"limitations\": [\"Static source only: no browser rendering, scripts or navigation were exercised.\", \"Whether +61 3 7010 3388 is the buyer's intended shop number is not stated in the source.\", \"No raster image pixels were supplied, so any phone number shown only in images cannot be assessed.\"]}"
+                }
+              }
+            ]
+          },
+          "logprobs": null,
+          "finish_reason": "tool_calls"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 6120,
+        "completion_tokens": 399,
+        "total_tokens": 6519,
+        "prompt_tokens_details": {
+          "cached_tokens": 5888
+        },
+        "prompt_cache_hit_tokens": 5888,
+        "prompt_cache_miss_tokens": 232
+      },
+      "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+    },
+    "contentText": "{\"catalogId\": \"3649282cd1be2e66b616623c9f24f0dcf2c9b6e8d064b435cfdc7967375cafb8\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"changes_suggested\", \"explanation\": \"index.html contains only the shop name and a collections sentence; no phone number appears. A phone number (+61 3 7010 3388) exists only in contact.html, not on the required page.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"s7\", \"c3\": \"s8\", \"c4\": \"s4\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [{\"title\": \"Shop phone number missing from index.html\", \"explanation\": \"The complete index.html markup has a heading and one paragraph with no phone number; the only phone number in the delivery is in contact.html.\", \"suggestion\": \"Add the shop phone number to index.html and confirm with the buyer which number is correct.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"s4\", \"c3\": \"\"}}], \"limitations\": [\"Static source only: no browser rendering, scripts or navigation were exercised.\", \"Whether +61 3 7010 3388 is the buyer's intended shop number is not stated in the source.\", \"No raster image pixels were supplied, so any phone number shown only in images cannot be assessed.\"]}",
+    "originalContentText": "{\"catalogId\": \"3649282cd1be2e66b616623c9f24f0dcf2c9b6e8d064b435cfdc7967375cafb8\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"changes_suggested\", \"explanation\": \"index.html contains only the shop name and a collections sentence; no phone number appears. A phone number (+61 3 7010 3388) exists only in contact.html, not on the required page.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"s7\", \"c3\": \"s8\", \"c4\": \"s4\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [{\"title\": \"Shop phone number missing from index.html\", \"explanation\": \"The complete index.html markup has a heading and one paragraph with no phone number; the only phone number in the delivery is in contact.html.\", \"suggestion\": \"Add the shop phone number to index.html and confirm with the buyer which number is correct.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"s4\", \"c3\": \"\"}}], \"limitations\": [\"Static source only: no browser rendering, scripts or navigation were exercised.\", \"Whether +61 3 7010 3388 is the buyer's intended shop number is not stated in the source.\", \"No raster image pixels were supplied, so any phone number shown only in images cannot be assessed.\"]}",
+    "originalJsonValid": true,
+    "contentNormalization": "none",
+    "transport": "strict_tool",
+    "citationEncoding": "catalog_slots",
+    "catalogIdValid": true,
+    "completion": {
+      "catalogId": "3649282cd1be2e66b616623c9f24f0dcf2c9b6e8d064b435cfdc7967375cafb8",
+      "items": [
+        {
+          "criterionId": "coverage-1",
+          "status": "changes_suggested",
+          "explanation": "index.html contains only the shop name and a collections sentence; no phone number appears. A phone number (+61 3 7010 3388) exists only in contact.html, not on the required page.",
+          "citations": {
+            "c1": "s5",
+            "c2": "s7",
+            "c3": "s8",
+            "c4": "s4",
+            "c5": "",
+            "c6": ""
+          }
+        }
+      ],
+      "risks": [
+        {
+          "title": "Shop phone number missing from index.html",
+          "explanation": "The complete index.html markup has a heading and one paragraph with no phone number; the only phone number in the delivery is in contact.html.",
+          "suggestion": "Add the shop phone number to index.html and confirm with the buyer which number is correct.",
+          "citations": {
+            "c1": "s5",
+            "c2": "s4",
+            "c3": ""
+          }
+        }
+      ],
+      "limitations": [
+        "Static source only: no browser rendering, scripts or navigation were exercised.",
+        "Whether +61 3 7010 3388 is the buyer's intended shop number is not stated in the source.",
+        "No raster image pixels were supplied, so any phone number shown only in images cannot be assessed."
+      ]
+    },
+    "items": [
+      {
+        "criterionId": "coverage-1",
+        "status": "changes_suggested",
+        "explanation": "index.html contains only the shop name and a collections sentence; no phone number appears. A phone number (+61 3 7010 3388) exists only in contact.html, not on the required page.",
+        "citations": {
+          "c1": "s5",
+          "c2": "s7",
+          "c3": "s8",
+          "c4": "s4",
+          "c5": "",
+          "c6": ""
+        }
+      }
+    ],
+    "risks": [
+      {
+        "title": "Shop phone number missing from index.html",
+        "explanation": "The complete index.html markup has a heading and one paragraph with no phone number; the only phone number in the delivery is in contact.html.",
+        "suggestion": "Add the shop phone number to index.html and confirm with the buyer which number is correct.",
+        "citations": {
+          "c1": "s5",
+          "c2": "s4",
+          "c3": ""
+        }
+      }
+    ],
+    "limitations": [
+      "Static source only: no browser rendering, scripts or navigation were exercised.",
+      "Whether +61 3 7010 3388 is the buyer's intended shop number is not stated in the source.",
+      "No raster image pixels were supplied, so any phone number shown only in images cannot be assessed."
+    ],
+    "finishReason": "tool_calls",
+    "model": "deepseek-flash",
+    "riskCitationChecks": [
+      [
+        {
+          "file": "index.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Our seasonal collections are made to order.</p></main></body></html>",
+          "start": 0,
+          "end": 242,
+          "valid": true
+        },
+        {
+          "file": "contact.html",
+          "excerpt": "<p>Phone: +61 3 7010 3388</p>",
+          "start": 166,
+          "end": 195,
+          "valid": true
+        }
+      ]
+    ]
+  },
+  "usage": {
+    "promptTokens": 6120,
+    "completionTokens": 399
+  },
+  "reportedUsageCostUsd": 0.0023148,
+  "usageExceededReservation": false,
+  "application": {
+    "accepted": true,
+    "report": {
+      "id": "5bed96aa-d112-4cfa-b2c6-516f6f346e03",
+      "deliveryId": "eval-full-gap-named-page-phone",
+      "method": "source-ai-v1",
+      "mode": "live",
+      "model": "deepseek-flash",
+      "assessedAt": "2026-11-05T18:15:00.911Z",
+      "items": [
+        {
+          "criterionId": "coverage-1",
+          "status": "changes_suggested",
+          "explanation": "The bounded static-text check did not locate a complete recognizable phone witness, so this remains a change suggestion for human review. Check equivalent wording and other content sources within the locked scope before making changes. This is not a page-count, browser-display or contact-validity finding.",
+          "citations": [
+            {
+              "file": "index.html",
+              "start": 0,
+              "end": 242,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Our seasonal collections are made to order.</p></main></body></html>"
+            },
+            {
+              "file": "index.html",
+              "start": 150,
+              "end": 171,
+              "excerpt": "<h1>Maple Floral</h1>"
+            },
+            {
+              "file": "index.html",
+              "start": 171,
+              "end": 221,
+              "excerpt": "<p>Our seasonal collections are made to order.</p>"
+            },
+            {
+              "file": "contact.html",
+              "start": 166,
+              "end": 195,
+              "excerpt": "<p>Phone: +61 3 7010 3388</p>"
+            }
+          ],
+          "ruleEvidenceIds": [
+            "eval-evidence-1"
+          ],
+          "obligations": {
+            "schema": "source-obligations-v1",
+            "coverage": "bounded_detection",
+            "sourceLength": 43,
+            "clauses": [
+              {
+                "start": 0,
+                "end": 43,
+                "excerpt": "index.html must list the shop phone number."
+              }
+            ],
+            "items": [
+              {
+                "id": "obligation-1",
+                "kind": "source_content",
+                "clauseIndex": 0,
+                "state": "source_review_required"
+              }
+            ]
+          }
+        }
+      ],
+      "risks": [],
+      "limitations": [
+        "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+        "The model supplied 3 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+        "The independent agreed scope of 1 optional model indication(s) is not established, so originals are withheld under the custom phone/email text scope. All item findings are unchanged; other page, link or mobile requirements are not declared passed. No status-adjustment record was invented. Human opinions do not release the gate, accept work or make a payment.",
+        "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog 3649282cd1be2e66b616623c9f24f0dcf2c9b6e8d064b435cfdc7967375cafb8. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+        "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+        "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+      ],
+      "coverage": {
+        "includedFiles": [
+          "contact.html",
+          "index.html",
+          "site.css"
+        ],
+        "truncatedFiles": [],
+        "omittedFiles": []
+      },
+      "withheldRisks": {
+        "version": 2,
+        "reason": "source_scope_unestablished",
+        "scopeCriterionIds": [
+          "coverage-1"
+        ],
+        "adjustedCriteria": [],
+        "entries": [
+          {
+            "originalRiskIndex": 0,
+            "risk": {
+              "title": "Shop phone number missing from index.html",
+              "explanation": "The complete index.html markup has a heading and one paragraph with no phone number; the only phone number in the delivery is in contact.html.",
+              "suggestion": "Add the shop phone number to index.html and confirm with the buyer which number is correct.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "start": 0,
+                  "end": 242,
+                  "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Our seasonal collections are made to order.</p></main></body></html>"
+                },
+                {
+                  "file": "contact.html",
+                  "start": 166,
+                  "end": 195,
+                  "excerpt": "<p>Phone: +61 3 7010 3388</p>"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "usage": {
+        "promptTokens": 6120,
+        "completionTokens": 399
+      }
+    },
+    "error": null
+  },
+  "elapsedMilliseconds": 2661,
+  "rawDiagnostics": {
+    "expectedCriterionIds": [
+      "coverage-1"
+    ],
+    "returnedKnownCriterionIds": [
+      "coverage-1"
+    ],
+    "missingCriterionIds": [],
+    "duplicateCriterionIds": [],
+    "unknownCriterionCount": 0,
+    "invalidItemCount": 0,
+    "contentParsed": true,
+    "idProfileParsed": true,
+    "profileSource": "original_json",
+    "completeItemCoverage": true,
+    "finishReason": "tool_calls"
+  }
+}

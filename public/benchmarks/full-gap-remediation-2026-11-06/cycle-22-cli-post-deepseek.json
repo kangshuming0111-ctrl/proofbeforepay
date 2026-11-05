@@ -1,0 +1,93 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "scripts/verify-revision-audit.mjs",
+      "bytes": 1764,
+      "lines": 21,
+      "sha256": "ecc9c1700ce76d68f9a131f753e860a94dc352450368a3a8335778d4d96805b8"
+    },
+    {
+      "file": "scripts/verify-evidence-export.mjs",
+      "bytes": 2308,
+      "lines": 34,
+      "sha256": "87e2f1a6b7f2019ff8301f437ab7097f966d67630ac9504eb807d1f0613c1018"
+    },
+    {
+      "file": "lib/issued-revision-audit.ts",
+      "bytes": 3704,
+      "lines": 41,
+      "sha256": "505c99e92e27d1eb0de24dfdf6339b5b2b6e498eff7756c478aa32040eb8d181"
+    },
+    {
+      "file": "lib/evidence-issuer.ts",
+      "bytes": 4718,
+      "lines": 55,
+      "sha256": "8d7db0682cf82ce52cf9e3e7f666631dbeac7734489fddeb1da8ac30d7010a0c"
+    },
+    {
+      "file": "lib/revision-audit.ts",
+      "bytes": 12348,
+      "lines": 70,
+      "sha256": "e0a6350eba94222a3c6884e5aaecae9ed7338d12bfab73850b7146a685be9d4f"
+    },
+    {
+      "file": "tests/revision-audit.test.ts",
+      "bytes": 14202,
+      "lines": 79,
+      "sha256": "4bd4172691122ab810d5b22d6368917be8b3a06c9b6b9451e50074ac415fc025"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Reviewed the exact reader (scripts/verify-evidence-export.mjs readEvidenceFile), the CLI dispatch (scripts/verify-revision-audit.mjs lines 10-14), the signed wrapper (lib/issued-revision-audit.ts envelope/verifier), the receipt verifier (lib/evidence-issuer.ts), and the unsigned verifier/digest (lib/revision-audit.ts) plus the CLI tests. The dispatch rule itself matches the stated contract: rows whose schema equals ISSUED_REVISION_AUDIT_SCHEMA, or that own 'audit' or 'receipt' (including assigned schema, inherited key, or null), are routed to verifyIssuedRevisionAudit; receipt failure returns consistency 'inconsistent' with issuance.status 'invalid' and never retries as unsigned; a pure unsigned core (no audit/receipt/schema fields) yields issuance.status 'unproven' with exit 0 when consistent. Exit codes follow the unsigned report's consistency (0 consistent, 1 inconsistent, 2 unsupported). One concrete defect stands: malformed receipts or envelopes lose the specific receipt reason and are all reported as reason 'invalid_receipt', which makes 'missing-receipt' indistinguishable from a structurally valid-but-wrong signature and breaks expected reporting for the tested rejection kinds. No other reachable correctness defect was established from the packet alone.\",\"findings\":[{\"severity\":\"P3\",\"file\":\"lib/issued-revision-audit.ts\",\"line\":23,\"title\":\"Receipt verification is skipped when base audit is inconsistent, collapsing specific reasons and making 'digest_mismatch' a false label\",\"evidence\":\"Line 23: `const issuance=base.consistency===\\\"consistent\\\"?await receiptVerifier(await revisionAuditDigest(captured.audit),captured.receipt):{status:\\\"invalid\\\",reason:\\\"digest_mismatch\\\"} as EvidenceIssuerVerification;`. When the signed envelope passes `envelope()` (exact keys, schema OK) but the inner audit is inconsistent, the receipt verifier never runs. Every such case reports `reason:\\\"digest_mismatch\\\"` even though no digest comparison was made, so a wrong-keyId or forged-signature receipt on a tampered audit is mislabeled. The opposite error occurs for the missing-receipt case: `envelope()` fails at line 11 (keys `audit|schema` != `audit|receipt|schema`) and the catch at lines 18-20 returns `issuance:{status:\\\"invalid\\\",reason:\\\"invalid_receipt\\\"}` without calling the receipt verifier, so `tests/revision-audit.test.ts:77` `missing-receipt` only sees the generic reason and cannot distinguish it from 'unknown_key', 'signature_invalid', or a non-string receipt. The test asserts only `status===\\\"invalid\\\"`, so it passes despite the mislabeling.\",\"reproduction\":\"Unverified inference (no execution): take a consistent issued audit E, delete its receipt key (or set receipt to `{}`), and run `node --experimental-strip-types scripts/verify-revision-audit.mjs missing.json`; the report has `issuance.reason === \\\"invalid_receipt\\\"` and exit 1, the same as if receipt were `{}`. Conversely flip a byte in E.audit and keep a valid receipt: the report says `reason:\\\"digest_mismatch\\\"` although `receiptVerifier` was never invoked. Real reason discrimination would require a JSON file with a valid-shaped receipt as in tests line 76; the CLI cannot report whether the receipt was structurally valid or was a known key with a bad signature.\",\"suggestion\":\"Track whether `envelope()` failed on a missing/malformed receipt vs a missing/malformed audit, or on audit inconsistency, and report the receipt reason the verifier would return; minimally, use a distinct reason such as `audit_inconsistent` (not `digest_mismatch`) when the receipt was not checked, and a distinct reason (`missing_or_malformed_receipt`) when `envelope()` failed only on the receipt key, so callers can tell that situation apart from a present-but-invalid receipt.\"}],\"limitations\":[\"Only the files in the supplied source packet were reviewed; helper modules not in the packet (evidence-bundle.ts assertEvidenceBundleBudget/evidenceBundleSha256, evidence-issuer-keys.ts EVIDENCE_ISSUER_KEYS, evidence-export.ts, static-project.ts) were not inspected, so their internal behavior is assumed from call sites in the packet.\",\"No runtime checks, tests, or commands were executed (read-only review); all reproductions are labeled reasoning traces.\",\"Production key pinning and private-key configuration were not supplied, so absence of pinning or key mismatch in production cannot be inferred from the omitted evidence-issuer-keys.ts.\",\"Model accuracy, UI, historical package scope, and winner-superiority claims were explicitly out of scope and not assessed.\",\"The `issuance` field and its `reason` string are treated as part of the CLI's machine-readable output contract; whether any downstream consumer depends on specific reasons could not be verified from the packet.\"]}",
+  "report": {
+    "summary": "Reviewed the exact reader (scripts/verify-evidence-export.mjs readEvidenceFile), the CLI dispatch (scripts/verify-revision-audit.mjs lines 10-14), the signed wrapper (lib/issued-revision-audit.ts envelope/verifier), the receipt verifier (lib/evidence-issuer.ts), and the unsigned verifier/digest (lib/revision-audit.ts) plus the CLI tests. The dispatch rule itself matches the stated contract: rows whose schema equals ISSUED_REVISION_AUDIT_SCHEMA, or that own 'audit' or 'receipt' (including assigned schema, inherited key, or null), are routed to verifyIssuedRevisionAudit; receipt failure returns consistency 'inconsistent' with issuance.status 'invalid' and never retries as unsigned; a pure unsigned core (no audit/receipt/schema fields) yields issuance.status 'unproven' with exit 0 when consistent. Exit codes follow the unsigned report's consistency (0 consistent, 1 inconsistent, 2 unsupported). One concrete defect stands: malformed receipts or envelopes lose the specific receipt reason and are all reported as reason 'invalid_receipt', which makes 'missing-receipt' indistinguishable from a structurally valid-but-wrong signature and breaks expected reporting for the tested rejection kinds. No other reachable correctness defect was established from the packet alone.",
+    "findings": [
+      {
+        "severity": "P3",
+        "file": "lib/issued-revision-audit.ts",
+        "line": 23,
+        "title": "Receipt verification is skipped when base audit is inconsistent, collapsing specific reasons and making 'digest_mismatch' a false label",
+        "evidence": "Line 23: `const issuance=base.consistency===\"consistent\"?await receiptVerifier(await revisionAuditDigest(captured.audit),captured.receipt):{status:\"invalid\",reason:\"digest_mismatch\"} as EvidenceIssuerVerification;`. When the signed envelope passes `envelope()` (exact keys, schema OK) but the inner audit is inconsistent, the receipt verifier never runs. Every such case reports `reason:\"digest_mismatch\"` even though no digest comparison was made, so a wrong-keyId or forged-signature receipt on a tampered audit is mislabeled. The opposite error occurs for the missing-receipt case: `envelope()` fails at line 11 (keys `audit|schema` != `audit|receipt|schema`) and the catch at lines 18-20 returns `issuance:{status:\"invalid\",reason:\"invalid_receipt\"}` without calling the receipt verifier, so `tests/revision-audit.test.ts:77` `missing-receipt` only sees the generic reason and cannot distinguish it from 'unknown_key', 'signature_invalid', or a non-string receipt. The test asserts only `status===\"invalid\"`, so it passes despite the mislabeling.",
+        "reproduction": "Unverified inference (no execution): take a consistent issued audit E, delete its receipt key (or set receipt to `{}`), and run `node --experimental-strip-types scripts/verify-revision-audit.mjs missing.json`; the report has `issuance.reason === \"invalid_receipt\"` and exit 1, the same as if receipt were `{}`. Conversely flip a byte in E.audit and keep a valid receipt: the report says `reason:\"digest_mismatch\"` although `receiptVerifier` was never invoked. Real reason discrimination would require a JSON file with a valid-shaped receipt as in tests line 76; the CLI cannot report whether the receipt was structurally valid or was a known key with a bad signature.",
+        "suggestion": "Track whether `envelope()` failed on a missing/malformed receipt vs a missing/malformed audit, or on audit inconsistency, and report the receipt reason the verifier would return; minimally, use a distinct reason such as `audit_inconsistent` (not `digest_mismatch`) when the receipt was not checked, and a distinct reason (`missing_or_malformed_receipt`) when `envelope()` failed only on the receipt key, so callers can tell that situation apart from a present-but-invalid receipt."
+      }
+    ],
+    "limitations": [
+      "Only the files in the supplied source packet were reviewed; helper modules not in the packet (evidence-bundle.ts assertEvidenceBundleBudget/evidenceBundleSha256, evidence-issuer-keys.ts EVIDENCE_ISSUER_KEYS, evidence-export.ts, static-project.ts) were not inspected, so their internal behavior is assumed from call sites in the packet.",
+      "No runtime checks, tests, or commands were executed (read-only review); all reproductions are labeled reasoning traces.",
+      "Production key pinning and private-key configuration were not supplied, so absence of pinning or key mismatch in production cannot be inferred from the omitted evidence-issuer-keys.ts.",
+      "Model accuracy, UI, historical package scope, and winner-superiority claims were explicitly out of scope and not assessed.",
+      "The `issuance` field and its `reason` string are treated as part of the CLI's machine-readable output contract; whether any downstream consumer depends on specific reasons could not be verified from the packet."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

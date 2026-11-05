@@ -1,0 +1,63 @@
+{
+  "schema": "pbp-stage-reference-results-v1",
+  "oracleSha256": "55a1f06f7afba82fea6ac0b1827e5d894ae5168f8237b2de5a5cfc26e886a7ea",
+  "sourceFiles": 5,
+  "actualProfileRuns": 4,
+  "sourceUnchanged": true,
+  "results": [
+    {
+      "profile": "fixed",
+      "file": "cycle-21-reference-fixed.json",
+      "reportDigest": "ee1e41962efb0b1f8804690de2f36ded812586cc3111b3e4cb197d32172015bf",
+      "summary": {
+        "matched": 4,
+        "mismatch": 0,
+        "unknown": 0,
+        "unsupported": 0
+      },
+      "statusesMatchFrozen": true
+    },
+    {
+      "profile": "no-store",
+      "file": "cycle-21-reference-no-store.json",
+      "reportDigest": "d15b325473dd25c98af3d2bf1ad95cc619a299f045c06b1b86f87d6d859c2cd7",
+      "summary": {
+        "matched": 2,
+        "mismatch": 2,
+        "unknown": 0,
+        "unsupported": 0
+      },
+      "statusesMatchFrozen": true
+    },
+    {
+      "profile": "wrong-readback",
+      "file": "cycle-21-reference-wrong-readback.json",
+      "reportDigest": "68d043a40186ab96b495aed96575faeb2ebf31f49e8ae22b8b672400f61b8d29",
+      "summary": {
+        "matched": 3,
+        "mismatch": 1,
+        "unknown": 0,
+        "unsupported": 0
+      },
+      "statusesMatchFrozen": true
+    },
+    {
+      "profile": "no-email",
+      "file": "cycle-21-reference-no-email.json",
+      "reportDigest": "779478721b75a80c71d4c43b69ab38c6ae95dbab21de2adebe25c4b610775cd7",
+      "summary": {
+        "matched": 3,
+        "mismatch": 1,
+        "unknown": 0,
+        "unsupported": 0
+      },
+      "statusesMatchFrozen": true
+    }
+  ],
+  "limits": [
+    "Own synthetic Node/SQLite reference, not a third-party or customer project.",
+    "Actual loopback HTTP and native database reads; local test sink only.",
+    "Cooperative report consistency does not establish independent backend authenticity.",
+    "Zero model calls and human participants."
+  ]
+}

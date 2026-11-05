@@ -1,0 +1,75 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/source-presence-evidence.ts",
+      "bytes": 7179,
+      "lines": 81,
+      "sha256": "0524783ded914e8cb80020321ca6d86857f2e8fb8bcea92d2907757a9d7d8147"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 55595,
+      "lines": 437,
+      "sha256": "287414631de8d5716d78d8ecb096772ba1567a4c4a8b065629b4ebf7b2efd979"
+    },
+    {
+      "file": "tests/source-presence-evidence.test.ts",
+      "bytes": 6419,
+      "lines": 36,
+      "sha256": "57b354d4a2002702414b1af12d84c2d66de3ffc6cc0f5e83dbb01a0d4f07e3ed"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Cycle19 presence evidence: I reviewed the source only and ran no code. The EN/ZH directive grammar stays narrow: it excludes negation, compound actions, exclusions, values, locations and role aliases. Comments, head, inert elements and attributes are excluded. Image, hidden and dynamic content are marked uncertain. Failed server rules keep priority. Unknown model output is not recast. The canonical citation splices the complete owner. I found one reachable causality defect. The catalog_slots evidence override also runs on replay and legacy encodings, so a V2 or legacy report that says changes_suggested can be changed to insufficient_evidence with a presence-based explanation. That contradicts the stated rule that catalog_slots is the live encoding and that V2/legacy output is not recast.\",\"findings\":[{\"severity\":\"P2\",\"file\":\"lib/delivery-assessment.ts\",\"line\":307,\"title\":\"Presence override runs on catalog_ids/legacy replays, recasting non-slots statuses via catalog_slots evidence\",\"evidence\":\"Line 307 guards the new block with `if (encoding === \\\"catalog_slots\\\" && item.status === \\\"changes_suggested\\\" && status === \\\"changes_suggested\\\" && businessEvidenceCheck(criterion.id).kind !== \\\"mismatch\\\")`; this guard is independent of the earlier `related.some(...finding === \\\"fail\\\")` branch (line 278) only because `status` is still checks_suggested there. The block's body (lines 309-314) mutates the shared `status`, `explanation`, `checkedCitations` and `evidenceNeed` variables regardless of what `encoding` actually is. `status` is always read from `item.status`, which is parsed from the same `responseItems` for every encoding (line 269), so an old-protocol report passed with `encoding` of `catalog_ids` (assessDeliveryCatalogReplay, line 117-119) or `legacy_quotes` (assessDeliveryLegacyReplay, line 122-124) can also enter the block. `presenceCheck` is built from `sent` (line 258), not from the citation protocol, so `presence.kind === \\\"present\\\"` is reachable for any encoding whose response contains a phone/email-positive owner. For those encodings, `need(...)` is a no-op because it checks `encoding === \\\"catalog_slots\\\"` (line 274), yet the presence explanation from line 312 is still applied. So a V2/legacy model verdict of `changes_suggested` becomes `insufficient_evidence` with a `manual_interpretation`/`source_ambiguity` explanation and a presence citation, exactly the recast the task says must be avoided (V2/legacy not recast).\",\"reproduction\":\"Not executed. Reasoning trace: (1) Call `assessDeliveryCatalogReplay` or `assessDeliveryLegacyReplay` on a quote whose `index.html` body is `<p>Phone: +61 3 9000 1234</p>` (the same fixture used in tests/source-presence-evidence.test.ts:7-10). (2) Provide a stub fetcher that returns a valid V2/legacy report: one item with `status:\\\"changes_suggested\\\"`, `citations` as an excerpt object array (legacy) or catalog IDs (catalog_ids), and no `fail` ruleEvidence entry. (3) `createSourcePresenceEvidenceCheck(sent)` hits the OWNERS `<p>` path (source-presence-evidence.ts:53), so `presence.kind` is `\\\"present\\\"` (line 70). (4) Line 307 is true (encoding !== \\\"catalog_slots\\\" is irrelevant; item.status and status are both changes_suggested; business kind is not mismatch), so status becomes `insufficient_evidence`, explanation is replaced with `sourcePresenceExplanation`, and `checkedCitations` is replaced with the server excerpt. Expected per the scoped contract: only catalog_slots (live v3 slots) should get this override.\",\"suggestion\":\"Wrap the presence-override block in an encoding-specific guard, e.g. change line 307 to `if (encoding === \\\"catalog_slots\\\" && item.status === \\\"changes_suggested\\\" && status === \\\"changes_suggested\\\" ...)`, or gate the whole branch on `encoding===\\\"catalog_slots\\\"` before entry, or make the presence/evidenceNeed refactor live solely in a slots-specific helper. Add a replay test asserting that a `changes_suggested` verdict on catalog_ids/legacy_quotes under `sourcePresenceExplanation` is rejected/held unchanged.\"}],\"limitations\":[\"Source-only review: no tests, typecheck, model calls, browser, or runtime execution were performed. All claims are static reasoning over the supplied packet.\",\"Packet contains only lib/source-presence-evidence.ts, lib/delivery-assessment.ts, tests/source-presence-evidence.test.ts and the skill. Contracts, exact-copy-evidence.ts, assessment-publication-policy.ts, source-business-evidence.ts, assessment-response.ts, catalog resolution and coverage code were not inspected, so behavior of `hasUncertainSourceBodyCopyAtFile`, the publication policy withholding logic, and `canonicalAssessmentRisk` is assumed and not verified.\",\"The parser/inert/hidden/scope logic in source-presence-evidence.ts was inspected but I found no source-reachable correctness defect within the bounded EN/ZH directive grammar. Whether the narrow grammar regex (e.g. 'list'/'include' verbs, only p/address/li/dd/td/div/span/a owners) under-detects valid simple directives was not treated as a defect because it only reduces the override's reach, and a `not_applicable` result leaves status untouched.\",\"Award/champion comparison claims (PHAROS_INC, IBM Bob 2026) were not verified; this review makes no quality or superiority judgment and no acceptance/payment conclusion.\",\"Feedback on unproven general semantic correctness cannot be validated from source, because it depends on live model behavior.\"]}",
+  "report": {
+    "summary": "Cycle19 presence evidence: I reviewed the source only and ran no code. The EN/ZH directive grammar stays narrow: it excludes negation, compound actions, exclusions, values, locations and role aliases. Comments, head, inert elements and attributes are excluded. Image, hidden and dynamic content are marked uncertain. Failed server rules keep priority. Unknown model output is not recast. The canonical citation splices the complete owner. I found one reachable causality defect. The catalog_slots evidence override also runs on replay and legacy encodings, so a V2 or legacy report that says changes_suggested can be changed to insufficient_evidence with a presence-based explanation. That contradicts the stated rule that catalog_slots is the live encoding and that V2/legacy output is not recast.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "lib/delivery-assessment.ts",
+        "line": 307,
+        "title": "Presence override runs on catalog_ids/legacy replays, recasting non-slots statuses via catalog_slots evidence",
+        "evidence": "Line 307 guards the new block with `if (encoding === \"catalog_slots\" && item.status === \"changes_suggested\" && status === \"changes_suggested\" && businessEvidenceCheck(criterion.id).kind !== \"mismatch\")`; this guard is independent of the earlier `related.some(...finding === \"fail\")` branch (line 278) only because `status` is still checks_suggested there. The block's body (lines 309-314) mutates the shared `status`, `explanation`, `checkedCitations` and `evidenceNeed` variables regardless of what `encoding` actually is. `status` is always read from `item.status`, which is parsed from the same `responseItems` for every encoding (line 269), so an old-protocol report passed with `encoding` of `catalog_ids` (assessDeliveryCatalogReplay, line 117-119) or `legacy_quotes` (assessDeliveryLegacyReplay, line 122-124) can also enter the block. `presenceCheck` is built from `sent` (line 258), not from the citation protocol, so `presence.kind === \"present\"` is reachable for any encoding whose response contains a phone/email-positive owner. For those encodings, `need(...)` is a no-op because it checks `encoding === \"catalog_slots\"` (line 274), yet the presence explanation from line 312 is still applied. So a V2/legacy model verdict of `changes_suggested` becomes `insufficient_evidence` with a `manual_interpretation`/`source_ambiguity` explanation and a presence citation, exactly the recast the task says must be avoided (V2/legacy not recast).",
+        "reproduction": "Not executed. Reasoning trace: (1) Call `assessDeliveryCatalogReplay` or `assessDeliveryLegacyReplay` on a quote whose `index.html` body is `<p>Phone: +61 3 9000 1234</p>` (the same fixture used in tests/source-presence-evidence.test.ts:7-10). (2) Provide a stub fetcher that returns a valid V2/legacy report: one item with `status:\"changes_suggested\"`, `citations` as an excerpt object array (legacy) or catalog IDs (catalog_ids), and no `fail` ruleEvidence entry. (3) `createSourcePresenceEvidenceCheck(sent)` hits the OWNERS `<p>` path (source-presence-evidence.ts:53), so `presence.kind` is `\"present\"` (line 70). (4) Line 307 is true (encoding !== \"catalog_slots\" is irrelevant; item.status and status are both changes_suggested; business kind is not mismatch), so status becomes `insufficient_evidence`, explanation is replaced with `sourcePresenceExplanation`, and `checkedCitations` is replaced with the server excerpt. Expected per the scoped contract: only catalog_slots (live v3 slots) should get this override.",
+        "suggestion": "Wrap the presence-override block in an encoding-specific guard, e.g. change line 307 to `if (encoding === \"catalog_slots\" && item.status === \"changes_suggested\" && status === \"changes_suggested\" ...)`, or gate the whole branch on `encoding===\"catalog_slots\"` before entry, or make the presence/evidenceNeed refactor live solely in a slots-specific helper. Add a replay test asserting that a `changes_suggested` verdict on catalog_ids/legacy_quotes under `sourcePresenceExplanation` is rejected/held unchanged."
+      }
+    ],
+    "limitations": [
+      "Source-only review: no tests, typecheck, model calls, browser, or runtime execution were performed. All claims are static reasoning over the supplied packet.",
+      "Packet contains only lib/source-presence-evidence.ts, lib/delivery-assessment.ts, tests/source-presence-evidence.test.ts and the skill. Contracts, exact-copy-evidence.ts, assessment-publication-policy.ts, source-business-evidence.ts, assessment-response.ts, catalog resolution and coverage code were not inspected, so behavior of `hasUncertainSourceBodyCopyAtFile`, the publication policy withholding logic, and `canonicalAssessmentRisk` is assumed and not verified.",
+      "The parser/inert/hidden/scope logic in source-presence-evidence.ts was inspected but I found no source-reachable correctness defect within the bounded EN/ZH directive grammar. Whether the narrow grammar regex (e.g. 'list'/'include' verbs, only p/address/li/dd/td/div/span/a owners) under-detects valid simple directives was not treated as a defect because it only reduces the override's reach, and a `not_applicable` result leaves status untouched.",
+      "Award/champion comparison claims (PHAROS_INC, IBM Bob 2026) were not verified; this review makes no quality or superiority judgment and no acceptance/payment conclusion.",
+      "Feedback on unproven general semantic correctness cannot be validated from source, because it depends on live model behavior."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

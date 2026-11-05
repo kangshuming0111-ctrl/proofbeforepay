@@ -1,0 +1,27 @@
+{
+  "schema": "pbp-cycle26-public-supplement-independent-audit-v1",
+  "apiCalls": 0,
+  "networkCalls": 0,
+  "finalRuntimeFiles": 41,
+  "finalRuntimeContentsAndHashesExact": true,
+  "all41MatchFinalWorkingSource": true,
+  "implementationSha256": "8d70feac19081b8c639d5216fe66d9fd6893fb0e56dbc973d2f496c1a441e0e4",
+  "replayedReports": 31,
+  "criterionObservations": 100,
+  "uniqueProjectInputs": 23,
+  "catalogsExactlyRebuilt": 31,
+  "applicationQuotes": {
+    "item": 214,
+    "activeRisk": 52,
+    "withheldRisk": 38,
+    "allExactUtf16": true
+  },
+  "historicalProviderSourceVersions": 79,
+  "ownStageAndFlaskSourceVersions": 10,
+  "totalArchivedSourceFileVersions": 130,
+  "limits": [
+    "31 saved wire replies include repeated known-case answers, not 31 new projects or calls.",
+    "This independently rebuilds source catalog identity and quote positions; it does not validate all semantic claims or establish execution authenticity.",
+    "Earlier 39/40 implementation archives remain historical; only this 41-file closure is asserted to match the final current source."
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "schema": "pbp-cycle25-postreview-adjudication-v1",
+  "createdAt": "2026-11-05T18:13:55.593180+00:00",
+  "reviewFile": "cycle-25-post-deepseek.json",
+  "reviewSha256": "1b3464e386b19248b7fe1d4a9e5901f223867500fa2842116be74a43683652ed",
+  "reviewValid": true,
+  "reviewIsAdvisory": true,
+  "runtimeChangedForTheseFindings": false,
+  "actualProviderCalls": 0,
+  "controlledProviderResponses": 2,
+  "networkCalls": 0,
+  "executedTests": "tests/merged-price-postreview.test.ts",
+  "findings": [
+    {
+      "severity": "P2",
+      "title": "Later business check with a generic unknown overwrites a canonical merged-row explanation's citations",
+      "decision": "rejected_as_reproduced_production_defect",
+      "reproducedWrongConclusion": false,
+      "actual": {
+        "rawStatusesExercised": [
+          "supported",
+          "changes_suggested"
+        ],
+        "publishedStatusBoth": "insufficient_evidence",
+        "combinedBusinessReasons": [
+          "merged_price_options_unconfirmed",
+          "label_not_unique_or_not_located"
+        ],
+        "completeMergedUnknownCitations": null,
+        "explanation": "existing generic uncertainty; no rowspan association assertion",
+        "citations": "original exact menu.html <p>Tea AUD 18</p> retained"
+      },
+      "reason": "The per-criterion checker evaluates all saved checks together. Canonical explanation and canonical source replacement share the same completeMergedUnknownCitations guard. Mixed unknowns make that guard undefined in both branches, so neither canonical assertion nor source substitution occurs. A generic capability limit with the original valid quote is not the alleged canonical claim/citation mismatch.",
+      "acceptedCoverageImprovement": "Permanent controlled-response tests added for both actual assessment status branches; no runtime change was needed."
+    },
+    {
+      "severity": "P3",
+      "title": "Merged-row lookup can be silently won by a different labelled cell instead of falling back to the ordinary simple check",
+      "decision": "rejected_as_reproduced_production_defect",
+      "reproducedWrongConclusion": false,
+      "actual": {
+        "label": "AUD 18",
+        "body": "rowspan AUD 18 label with AUD 25/AUD 30, plus simple Tea/AUD 18 table",
+        "findMergedPriceContext": null,
+        "businessKind": "unknown",
+        "businessReason": "label_not_unique_or_not_located",
+        "citations": []
+      },
+      "reason": "The second matching table makes the strict merged lookup return undefined; the existing full-body label uniqueness gate then observes two occurrences and returns generic unknown before ordinary price matching. The simple table also has actual label Tea, not AUD 18. No definite unchanged/mismatch is produced.",
+      "acceptedCoverageImprovement": "Exact proposed AUD-as-label source retained in a permanent countertest."
+    }
+  ],
+  "verification": {
+    "beforePostCountertests": {
+      "tests": 33,
+      "passed": 33
+    },
+    "afterPostCountertests": {
+      "tests": 35,
+      "passed": 35,
+      "failed": 0,
+      "log": "cycle25-postreview-countertests.log",
+      "sha256": "ba82001714bd1e10630db155598e9ff76f9f112c7106d607ec2197f36a97ec35"
+    },
+    "sourceAtAdjudication": {
+      "lib/merged-price-context.ts": "b566a193f494979064146eca94a1f8f0d62535c329e4c6db9a7b19ecf65874b6",
+      "lib/source-business-evidence.ts": "fa66043d3ab7f4fb7717893f14f60b86e7de0c912fb542bf89c0ad5a54ae38da",
+      "lib/delivery-assessment.ts": "749b6f01015760e67ff45df4418e554c96abba9f9e340bf160c06f84cf53a1b7",
+      "tests/merged-price-postreview.test.ts": "ce66f98d73d4f275094fbe7151d6335d4a447f19f8b9188340f031131e4ee1c3",
+      "tests/merged-price-context.test.ts": "67e96228b32a634fc03c499ef9b017e4746a7f8f758cfe29100d154461001c84"
+    }
+  },
+  "limits": [
+    "Controlled provider responses test application policy; they are not fresh live DeepSeek outputs.",
+    "Both reviewer cases were reproduced on the current working tree; source hashes above identify that state.",
+    "A bound two-row source association does not establish price-option business meaning, rendering, backend execution or award superiority."
+  ]
+}

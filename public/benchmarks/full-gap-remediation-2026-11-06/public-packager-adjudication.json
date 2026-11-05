@@ -1,0 +1,86 @@
+{
+  "schema": "pbp-public-packager-adjudication-v1",
+  "createdAt": "2026-11-05T18:22:42.781585+00:00",
+  "scope": "Only two exact new example-directory allowlist entries, a dated generated-guide paragraph, and the functional packaging test.",
+  "reviews": {
+    "first": {
+      "file": "public-packager-post-deepseek.json",
+      "sha256": "bf958a155f085ed462cd98e2bb8a208976fb120f7f8c2b34fa24e97bd667478e",
+      "reportValid": false,
+      "errors": [
+        "assistant_output_withheld",
+        "wait_not_returned",
+        "turn_not_completed",
+        "missing_final_assistant_text"
+      ],
+      "usedAsFindings": false
+    },
+    "validCorrective": {
+      "file": "public-packager-post-deepseek-final.json",
+      "sha256": "940097998ace620431f5f23800e888c29fad36d0ae6112534ad5a91f979f3f44",
+      "reportValid": true,
+      "findings": []
+    }
+  },
+  "adjudication": "The valid limited review reports no concrete reachable defect. Independent source/diff checks confirm the two exact subdirectories use the existing bounded walker and exclusion checks. The new functional test copies the actual six public source files, exports their manifest/archive entries and compares exact source bytes; root executed all twelve packager tests successfully. No runtime change is justified by this postreview.",
+  "sourceHashesStillMatch": {
+    "scripts/build-judge-pack.mjs": true,
+    "tests/judge-pack.test.mjs": true,
+    ".agents/skills/proofbeforepay-delivery/SKILL.md": true
+  },
+  "publicExampleFiles": [
+    {
+      "file": "examples/delivery-stage-staging/server.mjs",
+      "bytes": 3119,
+      "sha256": "2365ca75935b8b54874250729ea61ed78fac66999d77c9f528a2498b9128d5af",
+      "mode": "0o644"
+    },
+    {
+      "file": "examples/delivery-stage-staging/adapter.mjs",
+      "bytes": 2166,
+      "sha256": "2fe098fd60424607d0ab6eaa43f281bde9a0dc470e754fb90d9d237761c1d464",
+      "mode": "0o644"
+    },
+    {
+      "file": "examples/delivery-stage-staging/README.md",
+      "bytes": 6025,
+      "sha256": "06d043a41f2cd60e6f7dac36338344eb20fdd3cc9dfd7cf34513ff572d49fd40",
+      "mode": "0o644"
+    },
+    {
+      "file": "examples/delivery-stage-flask/adapter.mjs",
+      "bytes": 5334,
+      "sha256": "4a072d5546e8177b044cceb82639baddf9b5314d8a246f336924a7fa6094832e",
+      "mode": "0o644"
+    },
+    {
+      "file": "examples/delivery-stage-flask/serve.py",
+      "bytes": 716,
+      "sha256": "2ae680251a3585ea6925c27d7bf4c616464df2189ca52ef0f5009b52670a37e2",
+      "mode": "0o644"
+    },
+    {
+      "file": "examples/delivery-stage-flask/README.md",
+      "bytes": 4088,
+      "sha256": "366314f7152df18d330fdde3af29e0101539ec9d8a7fc93a8de2bee0eca22014",
+      "mode": "0o644"
+    }
+  ],
+  "tests": {
+    "log": "final-public-packager-tests.log",
+    "sha256": "3d46578700b7768de56ca443a14d4f7c38ed2283e5d3e028761fea8e329615e6",
+    "passed": 12,
+    "failed": 0,
+    "executionOwner": "root; this postreview read the exact result log and verified current tested source hashes."
+  },
+  "reviewCalls": 2,
+  "applicationAssessmentCalls": 0,
+  "paymentCalls": 0,
+  "stateOrPrivateFilesRead": false,
+  "runtimeOrAiClosureChanges": false,
+  "limits": [
+    "The first withheld/incomplete response is retained but supplies no review conclusion.",
+    "The valid reviewer did not run the tests or inspect actual example tree contents; the functional test and the independent source-file checks cover those source facts.",
+    "A public source export is not deployment, external onboarding success, independent user evidence or award superiority."
+  ]
+}

@@ -1,0 +1,340 @@
+{
+  "id": "full-gap-cross-page-price-owner",
+  "stratum": "mismatch",
+  "reference": [
+    {
+      "criterionId": "coverage-1",
+      "label": {
+        "expectedStatus": "changes_suggested",
+        "rationale": "index.html pairs Tea with AUD18. menu.html pairs Tea with AUD24 and Coffee with AUD18. The neighboring Coffee amount and correct first page cannot substitute for the wrong Tea owner on menu.html.",
+        "relevantFiles": [
+          "index.html",
+          "menu.html"
+        ],
+        "requiresSemanticReview": true
+      }
+    }
+  ],
+  "plan": {
+    "requestSha256": "3ca5dcdb8a068674725b4a0ffc5fc838f7b069951ea55d9344aa877b182b4938",
+    "requestUtf8Bytes": 28299,
+    "promptTokenUpperEstimate": 32395,
+    "outputTokenLimit": 3360,
+    "reservedCostUsd": 0.0137505,
+    "coverage": {
+      "includedFiles": [
+        "index.html",
+        "menu.html",
+        "site.css"
+      ],
+      "truncatedFiles": [],
+      "omittedFiles": []
+    }
+  },
+  "attempted": true,
+  "networkAttempted": true,
+  "criteria": [
+    {
+      "id": "coverage-1",
+      "referenceStatus": "changes_suggested",
+      "rawStatus": "changes_suggested",
+      "applicationStatus": "changes_suggested",
+      "rawCitations": [
+        {
+          "file": "index.html",
+          "excerpt": "<p>Tea AUD 18</p>",
+          "start": 163,
+          "end": 180,
+          "valid": true
+        },
+        {
+          "file": "menu.html",
+          "excerpt": "<p>Tea AUD 24</p>",
+          "start": 168,
+          "end": 185,
+          "valid": true
+        },
+        {
+          "file": "menu.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Full menu</h1><p>Tea AUD 24</p><p>Coffee AUD 18</p></main></body></html>",
+          "start": 0,
+          "end": 226,
+          "valid": true
+        }
+      ],
+      "applicationCitations": [
+        {
+          "file": "menu.html",
+          "excerpt": "<p>Tea AUD 24</p>",
+          "valid": true,
+          "start": 168,
+          "end": 185
+        }
+      ],
+      "rawCitationValidity": "valid",
+      "semanticReview": "pending_independent_adjudication"
+    }
+  ],
+  "wholeAnswerSemanticReview": "pending_independent_adjudication",
+  "raw": {
+    "httpStatus": 200,
+    "bodyText": "{\"id\":\"e164a016-33fa-429d-9866-74762adc5451\",\"object\":\"chat.completion\",\"created\":1793902501,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"index\":0,\"id\":\"call_00_tTJ80gbjulfy4QxHdLM99919\",\"type\":\"function\",\"function\":{\"name\":\"submit_source_assessment_v3\",\"arguments\":\"{\\\"catalogId\\\": \\\"8213411b1de13c90587fad07a75c16557600fc50719f518fa04f4c86567c5767\\\", \\\"items\\\": [{\\\"criterionId\\\": \\\"coverage-1\\\", \\\"status\\\": \\\"changes_suggested\\\", \\\"explanation\\\": \\\"index.html lists \\\\\\\"Tea AUD 18\\\\\\\", but menu.html lists \\\\\\\"Tea AUD 24\\\\\\\" (AUD 2400), not the agreed AUD 18 / 1800 minor units. One of the two required files fails.\\\", \\\"citations\\\": {\\\"c1\\\": \\\"s4\\\", \\\"c2\\\": \\\"s9\\\", \\\"c3\\\": \\\"s6\\\", \\\"c4\\\": \\\"\\\", \\\"c5\\\": \\\"\\\", \\\"c6\\\": \\\"\\\"}}], \\\"risks\\\": [{\\\"title\\\": \\\"menu.html prices Tea at AUD 24 instead of AUD 18\\\", \\\"explanation\\\": \\\"The menu.html main section contains \\\\\\\"<p>Tea AUD 24</p>\\\\\\\" while the agreed check expects Tea at 1800 minor units in AUD; the Coffee line there shows AUD 18 instead.\\\", \\\"suggestion\\\": \\\"Correct the Tea line in menu.html to AUD 18 (1800 minor units) and re-verify both files, then have the buyer confirm.\\\", \\\"citations\\\": {\\\"c1\\\": \\\"s9\\\", \\\"c2\\\": \\\"s10\\\", \\\"c3\\\": \\\"\\\"}}], \\\"limitations\\\": [\\\"Source-only review: rendered appearance and browser display of these prices were not observed.\\\", \\\"The figures were compared as literal text and minor units; no currency formatting or typography requirement was assessed.\\\"]}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":6438,\"completion_tokens\":408,\"total_tokens\":6846,\"prompt_tokens_details\":{\"cached_tokens\":6272},\"prompt_cache_hit_tokens\":6272,\"prompt_cache_miss_tokens\":166},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "bodyPrefixText": null,
+    "bodyComplete": true,
+    "bodyUtf8Bytes": 1805,
+    "bodyByteCountIsComplete": true,
+    "utf8Valid": true,
+    "providerBody": {
+      "id": "e164a016-33fa-429d-9866-74762adc5451",
+      "object": "chat.completion",
+      "created": 1793902501,
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+              {
+                "index": 0,
+                "id": "call_00_tTJ80gbjulfy4QxHdLM99919",
+                "type": "function",
+                "function": {
+                  "name": "submit_source_assessment_v3",
+                  "arguments": "{\"catalogId\": \"8213411b1de13c90587fad07a75c16557600fc50719f518fa04f4c86567c5767\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"changes_suggested\", \"explanation\": \"index.html lists \\\"Tea AUD 18\\\", but menu.html lists \\\"Tea AUD 24\\\" (AUD 2400), not the agreed AUD 18 / 1800 minor units. One of the two required files fails.\", \"citations\": {\"c1\": \"s4\", \"c2\": \"s9\", \"c3\": \"s6\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [{\"title\": \"menu.html prices Tea at AUD 24 instead of AUD 18\", \"explanation\": \"The menu.html main section contains \\\"<p>Tea AUD 24</p>\\\" while the agreed check expects Tea at 1800 minor units in AUD; the Coffee line there shows AUD 18 instead.\", \"suggestion\": \"Correct the Tea line in menu.html to AUD 18 (1800 minor units) and re-verify both files, then have the buyer confirm.\", \"citations\": {\"c1\": \"s9\", \"c2\": \"s10\", \"c3\": \"\"}}], \"limitations\": [\"Source-only review: rendered appearance and browser display of these prices were not observed.\", \"The figures were compared as literal text and minor units; no currency formatting or typography requirement was assessed.\"]}"
+                }
+              }
+            ]
+          },
+          "logprobs": null,
+          "finish_reason": "tool_calls"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 6438,
+        "completion_tokens": 408,
+        "total_tokens": 6846,
+        "prompt_tokens_details": {
+          "cached_tokens": 6272
+        },
+        "prompt_cache_hit_tokens": 6272,
+        "prompt_cache_miss_tokens": 166
+      },
+      "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+    },
+    "contentText": "{\"catalogId\": \"8213411b1de13c90587fad07a75c16557600fc50719f518fa04f4c86567c5767\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"changes_suggested\", \"explanation\": \"index.html lists \\\"Tea AUD 18\\\", but menu.html lists \\\"Tea AUD 24\\\" (AUD 2400), not the agreed AUD 18 / 1800 minor units. One of the two required files fails.\", \"citations\": {\"c1\": \"s4\", \"c2\": \"s9\", \"c3\": \"s6\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [{\"title\": \"menu.html prices Tea at AUD 24 instead of AUD 18\", \"explanation\": \"The menu.html main section contains \\\"<p>Tea AUD 24</p>\\\" while the agreed check expects Tea at 1800 minor units in AUD; the Coffee line there shows AUD 18 instead.\", \"suggestion\": \"Correct the Tea line in menu.html to AUD 18 (1800 minor units) and re-verify both files, then have the buyer confirm.\", \"citations\": {\"c1\": \"s9\", \"c2\": \"s10\", \"c3\": \"\"}}], \"limitations\": [\"Source-only review: rendered appearance and browser display of these prices were not observed.\", \"The figures were compared as literal text and minor units; no currency formatting or typography requirement was assessed.\"]}",
+    "originalContentText": "{\"catalogId\": \"8213411b1de13c90587fad07a75c16557600fc50719f518fa04f4c86567c5767\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"changes_suggested\", \"explanation\": \"index.html lists \\\"Tea AUD 18\\\", but menu.html lists \\\"Tea AUD 24\\\" (AUD 2400), not the agreed AUD 18 / 1800 minor units. One of the two required files fails.\", \"citations\": {\"c1\": \"s4\", \"c2\": \"s9\", \"c3\": \"s6\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [{\"title\": \"menu.html prices Tea at AUD 24 instead of AUD 18\", \"explanation\": \"The menu.html main section contains \\\"<p>Tea AUD 24</p>\\\" while the agreed check expects Tea at 1800 minor units in AUD; the Coffee line there shows AUD 18 instead.\", \"suggestion\": \"Correct the Tea line in menu.html to AUD 18 (1800 minor units) and re-verify both files, then have the buyer confirm.\", \"citations\": {\"c1\": \"s9\", \"c2\": \"s10\", \"c3\": \"\"}}], \"limitations\": [\"Source-only review: rendered appearance and browser display of these prices were not observed.\", \"The figures were compared as literal text and minor units; no currency formatting or typography requirement was assessed.\"]}",
+    "originalJsonValid": true,
+    "contentNormalization": "none",
+    "transport": "strict_tool",
+    "citationEncoding": "catalog_slots",
+    "catalogIdValid": true,
+    "completion": {
+      "catalogId": "8213411b1de13c90587fad07a75c16557600fc50719f518fa04f4c86567c5767",
+      "items": [
+        {
+          "criterionId": "coverage-1",
+          "status": "changes_suggested",
+          "explanation": "index.html lists \"Tea AUD 18\", but menu.html lists \"Tea AUD 24\" (AUD 2400), not the agreed AUD 18 / 1800 minor units. One of the two required files fails.",
+          "citations": {
+            "c1": "s4",
+            "c2": "s9",
+            "c3": "s6",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          }
+        }
+      ],
+      "risks": [
+        {
+          "title": "menu.html prices Tea at AUD 24 instead of AUD 18",
+          "explanation": "The menu.html main section contains \"<p>Tea AUD 24</p>\" while the agreed check expects Tea at 1800 minor units in AUD; the Coffee line there shows AUD 18 instead.",
+          "suggestion": "Correct the Tea line in menu.html to AUD 18 (1800 minor units) and re-verify both files, then have the buyer confirm.",
+          "citations": {
+            "c1": "s9",
+            "c2": "s10",
+            "c3": ""
+          }
+        }
+      ],
+      "limitations": [
+        "Source-only review: rendered appearance and browser display of these prices were not observed.",
+        "The figures were compared as literal text and minor units; no currency formatting or typography requirement was assessed."
+      ]
+    },
+    "items": [
+      {
+        "criterionId": "coverage-1",
+        "status": "changes_suggested",
+        "explanation": "index.html lists \"Tea AUD 18\", but menu.html lists \"Tea AUD 24\" (AUD 2400), not the agreed AUD 18 / 1800 minor units. One of the two required files fails.",
+        "citations": {
+          "c1": "s4",
+          "c2": "s9",
+          "c3": "s6",
+          "c4": "",
+          "c5": "",
+          "c6": ""
+        }
+      }
+    ],
+    "risks": [
+      {
+        "title": "menu.html prices Tea at AUD 24 instead of AUD 18",
+        "explanation": "The menu.html main section contains \"<p>Tea AUD 24</p>\" while the agreed check expects Tea at 1800 minor units in AUD; the Coffee line there shows AUD 18 instead.",
+        "suggestion": "Correct the Tea line in menu.html to AUD 18 (1800 minor units) and re-verify both files, then have the buyer confirm.",
+        "citations": {
+          "c1": "s9",
+          "c2": "s10",
+          "c3": ""
+        }
+      }
+    ],
+    "limitations": [
+      "Source-only review: rendered appearance and browser display of these prices were not observed.",
+      "The figures were compared as literal text and minor units; no currency formatting or typography requirement was assessed."
+    ],
+    "finishReason": "tool_calls",
+    "model": "deepseek-flash",
+    "riskCitationChecks": [
+      [
+        {
+          "file": "menu.html",
+          "excerpt": "<p>Tea AUD 24</p>",
+          "start": 168,
+          "end": 185,
+          "valid": true
+        },
+        {
+          "file": "menu.html",
+          "excerpt": "<p>Coffee AUD 18</p>",
+          "start": 185,
+          "end": 205,
+          "valid": true
+        }
+      ]
+    ]
+  },
+  "usage": {
+    "promptTokens": 6438,
+    "completionTokens": 408
+  },
+  "reportedUsageCostUsd": 0.002421,
+  "usageExceededReservation": false,
+  "application": {
+    "accepted": true,
+    "report": {
+      "id": "6349863e-de44-4523-ae3f-3a763efdcbc4",
+      "deliveryId": "eval-full-gap-cross-page-price-owner",
+      "method": "source-ai-v1",
+      "mode": "live",
+      "model": "deepseek-flash",
+      "assessedAt": "2026-11-05T18:15:03.371Z",
+      "items": [
+        {
+          "criterionId": "coverage-1",
+          "status": "changes_suggested",
+          "explanation": "A confirmed business check expects \"Tea\" at AUD 18.00, but the unique simple source block in menu.html states AUD 24.00. This is a limited source mismatch with an exact quotation, not rendered visibility or backend execution. All 2 confirmed checks for this criterion were inspected; any unknowns still need review.",
+          "citations": [
+            {
+              "file": "menu.html",
+              "start": 168,
+              "end": 185,
+              "excerpt": "<p>Tea AUD 24</p>"
+            }
+          ],
+          "ruleEvidenceIds": [
+            "eval-evidence-1"
+          ],
+          "obligations": {
+            "schema": "source-obligations-v1",
+            "coverage": "bounded_detection",
+            "sourceLength": 73,
+            "clauses": [
+              {
+                "start": 0,
+                "end": 73,
+                "excerpt": "The index.html and menu.html source content must both list Tea at AUD 18."
+              }
+            ],
+            "items": [
+              {
+                "id": "obligation-1",
+                "kind": "source_content",
+                "clauseIndex": 0,
+                "state": "source_review_required"
+              }
+            ]
+          }
+        }
+      ],
+      "risks": [
+        {
+          "title": "menu.html prices Tea at AUD 24 instead of AUD 18",
+          "explanation": "The menu.html main section contains \"<p>Tea AUD 24</p>\" while the agreed check expects Tea at 1800 minor units in AUD; the Coffee line there shows AUD 18 instead.",
+          "suggestion": "Correct the Tea line in menu.html to AUD 18 (1800 minor units) and re-verify both files, then have the buyer confirm.",
+          "citations": [
+            {
+              "file": "menu.html",
+              "start": 168,
+              "end": 185,
+              "excerpt": "<p>Tea AUD 24</p>"
+            },
+            {
+              "file": "menu.html",
+              "start": 185,
+              "end": 205,
+              "excerpt": "<p>Coffee AUD 18</p>"
+            }
+          ]
+        }
+      ],
+      "limitations": [
+        "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+        "The model supplied 2 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+        "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog 8213411b1de13c90587fad07a75c16557600fc50719f518fa04f4c86567c5767. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+        "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+        "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+      ],
+      "coverage": {
+        "includedFiles": [
+          "index.html",
+          "menu.html",
+          "site.css"
+        ],
+        "truncatedFiles": [],
+        "omittedFiles": []
+      },
+      "withheldRisks": {
+        "version": 1,
+        "reason": "not_withheld",
+        "adjustedCriteria": [],
+        "entries": []
+      },
+      "usage": {
+        "promptTokens": 6438,
+        "completionTokens": 408
+      }
+    },
+    "error": null
+  },
+  "elapsedMilliseconds": 2459,
+  "rawDiagnostics": {
+    "expectedCriterionIds": [
+      "coverage-1"
+    ],
+    "returnedKnownCriterionIds": [
+      "coverage-1"
+    ],
+    "missingCriterionIds": [],
+    "duplicateCriterionIds": [],
+    "unknownCriterionCount": 0,
+    "invalidItemCount": 0,
+    "contentParsed": true,
+    "idProfileParsed": true,
+    "profileSource": "original_json",
+    "completeItemCoverage": true,
+    "finishReason": "tool_calls"
+  }
+}

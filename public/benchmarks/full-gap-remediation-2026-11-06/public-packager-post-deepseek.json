@@ -1,0 +1,54 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "scripts/build-judge-pack.mjs",
+      "bytes": 34473,
+      "lines": 263,
+      "sha256": "2989e5f7836900aa4410a75f02f6b758e279acdc9decdaaa279ae0b5660047c5"
+    },
+    {
+      "file": "tests/judge-pack.test.mjs",
+      "bytes": 13872,
+      "lines": 164,
+      "sha256": "64a68d05ef75a4d74c7d5ec59fd5bb5046f3cef83ff18efb058da8217e8c8033"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "",
+  "report": null,
+  "reportValid": false,
+  "waitReturned": false,
+  "turnCompleted": false,
+  "completed": false,
+  "errors": [
+    "assistant_output_withheld",
+    "wait_not_returned",
+    "turn_not_completed",
+    "missing_final_assistant_text"
+  ]
+}

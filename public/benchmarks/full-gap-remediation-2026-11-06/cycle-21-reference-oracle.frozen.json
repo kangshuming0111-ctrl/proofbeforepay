@@ -1,0 +1,65 @@
+{
+  "schema": "pbp-stage-reference-pre-run-oracle-v1",
+  "source": [
+    {
+      "file": "lib/delivery-stage-evidence.ts",
+      "sha256": "7d217073d879000dff0b043a1094ffb999f9004694c3549b66e434c4379726dc"
+    },
+    {
+      "file": "lib/delivery-stage-probe.ts",
+      "sha256": "b05c64ea8f2e4d959cf5fde4b391bc44417ab90187b6249b550e701a17f17e45"
+    },
+    {
+      "file": "scripts/run-delivery-stage-probe.mjs",
+      "sha256": "f14ef213637a5ef5c27c052c823ff4bb2ec0c2689b3635cc13d77ae9c022b831"
+    },
+    {
+      "file": "examples/delivery-stage-staging/server.mjs",
+      "sha256": "2365ca75935b8b54874250729ea61ed78fac66999d77c9f528a2498b9128d5af"
+    },
+    {
+      "file": "examples/delivery-stage-staging/adapter.mjs",
+      "sha256": "2fe098fd60424607d0ab6eaa43f281bde9a0dc470e754fb90d9d237761c1d464"
+    }
+  ],
+  "variants": [
+    {
+      "profile": "fixed",
+      "statuses": [
+        "matched",
+        "matched",
+        "matched",
+        "matched"
+      ]
+    },
+    {
+      "profile": "no-store",
+      "statuses": [
+        "matched",
+        "mismatch",
+        "mismatch",
+        "matched"
+      ]
+    },
+    {
+      "profile": "wrong-readback",
+      "statuses": [
+        "matched",
+        "matched",
+        "mismatch",
+        "matched"
+      ]
+    },
+    {
+      "profile": "no-email",
+      "statuses": [
+        "matched",
+        "matched",
+        "matched",
+        "mismatch"
+      ]
+    }
+  ],
+  "modelCalls": 0,
+  "humanParticipants": 0
+}

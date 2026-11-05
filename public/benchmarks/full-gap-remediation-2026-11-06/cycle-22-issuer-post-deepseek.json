@@ -1,0 +1,90 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/evidence-issuer.ts",
+      "bytes": 4718,
+      "lines": 55,
+      "sha256": "8d7db0682cf82ce52cf9e3e7f666631dbeac7734489fddeb1da8ac30d7010a0c"
+    },
+    {
+      "file": "lib/issued-revision-audit.ts",
+      "bytes": 3704,
+      "lines": 41,
+      "sha256": "505c99e92e27d1eb0de24dfdf6339b5b2b6e498eff7756c478aa32040eb8d181"
+    },
+    {
+      "file": "lib/evidence-issuer-keys.ts",
+      "bytes": 583,
+      "lines": 8,
+      "sha256": "4f3f79bb23c15c497f2dab81b504c04333f57e57183f0e6030e6ff86eb8a3fc4"
+    },
+    {
+      "file": "tests/evidence-issuer.test.ts",
+      "bytes": 3308,
+      "lines": 30,
+      "sha256": "7019dce730f2b81adc8d80dd56df0e08df4eeb3b62f7ef4776df84981447c47c"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Reviewed the five supplied files only: evidence-issuer.ts, issued-revision-audit.ts, evidence-issuer-keys.ts, tests/evidence-issuer.test.ts and the project skill. The core design is sound. The receipt schema is strict: envelope check, allowlisted keys and exact count, data descriptors only, own null or Object prototype, bounded lengths. The key registry is trusted config, copied at creation. The official verifier is built only from source-pinned keys. Both strict-audit and pinned-receipt results are required, and a failed receipt is never retried as unsigned evidence. The signer clones its input before awaiting, binds the signature to the full canonical digest and re-verifies against the published key. No correctness or security defect was found in these files. One test-coverage gap is reported: one test's name claims more protection than its code exercises. No runtime checks or tests were executed, as required, so the 'hidden stdin' sign/verify claim and the root integration are outside this review.\",\"findings\":[{\"severity\":\"P3\",\"file\":\"tests/evidence-issuer.test.ts\",\"line\":24,\"title\":\"Mutation test does not prove that a receipt change during the awaited key import is invisible to verification\",\"evidence\":\"Test lines 24-26 call f.verify(digest,r), then synchronously mutate r.payloadSha256 and r.signature, then expect \\\"verified\\\". The verifier in lib/evidence-issuer.ts awaits only at line 34 (importKey) and line 37 (verify). Lines 29-36 validate and copy the receipt synchronously, building r = {...value} at line 30 and checking data descriptors at line 13. The test's own reasoning is sound: the synchronous mutations happen after the clone. But because the clone is synchronous, the test would pass identically against a verifier that kept reading the caller's object after the await. Only the variant where the clone comes after the first await (not the code shipped here) would be caught. The title therefore overstates the protection this case exercises, and no test pins the clone-before-await ordering.\",\"reproduction\":\"Reasoning trace, unexecuted. Change line 30 of evidence-issuer.ts to use the original value for message/verify (for example, pass value instead of r to message() and read value.signature), leaving the synchronous mutation window the same. The test at lines 24-26 still passes because the mutations occur before any await runs. A receipt mutation injected in a crypto.subtle.importKey stub before resolution would be needed to observe the difference. The five-test suite as written cannot distinguish those cases.\",\"suggestion\":\"Make the ordering claim testable. Import an ephemeral trusted key while a crypto.subtle.importKey wrapper waits on a deferred promise, and mutate the caller receipt inside that window before resolving. Assert the result is still \\\"verified\\\". Alternatively, retitle the test to what it proves (synchronous mutations after verify() is called do not affect the cloned snapshot).\"},{\"severity\":\"P3\",\"file\":\"tests/evidence-issuer.test.ts\",\"line\":27,\"title\":\"Wrong-signer case is proved only for the ephemeral path; the production pinned key is never exercised in the packet\",\"evidence\":\"Test line 29 signs an ephemeral key with signEvidenceDigest and expects a \\\"does not match\\\" rejection, which exercises lines 51-53 of evidence-issuer.ts. No test signs with the production-registered private key, because it is a runtime secret and is intentionally absent. Line 53's final check against verifyEvidenceIssuerReceipt therefore works only through the explicit mismatch rejection, or is self-consistent. The actual pinned sign/verify of the production pair, stated as performed via hidden stdin, has no retained evidence in this packet.\",\"reproduction\":\"Reasoning trace, unexecuted. signEvidenceDigest always signs with keyId EVIDENCE_ISSUER_KEY_ID (line 49). The final assertion at line 53 therefore checks only that the supplied private key matches the pinned SPKI, not that a third-party consumer can verify a production receipt. The five tests cover ephemeral success, wrongKey, tamper and getter/mutation/config-false paths. None captures a fixture signed by the real runtime key, and none can, without the secret. The production sign/verify claim is therefore unverified by the supplied source.\",\"suggestion\":\"No code change in the packet is required. Record the hidden-stdin production sign/verify as an external check in the cycle log, or add a separate operator-run script (not a unit test) that signs a digest from the Site secret and asserts verifyEvidenceIssuerReceipt returns \\\"verified\\\".\"}],\"limitations\":[\"Scope was the five supplied files only. No repository, environment, hidden files, runtime, tests, typecheck, build or production checks were inspected or run.\",\"The five unit tests, the ephemeral registry, and the hidden-stdin production sign/verify are reviewed only as text. Their pass/fail is unverified.\",\"The private key, .dev.vars or Site secrets, the server route calling issueRevisionAudit, the audit and evidence-bundle modules (verifyRevisionAudit, revisionAuditDigest, assertEvidenceBundleBudget), and the old unsigned v1/v2 workflow are not supplied. Whether keyIds and origins are bound to the issuer, whether the root page/summary hide the new verified state, whether evidence-bundle.ts uses the same SHA, JSON and prototype canonicalization, and whether the old v1/v2 workflow is truly unchanged and labelled 'auth unproven' cannot be confirmed.\",\"Backend integration is pending by instruction and was treated as a root-integration gap, not a new-code defect. The hidden-stdin production sign/verify claim and the operational status of the Site secret had no provided evidence.\",\"The claim is scoped as the official app having issued the export payload. It excludes factual truth, backend execution, third-party timestamps, human identity and payment. The verifier's message at line 27 and the test's expectations reflect only that scope. The 2027-01-01 issuedAt fixture is synthetic and consistent with the schema's strict ISO-millisecond check.\"]}",
+  "report": {
+    "summary": "Reviewed the five supplied files only: evidence-issuer.ts, issued-revision-audit.ts, evidence-issuer-keys.ts, tests/evidence-issuer.test.ts and the project skill. The core design is sound. The receipt schema is strict: envelope check, allowlisted keys and exact count, data descriptors only, own null or Object prototype, bounded lengths. The key registry is trusted config, copied at creation. The official verifier is built only from source-pinned keys. Both strict-audit and pinned-receipt results are required, and a failed receipt is never retried as unsigned evidence. The signer clones its input before awaiting, binds the signature to the full canonical digest and re-verifies against the published key. No correctness or security defect was found in these files. One test-coverage gap is reported: one test's name claims more protection than its code exercises. No runtime checks or tests were executed, as required, so the 'hidden stdin' sign/verify claim and the root integration are outside this review.",
+    "findings": [
+      {
+        "severity": "P3",
+        "file": "tests/evidence-issuer.test.ts",
+        "line": 24,
+        "title": "Mutation test does not prove that a receipt change during the awaited key import is invisible to verification",
+        "evidence": "Test lines 24-26 call f.verify(digest,r), then synchronously mutate r.payloadSha256 and r.signature, then expect \"verified\". The verifier in lib/evidence-issuer.ts awaits only at line 34 (importKey) and line 37 (verify). Lines 29-36 validate and copy the receipt synchronously, building r = {...value} at line 30 and checking data descriptors at line 13. The test's own reasoning is sound: the synchronous mutations happen after the clone. But because the clone is synchronous, the test would pass identically against a verifier that kept reading the caller's object after the await. Only the variant where the clone comes after the first await (not the code shipped here) would be caught. The title therefore overstates the protection this case exercises, and no test pins the clone-before-await ordering.",
+        "reproduction": "Reasoning trace, unexecuted. Change line 30 of evidence-issuer.ts to use the original value for message/verify (for example, pass value instead of r to message() and read value.signature), leaving the synchronous mutation window the same. The test at lines 24-26 still passes because the mutations occur before any await runs. A receipt mutation injected in a crypto.subtle.importKey stub before resolution would be needed to observe the difference. The five-test suite as written cannot distinguish those cases.",
+        "suggestion": "Make the ordering claim testable. Import an ephemeral trusted key while a crypto.subtle.importKey wrapper waits on a deferred promise, and mutate the caller receipt inside that window before resolving. Assert the result is still \"verified\". Alternatively, retitle the test to what it proves (synchronous mutations after verify() is called do not affect the cloned snapshot)."
+      },
+      {
+        "severity": "P3",
+        "file": "tests/evidence-issuer.test.ts",
+        "line": 27,
+        "title": "Wrong-signer case is proved only for the ephemeral path; the production pinned key is never exercised in the packet",
+        "evidence": "Test line 29 signs an ephemeral key with signEvidenceDigest and expects a \"does not match\" rejection, which exercises lines 51-53 of evidence-issuer.ts. No test signs with the production-registered private key, because it is a runtime secret and is intentionally absent. Line 53's final check against verifyEvidenceIssuerReceipt therefore works only through the explicit mismatch rejection, or is self-consistent. The actual pinned sign/verify of the production pair, stated as performed via hidden stdin, has no retained evidence in this packet.",
+        "reproduction": "Reasoning trace, unexecuted. signEvidenceDigest always signs with keyId EVIDENCE_ISSUER_KEY_ID (line 49). The final assertion at line 53 therefore checks only that the supplied private key matches the pinned SPKI, not that a third-party consumer can verify a production receipt. The five tests cover ephemeral success, wrongKey, tamper and getter/mutation/config-false paths. None captures a fixture signed by the real runtime key, and none can, without the secret. The production sign/verify claim is therefore unverified by the supplied source.",
+        "suggestion": "No code change in the packet is required. Record the hidden-stdin production sign/verify as an external check in the cycle log, or add a separate operator-run script (not a unit test) that signs a digest from the Site secret and asserts verifyEvidenceIssuerReceipt returns \"verified\"."
+      }
+    ],
+    "limitations": [
+      "Scope was the five supplied files only. No repository, environment, hidden files, runtime, tests, typecheck, build or production checks were inspected or run.",
+      "The five unit tests, the ephemeral registry, and the hidden-stdin production sign/verify are reviewed only as text. Their pass/fail is unverified.",
+      "The private key, .dev.vars or Site secrets, the server route calling issueRevisionAudit, the audit and evidence-bundle modules (verifyRevisionAudit, revisionAuditDigest, assertEvidenceBundleBudget), and the old unsigned v1/v2 workflow are not supplied. Whether keyIds and origins are bound to the issuer, whether the root page/summary hide the new verified state, whether evidence-bundle.ts uses the same SHA, JSON and prototype canonicalization, and whether the old v1/v2 workflow is truly unchanged and labelled 'auth unproven' cannot be confirmed.",
+      "Backend integration is pending by instruction and was treated as a root-integration gap, not a new-code defect. The hidden-stdin production sign/verify claim and the operational status of the Site secret had no provided evidence.",
+      "The claim is scoped as the official app having issued the export payload. It excludes factual truth, backend execution, third-party timestamps, human identity and payment. The verifier's message at line 27 and the test's expectations reflect only that scope. The 2027-01-01 issuedAt fixture is synthetic and consistent with the schema's strict ISO-millisecond check."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

@@ -1,0 +1,289 @@
+{
+  "id": "full-gap-present-phone",
+  "stratum": "clean",
+  "reference": [
+    {
+      "criterionId": "coverage-1",
+      "label": {
+        "expectedStatus": "supported",
+        "rationale": "The complete static index.html body contains a labelled telephone in one p owner. This establishes source copy only, not visibility, phone ownership or connection.",
+        "relevantFiles": [
+          "index.html",
+          "contact.html"
+        ],
+        "requiresSemanticReview": true
+      }
+    }
+  ],
+  "plan": {
+    "requestSha256": "aa5a853dc6d2a3c5b9a697392277b6eba9292d01c0cfeb04f1c723cbf4681286",
+    "requestUtf8Bytes": 27742,
+    "promptTokenUpperEstimate": 31838,
+    "outputTokenLimit": 3360,
+    "reservedCostUsd": 0.013583399999999999,
+    "coverage": {
+      "includedFiles": [
+        "contact.html",
+        "index.html",
+        "site.css"
+      ],
+      "truncatedFiles": [],
+      "omittedFiles": []
+    }
+  },
+  "attempted": true,
+  "networkAttempted": true,
+  "criteria": [
+    {
+      "id": "coverage-1",
+      "referenceStatus": "supported",
+      "rawStatus": "supported",
+      "applicationStatus": "supported",
+      "rawCitations": [
+        {
+          "file": "index.html",
+          "excerpt": "<p>Telephone: +61 3 7010 2244</p>",
+          "start": 171,
+          "end": 204,
+          "valid": true
+        },
+        {
+          "file": "index.html",
+          "excerpt": "<h1>Maple Floral</h1>",
+          "start": 150,
+          "end": 171,
+          "valid": true
+        }
+      ],
+      "applicationCitations": [
+        {
+          "file": "index.html",
+          "excerpt": "<p>Telephone: +61 3 7010 2244</p>",
+          "valid": true,
+          "start": 171,
+          "end": 204
+        },
+        {
+          "file": "index.html",
+          "excerpt": "<h1>Maple Floral</h1>",
+          "valid": true,
+          "start": 150,
+          "end": 171
+        }
+      ],
+      "rawCitationValidity": "valid",
+      "semanticReview": "pending_independent_adjudication"
+    }
+  ],
+  "wholeAnswerSemanticReview": "pending_independent_adjudication",
+  "raw": {
+    "httpStatus": 200,
+    "bodyText": "{\"id\":\"d5eda478-bda9-4d47-bcd3-7312462515e2\",\"object\":\"chat.completion\",\"created\":1793902487,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"index\":0,\"id\":\"call_00_4G1ToA7WLgGnGmA2dT4n6403\",\"type\":\"function\",\"function\":{\"name\":\"submit_source_assessment_v3\",\"arguments\":\"{\\\"catalogId\\\": \\\"f46cc84ed427ca4fd01bf8ac8d468b45030769e25925ce87537aeac1224c2b76\\\", \\\"items\\\": [{\\\"criterionId\\\": \\\"coverage-1\\\", \\\"status\\\": \\\"supported\\\", \\\"explanation\\\": \\\"index.html lists a shop telephone number: \\\\\\\"Telephone: +61 3 7010 2244\\\\\\\". contact.html has no number, but no page-specific location was required.\\\", \\\"citations\\\": {\\\"c1\\\": \\\"s8\\\", \\\"c2\\\": \\\"s7\\\", \\\"c3\\\": \\\"\\\", \\\"c4\\\": \\\"\\\", \\\"c5\\\": \\\"\\\", \\\"c6\\\": \\\"\\\"}}], \\\"risks\\\": [], \\\"limitations\\\": [\\\"The number is stated as plain text, not a tel: link; the requirement only asked that the content list a telephone number.\\\", \\\"Source review cannot confirm the number is rendered, correct or displayed in a browser.\\\", \\\"contact.html, cited as context, contains no telephone number.\\\"]}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":6219,\"completion_tokens\":280,\"total_tokens\":6499,\"prompt_tokens_details\":{\"cached_tokens\":6016},\"prompt_cache_hit_tokens\":6016,\"prompt_cache_miss_tokens\":203},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "bodyPrefixText": null,
+    "bodyComplete": true,
+    "bodyUtf8Bytes": 1379,
+    "bodyByteCountIsComplete": true,
+    "utf8Valid": true,
+    "providerBody": {
+      "id": "d5eda478-bda9-4d47-bcd3-7312462515e2",
+      "object": "chat.completion",
+      "created": 1793902487,
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+              {
+                "index": 0,
+                "id": "call_00_4G1ToA7WLgGnGmA2dT4n6403",
+                "type": "function",
+                "function": {
+                  "name": "submit_source_assessment_v3",
+                  "arguments": "{\"catalogId\": \"f46cc84ed427ca4fd01bf8ac8d468b45030769e25925ce87537aeac1224c2b76\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"supported\", \"explanation\": \"index.html lists a shop telephone number: \\\"Telephone: +61 3 7010 2244\\\". contact.html has no number, but no page-specific location was required.\", \"citations\": {\"c1\": \"s8\", \"c2\": \"s7\", \"c3\": \"\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [], \"limitations\": [\"The number is stated as plain text, not a tel: link; the requirement only asked that the content list a telephone number.\", \"Source review cannot confirm the number is rendered, correct or displayed in a browser.\", \"contact.html, cited as context, contains no telephone number.\"]}"
+                }
+              }
+            ]
+          },
+          "logprobs": null,
+          "finish_reason": "tool_calls"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 6219,
+        "completion_tokens": 280,
+        "total_tokens": 6499,
+        "prompt_tokens_details": {
+          "cached_tokens": 6016
+        },
+        "prompt_cache_hit_tokens": 6016,
+        "prompt_cache_miss_tokens": 203
+      },
+      "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+    },
+    "contentText": "{\"catalogId\": \"f46cc84ed427ca4fd01bf8ac8d468b45030769e25925ce87537aeac1224c2b76\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"supported\", \"explanation\": \"index.html lists a shop telephone number: \\\"Telephone: +61 3 7010 2244\\\". contact.html has no number, but no page-specific location was required.\", \"citations\": {\"c1\": \"s8\", \"c2\": \"s7\", \"c3\": \"\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [], \"limitations\": [\"The number is stated as plain text, not a tel: link; the requirement only asked that the content list a telephone number.\", \"Source review cannot confirm the number is rendered, correct or displayed in a browser.\", \"contact.html, cited as context, contains no telephone number.\"]}",
+    "originalContentText": "{\"catalogId\": \"f46cc84ed427ca4fd01bf8ac8d468b45030769e25925ce87537aeac1224c2b76\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"supported\", \"explanation\": \"index.html lists a shop telephone number: \\\"Telephone: +61 3 7010 2244\\\". contact.html has no number, but no page-specific location was required.\", \"citations\": {\"c1\": \"s8\", \"c2\": \"s7\", \"c3\": \"\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [], \"limitations\": [\"The number is stated as plain text, not a tel: link; the requirement only asked that the content list a telephone number.\", \"Source review cannot confirm the number is rendered, correct or displayed in a browser.\", \"contact.html, cited as context, contains no telephone number.\"]}",
+    "originalJsonValid": true,
+    "contentNormalization": "none",
+    "transport": "strict_tool",
+    "citationEncoding": "catalog_slots",
+    "catalogIdValid": true,
+    "completion": {
+      "catalogId": "f46cc84ed427ca4fd01bf8ac8d468b45030769e25925ce87537aeac1224c2b76",
+      "items": [
+        {
+          "criterionId": "coverage-1",
+          "status": "supported",
+          "explanation": "index.html lists a shop telephone number: \"Telephone: +61 3 7010 2244\". contact.html has no number, but no page-specific location was required.",
+          "citations": {
+            "c1": "s8",
+            "c2": "s7",
+            "c3": "",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          }
+        }
+      ],
+      "risks": [],
+      "limitations": [
+        "The number is stated as plain text, not a tel: link; the requirement only asked that the content list a telephone number.",
+        "Source review cannot confirm the number is rendered, correct or displayed in a browser.",
+        "contact.html, cited as context, contains no telephone number."
+      ]
+    },
+    "items": [
+      {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "index.html lists a shop telephone number: \"Telephone: +61 3 7010 2244\". contact.html has no number, but no page-specific location was required.",
+        "citations": {
+          "c1": "s8",
+          "c2": "s7",
+          "c3": "",
+          "c4": "",
+          "c5": "",
+          "c6": ""
+        }
+      }
+    ],
+    "risks": [],
+    "limitations": [
+      "The number is stated as plain text, not a tel: link; the requirement only asked that the content list a telephone number.",
+      "Source review cannot confirm the number is rendered, correct or displayed in a browser.",
+      "contact.html, cited as context, contains no telephone number."
+    ],
+    "finishReason": "tool_calls",
+    "model": "deepseek-flash",
+    "riskCitationChecks": []
+  },
+  "usage": {
+    "promptTokens": 6219,
+    "completionTokens": 280
+  },
+  "reportedUsageCostUsd": 0.0022017,
+  "usageExceededReservation": false,
+  "application": {
+    "accepted": true,
+    "report": {
+      "id": "d627c667-a27f-4658-8bb1-e5fb349c48b6",
+      "deliveryId": "eval-full-gap-present-phone",
+      "method": "source-ai-v1",
+      "mode": "live",
+      "model": "deepseek-flash",
+      "assessedAt": "2026-11-05T18:14:49.621Z",
+      "items": [
+        {
+          "criterionId": "coverage-1",
+          "status": "supported",
+          "explanation": "A complete source owner in index.html contains phone text, and the current citation covers that witness. This supports only the limited source-copy requirement. It does not require duplication on another unspecified page or establish browser visibility, contact validity or delivery; the buyer still reviews it.",
+          "citations": [
+            {
+              "file": "index.html",
+              "start": 171,
+              "end": 204,
+              "excerpt": "<p>Telephone: +61 3 7010 2244</p>"
+            },
+            {
+              "file": "index.html",
+              "start": 150,
+              "end": 171,
+              "excerpt": "<h1>Maple Floral</h1>"
+            }
+          ],
+          "ruleEvidenceIds": [
+            "eval-evidence-1"
+          ],
+          "obligations": {
+            "schema": "source-obligations-v1",
+            "coverage": "bounded_detection",
+            "sourceLength": 53,
+            "clauses": [
+              {
+                "start": 0,
+                "end": 53,
+                "excerpt": "The page content must list the shop telephone number."
+              }
+            ],
+            "items": [
+              {
+                "id": "obligation-1",
+                "kind": "source_content",
+                "clauseIndex": 0,
+                "state": "source_review_required"
+              }
+            ]
+          }
+        }
+      ],
+      "risks": [],
+      "limitations": [
+        "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+        "The model supplied 3 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+        "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog f46cc84ed427ca4fd01bf8ac8d468b45030769e25925ce87537aeac1224c2b76. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+        "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+        "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+      ],
+      "coverage": {
+        "includedFiles": [
+          "contact.html",
+          "index.html",
+          "site.css"
+        ],
+        "truncatedFiles": [],
+        "omittedFiles": []
+      },
+      "withheldRisks": {
+        "version": 1,
+        "reason": "not_withheld",
+        "adjustedCriteria": [],
+        "entries": []
+      },
+      "usage": {
+        "promptTokens": 6219,
+        "completionTokens": 280
+      }
+    },
+    "error": null
+  },
+  "elapsedMilliseconds": 2095,
+  "rawDiagnostics": {
+    "expectedCriterionIds": [
+      "coverage-1"
+    ],
+    "returnedKnownCriterionIds": [
+      "coverage-1"
+    ],
+    "missingCriterionIds": [],
+    "duplicateCriterionIds": [],
+    "unknownCriterionCount": 0,
+    "invalidItemCount": 0,
+    "contentParsed": true,
+    "idProfileParsed": true,
+    "profileSource": "original_json",
+    "completeItemCoverage": true,
+    "finishReason": "tool_calls"
+  }
+}

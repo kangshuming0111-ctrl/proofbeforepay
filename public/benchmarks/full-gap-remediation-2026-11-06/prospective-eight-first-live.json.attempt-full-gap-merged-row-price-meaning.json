@@ -1,0 +1,301 @@
+{
+  "id": "full-gap-merged-row-price-meaning",
+  "stratum": "boundary",
+  "reference": [
+    {
+      "criterionId": "coverage-1",
+      "label": {
+        "expectedStatus": "insufficient_evidence",
+        "rationale": "The rowspan explicitly associates Tea with both AUD18 and AUD28 rows. No size, option or other meaning identifies which amount applies to the agreed order. Unknown business meaning must not be described as an unknown Tea-to-row relationship; no definite price defect or successful order execution is established.",
+        "relevantFiles": [
+          "index.html",
+          "menu.html"
+        ],
+        "requiresSemanticReview": true
+      }
+    }
+  ],
+  "plan": {
+    "requestSha256": "7cd5adf3a1ec2a4b2178056cba2dcf92e24579de7b019a9d1a3979c5879a5588",
+    "requestUtf8Bytes": 28560,
+    "promptTokenUpperEstimate": 32656,
+    "outputTokenLimit": 3360,
+    "reservedCostUsd": 0.013828799999999999,
+    "coverage": {
+      "includedFiles": [
+        "index.html",
+        "menu.html",
+        "site.css"
+      ],
+      "truncatedFiles": [],
+      "omittedFiles": []
+    }
+  },
+  "attempted": true,
+  "networkAttempted": true,
+  "criteria": [
+    {
+      "id": "coverage-1",
+      "referenceStatus": "insufficient_evidence",
+      "rawStatus": "supported",
+      "applicationStatus": "insufficient_evidence",
+      "rawCitations": [
+        {
+          "file": "menu.html",
+          "excerpt": "<tr><td rowspan=\"2\">Tea</td><td>AUD 18</td></tr>",
+          "start": 177,
+          "end": 225,
+          "valid": true
+        },
+        {
+          "file": "menu.html",
+          "excerpt": "<td>AUD 18</td>",
+          "start": 205,
+          "end": 220,
+          "valid": true
+        }
+      ],
+      "applicationCitations": [
+        {
+          "file": "menu.html",
+          "excerpt": "<tr><td rowspan=\"2\">Tea</td><td>AUD 18</td></tr>",
+          "valid": true,
+          "start": 177,
+          "end": 225
+        },
+        {
+          "file": "menu.html",
+          "excerpt": "<td>AUD 18</td>",
+          "valid": true,
+          "start": 205,
+          "end": 220
+        }
+      ],
+      "rawCitationValidity": "valid",
+      "semanticReview": "pending_independent_adjudication"
+    }
+  ],
+  "wholeAnswerSemanticReview": "pending_independent_adjudication",
+  "raw": {
+    "httpStatus": 200,
+    "bodyText": "{\"id\":\"ee7ebee5-967e-4d81-8719-6251193927d9\",\"object\":\"chat.completion\",\"created\":1793901227,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"index\":0,\"id\":\"call_00_hIs1lAYnCdusfsOURWyC3787\",\"type\":\"function\",\"function\":{\"name\":\"submit_source_assessment_v3\",\"arguments\":\"{\\\"catalogId\\\": \\\"ca3de75a3de7fea952d05a3b9f81c29a6419c6b2fb204a0776bb03c3b586f34b\\\", \\\"items\\\": [{\\\"criterionId\\\": \\\"coverage-1\\\", \\\"status\\\": \\\"supported\\\", \\\"explanation\\\": \\\"menu.html lists a Tea row with AUD 18 (amountMinor 1800), matching the agreed label, currency and amount.\\\", \\\"citations\\\": {\\\"c1\\\": \\\"s8\\\", \\\"c2\\\": \\\"s10\\\", \\\"c3\\\": \\\"\\\", \\\"c4\\\": \\\"\\\", \\\"c5\\\": \\\"\\\", \\\"c6\\\": \\\"\\\"}}], \\\"risks\\\": [], \\\"limitations\\\": [\\\"Source review only; no browser rendering or interaction was observed.\\\", \\\"A second price (AUD 28) also appears in a separate row without its own label; the single-Tealabel-to-price pairing is read from the rowspan cell.\\\"]}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":6557,\"completion_tokens\":269,\"total_tokens\":6826,\"prompt_tokens_details\":{\"cached_tokens\":3712},\"prompt_cache_hit_tokens\":3712,\"prompt_cache_miss_tokens\":2845},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "bodyPrefixText": null,
+    "bodyComplete": true,
+    "bodyUtf8Bytes": 1276,
+    "bodyByteCountIsComplete": true,
+    "utf8Valid": true,
+    "providerBody": {
+      "id": "ee7ebee5-967e-4d81-8719-6251193927d9",
+      "object": "chat.completion",
+      "created": 1793901227,
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+              {
+                "index": 0,
+                "id": "call_00_hIs1lAYnCdusfsOURWyC3787",
+                "type": "function",
+                "function": {
+                  "name": "submit_source_assessment_v3",
+                  "arguments": "{\"catalogId\": \"ca3de75a3de7fea952d05a3b9f81c29a6419c6b2fb204a0776bb03c3b586f34b\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"supported\", \"explanation\": \"menu.html lists a Tea row with AUD 18 (amountMinor 1800), matching the agreed label, currency and amount.\", \"citations\": {\"c1\": \"s8\", \"c2\": \"s10\", \"c3\": \"\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [], \"limitations\": [\"Source review only; no browser rendering or interaction was observed.\", \"A second price (AUD 28) also appears in a separate row without its own label; the single-Tealabel-to-price pairing is read from the rowspan cell.\"]}"
+                }
+              }
+            ]
+          },
+          "logprobs": null,
+          "finish_reason": "tool_calls"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 6557,
+        "completion_tokens": 269,
+        "total_tokens": 6826,
+        "prompt_tokens_details": {
+          "cached_tokens": 3712
+        },
+        "prompt_cache_hit_tokens": 3712,
+        "prompt_cache_miss_tokens": 2845
+      },
+      "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+    },
+    "contentText": "{\"catalogId\": \"ca3de75a3de7fea952d05a3b9f81c29a6419c6b2fb204a0776bb03c3b586f34b\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"supported\", \"explanation\": \"menu.html lists a Tea row with AUD 18 (amountMinor 1800), matching the agreed label, currency and amount.\", \"citations\": {\"c1\": \"s8\", \"c2\": \"s10\", \"c3\": \"\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [], \"limitations\": [\"Source review only; no browser rendering or interaction was observed.\", \"A second price (AUD 28) also appears in a separate row without its own label; the single-Tealabel-to-price pairing is read from the rowspan cell.\"]}",
+    "originalContentText": "{\"catalogId\": \"ca3de75a3de7fea952d05a3b9f81c29a6419c6b2fb204a0776bb03c3b586f34b\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"supported\", \"explanation\": \"menu.html lists a Tea row with AUD 18 (amountMinor 1800), matching the agreed label, currency and amount.\", \"citations\": {\"c1\": \"s8\", \"c2\": \"s10\", \"c3\": \"\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [], \"limitations\": [\"Source review only; no browser rendering or interaction was observed.\", \"A second price (AUD 28) also appears in a separate row without its own label; the single-Tealabel-to-price pairing is read from the rowspan cell.\"]}",
+    "originalJsonValid": true,
+    "contentNormalization": "none",
+    "transport": "strict_tool",
+    "citationEncoding": "catalog_slots",
+    "catalogIdValid": true,
+    "completion": {
+      "catalogId": "ca3de75a3de7fea952d05a3b9f81c29a6419c6b2fb204a0776bb03c3b586f34b",
+      "items": [
+        {
+          "criterionId": "coverage-1",
+          "status": "supported",
+          "explanation": "menu.html lists a Tea row with AUD 18 (amountMinor 1800), matching the agreed label, currency and amount.",
+          "citations": {
+            "c1": "s8",
+            "c2": "s10",
+            "c3": "",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          }
+        }
+      ],
+      "risks": [],
+      "limitations": [
+        "Source review only; no browser rendering or interaction was observed.",
+        "A second price (AUD 28) also appears in a separate row without its own label; the single-Tealabel-to-price pairing is read from the rowspan cell."
+      ]
+    },
+    "items": [
+      {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "menu.html lists a Tea row with AUD 18 (amountMinor 1800), matching the agreed label, currency and amount.",
+        "citations": {
+          "c1": "s8",
+          "c2": "s10",
+          "c3": "",
+          "c4": "",
+          "c5": "",
+          "c6": ""
+        }
+      }
+    ],
+    "risks": [],
+    "limitations": [
+      "Source review only; no browser rendering or interaction was observed.",
+      "A second price (AUD 28) also appears in a separate row without its own label; the single-Tealabel-to-price pairing is read from the rowspan cell."
+    ],
+    "finishReason": "tool_calls",
+    "model": "deepseek-flash",
+    "riskCitationChecks": []
+  },
+  "usage": {
+    "promptTokens": 6557,
+    "completionTokens": 269
+  },
+  "reportedUsageCostUsd": 0.0022899,
+  "usageExceededReservation": false,
+  "application": {
+    "accepted": true,
+    "report": {
+      "id": "2bf46a9a-40f0-4981-8ce0-7b4f6989d963",
+      "deliveryId": "eval-full-gap-merged-row-price-meaning",
+      "method": "source-ai-v1",
+      "mode": "live",
+      "model": "deepseek-flash",
+      "assessedAt": "2026-11-05T17:53:48.964Z",
+      "items": [
+        {
+          "criterionId": "coverage-1",
+          "status": "insufficient_evidence",
+          "explanation": "Not all confirmed business checks can be reliably matched within the limited static simple-block format. Duplicate or unlocated content, complex markup or dynamic sources need other evidence. Source suggestions cannot establish compliance; the locked agreement is unchanged.",
+          "citations": [
+            {
+              "file": "menu.html",
+              "start": 177,
+              "end": 225,
+              "excerpt": "<tr><td rowspan=\"2\">Tea</td><td>AUD 18</td></tr>"
+            },
+            {
+              "file": "menu.html",
+              "start": 205,
+              "end": 220,
+              "excerpt": "<td>AUD 18</td>"
+            }
+          ],
+          "ruleEvidenceIds": [
+            "eval-evidence-1"
+          ],
+          "obligations": {
+            "schema": "source-obligations-v1",
+            "coverage": "bounded_detection",
+            "sourceLength": 78,
+            "clauses": [
+              {
+                "start": 0,
+                "end": 78,
+                "excerpt": "The menu.html source content must identify the price for the agreed Tea order."
+              }
+            ],
+            "items": [
+              {
+                "id": "obligation-1",
+                "kind": "source_content",
+                "clauseIndex": 0,
+                "state": "source_review_required"
+              }
+            ]
+          },
+          "evidenceNeed": {
+            "schema": "source-evidence-need-v1",
+            "reason": "source_ambiguity",
+            "targetFiles": [
+              "menu.html"
+            ]
+          }
+        }
+      ],
+      "risks": [],
+      "limitations": [
+        "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+        "The model supplied 2 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+        "1 item status(es) were adjusted by system checks. 0 unreviewed optional AI risk(s) are temporarily withheld; use item-level evidence. This publication gate does not accept work, authorize or trigger payment.",
+        "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog ca3de75a3de7fea952d05a3b9f81c29a6419c6b2fb204a0776bb03c3b586f34b. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+        "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+        "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+      ],
+      "coverage": {
+        "includedFiles": [
+          "index.html",
+          "menu.html",
+          "site.css"
+        ],
+        "truncatedFiles": [],
+        "omittedFiles": []
+      },
+      "withheldRisks": {
+        "version": 1,
+        "reason": "item_status_adjusted",
+        "adjustedCriteria": [
+          {
+            "criterionId": "coverage-1",
+            "originalStatus": "supported",
+            "publishedStatus": "insufficient_evidence"
+          }
+        ],
+        "entries": []
+      },
+      "usage": {
+        "promptTokens": 6557,
+        "completionTokens": 269
+      }
+    },
+    "error": null
+  },
+  "elapsedMilliseconds": 2148,
+  "rawDiagnostics": {
+    "expectedCriterionIds": [
+      "coverage-1"
+    ],
+    "returnedKnownCriterionIds": [
+      "coverage-1"
+    ],
+    "missingCriterionIds": [],
+    "duplicateCriterionIds": [],
+    "unknownCriterionCount": 0,
+    "invalidItemCount": 0,
+    "contentParsed": true,
+    "idProfileParsed": true,
+    "profileSource": "original_json",
+    "completeItemCoverage": true,
+    "finishReason": "tool_calls"
+  }
+}

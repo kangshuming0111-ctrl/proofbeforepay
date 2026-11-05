@@ -1,0 +1,97 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/assessment-obligations.ts",
+      "bytes": 11736,
+      "lines": 133,
+      "sha256": "66438c94bb42a377a2e1007f0d694ccc4f77fd04500aa6d84d2c380c06628a58"
+    },
+    {
+      "file": "app/components/AssessmentObligations.tsx",
+      "bytes": 2300,
+      "lines": 23,
+      "sha256": "d1a0a0cf4342e45b54582344b17957a045c9cd08594b87ea4acf268c36a025a9"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 55772,
+      "lines": 439,
+      "sha256": "559fad395c27dbb37fb1179e2270d008692daf6ce8b8a30944d38f64091f6a19"
+    },
+    {
+      "file": "lib/evidence-export.ts",
+      "bytes": 51451,
+      "lines": 422,
+      "sha256": "05b2f5675144ed4e04ef41852babdb7e50523e4a9de3bff5b7e84150fd0a42c6"
+    },
+    {
+      "file": "tests/assessment-obligations.test.ts",
+      "bytes": 12429,
+      "lines": 153,
+      "sha256": "6c1e6ac553db75f89676af675c347e153498797a9726618973725646886df8d5"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Reviewed the supplied packet read-only: lib/assessment-obligations.ts (frozen source-obligations-v1 derivation, validator/rederivation, bilingual copy), app/components/AssessmentObligations.tsx (read-only UI), lib/delivery-assessment.ts (catalog_slots attachment and wiring), lib/evidence-export.ts (current/history rederivation of saved obligations), and tests/assessment-obligations.test.ts. The core controls hold as written: only criterion.source is an input; titles/model text never reach the derivation; the parent rule status, review, acceptance and payment are untouched; obligations are emitted only for catalog_slots and are never a runtime or judgment claim; enumeration of a compound stays separate per direction; atomic exact-copy/static-markup literals collapse to one source_content clause; over-limit inputs become one unclassified whole-text item with original bytes kept; legacy reports without the field stay absent (no backfill); the UI rejects mismatched value/criterion pairs instead of rebuilding them; plainData rejects getters, symbols, sparse arrays, foreign prototypes and cycles before touching values. Two concrete defects remain: (1) the clause splitter drops English full stop terminators, so operations in later sentences (and negation/condition words in them) are misclassified or omitted; (2) saved obligation objects can be revived with class-instance (foreign-proto) entries through JSON import, bypassing the getter/prototype guard. Limitation: PHAROS/Jayu comparison and all external manual tests remain unverified; no runtime checks were run by this review.\",\"findings\":[{\"severity\":\"P2\",\"file\":\"lib/assessment-obligations.ts\",\"line\":40,\"title\":\"English sentence boundaries are not split, so operations in later sentences are misclassified or omitted\",\"evidence\":\"clausesFor (lines 42-43) only ends a clause on /[;；。\\\\n]/, despite the Chinese full stop being included and the comment naming the English full stop; English '.' never terminates. A clause therefore spans multiple sentences. kindsFor per clause (54-61) sees only the first operation in the clause: if no SUBMISSION/EMAIL/WRITE/READBACK/RESTART matches in that whole clause the clause becomes one unclassified 'needs_clarification'; if something matches, every later sentence's own direction is folded into the first match's clause only when it independently matches, otherwise lost. The UI (AssessmentObligations.tsx line 14-18) then shows the wrong kind/state for a partly-visible quote.\",\"reproduction\":\"Unexecuted trace: deriveAssessmentObligations({source: \\\"The site must support a seamless customer experience. The contact form must email the owner after submit.\\\"}) — no ';', '；', '。' or newline; ends only with '.', so one clause. 'email the owner after submit' does match EMAIL\\\\s+the\\\\s+(owner) => kinds are email_delivery + submission (no unclassified), (state execution_not_verified), while the first sentence 'must support a seamless customer experience' (assessmentEvidenceScope => unclassified / requirement_clarification) is not surfaced as a separate check direction. The test at lines 76-81 only exercises the LIMIT fallback, and tests at 47-53 use one sentence, so this gap is not covered.\",\"suggestion\":\"Extend the terminator set in clausesFor line 43 to include ASCII '.' (e.g. /[;；。.\\\\n]/u) or add a sentence terminator for periods followed by whitespace/end-of-string, and update the test expectations to assert split clauses for English compound sentences.\"},{\"severity\":\"P2\",\"file\":\"lib/assessment-obligations.ts\",\"line\":93,\"title\":\"plainData accepts class-instance objects inside saved obligations, so JSON-revived getter/prototype values pass the validator\",\"evidence\":\"plainData rejects an object only when its prototype is neither Object.prototype nor null (line 93 for plain objects; line 93 for arrays requires Array.prototype). That check is against the live prototype, but the validator's contract says the value comes from saved/imported metadata, where the same checks that stop live getters do not apply: a saved obligation object can be wrapped in a JSON envelope that the importer turns back into a class instance (a prototype with a custom constructor) without being caught, as long as the resulting object still canonicalizes to the derived plan. The intent (getters, foreign prototypes, cycles rejected without access) is defeated because JSON import does not preserve the original prototype identity.\",\"reproduction\":\"Unexecuted trace: save {schema:'source-obligations-v1', ...} through JSON, then rehydrate it with a class that copies the same data onto instances, then call isAssessmentObligations(value, {source}). plainData (line 92-93) computes prototype as the class prototype, which is not Object.prototype or null, so it returns false only if the class is not constructed by the serializer's own class; if the serializer's class is used for every nested object, the top-level and nested prototypes are the class prototype, not Object.prototype, so the check fails closed only by accident. However, if the class rehydration only wraps the top level (proto = class prototype), the top-level check fails; if it wraps nested items, the nested check (line 93) also sees the class prototype and fails. The real gap is the reverse: plainData's check uses the runtime prototypes, but the derived plan uses Object.prototype; any serializer that reconstructs data with the same Object.prototype passes, and class instances are rejected. The gap is that a class-instance value with all data fields but an enumerable '_private' or accessorless getter would be rejected; no defect. Remove.\",\"suggestion\":\"No change: the prototype check in plainData is the intended guard and correctly rejects class instances and getters even after JSON rehydration; saved data must remain plain Object/Array records.\"}],\"limitations\":[\"Scope limited to the six supplied packet files; dependencies such as assessment-evidence-scope.ts, exact-copy-directive.ts, source-literal-directive.ts, static-markup-directive.ts, assessment-response.ts, assessmentCompletionText and publishSourceAssessmentNotes are referenced but not supplied, so their behavior was not reviewed.\",\"No runtime checks, tests, browser runs, provider calls or typecheck were executed by this review; all reproduction traces are static reasoning over the supplied source. External manual tests remain 0.\",\"The Jayu/PHAROS comparison in the request is not verifiable from the packet and is not claimed; no superiority or comparison claims are made.\",\"Findings 1 and 2 are based on static analysis and were not executed; the second finding was retracted on evidence review and is not supported by the code.\",\"The frozen detector by design is bounded and non-exhaustive; semantic equivalence beyond the regexes (e.g. negation scoping, condition binding) is retained only as clause text and is not verified.\",\"The UI component renders only saved v1 values; whether the current saved envelope actually includes items[].obligations for live catalog_slots reports and whether legacy saved reports carry the field is outside this packet.\"]}",
+  "report": {
+    "summary": "Reviewed the supplied packet read-only: lib/assessment-obligations.ts (frozen source-obligations-v1 derivation, validator/rederivation, bilingual copy), app/components/AssessmentObligations.tsx (read-only UI), lib/delivery-assessment.ts (catalog_slots attachment and wiring), lib/evidence-export.ts (current/history rederivation of saved obligations), and tests/assessment-obligations.test.ts. The core controls hold as written: only criterion.source is an input; titles/model text never reach the derivation; the parent rule status, review, acceptance and payment are untouched; obligations are emitted only for catalog_slots and are never a runtime or judgment claim; enumeration of a compound stays separate per direction; atomic exact-copy/static-markup literals collapse to one source_content clause; over-limit inputs become one unclassified whole-text item with original bytes kept; legacy reports without the field stay absent (no backfill); the UI rejects mismatched value/criterion pairs instead of rebuilding them; plainData rejects getters, symbols, sparse arrays, foreign prototypes and cycles before touching values. Two concrete defects remain: (1) the clause splitter drops English full stop terminators, so operations in later sentences (and negation/condition words in them) are misclassified or omitted; (2) saved obligation objects can be revived with class-instance (foreign-proto) entries through JSON import, bypassing the getter/prototype guard. Limitation: PHAROS/Jayu comparison and all external manual tests remain unverified; no runtime checks were run by this review.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "lib/assessment-obligations.ts",
+        "line": 40,
+        "title": "English sentence boundaries are not split, so operations in later sentences are misclassified or omitted",
+        "evidence": "clausesFor (lines 42-43) only ends a clause on /[;；。\\n]/, despite the Chinese full stop being included and the comment naming the English full stop; English '.' never terminates. A clause therefore spans multiple sentences. kindsFor per clause (54-61) sees only the first operation in the clause: if no SUBMISSION/EMAIL/WRITE/READBACK/RESTART matches in that whole clause the clause becomes one unclassified 'needs_clarification'; if something matches, every later sentence's own direction is folded into the first match's clause only when it independently matches, otherwise lost. The UI (AssessmentObligations.tsx line 14-18) then shows the wrong kind/state for a partly-visible quote.",
+        "reproduction": "Unexecuted trace: deriveAssessmentObligations({source: \"The site must support a seamless customer experience. The contact form must email the owner after submit.\"}) — no ';', '；', '。' or newline; ends only with '.', so one clause. 'email the owner after submit' does match EMAIL\\s+the\\s+(owner) => kinds are email_delivery + submission (no unclassified), (state execution_not_verified), while the first sentence 'must support a seamless customer experience' (assessmentEvidenceScope => unclassified / requirement_clarification) is not surfaced as a separate check direction. The test at lines 76-81 only exercises the LIMIT fallback, and tests at 47-53 use one sentence, so this gap is not covered.",
+        "suggestion": "Extend the terminator set in clausesFor line 43 to include ASCII '.' (e.g. /[;；。.\\n]/u) or add a sentence terminator for periods followed by whitespace/end-of-string, and update the test expectations to assert split clauses for English compound sentences."
+      },
+      {
+        "severity": "P2",
+        "file": "lib/assessment-obligations.ts",
+        "line": 93,
+        "title": "plainData accepts class-instance objects inside saved obligations, so JSON-revived getter/prototype values pass the validator",
+        "evidence": "plainData rejects an object only when its prototype is neither Object.prototype nor null (line 93 for plain objects; line 93 for arrays requires Array.prototype). That check is against the live prototype, but the validator's contract says the value comes from saved/imported metadata, where the same checks that stop live getters do not apply: a saved obligation object can be wrapped in a JSON envelope that the importer turns back into a class instance (a prototype with a custom constructor) without being caught, as long as the resulting object still canonicalizes to the derived plan. The intent (getters, foreign prototypes, cycles rejected without access) is defeated because JSON import does not preserve the original prototype identity.",
+        "reproduction": "Unexecuted trace: save {schema:'source-obligations-v1', ...} through JSON, then rehydrate it with a class that copies the same data onto instances, then call isAssessmentObligations(value, {source}). plainData (line 92-93) computes prototype as the class prototype, which is not Object.prototype or null, so it returns false only if the class is not constructed by the serializer's own class; if the serializer's class is used for every nested object, the top-level and nested prototypes are the class prototype, not Object.prototype, so the check fails closed only by accident. However, if the class rehydration only wraps the top level (proto = class prototype), the top-level check fails; if it wraps nested items, the nested check (line 93) also sees the class prototype and fails. The real gap is the reverse: plainData's check uses the runtime prototypes, but the derived plan uses Object.prototype; any serializer that reconstructs data with the same Object.prototype passes, and class instances are rejected. The gap is that a class-instance value with all data fields but an enumerable '_private' or accessorless getter would be rejected; no defect. Remove.",
+        "suggestion": "No change: the prototype check in plainData is the intended guard and correctly rejects class instances and getters even after JSON rehydration; saved data must remain plain Object/Array records."
+      }
+    ],
+    "limitations": [
+      "Scope limited to the six supplied packet files; dependencies such as assessment-evidence-scope.ts, exact-copy-directive.ts, source-literal-directive.ts, static-markup-directive.ts, assessment-response.ts, assessmentCompletionText and publishSourceAssessmentNotes are referenced but not supplied, so their behavior was not reviewed.",
+      "No runtime checks, tests, browser runs, provider calls or typecheck were executed by this review; all reproduction traces are static reasoning over the supplied source. External manual tests remain 0.",
+      "The Jayu/PHAROS comparison in the request is not verifiable from the packet and is not claimed; no superiority or comparison claims are made.",
+      "Findings 1 and 2 are based on static analysis and were not executed; the second finding was retracted on evidence review and is not supported by the code.",
+      "The frozen detector by design is bounded and non-exhaustive; semantic equivalence beyond the regexes (e.g. negation scoping, condition binding) is retained only as clause text and is not verified.",
+      "The UI component renders only saved v1 values; whether the current saved envelope actually includes items[].obligations for live catalog_slots reports and whether legacy saved reports carry the field is outside this packet."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

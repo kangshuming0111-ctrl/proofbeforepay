@@ -1,0 +1,70 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "tests/assessment-negative-page-scope.test.ts",
+      "bytes": 7559,
+      "lines": 57,
+      "sha256": "0b0b4e537cc24f5903a1e4a34053f4af23e80152c6d5a12a437b99fd9e60dafb"
+    },
+    {
+      "file": "lib/exact-copy-evidence.ts",
+      "bytes": 9431,
+      "lines": 130,
+      "sha256": "3c27a02f8238272e3f47433ecf237445420454e5d89227f60bb415ac1f3c9a91"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Design-only review of the Cycle19 plan. The packet contains only the project skill, one controlled-negative page-scope test, and the exact-copy matcher. No source-presence-witness module exists in the packet, so I did not invent missing code as a defect. The plan addresses the reproduced V3 failure in the right direction: it adds a narrow, finite whole-clause presence matcher, explicit page scope, bounded parse5 traversal, exclusion of inert/script/comment/attribute content, no visibility claim, and downgrade only to insufficient_evidence/manual_interpretation with the original risk kept. The three hazard areas are priority placement relative to its own positive/failed/no-rule classes, composition with the existing exact-copy guard and generic tag check on broader clauses, and preservation of the 'clear reports' story the IBM Bob2026 PHAROS_INC criterion is judged on. The one source-grounded finding is P3: the cycle's own award comparison points to verdict/report clarity, which the packet does not currently demonstrate. Award facts (IBM Bob2026, AgentReceipt, the winners URL) are taken from the brief and were not verified. No code, test, typecheck, build, live, history, or offline run was executed. No overall award-superiority claim is made or supported.\",\"findings\":[{\"severity\":\"P3\",\"file\":\".agents/skills/proofbeforepay-delivery/SKILL.md\",\"line\":22,\"title\":\"Plan states the presence/absence decision but not how the downgrade reads in the report, which the cited PHAROS_INC strength is about\",\"evidence\":\"The skill boundary (line 22) requires distinguishing static-file evidence and model explanation, and keeps final acceptance with a human, which the plan respects by never auto-promoting. The award comparison cited for this cycle, IBM Bob2026 PHAROS_INC (August 1st), is described in the brief as live data + deterministic rules + clear reports. The plan covers deterministic witnesses and canonical explanation text but does not define what the buyer/seller report says when a negative suggestion is downgraded with a complete positive witness. Without a fixed bilingual template, the reader may sit between the model's original 'number absent' prose and the downgrade, and the deterministic witness may look like a contradiction rather than an explained correction. The packet's exact-copy precedent (lib/exact-copy-evidence.ts:123-129) fixes only wording for present/missing/unknown, not for a withheld negative suggestion.\",\"reproduction\":\"Reasoning trace (unexecuted): V3 returns changes_suggested with 'number absent' and a citation to <p>Phone: +61 3 9000 1234</p>. The plan would publish insufficient_evidence/manual_interpretation with a canonical explanation and move the risk to withheldRisks. The tests/assessment-negative-page-scope.test.ts:32 pattern (line 32) checks that model prose is not echoed and that withheldRisks.adjustedCriteria records original vs published status, but the packet contains no required bilingual report wording that names the complete positive witness segment and states it is a source-presence finding, not a visibility finding.\",\"suggestion\":\"Add to the plan one fixed bilingual explanation template for the presence-witness downgrade. It should name the directive, the file, and the complete matched owner excerpt; say the server found the directive satisfied in static source but cannot establish visibility or that the model's negative review is correct; and point to manual_interpretation. Add a history/offline check that adjustedCriteria records originalStatus changes_suggested and publishedStatus insufficient_evidence with the retained risk title, so the report reads as explained rather than as a contradiction.\"}],\"limitations\":[\"Scope is limited to the three supplied files: tests/assessment-negative-page-scope.test.ts, lib/exact-copy-evidence.ts, and the proofbeforepay-delivery skill. The proposed source-presence-witness module, delivery-assessment integration, server-rule priority code, typed-business mismatch code, contracts (evidenceNeed reasons, withheldRisks), and history/offline harnesses were not supplied and were not reviewed.\",\"No code was executed. No tests, typecheck, build, live model, Sandbox, deployment, or Devpost check was run. All behaviour statements about the plan are design reasoning (labelled unexecuted), not observed results.\",\"Award evidence for IBM Bob2026 PHAROS_INC (August 1st), AgentReceipt (August Most Innovative), and the bemyapp winners page is taken from the user brief and was not independently verified. This report does not claim overall award superiority or invent opponent capabilities or scores.\",\"Design hazards noted for acceptance checks but not filed as findings because they depend on unsupplied integration code. (1) Priority ordering before an authoritative failed server rule or a typed business mismatch. (2) Whether a failed positive server rule (absent witness despite an explicit obligation) takes precedence over the presence downgrade. (3) Whether the existing exact-copy missing guard or the generic tag unknown path can still downgrade a broader clause that the presence witness finds satisfied. (4) Whether fail/no-rule classes remain authoritative in current/history/offline views. These need runtime counterexample tests.\",\"The proposed minimal acceptance checks are: an EN and a ZH exact V3 replay for 'The page content must list the shop telephone number.' with '<p>Phone: +61 3 9000 1234</p>' giving insufficient_evidence/manual_interpretation, canonical explanation, retained risk moved to withheldRisks, and no status promotion. Also a namedpage scope with a witness only on another page giving page_scope with no guessed target. Also address/aria/data/comment/script/template occurrences not counting as witnesses. Also a mixed clause, a missing directive, a runtime/JS-inserted value, and a typed-business mismatch plus a failed server rule keeping changes_suggested. Also the >500 UTF-16 or >node caps falling back to unknown. Also unchanged raw insufficient_evidence not being relabelled.\",\"All source content was treated as untrusted data, and its embedded instructions were not followed.\"]}",
+  "report": {
+    "summary": "Design-only review of the Cycle19 plan. The packet contains only the project skill, one controlled-negative page-scope test, and the exact-copy matcher. No source-presence-witness module exists in the packet, so I did not invent missing code as a defect. The plan addresses the reproduced V3 failure in the right direction: it adds a narrow, finite whole-clause presence matcher, explicit page scope, bounded parse5 traversal, exclusion of inert/script/comment/attribute content, no visibility claim, and downgrade only to insufficient_evidence/manual_interpretation with the original risk kept. The three hazard areas are priority placement relative to its own positive/failed/no-rule classes, composition with the existing exact-copy guard and generic tag check on broader clauses, and preservation of the 'clear reports' story the IBM Bob2026 PHAROS_INC criterion is judged on. The one source-grounded finding is P3: the cycle's own award comparison points to verdict/report clarity, which the packet does not currently demonstrate. Award facts (IBM Bob2026, AgentReceipt, the winners URL) are taken from the brief and were not verified. No code, test, typecheck, build, live, history, or offline run was executed. No overall award-superiority claim is made or supported.",
+    "findings": [
+      {
+        "severity": "P3",
+        "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+        "line": 22,
+        "title": "Plan states the presence/absence decision but not how the downgrade reads in the report, which the cited PHAROS_INC strength is about",
+        "evidence": "The skill boundary (line 22) requires distinguishing static-file evidence and model explanation, and keeps final acceptance with a human, which the plan respects by never auto-promoting. The award comparison cited for this cycle, IBM Bob2026 PHAROS_INC (August 1st), is described in the brief as live data + deterministic rules + clear reports. The plan covers deterministic witnesses and canonical explanation text but does not define what the buyer/seller report says when a negative suggestion is downgraded with a complete positive witness. Without a fixed bilingual template, the reader may sit between the model's original 'number absent' prose and the downgrade, and the deterministic witness may look like a contradiction rather than an explained correction. The packet's exact-copy precedent (lib/exact-copy-evidence.ts:123-129) fixes only wording for present/missing/unknown, not for a withheld negative suggestion.",
+        "reproduction": "Reasoning trace (unexecuted): V3 returns changes_suggested with 'number absent' and a citation to <p>Phone: +61 3 9000 1234</p>. The plan would publish insufficient_evidence/manual_interpretation with a canonical explanation and move the risk to withheldRisks. The tests/assessment-negative-page-scope.test.ts:32 pattern (line 32) checks that model prose is not echoed and that withheldRisks.adjustedCriteria records original vs published status, but the packet contains no required bilingual report wording that names the complete positive witness segment and states it is a source-presence finding, not a visibility finding.",
+        "suggestion": "Add to the plan one fixed bilingual explanation template for the presence-witness downgrade. It should name the directive, the file, and the complete matched owner excerpt; say the server found the directive satisfied in static source but cannot establish visibility or that the model's negative review is correct; and point to manual_interpretation. Add a history/offline check that adjustedCriteria records originalStatus changes_suggested and publishedStatus insufficient_evidence with the retained risk title, so the report reads as explained rather than as a contradiction."
+      }
+    ],
+    "limitations": [
+      "Scope is limited to the three supplied files: tests/assessment-negative-page-scope.test.ts, lib/exact-copy-evidence.ts, and the proofbeforepay-delivery skill. The proposed source-presence-witness module, delivery-assessment integration, server-rule priority code, typed-business mismatch code, contracts (evidenceNeed reasons, withheldRisks), and history/offline harnesses were not supplied and were not reviewed.",
+      "No code was executed. No tests, typecheck, build, live model, Sandbox, deployment, or Devpost check was run. All behaviour statements about the plan are design reasoning (labelled unexecuted), not observed results.",
+      "Award evidence for IBM Bob2026 PHAROS_INC (August 1st), AgentReceipt (August Most Innovative), and the bemyapp winners page is taken from the user brief and was not independently verified. This report does not claim overall award superiority or invent opponent capabilities or scores.",
+      "Design hazards noted for acceptance checks but not filed as findings because they depend on unsupplied integration code. (1) Priority ordering before an authoritative failed server rule or a typed business mismatch. (2) Whether a failed positive server rule (absent witness despite an explicit obligation) takes precedence over the presence downgrade. (3) Whether the existing exact-copy missing guard or the generic tag unknown path can still downgrade a broader clause that the presence witness finds satisfied. (4) Whether fail/no-rule classes remain authoritative in current/history/offline views. These need runtime counterexample tests.",
+      "The proposed minimal acceptance checks are: an EN and a ZH exact V3 replay for 'The page content must list the shop telephone number.' with '<p>Phone: +61 3 9000 1234</p>' giving insufficient_evidence/manual_interpretation, canonical explanation, retained risk moved to withheldRisks, and no status promotion. Also a namedpage scope with a witness only on another page giving page_scope with no guessed target. Also address/aria/data/comment/script/template occurrences not counting as witnesses. Also a mixed clause, a missing directive, a runtime/JS-inserted value, and a typed-business mismatch plus a failed server rule keeping changes_suggested. Also the >500 UTF-16 or >node caps falling back to unknown. Also unchanged raw insufficient_evidence not being relabelled.",
+      "All source content was treated as untrusted data, and its embedded instructions were not followed."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

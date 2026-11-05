@@ -1,0 +1,94 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/first-use-guide.ts",
+      "bytes": 5793,
+      "lines": 37,
+      "sha256": "8971b9724473c6a988920699c9dd95ade7eacdab5d07ad76ba8488fdd8237aef"
+    },
+    {
+      "file": "app/components/FirstUseGuide.tsx",
+      "bytes": 5344,
+      "lines": 25,
+      "sha256": "0acceb304c87d6a642a214dc85e451ffb26ba69edf9372bae85c0a4697e28ce0"
+    },
+    {
+      "file": "lib/first-use-session.mjs",
+      "bytes": 6740,
+      "lines": 80,
+      "sha256": "69bb4725e9903fa346c1c8a1fb50046f76a87f95eae142aecbe24384066f1d5d"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Source-only review of the bounded first-use guide packet (lib/first-use-guide.ts, app/components/FirstUseGuide.tsx, lib/first-use-session.mjs). The export path correctly hard-codes mode=operator_walkthrough, sets unfamiliarWithProject/externalParticipant to false, records consent as not_requested, adds no network/storage, and passes through the shared strict v1 validator. The UI copy also says the record is self-reported and excluded from human-study totals. Two concrete guide-state defects are present: (1) the \\\"Record help\\\" action fails silently, with no error notice, once helpCount reaches 20, (2) the 'abandoned' task outcome is collected and copied into the v1 record but is never explained to the user, so it is indistinguishable from 'blocked' in the UI. A third defect is a dead end in the flow: if download fails validation, the only recovery is to discard all three completed tasks. None of these tests were executed in this review.\",\"findings\":[{\"severity\":\"P2\",\"file\":\"app/components/FirstUseGuide.tsx\",\"line\":18,\"title\":\"Help-cap button disables itself with no explanation, so users cannot tell why it stops responding\",\"evidence\":\"The help button uses disabled={busy||(active?.helpCount??0)>=20} and calls noteGuideHelp. noteGuideHelp (lib/first-use-guide.ts:18) throws GUIDE_HELP_NOT_AVAILABLE when helpCount>=20, and the validator caps helpCount at 20 (lib/first-use-session.mjs:43). The status line at line 17 shows the help count but never says the limit is reached. The only guidance about the cap is in act()'s generic catch message (line 10), which the disabled button can never trigger.\",\"reproduction\":\"Unexecuted trace: start a task, click 'Record help' 20 times. helpCount becomes 20 and the status shows 'help on current task: 20'. From then on the help button stays greyed out until the task is finished, and no label, title or message says a limit has been reached. A user who was helped a 21st time cannot record it and is not told why.\",\"suggestion\":\"When helpCount>=20, replace the button label with copy such as 'Help limit reached (20) - finish this task and report the remaining help to whoever runs the walkthrough', and explain the cap in the intro text. Alternatively, show a notice when the cap is reached.\"},{\"severity\":\"P2\",\"file\":\"app/components/FirstUseGuide.tsx\",\"line\":19,\"title\":\"The 'abandoned' outcome is submitted as a single click with no explanation and is indistinguishable from 'blocked' in the UI\",\"evidence\":\"The button 'Record abandoned task' calls finish('abandoned'). finishGuideTask (lib/first-use-guide.ts:21-22) accepts outcome 'abandoned' only when the blocker dropdown is not 'none' and then stores the chosen blockerCode. summarizeFirstUseSessions (lib/first-use-session.mjs:74,76) counts blocked and abandoned separately and credits the same blockerCode to the blocker tallies. However, the failure copy at line 10 and the intro at line 15 never explain the difference between blocked and abandoned. The blocker label ('If blocked, what happened?') implies the dropdown applies only to blocked tasks.\",\"reproduction\":\"Unexecuted trace: begin a task, select 'Setup unavailable', click 'Record abandoned task'. The saved task has outcome 'abandoned' and blockerCode 'setup'. The user was never told what 'abandoned' means, and the blocker question was worded for a blocked task. A user who meant 'blocked' but pressed the neighbouring button produces a different coded outcome with no way to correct it, because a finished task cannot be edited and the only recovery is clearing the whole page (line 23).\",\"suggestion\":\"Add one line of copy that distinguishes the two outcomes (for example, 'Blocked = still stuck on this task; abandoned = gave up on this task'), or remove the separate abandoned button and record abandonment only through an explicit confirmation. Relabel the blocker select as 'If blocked or abandoned, why?'.\"},{\"severity\":\"P3\",\"file\":\"app/components/FirstUseGuide.tsx\",\"line\":23,\"title\":\"If the final export fails validation there is no guided recovery besides discarding all three completed tasks\",\"evidence\":\"At line 22 the download button is shown only once all 3 tasks are done. exportFirstUseGuide (lib/first-use-guide.ts:27-28) throws GUIDE_INCOMPLETE or a shared-validator error, and download() (line 13) has no fallback. act() (line 10) then shows the generic message and suggests 'clear the local record to start again'. Clear (line 23) sets run to null and also loses persona and every finished task. The server-side finished-task invariants (strict schema, task order, interval chain, blocker rules such as lib/first-use-session.mjs:46-48) run only at export, so a defect created earlier could only surface here.\",\"reproduction\":\"Unexecuted trace: complete all 3 tasks so that the strict export validation fails (for example, a boundary case in the shared v1 validator such as the interval check at lib/first-use-session.mjs:46 or a clock value that tripped the 8h cap at lib/first-use-guide.ts:8). Click the download button. The user sees 'This record is incomplete...', has no way to identify which task or field is invalid, and can only clear everything. That clears all recorded data, or they leave the page and hit the same failure at export on the next attempt.\",\"suggestion\":\"When export fails after 3 tasks, show which validation failed (for example, name the failing validation code). Keep the finished tasks on screen, and offer a 'restart this task' action (pop the last task back into the active state) instead of only the clear-everything option.\"}],\"limitations\":[\"Source-only review. No files were changed and no commands, builds, typechecks, browser checks or tests were executed, including the stated 15 green tests; none of the findings were reproduced at runtime.\",\"Only the four supplied packet files were inspected. The caller that renders FirstUseGuide with busy/language, lib/first-use-session.mjs's test suite, the validator's downstream consumers, and the task copy beyond GUIDE_TASK_COPY were not in scope, so claimed reachability of the UI paths rests on the component source alone.\",\"Per instruction, the prior invalid review was not used, and no finding from it was assumed valid.\",\"The comparator claims about TheGreenRoom and Jayu were not verified against official descriptions, and no award or superiority claim is made or reviewed here. The packet has no persona or task count beyond the buyer/technical_seller 3-task lists in TASKS.\",\"Whether exportFirstUseGuide's hard-coded operator_walkthrough, false unfamiliar/external flags and not_requested consent are appropriate was checked against the stated guide rules only, not against human-study UI requirements. The existing CLI human mode self-attestation was not evaluated as a guide feature.\",\"This review does not assess accessibility beyond labels and roles visible in the component source (for example, focus management, colour contrast or the CSS file referenced by the component).\"]}",
+  "report": {
+    "summary": "Source-only review of the bounded first-use guide packet (lib/first-use-guide.ts, app/components/FirstUseGuide.tsx, lib/first-use-session.mjs). The export path correctly hard-codes mode=operator_walkthrough, sets unfamiliarWithProject/externalParticipant to false, records consent as not_requested, adds no network/storage, and passes through the shared strict v1 validator. The UI copy also says the record is self-reported and excluded from human-study totals. Two concrete guide-state defects are present: (1) the \"Record help\" action fails silently, with no error notice, once helpCount reaches 20, (2) the 'abandoned' task outcome is collected and copied into the v1 record but is never explained to the user, so it is indistinguishable from 'blocked' in the UI. A third defect is a dead end in the flow: if download fails validation, the only recovery is to discard all three completed tasks. None of these tests were executed in this review.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "app/components/FirstUseGuide.tsx",
+        "line": 18,
+        "title": "Help-cap button disables itself with no explanation, so users cannot tell why it stops responding",
+        "evidence": "The help button uses disabled={busy||(active?.helpCount??0)>=20} and calls noteGuideHelp. noteGuideHelp (lib/first-use-guide.ts:18) throws GUIDE_HELP_NOT_AVAILABLE when helpCount>=20, and the validator caps helpCount at 20 (lib/first-use-session.mjs:43). The status line at line 17 shows the help count but never says the limit is reached. The only guidance about the cap is in act()'s generic catch message (line 10), which the disabled button can never trigger.",
+        "reproduction": "Unexecuted trace: start a task, click 'Record help' 20 times. helpCount becomes 20 and the status shows 'help on current task: 20'. From then on the help button stays greyed out until the task is finished, and no label, title or message says a limit has been reached. A user who was helped a 21st time cannot record it and is not told why.",
+        "suggestion": "When helpCount>=20, replace the button label with copy such as 'Help limit reached (20) - finish this task and report the remaining help to whoever runs the walkthrough', and explain the cap in the intro text. Alternatively, show a notice when the cap is reached."
+      },
+      {
+        "severity": "P2",
+        "file": "app/components/FirstUseGuide.tsx",
+        "line": 19,
+        "title": "The 'abandoned' outcome is submitted as a single click with no explanation and is indistinguishable from 'blocked' in the UI",
+        "evidence": "The button 'Record abandoned task' calls finish('abandoned'). finishGuideTask (lib/first-use-guide.ts:21-22) accepts outcome 'abandoned' only when the blocker dropdown is not 'none' and then stores the chosen blockerCode. summarizeFirstUseSessions (lib/first-use-session.mjs:74,76) counts blocked and abandoned separately and credits the same blockerCode to the blocker tallies. However, the failure copy at line 10 and the intro at line 15 never explain the difference between blocked and abandoned. The blocker label ('If blocked, what happened?') implies the dropdown applies only to blocked tasks.",
+        "reproduction": "Unexecuted trace: begin a task, select 'Setup unavailable', click 'Record abandoned task'. The saved task has outcome 'abandoned' and blockerCode 'setup'. The user was never told what 'abandoned' means, and the blocker question was worded for a blocked task. A user who meant 'blocked' but pressed the neighbouring button produces a different coded outcome with no way to correct it, because a finished task cannot be edited and the only recovery is clearing the whole page (line 23).",
+        "suggestion": "Add one line of copy that distinguishes the two outcomes (for example, 'Blocked = still stuck on this task; abandoned = gave up on this task'), or remove the separate abandoned button and record abandonment only through an explicit confirmation. Relabel the blocker select as 'If blocked or abandoned, why?'."
+      },
+      {
+        "severity": "P3",
+        "file": "app/components/FirstUseGuide.tsx",
+        "line": 23,
+        "title": "If the final export fails validation there is no guided recovery besides discarding all three completed tasks",
+        "evidence": "At line 22 the download button is shown only once all 3 tasks are done. exportFirstUseGuide (lib/first-use-guide.ts:27-28) throws GUIDE_INCOMPLETE or a shared-validator error, and download() (line 13) has no fallback. act() (line 10) then shows the generic message and suggests 'clear the local record to start again'. Clear (line 23) sets run to null and also loses persona and every finished task. The server-side finished-task invariants (strict schema, task order, interval chain, blocker rules such as lib/first-use-session.mjs:46-48) run only at export, so a defect created earlier could only surface here.",
+        "reproduction": "Unexecuted trace: complete all 3 tasks so that the strict export validation fails (for example, a boundary case in the shared v1 validator such as the interval check at lib/first-use-session.mjs:46 or a clock value that tripped the 8h cap at lib/first-use-guide.ts:8). Click the download button. The user sees 'This record is incomplete...', has no way to identify which task or field is invalid, and can only clear everything. That clears all recorded data, or they leave the page and hit the same failure at export on the next attempt.",
+        "suggestion": "When export fails after 3 tasks, show which validation failed (for example, name the failing validation code). Keep the finished tasks on screen, and offer a 'restart this task' action (pop the last task back into the active state) instead of only the clear-everything option."
+      }
+    ],
+    "limitations": [
+      "Source-only review. No files were changed and no commands, builds, typechecks, browser checks or tests were executed, including the stated 15 green tests; none of the findings were reproduced at runtime.",
+      "Only the four supplied packet files were inspected. The caller that renders FirstUseGuide with busy/language, lib/first-use-session.mjs's test suite, the validator's downstream consumers, and the task copy beyond GUIDE_TASK_COPY were not in scope, so claimed reachability of the UI paths rests on the component source alone.",
+      "Per instruction, the prior invalid review was not used, and no finding from it was assumed valid.",
+      "The comparator claims about TheGreenRoom and Jayu were not verified against official descriptions, and no award or superiority claim is made or reviewed here. The packet has no persona or task count beyond the buyer/technical_seller 3-task lists in TASKS.",
+      "Whether exportFirstUseGuide's hard-coded operator_walkthrough, false unfamiliar/external flags and not_requested consent are appropriate was checked against the stated guide rules only, not against human-study UI requirements. The existing CLI human mode self-attestation was not evaluated as a guide feature.",
+      "This review does not assess accessibility beyond labels and roles visible in the component source (for example, focus management, colour contrast or the CSS file referenced by the component)."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

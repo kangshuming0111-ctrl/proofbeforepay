@@ -1,6 +1,7 @@
 import {parse, type DefaultTreeAdapterTypes} from "parse5";
 import type {Language, ProofAssessmentCitation, ProofBusinessCheckStep} from "./contracts.ts";
 import {hasUncertainSourceBodyCopyAtFile} from "./exact-copy-evidence.ts";
+import {findMergedPriceContext} from "./merged-price-context.ts";
 
 type Node = DefaultTreeAdapterTypes.Node;
 type Element = DefaultTreeAdapterTypes.Element;
@@ -153,6 +154,8 @@ export function createSourceBusinessEvidenceCheck(files: Record<string, string>,
         return {checkId: check.checkId, file: check.file, kind: "unchanged", reason: "literal_source_present", citation: matching[0].citation};
       }
       const label = normalize(check.expected.label);
+      const merged=findMergedPriceContext(snapshot,check.file,label);
+      if(merged)return{checkId:check.checkId,file:check.file,kind:"unknown",reason:"merged_price_options_unconfirmed",label,expected:money(check.expected.currency,check.expected.amountMinor),actual:merged.amounts.map(value=>money(value.currency,value.amountMinor)).join(" / "),citation:merged.citation};
       if (occurrences(source.bodyText, label) !== 1) return unknown("label_not_unique_or_not_located");
       const matching = source.priceLeaves.filter(leaf => leaf.label === undefined ? leaf.text.startsWith(label) : leaf.label === label);
       if (matching.length !== 1) return unknown("complex_or_unlocated_item");
@@ -163,9 +166,18 @@ export function createSourceBusinessEvidenceCheck(files: Record<string, string>,
       return {checkId: check.checkId, file: check.file, kind: same ? "unchanged" : "mismatch", reason: same ? "explicit_iso_price_equal" : "explicit_iso_price_differs", citation: leaf.citation, label, expected: money(check.expected.currency, check.expected.amountMinor), actual: money(actual.currency, actual.amountMinor)};
     });
     const mismatches = results.filter(result => result.kind === "mismatch"), kind = mismatches.length ? "mismatch" : results.some(result => result.kind === "unknown") ? "unknown" : "unchanged";
-    const citations = mismatches.flatMap(result => result.citation ? [result.citation] : []).filter((citation, index, list) => list.findIndex(other => other.file === citation.file && other.start === citation.start && other.end === citation.end) === index).slice(0, 3);
+    const cited=mismatches.length?mismatches:kind==="unknown"?results.filter(result=>result.kind==="unknown"&&result.reason==="merged_price_options_unconfirmed"):[];
+    const citations = cited.flatMap(result => result.citation ? [result.citation] : []).filter((citation, index, list) => list.findIndex(other => other.file === citation.file && other.start === citation.start && other.end === citation.end) === index).slice(0, 3);
     return {kind, checks: results, citations};
   };
+}
+
+/** Canonical merged-row wording is allowed only when every check has the
+ * recognized uncertainty and every full owner fits the retained citation cap.
+ * The caller must publish this same set if it uses the canonical explanation. */
+export function completeMergedUnknownCitations(evidence:SourceBusinessEvidence):ProofAssessmentCitation[]|undefined{
+ if(evidence.kind!=="unknown"||!evidence.checks.length||!evidence.checks.every(check=>check.kind==="unknown"&&check.reason==="merged_price_options_unconfirmed"&&check.label&&check.actual&&check.citation&&evidence.citations.some(c=>c.file===check.citation!.file&&c.start===check.citation!.start&&c.end===check.citation!.end&&c.excerpt===check.citation!.excerpt)))return;
+ return structuredClone(evidence.citations);
 }
 
 /** Witness the already locked file and complete server-located block, rather
@@ -212,6 +224,12 @@ export function sourceBusinessEvidenceExplanation(evidence: Exclude<SourceBusine
     return language === "zh"
       ? `已确认的业务检查要求“${mismatch.label}”为 ${mismatch.expected}，但 ${fileLabel} 的唯一简单源码段写为 ${mismatch.actual}。这是带精确原文引用的有限源码差异，不是浏览器可见性或后台执行证明；同项共检查 ${evidence.checks.length} 个已确认项目，其他未知项仍需核对。`
       : `A confirmed business check expects "${mismatch.label}" at ${mismatch.expected}, but the unique simple source block in ${fileLabel} states ${mismatch.actual}. This is a limited source mismatch with an exact quotation, not rendered visibility or backend execution. All ${evidence.checks.length} confirmed checks for this criterion were inspected; any unknowns still need review.`;
+  }
+  if(completeMergedUnknownCitations(evidence)){
+    const first=evidence.checks[0],others=evidence.checks.length-1;
+    return language==="zh"
+      ? `引文中的 rowspan="2" 表格将“${first.label}”关联到两条价格 ${first.actual}，源码关联已经明确。请买家确认约定订单对应的规格、选项或适用条件，再核对 ${first.expected} 的业务要求。${others?`另有 ${others} 项已确认检查存在同类选项不明，完整表格均在引文中。`:""}此处不选择价格或认定符合／不符，浏览器显示与后台行为仍未验证。`
+      : `The quoted rowspan="2" table links "${first.label}" to both prices ${first.actual}; the source association is established. Confirm which sizes, options or conditions apply to the agreed order before checking ${first.expected}.${others?` ${others} other confirmed check(s) have the same option uncertainty; their complete tables are also quoted.`:""} No price is selected; rendering and backend behavior are unverified.`;
   }
   return language === "zh"
     ? "本项已确认业务检查无法全部在有限的静态简单段落中可靠对应；重复或未定位内容、复杂格式或动态来源仍需其他证据。源码建议不能据此确认为符合，原始约定未改变。"

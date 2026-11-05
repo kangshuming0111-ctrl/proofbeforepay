@@ -1,0 +1,97 @@
+{
+  "schema": "pbp-delivery-stage-report-v1",
+  "evidenceLevel": "cooperative_adapter_observations",
+  "plan": {
+    "schema": "pbp-delivery-stage-plan-v1",
+    "runId": "stage-flask-tutorial-v1",
+    "syntheticOnly": true,
+    "scope": {
+      "projectId": "thirdparty-pallets-flask",
+      "deliveryId": "flask-tutorial-3.1.2",
+      "criterionId": "manual-native-post",
+      "sourceRevision": "2c1b30d0503cfb064f1cb252e6614a06915a362a",
+      "requirement": "Create an authenticated post through the native Flask tutorial route, store exact title and body, and read the same record after application restart. Email receipt is outside the upstream capability."
+    },
+    "payloadDigest": "94c5ef6b7e92358cee28eb256a85f23a823425f3ee951bd03a5a7cf28b1f5455",
+    "stages": [
+      {
+        "stage": "submit",
+        "coverage": "adapter"
+      },
+      {
+        "stage": "stored_record",
+        "coverage": "adapter"
+      },
+      {
+        "stage": "fresh_readback",
+        "coverage": "adapter"
+      },
+      {
+        "stage": "email_receipt",
+        "coverage": "unsupported"
+      }
+    ]
+  },
+  "rows": [
+    {
+      "stage": "submit",
+      "observation": {
+        "outcome": "observed",
+        "stage": "submit",
+        "runId": "stage-flask-tutorial-v1",
+        "sourceRevision": "2c1b30d0503cfb064f1cb252e6614a06915a362a",
+        "accepted": true,
+        "operationId": "native-http-create-post",
+        "record": null
+      },
+      "status": "mismatch",
+      "reason": "submission_not_accepted"
+    },
+    {
+      "stage": "stored_record",
+      "observation": {
+        "outcome": "observed",
+        "stage": "stored_record",
+        "runId": "stage-flask-tutorial-v1",
+        "sourceRevision": "2c1b30d0503cfb064f1cb252e6614a06915a362a",
+        "reader": "native_store",
+        "connectionId": "sqlite-probe-before-restart",
+        "record": {
+          "recordId": "post-1",
+          "payloadDigest": "94c5ef6b7e92358cee28eb256a85f23a823425f3ee951bd03a5a7cf28b1f5455"
+        }
+      },
+      "status": "unknown",
+      "reason": "submission_not_established"
+    },
+    {
+      "stage": "fresh_readback",
+      "observation": {
+        "outcome": "observed",
+        "stage": "fresh_readback",
+        "runId": "stage-flask-tutorial-v1",
+        "sourceRevision": "2c1b30d0503cfb064f1cb252e6614a06915a362a",
+        "reader": "fresh_connection",
+        "connectionId": "sqlite-probe-after-application-restart",
+        "record": null
+      },
+      "status": "mismatch",
+      "reason": "record_missing"
+    },
+    {
+      "stage": "email_receipt",
+      "observation": {
+        "outcome": "unsupported"
+      },
+      "status": "unsupported",
+      "reason": "stage_not_supported"
+    }
+  ],
+  "summary": {
+    "matched": 0,
+    "mismatch": 2,
+    "unknown": 1,
+    "unsupported": 1
+  },
+  "digest": "2ddec6dce8fdc3b12c7ecd9dad0c3002203944c9b46de3977a513c8cf3921c8f"
+}

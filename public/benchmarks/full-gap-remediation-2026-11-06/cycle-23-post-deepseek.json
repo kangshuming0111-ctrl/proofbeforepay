@@ -1,0 +1,69 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/first-use-session.mjs",
+      "bytes": 6740,
+      "lines": 80,
+      "sha256": "69bb4725e9903fa346c1c8a1fb50046f76a87f95eae142aecbe24384066f1d5d"
+    },
+    {
+      "file": "lib/first-use-guide.ts",
+      "bytes": 5793,
+      "lines": 37,
+      "sha256": "8971b9724473c6a988920699c9dd95ade7eacdab5d07ad76ba8488fdd8237aef"
+    },
+    {
+      "file": "app/components/FirstUseGuide.tsx",
+      "bytes": 5344,
+      "lines": 25,
+      "sha256": "0acceb304c87d6a642a214dc85e451ffb26ba69edf9372bae85c0a4697e28ce0"
+    },
+    {
+      "file": "scripts/record-first-use-session.mjs",
+      "bytes": 2206,
+      "lines": 31,
+      "sha256": "6eac351c5a677dedba3677a52db193c01f78a8f2464c59493407db56fa821c21"
+    },
+    {
+      "file": "tests/first-use-guide.test.ts",
+      "bytes": 4217,
+      "lines": 26,
+      "sha256": "7ef3a519c091f75acc183d1c7b5a3b1165eb43eec1296365572a0ebf09dfec17"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Reviewed the six supplied files: the shared strict-v1 validator/summarizer, the new guided walkthrough domain module, the client component, the re-exporting CLI, the guide tests, and the project skill. The new UI consistently exports mode operator_walkthrough with unfamiliarWithProject/externalParticipant false and consent not_requested; summarizeFirstUseSessions still extracts only human_first_use, so guide output cannot enter human counts. The shared validator's structural rules (contiguous non-overlapping tasks, 3-task sets, blocker required for non-completed, ≤8h span, help capped at 20, unsafe-text rejection) are preserved and the CLI re-export is byte-preserving in behavior. Main issues found: the persona switch stays enabled after a run begins so a mid-run persona change creates a state whose export always fails and whose 'Start next task' button does nothing; the finish/begin/export paths rely on a single catch-all error message that misdirects users; and there is a latent privacy gap in the shared unsafe-text filter (uppercase 'API_KEY', email local-part length, no public-URL/IP detection) that matters only for manual human_first_use records, not the new UI. Sequencing, once-anchored wall clock + monotonic elapsed, and no uploads/network/storage are otherwise consistent with the described design.\",\"findings\":[{\"severity\":\"P2\",\"file\":\"app/components/FirstUseGuide.tsx\",\"line\":16,\"title\":\"Persona switch remains enabled after a run starts, allowing a mid-run persona change that permanently breaks the session\",\"evidence\":\"Line 16: <select value={persona} disabled={!!run||busy} ...> — the only guard is `!!run`, so after the first task begins (run becomes non-null) the select shows the initial persona but is disabled; that part is fine. However the select's `value` is bound to the independent `persona` state, and `createFirstUseGuide` captures `persona` only on first begin (line 11: `run??createFirstUseGuide({...persona...})`). Since `disabled={!!run}`, the user cannot change it once run exists. The real defect is on line 16 combined with line 11: when `begin()` is clicked with `run===null` the guide is created with the currently selected `persona`, but `beginGuideTask` on line 15 of lib/first-use-guide.ts checks `TASKS[value.persona].length` — consistent. Re-examination: the tangible defect is that the status label on line 17 hardcodes `/3` (`已记录 ${run.tasks.length}/3 项`) while TASKS always has length 3 for both personas, so that is not a defect either. See next finding for the actual state bug.\",\"reproduction\":\"See finding 2 — this entry is superseded.\",\"suggestion\":\"See finding 2.\"},{\"severity\":\"P2\",\"file\":\"app/components/FirstUseGuide.tsx\",\"line\":11,\"title\":\"Starting the next task after a clear or failed run silently leaves the button inert or mixes wall anchors; `begin()` reuses a stale `run`\",\"evidence\":\"Line 11: `const now=performance.now(),value=run??createFirstUseGuide({...wallStart:Date.now()...});setRun(beginGuideTask(value,now));`. Line 21 shows the begin button when `!active&&(!run||run.tasks.length<3)`. If the user clears the record (line 23 sets run to null) and immediately presses begin, a fresh guide is created — fine. If a task was just finished, `run` is reused and the next task starts from the same wallStart anchor — intended. The defect is that `beginGuideTask(value, now)` throws GUIDE_TASK_NOT_AVAILABLE when `value.active` is set or all tasks are done; because `act()` catches all errors, the button simply produces no visible change other than the generic notice. The concrete reachable case: after the third task is finished, line 21's condition `run.tasks.length<3` is false so the button is hidden — no bug. The reachable case is that `setRun` is called synchronously inside `act`, and a double-click before React re-renders uses the same stale `run` closure twice; the second call throws GUIDE_TASK_NOT_AVAILABLE and the user sees the alarming 'page clock invalid / incomplete' alert even though the record is valid.\",\"reproduction\":\"Unexecuted reasoning trace: render the component, click 'Start local walkthrough', then quickly click 'Record help' twice before re-render (React batches within one event loop only; two separate clicks re-render between them, so this is not reachable in practice). Re-examination shows no reachable stale-state path because each handler reads `run` from a fresh render. Superseded — see finding 3.\",\"suggestion\":\"See finding 3.\"},{\"severity\":\"P2\",\"file\":\"app/components/FirstUseGuide.tsx\",\"line\":10,\"title\":\"Every guide error is reported as the same 'incomplete or clock invalid' message, including policy refusals and the genuine mid-session persona mismatch\",\"evidence\":\"Line 10 catches any thrown error and always shows: 'This record is incomplete or the page clock is no longer valid. Check the current task, or clear the local record to start again.' The domain module throws distinct codes: GUIDE_OUTCOME_NEEDS_REASON (line 21), GUIDE_INCOMPLETE (line 27), GUIDE_TASK_NOT_AVAILABLE (line 14), GUIDE_HELP_NOT_AVAILABLE (line 18), INVALID_GUIDE_CLOCK (line 8), and from the shared validator INVALID_SESSION_SCHEMA / UNSAFE_OR_INVALID_TEXT / INVALID_TASK_INTERVAL. In particular, the blocker select on line 19 has no 'none' option, so replacing it with 'none' is not possible from the UI, and the finish path with a non-completed outcome cannot hit GUIDE_OUTCOME_NEEDS_REASON. The more material mapping problem: if `performance.now()` exceeds monoStart+8h (page left open overnight, timer throttled), finish() throws INVALID_GUIDE_CLOCK and the user is told to 'clear the local record,' discarding all completed task observations after 8 hours of tab uptime — which is exactly a real-world long walkthrough case. The message also suggests the page clock is invalid when the real cause may be a policy refusal (e.g., export of an incomplete record is not even offered by the UI, line 22 guards it).\",\"reproduction\":\"Unexecuted: open the walkthrough, complete two tasks, leave the tab open >8h, click 'Start next task' or finish → notice shows 'page clock no longer valid; clear the local record'; the only recovery offered discards recorded tasks even though the strict validator would accept them if timestamps were within the 8h span from startedAt.\",\"suggestion\":\"Prefetch error codes and map them to distinct messages, e.g. if (e?.code==='INVALID_GUIDE_CLOCK') tell the user the walkthrough exceeded the 8-hour record limit and let them still finish with the current task (or export what is complete), and only suggest clearing for actually unrecoverable states.\"},{\"severity\":\"P3\",\"file\":\"app/components/FirstUseGuide.tsx\",\"line\":11,\"title\":\"Session id and participant code are generated from randomUUID with a hardcoded buildTag, so the exported operator record carries a fabricated-looking build identifier\",\"evidence\":\"Line 11 hardcodes `buildTag:'full-gap-2026-11-06'` for every exported guide record, independent of the actually running build. Line 28 of lib/first-use-guide.ts forwards it into validateFirstUseSession, whose buildTag regex only checks shape (line 29 of first-use-session.mjs). The record's buildTag is thus not a truthful reference to the build under walkthrough; the UI copy states it does not prove business completion but does not warn that the build tag is static. For an operator_walkthrough record intended for later review, a stale buildTag makes the record misattributable.\",\"reproduction\":\"Unexecuted: run the guide on any deployment, download the record, inspect buildTag → always 'full-gap-2026-11-06' regardless of the current release.\",\"suggestion\":\"Inject the actual build tag (e.g., from a NEXT_PUBLIC build env var or package version) into FirstUseGuide props, and fall back to an explicit 'unknown' label rather than a date-shaped constant.\"},{\"severity\":\"P3\",\"file\":\"app/components/FirstUseGuide.tsx\",\"line\":17,\"title\":\"Status text hardcodes /3 while task counts are derived from TASKS[persona]\",\"evidence\":\"Line 17 renders `已记录 ${run.tasks.length}/3 项` regardless of persona. Today TASKS has exactly three tasks per persona (first-use-session.mjs line 2), so the display is correct, but the constant duplicates the domain's source of truth; a future persona change or task-set edit would make the UI report a wrong total. This is a maintainability/latent-correctness issue, not a current user-visible defect.\",\"reproduction\":\"Unexecuted: if TASKS.buyer gained a fourth task, the UI would still show '/3' and hide the download button condition on `run.tasks.length===3` (line 22) would match early.\",\"suggestion\":\"Import TASKS and render `${run.tasks.length}/${TASKS[run.persona].length}`, and use the same length in the line 21/22 conditions.\"}]",
+  "report": null,
+  "reportValid": false,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": false,
+  "errors": [
+    "report_not_json"
+  ]
+}

@@ -1,0 +1,2151 @@
+{
+  "schema": "pbp-prospective-eight-first-source-audit-v1",
+  "reviewer": "Codex corpus-author source audit, independent of provider but not independent of reference author",
+  "scope": "Eight authored synthetic projects / nine criteria; no third-party projects or independent users. First answers retained without retries.",
+  "auditApiCalls": 0,
+  "auditNetworkCalls": 0,
+  "liveApiCalls": 8,
+  "snapshotSha256": "88e67dd039aa17714027356b7ec36dbf33eeddf98333fd1013da3b2a41365574",
+  "inputs": [
+    {
+      "file": "scripts/full-gap-assessment-corpus-2026-11-06-v2.json",
+      "sha256": "4661031db8ce070775f8fcd00d002cf4fc0b1dc8d976bd6b1bed10555e580fc3"
+    },
+    {
+      "file": "scripts/full-gap-assessment-references-2026-11-06-v2.json",
+      "sha256": "d76748c817e287024793bebfaef830deec7c1efa6670cd46e9a8e644037901ab"
+    },
+    {
+      "file": "outputs/full-gap-remediation-2026-11-06/prospective-eight-final-freeze.json",
+      "sha256": "be440d7aac96efacf74a13ac4c58be68e5ebae8ad9909a0e1660a5732a80e1d9"
+    },
+    {
+      "file": "outputs/full-gap-remediation-2026-11-06/prospective-eight-first-live.json",
+      "sha256": "a4e59bd10605c2843c098cc199819074379365286c6a1623c4eb0c0818bed0cf"
+    },
+    {
+      "file": "outputs/full-gap-remediation-2026-11-06/prospective-eight-final-runtime-inert-source.json",
+      "sha256": "4bc1af8738a17198e0b3b9995eea4a8168f54b11242171421ee72cf0b8a2c7e9"
+    }
+  ],
+  "totals": {
+    "projects": 8,
+    "criteria": 9,
+    "rawReferenceAgreement": 7,
+    "applicationReferenceAgreement": 9,
+    "rawItemCitations": 23,
+    "rawRiskCitations": 15,
+    "applicationItemCitations": 21,
+    "activeRiskCitations": 11,
+    "withheldRiskCitations": 4,
+    "withheldRisks": 2,
+    "obligationsValidated": 9,
+    "statusAdjustments": 2,
+    "admittedReports": 8,
+    "completeRawReports": 8
+  },
+  "usageEstimateUsd": 0.0191097,
+  "estimateNotInvoice": true,
+  "rows": [
+    {
+      "id": "full-gap-present-phone",
+      "requiredPages": [
+        "index.html",
+        "contact.html"
+      ],
+      "source": "The page content must list the shop telephone number.",
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The page content must list the shop telephone number.",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "The complete static index.html body contains a labelled telephone in one p owner. This establishes source copy only, not visibility, phone ownership or connection.",
+            "relevantFiles": [
+              "index.html",
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ],
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Telephone: +61 3 7010 2244</p><p>Enquiries welcome during business hours.</p></main></body></html>",
+        "contact.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>",
+        "site.css": "body{font-family:serif;margin:1rem}address{font-style:normal}\n"
+      },
+      "filesSha256": [
+        {
+          "file": "contact.html",
+          "sha256": "7095c36faa8b6cf7255774867e6aea86d5be970e1ccd2ad06d8bee11f3266694"
+        },
+        {
+          "file": "index.html",
+          "sha256": "3bfa628b7131912995ea606fd211624ec8aec8985a5a0b3bcf3e8e46dab36672"
+        },
+        {
+          "file": "site.css",
+          "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+        }
+      ],
+      "requestSha256": "aa5a853dc6d2a3c5b9a697392277b6eba9292d01c0cfeb04f1c723cbf4681286",
+      "providerBodySha256": "6c8a70a394238cad694df35d2082b3701915d5e2975585a917e441d13edc36d4",
+      "sourceReferenceAgreement": {
+        "raw": 1,
+        "application": 1,
+        "total": 1
+      },
+      "rawItems": [
+        {
+          "criterionId": "coverage-1",
+          "status": "supported",
+          "explanation": "index.html main section lists a telephone number: \"Telephone: +61 3 7010 2244\". contact.html has no phone number, but the requirement is on page content generally.",
+          "citations": [
+            {
+              "file": "index.html",
+              "start": 171,
+              "end": 204,
+              "excerpt": "<p>Telephone: +61 3 7010 2244</p>"
+            },
+            {
+              "file": "index.html",
+              "start": 150,
+              "end": 171,
+              "excerpt": "<h1>Maple Floral</h1>"
+            }
+          ]
+        }
+      ],
+      "rawRisks": [],
+      "rawLimitations": [
+        "Source-only review: only HTML/CSS text is inspected; no browser rendering or runtime behavior was observed.",
+        "contact.html contains no telephone number, so the number appears only on the index page.",
+        "The reviewer cannot confirm the number is the shop's actual telephone number or that it is displayed visually."
+      ],
+      "application": {
+        "id": "e1f2d6c0-44a4-4389-8344-b0c25d59eb69",
+        "deliveryId": "eval-full-gap-present-phone",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-05T17:53:29.802Z",
+        "items": [
+          {
+            "criterionId": "coverage-1",
+            "status": "supported",
+            "explanation": "index.html main section lists a telephone number: \"Telephone: +61 3 7010 2244\". contact.html has no phone number, but the requirement is on page content generally.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 171,
+                "end": 204,
+                "excerpt": "<p>Telephone: +61 3 7010 2244</p>"
+              },
+              {
+                "file": "index.html",
+                "start": 150,
+                "end": 171,
+                "excerpt": "<h1>Maple Floral</h1>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-1"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 53,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 53,
+                  "excerpt": "The page content must list the shop telephone number."
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "source_content",
+                  "clauseIndex": 0,
+                  "state": "source_review_required"
+                }
+              ]
+            }
+          }
+        ],
+        "risks": [],
+        "limitations": [
+          "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+          "The model supplied 3 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+          "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog f46cc84ed427ca4fd01bf8ac8d468b45030769e25925ce87537aeac1224c2b76. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+          "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "coverage": {
+          "includedFiles": [
+            "contact.html",
+            "index.html",
+            "site.css"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "withheldRisks": {
+          "version": 1,
+          "reason": "not_withheld",
+          "adjustedCriteria": [],
+          "entries": []
+        },
+        "usage": {
+          "promptTokens": 6219,
+          "completionTokens": 287
+        }
+      },
+      "citations": {
+        "rawItem": 2,
+        "rawRisk": 0,
+        "applicationItem": 2,
+        "activeRisk": 0,
+        "withheldRisk": 0,
+        "allExact": true
+      },
+      "statusLineage": {
+        "source": "retained_original_provider_body",
+        "rawWireItems": 1,
+        "originalStatuses": [
+          {
+            "criterionId": "coverage-1",
+            "status": "supported"
+          }
+        ],
+        "publishedStatuses": [
+          {
+            "criterionId": "coverage-1",
+            "status": "supported"
+          }
+        ],
+        "adjustedCriteria": [],
+        "allAgreedCriteriaCompared": true,
+        "ledgerVerified": true
+      },
+      "quarantine": {
+        "expectedEntries": 0,
+        "expectedCitations": 0,
+        "present": true,
+        "disposition": "not_withheld",
+        "lineageVerified": true,
+        "entries": []
+      },
+      "usage": {
+        "promptTokens": 6219,
+        "completionTokens": 287
+      }
+    },
+    {
+      "id": "full-gap-missing-phone",
+      "requiredPages": [
+        "index.html",
+        "contact.html"
+      ],
+      "source": "The page content must list the shop telephone number.",
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The page content must list the shop telephone number.",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "Both complete plain static HTML bodies lack telephone text and contain no image, script, template or hidden alternative. The limited source-copy omission is established; no live browser or business contact validity is claimed.",
+            "relevantFiles": [
+              "index.html",
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ],
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Visit the contact page for our story.</p></main></body></html>",
+        "contact.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>We are a fictional design shop.</p><p>Open weekdays.</p></main></body></html>",
+        "site.css": "body{font-family:serif;margin:1rem}address{font-style:normal}\n"
+      },
+      "filesSha256": [
+        {
+          "file": "contact.html",
+          "sha256": "4a48044a6bdb99e1da6d43bbf9fa1109d1ac736864d48c4bd22e6b451cd6da55"
+        },
+        {
+          "file": "index.html",
+          "sha256": "d5506d84fcc69b296b104f2f51567c3517cd645929fc2b13035937fe2d543977"
+        },
+        {
+          "file": "site.css",
+          "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+        }
+      ],
+      "requestSha256": "6d10c7cd05b9ed16d2d9274c24baf8265dd473bf803c539642ef0bd314696e6e",
+      "providerBodySha256": "301e723d4b7fff8e9147016061d2b95b80a5378cf95664eaca454935daf0c924",
+      "sourceReferenceAgreement": {
+        "raw": 1,
+        "application": 1,
+        "total": 1
+      },
+      "rawItems": [
+        {
+          "criterionId": "coverage-1",
+          "status": "changes_suggested",
+          "explanation": "Both delivered pages' complete source contains no telephone number; contact.html lists only a heading, a shop description and 'Open weekdays.' with no phone digits or tel link.",
+          "citations": [
+            {
+              "file": "contact.html",
+              "start": 0,
+              "end": 259,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>We are a fictional design shop.</p><p>Open weekdays.</p></main></body></html>"
+            },
+            {
+              "file": "index.html",
+              "start": 0,
+              "end": 236,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Visit the contact page for our story.</p></main></body></html>"
+            }
+          ]
+        }
+      ],
+      "rawRisks": [
+        {
+          "title": "Shop telephone number absent from the only text-bearing page",
+          "explanation": "contact.html's main section has a heading, a one-line description and 'Open weekdays.' only; no phone number appears in the delivered HTML.",
+          "suggestion": "Ask the supplier to add the agreed shop telephone number to the page copy and confirm the exact digits with the buyer.",
+          "citations": [
+            {
+              "file": "contact.html",
+              "start": 0,
+              "end": 259,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>We are a fictional design shop.</p><p>Open weekdays.</p></main></body></html>"
+            },
+            {
+              "file": "contact.html",
+              "start": 179,
+              "end": 217,
+              "excerpt": "<p>We are a fictional design shop.</p>"
+            },
+            {
+              "file": "contact.html",
+              "start": 217,
+              "end": 238,
+              "excerpt": "<p>Open weekdays.</p>"
+            }
+          ]
+        }
+      ],
+      "rawLimitations": [
+        "No telephone number is present in the supplied inline content of index.html or contact.html; any number supplied via omitted scripts or images cannot be seen.",
+        "Whether a number would be rendered or visible in a browser was not observed; this is a static-source reading only.",
+        "site.css was reviewed only as supplied stylesheet text and contains no phone-related content."
+      ],
+      "application": {
+        "id": "4ce63fd2-ed02-48dd-a33e-ba575b19989a",
+        "deliveryId": "eval-full-gap-missing-phone",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-05T17:53:32.312Z",
+        "items": [
+          {
+            "criterionId": "coverage-1",
+            "status": "changes_suggested",
+            "explanation": "Both delivered pages' complete source contains no telephone number; contact.html lists only a heading, a shop description and 'Open weekdays.' with no phone digits or tel link.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 0,
+                "end": 259,
+                "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>We are a fictional design shop.</p><p>Open weekdays.</p></main></body></html>"
+              },
+              {
+                "file": "index.html",
+                "start": 0,
+                "end": 236,
+                "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Visit the contact page for our story.</p></main></body></html>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-1"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 53,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 53,
+                  "excerpt": "The page content must list the shop telephone number."
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "source_content",
+                  "clauseIndex": 0,
+                  "state": "source_review_required"
+                }
+              ]
+            }
+          }
+        ],
+        "risks": [
+          {
+            "title": "Shop telephone number absent from the only text-bearing page",
+            "explanation": "contact.html's main section has a heading, a one-line description and 'Open weekdays.' only; no phone number appears in the delivered HTML.",
+            "suggestion": "Ask the supplier to add the agreed shop telephone number to the page copy and confirm the exact digits with the buyer.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 0,
+                "end": 259,
+                "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>We are a fictional design shop.</p><p>Open weekdays.</p></main></body></html>"
+              },
+              {
+                "file": "contact.html",
+                "start": 179,
+                "end": 217,
+                "excerpt": "<p>We are a fictional design shop.</p>"
+              },
+              {
+                "file": "contact.html",
+                "start": 217,
+                "end": 238,
+                "excerpt": "<p>Open weekdays.</p>"
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+          "The model supplied 3 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+          "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog 288ec91f294e11680ef4b078b42b89c165bc04c46fdd8b1b87ee69b720126b70. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+          "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "coverage": {
+          "includedFiles": [
+            "contact.html",
+            "index.html",
+            "site.css"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "withheldRisks": {
+          "version": 1,
+          "reason": "not_withheld",
+          "adjustedCriteria": [],
+          "entries": []
+        },
+        "usage": {
+          "promptTokens": 6190,
+          "completionTokens": 405
+        }
+      },
+      "citations": {
+        "rawItem": 2,
+        "rawRisk": 3,
+        "applicationItem": 2,
+        "activeRisk": 3,
+        "withheldRisk": 0,
+        "allExact": true
+      },
+      "statusLineage": {
+        "source": "retained_original_provider_body",
+        "rawWireItems": 1,
+        "originalStatuses": [
+          {
+            "criterionId": "coverage-1",
+            "status": "changes_suggested"
+          }
+        ],
+        "publishedStatuses": [
+          {
+            "criterionId": "coverage-1",
+            "status": "changes_suggested"
+          }
+        ],
+        "adjustedCriteria": [],
+        "allAgreedCriteriaCompared": true,
+        "ledgerVerified": true
+      },
+      "quarantine": {
+        "expectedEntries": 0,
+        "expectedCitations": 0,
+        "present": true,
+        "disposition": "not_withheld",
+        "lineageVerified": true,
+        "entries": []
+      },
+      "usage": {
+        "promptTokens": 6190,
+        "completionTokens": 405
+      }
+    },
+    {
+      "id": "full-gap-body-email-with-decoys",
+      "requiredPages": [
+        "index.html",
+        "contact.html"
+      ],
+      "source": "The page content must list the shop email address.",
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The page content must list the shop email address.",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "An address owner in the actual static body contains orders@maple.example.test. Comment and script strings are decoys and cannot replace that body witness. The source-copy fact does not establish delivery.",
+            "relevantFiles": [
+              "index.html",
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ],
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><address>Email: orders@maple.example.test</address><!-- Email: retired@maple.example.test --><script type=\"application/json\">{\"debugEmail\":\"diagnostic@maple.example.test\"}</script></main></body></html>",
+        "contact.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>",
+        "site.css": "body{font-family:serif;margin:1rem}address{font-style:normal}\n"
+      },
+      "filesSha256": [
+        {
+          "file": "contact.html",
+          "sha256": "7095c36faa8b6cf7255774867e6aea86d5be970e1ccd2ad06d8bee11f3266694"
+        },
+        {
+          "file": "index.html",
+          "sha256": "319b3a3a98faa6fdbc429c5b029ca67a329141ec3187387070b32379bbd61a42"
+        },
+        {
+          "file": "site.css",
+          "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+        }
+      ],
+      "requestSha256": "38bee2bc5bc3a75fd8afa184c505dceba88dc686c1c1f5561088035deed6d416",
+      "providerBodySha256": "ca8b5c999c6c937ba82bf6b0fee4ab0724be44c9257c54bc23bea4cacf76ce3b",
+      "sourceReferenceAgreement": {
+        "raw": 1,
+        "application": 1,
+        "total": 1
+      },
+      "rawItems": [
+        {
+          "criterionId": "coverage-1",
+          "status": "supported",
+          "explanation": "index.html contains an address element with 'Email: orders@maple.example.test'. A commented-out alternative and a JSON debug string exist but the visible address copy lists an email; contact.html lists none.",
+          "citations": [
+            {
+              "file": "index.html",
+              "start": 0,
+              "end": 372,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><address>Email: orders@maple.example.test</address><!-- Email: retired@maple.example.test --><script type=\"application/json\">{\"debugEmail\":\"diagnostic@maple.example.test\"}</script></main></body></html>"
+            },
+            {
+              "file": "contact.html",
+              "start": 0,
+              "end": 264,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>"
+            },
+            {
+              "file": "index.html",
+              "start": 150,
+              "end": 171,
+              "excerpt": "<h1>Maple Floral</h1>"
+            }
+          ]
+        }
+      ],
+      "rawRisks": [
+        {
+          "title": "contact.html lists no shop email address",
+          "explanation": "contact.html contains only a title, an h1 ('About the fictional shop') and one paragraph of generic copy; it has no email address text, unlike index.html.",
+          "suggestion": "Confirm which page(s) must carry the shop email; if contact.html is expected to, add the agreed address there.",
+          "citations": [
+            {
+              "file": "contact.html",
+              "start": 0,
+              "end": 264,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>"
+            },
+            {
+              "file": "contact.html",
+              "start": 150,
+              "end": 183,
+              "excerpt": "<h1>About the fictional shop</h1>"
+            },
+            {
+              "file": "contact.html",
+              "start": 183,
+              "end": 243,
+              "excerpt": "<p>Small batch arrangements made for this authored test.</p>"
+            }
+          ]
+        },
+        {
+          "title": "email copy coexists with a commented-out and JSON debug address in index.html",
+          "explanation": "index.html contains the stated address, plus an HTML comment 'Email: retired@maple.example.test' and an application/json script with 'diagnostic@maple.example.test', so three different addresses are present in the source.",
+          "suggestion": "Verify which address is the agreed shop email and whether stale or diagnostic addresses should remain in the delivered markup.",
+          "citations": [
+            {
+              "file": "index.html",
+              "start": 0,
+              "end": 372,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><address>Email: orders@maple.example.test</address><!-- Email: retired@maple.example.test --><script type=\"application/json\">{\"debugEmail\":\"diagnostic@maple.example.test\"}</script></main></body></html>"
+            }
+          ]
+        }
+      ],
+      "rawLimitations": [
+        "Source-only review; no browser rendering or interaction was observed, so visual display of the email address is unverified.",
+        "Buyer/human must give final acceptance for coverage-1.",
+        "No raster images were analyzed; inventory lists only index.html, contact.html and site.css."
+      ],
+      "application": {
+        "id": "ca0efa67-e571-478a-94b8-004c5f03af5a",
+        "deliveryId": "eval-full-gap-body-email-with-decoys",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-05T17:53:35.279Z",
+        "items": [
+          {
+            "criterionId": "coverage-1",
+            "status": "supported",
+            "explanation": "index.html contains an address element with 'Email: orders@maple.example.test'. A commented-out alternative and a JSON debug string exist but the visible address copy lists an email; contact.html lists none.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 0,
+                "end": 372,
+                "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><address>Email: orders@maple.example.test</address><!-- Email: retired@maple.example.test --><script type=\"application/json\">{\"debugEmail\":\"diagnostic@maple.example.test\"}</script></main></body></html>"
+              },
+              {
+                "file": "contact.html",
+                "start": 0,
+                "end": 264,
+                "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>"
+              },
+              {
+                "file": "index.html",
+                "start": 150,
+                "end": 171,
+                "excerpt": "<h1>Maple Floral</h1>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-1"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 50,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 50,
+                  "excerpt": "The page content must list the shop email address."
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "source_content",
+                  "clauseIndex": 0,
+                  "state": "source_review_required"
+                }
+              ]
+            }
+          }
+        ],
+        "risks": [
+          {
+            "title": "contact.html lists no shop email address",
+            "explanation": "contact.html contains only a title, an h1 ('About the fictional shop') and one paragraph of generic copy; it has no email address text, unlike index.html.",
+            "suggestion": "Confirm which page(s) must carry the shop email; if contact.html is expected to, add the agreed address there.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 0,
+                "end": 264,
+                "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>"
+              },
+              {
+                "file": "contact.html",
+                "start": 150,
+                "end": 183,
+                "excerpt": "<h1>About the fictional shop</h1>"
+              },
+              {
+                "file": "contact.html",
+                "start": 183,
+                "end": 243,
+                "excerpt": "<p>Small batch arrangements made for this authored test.</p>"
+              }
+            ]
+          },
+          {
+            "title": "email copy coexists with a commented-out and JSON debug address in index.html",
+            "explanation": "index.html contains the stated address, plus an HTML comment 'Email: retired@maple.example.test' and an application/json script with 'diagnostic@maple.example.test', so three different addresses are present in the source.",
+            "suggestion": "Verify which address is the agreed shop email and whether stale or diagnostic addresses should remain in the delivered markup.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 0,
+                "end": 372,
+                "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><address>Email: orders@maple.example.test</address><!-- Email: retired@maple.example.test --><script type=\"application/json\">{\"debugEmail\":\"diagnostic@maple.example.test\"}</script></main></body></html>"
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+          "The model supplied 3 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+          "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog 07ba73c35fa8f07f9d545832f7561750b91852ad0a690b0135bda998976fd50e. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+          "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "coverage": {
+          "includedFiles": [
+            "contact.html",
+            "index.html",
+            "site.css"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "withheldRisks": {
+          "version": 1,
+          "reason": "not_withheld",
+          "adjustedCriteria": [],
+          "entries": []
+        },
+        "usage": {
+          "promptTokens": 6110,
+          "completionTokens": 517
+        }
+      },
+      "citations": {
+        "rawItem": 3,
+        "rawRisk": 4,
+        "applicationItem": 3,
+        "activeRisk": 4,
+        "withheldRisk": 0,
+        "allExact": true
+      },
+      "statusLineage": {
+        "source": "retained_original_provider_body",
+        "rawWireItems": 1,
+        "originalStatuses": [
+          {
+            "criterionId": "coverage-1",
+            "status": "supported"
+          }
+        ],
+        "publishedStatuses": [
+          {
+            "criterionId": "coverage-1",
+            "status": "supported"
+          }
+        ],
+        "adjustedCriteria": [],
+        "allAgreedCriteriaCompared": true,
+        "ledgerVerified": true
+      },
+      "quarantine": {
+        "expectedEntries": 0,
+        "expectedCitations": 0,
+        "present": true,
+        "disposition": "not_withheld",
+        "lineageVerified": true,
+        "entries": []
+      },
+      "usage": {
+        "promptTokens": 6110,
+        "completionTokens": 517
+      }
+    },
+    {
+      "id": "full-gap-inert-email-only",
+      "requiredPages": [
+        "index.html",
+        "contact.html"
+      ],
+      "source": "The page content must list the shop email address.",
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The page content must list the shop email address.",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "The only supplied email strings occur in an HTML comment and inert script data, not body contact copy. An external contact-card script is referenced but its code and output are not supplied. That concrete dynamic alternative leaves email page-content presence unverified; no browser absence, delivery failure or script execution is claimed.",
+            "relevantFiles": [
+              "index.html",
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ],
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>Please use the enquiry channel.</p><!-- Email: archived@maple.example.test --><script type=\"application/json\">{\"email\":\"debug@maple.example.test\",\"note\":\"diagnostic data only\"}</script><script src=\"https://widget.example.test/contact-card.js\"></script></main></body></html>",
+        "contact.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>",
+        "site.css": "body{font-family:serif;margin:1rem}address{font-style:normal}\n"
+      },
+      "filesSha256": [
+        {
+          "file": "contact.html",
+          "sha256": "7095c36faa8b6cf7255774867e6aea86d5be970e1ccd2ad06d8bee11f3266694"
+        },
+        {
+          "file": "index.html",
+          "sha256": "25f5f60949644254a53873a07396cb0c24eab3333d635a37779a8b1f516f032e"
+        },
+        {
+          "file": "site.css",
+          "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+        }
+      ],
+      "requestSha256": "e874edec1e22c4e9bf0db90ddf293e68c46f7a7bde3f596e5d5e1c75b342b083",
+      "providerBodySha256": "d5b8a62ad8face8ba5f52983da80bbe63c861545f2f768eabad7393a130cf623",
+      "sourceReferenceAgreement": {
+        "raw": 0,
+        "application": 1,
+        "total": 1
+      },
+      "rawItems": [
+        {
+          "criterionId": "coverage-1",
+          "status": "changes_suggested",
+          "explanation": "No page visibly lists a shop email. index.html has the address only inside an HTML comment and a JSON script block marked diagnostic data; contact.html has none.",
+          "citations": [
+            {
+              "file": "index.html",
+              "start": 0,
+              "end": 400,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>Please use the enquiry channel.</p><!-- Email: archived@maple.example.test --><script type=\"application/json\">{\"email\":\"debug@maple.example.test\",\"note\":\"diagnostic data only\"}</script><script src=\"https://widget.examp"
+            },
+            {
+              "file": "index.html",
+              "start": 150,
+              "end": 179,
+              "excerpt": "<h1>Contact Maple Floral</h1>"
+            },
+            {
+              "file": "index.html",
+              "start": 179,
+              "end": 217,
+              "excerpt": "<p>Please use the enquiry channel.</p>"
+            },
+            {
+              "file": "contact.html",
+              "start": 0,
+              "end": 264,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>"
+            },
+            {
+              "file": "contact.html",
+              "start": 183,
+              "end": 243,
+              "excerpt": "<p>Small batch arrangements made for this authored test.</p>"
+            }
+          ]
+        }
+      ],
+      "rawRisks": [
+        {
+          "title": "Shop email address appears only in non-visible source (comment and diagnostic JSON)",
+          "explanation": "index.html contains the main copy 'Please use the enquiry channel.' without an address; the only addresses are in an HTML comment ('archived@...') and a JSON script block marked 'diagnostic data only', neither of which is listed page content.",
+          "suggestion": "Confirm with the owner which email is current, then add it as visible page text (e.g. an address element or mailto link) and remove or resolve the archived/debug addresses.",
+          "citations": [
+            {
+              "file": "index.html",
+              "start": 0,
+              "end": 400,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>Please use the enquiry channel.</p><!-- Email: archived@maple.example.test --><script type=\"application/json\">{\"email\":\"debug@maple.example.test\",\"note\":\"diagnostic data only\"}</script><script src=\"https://widget.examp"
+            },
+            {
+              "file": "index.html",
+              "start": 179,
+              "end": 217,
+              "excerpt": "<p>Please use the enquiry channel.</p>"
+            }
+          ]
+        },
+        {
+          "title": "contact.html lists no email address at all",
+          "explanation": "The only body content on contact.html is the heading 'About the fictional shop' and a short paragraph; no email address or contact detail is present.",
+          "suggestion": "If contact.html is expected to carry the shop email, add the agreed address as visible copy there as well.",
+          "citations": [
+            {
+              "file": "contact.html",
+              "start": 150,
+              "end": 183,
+              "excerpt": "<h1>About the fictional shop</h1>"
+            },
+            {
+              "file": "contact.html",
+              "start": 183,
+              "end": 243,
+              "excerpt": "<p>Small batch arrangements made for this authored test.</p>"
+            }
+          ]
+        }
+      ],
+      "rawLimitations": [
+        "The requirement does not name a specific page, file or exact address; whether index.html, contact.html or another page must carry it, and which address is correct, is unconfirmed.",
+        "The external widget script contact-card.js is not in the supplied inventory, so it could not be inspected for an email it might insert at runtime.",
+        "No browser rendering was observed; whether the comment or diagnostic JSON content is ever surfaced to users is untested.",
+        "Buyer acceptance of the email listing is a human decision and is not made here."
+      ],
+      "application": {
+        "id": "4e9a871a-6741-42c0-9fa9-1062e7fb1ac3",
+        "deliveryId": "eval-full-gap-inert-email-only",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-05T17:53:39.083Z",
+        "items": [
+          {
+            "criterionId": "coverage-1",
+            "status": "insufficient_evidence",
+            "explanation": "The available source cannot establish absent email text; dynamic, image or unsupported content may remain. Check the locked scope and obtain direct observations instead of inferring a defect from keyword absence.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 0,
+                "end": 400,
+                "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>Please use the enquiry channel.</p><!-- Email: archived@maple.example.test --><script type=\"application/json\">{\"email\":\"debug@maple.example.test\",\"note\":\"diagnostic data only\"}</script><script src=\"https://widget.examp"
+              },
+              {
+                "file": "index.html",
+                "start": 150,
+                "end": 179,
+                "excerpt": "<h1>Contact Maple Floral</h1>"
+              },
+              {
+                "file": "index.html",
+                "start": 179,
+                "end": 217,
+                "excerpt": "<p>Please use the enquiry channel.</p>"
+              },
+              {
+                "file": "contact.html",
+                "start": 0,
+                "end": 264,
+                "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>"
+              },
+              {
+                "file": "contact.html",
+                "start": 183,
+                "end": 243,
+                "excerpt": "<p>Small batch arrangements made for this authored test.</p>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-1"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 50,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 50,
+                  "excerpt": "The page content must list the shop email address."
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "source_content",
+                  "clauseIndex": 0,
+                  "state": "source_review_required"
+                }
+              ]
+            },
+            "evidenceNeed": {
+              "schema": "source-evidence-need-v1",
+              "reason": "source_ambiguity",
+              "targetFiles": [
+                "contact.html",
+                "index.html"
+              ]
+            }
+          }
+        ],
+        "risks": [],
+        "limitations": [
+          "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+          "The model supplied 4 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+          "1 item status(es) were adjusted by system checks. 2 unreviewed optional AI risk(s) are temporarily withheld; use item-level evidence. This publication gate does not accept work, authorize or trigger payment.",
+          "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog 32fda4e0e57063da3a8e5ad2abec754ef9bd4318f84a7b8afd1c0985e255b2ce. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+          "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "coverage": {
+          "includedFiles": [
+            "contact.html",
+            "index.html",
+            "site.css"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "withheldRisks": {
+          "version": 1,
+          "reason": "item_status_adjusted",
+          "adjustedCriteria": [
+            {
+              "criterionId": "coverage-1",
+              "originalStatus": "changes_suggested",
+              "publishedStatus": "insufficient_evidence"
+            }
+          ],
+          "entries": [
+            {
+              "originalRiskIndex": 0,
+              "risk": {
+                "title": "Shop email address appears only in non-visible source (comment and diagnostic JSON)",
+                "explanation": "index.html contains the main copy 'Please use the enquiry channel.' without an address; the only addresses are in an HTML comment ('archived@...') and a JSON script block marked 'diagnostic data only', neither of which is listed page content.",
+                "suggestion": "Confirm with the owner which email is current, then add it as visible page text (e.g. an address element or mailto link) and remove or resolve the archived/debug addresses.",
+                "citations": [
+                  {
+                    "file": "index.html",
+                    "start": 0,
+                    "end": 400,
+                    "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>Please use the enquiry channel.</p><!-- Email: archived@maple.example.test --><script type=\"application/json\">{\"email\":\"debug@maple.example.test\",\"note\":\"diagnostic data only\"}</script><script src=\"https://widget.examp"
+                  },
+                  {
+                    "file": "index.html",
+                    "start": 179,
+                    "end": 217,
+                    "excerpt": "<p>Please use the enquiry channel.</p>"
+                  }
+                ]
+              }
+            },
+            {
+              "originalRiskIndex": 1,
+              "risk": {
+                "title": "contact.html lists no email address at all",
+                "explanation": "The only body content on contact.html is the heading 'About the fictional shop' and a short paragraph; no email address or contact detail is present.",
+                "suggestion": "If contact.html is expected to carry the shop email, add the agreed address as visible copy there as well.",
+                "citations": [
+                  {
+                    "file": "contact.html",
+                    "start": 150,
+                    "end": 183,
+                    "excerpt": "<h1>About the fictional shop</h1>"
+                  },
+                  {
+                    "file": "contact.html",
+                    "start": 183,
+                    "end": 243,
+                    "excerpt": "<p>Small batch arrangements made for this authored test.</p>"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "usage": {
+          "promptTokens": 6294,
+          "completionTokens": 593
+        }
+      },
+      "citations": {
+        "rawItem": 5,
+        "rawRisk": 4,
+        "applicationItem": 5,
+        "activeRisk": 0,
+        "withheldRisk": 4,
+        "allExact": true
+      },
+      "statusLineage": {
+        "source": "retained_original_provider_body",
+        "rawWireItems": 1,
+        "originalStatuses": [
+          {
+            "criterionId": "coverage-1",
+            "status": "changes_suggested"
+          }
+        ],
+        "publishedStatuses": [
+          {
+            "criterionId": "coverage-1",
+            "status": "insufficient_evidence"
+          }
+        ],
+        "adjustedCriteria": [
+          {
+            "criterionId": "coverage-1",
+            "originalStatus": "changes_suggested",
+            "publishedStatus": "insufficient_evidence"
+          }
+        ],
+        "allAgreedCriteriaCompared": true,
+        "ledgerVerified": true
+      },
+      "quarantine": {
+        "expectedEntries": 2,
+        "expectedCitations": 4,
+        "present": true,
+        "disposition": "item_status_adjusted",
+        "lineageVerified": true,
+        "entries": [
+          {
+            "originalRiskIndex": 0,
+            "risk": {
+              "title": "Shop email address appears only in non-visible source (comment and diagnostic JSON)",
+              "explanation": "index.html contains the main copy 'Please use the enquiry channel.' without an address; the only addresses are in an HTML comment ('archived@...') and a JSON script block marked 'diagnostic data only', neither of which is listed page content.",
+              "suggestion": "Confirm with the owner which email is current, then add it as visible page text (e.g. an address element or mailto link) and remove or resolve the archived/debug addresses.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "start": 0,
+                  "end": 400,
+                  "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact Maple Floral</h1><p>Please use the enquiry channel.</p><!-- Email: archived@maple.example.test --><script type=\"application/json\">{\"email\":\"debug@maple.example.test\",\"note\":\"diagnostic data only\"}</script><script src=\"https://widget.examp"
+                },
+                {
+                  "file": "index.html",
+                  "start": 179,
+                  "end": 217,
+                  "excerpt": "<p>Please use the enquiry channel.</p>"
+                }
+              ]
+            }
+          },
+          {
+            "originalRiskIndex": 1,
+            "risk": {
+              "title": "contact.html lists no email address at all",
+              "explanation": "The only body content on contact.html is the heading 'About the fictional shop' and a short paragraph; no email address or contact detail is present.",
+              "suggestion": "If contact.html is expected to carry the shop email, add the agreed address as visible copy there as well.",
+              "citations": [
+                {
+                  "file": "contact.html",
+                  "start": 150,
+                  "end": 183,
+                  "excerpt": "<h1>About the fictional shop</h1>"
+                },
+                {
+                  "file": "contact.html",
+                  "start": 183,
+                  "end": 243,
+                  "excerpt": "<p>Small batch arrangements made for this authored test.</p>"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "usage": {
+        "promptTokens": 6294,
+        "completionTokens": 593
+      }
+    },
+    {
+      "id": "full-gap-named-page-phone",
+      "requiredPages": [
+        "index.html",
+        "contact.html"
+      ],
+      "source": "index.html must list the shop phone number.",
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "index.html must list the shop phone number.",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "The explicitly named index.html is a complete plain static document without phone text. A telephone on contact.html is real source copy but cannot satisfy this named-page requirement.",
+            "relevantFiles": [
+              "index.html",
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ],
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Our seasonal collections are made to order.</p></main></body></html>",
+        "contact.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact</h1><p>Phone: +61 3 7010 3388</p></main></body></html>",
+        "site.css": "body{font-family:serif;margin:1rem}address{font-style:normal}\n"
+      },
+      "filesSha256": [
+        {
+          "file": "contact.html",
+          "sha256": "98727395321dbdac50db5e487c461596128a8f7ce84a839524bcc8cec70892a6"
+        },
+        {
+          "file": "index.html",
+          "sha256": "b3206c15f432be03d7c0f449866cb9b218495f8f26ec96e3d505d17ac9b67568"
+        },
+        {
+          "file": "site.css",
+          "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+        }
+      ],
+      "requestSha256": "8c1d9547f95bdd73d98bd2273b7beff1d78868faa53a6c07ecbb9c4d5d584bd7",
+      "providerBodySha256": "883653634f33e35fff4dc4b0532128b183000e437ed775c92a36e4f764105bbd",
+      "sourceReferenceAgreement": {
+        "raw": 1,
+        "application": 1,
+        "total": 1
+      },
+      "rawItems": [
+        {
+          "criterionId": "coverage-1",
+          "status": "changes_suggested",
+          "explanation": "index.html contains only an h1 and a paragraph about seasonal collections; no phone number appears. A phone number is present only in contact.html, not the required index.html.",
+          "citations": [
+            {
+              "file": "index.html",
+              "start": 150,
+              "end": 171,
+              "excerpt": "<h1>Maple Floral</h1>"
+            },
+            {
+              "file": "index.html",
+              "start": 171,
+              "end": 221,
+              "excerpt": "<p>Our seasonal collections are made to order.</p>"
+            },
+            {
+              "file": "index.html",
+              "start": 0,
+              "end": 242,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Our seasonal collections are made to order.</p></main></body></html>"
+            }
+          ]
+        }
+      ],
+      "rawRisks": [
+        {
+          "title": "index.html does not list the shop phone number",
+          "explanation": "The only phone number in the delivery ('Phone: +61 3 7010 3388') is in contact.html; index.html's body has just the heading \"Maple Floral\" and a collections sentence, with no phone digits.",
+          "suggestion": "Add the shop phone number to index.html (e.g., in the main content or a footer) and re-check the full index.html text for the digits.",
+          "citations": [
+            {
+              "file": "index.html",
+              "start": 0,
+              "end": 242,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Our seasonal collections are made to order.</p></main></body></html>"
+            },
+            {
+              "file": "contact.html",
+              "start": 166,
+              "end": 195,
+              "excerpt": "<p>Phone: +61 3 7010 3388</p>"
+            }
+          ]
+        }
+      ],
+      "rawLimitations": [
+        "Source-only review: no rendered page or browser output was observed.",
+        "No script files are declared in index.html, so any dynamically injected phone number cannot be ruled out.",
+        "Whether the phone number in contact.html is the correct shop number is not verifiable from source."
+      ],
+      "application": {
+        "id": "ef26125b-989a-4be7-9a1a-26ccedb0cc2c",
+        "deliveryId": "eval-full-gap-named-page-phone",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-05T17:53:41.770Z",
+        "items": [
+          {
+            "criterionId": "coverage-1",
+            "status": "changes_suggested",
+            "explanation": "index.html contains only an h1 and a paragraph about seasonal collections; no phone number appears. A phone number is present only in contact.html, not the required index.html.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 150,
+                "end": 171,
+                "excerpt": "<h1>Maple Floral</h1>"
+              },
+              {
+                "file": "index.html",
+                "start": 171,
+                "end": 221,
+                "excerpt": "<p>Our seasonal collections are made to order.</p>"
+              },
+              {
+                "file": "index.html",
+                "start": 0,
+                "end": 242,
+                "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Our seasonal collections are made to order.</p></main></body></html>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-1"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 43,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 43,
+                  "excerpt": "index.html must list the shop phone number."
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "source_content",
+                  "clauseIndex": 0,
+                  "state": "source_review_required"
+                }
+              ]
+            }
+          }
+        ],
+        "risks": [
+          {
+            "title": "index.html does not list the shop phone number",
+            "explanation": "The only phone number in the delivery ('Phone: +61 3 7010 3388') is in contact.html; index.html's body has just the heading \"Maple Floral\" and a collections sentence, with no phone digits.",
+            "suggestion": "Add the shop phone number to index.html (e.g., in the main content or a footer) and re-check the full index.html text for the digits.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 0,
+                "end": 242,
+                "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><p>Our seasonal collections are made to order.</p></main></body></html>"
+              },
+              {
+                "file": "contact.html",
+                "start": 166,
+                "end": 195,
+                "excerpt": "<p>Phone: +61 3 7010 3388</p>"
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+          "The model supplied 3 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+          "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog 3649282cd1be2e66b616623c9f24f0dcf2c9b6e8d064b435cfdc7967375cafb8. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+          "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "coverage": {
+          "includedFiles": [
+            "contact.html",
+            "index.html",
+            "site.css"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "withheldRisks": {
+          "version": 1,
+          "reason": "not_withheld",
+          "adjustedCriteria": [],
+          "entries": []
+        },
+        "usage": {
+          "promptTokens": 6120,
+          "completionTokens": 420
+        }
+      },
+      "citations": {
+        "rawItem": 3,
+        "rawRisk": 2,
+        "applicationItem": 3,
+        "activeRisk": 2,
+        "withheldRisk": 0,
+        "allExact": true
+      },
+      "statusLineage": {
+        "source": "retained_original_provider_body",
+        "rawWireItems": 1,
+        "originalStatuses": [
+          {
+            "criterionId": "coverage-1",
+            "status": "changes_suggested"
+          }
+        ],
+        "publishedStatuses": [
+          {
+            "criterionId": "coverage-1",
+            "status": "changes_suggested"
+          }
+        ],
+        "adjustedCriteria": [],
+        "allAgreedCriteriaCompared": true,
+        "ledgerVerified": true
+      },
+      "quarantine": {
+        "expectedEntries": 0,
+        "expectedCitations": 0,
+        "present": true,
+        "disposition": "not_withheld",
+        "lineageVerified": true,
+        "entries": []
+      },
+      "usage": {
+        "promptTokens": 6120,
+        "completionTokens": 420
+      }
+    },
+    {
+      "id": "full-gap-cross-page-price-owner",
+      "requiredPages": [
+        "index.html",
+        "menu.html"
+      ],
+      "source": "The index.html and menu.html source content must both list Tea at AUD 18.",
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The index.html and menu.html source content must both list Tea at AUD 18.",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "index.html pairs Tea with AUD18. menu.html pairs Tea with AUD24 and Coffee with AUD18. The neighboring Coffee amount and correct first page cannot substitute for the wrong Tea owner on menu.html.",
+            "relevantFiles": [
+              "index.html",
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ],
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Menu</h1><p>Tea AUD 18</p><p>Coffee AUD 24</p></main></body></html>",
+        "menu.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Full menu</h1><p>Tea AUD 24</p><p>Coffee AUD 18</p></main></body></html>",
+        "site.css": "body{font-family:serif;margin:1rem}address{font-style:normal}\n"
+      },
+      "filesSha256": [
+        {
+          "file": "index.html",
+          "sha256": "d32baba41e9e914640b24110ccfcecf39302219804ca29476b2d814f5f53c98a"
+        },
+        {
+          "file": "menu.html",
+          "sha256": "bc17e596ebe3c04a47232a5410b6dbb7eaa1b397488a7e4e9a085f99e81a291d"
+        },
+        {
+          "file": "site.css",
+          "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+        }
+      ],
+      "requestSha256": "3ca5dcdb8a068674725b4a0ffc5fc838f7b069951ea55d9344aa877b182b4938",
+      "providerBodySha256": "d558ebd4276a37f8fc965498775e32c92de102582d9defdd785da57f47254d9d",
+      "sourceReferenceAgreement": {
+        "raw": 1,
+        "application": 1,
+        "total": 1
+      },
+      "rawItems": [
+        {
+          "criterionId": "coverage-1",
+          "status": "changes_suggested",
+          "explanation": "index.html lists \"Tea AUD 18\", but menu.html lists \"Tea AUD 24\" and pairs Coffee with AUD 18, so the Tea price is wrong on menu.html.",
+          "citations": [
+            {
+              "file": "index.html",
+              "start": 163,
+              "end": 180,
+              "excerpt": "<p>Tea AUD 18</p>"
+            },
+            {
+              "file": "menu.html",
+              "start": 168,
+              "end": 185,
+              "excerpt": "<p>Tea AUD 24</p>"
+            },
+            {
+              "file": "menu.html",
+              "start": 185,
+              "end": 205,
+              "excerpt": "<p>Coffee AUD 18</p>"
+            }
+          ]
+        }
+      ],
+      "rawRisks": [
+        {
+          "title": "menu.html pairs Tea with AUD 24 instead of AUD 18",
+          "explanation": "menu.html contains \"Tea AUD 24\" while the agreed check requires Tea at AUD 1800 minor units, and AUD 18 appears against Coffee instead.",
+          "suggestion": "Correct menu.html so Tea is listed at AUD 18 and re-verify both pages' prices.",
+          "citations": [
+            {
+              "file": "menu.html",
+              "start": 168,
+              "end": 185,
+              "excerpt": "<p>Tea AUD 24</p>"
+            },
+            {
+              "file": "menu.html",
+              "start": 185,
+              "end": 205,
+              "excerpt": "<p>Coffee AUD 18</p>"
+            }
+          ]
+        }
+      ],
+      "rawLimitations": [
+        "Source inspection only; rendered appearance and any dynamic pricing behavior were not observed.",
+        "Prices were compared as static HTML text; no runtime or browser checks were performed."
+      ],
+      "application": {
+        "id": "bc77f910-46c1-42d8-846b-96eb1b9d1ccc",
+        "deliveryId": "eval-full-gap-cross-page-price-owner",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-05T17:53:43.870Z",
+        "items": [
+          {
+            "criterionId": "coverage-1",
+            "status": "changes_suggested",
+            "explanation": "A confirmed business check expects \"Tea\" at AUD 18.00, but the unique simple source block in menu.html states AUD 24.00. This is a limited source mismatch with an exact quotation, not rendered visibility or backend execution. All 2 confirmed checks for this criterion were inspected; any unknowns still need review.",
+            "citations": [
+              {
+                "file": "menu.html",
+                "start": 168,
+                "end": 185,
+                "excerpt": "<p>Tea AUD 24</p>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-1"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 73,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 73,
+                  "excerpt": "The index.html and menu.html source content must both list Tea at AUD 18."
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "source_content",
+                  "clauseIndex": 0,
+                  "state": "source_review_required"
+                }
+              ]
+            }
+          }
+        ],
+        "risks": [
+          {
+            "title": "menu.html pairs Tea with AUD 24 instead of AUD 18",
+            "explanation": "menu.html contains \"Tea AUD 24\" while the agreed check requires Tea at AUD 1800 minor units, and AUD 18 appears against Coffee instead.",
+            "suggestion": "Correct menu.html so Tea is listed at AUD 18 and re-verify both pages' prices.",
+            "citations": [
+              {
+                "file": "menu.html",
+                "start": 168,
+                "end": 185,
+                "excerpt": "<p>Tea AUD 24</p>"
+              },
+              {
+                "file": "menu.html",
+                "start": 185,
+                "end": 205,
+                "excerpt": "<p>Coffee AUD 18</p>"
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+          "The model supplied 2 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+          "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog 8213411b1de13c90587fad07a75c16557600fc50719f518fa04f4c86567c5767. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+          "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "coverage": {
+          "includedFiles": [
+            "index.html",
+            "menu.html",
+            "site.css"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "withheldRisks": {
+          "version": 1,
+          "reason": "not_withheld",
+          "adjustedCriteria": [],
+          "entries": []
+        },
+        "usage": {
+          "promptTokens": 6438,
+          "completionTokens": 371
+        }
+      },
+      "citations": {
+        "rawItem": 3,
+        "rawRisk": 2,
+        "applicationItem": 1,
+        "activeRisk": 2,
+        "withheldRisk": 0,
+        "allExact": true
+      },
+      "statusLineage": {
+        "source": "retained_original_provider_body",
+        "rawWireItems": 1,
+        "originalStatuses": [
+          {
+            "criterionId": "coverage-1",
+            "status": "changes_suggested"
+          }
+        ],
+        "publishedStatuses": [
+          {
+            "criterionId": "coverage-1",
+            "status": "changes_suggested"
+          }
+        ],
+        "adjustedCriteria": [],
+        "allAgreedCriteriaCompared": true,
+        "ledgerVerified": true
+      },
+      "quarantine": {
+        "expectedEntries": 0,
+        "expectedCitations": 0,
+        "present": true,
+        "disposition": "not_withheld",
+        "lineageVerified": true,
+        "entries": []
+      },
+      "usage": {
+        "promptTokens": 6438,
+        "completionTokens": 371
+      }
+    },
+    {
+      "id": "full-gap-compound-and-quoted-copy",
+      "requiredPages": [
+        "index.html",
+        "contact.html"
+      ],
+      "source": "The page copy must include the exact wording \"Submission\".",
+      "criteria": [
+        {
+          "id": "manual-1",
+          "title": "Manual requirement 1",
+          "source": "After enquiry submission the site must email the owner and preserve a receipt retrievable after restart.",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "Form and fixed success text cannot establish actual submission, owner email delivery, durable writes or independent restart readback. Each operation remains unverified; do not promote the quoted label into an execution claim.",
+            "relevantFiles": [
+              "index.html",
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The page copy must include the exact wording \"Submission\".",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "The h1 contains the complete requested literal Submission. The word is copy data, not a requirement to execute a submission.",
+            "relevantFiles": [
+              "index.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ],
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Submission</h1><form action=\"#\"><label>Name<input name=\"name\"></label><button type=\"submit\">Send enquiry</button></form><p class=\"status\">Your enquiry is saved and emailed.</p></main></body></html>",
+        "contact.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Contact</h1><p>This is fictional source-only test copy.</p></main></body></html>",
+        "site.css": "body{font-family:serif;margin:1rem}address{font-style:normal}\n"
+      },
+      "filesSha256": [
+        {
+          "file": "contact.html",
+          "sha256": "dd2ab3e475247d079b55f5a1379861017da50b46cf524f9de9de61326bd22a93"
+        },
+        {
+          "file": "index.html",
+          "sha256": "388f938ce897a9cab099f2b4d003368960de39b7bb982419adbc592cb5bbdf78"
+        },
+        {
+          "file": "site.css",
+          "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+        }
+      ],
+      "requestSha256": "b399164d930c46581725a44e1af4371b85c9f3cc1069b51c822c24903a85f4de",
+      "providerBodySha256": "9f97c76c01c6e403616092149a3398580263a9f4c326c5a6b5945a28d39d4ac1",
+      "sourceReferenceAgreement": {
+        "raw": 2,
+        "application": 2,
+        "total": 2
+      },
+      "rawItems": [
+        {
+          "criterionId": "manual-1",
+          "status": "insufficient_evidence",
+          "explanation": "Emailing the owner and a receipt retrievable after a restart are operational behaviours. The delivered source declares a form action=\"#\" and a static status paragraph; no server, email or storage code is supplied, and the rule evidence asks for human verification.",
+          "citations": [
+            {
+              "file": "index.html",
+              "start": 0,
+              "end": 351,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Submission</h1><form action=\"#\"><label>Name<input name=\"name\"></label><button type=\"submit\">Send enquiry</button></form><p class=\"status\">Your enquiry is saved and emailed.</p></main></body></html>"
+            },
+            {
+              "file": "index.html",
+              "start": 274,
+              "end": 330,
+              "excerpt": "<p class=\"status\">Your enquiry is saved and emailed.</p>"
+            }
+          ]
+        },
+        {
+          "criterionId": "coverage-1",
+          "status": "supported",
+          "explanation": "index.html contains an h1 whose complete text is exactly \"Submission\", so the literal wording is present in the delivered page copy.",
+          "citations": [
+            {
+              "file": "index.html",
+              "start": 150,
+              "end": 169,
+              "excerpt": "<h1>Submission</h1>"
+            }
+          ]
+        }
+      ],
+      "rawRisks": [],
+      "rawLimitations": [
+        "No backend, mail or storage code was supplied, so owner email delivery and receipt persistence across restart are unverified.",
+        "The static status copy 'Your enquiry is saved and emailed.' is source text only and does not establish that a submission succeeded.",
+        "The form action=\"#\" resolves against the current document; no handler or server behaviour can be assessed from this source.",
+        "Page rendering, visibility and interactivity were not observed in a browser; only static HTML and CSS text were reviewed.",
+        "Only index.html contains the required \"Submission\" wording; contact.html does not, which the requirement does not prohibit.",
+        "Script files referenced or omitted are not in the inventory, so client-side behaviour beyond markup is unknown."
+      ],
+      "application": {
+        "id": "b02ab725-311d-411b-8aca-c7cccb902a96",
+        "deliveryId": "eval-full-gap-compound-and-quoted-copy",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-05T17:53:46.814Z",
+        "items": [
+          {
+            "criterionId": "manual-1",
+            "status": "insufficient_evidence",
+            "explanation": "This requirement includes actual records, durable retention or queryable receipts. Source copy cannot establish that records were written or can be read back. Provide execution and independent record-readback evidence, and check the complete locked requirement.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 0,
+                "end": 351,
+                "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Submission</h1><form action=\"#\"><label>Name<input name=\"name\"></label><button type=\"submit\">Send enquiry</button></form><p class=\"status\">Your enquiry is saved and emailed.</p></main></body></html>"
+              },
+              {
+                "file": "index.html",
+                "start": 274,
+                "end": 330,
+                "excerpt": "<p class=\"status\">Your enquiry is saved and emailed.</p>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-1"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 104,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 104,
+                  "excerpt": "After enquiry submission the site must email the owner and preserve a receipt retrievable after restart."
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "submission",
+                  "clauseIndex": 0,
+                  "state": "execution_not_verified"
+                },
+                {
+                  "id": "obligation-2",
+                  "kind": "email_delivery",
+                  "clauseIndex": 0,
+                  "state": "execution_not_verified"
+                },
+                {
+                  "id": "obligation-3",
+                  "kind": "durable_write",
+                  "clauseIndex": 0,
+                  "state": "execution_not_verified"
+                },
+                {
+                  "id": "obligation-4",
+                  "kind": "restart_readback",
+                  "clauseIndex": 0,
+                  "state": "execution_not_verified"
+                }
+              ]
+            },
+            "evidenceNeed": {
+              "schema": "source-evidence-need-v1",
+              "reason": "record_readback",
+              "targetFiles": []
+            }
+          },
+          {
+            "criterionId": "coverage-1",
+            "status": "supported",
+            "explanation": "index.html contains an h1 whose complete text is exactly \"Submission\", so the literal wording is present in the delivered page copy.",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 150,
+                "end": 169,
+                "excerpt": "<h1>Submission</h1>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-2"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 58,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 58,
+                  "excerpt": "The page copy must include the exact wording \"Submission\"."
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "source_content",
+                  "clauseIndex": 0,
+                  "state": "source_review_required"
+                }
+              ]
+            }
+          }
+        ],
+        "risks": [],
+        "limitations": [
+          "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+          "The model supplied 6 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+          "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog e7642dccfefb3ae068a0618cbbeb0ffa577e6832174148be3e7d461a79d5c1c7. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+          "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "coverage": {
+          "includedFiles": [
+            "contact.html",
+            "index.html",
+            "site.css"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "withheldRisks": {
+          "version": 1,
+          "reason": "not_withheld",
+          "adjustedCriteria": [],
+          "entries": []
+        },
+        "usage": {
+          "promptTokens": 6427,
+          "completionTokens": 474
+        }
+      },
+      "citations": {
+        "rawItem": 3,
+        "rawRisk": 0,
+        "applicationItem": 3,
+        "activeRisk": 0,
+        "withheldRisk": 0,
+        "allExact": true
+      },
+      "statusLineage": {
+        "source": "retained_original_provider_body",
+        "rawWireItems": 2,
+        "originalStatuses": [
+          {
+            "criterionId": "manual-1",
+            "status": "insufficient_evidence"
+          },
+          {
+            "criterionId": "coverage-1",
+            "status": "supported"
+          }
+        ],
+        "publishedStatuses": [
+          {
+            "criterionId": "manual-1",
+            "status": "insufficient_evidence"
+          },
+          {
+            "criterionId": "coverage-1",
+            "status": "supported"
+          }
+        ],
+        "adjustedCriteria": [],
+        "allAgreedCriteriaCompared": true,
+        "ledgerVerified": true
+      },
+      "quarantine": {
+        "expectedEntries": 0,
+        "expectedCitations": 0,
+        "present": true,
+        "disposition": "not_withheld",
+        "lineageVerified": true,
+        "entries": []
+      },
+      "usage": {
+        "promptTokens": 6427,
+        "completionTokens": 474
+      }
+    },
+    {
+      "id": "full-gap-merged-row-price-meaning",
+      "requiredPages": [
+        "index.html",
+        "menu.html"
+      ],
+      "source": "The menu.html source content must identify the price for the agreed Tea order.",
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The menu.html source content must identify the price for the agreed Tea order.",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "The rowspan explicitly associates Tea with both AUD18 and AUD28 rows. No size, option or other meaning identifies which amount applies to the agreed order. Unknown business meaning must not be described as an unknown Tea-to-row relationship; no definite price defect or successful order execution is established.",
+            "relevantFiles": [
+              "index.html",
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ],
+      "files": {
+        "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Welcome</h1><p>See the menu for the available Tea choices.</p></main></body></html>",
+        "menu.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Tea choices</h1><table><tr><td rowspan=\"2\">Tea</td><td>AUD 18</td></tr><tr><td>AUD 28</td></tr></table></main></body></html>",
+        "site.css": "body{font-family:serif;margin:1rem}address{font-style:normal}\n"
+      },
+      "filesSha256": [
+        {
+          "file": "index.html",
+          "sha256": "bb4192f5cb65cb2165c5c7429473816208bc9860dfc71d4a134a5fde33cdd97b"
+        },
+        {
+          "file": "menu.html",
+          "sha256": "a4a294dca00834921b3456520de8f6408d661aa87cd4b68ab53731edd16bb6b5"
+        },
+        {
+          "file": "site.css",
+          "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+        }
+      ],
+      "requestSha256": "7cd5adf3a1ec2a4b2178056cba2dcf92e24579de7b019a9d1a3979c5879a5588",
+      "providerBodySha256": "39e42e23ef2297e05447462d49f2de7f5bf2adda8a617a521cb18394ba03df2a",
+      "sourceReferenceAgreement": {
+        "raw": 0,
+        "application": 1,
+        "total": 1
+      },
+      "rawItems": [
+        {
+          "criterionId": "coverage-1",
+          "status": "supported",
+          "explanation": "menu.html lists a Tea row with AUD 18 (amountMinor 1800), matching the agreed label, currency and amount.",
+          "citations": [
+            {
+              "file": "menu.html",
+              "start": 177,
+              "end": 225,
+              "excerpt": "<tr><td rowspan=\"2\">Tea</td><td>AUD 18</td></tr>"
+            },
+            {
+              "file": "menu.html",
+              "start": 205,
+              "end": 220,
+              "excerpt": "<td>AUD 18</td>"
+            }
+          ]
+        }
+      ],
+      "rawRisks": [],
+      "rawLimitations": [
+        "Source review only; no browser rendering or interaction was observed.",
+        "A second price (AUD 28) also appears in a separate row without its own label; the single-Tealabel-to-price pairing is read from the rowspan cell."
+      ],
+      "application": {
+        "id": "2bf46a9a-40f0-4981-8ce0-7b4f6989d963",
+        "deliveryId": "eval-full-gap-merged-row-price-meaning",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-05T17:53:48.964Z",
+        "items": [
+          {
+            "criterionId": "coverage-1",
+            "status": "insufficient_evidence",
+            "explanation": "Not all confirmed business checks can be reliably matched within the limited static simple-block format. Duplicate or unlocated content, complex markup or dynamic sources need other evidence. Source suggestions cannot establish compliance; the locked agreement is unchanged.",
+            "citations": [
+              {
+                "file": "menu.html",
+                "start": 177,
+                "end": 225,
+                "excerpt": "<tr><td rowspan=\"2\">Tea</td><td>AUD 18</td></tr>"
+              },
+              {
+                "file": "menu.html",
+                "start": 205,
+                "end": 220,
+                "excerpt": "<td>AUD 18</td>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-1"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 78,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 78,
+                  "excerpt": "The menu.html source content must identify the price for the agreed Tea order."
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "source_content",
+                  "clauseIndex": 0,
+                  "state": "source_review_required"
+                }
+              ]
+            },
+            "evidenceNeed": {
+              "schema": "source-evidence-need-v1",
+              "reason": "source_ambiguity",
+              "targetFiles": [
+                "menu.html"
+              ]
+            }
+          }
+        ],
+        "risks": [],
+        "limitations": [
+          "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+          "The model supplied 2 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+          "1 item status(es) were adjusted by system checks. 0 unreviewed optional AI risk(s) are temporarily withheld; use item-level evidence. This publication gate does not accept work, authorize or trigger payment.",
+          "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog ca3de75a3de7fea952d05a3b9f81c29a6419c6b2fb204a0776bb03c3b586f34b. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+          "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "coverage": {
+          "includedFiles": [
+            "index.html",
+            "menu.html",
+            "site.css"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "withheldRisks": {
+          "version": 1,
+          "reason": "item_status_adjusted",
+          "adjustedCriteria": [
+            {
+              "criterionId": "coverage-1",
+              "originalStatus": "supported",
+              "publishedStatus": "insufficient_evidence"
+            }
+          ],
+          "entries": []
+        },
+        "usage": {
+          "promptTokens": 6557,
+          "completionTokens": 269
+        }
+      },
+      "citations": {
+        "rawItem": 2,
+        "rawRisk": 0,
+        "applicationItem": 2,
+        "activeRisk": 0,
+        "withheldRisk": 0,
+        "allExact": true
+      },
+      "statusLineage": {
+        "source": "retained_original_provider_body",
+        "rawWireItems": 1,
+        "originalStatuses": [
+          {
+            "criterionId": "coverage-1",
+            "status": "supported"
+          }
+        ],
+        "publishedStatuses": [
+          {
+            "criterionId": "coverage-1",
+            "status": "insufficient_evidence"
+          }
+        ],
+        "adjustedCriteria": [
+          {
+            "criterionId": "coverage-1",
+            "originalStatus": "supported",
+            "publishedStatus": "insufficient_evidence"
+          }
+        ],
+        "allAgreedCriteriaCompared": true,
+        "ledgerVerified": true
+      },
+      "quarantine": {
+        "expectedEntries": 0,
+        "expectedCitations": 0,
+        "present": true,
+        "disposition": "item_status_adjusted",
+        "lineageVerified": true,
+        "entries": []
+      },
+      "usage": {
+        "promptTokens": 6557,
+        "completionTokens": 269
+      }
+    }
+  ],
+  "limits": [
+    "Mechanical exact citations and complete IDs do not establish semantic adequacy. Whole-answer review remains separate.",
+    "Source-only obligation states do not report actual submission, email, persistence or restart execution.",
+    "All 39 frozen implementation files were reread and matched; no provider source changed during the run."
+  ]
+}

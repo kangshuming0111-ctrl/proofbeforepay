@@ -1,0 +1,293 @@
+{
+  "schema": "pbp-cycle26-final-adjudication-v1",
+  "date": "2026-11-06",
+  "adjudicator": "Codex implementation author, independently adjudicating DeepSeek review and controlled source/replay evidence; not an independent customer or benchmark author",
+  "scope": "One bounded positive static literal recall repair plus canonical source-only prose consistency in ordinary covered path. No new semantic feature expansion.",
+  "inputs": [
+    {
+      "file": "outputs/full-gap-remediation-2026-11-06/cycle-26-plan-deepseek.json",
+      "sha256": "4081c9146c1c972561e4890420b61f2301cc16dcbd4c1af1baa9f51ba1198181"
+    },
+    {
+      "file": "outputs/full-gap-remediation-2026-11-06/cycle-26-post-deepseek.json",
+      "sha256": "16335f16036e5f27c7231438e79128d07cf739b3bccc0ca34755a49f0065e58d"
+    },
+    {
+      "file": "outputs/full-gap-remediation-2026-11-06/cycle-26-final-copy-followup-deepseek.json",
+      "sha256": "1a12d8b1c93580af2b392e2f32f22f286cbddca568080b0336c4743dcf5d967a"
+    },
+    {
+      "file": "outputs/full-gap-remediation-2026-11-06/cycle-26-original31-body-replay.json",
+      "sha256": "06a3fda4b8e0806fe212aa8c0ae33a7cc29c08554a4dc821d8f0e0270de6b403"
+    },
+    {
+      "file": "outputs/full-gap-remediation-2026-11-06/cycle-26-final-replay-freeze.json",
+      "sha256": "01d24f378e1615faf4fc769d92996589ae0b3613dada4ff10aa55343474bbf57"
+    },
+    {
+      "file": "outputs/full-gap-remediation-2026-11-06/cycle-26-final-runtime-inert-source.json",
+      "sha256": "78c4bfd97564edf8f20e3d2635e84606a74a4aca32d8ddbedd7aa4c952f9628c"
+    }
+  ],
+  "reviewDecisions": {
+    "plan": "See preserved cycle-26-plan-adjudication.json: constraints accepted, nonexistent planned module not treated as current bug, no unchanged-first deadgate or contact-v2 schema misuse.",
+    "post": {
+      "valid": true,
+      "findingCount": 1,
+      "finding": {
+        "severity": "P3",
+        "file": "lib/positive-literal-source-witness.ts",
+        "line": 64,
+        "title": "Occurrence uniqueness counts literal substrings inside longer leaf text, which the owner check does not reject",
+        "evidence": "Lines 52-59 accept an owner only when the p/li has exactly one #text child, trimHtmlSpace(text) === literal, and the raw inner slice also equals literal. Line 62-64, however, counts occurrences of `literal` in every in-body, non-unsafe #text node, including those in subtrees that line 51 does not skip. So a leaf whose text is only partly the literal (e.g. 'Updated daily at noon') contributes an occurrence and makes occurrences > 1, which fails the else branch at line 68-69. This is fail-closed. It does not create unsafe promotion. The only effect is that a valid exact owner is withheld when the same literal also appears as a substring of other non-owner text.",
+        "reproduction": "Unexecuted reasoning trace. files menu.html = '<p>Updated daily</p><p>Updated daily at noon.</p>'; plan() with visible_copy 'Updated daily'; citation = exact owner '<p>Updated daily</p>'. locateOwner counts: the exact owner contributes one occurrence, and the second leaf's 'Updated daily' substring contributes another. occurrences === 2 gives {kind:'unwitnessed', reason:'literal_missing_or_not_unique'}. The delivery-assessment.ts:354-361 path then keeps the older unknown business disposition instead of the affirmative source fact.",
+        "suggestion": "Nothing changes for safety. If the intent is to let an exact owner witness the fact even when the same literal appears only as a substring elsewhere (not as another owner), consider counting exact simple p/li leaf texts (matching lines 52-56 rules) rather than every in-body #text substring, and keep the owners.length === 1 requirement unchanged. Otherwise, document this narrowing in the module comment."
+      },
+      "decision": "accepted_documented_conservative_limit_no_runtime_relaxation",
+      "reason": "Exact owner plus any other safe body occurrence, even in a longer substring, stays unwitnessed. This is the deliberate unique-safe-occurrence gate; countertest preserves the narrowing. No unsafe promotion shown."
+    },
+    "finalFollowup": {
+      "valid": true,
+      "findings": [],
+      "scope": "ONLY final ordinary covered explanation canonicalization + immediate guards",
+      "allReviewedFinalSourceHashesMatch": true
+    }
+  },
+  "implementation": {
+    "newHelper": "lib/positive-literal-source-witness.ts",
+    "rootIntegration": "lib/delivery-assessment.ts",
+    "factoryInterface": "createPositiveLiteralSourceWitnessCheck(files,savedBusinessSteps)(criterion,exactCitations)",
+    "helperNeverReturnsVerdict": true,
+    "unknownBypassRequires": "active catalog_slots + raw supported + current supported + all linked business checks unknown solely dynamic_or_unsupported_source + exact same typed source/text/file + same-file witness",
+    "ordinaryCoveredChange": "active catalog_slots + raw supported + existing business unchanged + existing complete source-citation witness covered + new positive literal witness covered => canonical explanation only, no status or citation change",
+    "grammar": "Whole finite bare English phrase directive, explicit canonical .html file or full menu grounded by unique saved typed file, no partial extraction or condition/operation tails",
+    "owner": "One complete explicitly source-located text-only p/li owner, exact raw and decoded literal, <=500 UTF16, exact same source-address model quotation. One safe body occurrence total; no normalization.",
+    "exclusions": "head/inert/comment/attributes/foreign namespaces/known hidden, inline style, dynamic attributes and their ancestors; missing owner close, parse5-reported parse issues, budgets and mixed typed plan. Does not prove every ancestor tag closed or general HTML validity.",
+    "noPromotion": "raw unknown/changes never promoted; server failures and business mismatch remain authoritative; all later guards continue.",
+    "noMutation": "Original requirements, raw answers, references, old snapshots, acceptance/payment and history untouched. No new publication schema."
+  },
+  "validation": {
+    "focusedTests": 18,
+    "focusedFailures": 0,
+    "focusedLog": "outputs/full-gap-remediation-2026-11-06/cycle-26-final-focused-tests.log",
+    "typecheckExitCode": 0,
+    "typecheckLog": "outputs/full-gap-remediation-2026-11-06/cycle-26-final-typecheck.log",
+    "replay": {
+      "originalProviderReplies": 31,
+      "criterionObservations": 100,
+      "distinctProjectInputs": 23,
+      "repeatedKnownEightNotNewBlindCases": true,
+      "apiCalls": 0,
+      "networkCalls": 0,
+      "cohorts": [
+        {
+          "cohort": "old15",
+          "projects": 15,
+          "criteria": 82,
+          "strictlyUnchangedReports": 14,
+          "explicitReconstructedItemChanges": 1,
+          "referenceAgreement": 79,
+          "rawReferenceAgreement": 81
+        },
+        {
+          "cohort": "first8",
+          "projects": 8,
+          "criteria": 9,
+          "strictlyUnchangedReports": 8,
+          "explicitReconstructedItemChanges": 0,
+          "referenceAgreement": 9,
+          "rawReferenceAgreement": 7
+        },
+        {
+          "cohort": "knownRepair8",
+          "projects": 8,
+          "criteria": 9,
+          "strictlyUnchangedReports": 8,
+          "explicitReconstructedItemChanges": 0,
+          "referenceAgreement": 9,
+          "rawReferenceAgreement": 7
+        }
+      ],
+      "totals": {
+        "itemCitations": 214,
+        "activeRiskCitations": 52,
+        "withheldRiskCitations": 38,
+        "withheldEntries": 18,
+        "wireStatusAdjustments": 8,
+        "originSaves": 88,
+        "originRetries": 88,
+        "originRefusals": 380
+      },
+      "wholeReportsUnchanged": 30,
+      "explicitReconstructedChangedReports": 1,
+      "onlyItemChange": [
+        {
+          "criterionId": "coverage-2",
+          "originalWireStatus": "supported",
+          "previousApplicationStatus": "insufficient_evidence",
+          "status": "supported",
+          "sourceWitness": {
+            "kind": "covered",
+            "file": "menu.html",
+            "literal": "Updated daily",
+            "citation": {
+              "file": "menu.html",
+              "start": 3877,
+              "end": 3923,
+              "excerpt": "<p class=\"eyebrow-rule mb-4\">Updated daily</p>"
+            }
+          },
+          "explanation": "The complete original source block in locked file menu.html contains \"Updated daily\", and the citation matches that exact block. This confirms submitted source copy only; rendered visibility, actual updates and runtime behavior are unverified. It does not accept work or trigger payment.",
+          "removedEvidenceNeed": {
+            "schema": "source-evidence-need-v1",
+            "reason": "source_ambiguity",
+            "targetFiles": [
+              "menu.html"
+            ]
+          },
+          "derivedLedgerCountBefore": 3,
+          "derivedLedgerCountAfter": 2,
+          "allOtherFieldsUnchanged": true
+        }
+      ],
+      "allRequestsResponsesReferencesSourceHashesUnchanged": true,
+      "currentRuntimeBeforeAfterUnchanged": true,
+      "localDomainOnlyOrigins": true
+    }
+  },
+  "remainingHistorical82ReferenceDisagreements": [
+    {
+      "projectId": "real-holdout-clean-blog",
+      "criterionId": "coverage-1",
+      "referenceStatus": "supported",
+      "originalWireStatus": "supported",
+      "previousApplicationStatus": "insufficient_evidence",
+      "status": "insufficient_evidence"
+    },
+    {
+      "projectId": "citation-relations-holdout-tavola",
+      "criterionId": "coverage-1",
+      "referenceStatus": "supported",
+      "originalWireStatus": "supported",
+      "previousApplicationStatus": "insufficient_evidence",
+      "status": "insufficient_evidence"
+    },
+    {
+      "projectId": "citation-relations-holdout-tavola",
+      "criterionId": "coverage-3",
+      "referenceStatus": "changes_suggested",
+      "originalWireStatus": "changes_suggested",
+      "previousApplicationStatus": "insufficient_evidence",
+      "status": "insufficient_evidence"
+    }
+  ],
+  "accounting": {
+    "cycle26ApplicationApiCalls": 0,
+    "previousFirstPlusKnownRepairApplicationCalls": 16,
+    "previousUsageEstimateUsd": 0.0381006,
+    "estimateNotInvoice": true,
+    "harnessReviewsSeparate": true,
+    "noRecharge": true,
+    "noAutomaticRetries": true
+  },
+  "freeze": {
+    "files": 41,
+    "implementationSha256": "8d70feac19081b8c639d5216fe66d9fd6893fb0e56dbc973d2f496c1a441e0e4",
+    "archiveSha256": "78c4bfd97564edf8f20e3d2635e84606a74a4aca32d8ddbedd7aa4c952f9628c",
+    "freezeSha256": "01d24f378e1615faf4fc769d92996589ae0b3613dada4ff10aa55343474bbf57"
+  },
+  "awardComparison": {
+    "reference": "PHAROS_INC August Challenge1st Place; Agent Receipt August ChallengeMostInnovative, IBM Bob2026",
+    "officialSource": "https://www.bemyapp.com/insights/ai-builders-challenge-with-ibm-bob-2026-winners.html",
+    "verifiedDate": "2026-11-06",
+    "observationLevel": "Organizer description only; no opponent source or same-condition execution",
+    "dimensions": [
+      {
+        "dimension": "user_value",
+        "before": "Correct cited literal returned generic unknown due page globalscripts.",
+        "after": "Exact locked-source phrase is acknowledged while visibility/update/runtime remains unverified.",
+        "gate": "met for actual retained source task",
+        "remaining": "No new unfamiliar-user evidence."
+      },
+      {
+        "dimension": "functional_depth",
+        "before": "Affirmative original copy fact and absence/runtime uncertainty shared whole-page gate.",
+        "after": "Narrow typed positive owner witness, raw-status guards, exact-cite ownership and negative/mixed/compound refusals.",
+        "gate": "met within finite grammar",
+        "remaining": "Entity/whitespace/duplicates/unsupported owners deliberately outside new witness."
+      },
+      {
+        "dimension": "AI_contribution",
+        "before": "Raw supported with correct quote was suppressed.",
+        "after": "Same actual wire preserves correct source advice; old15 application reference78to79/82, new8 unchanged.",
+        "gate": "known repair only",
+        "remaining": "3 historical unknown/ref disagreements remain, no aggregate accuracy or overall model claim."
+      },
+      {
+        "dimension": "product_flow",
+        "before": "Potential recall repair might alter wire ledger or acceptance/payment.",
+        "after": "Only one item plus derived existing adjustment3to2 reconstructed; local origin/idempotence/refusal checks preserve report and frozen acceptance/payment.",
+        "gate": "local domain verified",
+        "remaining": "Not new DB/browser/payment execution."
+      },
+      {
+        "dimension": "credibility",
+        "before": "Could hide old79to78 regression or retry score.",
+        "after": "All original bodies/refs/freeze retained, 31zero-network original replies,30whole reports unchanged, one explicit delta with exact original citation.",
+        "gate": "met for retained evidence",
+        "remaining": "Same-input replay not new blind generalization."
+      },
+      {
+        "dimension": "usability_and_real_intake",
+        "before": "Typed production plan already locked but ignored by global uncertainty.",
+        "after": "Actual production typed source/file/text used; no filename alias guessing; source prose actionability improved.",
+        "gate": "production intake and bounded response verified",
+        "remaining": "External independent sellers/humans still unverified."
+      }
+    ]
+  },
+  "limits": [
+    "No overall champion-superiority claim and no invented probability/score.",
+    "No new application model, external customer, browser visibility, live database or payment test in this cycle.",
+    "Devpost and video remain deferred.",
+    "Full suite, native package, deployment and online smoke are parent-root release evidence, not this child record."
+  ],
+  "independentNonImplementerCounterchecks": {
+    "reviewer": "Sibling agent22; neither runtime implementation author nor reference/corpus author for this slice",
+    "records": [
+      {
+        "file": "outputs/full-gap-remediation-2026-11-06/cycle26-independent-assessment-countercheck.json",
+        "sha256": "7a9cca7973e43789be7fd5356ac376fa3ffd28d8c5e545b7ffba997c004a0d89",
+        "topLevelKeys": [
+          "schema",
+          "actualModelCalls",
+          "networkCalls",
+          "controlledProviderResponses",
+          "sourceProject",
+          "abortedEarlierCounterRuns",
+          "rows"
+        ]
+      },
+      {
+        "file": "outputs/full-gap-remediation-2026-11-06/cycle26-independent-ordinary-canonical-countercheck.json",
+        "sha256": "950590a8605ea02620b169dade3b700728f66140c684f9b82067d4221662f0b4",
+        "topLevelKeys": [
+          "schema",
+          "actualModelCalls",
+          "networkCalls",
+          "controlledProviderResponses",
+          "sourceHashes",
+          "rawExplanation",
+          "result",
+          "quoteUnchanged",
+          "limits"
+        ]
+      }
+    ],
+    "scope": "Controlled evaluator responses over actual Tavola source plus ordinary-no-script path. Complete source witness, rawunknown/changes, wrong-file/short citation, mixed typed checks, confirmed price mismatch priority, locked scope/coverage refusals and canonical no-runtime prose.",
+    "apiCalls": 0,
+    "networkCalls": 0,
+    "noNewUnsafeSourceFindings": true,
+    "notHumanUserOrNewBlindModelEvidence": true
+  }
+}

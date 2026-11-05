@@ -1,0 +1,142 @@
+{
+  "schema": "pbp-thirdparty-dynamic-baseline-v1",
+  "sourceCommit": "2c1b30d0503cfb064f1cb252e6614a06915a362a",
+  "provenanceSha256": "a2ccd8af4e33fe11f9342365f2abb0a840e3433c03f0f42eca9bfa54ac87b652",
+  "referenceSha256": "d3f6e6d44ff60a22f93bd97d7b38600fe09165599287f5178056fbe417a39188",
+  "newThirdPartyProjects": 1,
+  "originalSourceFiles": 22,
+  "allOriginalSourceHashesUnchanged": true,
+  "logicalHttpOperations": 6,
+  "actualHttpRequests": 10,
+  "networkScope": "Loopback only; source/dependency downloads separately recorded.",
+  "modelCalls": 0,
+  "browserRuns": 0,
+  "independentHumanParticipants": 0,
+  "syntheticDataOnly": true,
+  "results": [
+    {
+      "id": "authenticated-submit",
+      "actual": "matched",
+      "observed": "Authenticated native POST /create followed redirect to / and exact synthetic title/body were present."
+    },
+    {
+      "id": "stored-record",
+      "actual": "matched",
+      "recordId": "1",
+      "payloadSha256": "afbab5a79f39040565d9a3b76d3c10303f71891e41a1ae6053e8e1c6513c90e8",
+      "observed": "Separate read-only SQLite connection queried the native post/user join and exact title/body; connection closed."
+    },
+    {
+      "id": "unauthenticated-submit",
+      "actual": "rejected-without-write",
+      "observed": "Anonymous native POST redirected to /auth/login; separate database connection found no marker row."
+    },
+    {
+      "id": "missing-title",
+      "actual": "rejected-without-write",
+      "observed": "Authenticated empty-title POST rendered native validation error; no matching body record persisted."
+    },
+    {
+      "id": "fresh-readback",
+      "actual": "matched",
+      "recordId": "1",
+      "observed": "Stopped and restarted the original Flask application on the same SQLite file; fresh HTTP GET / and fresh read-only connection retained exact record and payload."
+    },
+    {
+      "id": "email-receipt",
+      "actual": "unsupported",
+      "observed": "Upstream tutorial has no email delivery or inbox capability. No email delivery was claimed or attempted."
+    }
+  ],
+  "transcript": [
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "status": 200,
+      "finalPath": "/auth/login",
+      "bodySha256": "f5212eeac1512864431e47afb7a5c1775a538c97fc3a722b28f03f39eddbdef2",
+      "elapsedMs": 53.202,
+      "redirects": [
+        {
+          "fromPath": "/auth/register",
+          "status": 302,
+          "toPath": "/auth/login",
+          "followupMethod": "GET"
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200,
+      "finalPath": "/",
+      "bodySha256": "1281aa17a5607968d2939f20c577f164929dc22a1fac3f947f75b3f2c21dfe59",
+      "elapsedMs": 52.142,
+      "redirects": [
+        {
+          "fromPath": "/auth/login",
+          "status": 302,
+          "toPath": "/",
+          "followupMethod": "GET"
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/create",
+      "status": 200,
+      "finalPath": "/",
+      "bodySha256": "ec24bd41a60a93d17931050c4724bbc2884c8f1499c3c48afc7ab7aae19ac960",
+      "elapsedMs": 2.698,
+      "redirects": [
+        {
+          "fromPath": "/create",
+          "status": 302,
+          "toPath": "/",
+          "followupMethod": "GET"
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/create",
+      "status": 200,
+      "finalPath": "/auth/login",
+      "bodySha256": "f5212eeac1512864431e47afb7a5c1775a538c97fc3a722b28f03f39eddbdef2",
+      "elapsedMs": 1.247,
+      "redirects": [
+        {
+          "fromPath": "/create",
+          "status": 302,
+          "toPath": "/auth/login",
+          "followupMethod": "GET"
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/create",
+      "status": 200,
+      "finalPath": "/create",
+      "bodySha256": "f987fc0b9d88fe2ba4553cdd20f02dce369a6213d09f6d25687d5aaab9534b1c",
+      "elapsedMs": 1.884,
+      "redirects": []
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "status": 200,
+      "finalPath": "/",
+      "bodySha256": "cf5c80bb9fbc550120dec54825222ae0b887f78966a949fbec912347685aeeb4",
+      "elapsedMs": 5.036,
+      "redirects": []
+    }
+  ],
+  "limits": [
+    "One official framework tutorial, not a customer production site or broad framework coverage.",
+    "Direct native HTTP requests, not button/browser observations.",
+    "Separate local developer datastore access is not independent external trust attestation.",
+    "Mail unsupported by this project; nothing was sent to third parties.",
+    "Timing describes automated local HTTP requests, not human task completion."
+  ]
+}

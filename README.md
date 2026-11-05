@@ -1,5 +1,7 @@
 # ProofBeforePay
 
+The [6 November remediation record](docs/collaboration/full-gap-remediation-2026-11-06/README.md) adds bounded independent contact-copy and confirmed-literal source witnesses, explicit evidence directions for compound requirements, a four-stage submission/store/readback/test-inbox probe, selected-revision source audits with application-issued signatures, and an optional first-visit walkthrough. Original model replies, failed runs and later known-case repairs remain separate. A complete quoted source phrase does not establish rendering or actual updates. The probe does not establish seller-controlled backend authenticity; a signature attests the application's exact export, and the walkthrough is excluded from human-study totals.
+
 The [4 November functional update](docs/GAP-CLOSURE-2026-11-04.md) adds scoped independent operator review, buyer-confirmed time-policy checks, a configurable JavaScript-form adapter and separately recorded complete AI regression/transfer validation. The [public time-policy experiment](https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/time-policy.html) runs real controlled backend counterexamples without an account. Original reports, acceptance/payment boundaries and historical failures remain retained.
 
 Agree on the scope, let the seller submit evidence, and let the buyer accept the exact delivery independently of payment.

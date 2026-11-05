@@ -1,0 +1,272 @@
+{
+  "schema": "pbp-prospective-corpus-preflight-v1",
+  "apiCalls": 0,
+  "networkCalls": 0,
+  "sourceFinal": false,
+  "releaseTarget": "v77-planned-not-yet-assigned",
+  "corpusFile": "scripts/full-gap-assessment-corpus-2026-11-06.json",
+  "corpusSha256": "1075514a591788b8ebfd8ca65b8e0eaaec599881ac7cba2212d5e8d525e865ee",
+  "projects": 8,
+  "criteria": 9,
+  "validProductionIntake": true,
+  "quoteCriteria": [
+    {
+      "id": "eval-full-gap-present-phone",
+      "withRealParsedProject": true,
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The page content must list the shop telephone number."
+        }
+      ]
+    },
+    {
+      "id": "eval-full-gap-missing-phone",
+      "withRealParsedProject": true,
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The page content must list the shop telephone number."
+        }
+      ]
+    },
+    {
+      "id": "eval-full-gap-body-email-with-decoys",
+      "withRealParsedProject": true,
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The page content must list the shop email address."
+        }
+      ]
+    },
+    {
+      "id": "eval-full-gap-inert-email-only",
+      "withRealParsedProject": true,
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The page content must list the shop email address."
+        }
+      ]
+    },
+    {
+      "id": "eval-full-gap-named-page-phone",
+      "withRealParsedProject": true,
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "index.html must list the shop phone number."
+        }
+      ]
+    },
+    {
+      "id": "eval-full-gap-cross-page-price-owner",
+      "withRealParsedProject": true,
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The index.html and menu.html source content must both list Tea at AUD 18."
+        }
+      ]
+    },
+    {
+      "id": "eval-full-gap-compound-and-quoted-copy",
+      "withRealParsedProject": true,
+      "criteria": [
+        {
+          "id": "manual-1",
+          "title": "Manual requirement 1",
+          "source": "After enquiry submission the site must email the owner and preserve a receipt retrievable after restart."
+        },
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The page copy must include the exact wording \"Submission\"."
+        }
+      ]
+    },
+    {
+      "id": "eval-full-gap-merged-row-price-meaning",
+      "withRealParsedProject": true,
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The menu.html source content must identify the price for the agreed Tea order."
+        }
+      ]
+    }
+  ],
+  "provisionalSnapshotSha256": "604a506749a9924f1a9cb1fbe3d764706431cc374f1f6a133b90f45d8f4cdac8",
+  "requestCount": 8,
+  "implementationSnapshot": [
+    {
+      "file": "lib/article-title-punctuation.ts",
+      "sha256": "043826a30a1d8c5d78a5b86c0e4be231824187fe264f0eb0e2637a9ddc95e12a"
+    },
+    {
+      "file": "lib/assessment-citation-catalog.ts",
+      "sha256": "3765ff500c22abd42536c64bd24a9844f7bb7de099d70b5d4f449ac9b24a7904"
+    },
+    {
+      "file": "lib/assessment-citation-selection.ts",
+      "sha256": "c192ca65a095fa7aaba5a242e3d8ba7c2a6573c6e20d41d95afcebc4578abbb0"
+    },
+    {
+      "file": "lib/assessment-completion.ts",
+      "sha256": "18ec5c3984b06c1b62a1d1d9449746ba8f19cf2d9a9b3d23914d0b474b7a6a3e"
+    },
+    {
+      "file": "lib/assessment-evidence-needs.ts",
+      "sha256": "fa0809f0270aee00a27e8686a035d2f93acf43995a21ae72a447192b8ac1e03a"
+    },
+    {
+      "file": "lib/assessment-evidence-scope.ts",
+      "sha256": "a4e7c9c6ceca64810b51c0c9980b14950875a3d19cc4e0b68e24b6cf5b06ee13"
+    },
+    {
+      "file": "lib/assessment-label-citations.ts",
+      "sha256": "97fd5a5dea3e2dd5baa9c4b696b3866b2f8196f7d3dc64604f598c3594736c78"
+    },
+    {
+      "file": "lib/assessment-limits.ts",
+      "sha256": "4efb8a22faef0699431b264f6a106e7a6b15c516166830b04da7fe44ee873230"
+    },
+    {
+      "file": "lib/assessment-obligations.ts",
+      "sha256": "39d58e3c3168c4f689876d1ab88f5285a96499e05e8cd9af4f8f3ee6c0b82810"
+    },
+    {
+      "file": "lib/assessment-publication-policy.ts",
+      "sha256": "330984100a23dde5a9e1bed2c88a7d54276f2d64bd1df253c86c390b8685fae7"
+    },
+    {
+      "file": "lib/assessment-response.ts",
+      "sha256": "9f847b4cfa805af77347031e2c54d01231e56edfb9762f25ec4ecd8f64314e4c"
+    },
+    {
+      "file": "lib/assessment-risk-fields.ts",
+      "sha256": "14b21b863a6f4cf5ff6380c821a21122c66c35dcac84e030b8f65cdf211b8cf8"
+    },
+    {
+      "file": "lib/booking-capacity.ts",
+      "sha256": "5d4f7acea243d56165cf58a1c8213cbb3121c20c1acd397eecf152ff7d95389d"
+    },
+    {
+      "file": "lib/booking-policy.ts",
+      "sha256": "9af09f79f5dd2694771d03ca2358265cafb3c05db43f773cd642d89e656dea10"
+    },
+    {
+      "file": "lib/business-checks.ts",
+      "sha256": "5b6d6b2cfbe487aac9bf647f3cdf97f303fcec835e2479b7c7154f4708433ffd"
+    },
+    {
+      "file": "lib/contracts.ts",
+      "sha256": "06adbcb05e5f162e6bcf80d49b0087981a08f7a80def1e692a72fe56b56e9eeb"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "sha256": "3ea7987b59a78bbda9e174c2fea5e02b0b4b01f854d02d15a38c727555ee198c"
+    },
+    {
+      "file": "lib/domain.ts",
+      "sha256": "e122bd4af7124e3c72ce06505bc3f64acb2daa8a8e43ba75df1779f78952aa85"
+    },
+    {
+      "file": "lib/exact-copy-directive.ts",
+      "sha256": "e2e407311de1a9352deac8b52dff6da5acb90ff2076319bb6b52533bb2fb65bc"
+    },
+    {
+      "file": "lib/exact-copy-evidence.ts",
+      "sha256": "3c27a02f8238272e3f47433ecf237445420454e5d89227f60bb415ac1f3c9a91"
+    },
+    {
+      "file": "lib/html-source-inspection.ts",
+      "sha256": "b4571de85500b74f724aee51f46fa9ab2a5c67d4e8cb16ac0a8bb73419834687"
+    },
+    {
+      "file": "lib/providers.ts",
+      "sha256": "279550700cddfeabe56091e0f984289575c21b409da381b7805cb85b0ec8c073"
+    },
+    {
+      "file": "lib/requirement-coverage.ts",
+      "sha256": "8119444f01cb28bad2807d5108a1e52d7b9de2345c89826855e8e3546c455e90"
+    },
+    {
+      "file": "lib/runtime-capacity.ts",
+      "sha256": "21f070bf90e028a15d6e33e38df0637a8bbc7358efa4809978cff8ed71f1c87a"
+    },
+    {
+      "file": "lib/runtime-checks.ts",
+      "sha256": "7f2d93f4e471121c65b02998216eee105f9b77fe3fa186f32dce7148f579ee2f"
+    },
+    {
+      "file": "lib/runtime-metadata.ts",
+      "sha256": "d80cde282a8361230612caa3cf00eca254234cd3ef1a4b1dcb5afad538506f80"
+    },
+    {
+      "file": "lib/runtime-project.ts",
+      "sha256": "96df86528efaa12ae43eb45c27f544e54583f3410b6d34fbbab29f80eeada3d5"
+    },
+    {
+      "file": "lib/runtime-registration.ts",
+      "sha256": "a43ca3cc259e425d9114d6184f9df645bf6f68b3b036f1efd2b1ecf9f4c0a18b"
+    },
+    {
+      "file": "lib/source-business-evidence.ts",
+      "sha256": "4936fba46ab28f39ec42f356987c27840d46b652f752a6011fb019d170659141"
+    },
+    {
+      "file": "lib/source-literal-directive.ts",
+      "sha256": "cc65f84581ee8cca00afe49efc9626dea8bce91393fcf25137cc76a6338bb002"
+    },
+    {
+      "file": "lib/source-presence-evidence.ts",
+      "sha256": "0524783ded914e8cb80020321ca6d86857f2e8fb8bcea92d2907757a9d7d8147"
+    },
+    {
+      "file": "lib/static-markup-directive.ts",
+      "sha256": "1695a5ef3bbda3e5e996c32bcf9c7a6b750d1e3a048310929827476a5cfc22e1"
+    },
+    {
+      "file": "lib/static-project.ts",
+      "sha256": "282a72654575255041efeec393cb2138db63b6fc025683bb5ad17a79be9bf15a"
+    },
+    {
+      "file": "lib/static-resources.ts",
+      "sha256": "4fe957338889300bb524045b36b160acdfae685a3304bc377fbf4aed1187b445"
+    },
+    {
+      "file": "lib/universal-source-list-evidence.ts",
+      "sha256": "7f896ce3aa8070f8ac6060da07e8234f4d361be7b2d634869c79e1ca1d88b4ff"
+    },
+    {
+      "file": "lib/universal-tag-evidence.ts",
+      "sha256": "dee81d5f4e869c684903e6a40ab01f51a5014e3f99f0fd733856cb04d6a07f0c"
+    },
+    {
+      "file": "package.json",
+      "sha256": "92957921555c3c1b4c3bb2369ddb14e7b0c432609b39e2adfc98b3c5d3a1b717"
+    },
+    {
+      "file": "pnpm-lock.yaml",
+      "sha256": "f58106e62337e04188d1a7e8606dcd794c3f5d744a95ca5e6d47ed30688ec235"
+    },
+    {
+      "file": "scripts/run-project-assessment-evaluation.ts",
+      "sha256": "98bf2cb0321723e5be6cd299f12ac73093a7d0e4f5a89818048242fc77d4d5dc"
+    }
+  ],
+  "limits": [
+    "This preflight is not the final execution freeze. Root must freeze again after runtime source is final and before first provider call.",
+    "No credentials or live APIs were used.",
+    "References are sealed before provider inspection and must remain unchanged."
+  ]
+}

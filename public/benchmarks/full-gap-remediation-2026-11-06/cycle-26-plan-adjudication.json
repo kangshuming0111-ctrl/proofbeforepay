@@ -1,0 +1,95 @@
+{
+  "schema": "pbp-cycle26-plan-adjudication-v1",
+  "date": "2026-11-06",
+  "review": {
+    "file": "outputs/full-gap-remediation-2026-11-06/cycle-26-plan-deepseek.json",
+    "sha256": "4081c9146c1c972561e4890420b61f2301cc16dcbd4c1af1baa9f51ba1198181",
+    "valid": true
+  },
+  "codeReviewNotRuntimeEvidence": true,
+  "decisions": [
+    {
+      "findingIndex": 0,
+      "reviewSeverity": "P1",
+      "title": "PLAN GAP (missing narrow condition): typed coverage-2 plan can be admitted as source_text/literal_content while its directive grammar carries an operation clause, because sourceOnlyDirective short-circuits the OBSERVATION_REQUIRED veto for target criteria",
+      "adjudication": "accepted_constraint_already_in_plan",
+      "reason": "Full-match source with zero suffix, bare bounded literal and operation veto is enforced; this was a required plan condition, not a demonstrated current defect."
+    },
+    {
+      "findingIndex": 1,
+      "reviewSeverity": "P1",
+      "title": "PLAN GAP (missing narrow condition): the current business gate is pure file-level uncertainty; the proposed bypass is safe only on the exact typed plan, but the plan never states the plan parser must reject the same source when the criterion is NOT the one bounded literal/file grammar",
+      "adjudication": "accepted_constraint_already_in_plan",
+      "reason": "No partial mining; exact typed source/text/file is rechecked in the new helper."
+    },
+    {
+      "findingIndex": 2,
+      "reviewSeverity": "P1",
+      "title": "PLAN GAP (missing narrow condition): model citation covered-by-excerpt-span check does not constrain the model excerpt to be a safe source-located text owner, so a model excerpt from an aria-hidden/hidden/inert template duplicate can satisfy 'exact model citations cover complete owner'",
+      "adjudication": "accepted_narrower_requirement",
+      "reason": "Require exactly the safe owner start/end/excerpt, narrower than broad covering spans; no assumption about catalog owner safety."
+    },
+    {
+      "findingIndex": 3,
+      "reviewSeverity": "P2",
+      "title": "PLAN DESIGN BUG: the witness check that the plan reuses ('complete original owner citation') only tests span arithmetic against the expected excerpt and does not verify the model's excerpt was returned by a safe-owner sweep, so the existing covered witness is not a sufficient positive-literal witness",
+      "adjudication": "accepted_mixed_plan_veto_rejected_unchanged_prerequisite",
+      "reason": "Every linked check is exact same visible_copy plan. Requiring old business unchanged would contradict the actual dynamic-unknown problem and makes this repair unreachable, so that portion is rejected."
+    },
+    {
+      "findingIndex": 4,
+      "reviewSeverity": "P2",
+      "title": "PLAN GAP: the plan allows only 'dedup identical viewport repetitions' but the current business plan already deduplicates checkId and filters viewport 375 in delivery-assessment.ts:144–146; the plan must state that repeated identical visible_copy steps cannot be freshly injected and that repeated literal occurrences outside owners are treated as unwitnessable, not deduplicated",
+      "adjudication": "partly_rejected_reproduction",
+      "reason": "Exact positions prevent an inert identical string at another offset from witnessing the safe owner. Safe owner uniqueness is checked; inert/head/script/comment data does not become positive evidence. Requiring every inert duplicate to poison a real owner is unnecessary for the claimed source fact."
+    },
+    {
+      "findingIndex": 5,
+      "reviewSeverity": "P2",
+      "title": "PLAN RISK: source_presence/universal checks are skipped in the ordering for the new branch; the plan's integration condition says 'skip only old business unknown gate, not mismatch/otherchecks/otherlaterguards', but delivery-assessment.ts:363–418 run after the business block and the plan does not name the exact insertion point that preserves them (risk of accidental total short-circuit if the new witness is placed at line 342–361 without re-entering the exact-copy/label/tag/list guards)",
+      "adjudication": "accepted_integration_constraint",
+      "reason": "Root integrates in place in existing supported business gate, no return/continue or moved later guard. Active catalog V3/raw supported/server fail and dynamic-only reasons are mandatory."
+    },
+    {
+      "findingIndex": 6,
+      "reviewSeverity": "P2",
+      "title": "PLAN MISSING CONDITION: witness reason union has 'covered'|'unknown' with 'literal_source_present' but the new typed plan needs an explicit negative statuses (not_applicable|unwitnessed|covered) and a reason for 'not this exact typed criterion' so the new branch cannot be invoked for partial matches",
+      "adjudication": "accepted_interface_explicitness",
+      "reason": "Explicit not_applicable and unwitnessed reason unions, only covered can affect the gate; no arbitrary status mutation inside the helper."
+    },
+    {
+      "findingIndex": 7,
+      "reviewSeverity": "P3",
+      "title": "PLAN NOTE: normalization (source-business-evidence.ts:19) collapses NBSP and whitespace runs, but the exactLiteral is described as byte-exact in some places; the plan must say which normalization the typed-grammar parser and owner sweep will use so that 'Updated daily' in a p with NBSP or line break is not accepted nor silently rejected",
+      "adjudication": "accepted_need_to_pin_policy_rejected_normalization_expansion",
+      "reason": "New witness deliberately uses exact raw/decoded same phrase, no entity, NBSP, case or internal-whitespace normalization. Existing older checker is unchanged. Narrow unwitnessable forms retain prior behavior; no new false mismatch is invented."
+    },
+    {
+      "findingIndex": 8,
+      "reviewSeverity": "P3",
+      "title": "PLAN OPEN ITEM: status ledger/delta diagnostic wording ('old15 strict priorfailure retained in separate new explicit delta diagnostic', 'quarantine status ledger naturally reflects unchanged raw supported, no invented status adjustment') is not tied to an existing concrete field; contracts.ts:91 shows withheldRisks v2 'source_scope_unestablished' with scopeCriterionIds, which is the natural carrier, but the plan does not name it, so an implementer could reuse statusAdjustedCount/withheldRisks v1 and rewrite history",
+      "adjudication": "rejected_contact_v2_carrier",
+      "reason": "This literal task is not the finite contact-presence family. No new ledger/schema field and no v2 contact-scope insertion. Existing wire/publication comparison naturally derives any remaining v1 adjustments; old report records remain immutable."
+    }
+  ],
+  "independentCounterexamples": "Agent22 supplied parser repairs/foreign/ancestor/typed identity/citation position/normalization countercases; new helper tests execute these, root integration tests are separate.",
+  "helperTests": {
+    "passed": 9,
+    "failed": 0,
+    "log": "outputs/full-gap-remediation-2026-11-06/cycle-26-helper-tests.log"
+  },
+  "source": [
+    {
+      "file": "lib/positive-literal-source-witness.ts",
+      "sha256": "955be85760b0a52cc8e8eed29e16842cd2be315bff4ac249ad1f83bed468fdba"
+    },
+    {
+      "file": "tests/positive-literal-source-witness.test.ts",
+      "sha256": "673317118be61ef47f585f9f14af1bc8c2a1dbf2b3a82644747b933d1cf7f0a1"
+    }
+  ],
+  "limits": [
+    "Plan feedback is advisory; no finding reproductions were executed by DeepSeek.",
+    "No new application API call or reference edit; all previous first answers and freezes retained."
+  ]
+}

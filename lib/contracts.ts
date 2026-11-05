@@ -82,12 +82,13 @@ export type ProofEvidenceNeed = {
   reason: "browser_observation" | "direct_observation" | "financial_execution" | "record_readback" | "requirement_clarification" | "manual_interpretation" | "page_scope" | "page_citations" | "field_relationship" | "source_ambiguity" | "no_citations" | "model_unresolved";
   targetFiles: string[];
 };
-export type ProofAssessmentItem = { criterionId: string; status: "supported" | "changes_suggested" | "insufficient_evidence"; explanation: string; citations: ProofAssessmentCitation[]; ruleEvidenceIds: string[]; evidenceNeed?: ProofEvidenceNeed };
+export type ProofAssessmentItem = { criterionId: string; status: "supported" | "changes_suggested" | "insufficient_evidence"; explanation: string; citations: ProofAssessmentCitation[]; ruleEvidenceIds: string[]; evidenceNeed?: ProofEvidenceNeed; obligations?: import("./assessment-obligations").AssessmentObligations };
 export type ProofAssessmentRisk = { title: string; explanation: string; suggestion: string; citations: ProofAssessmentCitation[] };
-/** Validated AI leads retained separately after a system status adjustment.
- * This record neither confirms the leads nor releases the publication gate. */
-export type ProofAssessmentWithheldRisks = {
-  version: 1; reason: "item_status_adjusted" | "not_withheld";
+/** Validated original AI leads retained outside the active indication pool.
+ * v1 preserves status-adjustment publication; v2 records an independently
+ * bounded source-scope gate without inventing original status adjustments. */
+export type ProofAssessmentWithheldRisks = ({version: 1; reason: "item_status_adjusted" | "not_withheld"}
+  | {version: 2; reason: "source_scope_unestablished"; scopeCriterionIds: string[]}) & {
   adjustedCriteria: {criterionId: string; originalStatus: ProofAssessmentItem["status"]; publishedStatus: ProofAssessmentItem["status"]}[];
   entries: {originalRiskIndex: number; risk: ProofAssessmentRisk}[];
 };

@@ -1,0 +1,65 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 58566,
+      "lines": 473,
+      "sha256": "749b6f01015760e67ff45df4418e554c96abba9f9e340bf160c06f84cf53a1b7"
+    },
+    {
+      "file": "lib/source-presence-evidence.ts",
+      "bytes": 10946,
+      "lines": 107,
+      "sha256": "0d1edb0fca4923fe7f578c4ace2b63f4981c51dce69d9c5acd492d0403310e67"
+    },
+    {
+      "file": "tests/source-presence-evidence.test.ts",
+      "bytes": 9040,
+      "lines": 53,
+      "sha256": "aa9c742c7127597ccabf43d203c22b0da227a75c958007d76d7b7986fe634493"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"No reproducible defect found in the specified correction. In lib/delivery-assessment.ts:372-374, the corrected V3 (catalog_slots) guard only appears when a witnessed presence check is not already covered by the item citations. The wording now distinguishes an explicitly named file (which cannot take a witness from another page) from a generic page-copy requirement (which may use any scoped HTML file), and no longer states an affirmative finding that another page cannot satisfy a generic requirement. The guard still changes the status to insufficient_evidence and assigns page_citations when a witness exists but is not covered; otherwise it assigns source_ambiguity. It makes no claim about rendering, visibility, or delivery. The status of raw 'insufficient_evidence' remains unchanged: line 288 requires item.status to be 'insufficient_evidence', and lines 291-294 replace the model prose with sourcePresenceUnresolvedExplanation while recording model_unresolved. The test at tests/source-presence-evidence.test.ts:36 asserts the preserved status, the model_unresolved reason, the source-only wording, the retained citation, and that adjustedCriteria is empty. The existing exact-file and generic-scope expectations at line 13 match the directive logic at source-presence-evidence.ts:20-21, 64-71. Existing earlier checks that may set insufficient_evidence or changes_suggested (lines 279-318, 342-362) remain in place; this change modifies only the copy and does not add a new path for setting status.\",\"findings\":[],\"limitations\":[\"Read-only review of the supplied packet only; no code was executed and no tests, typecheck, or build were run.\",\"Only files in the packet were reviewed: lib/delivery-assessment.ts, lib/source-presence-evidence.ts, tests/source-presence-evidence.test.ts, and SKILL.md. publishSourceAssessmentNotes, exact-copy-evidence.ts, source-business-evidence.ts, assessment-publication-policy.ts, and others are not supplied, so claims about withheldRisks reasons and publication filtering rely on packet test assertions, not source reading.\",\"The correction changes two bilingual strings inside lines 372-374. Those lines also serve the 'absent' case (line 327-328, which sets sourcePresenceMissingAdvice) and the covered-present case (line 376, which sets sourcePresenceSupportedExplanation), so neither of those branches sees the edited copy. This is correct, but it was not traced end to end beyond the supplied code.\",\"Award and champion comparison (PHAROS_INC IBM Bob 2026 August 1st, Agent Receipt August Most Innovative) is not re-evaluated here; no superiority claim is made or supported.\",\"No live model, browser, or delivery flow observation was performed.\"]}",
+  "report": {
+    "summary": "No reproducible defect found in the specified correction. In lib/delivery-assessment.ts:372-374, the corrected V3 (catalog_slots) guard only appears when a witnessed presence check is not already covered by the item citations. The wording now distinguishes an explicitly named file (which cannot take a witness from another page) from a generic page-copy requirement (which may use any scoped HTML file), and no longer states an affirmative finding that another page cannot satisfy a generic requirement. The guard still changes the status to insufficient_evidence and assigns page_citations when a witness exists but is not covered; otherwise it assigns source_ambiguity. It makes no claim about rendering, visibility, or delivery. The status of raw 'insufficient_evidence' remains unchanged: line 288 requires item.status to be 'insufficient_evidence', and lines 291-294 replace the model prose with sourcePresenceUnresolvedExplanation while recording model_unresolved. The test at tests/source-presence-evidence.test.ts:36 asserts the preserved status, the model_unresolved reason, the source-only wording, the retained citation, and that adjustedCriteria is empty. The existing exact-file and generic-scope expectations at line 13 match the directive logic at source-presence-evidence.ts:20-21, 64-71. Existing earlier checks that may set insufficient_evidence or changes_suggested (lines 279-318, 342-362) remain in place; this change modifies only the copy and does not add a new path for setting status.",
+    "findings": [],
+    "limitations": [
+      "Read-only review of the supplied packet only; no code was executed and no tests, typecheck, or build were run.",
+      "Only files in the packet were reviewed: lib/delivery-assessment.ts, lib/source-presence-evidence.ts, tests/source-presence-evidence.test.ts, and SKILL.md. publishSourceAssessmentNotes, exact-copy-evidence.ts, source-business-evidence.ts, assessment-publication-policy.ts, and others are not supplied, so claims about withheldRisks reasons and publication filtering rely on packet test assertions, not source reading.",
+      "The correction changes two bilingual strings inside lines 372-374. Those lines also serve the 'absent' case (line 327-328, which sets sourcePresenceMissingAdvice) and the covered-present case (line 376, which sets sourcePresenceSupportedExplanation), so neither of those branches sees the edited copy. This is correct, but it was not traced end to end beyond the supplied code.",
+      "Award and champion comparison (PHAROS_INC IBM Bob 2026 August 1st, Agent Receipt August Most Innovative) is not re-evaluated here; no superiority claim is made or supported.",
+      "No live model, browser, or delivery flow observation was performed."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

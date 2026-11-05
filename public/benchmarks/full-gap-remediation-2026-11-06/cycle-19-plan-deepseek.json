@@ -1,0 +1,45 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 54735,
+      "lines": 425,
+      "sha256": "8c691b0e552a96d0d7a3a58159e9ae1d1843de7998715af6608307e38d0fc851"
+    },
+    {
+      "file": "lib/exact-copy-evidence.ts",
+      "bytes": 9431,
+      "lines": 130,
+      "sha256": "3c27a02f8238272e3f47433ecf237445420454e5d89227f60bb415ac1f3c9a91"
+    },
+    {
+      "file": "lib/assessment-evidence-scope.ts",
+      "bytes": 22171,
+      "lines": 200,
+      "sha256": "a4e7c9c6ceca64810b51c0c9980b14950875a3d19cc4e0b68e24b6cf5b06ee13"
+    },
+    {
+      "file": "tests/assessment-negative-page-scope.test.ts",
+      "bytes": 7559,
+      "lines": 57,
+      "sha256": "0b0b4e537cc24f5903a1e4a34053f4af23e80152c6d5a12a437b99fd9e60dafb"
+    }
+  ],
+  "skills": [],
+  "toolEvents": [],
+  "finalAssistantText": "",
+  "report": null,
+  "reportValid": false,
+  "waitReturned": false,
+  "turnCompleted": false,
+  "completed": false,
+  "errors": [
+    "unallowed_tool_call",
+    "wait_not_returned",
+    "turn_not_completed",
+    "missing_final_assistant_text"
+  ]
+}

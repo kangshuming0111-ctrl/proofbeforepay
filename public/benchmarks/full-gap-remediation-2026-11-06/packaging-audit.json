@@ -1,0 +1,44 @@
+{
+  "schema": "pbp-public-evidence-packaging-audit-v1",
+  "createdAt": "2026-11-05T18:41:24.241567+00:00",
+  "inputArtifacts": 128,
+  "allOriginalAndPublicSha256Verified": true,
+  "allUnmodifiedCopiesByteForByte": true,
+  "allWrappedTextByteForByte": true,
+  "metadataRedactions": {
+    "files": 9,
+    "pointers": 95,
+    "allowedOperation": "Only explicit metadata file pointers remove a local repository prefix; original value hashes and replacements are individually recorded.",
+    "allOtherJsonValuesDeepEqual": true
+  },
+  "sourceCatalogAudit": {
+    "file": "cycle26-public-supplement-audit.json",
+    "finalReplayCatalogsExactlyRebuilt": 31,
+    "historicalBatchCatalogsExactlyRebuilt": 16,
+    "sourceFileVersionsVerified": 130,
+    "finalProviderClosureCurrentMatches": 41,
+    "historicalKnownClosureAtCheckpoint": 40,
+    "firstProviderClosureHistoricalMatchesAtCheckpoint": 34,
+    "firstProviderClosureHistoricalFiles": 39
+  },
+  "privacyScan": {
+    "privateCredentialShapeFindings": 0,
+    "privateJwkFindings": 0,
+    "localUserPathFindings": 0,
+    "excluded": [
+      ".dev.vars",
+      ".env and runtime environment values",
+      "private signing keys",
+      "SQLite and temporary user state",
+      "cookies",
+      "venv and dependencies",
+      "hosting and authentication configuration"
+    ]
+  },
+  "oldBenchmarkData": "Prior 16-18 cohort is linked by its exact retained manifest; not recopied wholesale.",
+  "limits": [
+    "Text and shape scans are bounded checks, not a universal guarantee of no sensitive data.",
+    "Public issuer keys and signatures are non-secret verification material; no private key is included.",
+    "Unsigned/signed record consistency does not establish semantic truth, identity, user studies, bug-free execution or award superiority."
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schema": "pbp-cycle24-post-adjudication-v1",
+  "createdAt": "2026-11-05T18:14:21.495806+00:00",
+  "reviewFile": "outputs/full-gap-remediation-2026-11-06/cycle-24-post-deepseek.json",
+  "reviewSha256": "83726574175cbeb0c0398291c2d9a0b7400dc3eca9e9567573ac2d32b775c018",
+  "reviewer": "DeepSeek Harness source-only post-review",
+  "adjudicator": "Codex obligation/publication agent, independent judgment of feedback",
+  "findings": [
+    {
+      "severity": "P3",
+      "file": "lib/delivery-assessment.ts",
+      "line": 373,
+      "decision": "accepted_narrow_wording_only",
+      "rationale": "The controlled generic page-content requirement can use a source witness from contact.html, but the unsupported-citation explanation categorically says another scoped page cannot substitute. The named-file variant does prohibit substitution. These cases need distinct bounded wording, with the unknown status and existing reason preserved.",
+      "reproductionFile": "cycle-24-post-prose-controlled-reproduction.json",
+      "realApiCalls": 0,
+      "networkCalls": 0,
+      "statusPromotionSuggestion": "rejected: retaining insufficient_evidence for an unsupported raw supported claim is intentional; this finding does not establish that promotion or automatic repair is warranted.",
+      "implementationOwner": "root",
+      "fixState": "awaiting_root_copy_decision"
+    }
+  ],
+  "p1p2Findings": 0,
+  "limits": [
+    "DeepSeek source review did not run tests, browser or provider calls.",
+    "Code review agreement does not establish external user success or award superiority.",
+    "No source file was modified as part of this adjudication."
+  ]
+}

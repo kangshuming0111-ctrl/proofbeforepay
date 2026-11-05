@@ -3,7 +3,7 @@ import test from "node:test";
 import {mkdtemp,readFile,rm} from "node:fs/promises";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
-import {createEvidenceViewerController,runtimeEvidenceForViewer,type EvidenceInput} from "../app/guest-lab/evidence-controller.ts";
+import {createEvidenceViewerController,runtimeEvidenceForViewer,currentEvidenceChecks,type EvidenceInput} from "../app/guest-lab/evidence-controller.ts";
 import {verifyEvidenceExport,type EvidenceExport} from "../lib/evidence-export.ts";
 import {EVIDENCE_BUNDLE_BYTE_LIMIT as EVIDENCE_EXPORT_BYTE_LIMIT} from "../lib/evidence-bundle.ts";
 import {runtimeDeliveryDigest} from "../lib/runtime-project.ts";
@@ -121,7 +121,7 @@ test("actual supplemental renderer exposes bounded missing-module details and hi
  const script=ts.transpileModule(`${renderer.getText(file)}\nglobalThis.rendered=supplementalPanel();`,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.None}}).outputText;
  const render=(checks:typeof verification.checks)=>{
   const make=(tag:string,className="",text=""):GateNode=>({tag,className,text,children:[],setAttribute:()=>{}}),append=(p:GateNode,...nodes:GateNode[])=>p.children.push(...nodes),labelledValue=(label:string,value:string)=>{const n=make("div");append(n,make("dt","",label),make("dd","",value));return n;};
-  const context:{rendered?:GateNode;[key:string]:unknown}={state:{phase:"ready",supplemental:bundle.supplemental,verification:{checks}},tr:(zh:string)=>zh,node:make,append,labelledValue,getModuleDependencyFindings};vm.runInNewContext(script,context,{timeout:1000});return gateNodes(context.rendered!);
+  const context:{rendered?:GateNode;[key:string]:unknown}={state:{phase:"ready",supplemental:bundle.supplemental,verification:{checks}},tr:(zh:string)=>zh,node:make,append,labelledValue,getModuleDependencyFindings,currentEvidenceChecks};vm.runInNewContext(script,context,{timeout:1000});return gateNodes(context.rendered!);
  };
  const good=render(verification.checks);assert.ok(good.some(n=>n.text==="有限模块依赖观察"));assert.ok(good.some(n=>n.text.includes("artifact_not_declared")&&n.text.includes("missing.mjs")));assert.ok(good.some(n=>n.text.includes("没有原始 JS 可供重新解析")));assert.ok(good.some(n=>n.text.includes("声明范围关系：mismatch")));
  const bad=render(verification.checks.map(c=>c.id==="module-observations"?{...c,status:"inconsistent"as const}:c));assert.ok(bad.some(n=>n.text.includes("模块关系尚未核对一致")));assert.ok(!bad.some(n=>n.text.includes("声明范围关系：")));

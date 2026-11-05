@@ -1,0 +1,22 @@
+{
+  "cycle": 22,
+  "viewerReview": "cycle-22-viewer-post-deepseek.json",
+  "adjudication": [
+    {
+      "finding": "Missing issuer gates/unnamed failure",
+      "decision": "rejected",
+      "evidence": "gates defines issuer-envelope and issuer-receipt. Skip is gated by !check; actual failurecheck is present so isrendered. New realrenderer malformedbody/missingreceipt/badsignaturecountertest passes."
+    },
+    {
+      "finding": "Signed failure uses misleadinglegacycallout",
+      "decision": "rejected",
+      "evidence": "Malformed issued envelope has named issuer-envelope failure and separate issuancePanel invalid/no fallback; no legacydata exposed. Renderer countertest checks hidden source."
+    },
+    {
+      "finding": "Old source substitutedor scopeunlabelled",
+      "decision": "rejected",
+      "evidence": "sourcePanel selects actualversion.evidence and labels option Archived core reports; revisionPanel explicitlylistsarchivedscope/exclusions. Existingtest usesold-onlyunique source text."
+    }
+  ],
+  "viewerTests": 17
+}

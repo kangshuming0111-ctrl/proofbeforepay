@@ -1,0 +1,91 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/merged-price-context.ts",
+      "bytes": 7308,
+      "lines": 59,
+      "sha256": "b566a193f494979064146eca94a1f8f0d62535c329e4c6db9a7b19ecf65874b6"
+    },
+    {
+      "file": "lib/source-business-evidence.ts",
+      "bytes": 20962,
+      "lines": 237,
+      "sha256": "cfeb7a39a766b98d411db53426b8ece554bb3756ae1f285407cada5736083092"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 57790,
+      "lines": 464,
+      "sha256": "ebe1cc48b95ff8091e6aaafe301229f3ded63479a352a7a1e4797017f5b143c7"
+    },
+    {
+      "file": "tests/merged-price-context.test.ts",
+      "bytes": 9281,
+      "lines": 41,
+      "sha256": "c45ce8aae4158fe0c9d169027e87e7179e5391791c81f099365f2fd599ba0d21"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"It is not established that the merged price-size context path is defect-free. Different checks can be sent together in one request. One may return the canonical merged explanation; another may force an item to insufficient_evidence with generic rows on the same file, which then overwrites the item citations. In addition, a label that is itself uppercase AUD/USD text can make an adjacent canonical owner silently alter the two-price branch to unknown. The text() helper also refuses text that holds escaped '<' characters, which is conservative rather than a safety problem. A positive behavior was not tested. The packet only covers merged-price-context.ts, source-business-evidence.ts, delivery-assessment.ts and the focused test. I did not run tests, typecheck, or the root integration. I could not see getBusinessCheckPlan, exact-copy-evidence, assessment-evidence-scope, or the contracts and helpers used by the root test.\",\"findings\":[{\"severity\":\"P2\",\"file\":\"lib/delivery-assessment.ts\",\"line\":301,\"title\":\"Later business check with a generic unknown overwrites a canonical merged-row explanation's citations\",\"evidence\":\"Line 298 calls businessEvidenceCheck(criterion.id), which returns the source evidence for all checks on that criterion. sourceBusinessEvidenceExplanation (source-business-evidence.ts line 228) uses completeMergedUnknownCitations to pick the canonical wording only when EVERY check if unknown with reason merged_price_options_unconfirmed. Otherwise it returns the generic text on lines 234-236. Lines 302-303 then replace checkedCitations with completeMergedUnknownCitations(business). That function (source-business-evidence.ts lines 178-179) returns undefined for mixed reasoning, so citations are kept. So item.explanation describes generic limitations, but citations can be those of the merged table. This does not trigger only when the item stays changes_suggested; a model-supplied supported status reaches the same branch at lines 333-343.\",\"reproduction\":\"Plausible but UNAVAILABLE test trace: build a saved plan with two checks on coverage-1. index.html holds `<table><tr><td rowspan=\\\"2\\\">Tea</td><td>AUD 18</td></tr><tr><td>AUD 28</td></tr></table>`. menu.html holds `<p>Tea AUD 18</p><p>Tea AUD 28</p>`, which makes label_not_unique_or_not_located. This produces kind unknown, a merged citation for index.html only, and completeMergedUnknownCitations returns undefined. Assume the model then returns supported with a menu.html citation. Lines 335-341 set insufficient_evidence and set the generic explanation. checkedCitations is therefore not set to the context and keeps whatever citations were there (the earlier check's merged-table citation in the changes_suggested path, and the model's own in the supported path). As a result the report text and citations may not match: the canonical rowspan wording and canonical citations are not committed together. The focused tests only cover the all-merged and four-merged-check cases (tests lines 33-36) and do not cover this mixed case in either status branch. NONE OF THIS WAS EXECUTED.\",\"suggestion\":\"Replace only the merged-citation branch (delivery-assessment.ts lines 301-303 and 337-343). Compute `const context=completeMergedUnknownCitations(business)`. If it is defined, use the canonical explanation and set checkedCitations to context. Otherwise use a separate generic explanation with no merged citations (for example, pass undefined and fall back to the source-scope citation or need), or do not claim mixed and canonical reasoning together.\"},{\"severity\":\"P3\",\"file\":\"lib/merged-price-context.ts\",\"line\":27,\"title\":\"Merged-row lookup can be silently won by a different labelled cell instead of falling back to the ordinary simple check\",\"evidence\":\"targetInTable (line 27) looks for any td/th whose normalized text equals the label and ignores rowspan. Line 55 adds every table containing that label to `tables`. A second matching table, or an owner different from the priced owner, makes tables.length!==1 and findMergedPriceContext returns undefined (lines 55/58). In source-business-evidence.ts line 158 this skips the merged_price_options_unconfirmed branch. Execution continues to the ordinary code at lines 159-166, which may return a definite unchanged or mismatch, or complex_or_unlocated_item, instead of the canonical 'option not known, ask the buyer' result.\",\"reproduction\":\"Test this by reasoning only; NOT EXECUTED. label='AUD 18'. Source body: `<table><tr><td rowspan=\\\"2\\\">AUD 18</td><td>AUD 25</td></tr><tr><td>AUD 30</td></tr></table>` plus `<table><tr><td>Tea</td><td>AUD 18</td></tr></table>`. Every table that contains a cell equal to the label is collected, so two tables match and the lookup returns undefined. The ordinary check then looks for priceLeaves with label 'AUD 18' and finds the row's text starting with that label, so it can return an unchanged or mismatch verdict. The page instead contains two different price-to-label associations, one of which is the canonical owner. The mixed or ambiguous case therefore produces a definite verdict rather than a guarded unknown.\",\"suggestion\":\"Before falling back to the simple-price code at source-business-evidence.ts line 158, detect that more than one table had a cell matching the label (or that the label is mixed with price text). Then return unknown with an ambiguity reason instead of a definite unchanged/mismatch.\"}],\"limitations\":[\"Read-only source review of this packet only: lib/merged-price-context.ts, lib/source-business-evidence.ts, lib/delivery-assessment.ts, tests/merged-price-context.test.ts, and the skill document. I did not run tests, typecheck, the root integration, a browser, or order execution, and I make no runtime claims.\",\"The helpers getBusinessCheckPlan, hasUncertainSourceBodyCopyAtFile, assessmentEvidenceScope, and the contracts and makeAssessmentEvidenceNeed were not supplied. I cannot confirm plan deduplication, uncertainty gating, or whether the unavailable test trace builds a valid plan.\",\"Findings rest on parse5 and model-behaviour reasoning for inputs that are not covered by the focused tests (label_not_unique and mixed merges). Neither case was executed.\",\"Report-clarity: the packet contains no PHAROS or champion-cycle report text, so I could not review the report's stated comparison against that structure. I make no claim (and no contrary claim) about state rendering, ordering behavior, or backend execution.\",\"Out-of-scope observations not raised as findings: text() rejects cells whose escaped text contains '<' (conservative), a CSS ::before content rule blocks the path, and the hidden/style attribute gate is broad. None was shown to be reachable as a wrong definite verdict.\",\"Rows using th labels, colspan, or prices that use inside tables are deliberately excluded and fall back to the generic checker. That is a documented scope limit, not a defect.\"]}",
+  "report": {
+    "summary": "It is not established that the merged price-size context path is defect-free. Different checks can be sent together in one request. One may return the canonical merged explanation; another may force an item to insufficient_evidence with generic rows on the same file, which then overwrites the item citations. In addition, a label that is itself uppercase AUD/USD text can make an adjacent canonical owner silently alter the two-price branch to unknown. The text() helper also refuses text that holds escaped '<' characters, which is conservative rather than a safety problem. A positive behavior was not tested. The packet only covers merged-price-context.ts, source-business-evidence.ts, delivery-assessment.ts and the focused test. I did not run tests, typecheck, or the root integration. I could not see getBusinessCheckPlan, exact-copy-evidence, assessment-evidence-scope, or the contracts and helpers used by the root test.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "lib/delivery-assessment.ts",
+        "line": 301,
+        "title": "Later business check with a generic unknown overwrites a canonical merged-row explanation's citations",
+        "evidence": "Line 298 calls businessEvidenceCheck(criterion.id), which returns the source evidence for all checks on that criterion. sourceBusinessEvidenceExplanation (source-business-evidence.ts line 228) uses completeMergedUnknownCitations to pick the canonical wording only when EVERY check if unknown with reason merged_price_options_unconfirmed. Otherwise it returns the generic text on lines 234-236. Lines 302-303 then replace checkedCitations with completeMergedUnknownCitations(business). That function (source-business-evidence.ts lines 178-179) returns undefined for mixed reasoning, so citations are kept. So item.explanation describes generic limitations, but citations can be those of the merged table. This does not trigger only when the item stays changes_suggested; a model-supplied supported status reaches the same branch at lines 333-343.",
+        "reproduction": "Plausible but UNAVAILABLE test trace: build a saved plan with two checks on coverage-1. index.html holds `<table><tr><td rowspan=\"2\">Tea</td><td>AUD 18</td></tr><tr><td>AUD 28</td></tr></table>`. menu.html holds `<p>Tea AUD 18</p><p>Tea AUD 28</p>`, which makes label_not_unique_or_not_located. This produces kind unknown, a merged citation for index.html only, and completeMergedUnknownCitations returns undefined. Assume the model then returns supported with a menu.html citation. Lines 335-341 set insufficient_evidence and set the generic explanation. checkedCitations is therefore not set to the context and keeps whatever citations were there (the earlier check's merged-table citation in the changes_suggested path, and the model's own in the supported path). As a result the report text and citations may not match: the canonical rowspan wording and canonical citations are not committed together. The focused tests only cover the all-merged and four-merged-check cases (tests lines 33-36) and do not cover this mixed case in either status branch. NONE OF THIS WAS EXECUTED.",
+        "suggestion": "Replace only the merged-citation branch (delivery-assessment.ts lines 301-303 and 337-343). Compute `const context=completeMergedUnknownCitations(business)`. If it is defined, use the canonical explanation and set checkedCitations to context. Otherwise use a separate generic explanation with no merged citations (for example, pass undefined and fall back to the source-scope citation or need), or do not claim mixed and canonical reasoning together."
+      },
+      {
+        "severity": "P3",
+        "file": "lib/merged-price-context.ts",
+        "line": 27,
+        "title": "Merged-row lookup can be silently won by a different labelled cell instead of falling back to the ordinary simple check",
+        "evidence": "targetInTable (line 27) looks for any td/th whose normalized text equals the label and ignores rowspan. Line 55 adds every table containing that label to `tables`. A second matching table, or an owner different from the priced owner, makes tables.length!==1 and findMergedPriceContext returns undefined (lines 55/58). In source-business-evidence.ts line 158 this skips the merged_price_options_unconfirmed branch. Execution continues to the ordinary code at lines 159-166, which may return a definite unchanged or mismatch, or complex_or_unlocated_item, instead of the canonical 'option not known, ask the buyer' result.",
+        "reproduction": "Test this by reasoning only; NOT EXECUTED. label='AUD 18'. Source body: `<table><tr><td rowspan=\"2\">AUD 18</td><td>AUD 25</td></tr><tr><td>AUD 30</td></tr></table>` plus `<table><tr><td>Tea</td><td>AUD 18</td></tr></table>`. Every table that contains a cell equal to the label is collected, so two tables match and the lookup returns undefined. The ordinary check then looks for priceLeaves with label 'AUD 18' and finds the row's text starting with that label, so it can return an unchanged or mismatch verdict. The page instead contains two different price-to-label associations, one of which is the canonical owner. The mixed or ambiguous case therefore produces a definite verdict rather than a guarded unknown.",
+        "suggestion": "Before falling back to the simple-price code at source-business-evidence.ts line 158, detect that more than one table had a cell matching the label (or that the label is mixed with price text). Then return unknown with an ambiguity reason instead of a definite unchanged/mismatch."
+      }
+    ],
+    "limitations": [
+      "Read-only source review of this packet only: lib/merged-price-context.ts, lib/source-business-evidence.ts, lib/delivery-assessment.ts, tests/merged-price-context.test.ts, and the skill document. I did not run tests, typecheck, the root integration, a browser, or order execution, and I make no runtime claims.",
+      "The helpers getBusinessCheckPlan, hasUncertainSourceBodyCopyAtFile, assessmentEvidenceScope, and the contracts and makeAssessmentEvidenceNeed were not supplied. I cannot confirm plan deduplication, uncertainty gating, or whether the unavailable test trace builds a valid plan.",
+      "Findings rest on parse5 and model-behaviour reasoning for inputs that are not covered by the focused tests (label_not_unique and mixed merges). Neither case was executed.",
+      "Report-clarity: the packet contains no PHAROS or champion-cycle report text, so I could not review the report's stated comparison against that structure. I make no claim (and no contrary claim) about state rendering, ordering behavior, or backend execution.",
+      "Out-of-scope observations not raised as findings: text() rejects cells whose escaped text contains '<' (conservative), a CSS ::before content rule blocks the path, and the hidden/style attribute gate is broad. None was shown to be reachable as a wrong definite verdict.",
+      "Rows using th labels, colspan, or prices that use inside tables are deliberately excluded and fall back to the generic checker. That is a documented scope limit, not a defect."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

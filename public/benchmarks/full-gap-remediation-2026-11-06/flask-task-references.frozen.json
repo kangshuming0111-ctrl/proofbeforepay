@@ -1,0 +1,38 @@
+{
+  "schema": "pbp-thirdparty-task-reference-freeze-v1",
+  "sourceCommit": "2c1b30d0503cfb064f1cb252e6614a06915a362a",
+  "frozenBeforeRuntimeAnswers": true,
+  "tasks": [
+    {
+      "id": "authenticated-submit",
+      "expected": "matched",
+      "witness": "HTTP login then POST /create redirects and exact new marker appears on GET /"
+    },
+    {
+      "id": "stored-record",
+      "expected": "matched",
+      "witness": "Independent read-only SQLite connection sees exact marker/title/body and one author-bound row"
+    },
+    {
+      "id": "fresh-readback",
+      "expected": "matched",
+      "witness": "Application stopped and restarted on same database, new GET / and fresh read-only connection retain same record ID and exact content"
+    },
+    {
+      "id": "email-receipt",
+      "expected": "unsupported",
+      "witness": "No mail sender or inbox in upstream tutorial; absence of capability is not a runtime defect in an unpromised feature"
+    },
+    {
+      "id": "unauthenticated-submit",
+      "expected": "rejected-without-write",
+      "witness": "POST /create without authenticated cookie redirects to /auth/login and does not create supplied marker"
+    },
+    {
+      "id": "missing-title",
+      "expected": "rejected-without-write",
+      "witness": "Authenticated POST /create with empty title renders required-title error and creates no body marker"
+    }
+  ],
+  "criteriaScope": "These sealed manual HTTP/DB oracle tasks are separate from AI source-assessment scores and human usability results."
+}

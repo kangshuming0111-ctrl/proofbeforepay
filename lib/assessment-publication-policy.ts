@@ -1,5 +1,43 @@
-import type {Language, ProofAssessment, ProofAssessmentItem, ProofAssessmentWithheldRisks} from "./contracts.ts";
-import {staticFileKind} from "./static-resources.ts";
+import type {Language, ProofAssessment, ProofAssessmentItem, ProofAssessmentWithheldRisks, ProofCriterion} from "./contracts.ts";
+import {assertStaticPath, staticFileKind} from "./static-resources.ts";
+import {createSourcePresenceEvidenceCheck} from "./source-presence-evidence.ts";
+
+/** Independently re-derive this finite scope from exact locked criteria and
+ * matching item identities; a caller/model boolean is never an authority. */
+function htmlPath(value: string): boolean {try {return assertStaticPath(value) === value && staticFileKind(value) === "html";} catch {return false;}}
+function structuralCriterion(criterion: ProofCriterion): boolean {
+  if (criterion.id === "mobile") return ["All delivered pages must be usable on a mobile screen; a person must check them directly.", "所有交付页面都必须能在手机屏幕上正常使用；必须由人实际检查。"].includes(criterion.source);
+  if (/^page-(?:[1-9]|10)$/u.test(criterion.id)) {
+    const page = /^Deliver (\S+) as a separate nonempty HTML document with an HTML doctype, a nonempty title and a body\.$/u.exec(criterion.source)
+      ?? /^交付独立非空 HTML 文档 ([^，\s]+)，包含 HTML doctype、非空 title 与 body。$/u.exec(criterion.source);
+    return !!page && htmlPath(page[1]);
+  }
+  if (/^link(?:-[2-5])?$/u.test(criterion.id)) {
+    const link = /^(\S+) contains a link labelled “([^\r\n]{1,120})” pointing to (\S+)\.$/u.exec(criterion.source)
+      ?? /^([^\s]+) 包含文字为“([^\r\n]{1,120})”的链接，指向 ([^\s]+)。$/u.exec(criterion.source);
+    if (!link || !htmlPath(link[1])) return false;
+    const target = /^([^#]+\.html)(?:#[A-Za-z0-9_][A-Za-z0-9_.:-]{0,127})?$/iu.exec(link[3]);
+    return !!target && htmlPath(target[1]);
+  }
+  return false;
+}
+/** Only named production structural criteria may accompany the explicit
+ * contact-copy subset. Ignoring another custom obligation would be a scope bug.
+ * This does not establish that any structural or content item passed. */
+export function finiteContactPresenceScopeCriterionIds(criteria: readonly ProofCriterion[] | undefined, items: readonly Pick<ProofAssessmentItem, "criterionId">[], files: Record<string, string>): string[] | undefined {
+  if (!Array.isArray(criteria) || criteria.length < 1 || criteria.length > 33 || criteria.length !== items.length
+    || new Set(criteria.map(criterion => criterion?.id)).size !== criteria.length) return;
+  const check = createSourcePresenceEvidenceCheck(files);
+  const ids: string[] = [];
+  for (const [index, criterion] of criteria.entries()) {
+    if (!criterion || typeof criterion.id !== "string" || criterion.id !== items[index]?.criterionId || typeof criterion.source !== "string" || criterion.source.length > 3000) return;
+    if (/^(?:manual-[1-5]|coverage-(?:[1-9]|1[0-2]))$/u.test(criterion.id)) {
+      if (check(criterion).kind === "not_applicable") return;
+      ids.push(criterion.id);
+    } else if (!structuralCriterion(criterion)) return;
+  }
+  return ids.length ? ids : undefined;
+}
 
 /** Semantic publication policy, after the caller has validated every model
  * item/risk field and exact citation. This is not malformed-response recovery:
@@ -13,6 +51,7 @@ export function publishSourceAssessmentNotes(
   risks: ProofAssessment["risks"],
   modelLimitationCount: number,
   files: Record<string, string>,
+  criteria?: readonly ProofCriterion[],
 ): {risks: ProofAssessment["risks"]; limitations: string[]; statusAdjustedCount: number; withheldRisks?: ProofAssessmentWithheldRisks} {
   if (!Number.isSafeInteger(modelLimitationCount) || modelLimitationCount < 0) throw new TypeError("Source publication needs a nonnegative model-limitation count.");
   if (risks.length > 5) throw new TypeError("Source publication needs at most five validated optional risks.");
@@ -48,6 +87,15 @@ export function publishSourceAssessmentNotes(
     const withheldRisks: ProofAssessmentWithheldRisks = {version: 1, reason: "item_status_adjusted", adjustedCriteria,
       entries: risks.map((risk, originalRiskIndex) => ({originalRiskIndex, risk: {...risk, citations: risk.citations.map(citation => ({...citation}))}}))};
     return {risks: [], limitations, statusAdjustedCount, withheldRisks};
+  }
+  const scopeCriterionIds = risks.length ? finiteContactPresenceScopeCriterionIds(criteria, items, files) : undefined;
+  if (scopeCriterionIds) {
+    limitations.push(zh
+      ? `${risks.length} 条可选模型线索的独立约定范围尚未建立，已按电话／邮箱文字自定义范围单独暂缓；所有逐项结论保持不变，也未认定其他页面、链接或手机要求通过。没有伪造状态调整记录；人工意见不自动解除暂缓、验收或付款。`
+      : `The independent agreed scope of ${risks.length} optional model indication(s) is not established, so originals are withheld under the custom phone/email text scope. All item findings are unchanged; other page, link or mobile requirements are not declared passed. No status-adjustment record was invented. Human opinions do not release the gate, accept work or make a payment.`);
+    return {risks: [], limitations, statusAdjustedCount,
+      withheldRisks: {version: 2, reason: "source_scope_unestablished", scopeCriterionIds, adjustedCriteria: [],
+        entries: risks.map((risk, originalRiskIndex) => ({originalRiskIndex, risk: {...risk, citations: risk.citations.map(citation => ({...citation}))}}))}};
   }
   // Independent copies prevent later presentation edits from mutating the raw
   // validated response. Retained risks remain AI leads awaiting human review;

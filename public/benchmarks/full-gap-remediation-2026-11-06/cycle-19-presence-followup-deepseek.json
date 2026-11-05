@@ -1,0 +1,75 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/source-presence-evidence.ts",
+      "bytes": 7179,
+      "lines": 81,
+      "sha256": "0524783ded914e8cb80020321ca6d86857f2e8fb8bcea92d2907757a9d7d8147"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 57160,
+      "lines": 454,
+      "sha256": "3ea7987b59a78bbda9e174c2fea5e02b0b4b01f854d02d15a38c727555ee198c"
+    },
+    {
+      "file": "tests/source-presence-evidence.test.ts",
+      "bytes": 8775,
+      "lines": 53,
+      "sha256": "de421dbf12141afbf55e2b48b5ecd09b913c0d9e6de7154c4c0a1da44e1d79bf"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Reviewed the supplied packet read-only: the finite phone/email presence grammar in lib/source-presence-evidence.ts, its V3 wiring in lib/delivery-assessment.ts, the source-presence tests, and the packet's skill. The affirmative path uses the explicit encoding===\\\"catalog_slots\\\" guard (delivery-assessment.ts:346), and explicit V2 and legacy replays (tests:37-47) cannot enter the override. The negative whole-domain safe path is present: a candidate is accepted in the presence branch only when businessEvidenceCheck(criterion.id).kind !== \\\"mismatch\\\" (delivery-assessment.ts:308-310). I found one real defect: the affirmative guard in the source-only presence check cannot tell a true absence from a source it could not read. A body that has no text (whitespace-only) with no dynamic or inert markers is reported as \\\"absent\\\", which turns supported into insufficient_evidence and withholds risks (tests:48-52). There is no automatic promotion, pass, acceptance or payment anywhere in the reviewed path.\",\"findings\":[{\"severity\":\"P3\",\"file\":\"lib/source-presence-evidence.ts\",\"line\":56,\"title\":\"Empty or whitespace-only body is treated as true absence, so a completed affirmative phone/email check is wrongly marked unknown\",\"evidence\":\"In visit(), the ambiguity markers are only set for media/slot elements and elements having the hidden/inert/aria-hidden/display:none/visibility:hidden attributes (lines 46-47). Line 56 marks a file uncertain only when its readable text is non-empty (normalize(text) truthy) and mentions a phone/@ signal but has no owner. Line 60 marks it uncertain only when matches(field, bodyText) is true for the whole body text. A parsed HTML page whose body text is empty by construction, e.g. <img src=\\\"phone.png\\\" alt=\\\"contact\\\">, <svg> markup, or a body containing only a <form> of inputs whose values are attributes, has no text at all. So uncertain stays false and no owners exist. With targets=[that file], the check returns {kind:\\\"absent\\\"}. In delivery-assessment.ts:346-358, a raw supported item for the finite directive page must list the phone number is changed to insufficient_evidence with evidenceNeed source_ambiguity and the explanation that no complete owner covers the locked scope. The same kind is returned for any body with readable text that never mentions phone/@ (e.g. <p>Welcome to our shop.</p>). Neither response can count as an established omission when neither has an explicit absence declaration. That makes the affirmative check react to the absence of a keyword rather than to a complete owner. I did not run anything: this is a source reading of lines 46-47, 56, 60 and 71.\",\"reproduction\":\"Unexecuted trace. Files {'index.html': '<!doctype html><html><head><title>Contact</title></head><body><img src=\\\"phone.png\\\" alt=\\\"contact\\\"></body></html>'}. criterion={id:'coverage-1', title:'Original requirement 1', source:'The page content must list the shop telephone number.'}. Read returns uncertain=false because no img/slot/hidden attr sets it, text is '' so line 56 is skipped, and bodyText '' fails matches. owners=[] so line 71 returns kind 'absent'. In the test run() pipeline a raw 'supported' item therefore becomes insufficient_evidence with source_ambiguity (tests/source-presence-evidence.test.ts:50-51). That is the same result a supported claim gets for a body with no phone text. A model that returned changes_suggested for such a body would also keep changes_suggested, because the negative branch (delivery-assessment.ts:310-316) needs present or unknown.\",\"suggestion\":\"Do not treat a file as certain when it yields no readable body text or no owner that could serve as an absence baseline. In read(), set uncertain=true when insideBody text is empty but the body contains children that may carry non-text content, for example any flow-container/owner element or form/input/img, so line 71 returns unknown rather than absent. Keep the existing present path unchanged.\"}],\"limitations\":[\"Review was static and read-only. No tests, typecheck, build, browser, provider call or runtime trace was executed, so every statement is a source reading.\",\"The packet did not include tests/parserbudget, crossblock, sourceonlyvisibility, exact-copy-evidence.ts, business-checks/source-business-evidence.ts, assessment-publication-policy.ts, assessment-obligations.ts, or assessment-completion.ts. Conditions around parser budgets, cross-block citation coverage (delivery-assessment.ts:350-351), withheld-risk policy and the stage-20 obligations metadata could therefore only be checked through the code shown here.\",\"Stage-20 obligation metadata is additive and outside the presence grammar; I made no general semantic or product-flow claims about it beyond confirming it does not touch status promotion.\",\"The grammar's scope is the single finite English/Chinese presence directive. Broad natural-language requirements, actual rendered visibility, phone validity and email deliverability remain unproven, as the code's own comments say. The PHAROS source-clear report gap is narrowed to this finite family only.\",\"No environment, credentials, hidden files or unrelated context were inspected.\"]}",
+  "report": {
+    "summary": "Reviewed the supplied packet read-only: the finite phone/email presence grammar in lib/source-presence-evidence.ts, its V3 wiring in lib/delivery-assessment.ts, the source-presence tests, and the packet's skill. The affirmative path uses the explicit encoding===\"catalog_slots\" guard (delivery-assessment.ts:346), and explicit V2 and legacy replays (tests:37-47) cannot enter the override. The negative whole-domain safe path is present: a candidate is accepted in the presence branch only when businessEvidenceCheck(criterion.id).kind !== \"mismatch\" (delivery-assessment.ts:308-310). I found one real defect: the affirmative guard in the source-only presence check cannot tell a true absence from a source it could not read. A body that has no text (whitespace-only) with no dynamic or inert markers is reported as \"absent\", which turns supported into insufficient_evidence and withholds risks (tests:48-52). There is no automatic promotion, pass, acceptance or payment anywhere in the reviewed path.",
+    "findings": [
+      {
+        "severity": "P3",
+        "file": "lib/source-presence-evidence.ts",
+        "line": 56,
+        "title": "Empty or whitespace-only body is treated as true absence, so a completed affirmative phone/email check is wrongly marked unknown",
+        "evidence": "In visit(), the ambiguity markers are only set for media/slot elements and elements having the hidden/inert/aria-hidden/display:none/visibility:hidden attributes (lines 46-47). Line 56 marks a file uncertain only when its readable text is non-empty (normalize(text) truthy) and mentions a phone/@ signal but has no owner. Line 60 marks it uncertain only when matches(field, bodyText) is true for the whole body text. A parsed HTML page whose body text is empty by construction, e.g. <img src=\"phone.png\" alt=\"contact\">, <svg> markup, or a body containing only a <form> of inputs whose values are attributes, has no text at all. So uncertain stays false and no owners exist. With targets=[that file], the check returns {kind:\"absent\"}. In delivery-assessment.ts:346-358, a raw supported item for the finite directive page must list the phone number is changed to insufficient_evidence with evidenceNeed source_ambiguity and the explanation that no complete owner covers the locked scope. The same kind is returned for any body with readable text that never mentions phone/@ (e.g. <p>Welcome to our shop.</p>). Neither response can count as an established omission when neither has an explicit absence declaration. That makes the affirmative check react to the absence of a keyword rather than to a complete owner. I did not run anything: this is a source reading of lines 46-47, 56, 60 and 71.",
+        "reproduction": "Unexecuted trace. Files {'index.html': '<!doctype html><html><head><title>Contact</title></head><body><img src=\"phone.png\" alt=\"contact\"></body></html>'}. criterion={id:'coverage-1', title:'Original requirement 1', source:'The page content must list the shop telephone number.'}. Read returns uncertain=false because no img/slot/hidden attr sets it, text is '' so line 56 is skipped, and bodyText '' fails matches. owners=[] so line 71 returns kind 'absent'. In the test run() pipeline a raw 'supported' item therefore becomes insufficient_evidence with source_ambiguity (tests/source-presence-evidence.test.ts:50-51). That is the same result a supported claim gets for a body with no phone text. A model that returned changes_suggested for such a body would also keep changes_suggested, because the negative branch (delivery-assessment.ts:310-316) needs present or unknown.",
+        "suggestion": "Do not treat a file as certain when it yields no readable body text or no owner that could serve as an absence baseline. In read(), set uncertain=true when insideBody text is empty but the body contains children that may carry non-text content, for example any flow-container/owner element or form/input/img, so line 71 returns unknown rather than absent. Keep the existing present path unchanged."
+      }
+    ],
+    "limitations": [
+      "Review was static and read-only. No tests, typecheck, build, browser, provider call or runtime trace was executed, so every statement is a source reading.",
+      "The packet did not include tests/parserbudget, crossblock, sourceonlyvisibility, exact-copy-evidence.ts, business-checks/source-business-evidence.ts, assessment-publication-policy.ts, assessment-obligations.ts, or assessment-completion.ts. Conditions around parser budgets, cross-block citation coverage (delivery-assessment.ts:350-351), withheld-risk policy and the stage-20 obligations metadata could therefore only be checked through the code shown here.",
+      "Stage-20 obligation metadata is additive and outside the presence grammar; I made no general semantic or product-flow claims about it beyond confirming it does not touch status promotion.",
+      "The grammar's scope is the single finite English/Chinese presence directive. Broad natural-language requirements, actual rendered visibility, phone validity and email deliverability remain unproven, as the code's own comments say. The PHAROS source-clear report gap is narrowed to this finite family only.",
+      "No environment, credentials, hidden files or unrelated context were inspected."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

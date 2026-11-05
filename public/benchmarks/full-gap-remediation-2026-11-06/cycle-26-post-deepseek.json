@@ -1,0 +1,101 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/positive-literal-source-witness.ts",
+      "bytes": 10310,
+      "lines": 126,
+      "sha256": "955be85760b0a52cc8e8eed29e16842cd2be315bff4ac249ad1f83bed468fdba"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 59616,
+      "lines": 483,
+      "sha256": "ed04235a031b27bc85fc25181bd6b4df6c899ef81b059b4f06fb2fd2f4ec8164"
+    },
+    {
+      "file": "lib/source-business-evidence.ts",
+      "bytes": 20748,
+      "lines": 237,
+      "sha256": "fa66043d3ab7f4fb7717893f14f60b86e7de0c912fb542bf89c0ad5a54ae38da"
+    },
+    {
+      "file": "lib/business-checks.ts",
+      "bytes": 15585,
+      "lines": 181,
+      "sha256": "5b6d6b2cfbe487aac9bf647f3cdf97f303fcec835e2479b7c7154f4708433ffd"
+    },
+    {
+      "file": "lib/assessment-evidence-scope.ts",
+      "bytes": 22171,
+      "lines": 200,
+      "sha256": "a4e7c9c6ceca64810b51c0c9980b14950875a3d19cc4e0b68e24b6cf5b06ee13"
+    },
+    {
+      "file": "tests/positive-literal-source-witness.test.ts",
+      "bytes": 11931,
+      "lines": 148,
+      "sha256": "8349a607e9c3f52e5a4dfc98b05d3559e198e23e1daefcc5d275b8a825ed69c0"
+    },
+    {
+      "file": "tests/positive-literal-assessment.test.ts",
+      "bytes": 8407,
+      "lines": 94,
+      "sha256": "fc27dd52fe2aab2745913a1d16f658a7e0dee3a6ca9d0d6effad8a3166e91a32"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"I reviewed lib/positive-literal-source-witness.ts, its integration in lib/delivery-assessment.ts lines 344-372 (active catalog_slots path only), and the two focused test files, as source text only. The new module correctly keeps its scope limited: it applies only when the criterion is source_text, the saved typed step identity matches exactly, there is at least one business check and every business check is unknown for exactly dynamic_or_unsupported_source, and the model's citation exactly matches the unique safe p/li owner. The result is a source-only canonical explanation. It does not claim browser visibility, execution, acceptance or payment, and it does not change positions, excerpts, the citation ledger, V2/legacy paths or raw statuses. I found one narrow boundary behavior worth recording: the helper's occurrence count is based on the literal string found in #text nodes. The owner check itself is strict. My main concern is the bounded grammar's exactness of wording, not unsafe promotion. The Tavola criterion, its typed plan (full menu alias locked to menu.html with visible_copy 'Updated daily'), and the raw owner menu.html[3877,3923) fit this bounded path. No test or typecheck was run.\",\"findings\":[{\"severity\":\"P3\",\"file\":\"lib/positive-literal-source-witness.ts\",\"line\":64,\"title\":\"Occurrence uniqueness counts literal substrings inside longer leaf text, which the owner check does not reject\",\"evidence\":\"Lines 52-59 accept an owner only when the p/li has exactly one #text child, trimHtmlSpace(text) === literal, and the raw inner slice also equals literal. Line 62-64, however, counts occurrences of `literal` in every in-body, non-unsafe #text node, including those in subtrees that line 51 does not skip. So a leaf whose text is only partly the literal (e.g. 'Updated daily at noon') contributes an occurrence and makes occurrences > 1, which fails the else branch at line 68-69. This is fail-closed. It does not create unsafe promotion. The only effect is that a valid exact owner is withheld when the same literal also appears as a substring of other non-owner text.\",\"reproduction\":\"Unexecuted reasoning trace. files menu.html = '<p>Updated daily</p><p>Updated daily at noon.</p>'; plan() with visible_copy 'Updated daily'; citation = exact owner '<p>Updated daily</p>'. locateOwner counts: the exact owner contributes one occurrence, and the second leaf's 'Updated daily' substring contributes another. occurrences === 2 gives {kind:'unwitnessed', reason:'literal_missing_or_not_unique'}. The delivery-assessment.ts:354-361 path then keeps the older unknown business disposition instead of the affirmative source fact.\",\"suggestion\":\"Nothing changes for safety. If the intent is to let an exact owner witness the fact even when the same literal appears only as a substring elsewhere (not as another owner), consider counting exact simple p/li leaf texts (matching lines 52-56 rules) rather than every in-body #text substring, and keep the owners.length === 1 requirement unchanged. Otherwise, document this narrowing in the module comment.\"}],\"limitations\":[\"Read-only source review. I did not execute tests, tsc, parse5, the corpus fixture scripts/project-assessment-corpus-citation-relations-holdout.json, or any runtime path. I did not verify the claimed 17/17 green or the pending second tsc run.\",\"Only the supplied files were available. lib/exact-copy-evidence.ts (hasUncertainSourceBodyCopyAtFile), lib/static-resources.ts (assertStaticPath, STATIC_RESOURCE_LIMITS), lib/contracts.ts, getBusinessCheckPlan's validation, getBusinessCheckPlan business-checks.ts, and the catalog resolver were not supplied in full, so their exact behavior is inferred from names and call sites.\",\"The Tavola corpus record, the real typed plan and saved_business_steps are described but not supplied. I could not confirm that the actual saved plan yields exactly one checkId with viewportWidths [375,900], the full-menu alias resolving to menu.html, and visible_copy 'Updated daily'. I treated it as ground truth given in the task.\",\"Unexecuted: whether the model citation is accepted into checkedCitations as the exact [3877,3923) catalog entry depends on the catalog resolution code, which was not reviewed.\",\"Per instruction, I did not treat unknown external CSS/JS as a defect. The feature's design is that a complete source p establishes only a literal source fact, and I did not flag that.\",\"I did not compare implementation semantics with the bemyapp.com reference page code. I compared only the observable description level (PHAROS_INC deterministic rules and clear report; Agent Receipt evidence-linked authority and replay) as stated in the task, and this review makes no overall superiority or competitor capability claim.\",\"No history, publication-ledger or V2/legacy mutation was found in the supplied text. Untested: the assume-non-mutation relies on the snapshot/structuredClone pattern at lines 83-91 and 262 plus the unchanged later guards at delivery-assessment.ts:373-433.\"]}",
+  "report": {
+    "summary": "I reviewed lib/positive-literal-source-witness.ts, its integration in lib/delivery-assessment.ts lines 344-372 (active catalog_slots path only), and the two focused test files, as source text only. The new module correctly keeps its scope limited: it applies only when the criterion is source_text, the saved typed step identity matches exactly, there is at least one business check and every business check is unknown for exactly dynamic_or_unsupported_source, and the model's citation exactly matches the unique safe p/li owner. The result is a source-only canonical explanation. It does not claim browser visibility, execution, acceptance or payment, and it does not change positions, excerpts, the citation ledger, V2/legacy paths or raw statuses. I found one narrow boundary behavior worth recording: the helper's occurrence count is based on the literal string found in #text nodes. The owner check itself is strict. My main concern is the bounded grammar's exactness of wording, not unsafe promotion. The Tavola criterion, its typed plan (full menu alias locked to menu.html with visible_copy 'Updated daily'), and the raw owner menu.html[3877,3923) fit this bounded path. No test or typecheck was run.",
+    "findings": [
+      {
+        "severity": "P3",
+        "file": "lib/positive-literal-source-witness.ts",
+        "line": 64,
+        "title": "Occurrence uniqueness counts literal substrings inside longer leaf text, which the owner check does not reject",
+        "evidence": "Lines 52-59 accept an owner only when the p/li has exactly one #text child, trimHtmlSpace(text) === literal, and the raw inner slice also equals literal. Line 62-64, however, counts occurrences of `literal` in every in-body, non-unsafe #text node, including those in subtrees that line 51 does not skip. So a leaf whose text is only partly the literal (e.g. 'Updated daily at noon') contributes an occurrence and makes occurrences > 1, which fails the else branch at line 68-69. This is fail-closed. It does not create unsafe promotion. The only effect is that a valid exact owner is withheld when the same literal also appears as a substring of other non-owner text.",
+        "reproduction": "Unexecuted reasoning trace. files menu.html = '<p>Updated daily</p><p>Updated daily at noon.</p>'; plan() with visible_copy 'Updated daily'; citation = exact owner '<p>Updated daily</p>'. locateOwner counts: the exact owner contributes one occurrence, and the second leaf's 'Updated daily' substring contributes another. occurrences === 2 gives {kind:'unwitnessed', reason:'literal_missing_or_not_unique'}. The delivery-assessment.ts:354-361 path then keeps the older unknown business disposition instead of the affirmative source fact.",
+        "suggestion": "Nothing changes for safety. If the intent is to let an exact owner witness the fact even when the same literal appears only as a substring elsewhere (not as another owner), consider counting exact simple p/li leaf texts (matching lines 52-56 rules) rather than every in-body #text substring, and keep the owners.length === 1 requirement unchanged. Otherwise, document this narrowing in the module comment."
+      }
+    ],
+    "limitations": [
+      "Read-only source review. I did not execute tests, tsc, parse5, the corpus fixture scripts/project-assessment-corpus-citation-relations-holdout.json, or any runtime path. I did not verify the claimed 17/17 green or the pending second tsc run.",
+      "Only the supplied files were available. lib/exact-copy-evidence.ts (hasUncertainSourceBodyCopyAtFile), lib/static-resources.ts (assertStaticPath, STATIC_RESOURCE_LIMITS), lib/contracts.ts, getBusinessCheckPlan's validation, getBusinessCheckPlan business-checks.ts, and the catalog resolver were not supplied in full, so their exact behavior is inferred from names and call sites.",
+      "The Tavola corpus record, the real typed plan and saved_business_steps are described but not supplied. I could not confirm that the actual saved plan yields exactly one checkId with viewportWidths [375,900], the full-menu alias resolving to menu.html, and visible_copy 'Updated daily'. I treated it as ground truth given in the task.",
+      "Unexecuted: whether the model citation is accepted into checkedCitations as the exact [3877,3923) catalog entry depends on the catalog resolution code, which was not reviewed.",
+      "Per instruction, I did not treat unknown external CSS/JS as a defect. The feature's design is that a complete source p establishes only a literal source fact, and I did not flag that.",
+      "I did not compare implementation semantics with the bemyapp.com reference page code. I compared only the observable description level (PHAROS_INC deterministic rules and clear report; Agent Receipt evidence-linked authority and replay) as stated in the task, and this review makes no overall superiority or competitor capability claim.",
+      "No history, publication-ledger or V2/legacy mutation was found in the supplied text. Untested: the assume-non-mutation relies on the snapshot/structuredClone pattern at lines 83-91 and 262 plus the unchanged later guards at delivery-assessment.ts:373-433."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

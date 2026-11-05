@@ -1,0 +1,385 @@
+{
+  "id": "full-gap-body-email-with-decoys",
+  "stratum": "untrusted",
+  "reference": [
+    {
+      "criterionId": "coverage-1",
+      "label": {
+        "expectedStatus": "supported",
+        "rationale": "An address owner in the actual static body contains orders@maple.example.test. Comment and script strings are decoys and cannot replace that body witness. The source-copy fact does not establish delivery.",
+        "relevantFiles": [
+          "index.html",
+          "contact.html"
+        ],
+        "requiresSemanticReview": true
+      }
+    }
+  ],
+  "plan": {
+    "requestSha256": "38bee2bc5bc3a75fd8afa184c505dceba88dc686c1c1f5561088035deed6d416",
+    "requestUtf8Bytes": 27620,
+    "promptTokenUpperEstimate": 31716,
+    "outputTokenLimit": 3360,
+    "reservedCostUsd": 0.0135468,
+    "coverage": {
+      "includedFiles": [
+        "contact.html",
+        "index.html",
+        "site.css"
+      ],
+      "truncatedFiles": [],
+      "omittedFiles": []
+    }
+  },
+  "attempted": true,
+  "networkAttempted": true,
+  "criteria": [
+    {
+      "id": "coverage-1",
+      "referenceStatus": "supported",
+      "rawStatus": "supported",
+      "applicationStatus": "supported",
+      "rawCitations": [
+        {
+          "file": "index.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><address>Email: orders@maple.example.test</address><!-- Email: retired@maple.example.test --><script type=\"application/json\">{\"debugEmail\":\"diagnostic@maple.example.test\"}</script></main></body></html>",
+          "start": 0,
+          "end": 372,
+          "valid": true
+        },
+        {
+          "file": "contact.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>",
+          "start": 0,
+          "end": 264,
+          "valid": true
+        }
+      ],
+      "applicationCitations": [
+        {
+          "file": "index.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><address>Email: orders@maple.example.test</address><!-- Email: retired@maple.example.test --><script type=\"application/json\">{\"debugEmail\":\"diagnostic@maple.example.test\"}</script></main></body></html>",
+          "valid": true,
+          "start": 0,
+          "end": 372
+        },
+        {
+          "file": "contact.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>",
+          "valid": true,
+          "start": 0,
+          "end": 264
+        }
+      ],
+      "rawCitationValidity": "valid",
+      "semanticReview": "pending_independent_adjudication"
+    }
+  ],
+  "wholeAnswerSemanticReview": "pending_independent_adjudication",
+  "raw": {
+    "httpStatus": 200,
+    "bodyText": "{\"id\":\"1cbd85c5-d76b-4715-9249-80587ab532e1\",\"object\":\"chat.completion\",\"created\":1793902492,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"index\":0,\"id\":\"call_00_gKcHLgR7Z0yDMIuO9dAs4777\",\"type\":\"function\",\"function\":{\"name\":\"submit_source_assessment_v3\",\"arguments\":\"{\\\"catalogId\\\": \\\"07ba73c35fa8f07f9d545832f7561750b91852ad0a690b0135bda998976fd50e\\\", \\\"items\\\": [{\\\"criterionId\\\": \\\"coverage-1\\\", \\\"status\\\": \\\"supported\\\", \\\"explanation\\\": \\\"index.html contains an address element listing 'Email: orders@maple.example.test'. A retired email appears only in an HTML comment and a diagnostic one only in a JSON script block.\\\", \\\"citations\\\": {\\\"c1\\\": \\\"s5\\\", \\\"c2\\\": \\\"s1\\\", \\\"c3\\\": \\\"\\\", \\\"c4\\\": \\\"\\\", \\\"c5\\\": \\\"\\\", \\\"c6\\\": \\\"\\\"}}], \\\"risks\\\": [{\\\"title\\\": \\\"Commented-out and script-embedded email strings alongside the visible address\\\", \\\"explanation\\\": \\\"index.html includes a commented 'retired@maple.example.test' and a JSON script 'diagnostic@maple.example.test' in addition to the address element's email; comment and script text is not page copy content.\\\", \\\"suggestion\\\": \\\"Confirm the page address element text is the intended single shop email and remove or clarify the comment and diagnostic script strings if they are leftover debug artifacts.\\\", \\\"citations\\\": {\\\"c1\\\": \\\"s5\\\", \\\"c2\\\": \\\"\\\", \\\"c3\\\": \\\"\\\"}}, {\\\"title\\\": \\\"contact.html contains no email address\\\", \\\"explanation\\\": \\\"The whole contact.html source has only a heading and a paragraph about arrangements, with no address element or email string.\\\", \\\"suggestion\\\": \\\"Confirm with the buyer whether the shop email should also appear on contact.html; the requirement says 'the page content', so the agreed page set should be clarified.\\\", \\\"citations\\\": {\\\"c1\\\": \\\"s1\\\", \\\"c2\\\": \\\"\\\", \\\"c3\\\": \\\"\\\"}}], \\\"limitations\\\": [\\\"Source review cannot confirm the email is visible or rendered in a browser; only static markup was inspected.\\\", \\\"The requirement does not name a specific page, so the agreed target page set is not established by the source alone.\\\"]}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":6110,\"completion_tokens\":494,\"total_tokens\":6604,\"prompt_tokens_details\":{\"cached_tokens\":5888},\"prompt_cache_hit_tokens\":5888,\"prompt_cache_miss_tokens\":222},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "bodyPrefixText": null,
+    "bodyComplete": true,
+    "bodyUtf8Bytes": 2391,
+    "bodyByteCountIsComplete": true,
+    "utf8Valid": true,
+    "providerBody": {
+      "id": "1cbd85c5-d76b-4715-9249-80587ab532e1",
+      "object": "chat.completion",
+      "created": 1793902492,
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+              {
+                "index": 0,
+                "id": "call_00_gKcHLgR7Z0yDMIuO9dAs4777",
+                "type": "function",
+                "function": {
+                  "name": "submit_source_assessment_v3",
+                  "arguments": "{\"catalogId\": \"07ba73c35fa8f07f9d545832f7561750b91852ad0a690b0135bda998976fd50e\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"supported\", \"explanation\": \"index.html contains an address element listing 'Email: orders@maple.example.test'. A retired email appears only in an HTML comment and a diagnostic one only in a JSON script block.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"s1\", \"c3\": \"\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [{\"title\": \"Commented-out and script-embedded email strings alongside the visible address\", \"explanation\": \"index.html includes a commented 'retired@maple.example.test' and a JSON script 'diagnostic@maple.example.test' in addition to the address element's email; comment and script text is not page copy content.\", \"suggestion\": \"Confirm the page address element text is the intended single shop email and remove or clarify the comment and diagnostic script strings if they are leftover debug artifacts.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"\", \"c3\": \"\"}}, {\"title\": \"contact.html contains no email address\", \"explanation\": \"The whole contact.html source has only a heading and a paragraph about arrangements, with no address element or email string.\", \"suggestion\": \"Confirm with the buyer whether the shop email should also appear on contact.html; the requirement says 'the page content', so the agreed page set should be clarified.\", \"citations\": {\"c1\": \"s1\", \"c2\": \"\", \"c3\": \"\"}}], \"limitations\": [\"Source review cannot confirm the email is visible or rendered in a browser; only static markup was inspected.\", \"The requirement does not name a specific page, so the agreed target page set is not established by the source alone.\"]}"
+                }
+              }
+            ]
+          },
+          "logprobs": null,
+          "finish_reason": "tool_calls"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 6110,
+        "completion_tokens": 494,
+        "total_tokens": 6604,
+        "prompt_tokens_details": {
+          "cached_tokens": 5888
+        },
+        "prompt_cache_hit_tokens": 5888,
+        "prompt_cache_miss_tokens": 222
+      },
+      "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+    },
+    "contentText": "{\"catalogId\": \"07ba73c35fa8f07f9d545832f7561750b91852ad0a690b0135bda998976fd50e\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"supported\", \"explanation\": \"index.html contains an address element listing 'Email: orders@maple.example.test'. A retired email appears only in an HTML comment and a diagnostic one only in a JSON script block.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"s1\", \"c3\": \"\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [{\"title\": \"Commented-out and script-embedded email strings alongside the visible address\", \"explanation\": \"index.html includes a commented 'retired@maple.example.test' and a JSON script 'diagnostic@maple.example.test' in addition to the address element's email; comment and script text is not page copy content.\", \"suggestion\": \"Confirm the page address element text is the intended single shop email and remove or clarify the comment and diagnostic script strings if they are leftover debug artifacts.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"\", \"c3\": \"\"}}, {\"title\": \"contact.html contains no email address\", \"explanation\": \"The whole contact.html source has only a heading and a paragraph about arrangements, with no address element or email string.\", \"suggestion\": \"Confirm with the buyer whether the shop email should also appear on contact.html; the requirement says 'the page content', so the agreed page set should be clarified.\", \"citations\": {\"c1\": \"s1\", \"c2\": \"\", \"c3\": \"\"}}], \"limitations\": [\"Source review cannot confirm the email is visible or rendered in a browser; only static markup was inspected.\", \"The requirement does not name a specific page, so the agreed target page set is not established by the source alone.\"]}",
+    "originalContentText": "{\"catalogId\": \"07ba73c35fa8f07f9d545832f7561750b91852ad0a690b0135bda998976fd50e\", \"items\": [{\"criterionId\": \"coverage-1\", \"status\": \"supported\", \"explanation\": \"index.html contains an address element listing 'Email: orders@maple.example.test'. A retired email appears only in an HTML comment and a diagnostic one only in a JSON script block.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"s1\", \"c3\": \"\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [{\"title\": \"Commented-out and script-embedded email strings alongside the visible address\", \"explanation\": \"index.html includes a commented 'retired@maple.example.test' and a JSON script 'diagnostic@maple.example.test' in addition to the address element's email; comment and script text is not page copy content.\", \"suggestion\": \"Confirm the page address element text is the intended single shop email and remove or clarify the comment and diagnostic script strings if they are leftover debug artifacts.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"\", \"c3\": \"\"}}, {\"title\": \"contact.html contains no email address\", \"explanation\": \"The whole contact.html source has only a heading and a paragraph about arrangements, with no address element or email string.\", \"suggestion\": \"Confirm with the buyer whether the shop email should also appear on contact.html; the requirement says 'the page content', so the agreed page set should be clarified.\", \"citations\": {\"c1\": \"s1\", \"c2\": \"\", \"c3\": \"\"}}], \"limitations\": [\"Source review cannot confirm the email is visible or rendered in a browser; only static markup was inspected.\", \"The requirement does not name a specific page, so the agreed target page set is not established by the source alone.\"]}",
+    "originalJsonValid": true,
+    "contentNormalization": "none",
+    "transport": "strict_tool",
+    "citationEncoding": "catalog_slots",
+    "catalogIdValid": true,
+    "completion": {
+      "catalogId": "07ba73c35fa8f07f9d545832f7561750b91852ad0a690b0135bda998976fd50e",
+      "items": [
+        {
+          "criterionId": "coverage-1",
+          "status": "supported",
+          "explanation": "index.html contains an address element listing 'Email: orders@maple.example.test'. A retired email appears only in an HTML comment and a diagnostic one only in a JSON script block.",
+          "citations": {
+            "c1": "s5",
+            "c2": "s1",
+            "c3": "",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          }
+        }
+      ],
+      "risks": [
+        {
+          "title": "Commented-out and script-embedded email strings alongside the visible address",
+          "explanation": "index.html includes a commented 'retired@maple.example.test' and a JSON script 'diagnostic@maple.example.test' in addition to the address element's email; comment and script text is not page copy content.",
+          "suggestion": "Confirm the page address element text is the intended single shop email and remove or clarify the comment and diagnostic script strings if they are leftover debug artifacts.",
+          "citations": {
+            "c1": "s5",
+            "c2": "",
+            "c3": ""
+          }
+        },
+        {
+          "title": "contact.html contains no email address",
+          "explanation": "The whole contact.html source has only a heading and a paragraph about arrangements, with no address element or email string.",
+          "suggestion": "Confirm with the buyer whether the shop email should also appear on contact.html; the requirement says 'the page content', so the agreed page set should be clarified.",
+          "citations": {
+            "c1": "s1",
+            "c2": "",
+            "c3": ""
+          }
+        }
+      ],
+      "limitations": [
+        "Source review cannot confirm the email is visible or rendered in a browser; only static markup was inspected.",
+        "The requirement does not name a specific page, so the agreed target page set is not established by the source alone."
+      ]
+    },
+    "items": [
+      {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "index.html contains an address element listing 'Email: orders@maple.example.test'. A retired email appears only in an HTML comment and a diagnostic one only in a JSON script block.",
+        "citations": {
+          "c1": "s5",
+          "c2": "s1",
+          "c3": "",
+          "c4": "",
+          "c5": "",
+          "c6": ""
+        }
+      }
+    ],
+    "risks": [
+      {
+        "title": "Commented-out and script-embedded email strings alongside the visible address",
+        "explanation": "index.html includes a commented 'retired@maple.example.test' and a JSON script 'diagnostic@maple.example.test' in addition to the address element's email; comment and script text is not page copy content.",
+        "suggestion": "Confirm the page address element text is the intended single shop email and remove or clarify the comment and diagnostic script strings if they are leftover debug artifacts.",
+        "citations": {
+          "c1": "s5",
+          "c2": "",
+          "c3": ""
+        }
+      },
+      {
+        "title": "contact.html contains no email address",
+        "explanation": "The whole contact.html source has only a heading and a paragraph about arrangements, with no address element or email string.",
+        "suggestion": "Confirm with the buyer whether the shop email should also appear on contact.html; the requirement says 'the page content', so the agreed page set should be clarified.",
+        "citations": {
+          "c1": "s1",
+          "c2": "",
+          "c3": ""
+        }
+      }
+    ],
+    "limitations": [
+      "Source review cannot confirm the email is visible or rendered in a browser; only static markup was inspected.",
+      "The requirement does not name a specific page, so the agreed target page set is not established by the source alone."
+    ],
+    "finishReason": "tool_calls",
+    "model": "deepseek-flash",
+    "riskCitationChecks": [
+      [
+        {
+          "file": "index.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><address>Email: orders@maple.example.test</address><!-- Email: retired@maple.example.test --><script type=\"application/json\">{\"debugEmail\":\"diagnostic@maple.example.test\"}</script></main></body></html>",
+          "start": 0,
+          "end": 372,
+          "valid": true
+        }
+      ],
+      [
+        {
+          "file": "contact.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>",
+          "start": 0,
+          "end": 264,
+          "valid": true
+        }
+      ]
+    ]
+  },
+  "usage": {
+    "promptTokens": 6110,
+    "completionTokens": 494
+  },
+  "reportedUsageCostUsd": 0.0024258,
+  "usageExceededReservation": false,
+  "application": {
+    "accepted": true,
+    "report": {
+      "id": "3b51bed2-f974-4098-b726-f6df08fa118b",
+      "deliveryId": "eval-full-gap-body-email-with-decoys",
+      "method": "source-ai-v1",
+      "mode": "live",
+      "model": "deepseek-flash",
+      "assessedAt": "2026-11-05T18:14:55.279Z",
+      "items": [
+        {
+          "criterionId": "coverage-1",
+          "status": "supported",
+          "explanation": "A complete source owner in index.html contains email text, and the current citation covers that witness. This supports only the limited source-copy requirement. It does not require duplication on another unspecified page or establish browser visibility, contact validity or delivery; the buyer still reviews it.",
+          "citations": [
+            {
+              "file": "index.html",
+              "start": 0,
+              "end": 372,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><address>Email: orders@maple.example.test</address><!-- Email: retired@maple.example.test --><script type=\"application/json\">{\"debugEmail\":\"diagnostic@maple.example.test\"}</script></main></body></html>"
+            },
+            {
+              "file": "contact.html",
+              "start": 0,
+              "end": 264,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>"
+            }
+          ],
+          "ruleEvidenceIds": [
+            "eval-evidence-1"
+          ],
+          "obligations": {
+            "schema": "source-obligations-v1",
+            "coverage": "bounded_detection",
+            "sourceLength": 50,
+            "clauses": [
+              {
+                "start": 0,
+                "end": 50,
+                "excerpt": "The page content must list the shop email address."
+              }
+            ],
+            "items": [
+              {
+                "id": "obligation-1",
+                "kind": "source_content",
+                "clauseIndex": 0,
+                "state": "source_review_required"
+              }
+            ]
+          }
+        }
+      ],
+      "risks": [],
+      "limitations": [
+        "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+        "The model supplied 2 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+        "The independent agreed scope of 2 optional model indication(s) is not established, so originals are withheld under the custom phone/email text scope. All item findings are unchanged; other page, link or mobile requirements are not declared passed. No status-adjustment record was invented. Human opinions do not release the gate, accept work or make a payment.",
+        "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog 07ba73c35fa8f07f9d545832f7561750b91852ad0a690b0135bda998976fd50e. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+        "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+        "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+      ],
+      "coverage": {
+        "includedFiles": [
+          "contact.html",
+          "index.html",
+          "site.css"
+        ],
+        "truncatedFiles": [],
+        "omittedFiles": []
+      },
+      "withheldRisks": {
+        "version": 2,
+        "reason": "source_scope_unestablished",
+        "scopeCriterionIds": [
+          "coverage-1"
+        ],
+        "adjustedCriteria": [],
+        "entries": [
+          {
+            "originalRiskIndex": 0,
+            "risk": {
+              "title": "Commented-out and script-embedded email strings alongside the visible address",
+              "explanation": "index.html includes a commented 'retired@maple.example.test' and a JSON script 'diagnostic@maple.example.test' in addition to the address element's email; comment and script text is not page copy content.",
+              "suggestion": "Confirm the page address element text is the intended single shop email and remove or clarify the comment and diagnostic script strings if they are leftover debug artifacts.",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "start": 0,
+                  "end": 372,
+                  "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Maple Floral</h1><address>Email: orders@maple.example.test</address><!-- Email: retired@maple.example.test --><script type=\"application/json\">{\"debugEmail\":\"diagnostic@maple.example.test\"}</script></main></body></html>"
+                }
+              ]
+            }
+          },
+          {
+            "originalRiskIndex": 1,
+            "risk": {
+              "title": "contact.html contains no email address",
+              "explanation": "The whole contact.html source has only a heading and a paragraph about arrangements, with no address element or email string.",
+              "suggestion": "Confirm with the buyer whether the shop email should also appear on contact.html; the requirement says 'the page content', so the agreed page set should be clarified.",
+              "citations": [
+                {
+                  "file": "contact.html",
+                  "start": 0,
+                  "end": 264,
+                  "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>About the fictional shop</h1><p>Small batch arrangements made for this authored test.</p></main></body></html>"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "usage": {
+        "promptTokens": 6110,
+        "completionTokens": 494
+      }
+    },
+    "error": null
+  },
+  "elapsedMilliseconds": 3084,
+  "rawDiagnostics": {
+    "expectedCriterionIds": [
+      "coverage-1"
+    ],
+    "returnedKnownCriterionIds": [
+      "coverage-1"
+    ],
+    "missingCriterionIds": [],
+    "duplicateCriterionIds": [],
+    "unknownCriterionCount": 0,
+    "invalidItemCount": 0,
+    "contentParsed": true,
+    "idProfileParsed": true,
+    "profileSource": "original_json",
+    "completeItemCoverage": true,
+    "finishReason": "tool_calls"
+  }
+}

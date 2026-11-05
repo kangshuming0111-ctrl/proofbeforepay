@@ -12,6 +12,7 @@ import {assessmentCitationSelection} from "../lib/assessment-citation-selection.
 import {resolveCatalogCitations} from "../lib/assessment-citation-catalog.ts";
 import {canonicalAssessmentRisk} from "../lib/assessment-risk-fields.ts";
 import {recordRiskReview} from "../lib/risk-reviews.ts";
+import {isAssessmentObligations} from "../lib/assessment-obligations.ts";
 import {prepareProjectEvaluation,projectQuote,validateProjectCorpus} from "./run-project-assessment-evaluation.ts";
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),"..");
@@ -57,6 +58,28 @@ export function stripEvidenceActionMetadata(report){
  // The bounded risk-quarantine extension, when present, is checked separately.
  delete copy.withheldRisks;
  return copy;
+}
+
+/** The later additive obligation record is admitted only after exact original
+ * wording validation on BOTH sides. This does not ignore any verdict, quote,
+ * explanation or an arbitrary new item field. Historical status deltas still
+ * fail the unchanged baseline gate above/below this metadata comparison. */
+export function verifyAdditiveObligationsBaseline(report,previous,criteria){
+ assert.deepEqual(report.items.map(item=>item.criterionId),criteria.map(c=>c.id));
+ assert.deepEqual(previous.items.map(item=>item.criterionId),criteria.map(c=>c.id));
+ const current=stripEvidenceActionMetadata(report),baseline=stripEvidenceActionMetadata(previous);
+ let additions=0,retained=0;
+ for(let index=0;index<criteria.length;index++){
+  const item=report.items[index],old=previous.items[index],criterion=criteria[index];
+  assert.ok(Object.hasOwn(item,"obligations")&&isAssessmentObligations(item.obligations,criterion),"Current additive obligation metadata does not bind to the exact locked wording.");
+  if(Object.hasOwn(old,"obligations")){
+   assert.ok(isAssessmentObligations(old.obligations,criterion),"Baseline obligation metadata is invalid; it cannot be stripped or repaired.");
+   assert.ok(same(item.obligations,old.obligations),"A previously saved obligation record changed.");retained++;
+  }else additions++;
+  delete current.items[index].obligations;delete baseline.items[index].obligations;
+ }
+ assert.ok(same(current,baseline),"A field other than evidenceNeed/withheldRisks/exact validated additive obligations changed from the published baseline.");
+ return{validated:criteria.length,additions,alreadyRetainedUnchanged:retained,exactLockedWording:true,publishedCoreFieldsUnchanged:true};
 }
 
 function verifyCitations(report,files,criteria){
@@ -235,7 +258,7 @@ export async function replayEvidenceActions({groups,baseline,stage="16",requireE
     }));
     assert.equal(intercepts,1);assert.deepEqual(quote,before,"A read-only assessment mutated the quote, acceptance or payment.");
     assert.deepEqual(statuses(report),statuses(previous));
-    assert.ok(same(stripEvidenceActionMetadata(report),stripEvidenceActionMetadata(previous)),"A field other than evidenceNeed/withheldRisks changed from the published baseline.");
+    const obligationsComparison=verifyAdditiveObligationsBaseline(report,previous,packet.criteria);
     for(const item of report.items)if(item.status!=="insufficient_evidence")assert.equal(item.evidenceNeed,undefined);
     const needs=evidenceNeeds(report,project.files);
     if(requireEvidenceNeeds)assert.ok(needs.every(row=>row.hasActionableReason),"An unknown lacks structured evidence-needed metadata.");
@@ -245,7 +268,7 @@ export async function replayEvidenceActions({groups,baseline,stage="16",requireE
     rows.push({group:group.label,id:project.id,criterionCount:project.criteria.length,originalProviderBodySha256:hash(old.raw.bodyText),originalRequestSha256:source.plan.requestSha256,replayRequestSha256:requestSha256,
      originalFreezeSha256:group.frozen.snapshotSha256,sourceFiles:source.files,quoteSha256:source.quoteSha256,quoteUnchanged:true,acceptanceAndPaymentUnchanged:true,
      requestBytesUnchanged:true,completeCriteria:true,itemStatusesUnchanged:true,publishedFieldsUnchanged:true,evidenceNeeds:needs,
-     citationVerification:citations,statusLineage:lineage.statusLineage,withheldRisks,reviewNamespace,baselineApplication:prior.currentApplication,currentApplication:{accepted:true,report,error:null}});
+     citationVerification:citations,obligationsComparison,statusLineage:lineage.statusLineage,withheldRisks,reviewNamespace,baselineApplication:prior.currentApplication,currentApplication:{accepted:true,report,error:null}});
    }
   }
  }finally{globalThis.fetch=originalFetch;}
@@ -264,7 +287,7 @@ export async function replayEvidenceActions({groups,baseline,stage="16",requireE
    quarantinedEntriesVerified:rows.reduce((n,row)=>n+(row.withheldRisks.lineageVerified?row.withheldRisks.expectedEntries:0),0),namespaceReportsChecked:rows.filter(row=>row.reviewNamespace.checked).length,
    statusLineageReportsChecked:rows.filter(row=>row.statusLineage.allAgreedCriteriaCompared).length,statusLineageLedgersVerified:rows.filter(row=>row.statusLineage.ledgerVerified).length,originalToPublishedStatusAdjustments:rows.reduce((n,row)=>n+row.statusLineage.adjustedCriteria.length,0)},
   limits:["Retained original HTTP bodies and byte-identical requests, not new model inference or a prompt experiment.","The baseline is the previous publication replay, not the unprocessed R15 response. Only explicitly allowed new evidence-action metadata may differ.",
-   "Original raw responses, source files, frozen references, item statuses, active risks and report explanations remain unchanged; input hashes are checked again after replay.",
+   "Original raw responses, source files, frozen references, item statuses, active risks and report explanations remain unchanged; input hashes are checked again after replay. New obligation directions are a separately counted additive change and must exactly rederive from each locked criterion; baseline directions, when present, must also validate and remain unchanged.",
    "Evidence requests and quarantined AI leads do not establish a defect, resolution, acceptance or payment. Replaying synthetic or public templates is not a customer test."]};
 }
 

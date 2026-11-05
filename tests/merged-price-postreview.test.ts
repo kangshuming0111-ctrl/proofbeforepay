@@ -1,0 +1,24 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import {assessDelivery} from "../lib/delivery-assessment.ts";
+import {projectQuote,type EvaluationProject} from "../scripts/run-project-assessment-evaluation.ts";
+import {summaryCoverageUnits} from "../lib/requirement-coverage.ts";
+import {getBusinessCheckPlan} from "../lib/business-checks.ts";
+import {createSourceBusinessEvidenceCheck,completeMergedUnknownCitations,sourceBusinessEvidenceExplanation} from "../lib/source-business-evidence.ts";
+import {findMergedPriceContext} from "../lib/merged-price-context.ts";
+import type {ProofAssessmentItem} from "../lib/contracts.ts";
+const table=(label="Tea",a="AUD 18",b="AUD 28")=>`<table><tr><td rowspan="2">${label}</td><td>${a}</td></tr><tr><td>${b}</td></tr></table>`;
+const html=(body:string)=>`<!doctype html><html><head><title>Menu</title></head><body>${body}</body></html>`;
+function fixture(files:Record<string,string>,label="Tea"){
+ const source=`The source menu must list ${label} at AUD 18.`,unit=summaryCoverageUnits(source)[0],p:EvaluationProject={id:"merged-postreview-counterexample",stratum:"boundary",language:"en",title:"Postreview boundary",summary:source,requiredPages:Object.keys(files),files,criteria:[{id:"coverage-1",title:"Original requirement 1",source,reference:{expectedStatus:"insufficient_evidence",rationale:"Controlled review counterexample; no live model score.",relevantFiles:Object.keys(files),requiresSemanticReview:true}}],businessChecks:{confirmed:true,items:Object.keys(files).map((file,index)=>({id:`business-${index+1}`,criterionId:"coverage-1",file,source:{start:unit.start,end:unit.end,excerpt:unit.text},expected:{kind:"item_price",label,currency:"AUD",amountMinor:1800}}))}};return projectQuote(p);
+}
+test("DeepSeek P2 mixed merged/generic unknown retains generic wording and original quotes in both real assessment branches",async()=>{
+ const files={"index.html":html(table()),"menu.html":html("<p>Tea AUD 18</p><p>Tea AUD 28</p>")},q=fixture(files),before=structuredClone(q),steps=getBusinessCheckPlan(q),business=createSourceBusinessEvidenceCheck(files,steps)("coverage-1");assert.equal(business.kind,"unknown");assert.deepEqual(business.checks.map(c=>c.reason),["merged_price_options_unconfirmed","label_not_unique_or_not_located"]);assert.equal(completeMergedUnknownCitations(business),undefined);assert.ok(!sourceBusinessEvidenceExplanation(business,"en").includes("source association is established"));
+ for(const status of ["supported","changes_suggested"]as ProofAssessmentItem["status"][]){let calls=0;const result=await assessDelivery(q,{DEEPSEEK_API_KEY:"offline-controlled-not-a-real-key"},async(_url,init)=>{calls++;const packet=JSON.parse(JSON.parse(String(init!.body)).messages[1].content),entry=packet.citationCatalog.entries.find((e:{file:string;excerpt:string})=>e.file==="menu.html"&&e.excerpt==="<p>Tea AUD 18</p>");assert.ok(entry);return Response.json({choices:[{finish_reason:"tool_calls",message:{tool_calls:[{type:"function",function:{name:"submit_source_assessment_v3",arguments:JSON.stringify({catalogId:packet.citationCatalog.catalogId,items:packet.criteria.map((c:{id:string})=>({criterionId:c.id,status,explanation:"Controlled model prose to test generic uncertainty, not an actual provider judgment.",citations:Object.fromEntries(Array.from({length:6},(_,index)=>[`c${index+1}`,index?"":entry.id]))})),risks:[],limitations:[]})}}]}}]});});
+  assert.equal(calls,1);assert.equal(result.items.length,1);const item=result.items[0];assert.equal(item.status,"insufficient_evidence",status);assert.equal(item.explanation,sourceBusinessEvidenceExplanation(business,"en"),status);assert.ok(!item.explanation.includes("rowspan"),status);assert.ok(!item.explanation.includes("source association is established"),status);assert.equal(item.citations.length,1);assert.equal(item.citations[0].file,"menu.html");assert.equal(item.citations[0].excerpt,"<p>Tea AUD 18</p>");assert.equal(files["menu.html"].slice(item.citations[0].start,item.citations[0].end),item.citations[0].excerpt);
+ }
+ assert.deepEqual(q,before);
+});
+test("DeepSeek P3 AUD amount used as a label and another table price stays generic unknown, never a definite verdict",()=>{
+ const files={"index.html":html(table("AUD 18","AUD 25","AUD 30")+"<table><tr><td>Tea</td><td>AUD 18</td></tr></table>")},q=fixture(files,"AUD 18");assert.equal(findMergedPriceContext(files,"index.html","AUD 18"),undefined);const business=createSourceBusinessEvidenceCheck(files,getBusinessCheckPlan(q))("coverage-1");assert.equal(business.kind,"unknown");assert.equal(business.checks[0].reason,"label_not_unique_or_not_located");assert.equal(completeMergedUnknownCitations(business),undefined);assert.deepEqual(business.citations,[]);assert.ok(!sourceBusinessEvidenceExplanation(business,"en").includes("source association is established"));
+});

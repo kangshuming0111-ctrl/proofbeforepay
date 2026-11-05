@@ -1,0 +1,362 @@
+{
+  "schema": "pbp-curated-catalog-and-source-audit-v1",
+  "apiCalls": 0,
+  "networkCalls": 0,
+  "phases": [
+    {
+      "phase": "first",
+      "liveFile": "prospective-eight-first-live.json",
+      "archiveFile": "prospective-eight-final-runtime-inert-source.json",
+      "runtimeFiles": 39,
+      "runtimeSourceContentsAndHashesExact": true,
+      "runtimeFilesMatchingCurrent": 34,
+      "projects": 8,
+      "catalogsRebuilt": 8,
+      "cases": [
+        {
+          "id": "full-gap-present-phone",
+          "catalogId": "f46cc84ed427ca4fd01bf8ac8d468b45030769e25925ce87537aeac1224c2b76",
+          "sourceFiles": [
+            {
+              "file": "contact.html",
+              "sha256": "7095c36faa8b6cf7255774867e6aea86d5be970e1ccd2ad06d8bee11f3266694"
+            },
+            {
+              "file": "index.html",
+              "sha256": "3bfa628b7131912995ea606fd211624ec8aec8985a5a0b3bcf3e8e46dab36672"
+            },
+            {
+              "file": "site.css",
+              "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+            }
+          ],
+          "catalogExactReconstruction": true
+        },
+        {
+          "id": "full-gap-missing-phone",
+          "catalogId": "288ec91f294e11680ef4b078b42b89c165bc04c46fdd8b1b87ee69b720126b70",
+          "sourceFiles": [
+            {
+              "file": "contact.html",
+              "sha256": "4a48044a6bdb99e1da6d43bbf9fa1109d1ac736864d48c4bd22e6b451cd6da55"
+            },
+            {
+              "file": "index.html",
+              "sha256": "d5506d84fcc69b296b104f2f51567c3517cd645929fc2b13035937fe2d543977"
+            },
+            {
+              "file": "site.css",
+              "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+            }
+          ],
+          "catalogExactReconstruction": true
+        },
+        {
+          "id": "full-gap-body-email-with-decoys",
+          "catalogId": "07ba73c35fa8f07f9d545832f7561750b91852ad0a690b0135bda998976fd50e",
+          "sourceFiles": [
+            {
+              "file": "contact.html",
+              "sha256": "7095c36faa8b6cf7255774867e6aea86d5be970e1ccd2ad06d8bee11f3266694"
+            },
+            {
+              "file": "index.html",
+              "sha256": "319b3a3a98faa6fdbc429c5b029ca67a329141ec3187387070b32379bbd61a42"
+            },
+            {
+              "file": "site.css",
+              "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+            }
+          ],
+          "catalogExactReconstruction": true
+        },
+        {
+          "id": "full-gap-inert-email-only",
+          "catalogId": "32fda4e0e57063da3a8e5ad2abec754ef9bd4318f84a7b8afd1c0985e255b2ce",
+          "sourceFiles": [
+            {
+              "file": "contact.html",
+              "sha256": "7095c36faa8b6cf7255774867e6aea86d5be970e1ccd2ad06d8bee11f3266694"
+            },
+            {
+              "file": "index.html",
+              "sha256": "25f5f60949644254a53873a07396cb0c24eab3333d635a37779a8b1f516f032e"
+            },
+            {
+              "file": "site.css",
+              "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+            }
+          ],
+          "catalogExactReconstruction": true
+        },
+        {
+          "id": "full-gap-named-page-phone",
+          "catalogId": "3649282cd1be2e66b616623c9f24f0dcf2c9b6e8d064b435cfdc7967375cafb8",
+          "sourceFiles": [
+            {
+              "file": "contact.html",
+              "sha256": "98727395321dbdac50db5e487c461596128a8f7ce84a839524bcc8cec70892a6"
+            },
+            {
+              "file": "index.html",
+              "sha256": "b3206c15f432be03d7c0f449866cb9b218495f8f26ec96e3d505d17ac9b67568"
+            },
+            {
+              "file": "site.css",
+              "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+            }
+          ],
+          "catalogExactReconstruction": true
+        },
+        {
+          "id": "full-gap-cross-page-price-owner",
+          "catalogId": "8213411b1de13c90587fad07a75c16557600fc50719f518fa04f4c86567c5767",
+          "sourceFiles": [
+            {
+              "file": "index.html",
+              "sha256": "d32baba41e9e914640b24110ccfcecf39302219804ca29476b2d814f5f53c98a"
+            },
+            {
+              "file": "menu.html",
+              "sha256": "bc17e596ebe3c04a47232a5410b6dbb7eaa1b397488a7e4e9a085f99e81a291d"
+            },
+            {
+              "file": "site.css",
+              "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+            }
+          ],
+          "catalogExactReconstruction": true
+        },
+        {
+          "id": "full-gap-compound-and-quoted-copy",
+          "catalogId": "e7642dccfefb3ae068a0618cbbeb0ffa577e6832174148be3e7d461a79d5c1c7",
+          "sourceFiles": [
+            {
+              "file": "contact.html",
+              "sha256": "dd2ab3e475247d079b55f5a1379861017da50b46cf524f9de9de61326bd22a93"
+            },
+            {
+              "file": "index.html",
+              "sha256": "388f938ce897a9cab099f2b4d003368960de39b7bb982419adbc592cb5bbdf78"
+            },
+            {
+              "file": "site.css",
+              "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+            }
+          ],
+          "catalogExactReconstruction": true
+        },
+        {
+          "id": "full-gap-merged-row-price-meaning",
+          "catalogId": "ca3de75a3de7fea952d05a3b9f81c29a6419c6b2fb204a0776bb03c3b586f34b",
+          "sourceFiles": [
+            {
+              "file": "index.html",
+              "sha256": "bb4192f5cb65cb2165c5c7429473816208bc9860dfc71d4a134a5fde33cdd97b"
+            },
+            {
+              "file": "menu.html",
+              "sha256": "a4a294dca00834921b3456520de8f6408d661aa87cd4b68ab53731edd16bb6b5"
+            },
+            {
+              "file": "site.css",
+              "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+            }
+          ],
+          "catalogExactReconstruction": true
+        }
+      ],
+      "citations": {
+        "rawItem": 23,
+        "rawRisk": 15,
+        "applicationItem": 21,
+        "activeRisk": 11,
+        "quarantinedRisk": 4,
+        "allExactUtf16": true
+      }
+    },
+    {
+      "phase": "known_repair",
+      "liveFile": "known-repair-eight-live.json",
+      "archiveFile": "known-repair-eight-final-runtime-inert-source.json",
+      "runtimeFiles": 40,
+      "runtimeSourceContentsAndHashesExact": true,
+      "runtimeFilesMatchingCurrent": 40,
+      "projects": 8,
+      "catalogsRebuilt": 8,
+      "cases": [
+        {
+          "id": "full-gap-present-phone",
+          "catalogId": "f46cc84ed427ca4fd01bf8ac8d468b45030769e25925ce87537aeac1224c2b76",
+          "sourceFiles": [
+            {
+              "file": "contact.html",
+              "sha256": "7095c36faa8b6cf7255774867e6aea86d5be970e1ccd2ad06d8bee11f3266694"
+            },
+            {
+              "file": "index.html",
+              "sha256": "3bfa628b7131912995ea606fd211624ec8aec8985a5a0b3bcf3e8e46dab36672"
+            },
+            {
+              "file": "site.css",
+              "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+            }
+          ],
+          "catalogExactReconstruction": true
+        },
+        {
+          "id": "full-gap-missing-phone",
+          "catalogId": "288ec91f294e11680ef4b078b42b89c165bc04c46fdd8b1b87ee69b720126b70",
+          "sourceFiles": [
+            {
+              "file": "contact.html",
+              "sha256": "4a48044a6bdb99e1da6d43bbf9fa1109d1ac736864d48c4bd22e6b451cd6da55"
+            },
+            {
+              "file": "index.html",
+              "sha256": "d5506d84fcc69b296b104f2f51567c3517cd645929fc2b13035937fe2d543977"
+            },
+            {
+              "file": "site.css",
+              "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+            }
+          ],
+          "catalogExactReconstruction": true
+        },
+        {
+          "id": "full-gap-body-email-with-decoys",
+          "catalogId": "07ba73c35fa8f07f9d545832f7561750b91852ad0a690b0135bda998976fd50e",
+          "sourceFiles": [
+            {
+              "file": "contact.html",
+              "sha256": "7095c36faa8b6cf7255774867e6aea86d5be970e1ccd2ad06d8bee11f3266694"
+            },
+            {
+              "file": "index.html",
+              "sha256": "319b3a3a98faa6fdbc429c5b029ca67a329141ec3187387070b32379bbd61a42"
+            },
+            {
+              "file": "site.css",
+              "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+            }
+          ],
+          "catalogExactReconstruction": true
+        },
+        {
+          "id": "full-gap-inert-email-only",
+          "catalogId": "32fda4e0e57063da3a8e5ad2abec754ef9bd4318f84a7b8afd1c0985e255b2ce",
+          "sourceFiles": [
+            {
+              "file": "contact.html",
+              "sha256": "7095c36faa8b6cf7255774867e6aea86d5be970e1ccd2ad06d8bee11f3266694"
+            },
+            {
+              "file": "index.html",
+              "sha256": "25f5f60949644254a53873a07396cb0c24eab3333d635a37779a8b1f516f032e"
+            },
+            {
+              "file": "site.css",
+              "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+            }
+          ],
+          "catalogExactReconstruction": true
+        },
+        {
+          "id": "full-gap-named-page-phone",
+          "catalogId": "3649282cd1be2e66b616623c9f24f0dcf2c9b6e8d064b435cfdc7967375cafb8",
+          "sourceFiles": [
+            {
+              "file": "contact.html",
+              "sha256": "98727395321dbdac50db5e487c461596128a8f7ce84a839524bcc8cec70892a6"
+            },
+            {
+              "file": "index.html",
+              "sha256": "b3206c15f432be03d7c0f449866cb9b218495f8f26ec96e3d505d17ac9b67568"
+            },
+            {
+              "file": "site.css",
+              "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+            }
+          ],
+          "catalogExactReconstruction": true
+        },
+        {
+          "id": "full-gap-cross-page-price-owner",
+          "catalogId": "8213411b1de13c90587fad07a75c16557600fc50719f518fa04f4c86567c5767",
+          "sourceFiles": [
+            {
+              "file": "index.html",
+              "sha256": "d32baba41e9e914640b24110ccfcecf39302219804ca29476b2d814f5f53c98a"
+            },
+            {
+              "file": "menu.html",
+              "sha256": "bc17e596ebe3c04a47232a5410b6dbb7eaa1b397488a7e4e9a085f99e81a291d"
+            },
+            {
+              "file": "site.css",
+              "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+            }
+          ],
+          "catalogExactReconstruction": true
+        },
+        {
+          "id": "full-gap-compound-and-quoted-copy",
+          "catalogId": "e7642dccfefb3ae068a0618cbbeb0ffa577e6832174148be3e7d461a79d5c1c7",
+          "sourceFiles": [
+            {
+              "file": "contact.html",
+              "sha256": "dd2ab3e475247d079b55f5a1379861017da50b46cf524f9de9de61326bd22a93"
+            },
+            {
+              "file": "index.html",
+              "sha256": "388f938ce897a9cab099f2b4d003368960de39b7bb982419adbc592cb5bbdf78"
+            },
+            {
+              "file": "site.css",
+              "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+            }
+          ],
+          "catalogExactReconstruction": true
+        },
+        {
+          "id": "full-gap-merged-row-price-meaning",
+          "catalogId": "ca3de75a3de7fea952d05a3b9f81c29a6419c6b2fb204a0776bb03c3b586f34b",
+          "sourceFiles": [
+            {
+              "file": "index.html",
+              "sha256": "bb4192f5cb65cb2165c5c7429473816208bc9860dfc71d4a134a5fde33cdd97b"
+            },
+            {
+              "file": "menu.html",
+              "sha256": "a4a294dca00834921b3456520de8f6408d661aa87cd4b68ab53731edd16bb6b5"
+            },
+            {
+              "file": "site.css",
+              "sha256": "107b9d052b25c2dd0973e4006c2f05b51a4aaec58081fba45c2bf31aece6de8b"
+            }
+          ],
+          "catalogExactReconstruction": true
+        }
+      ],
+      "citations": {
+        "rawItem": 24,
+        "rawRisk": 12,
+        "applicationItem": 20,
+        "activeRisk": 2,
+        "quarantinedRisk": 10,
+        "allExactUtf16": true
+      }
+    }
+  ],
+  "sourceArchives": {
+    "providerVersions": 79,
+    "ownReferenceVersions": 5,
+    "flaskAdapterVersions": 5,
+    "totalVerifiedSourceFileVersions": 89
+  },
+  "limits": [
+    "First and repair implementations are separately archived; the first is not represented as the final code.",
+    "Same frozen eight authored sources are reused, not new customer or independent unseen projects.",
+    "Exact source hashes, reconstructed catalog identity and UTF16 quotes establish provenance/consistency, not semantic sufficiency or execution authenticity."
+  ]
+}

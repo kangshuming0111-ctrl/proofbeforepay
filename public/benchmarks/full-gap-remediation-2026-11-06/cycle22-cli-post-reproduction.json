@@ -1,0 +1,24 @@
+{
+  "schema": "pbp-cli-post-reproduction-v1",
+  "actualModelCalls": 0,
+  "networkCalls": 0,
+  "wrongSignature": {
+    "status": "invalid",
+    "reason": "signature_invalid"
+  },
+  "unknownKey": {
+    "status": "invalid",
+    "reason": "unknown_key"
+  },
+  "missingReceipt": {
+    "status": "invalid",
+    "reason": "invalid_receipt"
+  },
+  "inconsistentAudit": {
+    "status": "invalid",
+    "reason": "digest_mismatch"
+  },
+  "receiptVerifierCallsForInconsistentAudit": 0,
+  "securityOutcome": "All invalid cases reject; no unsigned fallback or unverified audit exposed.",
+  "diagnosticOutcome": "Inner invalid audit is incorrectly labeled digest_mismatch although the receipt verifier did not run."
+}

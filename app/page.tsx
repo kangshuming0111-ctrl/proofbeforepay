@@ -1,5 +1,7 @@
 "use client";
 
+import {FirstUseGuide} from "./components/FirstUseGuide";
+
 import { useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import {
   ArrowDownToLine, ArrowRight, ArrowUpRight, Check, CheckCheck,
@@ -1394,6 +1396,7 @@ export default function Home() {
       </header>
 
       <main className="main-wrap cockpit-main">
+        <div className="first-use-guide-shell" hidden={workspaceView !== "workbench"}><FirstUseGuide language={language} busy={!!busy||loading}/></div>
         <h1 className="sr-only">{tr("交付验收工作台", "Delivery acceptance workspace")}</h1>
         <div className="workflow no-print" hidden={welcomeActive} aria-label={tr("验收流程", "Acceptance workflow")}>
           {steps.map((step, index) => <div className={`workflow-step ${index === currentStep ? "current" : ""} ${index < currentStep && completedSteps[index] ? "done" : ""}`} key={step}><span>{index < currentStep && completedSteps[index] ? <Check size={13} /> : `0${index + 1}`}</span><strong>{step}</strong>{index < steps.length - 1 && <ChevronRight className="step-arrow" size={15} />}</div>)}

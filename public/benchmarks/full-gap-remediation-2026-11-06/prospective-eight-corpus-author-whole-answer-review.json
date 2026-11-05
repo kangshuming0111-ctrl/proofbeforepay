@@ -1,0 +1,265 @@
+{
+  "schema": "pbp-prospective-eight-corpus-author-whole-answer-review-v1",
+  "createdAt": "2026-11-05T17:56:42.456431+00:00",
+  "reviewer": "Codex corpus-author agent; independent of DeepSeek provider response, not independent of reference authorship and not a human study",
+  "apiCalls": 0,
+  "networkCalls": 0,
+  "inputAudit": {
+    "file": "prospective-eight-first-source-audit.json",
+    "sha256": "2d4434e09a12a92f4d0babd1e313b5281f9d92fc8eacca4e6a1ed8b899524162"
+  },
+  "scope": "First replies for eight authored synthetic projects / nine source criteria; no retries, reference changes, external projects or generic accuracy estimate.",
+  "classificationPolicy": {
+    "accepted": "Whole published/raw answer is source-grounded, in locked scope and honest about evidence level.",
+    "qualified": "Core status/action remains reasonable but a specific non-blocking wording, relevance or actionability issue remains.",
+    "rejected": "At least one important status or active claim/repair direction overreaches the evidence or locked scope. Mechanical report admission is distinct."
+  },
+  "summary": {
+    "projects": 8,
+    "criteria": 9,
+    "rawReferenceAgreement": 7,
+    "applicationReferenceAgreement": 9,
+    "rawWholeAnswers": {
+      "accepted": 2,
+      "qualified": 3,
+      "rejected": 3
+    },
+    "applicationWholeAnswers": {
+      "accepted": 5,
+      "qualified": 2,
+      "rejected": 1
+    },
+    "exactCitationCounts": {
+      "projects": 8,
+      "criteria": 9,
+      "rawReferenceAgreement": 7,
+      "applicationReferenceAgreement": 9,
+      "rawItemCitations": 23,
+      "rawRiskCitations": 15,
+      "applicationItemCitations": 21,
+      "activeRiskCitations": 11,
+      "withheldRiskCitations": 4,
+      "withheldRisks": 2,
+      "obligationsValidated": 9,
+      "statusAdjustments": 2,
+      "admittedReports": 8,
+      "completeRawReports": 8
+    }
+  },
+  "rows": [
+    {
+      "id": "full-gap-present-phone",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "sourceReferenceAgreement": {
+        "raw": 1,
+        "application": 1,
+        "total": 1
+      },
+      "reviewNotes": [
+        "The source-only supported claim is confined to the labelled p owner in index.html. Generic page-content scope does not require duplicating the telephone on contact.html.",
+        "No rendered visibility or phone ownership is claimed in the published item."
+      ],
+      "requestSha256": "aa5a853dc6d2a3c5b9a697392277b6eba9292d01c0cfeb04f1c723cbf4681286",
+      "providerBodySha256": "6c8a70a394238cad694df35d2082b3701915d5e2975585a917e441d13edc36d4",
+      "citations": {
+        "rawItem": 2,
+        "rawRisk": 0,
+        "applicationItem": 2,
+        "activeRisk": 0,
+        "withheldRisk": 0,
+        "allExact": true
+      },
+      "obligationsValidated": true
+    },
+    {
+      "id": "full-gap-missing-phone",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "sourceReferenceAgreement": {
+        "raw": 1,
+        "application": 1,
+        "total": 1
+      },
+      "reviewNotes": [
+        "The limited static-copy omission and proposed phone repair are supported by both complete plain documents.",
+        "The raw/published risk title incorrectly calls contact.html the only text-bearing page; index.html also contains an h1 and paragraph. Keep this precision issue visible despite the correct item status."
+      ],
+      "requestSha256": "6d10c7cd05b9ed16d2d9274c24baf8265dd473bf803c539642ef0bd314696e6e",
+      "providerBodySha256": "301e723d4b7fff8e9147016061d2b95b80a5378cf95664eaca454935daf0c924",
+      "citations": {
+        "rawItem": 2,
+        "rawRisk": 3,
+        "applicationItem": 2,
+        "activeRisk": 3,
+        "withheldRisk": 0,
+        "allExact": true
+      },
+      "obligationsValidated": true
+    },
+    {
+      "id": "full-gap-body-email-with-decoys",
+      "rawWholeAnswer": "rejected",
+      "applicationWholeAnswer": "rejected",
+      "sourceReferenceAgreement": {
+        "raw": 1,
+        "application": 1,
+        "total": 1
+      },
+      "reviewNotes": [
+        "The body address owner genuinely establishes email source copy and the supported item status is correct.",
+        "The item nevertheless calls the address copy visible despite no browser observation.",
+        "The first optional risk raises absent email on contact.html even though the locked generic page-content requirement is already satisfied on index.html; its conditional suggestion is additional scope, not an evidenced delivery defect.",
+        "The second optional risk treats explicitly archived/commented and diagnostic JSON strings as a potential defect without an agreed requirement to remove such source data.",
+        "Because no item status changed, these leads remain published rather than quarantined; this is a real optional-risk scope/wording quality gap, not a false citation."
+      ],
+      "requestSha256": "38bee2bc5bc3a75fd8afa184c505dceba88dc686c1c1f5561088035deed6d416",
+      "providerBodySha256": "ca8b5c999c6c937ba82bf6b0fee4ab0724be44c9257c54bc23bea4cacf76ce3b",
+      "citations": {
+        "rawItem": 3,
+        "rawRisk": 4,
+        "applicationItem": 3,
+        "activeRisk": 4,
+        "withheldRisk": 0,
+        "allExact": true
+      },
+      "obligationsValidated": true
+    },
+    {
+      "id": "full-gap-inert-email-only",
+      "rawWholeAnswer": "rejected",
+      "applicationWholeAnswer": "accepted",
+      "sourceReferenceAgreement": {
+        "raw": 0,
+        "application": 1,
+        "total": 1
+      },
+      "reviewNotes": [
+        "The raw answer asserts no page visibly lists an email and proposes definite repair while its own limitations acknowledge that the external widget code/output is unsupplied.",
+        "The application correctly changes this to source-evidence uncertainty and retains both original optional leads separately under the report-wide gate. It does not assert email absence, run a browser or mark the item passed."
+      ],
+      "requestSha256": "e874edec1e22c4e9bf0db90ddf293e68c46f7a7bde3f596e5d5e1c75b342b083",
+      "providerBodySha256": "d5b8a62ad8face8ba5f52983da80bbe63c861545f2f768eabad7393a130cf623",
+      "citations": {
+        "rawItem": 5,
+        "rawRisk": 4,
+        "applicationItem": 5,
+        "activeRisk": 0,
+        "withheldRisk": 4,
+        "allExact": true
+      },
+      "obligationsValidated": true
+    },
+    {
+      "id": "full-gap-named-page-phone",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "sourceReferenceAgreement": {
+        "raw": 1,
+        "application": 1,
+        "total": 1
+      },
+      "reviewNotes": [
+        "The named-page omission is correctly distinguished from the real telephone owner on contact.html; the item and repair lead are source-supported.",
+        "A raw limitation unnecessarily speculates about dynamically injected text after noting that no script files are declared. This raw limitation is not published as a detected fact."
+      ],
+      "requestSha256": "8c1d9547f95bdd73d98bd2273b7beff1d78868faa53a6c07ecbb9c4d5d584bd7",
+      "providerBodySha256": "883653634f33e35fff4dc4b0532128b183000e437ed775c92a36e4f764105bbd",
+      "citations": {
+        "rawItem": 3,
+        "rawRisk": 2,
+        "applicationItem": 3,
+        "activeRisk": 2,
+        "withheldRisk": 0,
+        "allExact": true
+      },
+      "obligationsValidated": true
+    },
+    {
+      "id": "full-gap-cross-page-price-owner",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "sourceReferenceAgreement": {
+        "raw": 1,
+        "application": 1,
+        "total": 1
+      },
+      "reviewNotes": [
+        "The raw answer and the canonical application comparison keep Tea/Coffee owners and index/menu pages separate.",
+        "The exact source mismatch is Tea AUD24 on menu.html against the buyer-confirmed AUD18; nearby Coffee AUD18 does not substitute. Runtime pricing is not claimed."
+      ],
+      "requestSha256": "3ca5dcdb8a068674725b4a0ffc5fc838f7b069951ea55d9344aa877b182b4938",
+      "providerBodySha256": "d558ebd4276a37f8fc965498775e32c92de102582d9defdd785da57f47254d9d",
+      "citations": {
+        "rawItem": 3,
+        "rawRisk": 2,
+        "applicationItem": 1,
+        "activeRisk": 2,
+        "withheldRisk": 0,
+        "allExact": true
+      },
+      "obligationsValidated": true
+    },
+    {
+      "id": "full-gap-compound-and-quoted-copy",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "sourceReferenceAgreement": {
+        "raw": 2,
+        "application": 2,
+        "total": 2
+      },
+      "reviewNotes": [
+        "Both criterion statuses are correct: actual submission/email/write/restart readback remain unverified, whereas the literal Submission heading is supported copy.",
+        "The raw limitations mention referenced/omitted scripts despite this fixture declaring none; this is imprecise coverage wording, not proof of execution or a missing implementation. The application keeps only fixed inventory/coverage notes.",
+        "Saved obligations distinguish the actual operation directions and leave all execution_not_verified; the quoted label has only source_content and does not invent a submission operation."
+      ],
+      "requestSha256": "b399164d930c46581725a44e1af4371b85c9f3cc1069b51c822c24903a85f4de",
+      "providerBodySha256": "9f97c76c01c6e403616092149a3398580263a9f4c326c5a6b5945a28d39d4ac1",
+      "citations": {
+        "rawItem": 3,
+        "rawRisk": 0,
+        "applicationItem": 3,
+        "activeRisk": 0,
+        "withheldRisk": 0,
+        "allExact": true
+      },
+      "obligationsValidated": true
+    },
+    {
+      "id": "full-gap-merged-row-price-meaning",
+      "rawWholeAnswer": "rejected",
+      "applicationWholeAnswer": "qualified",
+      "sourceReferenceAgreement": {
+        "raw": 0,
+        "application": 1,
+        "total": 1
+      },
+      "reviewNotes": [
+        "The raw supported verdict cherry-picks AUD18 while the same Tea rowspan also owns AUD28. A confirmed amount alone does not settle which price applies to the agreed order.",
+        "The application correctly withholds a supported conclusion under complex-source uncertainty. Its explanation remains generic: a more useful result would state that Tea already relates to both rows and ask which price/option applies, rather than only listing possible source complexities."
+      ],
+      "requestSha256": "7cd5adf3a1ec2a4b2178056cba2dcf92e24579de7b019a9d1a3979c5879a5588",
+      "providerBodySha256": "39e42e23ef2297e05447462d49f2de7f5bf2adda8a617a521cb18394ba03df2a",
+      "citations": {
+        "rawItem": 2,
+        "rawRisk": 0,
+        "applicationItem": 2,
+        "activeRisk": 0,
+        "withheldRisk": 0,
+        "allExact": true
+      },
+      "obligationsValidated": true
+    }
+  ],
+  "remainingActualIssues": [
+    "body-email-with-decoys: unobserved visible wording and extra-scope published contact/debug-email repair leads",
+    "missing-phone: false only-text-bearing-page risk title",
+    "merged-row: safe unknown still lacks precise which-price-applies question"
+  ],
+  "limits": [
+    "This review is not independent of the corpus/reference author. Obtain a separate reviewer of raw and application answers before presenting independent whole-answer counts.",
+    "Exact quotes and reference-status agreement do not eliminate semantic or optional-risk errors.",
+    "Quarantined original provider leads are retained evidence, not published confirmed defects."
+  ]
+}

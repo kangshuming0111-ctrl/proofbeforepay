@@ -1,0 +1,26 @@
+{
+  "schema": "pbp-cycle22-cli-followup-adjudication-v1",
+  "finding": "The revision CLI only dispatched unsigned core audits, so official issued revision downloads were unsupported.",
+  "decision": "accepted_and_fixed",
+  "runtimeAssessmentChanged": false,
+  "fix": "Recognizable issued envelopes use verifyIssuedRevisionAudit and never downgrade; explicit raw cores retain unsigned/unproven status.",
+  "tests": {
+    "command": "node --experimental-strip-types --test tests/revision-audit.test.ts tests/revision-audit-route.test.ts",
+    "passed": 15,
+    "failed": 0,
+    "log": "cycle22-cli-signed-followup-tests.log",
+    "sha256": "e5de93028a76d182a61164ade652e20fb4f8224e0ce3cfaed0d5d262654242a2"
+  },
+  "cases": [
+    "unsigned core exit0 issuance unproven",
+    "unknown key exit1",
+    "fake pinned-key signature exit1",
+    "missing receipt exit1",
+    "disguised issued schema exit1",
+    "network API blocked in the actual child CLI process"
+  ],
+  "productionSignedDownloadCli": "pending root hosted verification",
+  "deepseekFollowup": "pending root source review",
+  "secretsRead": false,
+  "newLiveModelCalls": 0
+}

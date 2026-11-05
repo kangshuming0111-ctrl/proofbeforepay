@@ -1,5 +1,6 @@
 import type { ProofQuote, ProofRiskReview, ProofRole } from './contracts.ts';
 import { DomainError } from './domain.ts';
+import {finiteContactPresenceScopeCriterionIds} from './assessment-publication-policy.ts';
 
 export type RiskReviewInput = { deliveryId: string; assessmentId: string; riskIndex: number; riskOrigin?: "withheld"; decision: ProofRiskReview['decision']; reason: string };
 
@@ -17,7 +18,10 @@ export function recordRiskReview(quote: ProofQuote, role: ProofRole, value: unkn
   const riskIndex=Number(input.riskIndex);
   if(withheld){
     const pool=report.withheldRisks,entry=pool?.entries?.[riskIndex];
-    if(!pool||pool.version!==1||pool.reason!=='item_status_adjusted'||!Array.isArray(pool.entries)||pool.entries.length>5||!entry||entry.originalRiskIndex!==riskIndex||!entry.risk)throw new DomainError('Choose an exact withheld lead in this report.');
+    const eligible=pool&&(pool.version===1&&pool.reason==='item_status_adjusted'
+      ||pool.version===2&&pool.reason==='source_scope_unestablished'&&Array.isArray(pool.adjustedCriteria)&&pool.adjustedCriteria.length===0&&report.risks.length===0&&Array.isArray(pool.entries)&&pool.entries.length>0&&Array.isArray(pool.scopeCriterionIds)
+        &&JSON.stringify(pool.scopeCriterionIds)===JSON.stringify(finiteContactPresenceScopeCriterionIds(quote.proof.criteria,report.items,delivery.files??{})));
+    if(!eligible||!pool||!Array.isArray(pool.entries)||pool.entries.length>5||!entry||entry.originalRiskIndex!==riskIndex||!entry.risk)throw new DomainError('Choose an exact withheld lead in this report.');
   }else if(riskIndex>=report.risks.length)throw new DomainError('Choose a published risk in this report.');
   if (typeof input.decision !== 'string' || !['confirmed','rejected','needs_evidence'].includes(input.decision)) throw new DomainError('Choose a human review decision.');
   if (typeof input.reason!=='string' || !input.reason.trim() || input.reason.trim().length>1000 || /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/u.test(input.reason)) throw new DomainError('Add a reason of 1–1000 characters.');

@@ -1,0 +1,9 @@
+{
+  "schema": "pbp-retained-text-artifact-v1",
+  "originalFile": "outputs/full-gap-remediation-2026-11-06/flask-thirdparty/installed-dependencies.txt",
+  "originalSha256": "0d7c7e0cda93ff0332cc315de5eba207bb82c2687d0d18d1c3bc675a1ffaba5b",
+  "text": "blinker==1.9.0\nclick==8.5.0\nFlask==3.1.2\nitsdangerous==2.2.0\nJinja2==3.1.6\nMarkupSafe==3.0.4\nWerkzeug==3.1.9\n",
+  "limits": [
+    "Retained developer artifact; no independent human result is claimed."
+  ]
+}

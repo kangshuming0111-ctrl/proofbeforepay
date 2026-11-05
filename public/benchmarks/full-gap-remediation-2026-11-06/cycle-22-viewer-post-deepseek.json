@@ -1,0 +1,99 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "app/guest-lab/evidence-controller.ts",
+      "bytes": 8181,
+      "lines": 99,
+      "sha256": "3b69af2fd5cda667288670b4483f89c189e9c09106ff5759a5f39ee268dd373b"
+    },
+    {
+      "file": "app/guest-lab/evidence-viewer.ts",
+      "bytes": 40554,
+      "lines": 244,
+      "sha256": "59a14367f7d51295ed5211191694cdcfbbbd8e551b75eeab8c13ede4abf0bad5"
+    },
+    {
+      "file": "lib/issued-revision-audit.ts",
+      "bytes": 3704,
+      "lines": 41,
+      "sha256": "505c99e92e27d1eb0de24dfdf6339b5b2b6e498eff7756c478aa32040eb8d181"
+    },
+    {
+      "file": "tests/evidence-revision-viewer.test.ts",
+      "bytes": 10809,
+      "lines": 52,
+      "sha256": "335981db0d8d5bbd291a3dcff0434520e5eb90ec9f4c7c06ce43a7538d4f2586"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Reviewed the supplied packet only (evidence-controller.ts, evidence-viewer.ts, issued-revision-audit.ts, evidence-revision-viewer.test.ts) against the Cycle 22 conditions. Several required controls hold in the supplied source: signed envelopes are detected by schema or by an own audit/receipt key and never fall back to the unsigned verifier (controller lines 66-67); a failed envelope is reported as invalid with no revision audit or packet, and revisionAudit is only set when consistency is consistent and issuance is verified (line 68); reset() and every new begin() bump the generation, so later results from older selections are revoked (lines 58-59, 67, 76, 85, 89); input is limited to 8 MiB via the bundle limit and file.size, parsed as fatal UTF-8 plain JSON, with no fetch or evaluation path (lines 35-40, 88); the production controller uses the pinned-key verifyIssuedRevisionAudit by default, so a test-key envelope is rejected (test line 26); and test line 31 asserts the unsigned verifier is never called for the seven mutated envelopes. The defects below are UI consistency problems that can tell the user there is no signature check, or show the wrong checks or files, even though the underlying verification result is correct. Every finding is based on the supplied source, and the runtime and test behaviour is unexecuted (reviewed by reading only).\",\"findings\":[{\"severity\":\"P2\",\"file\":\"app/guest-lab/evidence-viewer.ts\",\"line\":107,\"title\":\"A valid signed envelope with a broken structure shows the misleading unsigned-legacy note\",\"evidence\":\"gatePanel runs when state.phase==='ready' and state.issuance.status==='invalid'. In that case, if a check is missing (for example the structure check that createIssuedRevisionAuditVerifier emits, issued-revision-audit.ts lines 19-20), the hide condition at line 107 is evaluated. Its grouped expression is effectively `(ready && issuance.status!==undefined && issuance.status!==\\\"unproven\\\") || [...legacy-only ids].includes(id)`. The legacy list includes 'structure'. So for id==='structure' the right side is always true and the row is skipped even when issuance is invalid. The issuer-envelope and issuer-receipt rows from that failed verification are also skipped (line 107), because issuance.status==='invalid' makes the first clause true. None of the invalid-issuance checks are named in `gates` (lines 18-45), so line 116 also drops them as unnamed and renders the 'not yet named by this view' note. The gate list is therefore empty, line 114 finds no schema/structure row, and the panel shows no signature failure at all.\",\"reproduction\":\"Not executed. Reasoning trace: call openFile on an envelope where row.audit has been replaced with a non-object (or with an object outside the revision-audit budget). issued-revision-audit.ts line 22 runs verifyRevisionAudit(captured.audit). Line 23 sets issuance to {status:'invalid',reason:'digest_mismatch'}. Line 26 adds issuer-receipt inconsistent. Controller line 73 publishes phase 'ready' with that issuance and with issuancePanel 'Application issuance could not be verified'. In gatePanel, checks = [issuer-receipt] (plus any base checks). For every gates entry, the find returns undefined. The legacy list contains 'structure', so the 'structure' row is skipped, and the issuance-invalid clause skips the remaining rows. checks.length is 1, and line 117 shows only the unnamed-checks note. Result: the signature-failure check is never shown under 'Evidence checks' for exactly the case the task says must be fixed.\",\"suggestion\":\"Only apply the legacy-only skip list to unsigned legacy states. For example, hide the legacy ids only when state.issuance?.status==='unproven', and show 'structure' whenever a check exists. Also add 'issuer-receipt' and 'issuer-envelope' copy to `gates`, and treat invalid-issuance check ids as named so line 117 does not fire.\"},{\"severity\":\"P2\",\"file\":\"app/guest-lab/evidence-viewer.ts\",\"line\":115,\"title\":\"Structure-failure callout uses the legacy bounds message for signed envelopes and ignores a missing structure check\",\"evidence\":\"Line 114 computes early with `row.id===\\\"schema\\\"||row.id===\\\"structure\\\"&&row.status!==\\\"consistent\\\"`. A signed envelope whose structure or budget fails carries only issuer-envelope/issuer-receipt checks (issued-revision-audit.ts line 20) and no 'schema' row. {id:'schema',status:'inconsistent'} is therefore the only trigger in that path. It prints 'Raw project JSON is not silently treated as this format', which describes an unsigned raw-project input, not a failed signed envelope whose structure or budget is invalid. When the structure check is missing, nothing is shown at the gates level. This disagrees with the requirement that a broken schema is never treated as unsigned and that actual failed-gate status stays visible.\",\"reproduction\":\"Not executed. Reasoning trace: open an issued revision audit with a valid 'schema', 'audit' and 'receipt' whose schema is broken (for example audit.versions is not an array), so the envelope fails at line 19 or 20 of issued-revision-audit.ts. The controller publishes ready with issuance invalid, packet undefined and checks = [issuer-envelope, issuer-receipt]. gatePanel: both rows are skipped or unnamed (finding 1), early = undefined because no 'schema' row exists and the 'structure' row is absent, and no callout is rendered. Result: the specific structural failure is not explained anywhere at gate level.\",\"suggestion\":\"In gatePanel, when state.issuance?.status==='invalid', render a callout that names the issuer-envelope/issuer-receipt inconsistency (ignoring status, not just id), and only use the 'raw project JSON' or 'outside bounded JSON' wording for unsigned inputs.\"},{\"severity\":\"P3\",\"file\":\"app/guest-lab/evidence-viewer.ts\",\"line\":150,\"title\":\"Switching to an archived revision can expose the unsigned-v1 source of that version while the verified-path gate copy describes a complete 'Current' or 'Archived' bundle\",\"evidence\":\"sourcePanel, when an audit is present, sets packet to selected.evidence for schema proofbeforepay-evidence-export-v1 (line 150). That unsigned legacy v1 core is then shown (files and @requirements). But gates entries 'bounded-json', 'bundle-structure' and 'revision-inventory' (lines 19-20, 25) say 'The entire record remains bounded plain JSON; oversized revisions are not omitted' and 'The unchanged v1 core and supplemental reports have explicit bounds'. Those outcomes are the envelope-level checks from the consistent verification. They are not re-run against the selected archived v1 evidence by the viewer. The source panel therefore attaches complete-bundle wording to text from an older, unsigned format. The text itself is taken from the exact selected version, not from the current version.\",\"reproduction\":\"Not executed. Reasoning trace: open a valid issued audit whose versions[0] is archived-core with evidence.schema==='proofbeforepay-evidence-export-v1'. In sourcePanel, the revision chooser defaults to versions.at(-1) (current). Selecting versions[0] sets packet to the v1 export (line 150), and the pre block shows the archived v1 files (line 159). Switching to the Evidence checks tab shows 'bounded-json' as 'Consistent' with the copy promising that the entire record is bounded and that oversized revisions are not omitted. That statement covers the signed envelope, not the selected archived evidence's own limits.\",\"suggestion\":\"When the chooser selects an archived-core version whose evidence is a v1 export, label the source area as retained unsigned legacy core (v1) with its original verification scope, and avoid displaying the envelope-level 'bounded-json'/'bundle-structure' copy as if it had been recomputed for that selected v1 object.\"}],\"limitations\":[\"Source-only static review: no build, typecheck, test run, render, browser check or network probe was performed. The seven-mutation no-fallback test (test line 31) and the production-test-key rejection (test line 26) are read as claims, not confirmed runtime results.\",\"Only the four supplied packet files were inspected. The behaviour of verifyRevisionAudit, verifyEvidenceBundle, revisionAuditDigest, verifyEvidenceIssuerReceipt, assertEvidenceBundleBudget, EVIDENCE_BUNDLE_BYTE_LIMIT and the pinned EVIDENCE_ISSUER_KEYS is assumed from usage and is not verified.\",\"The actual key pinning and receipt checks live outside the packet. Whether the production key set contains only the official application key could not be checked, so 'official application issuance only' is not independently confirmed.\",\"The recorded tests use an ephemeral test registry and a transpiled partial render of individual functions. Full-page tab and focus behaviour (including the revision-tab visibility rule at line 239) was not rendered.\",\"No assessment of legal, payment, backend-truth or third-party timestamp claims beyond what the supplied UI strings state.\"]}",
+  "report": {
+    "summary": "Reviewed the supplied packet only (evidence-controller.ts, evidence-viewer.ts, issued-revision-audit.ts, evidence-revision-viewer.test.ts) against the Cycle 22 conditions. Several required controls hold in the supplied source: signed envelopes are detected by schema or by an own audit/receipt key and never fall back to the unsigned verifier (controller lines 66-67); a failed envelope is reported as invalid with no revision audit or packet, and revisionAudit is only set when consistency is consistent and issuance is verified (line 68); reset() and every new begin() bump the generation, so later results from older selections are revoked (lines 58-59, 67, 76, 85, 89); input is limited to 8 MiB via the bundle limit and file.size, parsed as fatal UTF-8 plain JSON, with no fetch or evaluation path (lines 35-40, 88); the production controller uses the pinned-key verifyIssuedRevisionAudit by default, so a test-key envelope is rejected (test line 26); and test line 31 asserts the unsigned verifier is never called for the seven mutated envelopes. The defects below are UI consistency problems that can tell the user there is no signature check, or show the wrong checks or files, even though the underlying verification result is correct. Every finding is based on the supplied source, and the runtime and test behaviour is unexecuted (reviewed by reading only).",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "app/guest-lab/evidence-viewer.ts",
+        "line": 107,
+        "title": "A valid signed envelope with a broken structure shows the misleading unsigned-legacy note",
+        "evidence": "gatePanel runs when state.phase==='ready' and state.issuance.status==='invalid'. In that case, if a check is missing (for example the structure check that createIssuedRevisionAuditVerifier emits, issued-revision-audit.ts lines 19-20), the hide condition at line 107 is evaluated. Its grouped expression is effectively `(ready && issuance.status!==undefined && issuance.status!==\"unproven\") || [...legacy-only ids].includes(id)`. The legacy list includes 'structure'. So for id==='structure' the right side is always true and the row is skipped even when issuance is invalid. The issuer-envelope and issuer-receipt rows from that failed verification are also skipped (line 107), because issuance.status==='invalid' makes the first clause true. None of the invalid-issuance checks are named in `gates` (lines 18-45), so line 116 also drops them as unnamed and renders the 'not yet named by this view' note. The gate list is therefore empty, line 114 finds no schema/structure row, and the panel shows no signature failure at all.",
+        "reproduction": "Not executed. Reasoning trace: call openFile on an envelope where row.audit has been replaced with a non-object (or with an object outside the revision-audit budget). issued-revision-audit.ts line 22 runs verifyRevisionAudit(captured.audit). Line 23 sets issuance to {status:'invalid',reason:'digest_mismatch'}. Line 26 adds issuer-receipt inconsistent. Controller line 73 publishes phase 'ready' with that issuance and with issuancePanel 'Application issuance could not be verified'. In gatePanel, checks = [issuer-receipt] (plus any base checks). For every gates entry, the find returns undefined. The legacy list contains 'structure', so the 'structure' row is skipped, and the issuance-invalid clause skips the remaining rows. checks.length is 1, and line 117 shows only the unnamed-checks note. Result: the signature-failure check is never shown under 'Evidence checks' for exactly the case the task says must be fixed.",
+        "suggestion": "Only apply the legacy-only skip list to unsigned legacy states. For example, hide the legacy ids only when state.issuance?.status==='unproven', and show 'structure' whenever a check exists. Also add 'issuer-receipt' and 'issuer-envelope' copy to `gates`, and treat invalid-issuance check ids as named so line 117 does not fire."
+      },
+      {
+        "severity": "P2",
+        "file": "app/guest-lab/evidence-viewer.ts",
+        "line": 115,
+        "title": "Structure-failure callout uses the legacy bounds message for signed envelopes and ignores a missing structure check",
+        "evidence": "Line 114 computes early with `row.id===\"schema\"||row.id===\"structure\"&&row.status!==\"consistent\"`. A signed envelope whose structure or budget fails carries only issuer-envelope/issuer-receipt checks (issued-revision-audit.ts line 20) and no 'schema' row. {id:'schema',status:'inconsistent'} is therefore the only trigger in that path. It prints 'Raw project JSON is not silently treated as this format', which describes an unsigned raw-project input, not a failed signed envelope whose structure or budget is invalid. When the structure check is missing, nothing is shown at the gates level. This disagrees with the requirement that a broken schema is never treated as unsigned and that actual failed-gate status stays visible.",
+        "reproduction": "Not executed. Reasoning trace: open an issued revision audit with a valid 'schema', 'audit' and 'receipt' whose schema is broken (for example audit.versions is not an array), so the envelope fails at line 19 or 20 of issued-revision-audit.ts. The controller publishes ready with issuance invalid, packet undefined and checks = [issuer-envelope, issuer-receipt]. gatePanel: both rows are skipped or unnamed (finding 1), early = undefined because no 'schema' row exists and the 'structure' row is absent, and no callout is rendered. Result: the specific structural failure is not explained anywhere at gate level.",
+        "suggestion": "In gatePanel, when state.issuance?.status==='invalid', render a callout that names the issuer-envelope/issuer-receipt inconsistency (ignoring status, not just id), and only use the 'raw project JSON' or 'outside bounded JSON' wording for unsigned inputs."
+      },
+      {
+        "severity": "P3",
+        "file": "app/guest-lab/evidence-viewer.ts",
+        "line": 150,
+        "title": "Switching to an archived revision can expose the unsigned-v1 source of that version while the verified-path gate copy describes a complete 'Current' or 'Archived' bundle",
+        "evidence": "sourcePanel, when an audit is present, sets packet to selected.evidence for schema proofbeforepay-evidence-export-v1 (line 150). That unsigned legacy v1 core is then shown (files and @requirements). But gates entries 'bounded-json', 'bundle-structure' and 'revision-inventory' (lines 19-20, 25) say 'The entire record remains bounded plain JSON; oversized revisions are not omitted' and 'The unchanged v1 core and supplemental reports have explicit bounds'. Those outcomes are the envelope-level checks from the consistent verification. They are not re-run against the selected archived v1 evidence by the viewer. The source panel therefore attaches complete-bundle wording to text from an older, unsigned format. The text itself is taken from the exact selected version, not from the current version.",
+        "reproduction": "Not executed. Reasoning trace: open a valid issued audit whose versions[0] is archived-core with evidence.schema==='proofbeforepay-evidence-export-v1'. In sourcePanel, the revision chooser defaults to versions.at(-1) (current). Selecting versions[0] sets packet to the v1 export (line 150), and the pre block shows the archived v1 files (line 159). Switching to the Evidence checks tab shows 'bounded-json' as 'Consistent' with the copy promising that the entire record is bounded and that oversized revisions are not omitted. That statement covers the signed envelope, not the selected archived evidence's own limits.",
+        "suggestion": "When the chooser selects an archived-core version whose evidence is a v1 export, label the source area as retained unsigned legacy core (v1) with its original verification scope, and avoid displaying the envelope-level 'bounded-json'/'bundle-structure' copy as if it had been recomputed for that selected v1 object."
+      }
+    ],
+    "limitations": [
+      "Source-only static review: no build, typecheck, test run, render, browser check or network probe was performed. The seven-mutation no-fallback test (test line 31) and the production-test-key rejection (test line 26) are read as claims, not confirmed runtime results.",
+      "Only the four supplied packet files were inspected. The behaviour of verifyRevisionAudit, verifyEvidenceBundle, revisionAuditDigest, verifyEvidenceIssuerReceipt, assertEvidenceBundleBudget, EVIDENCE_BUNDLE_BYTE_LIMIT and the pinned EVIDENCE_ISSUER_KEYS is assumed from usage and is not verified.",
+      "The actual key pinning and receipt checks live outside the packet. Whether the production key set contains only the official application key could not be checked, so 'official application issuance only' is not independently confirmed.",
+      "The recorded tests use an ephemeral test registry and a transpiled partial render of individual functions. Full-page tab and focus behaviour (including the revision-tab visibility rule at line 239) was not rendered.",
+      "No assessment of legal, payment, backend-truth or third-party timestamp claims beyond what the supplied UI strings state."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

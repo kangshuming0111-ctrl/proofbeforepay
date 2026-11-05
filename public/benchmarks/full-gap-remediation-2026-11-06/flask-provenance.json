@@ -1,0 +1,152 @@
+{
+  "schema": "pbp-thirdparty-source-provenance-v1",
+  "upstream": "https://github.com/pallets/flask",
+  "officialTutorial": "https://flask.palletsprojects.com/en/stable/tutorial/",
+  "tag": "3.1.2",
+  "annotatedTagObject": "80be49be88b534d2a72ef6bf5ea4aabf89f3305b",
+  "commit": "2c1b30d0503cfb064f1cb252e6614a06915a362a",
+  "tutorialRoot": "examples/tutorial",
+  "licence": "BSD-3-Clause; retained examples/tutorial/LICENSE.txt and repository LICENSE.txt",
+  "retrievedAt": "2026-11-05T17:29:17.488457+00:00",
+  "files": [
+    {
+      "path": "examples/tutorial/.gitignore",
+      "bytes": 119,
+      "sha256": "33e8459e8e10c3260d9b06a2d3a256306cbc154708601d734bff17c42109b319",
+      "gitBlob": "a306afbc08add2208b56b29ace2701a2f91bbf77"
+    },
+    {
+      "path": "examples/tutorial/LICENSE.txt",
+      "bytes": 1475,
+      "sha256": "489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea",
+      "gitBlob": "9d227a0cc43c3268d15722b763bd94ad298645a1"
+    },
+    {
+      "path": "examples/tutorial/README.rst",
+      "bytes": 1273,
+      "sha256": "e6c7aa25f5a857ce3b30c0b2a2d0d7a25bbf0f1c96d700e1bad2868c7ea231f5",
+      "gitBlob": "653c216729dd4f9aac68ee375f52587d69981645"
+    },
+    {
+      "path": "examples/tutorial/flaskr/__init__.py",
+      "bytes": 1437,
+      "sha256": "ecfe54451a0cb1cfb8aac26d0f65bdfc4b1fc5ccd7148f4ad38829a8ba26f03a",
+      "gitBlob": "e35934d67616f3978a78c19ea222bec702bbe24b"
+    },
+    {
+      "path": "examples/tutorial/flaskr/auth.py",
+      "bytes": 3296,
+      "sha256": "a5ed5eaa05c6f6ee3e5bdb07b9e657a6e9320a115a68fd74b1cb4ac646680167",
+      "gitBlob": "34c03a204f03fdfb339640b788044174e7487eb7"
+    },
+    {
+      "path": "examples/tutorial/flaskr/blog.py",
+      "bytes": 3305,
+      "sha256": "c49c5f6e3db32d74bfac13633fd328ec904cb7159d76ca78f6956432076c1fd7",
+      "gitBlob": "be0d92c4354c9ffa4fa10d970995d735c2c71209"
+    },
+    {
+      "path": "examples/tutorial/flaskr/db.py",
+      "bytes": 1317,
+      "sha256": "700f9d0a455bf79c9bf6de4f2784f13b96256faea19c15ddee71fb7957e14c31",
+      "gitBlob": "dec22fde2d8fb4ebb0be5c03982d0f0ee69ccf17"
+    },
+    {
+      "path": "examples/tutorial/flaskr/schema.sql",
+      "bytes": 498,
+      "sha256": "c23021b8a5229cedd3191825850e963f393790a794d31ac2f83846a0c5d559f7",
+      "gitBlob": "dd4c86600a4b6d022f3c7dbbd97b1d4ca78e0fdd"
+    },
+    {
+      "path": "examples/tutorial/flaskr/static/style.css",
+      "bytes": 1696,
+      "sha256": "b7724c7981be21b5a13484c8f7eb9df306f06a88406db3dc7619b80aa040e372",
+      "gitBlob": "2f1f4d0c3c57c4916577e3acc4b9d3f1d1e6f23c"
+    },
+    {
+      "path": "examples/tutorial/flaskr/templates/auth/login.html",
+      "bytes": 424,
+      "sha256": "f0d4ee341a19c8f9d51a66c5da624e687e58de7e3fb2ca41c6f5b8d07e20a6c1",
+      "gitBlob": "b326b5a6b8e469710b20be8487956757ffc8ac9c"
+    },
+    {
+      "path": "examples/tutorial/flaskr/templates/auth/register.html",
+      "bytes": 428,
+      "sha256": "53da308c1d62f057613ec8e445eb70e89404288f503156102d1e3e39ec5b2153",
+      "gitBlob": "4320e17e8499856b22b22d5cfb830ab0378a378b"
+    },
+    {
+      "path": "examples/tutorial/flaskr/templates/base.html",
+      "bytes": 752,
+      "sha256": "a3c74c6ba8ae95bd3b4b63c0bcf5712944c5b954578514c1316a248db0949b07",
+      "gitBlob": "f09e92687c7acf29f0068ae485859dca43bfb5c3"
+    },
+    {
+      "path": "examples/tutorial/flaskr/templates/blog/create.html",
+      "bytes": 447,
+      "sha256": "f41e3166cfd09d41a88def1896fb93631e707b0d9968b14ccb00953263e20025",
+      "gitBlob": "88e31e44bdc255d905e2e6b4a040c979d7e48221"
+    },
+    {
+      "path": "examples/tutorial/flaskr/templates/blog/index.html",
+      "bytes": 790,
+      "sha256": "67cdf10979b06f697953477d0ee8043e56a11ebe87b03b307ada12d13a240617",
+      "gitBlob": "3481b8e18d6022f3c0c633c0c721824cc398f79e"
+    },
+    {
+      "path": "examples/tutorial/flaskr/templates/blog/update.html",
+      "bytes": 690,
+      "sha256": "0e16cd0d933914628e890411dcddd7527fb96b5a7c9113390d93b3e79b44b5ad",
+      "gitBlob": "2c405e63038ec6693ca7fcbe8af8a53150c0d3e9"
+    },
+    {
+      "path": "examples/tutorial/pyproject.toml",
+      "bytes": 771,
+      "sha256": "8ea666f85481f44bc7a5cef54e39ab939f92f5f2cb576f9a6b959866a3fac0aa",
+      "gitBlob": "ca31e53d19af7c897527681c04f8dca0a4e3947c"
+    },
+    {
+      "path": "examples/tutorial/tests/conftest.py",
+      "bytes": 1454,
+      "sha256": "2778b7c035d917bb0909ec6ee2f9d61ccba030ff8ae635ff65a52c133ec5afca",
+      "gitBlob": "6bf62f0a8fcf6f922fe43bf58fb625b7352492f4"
+    },
+    {
+      "path": "examples/tutorial/tests/data.sql",
+      "bytes": 394,
+      "sha256": "244a542220a64bdbf9bd3340f8280551b95e6d3248ead974fdd0a07a7dd06a0c",
+      "gitBlob": "9b68006510ba310c37f43d7f9ecd5588d2707a7e"
+    },
+    {
+      "path": "examples/tutorial/tests/test_auth.py",
+      "bytes": 2070,
+      "sha256": "cbbe178c9980d8499561d8eae72f01b8abeead2fa10c9d5f71427da4af38a938",
+      "gitBlob": "76db62f79d66f92e45eb3dc85b61c7a3dbdbdb57"
+    },
+    {
+      "path": "examples/tutorial/tests/test_blog.py",
+      "bytes": 2503,
+      "sha256": "a4c01c486e86aed522c3ade398bf4016f6ef59bbada2c7c5f69eb55ce297877c",
+      "gitBlob": "55c769d8174e10790027ccdda5ed301707ff6a8f"
+    },
+    {
+      "path": "examples/tutorial/tests/test_db.py",
+      "bytes": 616,
+      "sha256": "324baea21b981575b4e6d92b6517f21ec2ad86a6138010863a9fcfb4f984e649",
+      "gitBlob": "2363bf816375198cb1bc72b134f223fbc66c7caf"
+    },
+    {
+      "path": "examples/tutorial/tests/test_factory.py",
+      "bytes": 298,
+      "sha256": "1906cfed379afe315b6ad7db3c71c951ac87c53b57b28b04b5b6c84df2a79e01",
+      "gitBlob": "9b7ca57fd4458184428a5bfef183ac113de60cb3"
+    }
+  ],
+  "originalSourceModified": false,
+  "newProjectForThisBatch": true,
+  "limits": [
+    "Official framework tutorial rather than customer production project.",
+    "Local HTTP and SQLite observation only; no user browser or third-party service.",
+    "Mail is unsupported by the upstream tutorial."
+  ]
+}

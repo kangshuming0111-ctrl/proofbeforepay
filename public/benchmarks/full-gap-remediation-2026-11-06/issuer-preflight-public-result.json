@@ -1,0 +1,20 @@
+{
+  "schema": "pbp-issuer-preflight-v1",
+  "digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "receipt": {
+    "schema": "pbp-evidence-issuer-receipt-v1",
+    "keyId": "pbp-issuer-92779b570c3e4a8d",
+    "issuer": "https://briefpay-kang-lab.blueheron8.chatgpt.site",
+    "issuedAt": "2026-11-05T17:44:45.841Z",
+    "payloadSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "signature": "Jb2PXv7cFFyP505GoKtxYaQSDEhedTBSN959ivNHn8iIxQixWtnPRM8tGdGY4YsZ2nmR1JE2IX62zhcLG9YXAg"
+  },
+  "verification": {
+    "status": "verified",
+    "reason": "pinned_issuer_signature",
+    "keyId": "pbp-issuer-92779b570c3e4a8d",
+    "issuer": "https://briefpay-kang-lab.blueheron8.chatgpt.site",
+    "issuedAt": "2026-11-05T17:44:45.841Z"
+  },
+  "privateKeyPersisted": false
+}

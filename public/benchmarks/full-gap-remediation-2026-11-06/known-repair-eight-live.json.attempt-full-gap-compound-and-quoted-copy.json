@@ -1,0 +1,415 @@
+{
+  "id": "full-gap-compound-and-quoted-copy",
+  "stratum": "boundary",
+  "reference": [
+    {
+      "criterionId": "manual-1",
+      "label": {
+        "expectedStatus": "insufficient_evidence",
+        "rationale": "Form and fixed success text cannot establish actual submission, owner email delivery, durable writes or independent restart readback. Each operation remains unverified; do not promote the quoted label into an execution claim.",
+        "relevantFiles": [
+          "index.html",
+          "contact.html"
+        ],
+        "requiresSemanticReview": true
+      }
+    },
+    {
+      "criterionId": "coverage-1",
+      "label": {
+        "expectedStatus": "supported",
+        "rationale": "The h1 contains the complete requested literal Submission. The word is copy data, not a requirement to execute a submission.",
+        "relevantFiles": [
+          "index.html"
+        ],
+        "requiresSemanticReview": true
+      }
+    }
+  ],
+  "plan": {
+    "requestSha256": "b399164d930c46581725a44e1af4371b85c9f3cc1069b51c822c24903a85f4de",
+    "requestUtf8Bytes": 28668,
+    "promptTokenUpperEstimate": 32764,
+    "outputTokenLimit": 3520,
+    "reservedCostUsd": 0.014053199999999998,
+    "coverage": {
+      "includedFiles": [
+        "contact.html",
+        "index.html",
+        "site.css"
+      ],
+      "truncatedFiles": [],
+      "omittedFiles": []
+    }
+  },
+  "attempted": true,
+  "networkAttempted": true,
+  "criteria": [
+    {
+      "id": "manual-1",
+      "referenceStatus": "insufficient_evidence",
+      "rawStatus": "insufficient_evidence",
+      "applicationStatus": "insufficient_evidence",
+      "rawCitations": [
+        {
+          "file": "index.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Submission</h1><form action=\"#\"><label>Name<input name=\"name\"></label><button type=\"submit\">Send enquiry</button></form><p class=\"status\">Your enquiry is saved and emailed.</p></main></body></html>",
+          "start": 0,
+          "end": 351,
+          "valid": true
+        },
+        {
+          "file": "index.html",
+          "excerpt": "<p class=\"status\">Your enquiry is saved and emailed.</p>",
+          "start": 274,
+          "end": 330,
+          "valid": true
+        }
+      ],
+      "applicationCitations": [
+        {
+          "file": "index.html",
+          "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Submission</h1><form action=\"#\"><label>Name<input name=\"name\"></label><button type=\"submit\">Send enquiry</button></form><p class=\"status\">Your enquiry is saved and emailed.</p></main></body></html>",
+          "valid": true,
+          "start": 0,
+          "end": 351
+        },
+        {
+          "file": "index.html",
+          "excerpt": "<p class=\"status\">Your enquiry is saved and emailed.</p>",
+          "valid": true,
+          "start": 274,
+          "end": 330
+        }
+      ],
+      "rawCitationValidity": "valid",
+      "semanticReview": "pending_independent_adjudication"
+    },
+    {
+      "id": "coverage-1",
+      "referenceStatus": "supported",
+      "rawStatus": "supported",
+      "applicationStatus": "supported",
+      "rawCitations": [
+        {
+          "file": "index.html",
+          "excerpt": "<h1>Submission</h1>",
+          "start": 150,
+          "end": 169,
+          "valid": true
+        }
+      ],
+      "applicationCitations": [
+        {
+          "file": "index.html",
+          "excerpt": "<h1>Submission</h1>",
+          "valid": true,
+          "start": 150,
+          "end": 169
+        }
+      ],
+      "rawCitationValidity": "valid",
+      "semanticReview": "pending_independent_adjudication"
+    }
+  ],
+  "wholeAnswerSemanticReview": "pending_independent_adjudication",
+  "raw": {
+    "httpStatus": 200,
+    "bodyText": "{\"id\":\"5aa70056-8cfa-4448-85ff-296150a5d5e6\",\"object\":\"chat.completion\",\"created\":1793902503,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"index\":0,\"id\":\"call_00_iQRAwnkN17eceBRNFSQK5084\",\"type\":\"function\",\"function\":{\"name\":\"submit_source_assessment_v3\",\"arguments\":\"{\\\"catalogId\\\": \\\"e7642dccfefb3ae068a0618cbbeb0ffa577e6832174148be3e7d461a79d5c1c7\\\", \\\"items\\\": [{\\\"criterionId\\\": \\\"manual-1\\\", \\\"status\\\": \\\"insufficient_evidence\\\", \\\"explanation\\\": \\\"Email delivery after submission and a receipt surviving a restart need runtime/backend evidence. index.html only contains a form with action \\\\\\\"#\\\\\\\" and a static status paragraph; neither proves emailing or persistence.\\\", \\\"citations\\\": {\\\"c1\\\": \\\"s5\\\", \\\"c2\\\": \\\"s10\\\", \\\"c3\\\": \\\"\\\", \\\"c4\\\": \\\"\\\", \\\"c5\\\": \\\"\\\", \\\"c6\\\": \\\"\\\"}}, {\\\"criterionId\\\": \\\"coverage-1\\\", \\\"status\\\": \\\"supported\\\", \\\"explanation\\\": \\\"index.html contains the exact word \\\\\\\"Submission\\\\\\\" in an h1. Buyer must still confirm final acceptance.\\\", \\\"citations\\\": {\\\"c1\\\": \\\"s7\\\", \\\"c2\\\": \\\"\\\", \\\"c3\\\": \\\"\\\", \\\"c4\\\": \\\"\\\", \\\"c5\\\": \\\"\\\", \\\"c6\\\": \\\"\\\"}}], \\\"risks\\\": [], \\\"limitations\\\": [\\\"No script or backend files are in inventory; email sending, submission handling and receipt persistence after restart are unverified.\\\", \\\"The status copy \\\\\\\"Your enquiry is saved and emailed.\\\\\\\" is static markup; the source does not establish when or whether it is shown.\\\", \\\"Form action \\\\\\\"#\\\\\\\" resolves to the current document; the source does not show how submissions are handled.\\\", \\\"Only the index.html h1 was checked for the exact word \\\\\\\"Submission\\\\\\\"; contact.html does not contain it.\\\"]}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":6427,\"completion_tokens\":413,\"total_tokens\":6840,\"prompt_tokens_details\":{\"cached_tokens\":6272},\"prompt_cache_hit_tokens\":6272,\"prompt_cache_miss_tokens\":155},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "bodyPrefixText": null,
+    "bodyComplete": true,
+    "bodyUtf8Bytes": 1977,
+    "bodyByteCountIsComplete": true,
+    "utf8Valid": true,
+    "providerBody": {
+      "id": "5aa70056-8cfa-4448-85ff-296150a5d5e6",
+      "object": "chat.completion",
+      "created": 1793902503,
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+              {
+                "index": 0,
+                "id": "call_00_iQRAwnkN17eceBRNFSQK5084",
+                "type": "function",
+                "function": {
+                  "name": "submit_source_assessment_v3",
+                  "arguments": "{\"catalogId\": \"e7642dccfefb3ae068a0618cbbeb0ffa577e6832174148be3e7d461a79d5c1c7\", \"items\": [{\"criterionId\": \"manual-1\", \"status\": \"insufficient_evidence\", \"explanation\": \"Email delivery after submission and a receipt surviving a restart need runtime/backend evidence. index.html only contains a form with action \\\"#\\\" and a static status paragraph; neither proves emailing or persistence.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"s10\", \"c3\": \"\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}, {\"criterionId\": \"coverage-1\", \"status\": \"supported\", \"explanation\": \"index.html contains the exact word \\\"Submission\\\" in an h1. Buyer must still confirm final acceptance.\", \"citations\": {\"c1\": \"s7\", \"c2\": \"\", \"c3\": \"\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [], \"limitations\": [\"No script or backend files are in inventory; email sending, submission handling and receipt persistence after restart are unverified.\", \"The status copy \\\"Your enquiry is saved and emailed.\\\" is static markup; the source does not establish when or whether it is shown.\", \"Form action \\\"#\\\" resolves to the current document; the source does not show how submissions are handled.\", \"Only the index.html h1 was checked for the exact word \\\"Submission\\\"; contact.html does not contain it.\"]}"
+                }
+              }
+            ]
+          },
+          "logprobs": null,
+          "finish_reason": "tool_calls"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 6427,
+        "completion_tokens": 413,
+        "total_tokens": 6840,
+        "prompt_tokens_details": {
+          "cached_tokens": 6272
+        },
+        "prompt_cache_hit_tokens": 6272,
+        "prompt_cache_miss_tokens": 155
+      },
+      "system_fingerprint": "bc19ba97cbe016479903222bb1578db6"
+    },
+    "contentText": "{\"catalogId\": \"e7642dccfefb3ae068a0618cbbeb0ffa577e6832174148be3e7d461a79d5c1c7\", \"items\": [{\"criterionId\": \"manual-1\", \"status\": \"insufficient_evidence\", \"explanation\": \"Email delivery after submission and a receipt surviving a restart need runtime/backend evidence. index.html only contains a form with action \\\"#\\\" and a static status paragraph; neither proves emailing or persistence.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"s10\", \"c3\": \"\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}, {\"criterionId\": \"coverage-1\", \"status\": \"supported\", \"explanation\": \"index.html contains the exact word \\\"Submission\\\" in an h1. Buyer must still confirm final acceptance.\", \"citations\": {\"c1\": \"s7\", \"c2\": \"\", \"c3\": \"\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [], \"limitations\": [\"No script or backend files are in inventory; email sending, submission handling and receipt persistence after restart are unverified.\", \"The status copy \\\"Your enquiry is saved and emailed.\\\" is static markup; the source does not establish when or whether it is shown.\", \"Form action \\\"#\\\" resolves to the current document; the source does not show how submissions are handled.\", \"Only the index.html h1 was checked for the exact word \\\"Submission\\\"; contact.html does not contain it.\"]}",
+    "originalContentText": "{\"catalogId\": \"e7642dccfefb3ae068a0618cbbeb0ffa577e6832174148be3e7d461a79d5c1c7\", \"items\": [{\"criterionId\": \"manual-1\", \"status\": \"insufficient_evidence\", \"explanation\": \"Email delivery after submission and a receipt surviving a restart need runtime/backend evidence. index.html only contains a form with action \\\"#\\\" and a static status paragraph; neither proves emailing or persistence.\", \"citations\": {\"c1\": \"s5\", \"c2\": \"s10\", \"c3\": \"\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}, {\"criterionId\": \"coverage-1\", \"status\": \"supported\", \"explanation\": \"index.html contains the exact word \\\"Submission\\\" in an h1. Buyer must still confirm final acceptance.\", \"citations\": {\"c1\": \"s7\", \"c2\": \"\", \"c3\": \"\", \"c4\": \"\", \"c5\": \"\", \"c6\": \"\"}}], \"risks\": [], \"limitations\": [\"No script or backend files are in inventory; email sending, submission handling and receipt persistence after restart are unverified.\", \"The status copy \\\"Your enquiry is saved and emailed.\\\" is static markup; the source does not establish when or whether it is shown.\", \"Form action \\\"#\\\" resolves to the current document; the source does not show how submissions are handled.\", \"Only the index.html h1 was checked for the exact word \\\"Submission\\\"; contact.html does not contain it.\"]}",
+    "originalJsonValid": true,
+    "contentNormalization": "none",
+    "transport": "strict_tool",
+    "citationEncoding": "catalog_slots",
+    "catalogIdValid": true,
+    "completion": {
+      "catalogId": "e7642dccfefb3ae068a0618cbbeb0ffa577e6832174148be3e7d461a79d5c1c7",
+      "items": [
+        {
+          "criterionId": "manual-1",
+          "status": "insufficient_evidence",
+          "explanation": "Email delivery after submission and a receipt surviving a restart need runtime/backend evidence. index.html only contains a form with action \"#\" and a static status paragraph; neither proves emailing or persistence.",
+          "citations": {
+            "c1": "s5",
+            "c2": "s10",
+            "c3": "",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          }
+        },
+        {
+          "criterionId": "coverage-1",
+          "status": "supported",
+          "explanation": "index.html contains the exact word \"Submission\" in an h1. Buyer must still confirm final acceptance.",
+          "citations": {
+            "c1": "s7",
+            "c2": "",
+            "c3": "",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          }
+        }
+      ],
+      "risks": [],
+      "limitations": [
+        "No script or backend files are in inventory; email sending, submission handling and receipt persistence after restart are unverified.",
+        "The status copy \"Your enquiry is saved and emailed.\" is static markup; the source does not establish when or whether it is shown.",
+        "Form action \"#\" resolves to the current document; the source does not show how submissions are handled.",
+        "Only the index.html h1 was checked for the exact word \"Submission\"; contact.html does not contain it."
+      ]
+    },
+    "items": [
+      {
+        "criterionId": "manual-1",
+        "status": "insufficient_evidence",
+        "explanation": "Email delivery after submission and a receipt surviving a restart need runtime/backend evidence. index.html only contains a form with action \"#\" and a static status paragraph; neither proves emailing or persistence.",
+        "citations": {
+          "c1": "s5",
+          "c2": "s10",
+          "c3": "",
+          "c4": "",
+          "c5": "",
+          "c6": ""
+        }
+      },
+      {
+        "criterionId": "coverage-1",
+        "status": "supported",
+        "explanation": "index.html contains the exact word \"Submission\" in an h1. Buyer must still confirm final acceptance.",
+        "citations": {
+          "c1": "s7",
+          "c2": "",
+          "c3": "",
+          "c4": "",
+          "c5": "",
+          "c6": ""
+        }
+      }
+    ],
+    "risks": [],
+    "limitations": [
+      "No script or backend files are in inventory; email sending, submission handling and receipt persistence after restart are unverified.",
+      "The status copy \"Your enquiry is saved and emailed.\" is static markup; the source does not establish when or whether it is shown.",
+      "Form action \"#\" resolves to the current document; the source does not show how submissions are handled.",
+      "Only the index.html h1 was checked for the exact word \"Submission\"; contact.html does not contain it."
+    ],
+    "finishReason": "tool_calls",
+    "model": "deepseek-flash",
+    "riskCitationChecks": []
+  },
+  "usage": {
+    "promptTokens": 6427,
+    "completionTokens": 413
+  },
+  "reportedUsageCostUsd": 0.0024237,
+  "usageExceededReservation": false,
+  "application": {
+    "accepted": true,
+    "report": {
+      "id": "7941617b-6db4-45ad-b1f5-1cdc57c60393",
+      "deliveryId": "eval-full-gap-compound-and-quoted-copy",
+      "method": "source-ai-v1",
+      "mode": "live",
+      "model": "deepseek-flash",
+      "assessedAt": "2026-11-05T18:15:06.032Z",
+      "items": [
+        {
+          "criterionId": "manual-1",
+          "status": "insufficient_evidence",
+          "explanation": "This requirement includes actual records, durable retention or queryable receipts. Source copy cannot establish that records were written or can be read back. Provide execution and independent record-readback evidence, and check the complete locked requirement.",
+          "citations": [
+            {
+              "file": "index.html",
+              "start": 0,
+              "end": 351,
+              "excerpt": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Synthetic delivery</title><link rel=\"stylesheet\" href=\"site.css\"></head><body><main><h1>Submission</h1><form action=\"#\"><label>Name<input name=\"name\"></label><button type=\"submit\">Send enquiry</button></form><p class=\"status\">Your enquiry is saved and emailed.</p></main></body></html>"
+            },
+            {
+              "file": "index.html",
+              "start": 274,
+              "end": 330,
+              "excerpt": "<p class=\"status\">Your enquiry is saved and emailed.</p>"
+            }
+          ],
+          "ruleEvidenceIds": [
+            "eval-evidence-1"
+          ],
+          "obligations": {
+            "schema": "source-obligations-v1",
+            "coverage": "bounded_detection",
+            "sourceLength": 104,
+            "clauses": [
+              {
+                "start": 0,
+                "end": 104,
+                "excerpt": "After enquiry submission the site must email the owner and preserve a receipt retrievable after restart."
+              }
+            ],
+            "items": [
+              {
+                "id": "obligation-1",
+                "kind": "submission",
+                "clauseIndex": 0,
+                "state": "execution_not_verified"
+              },
+              {
+                "id": "obligation-2",
+                "kind": "email_delivery",
+                "clauseIndex": 0,
+                "state": "execution_not_verified"
+              },
+              {
+                "id": "obligation-3",
+                "kind": "durable_write",
+                "clauseIndex": 0,
+                "state": "execution_not_verified"
+              },
+              {
+                "id": "obligation-4",
+                "kind": "restart_readback",
+                "clauseIndex": 0,
+                "state": "execution_not_verified"
+              }
+            ]
+          },
+          "evidenceNeed": {
+            "schema": "source-evidence-need-v1",
+            "reason": "record_readback",
+            "targetFiles": []
+          }
+        },
+        {
+          "criterionId": "coverage-1",
+          "status": "supported",
+          "explanation": "index.html contains the exact word \"Submission\" in an h1. Buyer must still confirm final acceptance.",
+          "citations": [
+            {
+              "file": "index.html",
+              "start": 150,
+              "end": 169,
+              "excerpt": "<h1>Submission</h1>"
+            }
+          ],
+          "ruleEvidenceIds": [
+            "eval-evidence-2"
+          ],
+          "obligations": {
+            "schema": "source-obligations-v1",
+            "coverage": "bounded_detection",
+            "sourceLength": 58,
+            "clauses": [
+              {
+                "start": 0,
+                "end": 58,
+                "excerpt": "The page copy must include the exact wording \"Submission\"."
+              }
+            ],
+            "items": [
+              {
+                "id": "obligation-1",
+                "kind": "source_content",
+                "clauseIndex": 0,
+                "state": "source_review_required"
+              }
+            ]
+          }
+        }
+      ],
+      "risks": [],
+      "limitations": [
+        "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+        "The model supplied 4 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+        "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog e7642dccfefb3ae068a0618cbbeb0ffa577e6832174148be3e7d461a79d5c1c7. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+        "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+        "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+      ],
+      "coverage": {
+        "includedFiles": [
+          "contact.html",
+          "index.html",
+          "site.css"
+        ],
+        "truncatedFiles": [],
+        "omittedFiles": []
+      },
+      "withheldRisks": {
+        "version": 1,
+        "reason": "not_withheld",
+        "adjustedCriteria": [],
+        "entries": []
+      },
+      "usage": {
+        "promptTokens": 6427,
+        "completionTokens": 413
+      }
+    },
+    "error": null
+  },
+  "elapsedMilliseconds": 2659,
+  "rawDiagnostics": {
+    "expectedCriterionIds": [
+      "manual-1",
+      "coverage-1"
+    ],
+    "returnedKnownCriterionIds": [
+      "manual-1",
+      "coverage-1"
+    ],
+    "missingCriterionIds": [],
+    "duplicateCriterionIds": [],
+    "unknownCriterionCount": 0,
+    "invalidItemCount": 0,
+    "contentParsed": true,
+    "idProfileParsed": true,
+    "profileSource": "original_json",
+    "completeItemCoverage": true,
+    "finishReason": "tool_calls"
+  }
+}

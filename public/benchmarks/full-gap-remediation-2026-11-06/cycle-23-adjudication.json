@@ -1,0 +1,21 @@
+{
+  "cycle": 23,
+  "plan": "cycle-23-plan-deepseek.json",
+  "post": "cycle-23-post-deepseek-final.json",
+  "invalid": [
+    "cycle-23-post-deepseek.json"
+  ],
+  "accepted": [
+    "Explain20help cap; distinguish blocked fromabandoned andshow completedresults/redo localdraft.",
+    "Use finaltaskstop forsessionendedAt; idle beforedownload mustnotinvalidate completedtaskrecord."
+  ],
+  "limits": [
+    "Alwaysoperatorwalkthrough; no newhumanresults or verifiedbusinesscompletion."
+  ],
+  "tests": 17,
+  "followup": "cycle-23-followup-deepseek.json",
+  "followupAdjudication": {
+    "noP1P2": true,
+    "rejected": "P3 assumestechnical_seller has differenttaskcount; actualsharedTASKS has3foreachpersona, bothdomainexport tests pass. A hypotheticalfutureTASKSschema change needsUIupdate but isnotcurrentdefect."
+  }
+}
