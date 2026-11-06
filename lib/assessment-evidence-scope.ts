@@ -81,6 +81,10 @@ function isExplicitRefundPolicyCopy(criterion: ProofCriterion): boolean {
 // This remains conservative bounded language, not a complete semantic parser.
 const RECORD_ACTION = /\b(?:record(?:s|ed|ing)?|archiv(?:e[sd]?|ing)|log(?:s|ged|ging)?|stor(?:e[sd]?|ing)|retain(?:s|ed|ing)?|writ(?:e[sd]?|ing)|queue(?:s|d|ing)?)\b[^.。；;\n]{0,180}\b(?:enquir(?:y|ies)|inquir(?:y|ies)|requests?|receipts?|records?|submissions?|transactions?|customer\s+data|audit\s+trail)\b|\b(?:enquir(?:y|ies)|inquir(?:y|ies)|requests?|receipts?|records?|submissions?|transactions?|audit\s+trail)\b[^.。；;\n]{0,120}\b(?:durab(?:le|ly|ility)|archived|logged|stored|retained|queryable|retrievable|persistently|permanently)\b|(?:询价|咨询|请求|回执|记录|交易|提交内容)[^。；;\n]{0,80}(?:落库|持久|留存|入库|可查询|可检索|重启后保留)|(?:落库|持久保存|持久记录|持久存储|留存|入库|归档|记录|存储)[^。；;\n]{0,80}(?:询价|咨询请求|回执|交易|提交内容)|\b(?:receipts?|records?|audit\s+trail)\b[^.。；;\n]{0,120}\b(?:after\s+(?:a\s+|the\s+)?(?:server\s+)?restart|survive\s+(?:a\s+)?restart)\b/iu;
 const CUSTOMER_DATA_REBOOT = /\bcustomer\s+data\s+(?:(?:must|should|shall|will)\s+)?surviv(?:e[sd]?|ing)\s+(?:(?:a|the)\s+)?(?:server\s+)?(?:reboot|restart)\b/iu;
+// Explicit capability in this original criterion, including a continuation
+// that independently names reboot/readback. Quoted literal source data remain
+// outside `combined`, so this does not turn a notice into an execution claim.
+const ZH_DURABLE_CAPABILITY = /持久(?:化)?(?:保存|存储|储存)|(?:重新启动|重启)(?:后|之后)[^。；;\n]{0,24}(?:可|能|需要|必须|须)?(?:独立)?回读/u;
 
 type StaticRelationDescriptor = {identity: string; files: string[]} & (
   {kind: "label_for_id"; labels: string[]}
@@ -171,7 +175,7 @@ export function assessmentEvidenceScope(criterion: ProofCriterion): AssessmentEv
   const combined = literal !== undefined || markupDirective !== undefined ? title : `${title}\n${criterion.source}`;
   if (criterion.id === "mobile") return { category: "requires_observation", reason: "mobile" };
   if (FINANCIAL_ACTION.test(combined) || CARD_DEBIT_ACTION.test(combined)) return { category: "requires_observation", reason: "financial_action" };
-  if (RECORD_ACTION.test(combined) || CUSTOMER_DATA_REBOOT.test(combined)) return { category: "requires_observation", reason: "durable_record" };
+  if (RECORD_ACTION.test(combined) || CUSTOMER_DATA_REBOOT.test(combined) || ZH_DURABLE_CAPABILITY.test(combined)) return { category: "requires_observation", reason: "durable_record" };
   if (EMAIL_DELIVERY_ACTION.test(combined)) return {category: "requires_observation", reason: "runtime_or_subjective"};
   if (!sourceOnlyDirective && (isSourceLiteralDirectiveCandidate(criterion.source) || isStaticMarkupDirectiveCandidate(criterion.source) || isStaticRelationCandidate(criterion.source) || isNativeFormSourceDirectiveCandidate(criterion.source))) return {category: "requires_observation", reason: "unclassified_requirement"};
   if (sourceOnlyDirective) return OBSERVATION_REQUIRED.test(withoutWorkingTimeUnits(title))

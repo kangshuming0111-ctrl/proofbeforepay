@@ -12,7 +12,7 @@ const NOTICE = /^[A-Z][A-Za-z0-9 '’_-]{0,119}[.!]?$/u;
  * broader ordinary-copy allowance. Unrelated text is not classified here. */
 export function isSourceLiteralDirectiveCandidate(source: string): boolean {
   const text = source.trim(), prefix = PREFIX.exec(text);
-  return TITLE_PREFIX.test(text) || !!prefix && /^(?:label\b|include the (?:labels\b|exact table headings\b|exact notice:))/u.test(text.slice(prefix[0].length));
+  return /^(?:[\p{Script=Han}A-Za-z0-9 _-]{1,40})?(?:页面|表单)源码(?:必须|须|应)包含标签/u.test(text) || TITLE_PREFIX.test(text) || !!prefix && /^(?:label\b|include the (?:labels\b|exact table headings\b|exact notice:))/u.test(text.slice(prefix[0].length));
 }
 
 export type SourceLiteralDescriptor = {identity: string; kind: "html_labels"; labels: string[]; context: "page" | "form"; quotedLabels?: true}
@@ -23,6 +23,13 @@ export type SourceLiteralDescriptor = {identity: string; kind: "html_labels"; la
 export function parseSourceLiteralDirective(source: string): SourceLiteralDescriptor | undefined {
   const text = source.trim(), markupLabels = staticMarkupLabelDirective(text), titlePrefix = TITLE_PREFIX.exec(text);
   if (markupLabels) return {...markupLabels, kind: "html_labels"};
+  // A whole atomic Chinese declaration, not an exemption for appended actions.
+  // Only balanced quoted label data are accepted; no filename/role is inferred.
+  const chinese = /^([\p{Script=Han}A-Za-z0-9 _-]{0,40}?)(页面|表单)源码(?:必须|须|应)包含标签((?:“[^“”\r\n]{1,80}”|"[^"\r\n]{1,80}")(?:和(?:“[^“”\r\n]{1,80}”|"[^"\r\n]{1,80}")){0,5})[。.]?$/u.exec(text);
+  if (chinese && !/源码|必须|须|应|包含|标签|提交|保存|发送|支付|退款|实际|自动|持久|点击|如果|然后|并且/u.test(chinese[1])) {
+    const values = [...chinese[3].matchAll(/“([^“”]+)”|"([^"]+)"/gu)].map(m => m[1] ?? m[2]);
+    if (values.length && new Set(values).size === values.length) return {identity: text, kind: "html_labels", context: chinese[2] === "表单" ? "form" : "page", labels: values, quotedLabels: true};
+  }
   if (titlePrefix) {
     const names = /^([A-Z][A-Za-z0-9 '’_-]{0,79}) rather than ([A-Z][A-Za-z0-9 '’_-]{0,79})\.?$/u.exec(text.slice(titlePrefix[0].length));
     if (!names || names.slice(1).some(name => name.trim().split(/\s+/u).length > 6 || ACTION_OR_CLAUSE.test(name) || /\b(?:and|or|rather|than)\b/iu.test(name))) return;

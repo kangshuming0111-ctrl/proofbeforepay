@@ -1,0 +1,91 @@
+{
+  "schema": "proofbeforepay-noodle-core-record-v1",
+  "scope": "Fixed fictional noodle-shop outsourcing acceptance only. Four authored project variants, not four independent real merchants. Source facts, original model judgments and human confirmation are separate.",
+  "provenance": {
+    "kind": "authored-fictional",
+    "independentThirdPartyRepositories": 0,
+    "realCustomers": 0,
+    "humanUserStudyParticipants": 0,
+    "sourceCopiedFromExternalProject": false
+  },
+  "before": {
+    "release": "v86",
+    "linkedPreviousRecord": "/benchmarks/qualified-answers-2026-11-06/latest.json",
+    "priorKnownSemanticRemaining": "Earth ordinary meaning remains unknown; not part of fixed noodle gate, no entity-specific semantic engine added."
+  },
+  "firstEvaluation": {
+    "cases": 4,
+    "focusedCriteria": 9,
+    "providerIds": 13,
+    "providerIdsReturned": 13,
+    "missingIds": 0,
+    "duplicateIds": 0,
+    "unknownIds": 0,
+    "reportsAccepted": 4,
+    "rawStatusMatches": 9,
+    "publishedStatusMatches": 7,
+    "effectiveSourceOrPublishedMatches": 8,
+    "evaluationCalls": 4,
+    "estimatedCostUsd": 0.0129225,
+    "noRetries": true,
+    "wholeAnswerReview": "author-first-four-whole-review.json",
+    "record": "first-live.json",
+    "note": "Status matching is not whole-answer correctness or general accuracy. A genuine conservative source-price abstention remained; it is preserved here."
+  },
+  "correctiveReplay": {
+    "record": "corrective-zero-call-replay.json",
+    "cases": 4,
+    "focusedCriteria": 9,
+    "rawStatusMatches": 9,
+    "publishedStatusMatches": 7,
+    "effectiveSourceOrPublishedMatches": 9,
+    "additionalProviderCalls": 0,
+    "networkCalls": 0,
+    "blockedNetworkAttempts": 0,
+    "exactOriginalRequestsAndResponses": true,
+    "rawAndPublishedStatusesUnchanged": true,
+    "changes": [
+      "Only independent item_price source fact policy excludes plain inert template decoys; script/event/generated CSS/parse error/shadowroot/ambiguous active prices stay unknown. Existing published price checker remains conservative.",
+      "Explicit Chinese persistence/reboot independent readback now requires record_readback; source alone still does not pass these capabilities."
+    ],
+    "note": "This is a known-case corrective replay, not a second fresh benchmark, new raw model improvement or a new live run."
+  },
+  "layers": {
+    "raw": "modelJudgment preserves decoded original item status, full explanation whitespace and resolved original citations before guards. No provider authenticity signature claimed.",
+    "published": "Conservative legacy item.status remains separate; it may stay unknown even an independent source finding proves a limited source fact.",
+    "source": "sourceFinding is a finite independently recomputed source-only conclusion. F4 must show it separately and lead with it for the source conditions. It never attests visibility, execution, acceptance or payment."
+  },
+  "referenceCorrection": {
+    "record": "precall-reference-correction.json",
+    "beforeCalls": true,
+    "reason": "Production splitter generated a third reboot/readback criterion. Missing reference was corrected to unknown before first calls; original initial corpus and seal are retained.",
+    "initialFocusedCount": 8,
+    "correctedFocusedCount": 9
+  },
+  "limits": [
+    "No same-condition competitor evaluation or winning probability.",
+    "A finite labelled-source/simple item-price checker, not a universal HTML semantics, conformance or security detector.",
+    "Source inspection does not prove rendered visibility or actual form persistence; real operation and independent readback need other evidence.",
+    "Unconfirmed business aliases remain unassigned; source mismatch without confirmed scope asks both parties to clarify before specific page repair.",
+    "Scope confirmation is not evidence of compliance, final acceptance or payment.",
+    "Original first4 failed-source finding remains bound to its frozen first implementation. Corrective source findings are separately recorded rather than overwriting it.",
+    "Independent real seller/merchant or human usability study is outside this fixed cycle and has not been newly claimed."
+  ],
+  "awardComparison": {
+    "source": "https://www.bemyapp.com/insights/ai-builders-challenge-with-ibm-bob-2026-winners.html",
+    "verifiedOn": "2026-11-06",
+    "references": [
+      {
+        "name": "PHAROS_INC",
+        "award": "IBM Bob 2026 August 1st Place",
+        "dimension": "Rules + readable results"
+      },
+      {
+        "name": "Agent Receipt",
+        "award": "IBM Bob 2026 August Most Innovative",
+        "dimension": "Evidence and authority linkage"
+      }
+    ],
+    "claim": "Only the fixed engineering gate is evaluated. Official descriptions are not competitor performance measurements."
+  }
+}

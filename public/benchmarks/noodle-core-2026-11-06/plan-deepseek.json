@@ -1,0 +1,75 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "advisoryOnly": true,
+  "completed": true,
+  "errors": [],
+  "sources": [
+    {
+      "file": "tests/fixtures/noodle-f1-plan-context.json",
+      "bytes": 4421,
+      "lines": 56,
+      "sha256": "b31d4183d8af8b2d4a1f356ffdde23e704609b5e8eea3e163110987f41aa182a"
+    },
+    {
+      "file": "lib/assessment-label-citations.ts",
+      "bytes": 18730,
+      "lines": 232,
+      "sha256": "24b9106b0cd8abef97fa1a8b6460b27180641d58bc4808dde25e7ffbd66fd851"
+    },
+    {
+      "file": "lib/source-business-evidence.ts",
+      "bytes": 20748,
+      "lines": 237,
+      "sha256": "fa66043d3ab7f4fb7717893f14f60b86e7de0c912fb542bf89c0ad5a54ae38da"
+    },
+    {
+      "file": "lib/assessment-evidence-scope.ts",
+      "bytes": 22834,
+      "lines": 205,
+      "sha256": "b79ce478dc4843ad0f689b9402037260aaba13a9df949fbf12c279d526f78c9c"
+    },
+    {
+      "file": "lib/source-literal-directive.ts",
+      "bytes": 4265,
+      "lines": 53,
+      "sha256": "047f4827abdd59c863c922c17a62967abadbc6427b0bbb6ffd032e04466146c8"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "report": {
+    "summary": "Reviewed the F1 plan against the supplied finite parsers only; no runtime checks or tests were run. The plan's principle of reusing the existing label parser and price witness is sound, but the raw packet shows two concrete planned-reuse boundaries that the guard text does not cover. (1) Price: the existing price leaf model can attach the expected price to the wrong dish when expected labels are prefixes of each other, or when the same label appears in two p tags, and it ignores required label multiplicity. (2) Labels: the existing 'complete parsed HTML' absence gate does not reject parse5 template/foster-parented content or the textarea and non-HTML-namespace name attribute cases, so a whole-source absence (no_complete_group) can be stated for source that is not actually complete. Both findings are about planned functions that consume existing code today; they are not requests for a general semantic engine.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "lib/source-business-evidence.ts",
+        "line": 160,
+        "title": "Planned price reuse can bind the expected price to the wrong dish via prefix labels or duplicate p text, and ignores label multiplicity",
+        "evidence": "Line 160: `leaf => leaf.label === undefined ? leaf.text.startsWith(label) : leaf.label === label`. p/li leaves (lines 103-109) get no `label`, so any p whose text starts with the expected label matches. Line 152 only requires the literal to occur once in bodyText; lines 159-161 reject uniqueness failures only for `occurrences(bodyText,label)`. Line 51 table cell text and line 78-79 label text are unguarded for prefix relations. The plan (fixture lines 17, 44) promises 'exact dish and no adjacent-row/other-dish borrowing' and line 16's label witness promises a 'complete ... source-label requirement' with full owner group. The current witness enforces neither label multiplicity nor label-exact p matching.",
+        "reproduction": "Reasoning trace, unexecuted. (a) HTML `<p>AUD 16 Noodles</p><p>AUD 16 Noodles with Beef</p>`, label `Noodles`, expected AUD 18. Line 160 matches only the second p (startsWith) → actual AUD 16 → kind mismatch on the wrong dish; lines 159/161 also return unchanged/mismatch instead of the intended ambiguous unknown. (b) `<p>Beef Noodles AUD 18</p><p>Beef Noodles AUD 28</p>` with label `Beef Noodles` fails occurrences===1 (line 159) and returns unknown even though a table row or two more p elements could record the same item as AUD 18, which the label grammar allows. (c) Requirement labels [Name, Name] is deduped by new Set at assessment-label-citations.ts line 150 (unknown) but price checks carry no count, so the two-label owner group can never be evidenced price-side while label-side declares it required.",
+        "suggestion": "In the planned price reuse, require the label leaf to be the table `leaf.label` (exact equality) or, for p/li, whole normalized text equal to the label, reject matching leaves whose text starts with the label but extends with further dish words unless an explicit item-identity tie exists, and treat more than one located candidate as unknown instead of reliance on bodyText uniqueness. Require expected labels to be distinct in the plan and add a fixture for prefix-label and duplicate-p cases."
+      },
+      {
+        "severity": "P2",
+        "file": "lib/assessment-label-citations.ts",
+        "line": 119,
+        "title": "'Complete parsed HTML' absence gate accepts template/foster-parented content and textarea and name-attribute cases, so no_complete_group can overstate absence",
+        "evidence": "labelsIn records only non-doctype parse errors (line 24). template content is skipped by INERT (line 46) and never checked, although parse5 parses it. Line 81 skips INERT including textarea, so textarea text never triggers unresolved ownership. Lines 69-79 return unresolved only when a foreign element has non-empty text; a foreign element that carries the label via a `name` attribute (for example SVG `<a name=\"Name\">`) is silently ignored. PLACEHOLDER `label` inside table scope is foster-parented outside the form, so it never gets `form` and line 158 skips it for form context. The planned algorithm (lines 151-166) then returns no_complete_group once no group is found. The sibling plan promise is 'negative requires complete parsed HTML plus no group, no implicit/foreign/parse uncertainty' (fixture line 16, control line 52). Those cases are not covered.",
+        "reproduction": "Reasoning trace, unexecuted. `<form><table><tr><td><label>Name</label></td><td><input name=\"n\"></td></tr><tr><td><label placeholder>x</label></td></tr></table></form><input form=\"f\" name=\"placeholder\">`: parse5 foster-parents `<label placeholder>` out of the table (an error the line-24 filter does not catch), so it lacks the form group and form-context search finds no complete group → no_complete_group. The unresolved template case is `<form id=\"f\"><label>Name</label><template><label>Email</label></template></form>`, and the foreign-attribute case is `<form><svg><a name=\"Email\"></a></svg></form>`. In all of these the complete-source absence fact is published while ownership was not actually exhaustively resolved.",
+        "suggestion": "Before the negative scan, make labelsIn return undefined (unknown) on template elements or parse errors currently filtered only as non-doctype, on textarea nodes, and on foreign elements with any attribute whose value equals a required label (or that contains recovered nodes); optionally disable foster parenting by source re-parsing. Alternatively, restrict no_complete_group to files with no template/textarea/foreign content. Keep PAGE/FORM grouping semantics unchanged."
+      }
+    ],
+    "limitations": [
+      "Scope was limited to the supplied packet: the F1 fixture, lib/assessment-label-citations.ts, lib/source-business-evidence.ts, lib/assessment-evidence-scope.ts, lib/source-literal-directive.ts and the project skill. The planned files (lib/assessment-source-findings.ts, lib/assessment-evidence-scope.ts additions, lib/evidence-export.ts, contracts, tests) are not supplied. Their absence is not treated as a bug; findings cite today's reused code and planned lines.",
+      "No shell, tests, typecheck, runtime, parse5 or browser checks were run. Reproduction is a reasoning trace over the cited regex and parse5 flags; parse5 foster-parenting and template behavior come from the documented parser model, not from an execution.",
+      "getBusinessCheckPlan and createSourceBusinessEvidenceCheck output shapes, merged-price context and exact-copy uncertainty were not inspected. Whether cited coverage or scope gating elsewhere already neutralizes a case was not verified.",
+      "The findings do not request a universal semantic engine; they are bounded validation and parser-failure gating for the finite witnesses the plan already commits to.",
+      "Earth/Flight wording and the optional sourceFinding export determinism were not assessable from this packet.",
+      "The plan leaves the root owner of the Earth case undecided; no finding is raised for that open decision."
+    ]
+  }
+}

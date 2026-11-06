@@ -2,6 +2,7 @@ import {assertCooperativeStageBounds} from "./cooperative-stage-evidence.ts";
 import type { ProofAcceptanceEvidence, ProofDelivery, ProofQuote } from "./contracts.ts";
 import { DomainError } from "./domain.ts";
 import {inlineModelReportsFor,modelArchiveRefs,modelReportsFor} from "./model-report-archive.ts";
+import {assertScopeClarificationBounds} from "./scope-clarifications.ts";
 
 export const EVIDENCE_HISTORY_BYTE_LIMIT = 256 * 1024;
 export const DELIVERY_EVIDENCE_BYTE_LIMIT = 2 * 1024 * 1024;
@@ -40,6 +41,7 @@ function retained<T extends {id: string; deliveryId: string}>(delivery: ProofDel
 function histories(delivery: ProofDelivery) {
   assertCooperativeStageBounds(delivery.cooperativeStageReports);
   return {
+    assessment: delivery.assessmentHistory,
     cooperativeStageReports: delivery.cooperativeStageReports,
     runtime: retained(delivery, delivery.runtimeHistory, delivery.runtimeReport),
     enquiry: retained(delivery, delivery.enquiryHistory, delivery.enquiryReport),
@@ -136,7 +138,8 @@ function needsAcceptanceSnapshot(quote: ProofQuote): boolean {
   const id = quote.proof.acceptedEvidenceSnapshotId ?? quote.proof.collaboration?.acceptance?.evidenceSnapshotId;
   return !id || !delivery?.acceptanceEvidence?.some(row => row.id === id && row.deliveryId === delivery.id);
 }
-function check(delivery: ProofDelivery, acceptanceBytes?: number): void {
+function check(delivery: ProofDelivery, acceptanceBytes?: number, scopeBytes = 0): void {
+  if(delivery.assessmentHistory!==undefined&&(!Array.isArray(delivery.assessmentHistory)||delivery.assessmentHistory.length>4||new Set(delivery.assessmentHistory.map(r=>r.id)).size!==delivery.assessmentHistory.length||delivery.assessmentHistory.some(r=>r.deliveryId!==delivery.id)))throw new DomainError("The saved four-report assessment history is invalid.",409);
   for (const [value, limit] of [[delivery.journeyPlanSuggestions, 32 * 1024], [delivery.journeyPlanAdoption, 32 * 1024], [delivery.journeyExplanation, 16 * 1024], [delivery.modelExplanation, 16 * 1024]] as const) {
     if (value !== undefined && bytes(value) > limit) throw new DomainError("The saved journey planning or explanation record exceeds its bounded evidence allowance.", 409);
   }
@@ -146,12 +149,12 @@ function check(delivery: ProofDelivery, acceptanceBytes?: number): void {
   const retainedHistory = histories(delivery);
   modelReportsFor(delivery);
   if(retainedHistory.model.length>4||retainedHistory.model.some(report=>bytes(report)>MODEL_REPORT_RESERVATION_BYTES))throw new DomainError("Model reports exceed their four-record or 32 KiB bounds.",409);
-  if (bytes(retainedHistory) + reportReserve + acceptanceReserve > EVIDENCE_HISTORY_BYTE_LIMIT) full();
+  if (bytes(retainedHistory) + scopeBytes + reportReserve + acceptanceReserve > EVIDENCE_HISTORY_BYTE_LIMIT) full();
   // A runtime report is also stored in the latest slot. Materialize legacy
   // histories here so reserving them cannot fail only after a network write.
   const normalized = {...delivery, runtimeHistory: retainedHistory.runtime, enquiryHistory:retainedHistory.enquiry,journeyHistory: retainedHistory.journey, modelHistory:retainedHistory.model,businessCheckHistory: retainedHistory.business,
     browserCheckHistory: retainedHistory.browser, layoutHistory: retainedHistory.layout, acceptanceEvidence: retainedHistory.acceptance};
-  if (bytes(normalized) + 2 * reportReserve + acceptanceReserve > DELIVERY_EVIDENCE_BYTE_LIMIT) full();
+  if (bytes(normalized) + scopeBytes + 2 * reportReserve + acceptanceReserve > DELIVERY_EVIDENCE_BYTE_LIMIT) full();
 }
 
 /** The same reservation arithmetic as check(), without creating a run lease.
@@ -162,7 +165,8 @@ export function modelEvidenceBudgetProjection(quote:ProofQuote){
   const acceptanceBytes=Math.max(needsAcceptanceSnapshot(quote)?acceptanceSnapshotReservationBytes(quote,true):0,saved?.acceptanceBytes??0,journey?.acceptanceBytes??0,model?.acceptanceBytes??0,enquiry?.acceptanceBytes??0);
   const reportBytes=MODEL_REPORT_RESERVATION_BYTES+(saved?.reportBytes??0)+(journey?.reportBytes??0)+(model?.reportBytes??0)+(enquiry?.reportBytes??0);
   const normalized={...delivery,runtimeHistory:retainedHistory.runtime,enquiryHistory:retainedHistory.enquiry,journeyHistory:retainedHistory.journey,modelHistory:retainedHistory.model,businessCheckHistory:retainedHistory.business,browserCheckHistory:retainedHistory.browser,layoutHistory:retainedHistory.layout,acceptanceEvidence:retainedHistory.acceptance};
-  const inlineEvidenceBytes=bytes(retainedHistory),hydratedDeliveryBytes=bytes(normalized);
+  const scopeBytes=assertScopeClarificationBounds(quote.proof.scopeClarifications);
+  const inlineEvidenceBytes=bytes(retainedHistory)+scopeBytes,hydratedDeliveryBytes=bytes(normalized)+scopeBytes;
   return{inlineEvidenceBytes,hydratedDeliveryBytes,acceptanceBytes,projectedInlineEvidenceBytes:inlineEvidenceBytes+reportBytes+acceptanceBytes,projectedHydratedDeliveryBytes:hydratedDeliveryBytes+2*reportBytes+acceptanceBytes,acceptanceRoom:!needsAcceptanceSnapshot(quote)||(delivery.acceptanceEvidence?.length??0)<MAX_ACCEPTANCES};
 }
 
@@ -173,6 +177,7 @@ export function assertDeliveryEvidenceBudget(delivery: ProofDelivery): void { ch
 /** Storage calls this on every mutation, including assessment and risk-review
  * writes that change the contents of the next acceptance snapshot. */
 export function assertQuoteEvidenceBudget(quote: ProofQuote): void {
+  const scopeBytes=assertScopeClarificationBounds(quote.proof.scopeClarifications);
   const delivery = quote.proof.delivery;
   if (!delivery) return;
   const saved = reservation(delivery);
@@ -180,7 +185,7 @@ export function assertQuoteEvidenceBudget(quote: ProofQuote): void {
   const model=modelReservation(delivery),enquiry=enquiryReservation(delivery);
   const acceptance = (saved || journey || model || enquiry) && needsAcceptanceSnapshot(quote)
     ? Math.max(saved?.acceptanceBytes ?? 0, journey?.acceptanceBytes ?? 0,model?.acceptanceBytes??0,enquiry?.acceptanceBytes??0, acceptanceSnapshotReservationBytes(quote)) : Math.max(saved?.acceptanceBytes ?? 0, journey?.acceptanceBytes ?? 0,model?.acceptanceBytes??0,enquiry?.acceptanceBytes??0);
-  check(delivery, acceptance);
+  check(delivery, acceptance, scopeBytes);
 }
 
 /** Called before the run lease CAS and thus before any external HTTP request. */

@@ -1,0 +1,86 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "advisoryOnly": true,
+  "completed": true,
+  "errors": [],
+  "sources": [
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 65584,
+      "lines": 555,
+      "sha256": "b3f5da2ccf150e6c6b021c867634f6a25aae7f0067d91d796d578c266505aa3c"
+    },
+    {
+      "file": "lib/assessment-source-findings.ts",
+      "bytes": 8162,
+      "lines": 66,
+      "sha256": "dc9b79f665723daf096747149cb9c2780d6473c7d07616d9a6abb1561e499e9c"
+    },
+    {
+      "file": "lib/assessment-label-citations.ts",
+      "bytes": 24653,
+      "lines": 315,
+      "sha256": "257db4edf00141aa4eccc8cfbf03f9ae5e87827ce8d13851f5d49337f72da68c"
+    },
+    {
+      "file": "lib/source-literal-directive.ts",
+      "bytes": 5240,
+      "lines": 60,
+      "sha256": "3765c25c276c80c17aaa5186b0ba8e8bfae41ce91d18ecd038a010e92800c568"
+    },
+    {
+      "file": "lib/assessment-evidence-scope.ts",
+      "bytes": 22834,
+      "lines": 205,
+      "sha256": "b79ce478dc4843ad0f689b9402037260aaba13a9df949fbf12c279d526f78c9c"
+    },
+    {
+      "file": "lib/contracts.ts",
+      "bytes": 18074,
+      "lines": 263,
+      "sha256": "191e2b0f4e7fc887a78325a5b7e8b1601c1cceb631b44a7b2a5707e9992e88ea"
+    },
+    {
+      "file": "lib/evidence-export.ts",
+      "bytes": 59309,
+      "lines": 474,
+      "sha256": "17f3f08044e15d044dfe044c7dae5f06e82abfe3bb6a202648c9d2b71dd17679"
+    },
+    {
+      "file": "lib/scope-clarifications.ts",
+      "bytes": 18656,
+      "lines": 107,
+      "sha256": "d873f77a73e5d977b41dd7ded737087195346bf33bd4666691de4603186dffa8"
+    },
+    {
+      "file": "tests/noodle-source-findings.test.ts",
+      "bytes": 8018,
+      "lines": 82,
+      "sha256": "f09064dc3dfc954bcb0bebc09480e3eafaebeb1424a69906e932979fa20d0715"
+    },
+    {
+      "file": "tests/noodle-source-pipeline.test.ts",
+      "bytes": 7747,
+      "lines": 59,
+      "sha256": "3cf3ba9ff010f1fbbe74e63623afd6545396773ac949f23fa420d0931aae7fac"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "report": {
+    "summary": "Reviewed the fixed-scope noodle packet (delivery-assessment, source findings, label citations, literal directive, evidence scope, contracts, evidence export, scope clarifications, two tests) for concrete P1/P2 defects. The row-context rewrite is absent, and raw modelJudgment keeps the untrimmed decoded explanation, status and resolved citations. The Chinese quoted-label grammar correctly rejects unquoted operational or second-frame prefixes, and treats quoted action-like labels as data. Evidence export recomputes sourceFinding from files plus the historical scope prefix, and a conflicting F2 file is rejected by the domain. I found no new concrete P1/P2 defect that can be shown with an exact, source-supported repro under these constraints.",
+    "findings": [],
+    "limitations": [
+      "Read-only source review. No files were changed and no typecheck, build, tests, browser, provider or API checks were run.",
+      "Review is limited to the supplied packet files. Callers and helpers outside the packet (business-checks, source-business-evidence, static-project, publication policy, assessment-completion, runtime-project, proof-demo) are taken as given and not verified.",
+      "The parser (parse5) and normalization helpers are not in the packet, so parse5 DOM/source-offset behavior was reasoned about from its documented API rather than observed.",
+      "Scope is deliberately narrow (the fixed noodle scope). Generic defects outside the changed boundaries, such as the leading-whitespace handling of the top-level completion text() call in delivery-assessment (line 253), were not treated as regression findings here.",
+      "No inferred regex claims about repeated-frame Chinese repro strings were made, per instruction.",
+      "sourceFinding is assessed only as source facts from the exact exported files plus the historical scope prefix. Rendering, visibility, persistence, provider execution, authentication and payment are not attested."
+    ]
+  }
+}

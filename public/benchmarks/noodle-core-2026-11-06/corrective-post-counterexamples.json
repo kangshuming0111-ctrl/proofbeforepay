@@ -1,0 +1,109 @@
+{
+  "networkCalls": 0,
+  "results": [
+    {
+      "source": "<!doctype html><!doctype html><html><head><title>T</title></head><body><p>Dish AUD31</p><template><p>Dish AUD21</p></template></body></html>",
+      "parseErrors": [],
+      "publishedUncertain": true,
+      "independentUncertain": false,
+      "independentFact": {
+        "kind": "mismatch",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "menu.html",
+            "kind": "mismatch",
+            "reason": "explicit_iso_price_differs",
+            "citation": {
+              "file": "menu.html",
+              "start": 71,
+              "end": 88,
+              "excerpt": "<p>Dish AUD31</p>"
+            },
+            "label": "Dish",
+            "expected": "AUD 21.00",
+            "actual": "AUD 31.00"
+          }
+        ],
+        "citations": [
+          {
+            "file": "menu.html",
+            "start": 71,
+            "end": 88,
+            "excerpt": "<p>Dish AUD31</p>"
+          }
+        ]
+      }
+    },
+    {
+      "source": "<!doctype html><html><head><title>T</title></head><body><!doctype html><p>Dish AUD31</p><template><p>Dish AUD21</p></template></body></html>",
+      "parseErrors": [],
+      "publishedUncertain": true,
+      "independentUncertain": false,
+      "independentFact": {
+        "kind": "mismatch",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "menu.html",
+            "kind": "mismatch",
+            "reason": "explicit_iso_price_differs",
+            "citation": {
+              "file": "menu.html",
+              "start": 71,
+              "end": 88,
+              "excerpt": "<p>Dish AUD31</p>"
+            },
+            "label": "Dish",
+            "expected": "AUD 21.00",
+            "actual": "AUD 31.00"
+          }
+        ],
+        "citations": [
+          {
+            "file": "menu.html",
+            "start": 71,
+            "end": 88,
+            "excerpt": "<p>Dish AUD31</p>"
+          }
+        ]
+      }
+    },
+    {
+      "source": "<html><head><title>T</title></head><body><p>Dish AUD31</p></body></html>",
+      "parseErrors": [
+        "missing-doctype"
+      ],
+      "publishedUncertain": false,
+      "independentUncertain": false,
+      "independentFact": {
+        "kind": "mismatch",
+        "checks": [
+          {
+            "checkId": "business-1",
+            "file": "menu.html",
+            "kind": "mismatch",
+            "reason": "explicit_iso_price_differs",
+            "citation": {
+              "file": "menu.html",
+              "start": 41,
+              "end": 58,
+              "excerpt": "<p>Dish AUD31</p>"
+            },
+            "label": "Dish",
+            "expected": "AUD 21.00",
+            "actual": "AUD 31.00"
+          }
+        ],
+        "citations": [
+          {
+            "file": "menu.html",
+            "start": 41,
+            "end": 58,
+            "excerpt": "<p>Dish AUD31</p>"
+          }
+        ]
+      }
+    }
+  ]
+}

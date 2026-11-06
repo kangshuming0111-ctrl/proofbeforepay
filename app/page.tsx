@@ -33,6 +33,8 @@ import { CollaborationPanel, type CollaborationHistoryHandle, type FeedbackSugge
 import { VersionViewer } from "./components/VersionViewer";
 import { RequirementsIntake } from "./components/RequirementsIntake";
 import { DeliveryAssessment } from "./components/DeliveryAssessment";
+import {ScopeClarificationPanel, RequirementNextStep, type ScopeProposalInput, type ScopeConfirmationInput} from "./components/ScopeClarificationPanel";
+import type {ScopeContext, ScopeTargetCandidate} from "@/lib/scope-clarifications";
 import {assessmentFeedbackScopeSteps} from "./components/assessment-feedback";
 import {SupplementalEvidencePanel} from "./components/SupplementalEvidencePanel";
 import {EvidenceFollowupPanel} from "./components/EvidenceFollowupPanel";
@@ -106,6 +108,10 @@ function isProof(value: unknown): value is ProofQuote {
 type ModalState = { kind: "authorize"; orderId: string } | { kind: "void" } | null;
 type ProjectMode = "custom" | "demo";
 type CaseResult = {quote: ProofQuote; role?: ProofRole};
+type ScopeResult = CaseResult & {scopeContext:ScopeContext;candidates:ScopeTargetCandidate[]};
+type ScopeLoad = {key:string;status:"loading"|"ready"|"error";result?:ScopeResult};
+function scopeViewKey(quote:ProofQuote|null|undefined,role:ProofRole) {return JSON.stringify([quote?.id,quote?.proof.delivery?.id,role,quote?.proof.scopeClarifications??[]]);}
+
 type CaseList = {quotes: unknown[]; roles?: Record<string, ProofRole>};
 type BrowserStepDraft = { from: string; text: string; to: string };
 type IntakeStepFocus = {step: 0 | 1; selector: string; view: QuoteResponseView; workspaceRole: ProofRole; viewSerial: number};
@@ -209,6 +215,8 @@ export default function Home() {
   const [browserCheckProgress, setBrowserCheckProgress] = useState<{done: number; total: number}>();
   const [businessCheckProgress, setBusinessCheckProgress] = useState<{done: number; total: number}>();
   const [criterionIndex, setCriterionIndex] = useState(0);
+  const [scopeLoad,setScopeLoad]=useState<ScopeLoad>();
+  const [scopeReload,setScopeReload]=useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
   const workspaceRef = useRef<HTMLDivElement>(null);
   const workspaceFocusSerial = useRef(0);
@@ -276,6 +284,8 @@ export default function Home() {
   const welcomeActive = !quote && !sellerEntry && !intakeStarted;
   const roleRecords = records.filter(item => item.proof.demoRoleplay || (recordRoles[item.id] ?? "buyer") === workspaceRole);
   const delivery = proof?.delivery;
+  const scopeKey=scopeViewKey(quote,displayRole);
+  const currentScope=scopeLoad?.key===scopeKey&&scopeLoad.status==="ready"?scopeLoad.result:undefined;
   const versionListKey=JSON.stringify([quote?.id??"",delivery?.id??"",workspaceRole]);
   const scopedVersionList=versionListLoad?.key===versionListKey?versionListLoad:undefined;
   const previousComparisonSummary=delivery&&scopedVersionList?.status==="ready"?versions.find(version=>isOlderDelivery(version,delivery)):undefined;
@@ -297,6 +307,11 @@ export default function Home() {
     && Object.hasOwn(deliveryFiles, previewFile)
     && typeof deliveryFiles[previewFile] === "string";
   const reviewCurrent = !!delivery && proof?.review?.deliveryId === delivery.id;
+  const selectedCriterion=proof?.criteria[criterionIndex];
+  const selectedAssessmentItem=delivery?.assessment?.items.find(item=>item.criterionId===selectedCriterion?.id);
+  const scopeRequested=!!currentScope?.scopeContext.states.find(state=>state.criterionId===selectedCriterion?.id)?.latest
+    ||selectedAssessmentItem?.evidenceNeed?.reason==="page_scope"||selectedAssessmentItem?.evidenceNeed?.reason==="field_relationship"
+    ||selectedAssessmentItem?.sourceFinding?.basis==="declared_html_labels"&&!selectedAssessmentItem.sourceFinding.scopeBinding;
   const authorized = proof?.paymentState === "authorized";
   const captured = proof?.paymentState === "captured";
   const voided = proof?.paymentState === "voided";
@@ -490,6 +505,27 @@ export default function Home() {
     setFeedbackSuggestion(undefined);
     layoutController.current?.abort();
   }, [delivery?.id]);
+
+  useEffect(()=>{
+    if(!quote||!delivery||!custom)return;
+    const key=scopeKey,ticket=renderedQuoteResponseTicket,view={...ticket.view},controller=new AbortController();let active=true;
+    const timeout=window.setTimeout(()=>controller.abort(),15000);
+    setScopeLoad({key,status:"loading"});
+    apiRequest<ScopeResult>(`/api/proofs/${encodeURIComponent(quote.id)}/scope-clarifications`,"GET",undefined,displayRole,controller.signal)
+      .then(async result=>{
+        if(!active||!sameQuoteResponseView(view,currentQuoteView.current))return;
+        // A partner may have saved new scope after this page loaded. Synchronize
+        // the same project's guarded quote rather than leaving a loading dead end.
+        const outcome=await getQuoteResponseFence().receive(ticket,result);
+        if(!active||!sameQuoteResponseView(view,currentQuoteView.current))return;
+        if(outcome.kind==="applied"&&outcome.source==="response")setScopeLoad({key:scopeViewKey(result.quote,result.role??displayRole),status:"ready",result});
+        else if(outcome.kind==="applied") {setScopeLoad({key,status:"loading"});setScopeReload(value=>value+1);}
+        else setScopeLoad({key,status:"error"});
+      })
+      .catch(()=>{if(active&&sameQuoteResponseView(view,currentQuoteView.current))setScopeLoad({key,status:"error"});})
+      .finally(()=>window.clearTimeout(timeout));
+    return()=>{active=false;controller.abort();window.clearTimeout(timeout);};
+  },[scopeKey,scopeReload,custom]);
 
   useEffect(() => () => { layoutController.current?.abort(); }, []);
 
@@ -695,7 +731,7 @@ export default function Home() {
     setRuntimeEnabled(false);setRuntimeCriterionId("");setRuntimeCapacityCriterionId("");
     setIntakeStarted(true); setProjectMode("custom"); setProjectStep(0); setWorkspacePanel("agreement");
     setProjectTitle(tr("双语面馆：业务内容验收", "Bilingual noodle shop: business content checks"));
-    updateProjectSummary(tr("英文菜单标明 Beef noodles AUD 18\n中文菜单标明牛肉面 AUD 18\n到店说明展示电话 +61 3 9000 0000", "The English menu must show Beef noodles AUD 18\nThe Chinese menu must show 牛肉面 AUD 18\nThe visit page must show phone +61 3 9000 0000"));
+    updateProjectSummary(tr("英文菜单标明 Beef noodles AUD 18\n中文菜单标明牛肉面 AUD 18\n到店说明展示电话 +61 3 9000 0000\n联系表单源码必须包含标签“姓名”和“邮箱”", "The English menu must show Beef noodles AUD 18\nThe Chinese menu must show 牛肉面 AUD 18\nThe visit page must show phone +61 3 9000 0000\nThe contact form source must contain labels “姓名” and “邮箱”."));
     setProjectAmount("1.00"); setCurrency("AUD"); setRequiredPagesInput("index.html\nmenu-en.html\nmenu-zh.html\nvisit.html"); setManualRequirementsInput("");
     setBrowserSteps([{from: "index.html", text: "View menu", to: "menu-en.html"}, {from: "menu-en.html", text: "中文菜单", to: "menu-zh.html"}, {from: "menu-zh.html", text: "查看到店说明", to: "visit.html#consultation"}]);
     setBusinessDrafts([
@@ -788,6 +824,31 @@ export default function Home() {
       if (action === "accept_delivery") setWorkspacePanel("payment");
       if (message) setNotice(message);
     });
+  }
+
+  async function saveScope(action:"propose"|"confirm",input:ScopeProposalInput|ScopeConfirmationInput):Promise<boolean>{
+    if(!quote||!delivery)return false;
+    const ticket=renderedQuoteResponseTicket;let saved=false;
+    await run("scope-clarifications",async()=>{
+      const result=await request<ScopeResult>(`/api/proofs/${quote.id}/scope-clarifications`,"POST",{action,...input});
+      const outcome=await getQuoteResponseFence().receive(ticket,result);
+      if(outcome.kind!=="applied"){
+        if(sameQuoteResponseView(ticket.view,currentQuoteView.current))setNotice(tr("范围操作已收到响应，请刷新核对保存状态后再继续，不要重复确认。","The scope request received a response. Refresh and check its saved state before continuing; do not repeat the confirmation."));
+        return;
+      }
+      saved=true;
+      if(outcome.source==="response")setScopeLoad({key:scopeViewKey(result.quote,result.role??displayRole),status:"ready",result});
+      else {setScopeLoad(undefined);setScopeReload(value=>value+1);}
+      setNotice(action==="propose"?tr("范围提案已保存，仍需买卖双方分别明确确认。旧评估保留，下一次检查使用确认后的依据。","Scope proposal saved. Both parties still need to confirm separately. Earlier assessments are retained; the next check uses the confirmed basis."):tr("本方的范围确认已保存。双方确认不代表交付通过，请继续检查当前版本。","Your scope confirmation is saved. Agreement on scope does not pass the delivery; check the current version next."));
+    },false);
+    return saved;
+  }
+
+  function reopenCriterion(criterionId:string){
+    const index=proof?.criteria.findIndex(c=>c.id===criterionId)??-1;
+    if(index<0)return;
+    setCriterionIndex(index);setWorkspacePanel("delivery");setDeliveryTab("evidence");
+    scheduleWorkspaceFocus(root=>{const panel=root.querySelector<HTMLDetailsElement>(".delivery-assessment");if(panel){panel.open=true;panel.scrollIntoView({block:"nearest"});}});
   }
 
   async function saveRiskReview(input: RiskReviewInput): Promise<boolean> {
@@ -1695,7 +1756,10 @@ export default function Home() {
               {delivery && !custom && <nav className="criterion-switch no-print" aria-label={tr("选择验收项目", "Choose an acceptance criterion")}>
                 {proof?.criteria.map((criterion, index) => <button key={criterion.id} aria-pressed={criterionIndex === index} className={criterionIndex === index ? "active" : ""} onClick={() => setCriterionIndex(index)}><span>0{index + 1}</span><strong>{criterionDisplayTitle(criterion, language)}</strong><small>{findingLabel(findingFor(criterion))}</small></button>)}
               </nav>}
+              {delivery&&proof&&proof.criteria[criterionIndex]&&<RequirementNextStep criterion={proof.criteria[criterionIndex]} item={delivery.assessment?.items.find(item=>item.criterionId===proof.criteria[criterionIndex].id)} evidence={evidence.filter(item=>item.criterionId===proof.criteria[criterionIndex].id)} humanConfirmed={confirmedManualChecks.includes(proof.criteria[criterionIndex].id)} language={language}/>}
+              {quote&&delivery&&custom&&selectedCriterion&&<details className="scope-entry" open={scopeRequested||undefined}><summary>{tr("页面或表单归属不明？双方确认检查范围","Page or form unclear? Agree the check scope")}</summary><ScopeClarificationPanel key={`${quote.id}-${delivery.id}-${displayRole}-${proof.criteria[criterionIndex].id}`} quote={quote} criterion={proof.criteria[criterionIndex]} role={displayRole} language={language} scopeContext={currentScope?.scopeContext} candidates={currentScope?.candidates??[]} busy={!!busy||scopeLoad?.key===scopeKey&&scopeLoad.status==="loading"} readOnly={!collaboration||acceptedCurrent||!deliveryUnlocked} onPropose={input=>saveScope("propose",input)} onConfirm={input=>saveScope("confirm",input)} onReload={()=>setScopeReload(value=>value+1)} onRecheck={reopenCriterion}/></details>}
               {delivery && proof && <DeliveryAssessment report={delivery.assessment?.deliveryId === delivery.id ? delivery.assessment : undefined} riskReviews={delivery.riskReviews} actorRole={displayRole} onSaveRiskReview={saveRiskReview} criteria={proof.criteria} scopeSteps={assessmentFeedbackScopeSteps(quote)} language={language} selectedCriterionId={proof.criteria[criterionIndex]?.id} configured={config?.aiMode === "live"} enabled={!!canCheckDelivery && reviewCurrent && !!delivery.files && !busy} busy={busy === "assess"} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked && !busy ? prepareFeedback : undefined} onRun={() => mutate("assess", {deliveryId: delivery.id, confirm: true}, tr("已保存当前版本的 AI 评估。建议与规则证据独立，最终仍由买家验收。", "AI assessment saved for this version. Advice remains separate from rule evidence; the buyer decides acceptance."))} />}
+              {!!delivery?.assessmentHistory?.length&&proof&&<details className="assessment-history"><summary>{tr(`查看本版先前评估（${delivery.assessmentHistory.length}）`,`Inspect earlier assessments of this version (${delivery.assessmentHistory.length})`)}</summary><p>{tr("这些报告使用当时的范围依据，原样保留；不作为当前评估，也不能用于自动验收。","These reports retain their original scope basis. They are earlier assessments, not the current finding, and cannot automatically accept the delivery.")}</p>{delivery.assessmentHistory.map(report=><DeliveryAssessment key={report.id} report={report} criteria={proof.criteria} language={language} selectedCriterionId={proof.criteria[criterionIndex]?.id} readOnly riskReviews={delivery.riskReviews}/>)}</details>}
               {quote && delivery && <SourceVisibilityPanel quote={quote} role={role} language={language} enabled={!busy} request={request} onChanged={()=>void refreshEvidenceCatalog()}/>}
               {delivery && <div className="criteria-evidence-list">
                 {proof?.criteria.map((criterion, index) => {

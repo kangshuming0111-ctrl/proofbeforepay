@@ -1,0 +1,10 @@
+{
+  "schema": "noodle-f1-unseen-case-seal-v1",
+  "corpusSha256": "c8061b4be834b5a83ae64621a92761fa0764ff7664b390e489ab61e80318e9dd",
+  "caseCount": 4,
+  "criteriaCount": 9,
+  "modelCalls": 0,
+  "reviewerExposure": false,
+  "referenceCorrection": "f1-fresh-four-reference-correction.json",
+  "sourceBeforeF1": "c01044fb387918e649f547d37a9091164e9bc93f"
+}

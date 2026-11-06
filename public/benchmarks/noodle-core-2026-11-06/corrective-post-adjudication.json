@@ -1,0 +1,21 @@
+{
+  "review": "f1-corrective-post-deepseek.json",
+  "valid": true,
+  "independentReviewer": "Codex AI executed parse5 and both real policy functions, not a human study",
+  "findings": [
+    {
+      "finding": 1,
+      "decision": "rejected",
+      "reason": "Actual parse5 reports no error for duplicate/stray doctype; it retains the cited active p price. Published uncertainty in those examples is caused by template, not a stricter doctype parser: both policies share the same error callback excluding only missing-doctype. The independent result correctly identifies the actual active source price, not rendered output or HTML conformance. The reported duplicate-active-price example remains unknown by subject uniqueness. The reported claim of dropped price content/strict doctype rejection is not reproduced. This finite source fact is not an HTML conformance validator; parse5-reported errors still yield unknown.",
+      "reproduction": "f1-corrective-post-repro.json"
+    }
+  ],
+  "sourceChangesAfterPost": false,
+  "acceptedP1P2": 0,
+  "limits": [
+    "One controlled fetcher invocation per exact replay is not a network call: f1-corrective-zero-call-replay replaces global fetch with a denied function and supplies retained Response directly. networkCalls=0 and blockedNetworkAttempts=0.",
+    "No new provider evaluations beyond original4; raw and published statuses remain original.",
+    "Explicit new price fact policy only changes plain template uncertainty, while all exact copy/published calls retain old semantics.",
+    "The source certainty gate rejects parse5-reported errors except the unchanged missing-doctype allowance; ignored duplicate/stray doctypes are not a complete HTML conformance check. It does not claim standards validation or rendered behavior."
+  ]
+}

@@ -13,6 +13,9 @@ import {resolveCatalogCitations} from "../lib/assessment-citation-catalog.ts";
 import {canonicalAssessmentRisk} from "../lib/assessment-risk-fields.ts";
 import {recordRiskReview} from "../lib/risk-reviews.ts";
 import {isAssessmentObligations} from "../lib/assessment-obligations.ts";
+import {createAssessmentSourceFindingCheck} from "../lib/assessment-source-findings.ts";
+import {resolveAssessmentScopeContext} from "../lib/scope-clarifications.ts";
+import {getBusinessCheckPlan} from "../lib/business-checks.ts";
 import {prepareProjectEvaluation,projectQuote,validateProjectCorpus} from "./run-project-assessment-evaluation.ts";
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),"..");
@@ -85,6 +88,48 @@ export function stripEvidenceActionMetadata(report){
  // The bounded risk-quarantine extension, when present, is checked separately.
  delete copy.withheldRisks;
  return copy;
+}
+
+/** Validate the new, separate provenance layers against retained wire items and
+ * actual prepared source BEFORE stripping only these named additive fields.
+ * This is not permission to rewrite any published item or historical fixture. */
+export async function verifyAssessmentProvenanceMetadata(report,previous,packet,quote,wireItems){
+ assert.deepEqual(packet.criteria,quote.proof.criteria.map(({id,title,source})=>({id,title,source})));
+ assert.ok(object(packet.files)&&object(quote.proof.delivery?.files));
+ for(const[file,source]of Object.entries(packet.files))assert.ok(typeof source==="string"&&Object.hasOwn(quote.proof.delivery.files,file)&&quote.proof.delivery.files[file].startsWith(source),"Prepared source is not an exact prefix of the retained file.");
+ assert.ok(Array.isArray(wireItems)&&wireItems.length===packet.criteria.length);
+ const originals=new Map();
+ for(const wire of wireItems){
+  assert.ok(object(wire));assert.deepEqual(Object.keys(wire).sort(),["citations","criterionId","explanation","status"]);
+  assert.ok(packet.criteria.some(c=>c.id===wire.criterionId)&&!originals.has(wire.criterionId));
+  assert.ok(["supported","changes_suggested","insufficient_evidence"].includes(wire.status));
+  assert.ok(typeof wire.explanation==="string"&&wire.explanation.trim().length>0&&wire.explanation.length<=600);
+  originals.set(wire.criterionId,{status:wire.status,explanation:wire.explanation,citations:resolveCatalogCitations(assessmentCitationSelection(wire.citations,ASSESSMENT_ITEM_CITATION_LIMIT,"catalog_slots"),packet.citationCatalog,ASSESSMENT_ITEM_CITATION_LIMIT)});
+ }
+ const accounting={schema:"retained-assessment-provenance-additions-v1",rawModelItemsVerified:0,sourceFindingsRecomputed:0,currentScopeStampVerified:false,baselineModelItemsRetained:0,baselineSourceFindingsRetained:0,baselineScopeStampRetained:false,publishedCoreFieldsUnchanged:true};
+ const normalize=async(value,current)=>{
+  assert.deepEqual(value.items.map(i=>i.criterionId),packet.criteria.map(c=>c.id));
+  if(current)assert.ok(Object.hasOwn(value,"scopeContext"),"Current catalog report lacks its exact scope-context stamp.");
+  const scope=await resolveAssessmentScopeContext(quote,value);
+  const sourceCheck=createAssessmentSourceFindingCheck({files:packet.files,coverage:value.coverage,language:quote.language,businessSteps:getBusinessCheckPlan(quote),scope});
+  const copy=structuredClone(value);
+  for(const[index,item]of value.items.entries()){
+   if(current)assert.ok(Object.hasOwn(item,"modelJudgment"),"Current catalog item lacks its original decoded model judgment.");
+   if(Object.hasOwn(item,"modelJudgment")){
+    assert.ok(object(item.modelJudgment));assert.deepEqual(Object.keys(item.modelJudgment).sort(),["citations","explanation","status"]);
+    assert.deepEqual(item.modelJudgment,originals.get(item.criterionId),"Retained modelJudgment differs from the exact original decoded provider item.");
+    const expected=sourceCheck(packet.criteria[index]);
+    if(expected===undefined)assert.ok(!Object.hasOwn(item,"sourceFinding"),"An unsupported independent source field cannot be stripped.");
+    else assert.deepEqual(item.sourceFinding,expected,"Independent sourceFinding differs from exact source/scope recomputation.");
+    if(current){accounting.rawModelItemsVerified++;if(expected!==undefined)accounting.sourceFindingsRecomputed++;}
+    else{accounting.baselineModelItemsRetained++;if(expected!==undefined)accounting.baselineSourceFindingsRetained++;}
+   }else assert.ok(!Object.hasOwn(item,"sourceFinding"),"A sourceFinding without retained modelJudgment cannot be stripped.");
+   delete copy.items[index].modelJudgment;delete copy.items[index].sourceFinding;
+  }
+  if(Object.hasOwn(value,"scopeContext")){assert.ok(object(value.scopeContext));if(current)accounting.currentScopeStampVerified=true;else accounting.baselineScopeStampRetained=true;delete copy.scopeContext;}
+  return copy;
+ };
+ return{report:await normalize(report,true),previous:await normalize(previous,false),accounting};
 }
 
 /** The later additive obligation record is admitted only after exact original
@@ -322,8 +367,11 @@ export async function replayEvidenceActions({groups,baseline,stage="16",requireE
     }));
     assert.equal(intercepts,1);assert.deepEqual(quote,before,"A read-only assessment mutated the quote, acceptance or payment.");
     assert.deepEqual(statuses(report),statuses(previous));
+    const decoded=assessmentReportJson(assessmentCompletionText(old.raw.providerBody,"catalog_slots")).value;
+    assert.equal(decoded.catalogId,packet.citationCatalog.catalogId);assert.ok(same(decoded.items,old.raw.items));
+    const provenance=await verifyAssessmentProvenanceMetadata(report,previous,packet,quote,decoded.items);
     const migrating=report.withheldRisks?.version===4&&previous.risks.length>0;
-    const obligationsComparison=migrating?verifyV4PublicationMigrationBaseline(report,previous,packet.criteria,project.language):verifyAdditiveObligationsBaseline(report,previous,packet.criteria);
+    const obligationsComparison=migrating?verifyV4PublicationMigrationBaseline(provenance.report,provenance.previous,packet.criteria,project.language):verifyAdditiveObligationsBaseline(provenance.report,provenance.previous,packet.criteria);
     for(const item of report.items)if(item.status!=="insufficient_evidence")assert.equal(item.evidenceNeed,undefined);
     const needs=evidenceNeeds(report,project.files);
     if(requireEvidenceNeeds)assert.ok(needs.every(row=>row.hasActionableReason),"An unknown lacks structured evidence-needed metadata.");
@@ -333,7 +381,7 @@ export async function replayEvidenceActions({groups,baseline,stage="16",requireE
     rows.push({group:group.label,id:project.id,criterionCount:project.criteria.length,originalProviderBodySha256:hash(old.raw.bodyText),originalRequestSha256:source.plan.requestSha256,replayRequestSha256:requestSha256,
      originalFreezeSha256:group.frozen.snapshotSha256,sourceFiles:source.files,quoteSha256:source.quoteSha256,quoteUnchanged:true,acceptanceAndPaymentUnchanged:true,
      requestBytesUnchanged:requestPolicyComparison.requestBytesUnchanged,requestPolicyComparison,completeCriteria:true,itemStatusesUnchanged:true,publishedFieldsUnchanged:obligationsComparison.publishedCoreFieldsUnchanged,
-     publicationMigration:obligationsComparison.publicationMigration??null,evidenceNeeds:needs,
+     publicationMigration:obligationsComparison.publicationMigration??null,provenanceMetadataComparison:provenance.accounting,evidenceNeeds:needs,
      citationVerification:citations,obligationsComparison,statusLineage:lineage.statusLineage,withheldRisks,reviewNamespace,baselineApplication:prior.currentApplication,currentApplication:{accepted:true,report,error:null}});
    }
   }
@@ -354,6 +402,7 @@ export async function replayEvidenceActions({groups,baseline,stage="16",requireE
    statusLineageReportsChecked:rows.filter(row=>row.statusLineage.allAgreedCriteriaCompared).length,statusLineageLedgersVerified:rows.filter(row=>row.statusLineage.ledgerVerified).length,originalToPublishedStatusAdjustments:rows.reduce((n,row)=>n+row.statusLineage.adjustedCriteria.length,0)},
   limits:["Retained original HTTP response bodies, not new model inference or a prompt experiment. Only messages[0].content system policy text may differ from the frozen request; both system hashes and the actual change flag are recorded. All other request bytes remain unchanged, and the actual intercepted request must equal the verified current preparation.","The baseline is the previous publication replay, not the unprocessed R15 response. Only explicitly allowed new evidence-action metadata may differ.",
    "Original raw responses, source files, frozen references, item statuses and report explanations remain unchanged; input hashes are checked again after replay. An explicitly counted v4 publication migration may move the complete unchanged active risks into original-indexed withheld entries and insert only its exact fixed notice; such rows explicitly report publishedFieldsUnchanged=false. Every other core field is compared strictly. New obligation directions are a separately counted additive change and must exactly rederive from each locked criterion; baseline directions, when present, must also validate and remain unchanged.",
+   "Separate modelJudgment additions must equal the retained original decoded provider item character-for-character; independent sourceFinding additions must rederive from the actual prepared file bytes and exact historical scope. Only these specifically validated metadata fields and the verified scope stamp are removed for the old immutable-core comparison; unknown fields still fail. This is neither new model inference nor improved historical model accuracy.",
    "Evidence requests and quarantined AI leads do not establish a defect, resolution, acceptance or payment. Replaying synthetic or public templates is not a customer test."]};
 }
 

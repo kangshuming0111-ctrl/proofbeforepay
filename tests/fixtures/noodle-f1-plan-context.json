@@ -1,0 +1,56 @@
+{
+  "scope": "F1 only, fictional Melbourne noodle-shop website outsourcing acceptance, not a general HTML semantic verifier",
+  "baseline": "c01044 / v86; latest controlled semantic statuses12/14, actual raw Earth wording objection and Flight crosspage unknown retained",
+  "approved_fixed_gate": [
+    "equivalent AUD18 and AUD18.00 for exact buyer-confirmed item/file",
+    "actual AUD28 on that same item mismatch",
+    "wrong page or wrong dish cannot borrow expected price",
+    "Name and Email source labels in requested same PAGE/FORM",
+    "only source for durable submission stays unknown",
+    "buyer/seller confirmed current source scope restricts witness",
+    "seller revision same criterion creates new finding, old finding untouched",
+    "buyer sees source finding, raw model and next action separately"
+  ],
+  "proposal": {
+    "metadata": "Optional modelJudgment captures exact decoded status/explanation/citations BEFORE guards. Optional sourceFinding v1 is independent, server-recomputed supported/changes_suggested/insufficient_evidence with basis, explanation, exact citations, checked files and optional confirmed scope proposal ref. Raw/model and source findings must never be pooled as model accuracy.",
+    "label_witness": "Reuse finite source-label parser; add complete quoted Chinese atomic source-label requirement grammar only. Scan complete sent HTML independent of AI citations. Positive requires full owner group; negative requires complete parsed HTML plus no group, no implicit/foreign/parse uncertainty. Confirmed page/form restricts exact file/form without rebasing source offsets; pending/unavailable scope yields unknown. Unbound PAGE/FORM can prove only all-source grouping facts, no semantic role->filename authority.",
+    "price_witness": "Reuse existing getBusinessCheckPlan expected item_price and createSourceBusinessEvidenceCheck. Explicit buyer-confirmed values/file only; AUD18/AUD18.00 equivalence, exact dish and no adjacent-row/other-dish borrowing. Source cannot prove rendered visibility/persistence. Bilingual names explicitly locked as two expectations, no automatic translation.",
+    "guards": "Strict every-criterion/schema/citations unchanged. Runtime/record checks remain unknown even price/label snippets present. Raw unknown may coexist with independently supported source finding; no silent raw upgrade. Fail evidence wins; malformed source/scope/ambiguous owner unknown.",
+    "export": "Optional fields backward compatible; new sourceFinding deterministically recomputed from exported delivery/criteria/validated business checks+historical confirmed scope. Compare exact metadata, citations, status, explanation. modelJudgment schema/citations bounded but no claim external proof of model provenance.",
+    "earth": "No NASA/entity keywords; can expose checkable subject/column/value relation if bounded but cannot treat arbitrary same row as semantic entailment. Root deciding whether old case stays source unknown with explicit relational observation.",
+    "files": [
+      "lib/contracts.ts optional two field types only",
+      "lib/assessment-source-findings.ts",
+      "lib/assessment-label-citations.ts",
+      "lib/source-literal-directive.ts",
+      "lib/assessment-evidence-scope.ts",
+      "lib/delivery-assessment.ts",
+      "lib/evidence-export.ts narrow validator seam",
+      "tests/noodle-source-findings.test.ts"
+    ],
+    "not_allowed": [
+      "new auth/check protocol family",
+      "new platform adapter",
+      "AI guesses page alias",
+      "all unknown -> supported",
+      "missing AI citation -> missing field",
+      "word replacement visible -> declared",
+      "automatic acceptance/payment",
+      "historical raw answers changed",
+      "repeated provider retries to get favorable outputs"
+    ]
+  },
+  "adversarial_controls": [
+    "same page wrong dish correct price",
+    "same label in different form",
+    "duplicate form id",
+    "form=retarget unresolved",
+    "comment/template/script decoy",
+    "quoted label containing operation words is literal data, appended runtime clause is not",
+    "pending/stale/unilateral scope not authority",
+    "source changing after confirmation must revalidate current target",
+    "missing/truncated HTML cannot establish absence",
+    "non-source runtime requirement with valid labels remains unknown",
+    "wrong sourceFinding/citation/exported scope must be rejected"
+  ]
+}

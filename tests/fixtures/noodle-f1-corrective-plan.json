@@ -1,0 +1,83 @@
+{
+  "scope": "Fixed F1 correction only, existing first4 are now known; no new models called or firstanswers overwritten.",
+  "observed": {
+    "caseId": "f1-sealed-wrong-object",
+    "focused": [
+      {
+        "criterionId": "coverage-1",
+        "reference": "changes_suggested",
+        "raw": "changes_suggested",
+        "published": "insufficient_evidence",
+        "sourceFinding": "insufficient_evidence",
+        "effective": "insufficient_evidence",
+        "rawMatches": true,
+        "publishedMatches": false,
+        "effectiveMatches": false
+      },
+      {
+        "criterionId": "coverage-2",
+        "reference": "changes_suggested",
+        "raw": "changes_suggested",
+        "published": "changes_suggested",
+        "sourceFinding": "changes_suggested",
+        "effective": "changes_suggested",
+        "rawMatches": true,
+        "publishedMatches": true,
+        "effectiveMatches": true
+      }
+    ],
+    "sourceFinding": {
+      "version": "source-finding-v1",
+      "status": "insufficient_evidence",
+      "basis": "locked_business_values",
+      "explanation": "本项已确认业务检查无法全部在有限的静态简单段落中可靠对应；重复或未定位内容、复杂格式或动态来源仍需其他证据。源码建议不能据此确认为符合，原始约定未改变。",
+      "citations": [],
+      "files": [
+        "menu.html"
+      ]
+    },
+    "rawItems": [
+      {
+        "criterionId": "coverage-1",
+        "status": "changes_suggested",
+        "explanation": "menu.html正文中牛肉面标为AUD 28、Beef noodles标为AUD28，均非AUD18；仅<template>内一条牛肉面为AUD18，属模板内容且非Beef noodles，不满足两项锁定价格。",
+        "citations": {
+          "c1": "s10",
+          "c2": "s12",
+          "c3": "s13",
+          "c4": "",
+          "c5": "",
+          "c6": ""
+        }
+      },
+      {
+        "criterionId": "coverage-2",
+        "status": "changes_suggested",
+        "explanation": "contact.html虽有“姓名”和“邮箱”标签，但分属两个不同表单：姓名在id=contact表单内，邮箱在id=newsletter表单内；联系表单本身缺“邮箱”标签。",
+        "citations": {
+          "c1": "s1",
+          "c2": "s3",
+          "c3": "s5",
+          "c4": "",
+          "c5": "",
+          "c6": ""
+        }
+      }
+    ]
+  },
+  "proposal": [
+    "Keep published createSourceBusinessEvidenceCheck default strict and unchanged. Add separate independent source-fact price path through same subject/price parser with only plain inert HTML template allowed by source certainty policy; ordinary scripts, event handlers, generated CSS, bad parse, foreign/embed/shadowrootmode templates, ambiguity remain unknown. Template content never enters active body leaves or subject count. No masking or replacing source bytes. Visible_copy stays strict.",
+    "Recognize explicit Chinese 持久保存 / 重新启动后可独立回读 as durable_record within this criterion source, not borrowing another criterion. Existing literal quoted source data and runtime titles retain priority. evidenceNeed record_readback is required so user supplies run+independent readback rather than needless page clarification.",
+    "Replay same4 exact captured provider bodies with same catalogs and source bytes without new API calls. Raw 9/9 status remains historical; live first effective8/9 failure retained. Corrective replay can show improved source findings only."
+  ],
+  "controls": [
+    "template inert wrongvalue decoy cannot change unique active expected subject",
+    "template + any active script/handler remains unknown",
+    "shadowrootmode template remains unknown",
+    "parse error remains unknown",
+    "two active same-name differentprices remains unknown",
+    "whole quoted 保存 label remains data, runtime append remains observation",
+    "English prior checks unchanged; legacy checker still unknown for template"
+  ],
+  "approvedByRoot": true
+}

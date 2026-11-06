@@ -230,3 +230,86 @@ export function labelCitationCoverageExplanation(result: Extract<LabelCitationCo
     ? `源码引文尚未在${context}覆盖标签：${shown}${remaining > 0 ? `（另 ${remaining} 项）` : ""}。请补充引文；这是引用缺口，不代表交付缺少字段。`
     : `Source citations do not cover these labels in ${context}: ${shown}${remaining > 0 ? ` (+${remaining} more)` : ""}. Add citations; this is an evidence gap, not proof of missing delivery fields.`;
 }
+
+/** A confirmed scope restricts an existing source declaration; it never supplies
+ * a missing field or changes byte offsets. Binding authenticity is validated by
+ * the scope domain before this pure witness receives it. */
+export type LabelDeclaredScope = {file: string; kind: "page" | "form"; formId?: string};
+export type IndependentLabelSourceFact = {kind: "not_applicable"}
+  | {kind: "unknown"; context: "page" | "form"; files: string[]; reason: "incomplete_source" | "unresolved_parse_or_owner" | "citation_budget" | "ambiguous_groups"}
+  | {kind: "declared"; context: "page" | "form"; files: string[]; labelCount: number; citations: ProofAssessmentCitation[]}
+  | {kind: "no_complete_group"; context: "page" | "form"; files: string[]; labelCount: number; citations: ProofAssessmentCitation[]};
+
+function declaredScopeForm(source: string, formId?: string): string | undefined {
+  const document = parse(source, {sourceCodeLocationInfo: true}), pending: Node[] = [document];
+  const matching: Element[] = []; let ids = 0, count = 0;
+  while (pending.length) {
+    const node = pending.pop()!; if (++count > 50_000) return;
+    if (element(node)) {
+      if (node.namespaceURI !== "http://www.w3.org/1999/xhtml" || INERT.has(node.tagName)) continue;
+      const id = node.attrs.find(a => a.name === "id")?.value;
+      if (formId !== undefined && id === formId) ids++;
+      if (node.tagName === "form" && (formId === undefined || id === formId)) matching.push(node);
+    }
+    if ("childNodes" in node) pending.push(...node.childNodes);
+  }
+  const offset = matching.length === 1 && (formId === undefined || ids === 1) ? matching[0].sourceCodeLocation?.startOffset : undefined;
+  return Number.isSafeInteger(offset) ? String(offset) : undefined;
+}
+
+/** Independently locates label declarations from ALL complete sent source.
+ * This does not use a model's omissions as absence evidence and never observes
+ * rendered visibility. PAGE and FORM ownership retain their distinct meaning. */
+export function createIndependentLabelSourceFactsCheck(files: Record<string, string>, coverage: ProofAssessment["coverage"]) {
+  const snapshot = {...files}, completeness = structuredClone(coverage);
+  return (criterion: ProofCriterion, scope?: LabelDeclaredScope): IndependentLabelSourceFact => {
+    const descriptor = parseSourceLiteralDirective(criterion.source);
+    if (descriptor?.kind !== "html_labels") return {kind: "not_applicable"};
+    const context = descriptor.context === "form" || scope?.kind === "form" ? "form" : "page";
+    const html = Object.keys(snapshot).filter(file => staticFileKind(file) === "html").sort();
+    const selected = scope ? html.filter(file => file === scope.file) : html;
+    const unknown = (reason: Extract<IndependentLabelSourceFact, {kind: "unknown"}>["reason"]): IndependentLabelSourceFact => ({kind: "unknown", context, files: selected, reason});
+    const labels = descriptor.labels.map(normalized);
+    if (!selected.length || Object.keys(snapshot).length > 40 || Object.values(snapshot).reduce((n, s) => n + s.length, 0) > 262_144
+      || completeness.truncatedFiles.length || completeness.omittedFiles.some(file => staticFileKind(file) === "html")
+      || html.some(file => !completeness.includedFiles.includes(file))
+      || completeness.includedFiles.some(file => staticFileKind(file) === "html" && !Object.hasOwn(snapshot, file))
+      || new Set(labels).size !== labels.length) return unknown("incomplete_source");
+    const groups: {file: string; labels: Label[]}[] = [], observed: ProofAssessmentCitation[] = [];
+    for (const file of selected) {
+      const all = labelsIn(snapshot[file], {context, requiredLabels: labels});
+      if (!all) return unknown("unresolved_parse_or_owner");
+      const scopedForm = scope?.kind === "form" ? declaredScopeForm(snapshot[file], scope.formId) : undefined;
+      if (scope?.kind === "form" && scopedForm === undefined) return unknown("unresolved_parse_or_owner");
+      const owners = new Map<string, Label[]>();
+      for (const label of all) {
+        if (!labels.includes(label.text) || context === "form" && !label.form || scopedForm !== undefined && label.form !== scopedForm) continue;
+        const key = context === "form" ? label.form! : file;
+        if (!owners.has(key)) owners.set(key, []);
+        owners.get(key)!.push(label);
+      }
+      for (const group of owners.values()) {
+        const chosen = labels.map(text => group.find(label => label.text === text));
+        if (chosen.every((label): label is Label => !!label)) groups.push({file, labels: chosen});
+        for (const label of group) {
+          if (!label.parts.length) continue;
+          const start = Math.min(...label.parts.map(p => p.start)), end = Math.max(...label.parts.map(p => p.end));
+          if (end > start && end - start <= 500) observed.push({file, start, end, excerpt: snapshot[file].slice(start, end)});
+        }
+      }
+    }
+    if (groups.length > 1) return unknown("ambiguous_groups");
+    if (groups.length === 1) {
+      const group = groups[0], citations: ProofAssessmentCitation[] = [];
+      for (const label of group.labels) {
+        if (!label.parts.length) return unknown("citation_budget");
+        const start = Math.min(...label.parts.map(p => p.start)), end = Math.max(...label.parts.map(p => p.end));
+        if (end <= start || end - start > 500) return unknown("citation_budget");
+        citations.push({file: group.file, start, end, excerpt: snapshot[group.file].slice(start, end)});
+      }
+      return {kind: "declared", context, files: selected, labelCount: labels.length, citations};
+    }
+    const citations = observed.filter((c, i, all) => all.findIndex(other => other.file === c.file && other.start === c.start && other.end === c.end) === i).slice(0, ASSESSMENT_ITEM_CITATION_LIMIT);
+    return {kind: "no_complete_group", context, files: selected, labelCount: labels.length, citations};
+  };
+}

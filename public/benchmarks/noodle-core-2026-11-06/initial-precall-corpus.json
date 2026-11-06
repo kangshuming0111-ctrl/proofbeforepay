@@ -1,0 +1,380 @@
+{
+  "schema": "proofbeforepay-noodle-frozen-source-cases-v1",
+  "cohort": "noodle-f1-preimplementation-first-four",
+  "scope": "Four authored fictional variants, not four independent real projects. Raw model and system finding scored separately. Conditional scope fixture must be installed by actual confirmed F2 server path before effective check; cannot claim wrong-page label case checked without it.",
+  "provenance": {
+    "kind": "authored-fictional",
+    "author": "Codex AI",
+    "realCustomer": false,
+    "externalSourceCopied": false,
+    "createdBeforeF1ProductionChanges": true
+  },
+  "projects": [
+    {
+      "id": "f1-sealed-equivalent",
+      "stratum": "clean",
+      "language": "zh",
+      "title": "f1-sealed-equivalent",
+      "summary": "菜单的牛肉面和Beef noodles标价必须为AUD18。联系表单源码必须包含标签“姓名”和“邮箱”。",
+      "requiredPages": [
+        "index.html",
+        "menu.html",
+        "contact.html"
+      ],
+      "businessChecks": {
+        "confirmed": true,
+        "items": [
+          {
+            "id": "business-1",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 30,
+              "excerpt": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "牛肉面",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            }
+          },
+          {
+            "id": "business-2",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 30,
+              "excerpt": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Beef noodles",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            }
+          }
+        ]
+      },
+      "files": {
+        "index.html": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><h1>Fictional Melbourne noodle shop</h1></body></html>",
+        "menu.html": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><table><tr><th>牛肉面</th><td>AUD 18.00</td></tr><tr><th>Beef noodles</th><td>AUD18</td></tr></table></body></html>",
+        "contact.html": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><form id=\"contact\"><label>姓名<input name=\"name\"></label><label>邮箱<input name=\"email\" type=\"email\"></label></form></body></html>",
+        "site.css": "body{font-family:system-ui}"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "原始需求 1",
+          "source": "菜单的牛肉面和Beef noodles标价必须为AUD18。",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "Independent reference for final server sourceFinding, not a claim of expected raw-model accuracy. Authored fictional source and requirements, not real merchant data.",
+            "relevantFiles": [
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-2",
+          "title": "原始需求 2",
+          "source": "联系表单源码必须包含标签“姓名”和“邮箱”。",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "Independent reference for final server sourceFinding, not a claim of expected raw-model accuracy. Authored fictional source and requirements, not real merchant data.",
+            "relevantFiles": [
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ],
+      "sourceFindingReference": [
+        "supported",
+        "supported"
+      ]
+    },
+    {
+      "id": "f1-sealed-wrong-object",
+      "stratum": "mismatch",
+      "language": "zh",
+      "title": "f1-sealed-wrong-object",
+      "summary": "菜单的牛肉面和Beef noodles标价必须为AUD18。联系表单源码必须包含标签“姓名”和“邮箱”。",
+      "requiredPages": [
+        "index.html",
+        "menu.html",
+        "contact.html"
+      ],
+      "businessChecks": {
+        "confirmed": true,
+        "items": [
+          {
+            "id": "business-1",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 30,
+              "excerpt": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "牛肉面",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            }
+          },
+          {
+            "id": "business-2",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 30,
+              "excerpt": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Beef noodles",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            }
+          }
+        ]
+      },
+      "files": {
+        "index.html": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><h1>Fictional Melbourne noodle shop</h1></body></html>",
+        "menu.html": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><p>牛肉面 AUD 28</p><p>Beef noodles AUD28</p><p>Vegetable noodles AUD18</p><template><p>牛肉面 AUD18</p></template></body></html>",
+        "contact.html": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><form id=\"contact\"><label>姓名<input></label></form><form id=\"newsletter\"><label>邮箱<input></label></form></body></html>",
+        "site.css": "body{font-family:system-ui}"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "原始需求 1",
+          "source": "菜单的牛肉面和Beef noodles标价必须为AUD18。",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "Independent reference for final server sourceFinding, not a claim of expected raw-model accuracy. Authored fictional source and requirements, not real merchant data.",
+            "relevantFiles": [
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-2",
+          "title": "原始需求 2",
+          "source": "联系表单源码必须包含标签“姓名”和“邮箱”。",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "Independent reference for final server sourceFinding, not a claim of expected raw-model accuracy. Authored fictional source and requirements, not real merchant data.",
+            "relevantFiles": [
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ],
+      "sourceFindingReference": [
+        "changes_suggested",
+        "changes_suggested"
+      ]
+    },
+    {
+      "id": "f1-sealed-wrong-page",
+      "stratum": "mismatch",
+      "language": "zh",
+      "title": "f1-sealed-wrong-page",
+      "summary": "菜单的牛肉面和Beef noodles标价必须为AUD18。联系表单源码必须包含标签“姓名”和“邮箱”。",
+      "requiredPages": [
+        "index.html",
+        "menu.html",
+        "contact.html"
+      ],
+      "businessChecks": {
+        "confirmed": true,
+        "items": [
+          {
+            "id": "business-1",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 30,
+              "excerpt": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "牛肉面",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            }
+          },
+          {
+            "id": "business-2",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 30,
+              "excerpt": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Beef noodles",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            }
+          }
+        ]
+      },
+      "files": {
+        "index.html": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><h1>Fictional Melbourne noodle shop</h1><p>牛肉面 AUD18</p><p>Beef noodles AUD18</p><form id=\"other\"><label>姓名<input></label><label>邮箱<input></label></form></body></html>",
+        "menu.html": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><p>牛肉面 AUD28</p><p>Beef noodles AUD28</p></body></html>",
+        "contact.html": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><form id=\"contact\"><label>姓名<input></label></form></body></html>",
+        "site.css": "body{font-family:system-ui}"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "原始需求 1",
+          "source": "菜单的牛肉面和Beef noodles标价必须为AUD18。",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "Independent reference for final server sourceFinding, not a claim of expected raw-model accuracy. Authored fictional source and requirements, not real merchant data.",
+            "relevantFiles": [
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-2",
+          "title": "原始需求 2",
+          "source": "联系表单源码必须包含标签“姓名”和“邮箱”。",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "Independent reference for final server sourceFinding, not a claim of expected raw-model accuracy. Authored fictional source and requirements, not real merchant data.",
+            "relevantFiles": [
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ],
+      "confirmedScopeFixture": {
+        "criterionId": "coverage-2",
+        "file": "contact.html",
+        "kind": "form",
+        "formId": "contact"
+      },
+      "sourceFindingReference": [
+        "changes_suggested",
+        "changes_suggested"
+      ]
+    },
+    {
+      "id": "f1-sealed-runtime-insufficient",
+      "stratum": "boundary",
+      "language": "zh",
+      "title": "f1-sealed-runtime-insufficient",
+      "summary": "菜单的牛肉面和Beef noodles标价必须为AUD18。联系表单提交结果必须持久保存，并在重新启动后可独立回读。",
+      "requiredPages": [
+        "index.html",
+        "menu.html",
+        "contact.html"
+      ],
+      "businessChecks": {
+        "confirmed": true,
+        "items": [
+          {
+            "id": "business-1",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 30,
+              "excerpt": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "牛肉面",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            }
+          },
+          {
+            "id": "business-2",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 30,
+              "excerpt": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Beef noodles",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            }
+          }
+        ]
+      },
+      "files": {
+        "index.html": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><h1>Fictional Melbourne noodle shop</h1></body></html>",
+        "menu.html": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><p>牛肉面 AUD18.0</p><p>Beef noodles AUD18.00</p></body></html>",
+        "contact.html": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><form id=\"contact\" action=\"/save\"><label>姓名<input></label><label>邮箱<input></label><button>提交</button></form></body></html>",
+        "site.css": "body{font-family:system-ui}"
+      },
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "原始需求 1",
+          "source": "菜单的牛肉面和Beef noodles标价必须为AUD18。",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "Independent reference for final server sourceFinding, not a claim of expected raw-model accuracy. Authored fictional source and requirements, not real merchant data.",
+            "relevantFiles": [
+              "menu.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-2",
+          "title": "原始需求 2",
+          "source": "联系表单提交结果必须持久保存，",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "Independent reference for final server sourceFinding, not a claim of expected raw-model accuracy. Authored fictional source and requirements, not real merchant data.",
+            "relevantFiles": [
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-3",
+          "title": "原始需求 3",
+          "source": "并在重新启动后可独立回读。",
+          "reference": {
+            "rationale": "Independent reference for final server sourceFinding, not a claim of expected raw-model accuracy. Authored fictional source and requirements, not real merchant data.",
+            "relevantFiles": [
+              "contact.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ],
+      "sourceFindingReference": [
+        "supported",
+        "insufficient_evidence"
+      ]
+    }
+  ]
+}

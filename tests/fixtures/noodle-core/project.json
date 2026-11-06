@@ -1,0 +1,15 @@
+{
+  "title": "面馆网站外包验收 · 固定流程",
+  "summary": "英文菜单标明 Beef noodles AUD 18\n中文菜单标明牛肉面 AUD 18\n到店说明展示电话 +61 3 9000 0000\n联系表单源码必须包含标签“姓名”和“邮箱”",
+  "amount": "1.00",
+  "currency": "AUD",
+  "requiredPages": [
+    "index.html",
+    "menu-en.html",
+    "menu-zh.html",
+    "visit.html"
+  ],
+  "manualRequirements": [],
+  "runtimeBoundary": "仅有表单源码不能证明提交结果已持久保存。该边界另外测试，不能用本静态文件宣称真实保存。",
+  "fictional": true
+}

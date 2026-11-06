@@ -1,6 +1,6 @@
 import {parse, type DefaultTreeAdapterTypes} from "parse5";
 import type {Language, ProofAssessmentCitation, ProofBusinessCheckStep} from "./contracts.ts";
-import {hasUncertainSourceBodyCopyAtFile} from "./exact-copy-evidence.ts";
+import {hasUncertainSourceBodyCopyAtFile, hasUncertainDeclaredPriceSourceAtFile} from "./exact-copy-evidence.ts";
 import {findMergedPriceContext} from "./merged-price-context.ts";
 
 type Node = DefaultTreeAdapterTypes.Node;
@@ -134,7 +134,7 @@ const money = (currency: string, minor: number) => `${currency} ${Math.trunc(min
 
 /** Only getBusinessCheckPlan's already validated saved steps are accepted by
  * this internal seam. No prose extraction, currency inference or new scope. */
-export function createSourceBusinessEvidenceCheck(files: Record<string, string>, savedSteps: readonly ProofBusinessCheckStep[]): (criterionId: string) => SourceBusinessEvidence {
+function sourceBusinessEvidenceCheck(files: Record<string, string>, savedSteps: readonly ProofBusinessCheckStep[], independentPriceFacts: boolean): (criterionId: string) => SourceBusinessEvidence {
   const snapshot = {...files}, steps = structuredClone(savedSteps), checks = steps.filter((step, index) => steps.findIndex(other => other.checkId === step.checkId) === index);
   const parsed = new Map<string, Source | undefined>(), uncertainty = new Map<string, boolean>();
   return criterionId => {
@@ -143,8 +143,9 @@ export function createSourceBusinessEvidenceCheck(files: Record<string, string>,
     const results: SourceBusinessCheckResult[] = selected.map(check => {
       const unknown = (reason: string): SourceBusinessCheckResult => ({checkId: check.checkId, file: check.file, kind: "unknown", reason});
       if (!Object.hasOwn(snapshot, check.file)) return unknown("missing_file");
-      if (!uncertainty.has(check.file)) uncertainty.set(check.file, hasUncertainSourceBodyCopyAtFile(snapshot, check.file));
-      if (uncertainty.get(check.file)) return unknown("dynamic_or_unsupported_source");
+      const priceFacts = independentPriceFacts && check.expected.kind === "item_price", certaintyKey = `${priceFacts ? "price-fact" : "published"}\u0000${check.file}`;
+      if (!uncertainty.has(certaintyKey)) uncertainty.set(certaintyKey, priceFacts ? hasUncertainDeclaredPriceSourceAtFile(snapshot, check.file) : hasUncertainSourceBodyCopyAtFile(snapshot, check.file));
+      if (uncertainty.get(certaintyKey)) return unknown("dynamic_or_unsupported_source");
       if (!parsed.has(check.file)) parsed.set(check.file, sourceFor(check.file, snapshot[check.file]));
       const source = parsed.get(check.file); if (!source) return unknown("parse_or_budget");
       if (check.expected.kind === "visible_copy") {
@@ -170,6 +171,16 @@ export function createSourceBusinessEvidenceCheck(files: Record<string, string>,
     const citations = cited.flatMap(result => result.citation ? [result.citation] : []).filter((citation, index, list) => list.findIndex(other => other.file === citation.file && other.start === citation.start && other.end === citation.end) === index).slice(0, 3);
     return {kind, checks: results, citations};
   };
+}
+
+/** Legacy publication semantics remain unchanged and conservative. */
+export function createSourceBusinessEvidenceCheck(files: Record<string, string>, savedSteps: readonly ProofBusinessCheckStep[]) {
+  return sourceBusinessEvidenceCheck(files, savedSteps, false);
+}
+/** Independent source-PRICE findings use the same exact subject/value parser.
+ * Only a plain inert template differs from the published uncertainty policy. */
+export function createIndependentSourceBusinessFactCheck(files: Record<string, string>, savedSteps: readonly ProofBusinessCheckStep[]) {
+  return sourceBusinessEvidenceCheck(files, savedSteps, true);
 }
 
 /** Canonical merged-row wording is allowed only when every check has the

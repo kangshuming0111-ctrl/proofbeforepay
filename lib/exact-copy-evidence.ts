@@ -17,7 +17,7 @@ const generatedCss = (source: string) => /(?:\bcontent\s*:|@import\b|\\)/iu.test
 
 /** Snapshot static body-copy segments once. This deliberately does not render,
  * follow URLs, run scripts or establish that any text is visible. */
-function bodyCopy(files: [string, string][]): { segments: string[]; uncertain: boolean } {
+function bodyCopy(files: [string, string][], allowPlainInertTemplate = false): { segments: string[]; uncertain: boolean } {
   const members = new Map(files), html = files.filter(([file]) => file.endsWith(".html"));
   if (!html.length || files.length > 40 || files.reduce((sum, [, value]) => sum + value.length, 0) > 262_144) return { segments: [], uncertain: true };
   let uncertain = files.some(([file, source]) => file.endsWith(".css") && generatedCss(source)), visited = 0;
@@ -38,7 +38,8 @@ function bodyCopy(files: [string, string][]): { segments: string[]; uncertain: b
         body ||= node.tagName === "body";
         if (node.namespaceURI !== "http://www.w3.org/1999/xhtml") { uncertain = true; if (body) chunks.push("\u0000"); continue; }
         if (node.tagName === "script" && !["application/json", "application/ld+json"].includes((attr(node, "type") ?? "").trim().toLowerCase())) uncertain = true;
-        if (DYNAMIC_OR_UNSUPPORTED.has(node.tagName)) uncertain = true;
+        if (DYNAMIC_OR_UNSUPPORTED.has(node.tagName) && !(allowPlainInertTemplate && node.tagName === "template"
+          && !node.attrs.some(row => ["shadowrootmode", "shadowroot"].includes(row.name)))) uncertain = true;
         if (node.attrs.some(row => /^on/iu.test(row.name)) || generatedCss(attr(node, "style") ?? "")) uncertain = true;
         if (node.tagName === "style" && "childNodes" in node && generatedCss(node.childNodes.map(child => child.nodeName === "#text" ? (child as DefaultTreeAdapterTypes.TextNode).value : "").join(""))) uncertain = true;
         if (node.tagName === "link" && (attr(node, "rel") ?? "").toLowerCase().split(/\s+/u).includes("stylesheet")) {
@@ -74,7 +75,7 @@ export function hasUncertainSourceBodyCopy(files: Record<string, string>): boole
  * change that file's source-copy scope. Include only its directly linked local
  * stylesheets; imports and missing/external/unsupported sources stay uncertain.
  * This does not render the page or establish that a value is visible. */
-export function hasUncertainSourceBodyCopyAtFile(files: Record<string, string>, file: string): boolean {
+function uncertainSourceBodyCopyAtFile(files: Record<string, string>, file: string, allowPlainInertTemplate: boolean): boolean {
   const entries = Object.entries(files);
   if (!Object.hasOwn(files, file) || !file.endsWith(".html") || entries.length > 40
     || entries.reduce((sum, [, value]) => sum + value.length, 0) > 262_144) return true;
@@ -100,7 +101,18 @@ export function hasUncertainSourceBodyCopyAtFile(files: Record<string, string>, 
     }
     if ("childNodes" in node) for (let i = node.childNodes.length - 1; i >= 0; i--) stack.push({node: node.childNodes[i], depth: depth + 1});
   }
-  return bodyCopy([...members]).uncertain;
+  return bodyCopy([...members], allowPlainInertTemplate).uncertain;
+}
+
+/** Existing publication/copy guard remains conservative, including templates. */
+export function hasUncertainSourceBodyCopyAtFile(files: Record<string, string>, file: string): boolean {
+  return uncertainSourceBodyCopyAtFile(files, file, false);
+}
+/** Source-PRICE facts alone may ignore a plain inert template's declarations.
+ * Script, handlers, generated CSS, parse errors and declarative shadow DOM
+ * remain uncertain. No bytes are removed, rendered or used as active content. */
+export function hasUncertainDeclaredPriceSourceAtFile(files: Record<string, string>, file: string): boolean {
+  return uncertainSourceBodyCopyAtFile(files, file, true);
 }
 
 /** A negative-only guard. Presence leaves a model suggestion unchanged; it never

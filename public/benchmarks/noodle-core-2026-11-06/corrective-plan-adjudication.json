@@ -1,0 +1,28 @@
+{
+  "review": "f1-corrective-plan-deepseek.json",
+  "valid": true,
+  "decisions": [
+    {
+      "finding": 1,
+      "decision": "rejected",
+      "reason": "sourceFor exits with continue at INERT template before child push; actual parse5 template.childNodes=0 and content stored separately. No template text enters active body count. Proposed new certainty policy can therefore reuse unchanged unique subject parser; added duplicate-inert-label control."
+    },
+    {
+      "finding": 2,
+      "decision": "rejected_reasoning_accept_boundary",
+      "reason": "Source order explicitly checks RECORD_ACTION line before OBSERVATION_REQUIRED. New Chinese durable pattern belongs in that existing early OR, no new schema/reason required. Existing source literal combined=neutral title must remain data. Boundary adopted, claimed precedence bug false."
+    },
+    {
+      "finding": 3,
+      "decision": "rejected",
+      "reason": "Whole-pack and existing published per-file checks deliberately remain strict, as root fixed gate requires. Only new independent price fact path gets one explicit policy argument. It is not a conflicting authority claim because raw/published/source layers are separately named."
+    },
+    {
+      "finding": 4,
+      "decision": "rejected",
+      "reason": "Executed exact Chinese exact-copy literal containing durable words with neutral Notice title already returns source_text/literal_content; claimed quoted-data veto is not present. Keep this positive control after adding explicit Chinese runtime pattern."
+    }
+  ],
+  "actualReproduction": "f1-corrective-plan-repro.json",
+  "implementation": "Only independent item_price certainty allows ordinary inert template; all other uncertainty retained, default checker unchanged. Early explicit Chinese durable capability -> existing durable_record reason."
+}

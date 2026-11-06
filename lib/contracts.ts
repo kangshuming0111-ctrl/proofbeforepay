@@ -82,7 +82,18 @@ export type ProofEvidenceNeed = {
   reason: "browser_observation" | "direct_observation" | "financial_execution" | "record_readback" | "requirement_clarification" | "manual_interpretation" | "page_scope" | "page_citations" | "field_relationship" | "source_ambiguity" | "no_citations" | "model_unresolved";
   targetFiles: string[];
 };
-export type ProofAssessmentItem = { criterionId: string; status: "supported" | "changes_suggested" | "insufficient_evidence"; explanation: string; citations: ProofAssessmentCitation[]; ruleEvidenceIds: string[]; evidenceNeed?: ProofEvidenceNeed; obligations?: import("./assessment-obligations").AssessmentObligations };
+/** The strict decoded item before publication guards; this is not a provider signature. */
+export type ProofAssessmentModelJudgment = {status: "supported" | "changes_suggested" | "insufficient_evidence"; explanation: string; citations: ProofAssessmentCitation[]};
+/** Independent, replayable source-only finding. It never attests rendering,
+ * persistence, acceptance or payment, and does not rewrite the raw model item. */
+export type ProofAssessmentSourceFinding = {
+  version: "source-finding-v1";
+  status: "supported" | "changes_suggested" | "insufficient_evidence";
+  basis: "declared_html_labels" | "locked_business_values";
+  explanation: string; citations: ProofAssessmentCitation[]; files: string[];
+  scopeBinding?: {proposalId: string; proposalDigest: string; file: string; kind: "page" | "form"; formId?: string};
+};
+export type ProofAssessmentItem = { criterionId: string; status: "supported" | "changes_suggested" | "insufficient_evidence"; explanation: string; citations: ProofAssessmentCitation[]; ruleEvidenceIds: string[]; evidenceNeed?: ProofEvidenceNeed; obligations?: import("./assessment-obligations").AssessmentObligations; modelJudgment?: ProofAssessmentModelJudgment; sourceFinding?: ProofAssessmentSourceFinding };
 export type ProofAssessmentRisk = { title: string; explanation: string; suggestion: string; citations: ProofAssessmentCitation[] };
 /** Validated original AI leads retained outside the active indication pool.
  * v1 preserves status-adjustment publication; v2 records an independently
@@ -101,6 +112,7 @@ export type ProofAssessmentWithheldRisks = ({version: 1; reason: "item_status_ad
 export type ProofRiskReview = { id: string; deliveryId: string; assessmentId: string; riskIndex: number; riskOrigin?: "withheld"; decision: "confirmed" | "rejected" | "needs_evidence"; reason: string; actorRole: ProofRole; reviewedAt: string };
 export type ProofResourceReport = { method: "static-resources-v1"; checked: number; findings: { from: string; reference: string; target?: string; kind: "missing" | "blocked" | "uninspectable" }[] };
 export type ProofAssessment = {
+  scopeContext?: import("./scope-clarifications").ScopeAssessmentContext;
   id: string; deliveryId: string; method: "source-ai-v1"; mode: "live"; model: string; assessedAt: string;
   items: ProofAssessmentItem[]; risks: ProofAssessmentRisk[]; limitations: string[];
   withheldRisks?: ProofAssessmentWithheldRisks;
@@ -108,6 +120,7 @@ export type ProofAssessment = {
   usage?: { promptTokens: number; completionTokens: number };
 };
 export type ProofDelivery = {
+  assessmentHistory?: ProofAssessment[];
   /** Participant-supplied appendix; never an acceptance or execution attestation. */
   cooperativeStageReports?: import("./cooperative-stage-evidence").CooperativeStageReport[];
   enquiryPlan?: import("./project-enquiry").ProjectEnquiryPlan;
@@ -175,7 +188,7 @@ export type ProofCollaboration = {
   /** Append-only human repair proposals and reviews; never automatic acceptance. */
   riskRepairEvents?: import("./risk-repairs").RiskRepairEvent[];
 };
-export type ProofDeliveryVersion = { isCurrent?: boolean; delivery: ProofDelivery; review?: ProofReview; submission?: ProofSubmission; feedback: ProofFeedback[]; archivedAt: string };
+export type ProofDeliveryVersion = { isCurrent?: boolean; delivery: ProofDelivery; review?: ProofReview; submission?: ProofSubmission; feedback: ProofFeedback[]; archivedAt: string; scopeClarifications?: import("./scope-clarifications").ScopeClarification[] };
 export type RequirementCoverageUnit = { id: string; start: number; end: number; text: string };
 export type RequirementCoverageDecision = RequirementCoverageUnit & { disposition: "include" | "exclude"; reason?: string; criterionId?: string };
 export type RequirementCoverage = { version: 1; sourceText: string; confirmedAt: string; decisions: RequirementCoverageDecision[] };
@@ -221,6 +234,7 @@ export type ProofPaymentReconciliation =
   | { kind: "unresolved"; reason: "pending" | "authorization_still_active" | "provider_unavailable" | "inconsistent_resources" };
 export type ProofEvent = { at: string; kind: "created" | "scope_approved" | "seller_joined" | "authorized" | "delivery_submitted" | "delivery_sent" | "changes_requested" | "delivery_accepted" | "reviewed" | "assessed" | "risk_reviewed" | "risk_repair_proposed" | "risk_repair_reviewed" | "layout_checked" | "browser_checked" | "business_checked" | "accepted" | "captured" | "voided" | "payment_closed" | "payment_reconciled"; deliveryId?: string; reportId?: string; evidenceSnapshotId?: string; feedbackId?: string };
 export type ProofState = {
+  scopeClarifications?: import("./scope-clarifications").ScopeClarification[];
   requirements?: RequirementAgreement;
   demoRoleplay?: true;
   /** Explicitly created one-owner PayPal Sandbox rehearsal, never seller settlement. */

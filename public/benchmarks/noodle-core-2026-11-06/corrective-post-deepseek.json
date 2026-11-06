@@ -1,0 +1,70 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "advisoryOnly": true,
+  "completed": true,
+  "errors": [],
+  "sources": [
+    {
+      "file": "lib/exact-copy-evidence.ts",
+      "bytes": 10322,
+      "lines": 142,
+      "sha256": "ea381d779b62b44c289bbd7a024805e51d34e73af27251bb1c43352e64019b0e"
+    },
+    {
+      "file": "lib/source-business-evidence.ts",
+      "bytes": 21685,
+      "lines": 248,
+      "sha256": "6d62133f10992c0effd51e6f7753ff41562c7c23fd53ba58ff69bd99458889a0"
+    },
+    {
+      "file": "lib/assessment-source-findings.ts",
+      "bytes": 8176,
+      "lines": 66,
+      "sha256": "33da83fbe3f7eec9661d5225fb3bc1e75f05de1727562a87492837925b9868d0"
+    },
+    {
+      "file": "lib/assessment-evidence-scope.ts",
+      "bytes": 23284,
+      "lines": 209,
+      "sha256": "5d6ea4fca09450cfc7f8619f4684760f2b9141857fb500a1cfb4e8d2237c1f6a"
+    },
+    {
+      "file": "tests/noodle-source-findings.test.ts",
+      "bytes": 10113,
+      "lines": 107,
+      "sha256": "0821726ee2ba68d56ebf3621829b321c9076886563a0d86dd597fcf1167bdaf5"
+    },
+    {
+      "file": "tests/noodle-source-first-four-replay.test.ts",
+      "bytes": 2595,
+      "lines": 26,
+      "sha256": "a807ea50fb915ac3b087d9063c4c5ef3425da69d731514ed2659fc70142d9d51"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "report": {
+    "summary": "The packet implements the bounded price-fact template exemption on a separate, default-off path (exact-copy-evidence.ts:20,41-42,104,108-116), keeps the published/visible-copy path strict (source-business-evidence.ts:146-147,151), and preserves the earlier durable-record and quoted-literal handling (assessment-evidence-scope.ts:87,175,178). I found one concrete source-level gap: in the price-fact certainty gate, the sourceFor second parse fixes a missing doctype, so a malformed page that only has a doctype parse error can be treated as certain and return a definitive price result, while the first default-strict parse still treats the same page as unknown. Other owner-side defects visible in this code (inert template and noscript content reaching label checks; a bare 'saved' token vetoing every source-text requirement) sit outside the price-fact/durable-record scope under review and are not reported as findings. No runtime checks or tests were run.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "lib/exact-copy-evidence.ts",
+        "line": 27,
+        "title": "Doctype-only malformed pages can still pass the price-fact certainty gate as certain",
+        "evidence": "Line 27 reparses the file with `scriptingEnabled: true, onParseError: error => { if (error.code !== \"missing-doctype\") parseIssue = true; }`, so doctype errors never mark the first parse uncertain. uncertainSourceBodyCopyAtFile (line 83) reparses with `parse(files[file], {scriptingEnabled: true})`, which uses parse5's default onParseError listener. source-business-evidence.ts:86-88 reparses the same source with `{sourceCodeLocationInfo: true, scriptingEnabled: true}`. parse5's default error handler only logs (`defaultTreeAdapter.…; console.warn('Parse Error: ' + code)`) and does not throw, so none of the three parses rejects a document whose only error is a doctype problem. That covers duplicate or stray doctypes, where insertion-mode repair can move nodes, and a doctype after content, where anything before it is dropped. The strict published gate does reject these documents because it counts every doctype error as a parseIssue. The price-fact gate therefore gives a definitive unchanged or mismatch result for input the existing publication checker already treats as unknown.",
+        "reproduction": "Lines 27-28 versus 83 and 86-88; unexecuted parse trace from the parse5 source. Needed fixtures, not present in the packet: (a) `<!doctype html><!doctype html><html><body><p>Vegetable soup AUD31</p><p>Vegetable soup AUD21</p></body></html>` with the test's checks() expecting 21 and a template also in the body, so the strict path returns unknown(\"dynamic_or_unsupported_source\"); (b) `<!doctype html><html><body><!-- removed --><!doctype html><p>Vegetable soup AUD21</p></body></html>` with checks() expecting 31, where the parser drops the `<!doctype html><p>Vegetable soup AUD21</p>` text before the second doctype. In each case, query hasUncertainSourceBodyCopyAtFile (unknown) and hasUncertainDeclaredPriceSourceAtFile (false) for the same file, then build a finding with finding(files, price with that template, checks()). Expected: the price-fact finding is not a definitive supported/changes_suggested status. Actual by trace: the gate is certain and the finding returns unchanged or mismatch.",
+        "suggestion": "Make the price-fact parser stricter than the default in a way that matches or exceeds the publication gate. Collect every parse error through one shared callback, or keep the default strict doctype handling by counting `error.code !== \"missing-doctype\"` for the missing-doctype case only. For example, at line 83 use a single `parse(source, {scriptingEnabled: true, onParseError: e => { if (e.code !== \"missing-doctype\") errors.push(e.code); }})` and treat any collected error as uncertain. Add a doctype-insertion-mode fixture to the strictness test at tests/noodle-source-findings.test.ts:92-99."
+      }
+    ],
+    "limitations": [
+      "Source-only review of the supplied packet. No files were read or run, and no runtime checks, tests, typecheck or parse5 execution were performed. The parse5 behaviour (default onParseError only warns) is the only external assumption.",
+      "Some packet imports are not supplied, so their behaviour could not be verified: exact-copy-directive.ts (exactCopyLiteral, normalizeExactCopyWhitespace), source-literal-directive.ts, static-markup-directive.ts, static-resources.ts (assertStaticPath), native-form-source.ts, merged-price-context.ts, assessment-label-citations.ts, delivery-assessment.ts and contracts.ts.",
+      "The replay test asserts `calls === 1` per case (tests/noodle-source-first-four-replay.test.ts:17), which does not show the 'same4 … now zero-call replay' property. Whether zero-call replay exists cannot be checked without delivery-assessment.ts.",
+      "Visible-but-unreported defects outside the price-fact and durable-record scope: assessment-label-citations.ts treats template/noscript children as active labels (contradicting this packet's 'template children never enter active bodyText/leaves'); applyLabels at source-business-evidence.ts:103 does not skip hidden ancestors, which could give a false 'unchanged' visible_copy; and the ZH_DURABLE_CAPABILITY regex at assessment-evidence-scope.ts:87 contains '保存', so ordinary Chinese criteria containing that word would be classed as requires_observation/durable_record. None of these were reproduced against a supplied failing fixture."
+    ]
+  }
+}

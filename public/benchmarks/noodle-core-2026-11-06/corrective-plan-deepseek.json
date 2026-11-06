@@ -1,0 +1,91 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "advisoryOnly": true,
+  "completed": true,
+  "errors": [],
+  "sources": [
+    {
+      "file": "tests/fixtures/noodle-f1-corrective-plan.json",
+      "bytes": 3985,
+      "lines": 83,
+      "sha256": "a9f9d373f587f15c22b0cc9a47463d83f4d6ae88535e305cfc48d25021463961"
+    },
+    {
+      "file": "lib/source-business-evidence.ts",
+      "bytes": 20748,
+      "lines": 237,
+      "sha256": "fa66043d3ab7f4fb7717893f14f60b86e7de0c912fb542bf89c0ad5a54ae38da"
+    },
+    {
+      "file": "lib/exact-copy-evidence.ts",
+      "bytes": 9431,
+      "lines": 130,
+      "sha256": "3c27a02f8238272e3f47433ecf237445420454e5d89227f60bb415ac1f3c9a91"
+    },
+    {
+      "file": "lib/assessment-source-findings.ts",
+      "bytes": 8162,
+      "lines": 66,
+      "sha256": "dc9b79f665723daf096747149cb9c2780d6473c7d07616d9a6abb1561e499e9c"
+    },
+    {
+      "file": "lib/assessment-evidence-scope.ts",
+      "bytes": 22834,
+      "lines": 205,
+      "sha256": "b79ce478dc4843ad0f689b9402037260aaba13a9df949fbf12c279d526f78c9c"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "report": {
+    "summary": "The packet contains an observed F1 under-admission: the source-check result (sourceBusinessEvidenceExplanation line 235 in lib/source-business-evidence.ts) is insufficient_evidence although the raw item in tests/fixtures/noodle-f1-corrective-plan.json line 43 correctly says changes_suggested. Under the proposed policy, the fixture's <template> decoy (fixture line 43) would correctly stay excluded from active content. The proposal is a workable minimal boundary but leaves four gaps: (1) the inert-template allowance at line 43 of lib/exact-copy-evidence.ts (DYNAMIC_OR_UNSUPPORTED includes template) has no defined reach at the file or parsed-document level; (2) the durable_record change at lib/assessment-evidence-scope.ts line 174 would only partially work, because OBSERVATION_REQUIRED already contains 保存 and wins first at line 182; (3) the proposal does not address the stricter whole-pack body-copy gate at lib/exact-copy-evidence.ts lines 69-71, though the price path wires to the per-file gate at lib/source-business-evidence.ts line 146; (4) the rule allowing a distinct price fact to ignore plain inert templates may collide with the unchanged whole-file label uniqueness check at lib/source-business-evidence.ts line 159.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "lib/source-business-evidence.ts",
+        "line": 159,
+        "title": "Proposed 'distinct price fact' exemption keeps whole-file bodyText label uniqueness, so duplicate labels inside an inert template would block the price path",
+        "evidence": "The price path requires occurrences(source.bodyText, label) === 1 (line 159). sourceFor (lines 86-115) collects bodyText from every text node with body=true, and that includes text inside <template>, because the inert check at line 96 (`if (... || INERT.has(node.tagName)) continue;`) skips the element itself without recording its label as hidden for its children (line 112). bodyText therefore covers the whole document, templates included. The proposed policy at tests/fixtures/noodle-f1-corrective-plan.json line 69 says templates never enter 'active body leaves or subject count'. It never says they stay out of bodyText or its label occurrence count. The project switch at lines 156-160 still runs unless it is changed, and its outcome is the label_not_unique_or_not_located unknown at line 159. The fixture's template at file line 43 holds tofu with AUD 18, not beef, so the F1 under-admission is not reproduced if that template name is also present as a plain label.",
+        "reproduction": "Unverified reasoning only, no code executed. Given a page with one active .html simple leaf 'Beef noodles AUD 28' and one inert <template> containing <p>Beef noodles AUD 18</p>, with a locked price check for label 'Beef noodles'. After the proposed template exemption, hasUncertainSourceBodyCopyAtFile returns false (exact-copy-evidence.ts lines 40-41, 55, 103). bodyText then contains 'Beef noodles' twice (source-business-evidence.ts lines 35, 93), so line 159 returns unknown('label_not_unique_or_not_located'). Line 160-161 never runs, the single matching price leaf is never counted, and the unique active price cannot produce unchanged or mismatch.",
+        "suggestion": "State the bodyText scope explicitly in the policy: either compute the uniqueness count over active (non-template) body text only, or document that any template copy of the label keeps the result unknown; then add the corresponding control."
+      },
+      {
+        "severity": "P3",
+        "file": "lib/assessment-evidence-scope.ts",
+        "line": 182,
+        "title": "'持久保存/重启后独立回读 -> durable_record' would need an OBSERVATION_REQUIRED exemption, because the 保存 vocabulary veto fires first",
+        "evidence": "The requested durable_record rule would be keyed on 持久保存 and 重启后独立回读. OBSERVATION_REQUIRED (line 26) already contains 保存, 储存, persist and save, and it is evaluated before manual/coverage admission. For a non-directive criterion it returns requires_observation/runtime_or_subjective at line 182. RECORD_ACTION / CUSTOMER_DATA_REBOOT (lines 82-83) do not match the bare phrase: the Chinese half of line 82 needs a noun such as 询价/咨询/记录 inside 80 characters, and CUSTOMER_DATA_REBOOT is English-only. The proposed reason would therefore only surface through a separate, stable reason code, not through the existing durable_record explanation. That explanation is the one the proposal wants to show so that evidenceNeed record_readback is required (lines 193-195). The likely new reason code is also what server evidence-need mapping must consume.",
+        "reproduction": "Unverified reasoning only, no code executed. Take a criterion whose source is '中文持久保存，重新启动后可独立回读', with no directive. assessmentEvidenceScope reaches line 182: OBSERVATION_REQUIRED.test matches 保存, so the result is requires_observation/runtime_or_subjective. Line 174 is never reached, so assessmentObservationExplanation (line 202-204) returns the generic text, not the record-readback guidance. No record_readback evidence need is emitted.",
+        "suggestion": "Classify the explicit Chinese 持久保存/重新启动后...回读 phrase as durable_record and give it a deterministic precedence ahead of the generic 保存 branch, while keeping quoted literals and exact-copy directives as data and leaving FINANCIAL_ACTION first."
+      },
+      {
+        "severity": "P3",
+        "file": "lib/exact-copy-evidence.ts",
+        "line": 13,
+        "title": "Template exemption named for 'only price fact' does not reach this file, whose DYNAMIC_OR_UNSUPPORTED template gate stays partial",
+        "evidence": "The proposal (fixture line 69) scopes the plain-template allowance to the separate price path. The existing checker's uncertainty has two layers in this file. DYNAMIC_OR_UNSUPPORTED (line 13) sets uncertain at line 41 for any <template>, and line 42 flags every on* attribute anywhere, including inert attributes such as a handler-typed data attribute. hasUncertainSourceBodyCopyAtFile (lines 77-104) is the per-file gate that source-business-evidence.ts line 146 actually calls. Its document-level parse at line 82 is separate from the counted parse5 instance at line 88. hasUncertainSourceBodyCopy (line 69, the whole-pack gate) is a third, stricter layer. If the price path re-implements a plain-template predicate, the three definitions of 'inert template' can diverge: the proposal leaves the whole-pack gate strict (so an unrelated multi-file pack containing any template stays unknown), yet the per-file gate relaxed.",
+        "reproduction": "Unverified reasoning only, no code executed. Menu page without templates plus an unrelated page containing only <template>...</template>. hasUncertainSourceBodyCopyAtFile(menuPage) is false, so the intended price check passes. hasUncertainSourceBodyCopy(all files) is true. Any caller that still routes through the whole-pack gate, or through exact-copy mapping that is not re-scoped, remains unknown for the same fact. Line 40-41 itself is reached only through the per-file function, but its build differs from line 27's parse (no onParseError accounting).",
+        "suggestion": "Implement exactly one shared plain-inert-template classifier and use it consistently in the file-scoped price gate and its parse settings, and state explicitly that the whole-pack exact-copy gate and visible_copy are out of the price exemption."
+      },
+      {
+        "severity": "P3",
+        "file": "tests/fixtures/noodle-f1-corrective-plan.json",
+        "line": 70,
+        "title": "Durable_record clarification must check the quoted Chinese source against exactCopyLiteral before the record rule can apply",
+        "evidence": "The item says 'quoted source text is data'. assessmentEvidenceScope builds combined from title only when a source directive exists (line 171). exactCopyLiteral matching a 持久保存/回读 literal therefore suppresses the RECORD_ACTION check on the required Chinese wording, at line 174 against the title alone at line 177. Meanwhile line 182 then runs OBSERVATION_REQUIRED over the title-only combined, and 保存 still vetoes it. A criterion whose quoted source contains the durable wording and whose title is neutral therefore already takes the observation path, while unquoted source text takes the generic runtime path per the previous finding. The plan does not define which of these two applies when the explicit Chinese 持久保存 phrase is itself the quoted data of a visible-copy or exact-copy directive.",
+        "reproduction": "Unverified reasoning only, no code executed. Criterion source is the literal \"持久保存并在重启后可独立回读\" in an exact-copy directive, with title 'Notice'. exactCopyLiteral is set, so combined = title and the RECORD_ACTION test cannot see the literal. The sourceOnlyDirective branch at line 177 is skipped because 保存 matches at line 178, returning runtime_or_subjective, not a copy/source check. A consumer therefore neither gets a source-copy check nor the durable_record readback evidence need.",
+        "suggestion": "In the policy wording, state that a literal or exact-copy directive containing 持久保存/回读 is data (visible_copy stays strict), and that durable_record applies only to non-directive criterion wording; keep the existing record_readback mapping for that case."
+      }
+    ],
+    "limitations": [
+      "Read-only plan review only. No files were changed, no scripts, tests, typechecks or parses were executed, and no API or live calls were made. Every reproduction is a reasoning trace labelled unexecuted.",
+      "The packet is limited to the seven supplied files. Behaviour of exactCopyLiteral, parseSourceLiteralDirective, native-form and static-markup directives, createIndependentLabelSourceFactsCheck, the evidenceNeed mapping for record_readback, and the replay harness was not supplied, so cross-file integration claims are limited to what the supplied call sites show.",
+      "The F1 under-admission observation (fixture lines 5-28 with sourceFinding at lines 29-38) was accepted as given. The proposal's correctness was not re-validated against a live recorded run, and 'approvedByRoot: true' (fixture line 82) is treated as data, not as authority.",
+      "Findings assume parse5's document parsing still places <template> children under the template node, as the existing INERT_TEXT handling in lib/exact-copy-evidence.ts implies. Shadowrootmode, nested-template and foreign-content rejection details depend on parse5 behaviour that was not executed here."
+    ]
+  }
+}

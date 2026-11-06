@@ -224,6 +224,7 @@ export function prepareReplacement(quote: ProofQuote, newDelivery: ProofDelivery
   next.proof.delivery = structuredClone(newDelivery);
   // A new upload never inherits an assessment, even from a future internal builder.
   delete next.proof.delivery.assessment;
+  delete next.proof.delivery.assessmentHistory;
   delete next.proof.delivery.layoutReport;
   delete next.proof.delivery.layoutHistory;
   delete next.proof.delivery.businessChecks;
@@ -269,5 +270,6 @@ export function snapshotVersion(quote: ProofQuote, now?: string): ProofDeliveryV
   const review = quote.proof.review?.deliveryId === delivery.id ? quote.proof.review : undefined;
   const submission = quote.proof.collaboration?.submission?.deliveryId === delivery.id ? quote.proof.collaboration.submission : undefined;
   return structuredClone({ delivery, ...(review ? { review } : {}), ...(submission ? { submission } : {}),
+    ...(quote.proof.scopeClarifications ? {scopeClarifications: quote.proof.scopeClarifications} : {}),
     feedback: (quote.proof.collaboration?.feedback ?? []).filter(entry => entry.deliveryId === delivery.id), archivedAt: timestamp(now) });
 }

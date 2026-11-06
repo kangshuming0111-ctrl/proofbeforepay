@@ -1,3 +1,4 @@
+import {resolveScopeClarifications,resolveAssessmentScopeContext,scopeConfirmationMode,assessmentHistoryFor,type ScopeClarification,type ScopeConfirmationMode} from "./scope-clarifications.ts";
 import {validateCooperativeStageReports} from "./cooperative-stage-evidence.ts";
 import {validateSavedEnquiryEvidence,validateEnquiryReportDecision,projectEnquiryReportsFor} from "./project-enquiry.ts";
 import {ASSESSMENT_ITEM_CITATION_LIMIT, ASSESSMENT_RISK_CITATION_LIMIT} from "./assessment-limits.ts";
@@ -20,7 +21,8 @@ import {sameRuntimeRegistration} from "./runtime-registration.ts";
 import {browserReportsFor, businessReportsFor, layoutReportsFor} from "./acceptance-evidence.ts";
 import {validateSavedCoverage} from "./requirement-coverage.ts";
 import {createBrowserCheckReport} from "./browser-check-report.ts";
-import {createBusinessCheckReport} from "./business-checks.ts";
+import {createBusinessCheckReport,getBusinessCheckPlan} from "./business-checks.ts";
+import {createAssessmentSourceFindingCheck} from "./assessment-source-findings.ts";
 import {createLayoutReport} from "./layout-report.ts";
 import {assertModelAcceptanceReference,modelReportsFor} from "./model-check-actions.ts";
 import {MODEL_SPEC_DIGEST,modelCheckReportFromTrace,validateStoredModelCheckReport} from "./model-checks.ts";
@@ -30,12 +32,12 @@ import {validateModelArchive} from "./model-report-archive.ts";
 export const EVIDENCE_EXPORT_SCHEMA = "proofbeforepay-evidence-export-v1";
 export const EVIDENCE_EXPORT_RULES = "pbp-static-source-v2";
 export const EVIDENCE_EXPORT_BYTE_LIMIT = 4 * 1024 * 1024;
-const DELIVERY_KEYS = ["cooperativeStageReports","id","variant","sequence","label","submittedAt","files","evidence","resources","layoutReport","layoutHistory","browserChecks","browserCheckHistory","businessChecks","businessCheckHistory","assessment","riskReviews","acceptanceEvidence","backendTargetId","runtimeDeliveryDigest","runtimeRegistration","runtimeReport","runtimeHistory","runtimeRun","journeyPlan","journeyReport","journeyHistory","journeyPlanSuggestions","journeyPlanAdoption","journeyExplanation","modelRun","modelReport","modelHistory","modelArchiveRefs","modelArchive","modelExplanation","enquiryPlan","enquiryRun","enquiryReport","enquiryHistory"] as const;
+const DELIVERY_KEYS = ["cooperativeStageReports","id","variant","sequence","label","submittedAt","files","evidence","resources","layoutReport","layoutHistory","browserChecks","browserCheckHistory","businessChecks","businessCheckHistory","assessment","assessmentHistory","riskReviews","acceptanceEvidence","backendTargetId","runtimeDeliveryDigest","runtimeRegistration","runtimeReport","runtimeHistory","runtimeRun","journeyPlan","journeyReport","journeyHistory","journeyPlanSuggestions","journeyPlanAdoption","journeyExplanation","modelRun","modelReport","modelHistory","modelArchiveRefs","modelArchive","modelExplanation","enquiryPlan","enquiryRun","enquiryReport","enquiryHistory"] as const;
 const SNAPSHOT_KEYS = ["id","deliveryId","at","browserReportId","layoutReportId","assessmentId","businessReportId","businessExceptionReason","runtimeReportId","runtimeExceptionReason","runtimeAcknowledgedSteps","runtimeDeliveryDigest","runtimeTargetId","runtimeRegistration","journeyReportId","journeyDeliveryDigest","journeyPlanDigest","journeyRegistration","journeyExceptionReason","journeyAcknowledgedSteps","journeyClientObservationAcknowledged","modelReportId","modelSpecDigest","modelDeliveryDigest","modelDecision","enquiryReportId","enquiryDeliveryDigest","enquiryDecision","criteria","evidence","manualChecks","review","assessment","riskReviews"];
 type AcceptanceReference = {kind:"delivery-acceptance"|"capture-consent";deliveryId:string;evidenceSnapshotId:string|null};
 export type EvidenceExport = {
   schema:typeof EVIDENCE_EXPORT_SCHEMA; verificationRules:typeof EVIDENCE_EXPORT_RULES; scope:"current-delivery-only";
-  project:{id:string;reference:string;title:string;summary:string;language:Language;criteria:ProofCriterion[];spec?:StaticProjectSpec;requirements?:{sourceText:string;sourceRefs:{criterionId:string;source:{start:number;end:number;excerpt:string}}[]}};
+  project:{id:string;reference:string;title:string;summary:string;language:Language;criteria:ProofCriterion[];scopeClarifications?:ScopeClarification[];scopeConfirmationMode?:ScopeConfirmationMode;spec?:StaticProjectSpec;requirements?:{sourceText:string;sourceRefs:{criterionId:string;source:{start:number;end:number;excerpt:string}}[]}};
   delivery:ProofDelivery; fileDigest:string; acceptanceReferences:AcceptanceReference[];
   riskRepairs?:{schema:"pbp-risk-repairs-v1";feedback:ProofFeedback[];events:RiskRepairEvent[]};
 };
@@ -150,6 +152,7 @@ export async function createEvidenceExport(quote:ProofQuote):Promise<EvidenceExp
   if(quote.proof.acceptedDeliveryId)acceptanceReferences.push({kind:"capture-consent",deliveryId:quote.proof.acceptedDeliveryId,evidenceSnapshotId:quote.proof.acceptedEvidenceSnapshotId??null});
   const result:EvidenceExport={schema:EVIDENCE_EXPORT_SCHEMA,verificationRules:EVIDENCE_EXPORT_RULES,scope:"current-delivery-only",
     project:{id:quote.id,reference:quote.reference,title:quote.title,summary:quote.summary,language:quote.language,criteria:structuredClone(quote.proof.criteria),
+      ...(quote.proof.scopeClarifications?{scopeClarifications:structuredClone(quote.proof.scopeClarifications),scopeConfirmationMode:scopeConfirmationMode(quote)}:{}),
       ...(quote.proof.project?{spec:structuredClone(quote.proof.project)}:{}),...(requirements?{requirements:structuredClone({sourceText:requirements.sourceText,sourceRefs:requirements.sourceRefs})}:{})},
     delivery,fileDigest:await runtimeDeliveryDigest(exportFiles(delivery,!!quote.proof.project)),acceptanceReferences,
     ...(quote.proof.collaboration?.feedback.some(row=>row.riskSource)?{riskRepairs:{schema:"pbp-risk-repairs-v1" as const,feedback:structuredClone(quote.proof.collaboration.feedback.filter(row=>row.riskSource)),events:structuredClone(quote.proof.collaboration.riskRepairEvents??[])}}:{})};
@@ -178,7 +181,7 @@ function sourceReference(value:unknown,source:string):void{
   requireValue(Number.isSafeInteger(row.start)&&Number.isSafeInteger(row.end)&&(row.start as number)>=0&&(row.end as number)>(row.start as number)&&(row.end as number)<=source.length&&typeof row.excerpt==="string"&&row.excerpt===source.slice(row.start as number,row.end as number),"A source reference does not match its exact UTF-16 span.");
 }
 function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[],observationContext?:ObservationScopeContext):void{
-  const row=object(value,["id","deliveryId","method","mode","model","assessedAt","items","risks","limitations","coverage","usage","withheldRisks"],"AI assessment");
+  const row=object(value,["id","deliveryId","method","mode","model","assessedAt","items","risks","limitations","coverage","usage","withheldRisks","scopeContext"],"AI assessment");
   text(row.id,100);text(row.model,200);requireValue(row.deliveryId===delivery.id&&row.method==="source-ai-v1"&&row.mode==="live"&&typeof row.assessedAt==="string"&&Number.isFinite(Date.parse(row.assessedAt)),"AI assessment binding is invalid.");
   const cite=(value:unknown,limit:number)=>array(value,limit,"AI citations").forEach(entry=>{
     const citation=object(entry,["file","start","end","excerpt"],"AI citation"),file=text(citation.file,200);
@@ -186,9 +189,28 @@ function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]
   });
   const items=array(row.items,33,"AI items");
   for(const item of items){
-    const result=object(item,["criterionId","status","explanation","citations","ruleEvidenceIds","evidenceNeed","obligations"],"AI item");
+    const result=object(item,["criterionId","status","explanation","citations","ruleEvidenceIds","evidenceNeed","obligations","modelJudgment","sourceFinding"],"AI item");
     requireValue(agreed.some(criterion=>criterion.id===result.criterionId)&&["supported","changes_suggested","insufficient_evidence"].includes(result.status as string),"AI criterion reference is invalid.");
     text(result.explanation,3000);cite(result.citations,ASSESSMENT_ITEM_CITATION_LIMIT);
+    if(result.modelJudgment!==undefined){
+      const original=object(result.modelJudgment,["status","explanation","citations"],"Original AI item");
+      requireValue(["supported","changes_suggested","insufficient_evidence"].includes(original.status as string),"The original AI status is invalid.");
+      text(original.explanation,600);cite(original.citations,ASSESSMENT_ITEM_CITATION_LIMIT);
+    }
+    if(result.sourceFinding!==undefined){
+      requireValue(result.modelJudgment!==undefined,"A new independent source finding must retain the separate decoded model item.");
+      const source=object(result.sourceFinding,["version","status","basis","explanation","citations","files","scopeBinding"],"Independent source finding");
+      requireValue(source.version==="source-finding-v1"&&["supported","changes_suggested","insufficient_evidence"].includes(source.status as string)&&["declared_html_labels","locked_business_values"].includes(source.basis as string),"The independent source finding schema is invalid.");
+      text(source.explanation,3000);cite(source.citations,8);
+      const files=array(source.files,40,"Independent checked files");
+      requireValue(new Set(files).size===files.length,"Independent source files must be unique.");
+      for(const value of files){const file=text(value,300);requireValue(Object.hasOwn(delivery.files!,file)&&staticFileKind(file)==="html","An independent source file is not supplied HTML.");}
+      if(source.scopeBinding!==undefined){
+        const binding=object(source.scopeBinding,["proposalId","proposalDigest","file","kind","formId"],"Independent scope reference");
+        text(binding.proposalId,100);requireValue(typeof binding.proposalDigest==="string"&&/^[a-f0-9]{64}$/u.test(binding.proposalDigest),"The independent scope digest is invalid.");text(binding.file,300);
+        requireValue(binding.kind==="page"&&!Object.hasOwn(binding,"formId")||binding.kind==="form"&&typeof binding.formId==="string","The independent scope target is invalid.");if(binding.formId!==undefined)text(binding.formId,120);
+      }
+    }
     if(result.obligations!==undefined)requireValue(isAssessmentObligations(result.obligations,agreed.find(c=>c.id===result.criterionId)!),"AI obligation directions do not match the exact locked wording and named rules.");
     if(result.evidenceNeed!==undefined){
       const need=object(result.evidenceNeed,["schema","reason","targetFiles"],"AI evidence need");
@@ -254,7 +276,7 @@ function riskBindings(value:unknown,deliveryId:string,reports:ProofAssessment[])
 
 function quoteFor(bundle:EvidenceExport):ProofQuote{
   return {id:bundle.project.id,reference:bundle.project.reference,title:bundle.project.title,summary:bundle.project.summary,brief:bundle.project.summary,language:bundle.project.language,workflow:"proof-v1",status:"approved",clientName:"Not exported",currency:"AUD",hourlyRateCents:0,totalCents:0,lineItems:[],assumptions:[],questions:[],timelineDays:1,aiMode:"demo",paymentMode:"demo",createdAt:bundle.delivery.submittedAt,
-    proof:{criteria:bundle.project.criteria,project:bundle.project.spec,delivery:bundle.delivery,paymentState:"unfunded",audit:[]}};
+    proof:{criteria:bundle.project.criteria,project:bundle.project.spec,scopeClarifications:bundle.project.scopeClarifications,delivery:bundle.delivery,paymentState:"unfunded",audit:[]}};
 }
 
 /** Offline consistency only. No code, URL, browser, provider or payment is run.
@@ -272,7 +294,7 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
   const bundle=canonical(input) as EvidenceExport;let structure=false;
   await check("structure",()=>{
     object(bundle,["schema","verificationRules","scope","project","delivery","fileDigest","acceptanceReferences","riskRepairs"],"Export");requireValue(bundle.scope==="current-delivery-only","Unsupported export scope.");
-    object(bundle.project,["id","reference","title","summary","language","criteria","spec","requirements"],"Project");
+    object(bundle.project,["id","reference","title","summary","language","criteria","spec","requirements","scopeClarifications","scopeConfirmationMode"],"Project");
     text(bundle.project.id,100);text(bundle.project.reference,100);text(bundle.project.title,500);text(bundle.project.summary,3000);requireValue(["zh","en"].includes(bundle.project.language),"Unsupported language.");criteria(bundle.project.criteria);
     object(bundle.delivery,DELIVERY_KEYS,"Delivery");text(bundle.delivery.id,100);text(bundle.delivery.label,500);requireValue(["upload","flawed","fixed"].includes(bundle.delivery.variant)&&Number.isFinite(Date.parse(bundle.delivery.submittedAt)),"Delivery identity is invalid.");
     requireValue(/^[a-f0-9]{64}$/u.test(bundle.fileDigest),"A file digest is required.");exportFiles(bundle.delivery,!!bundle.project.spec);
@@ -310,11 +332,26 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
     const values=(rows:ProofEvidence[])=>rows.map(row=>pick(row,["id","criterionId","file","excerpt","finding","explanation"]));
     requireValue(same(values(actual),values(replay)),"Saved source evidence differs from the current versioned rules.");
   },"Saved findings/excerpts match deterministic source replay with the named verifier rules. Rendering and human checks are not replayed.");
-  await check("ai-source-citations",()=>{
-    const reports=[bundle.delivery.assessment,...(bundle.delivery.acceptanceEvidence??[]).map(snapshot=>snapshot.assessment)].filter((report):report is ProofAssessment=>!!report);
+  await check("ai-source-citations",async()=>{
+    const scopeQuote=quoteFor(bundle),mode=bundle.project.scopeConfirmationMode;
+    requireValue((bundle.project.scopeClarifications===undefined)===(mode===undefined),"Scope mode and history must be present together.");
+    if(mode!==undefined)requireValue(mode==="owner-roleplay"||mode==="authenticated-participants","Unknown scope confirmation mode.");
+    await resolveScopeClarifications(scopeQuote,mode);
+    const reports=[...assessmentHistoryFor(scopeQuote),bundle.delivery.assessment,...(bundle.delivery.acceptanceEvidence??[]).map(snapshot=>snapshot.assessment)].filter((report):report is ProofAssessment=>!!report);
     immutableIds(reports);
     immutableIds([...(bundle.delivery.riskReviews??[]),...(bundle.delivery.acceptanceEvidence??[]).flatMap(snapshot=>snapshot.riskReviews??[])]);
-    for(const report of reports)assessment(report,bundle.delivery,bundle.project.criteria,{hasBusinessChecks:bundle.project.spec?.businessChecks!==undefined&&(!Array.isArray(bundle.project.spec.businessChecks)||bundle.project.spec.businessChecks.length>0)});
+    for(const report of reports){const reportScope=await resolveAssessmentScopeContext(scopeQuote,report,mode);
+      assessment(report,bundle.delivery,bundle.project.criteria,{hasBusinessChecks:bundle.project.spec?.businessChecks!==undefined&&(!Array.isArray(bundle.project.spec.businessChecks)||bundle.project.spec.businessChecks.length>0)});
+      // New source facts are recomputed from current exported bytes and the
+      // report's immutable historical scope prefix, never from model prose.
+      const checkSource=createAssessmentSourceFindingCheck({files:Object.fromEntries(Object.entries(bundle.delivery.files!).filter(([file])=>["html","css"].includes(staticFileKind(file)??""))),coverage:report.coverage,language:bundle.project.language,businessSteps:getBusinessCheckPlan(scopeQuote),scope:reportScope});
+      for(const item of report.items)if(item.modelJudgment!==undefined||item.sourceFinding!==undefined){
+        const expected=checkSource(bundle.project.criteria.find(c=>c.id===item.criterionId)!);
+        requireValue(same(item.sourceFinding??null,expected??null),"The independent source finding differs from exact source/scope replay.");
+        const adjustment=report.withheldRisks?.adjustedCriteria.find(row=>row.criterionId===item.criterionId);
+        if(adjustment)requireValue(adjustment.originalStatus===item.modelJudgment?.status,"The retained original AI status conflicts with its adjustment ledger.");
+      }
+    }
     riskBindings(bundle.delivery.riskReviews,bundle.delivery.id,reports);
   },"Included AI citations resolve to source; risk annotations, optional evidence-need metadata and withheld-risk dispositions have valid saved bindings. Model judgment, the asserted original statuses or cause of an evidence gap, human identity and provider execution are not proven.");
   if(bundle.riskRepairs)await check("risk-repair-chain",()=>{
@@ -325,7 +362,7 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
     const tasks=validateRiskRepairRecords(feedback as ProofFeedback[],array(records.events,100,"Risk repair events") as RiskRepairEvent[],bundle.project.criteria);
     for(const task of tasks){
       if(task.source.deliveryId===bundle.delivery.id){
-        const report=bundle.delivery.assessment;
+        const report=[bundle.delivery.assessment,...(bundle.delivery.assessmentHistory??[])].find(r=>r?.id===task.source.assessmentId);
         requireValue(report?.id===task.source.assessmentId&&same(report.risks[task.source.riskIndex],task.source.risk),"Current risk repair source differs from its saved report.");
       }
     }

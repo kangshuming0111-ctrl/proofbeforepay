@@ -1,0 +1,40 @@
+{
+  "reviews": [
+    "f1-post-deepseek.json",
+    "f1-export-post-deepseek.json"
+  ],
+  "valid": true,
+  "independentReviewer": "Codex AI; not human study",
+  "findings": [
+    {
+      "review": "source",
+      "finding": 1,
+      "decision": "rejected",
+      "reason": "Even reviewed row helper returned only context text, never supported or a sourceFinding. F2 actual applyScopeClarification rejects index explicit source->contact target (executed). Moreover root fixed-noodle scope directed production row-context rewrite entirely removed; old Earth explanation/cites/status remain baseline. Pure row context helper/unit is not called by production."
+    },
+    {
+      "review": "source",
+      "finding": 2,
+      "decision": "rejected_exact_reproduction_with_related_hardening",
+      "reason": "Executed exact repeated-frame repro returns undefined/requires_observation, because prefix cannot absorb quotation punctuation or period. Separately hardened unquoted role prefix against operation/second-frame tokens so an operational prefix cannot evade source-only grammar; quoted label operation words remain literal data. Positive/negative atomic grammar tests retained."
+    },
+    {
+      "review": "export",
+      "finding": 1,
+      "decision": "rejected",
+      "reason": "Existing object.hasOwn(delivery.files,file) and staticFileKind check explicitly reject nonexistent evidenceNeed targets. Its reproduction substitutes existing HTML files and complains that cause/scope semantics are not authenticated; export explicitly does not establish cause/model judgment/authenticity. The independent sourceFinding has stronger deterministic replay and cannot be changed this way. Added actual missing-target mutation test; no broadened new semantic validator or unsigned authenticity claim."
+    }
+  ],
+  "correctiveChanges": [
+    "modelJudgment explanation preserves original decoded whitespace exactly, no trim",
+    "source-finding positive locked values explanation general to existing literal_copy and item_price",
+    "Chinese source-declaration role prefix excludes operation tokens; quoted data unchanged",
+    "Earth online context rewrite removed per fixed scope; baseline narrative preserved"
+  ],
+  "counterexampleReceipt": "f1-post-counterexamples.json",
+  "awaitingFinalCorrectiveReview": false,
+  "finalCorrectiveReview": "f1-final-post-deepseek.json",
+  "finalFindings": [],
+  "finalAcceptedP1P2": 0,
+  "finalSourceMatched": true
+}

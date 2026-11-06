@@ -1,0 +1,60 @@
+{
+  "schema": "noodle-f1-final-owned-source-freeze-v1",
+  "productionFrozen": true,
+  "review": "f1-corrective-final-adjudication.json",
+  "files": [
+    {
+      "file": "lib/assessment-source-findings.ts",
+      "sha256": "33da83fbe3f7eec9661d5225fb3bc1e75f05de1727562a87492837925b9868d0"
+    },
+    {
+      "file": "lib/assessment-label-citations.ts",
+      "sha256": "257db4edf00141aa4eccc8cfbf03f9ae5e87827ce8d13851f5d49337f72da68c"
+    },
+    {
+      "file": "lib/assessment-prompt-guidance.ts",
+      "sha256": "e3f3e0aea8ff4e05b571dc2e71aaa9a633d3612b23e4dc2136e37b84782198d0"
+    },
+    {
+      "file": "lib/source-literal-directive.ts",
+      "sha256": "3765c25c276c80c17aaa5186b0ba8e8bfae41ce91d18ecd038a010e92800c568"
+    },
+    {
+      "file": "lib/assessment-evidence-scope.ts",
+      "sha256": "5d6ea4fca09450cfc7f8619f4684760f2b9141857fb500a1cfb4e8d2237c1f6a"
+    },
+    {
+      "file": "lib/source-business-evidence.ts",
+      "sha256": "6d62133f10992c0effd51e6f7753ff41562c7c23fd53ba58ff69bd99458889a0"
+    },
+    {
+      "file": "lib/exact-copy-evidence.ts",
+      "sha256": "ea381d779b62b44c289bbd7a024805e51d34e73af27251bb1c43352e64019b0e"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "sha256": "b3f5da2ccf150e6c6b021c867634f6a25aae7f0067d91d796d578c266505aa3c"
+    },
+    {
+      "file": "lib/contracts.ts",
+      "sha256": "191e2b0f4e7fc887a78325a5b7e8b1601c1cceb631b44a7b2a5707e9992e88ea"
+    },
+    {
+      "file": "lib/evidence-export.ts",
+      "sha256": "17f3f08044e15d044dfe044c7dae5f06e82abfe3bb6a202648c9d2b71dd17679"
+    },
+    {
+      "file": "tests/noodle-source-findings.test.ts",
+      "sha256": "0821726ee2ba68d56ebf3621829b321c9076886563a0d86dd597fcf1167bdaf5"
+    },
+    {
+      "file": "tests/noodle-source-pipeline.test.ts",
+      "sha256": "3cf3ba9ff010f1fbbe74e63623afd6545396773ac949f23fa420d0931aae7fac"
+    },
+    {
+      "file": "tests/noodle-source-first-four-replay.test.ts",
+      "sha256": "a807ea50fb915ac3b087d9063c4c5ef3425da69d731514ed2659fc70142d9d51"
+    }
+  ],
+  "manifestSha256": "8785cc67159850ef2b18ce0483216cbf2c45608fede74ab43b346de8d721c654"
+}

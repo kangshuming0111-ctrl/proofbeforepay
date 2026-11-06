@@ -1,0 +1,49 @@
+{
+  "schema": "noodle-f1-author-first-four-whole-review-v1",
+  "reviewer": "Codex AI; not human study",
+  "read": "All raw items/risks/limitations and published items/sourceFinding/withheld originals/limitations inspected; not status-only",
+  "rawStatusMatches": "9/9 focused refs",
+  "publishedStatusMatches": "7/9",
+  "effectiveSourceOrPublishedMatches": "8/9",
+  "providerIds": "13/13 complete, zero missing/duplicate/unknown",
+  "wholeAnswers": [
+    {
+      "id": "f1-sealed-equivalent",
+      "raw": "accepted",
+      "application": "accepted",
+      "notes": [
+        "Equivalent ISO numeric formatting and same table-row association correct; labels actual same form. Unconfirmed business role explicitly separated; no runtime claim."
+      ]
+    },
+    {
+      "id": "f1-sealed-wrong-object",
+      "raw": "qualified",
+      "application": "qualified_conservative_unknown",
+      "notes": [
+        "Raw price mismatch correct; optional schema self-limitation calls same-form a mere inference despite source form family, kept outside active facts. Raw optional template suggestion not adopted.",
+        "System sourceFinding wrongly abstains on unique active wrong price only because inert template decoy exists. This is real F1 under-admission, not fixed/success. Cross-form mismatch correctly independently proved."
+      ]
+    },
+    {
+      "id": "f1-sealed-wrong-page",
+      "raw": "accepted",
+      "application": "accepted_effective_source_layer",
+      "notes": [
+        "All six actual HTTP-fixture IDs read, four mechanical/mobile not pooled with nine semantic refs.",
+        "Confirmed contact.html#contact lacks email despite other index form full. Legacy model publication guard becomes unknown, but independent scoped source finding is correct mismatch and F4 must lead with it."
+      ]
+    },
+    {
+      "id": "f1-sealed-runtime-insufficient",
+      "raw": "qualified_minor_wording",
+      "application": "qualified_next_evidence_kind",
+      "notes": [
+        "Unknown durability/readback correct; raw phrase 1800 AUD is minor-unit wording imprecision, not a different status. No backend execution claimed.",
+        "Published coverage3 reason requirement_clarification wrongly points next action toward scope; explicit reboot/readback should need record_readback. coverage2 persistence similarly lacks specific classification."
+      ]
+    }
+  ],
+  "networkCalls": 4,
+  "additionalCalls": 0,
+  "costUsdEstimate": 0.0129225
+}

@@ -15,7 +15,7 @@ import {createSourceBusinessEvidenceCheck, sourceBusinessEvidenceExplanation, as
 import {assessmentCompletionText, assessmentReportJson, assessmentToolDefinition, assessmentCatalogToolDefinition, assessmentSlotsToolDefinition, SOURCE_ASSESSMENT_TOOL_NAME, SOURCE_ASSESSMENT_CATALOG_TOOL_NAME, SOURCE_ASSESSMENT_SLOTS_TOOL_NAME, type AssessmentCitationEncoding} from "./assessment-completion.ts";
 import {assessmentCitationSelection, assessmentItemsForValidation} from "./assessment-citation-selection.ts";
 import {ASSESSMENT_ITEM_CITATION_LIMIT, ASSESSMENT_RISK_CITATION_LIMIT} from "./assessment-limits.ts";
-import {assessmentReportPromptGuidance, assessmentCitationPromptGuidance, ASSESSMENT_FACT_RELATION_GUIDANCE, ASSESSMENT_OWN_TARGET_GUIDANCE} from "./assessment-prompt-guidance.ts";
+import {assessmentReportPromptGuidance, assessmentCitationPromptGuidance, ASSESSMENT_FACT_RELATION_GUIDANCE, ASSESSMENT_OWN_TARGET_GUIDANCE, ASSESSMENT_CONFIRMED_SCOPE_GUIDANCE} from "./assessment-prompt-guidance.ts";
 import {checkSourceTargetAssertion, sourceTargetAssertionExplanation} from "./assessment-source-target.ts";
 import {createAssessmentLabelCitationCheck, labelCitationCoverageExplanation, createAssessmentLabelSourceFactsCheck, labelSourceFactExplanation} from "./assessment-label-citations.ts";
 import {createNativeFormCitationCheck} from "./native-form-source.ts";
@@ -27,6 +27,8 @@ import {publishSourceAssessmentNotes} from "./assessment-publication-policy.ts";
 import {makeAssessmentEvidenceNeed} from "./assessment-evidence-needs.ts";
 import {canonicalAssessmentRisk} from "./assessment-risk-fields.ts";
 import {createAssessmentCitationCatalog, resolveCatalogCitations} from "./assessment-citation-catalog.ts";
+import {createAssessmentSourceFindingCheck} from "./assessment-source-findings.ts";
+import {resolveScopeClarifications} from "./scope-clarifications.ts";
 export {AssessmentResponseError} from "./assessment-response.ts";
 
 const CONTROL = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u;
@@ -150,7 +152,8 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
     .filter(step => step.viewportWidth === 375)
     .map(({checkId, criterionId, file, source, expected}) => ({id: checkId, criterionId, file, source, expected}));
   const scopeCoverage = quote.proof.project?.coverage ? validateSavedCoverage(quote.proof.project.coverage) : undefined;
-  const scopeContext = { summary: quote.summary, ...(businessChecks.length ? {businessChecks} : {}), ...(scopeCoverage ? {requirementCoverage: {
+  const confirmedScope = encoding === "catalog_slots" ? await resolveScopeClarifications(quote) : undefined;
+  const scopeContext = { ...(confirmedScope?.bindings.length ? {confirmedScopeBindings: confirmedScope.bindings} : {}), summary: quote.summary, ...(businessChecks.length ? {businessChecks} : {}), ...(scopeCoverage ? {requirementCoverage: {
     method: "buyer-confirmed-literal-source-groups",
     included: scopeCoverage.decisions.filter(row => row.disposition === "include").map(row => ({criterionId: row.criterionId, text: row.text})),
     excluded: scopeCoverage.decisions.filter(row => row.disposition === "exclude").map(row => ({text: row.text, reason: row.reason})),
@@ -202,7 +205,7 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
         "For catalog reports the full selected excerpts are expanded by the server. Keep the total selected excerpt lengths across all items and risks within 18000 UTF-16 units to leave room under the complete 30000-unit expanded report limit. Prefer compact complete owner IDs (paragraph, list item, table row, label) over overlapping broad windows; never omit required answers to save space. For locked content relationships select a complete containing owner span, not just isolated names or amounts.",
         "Every factual statement in an explanation must be supported by its quoted excerpts. Do not claim a value appears in a title, heading, footer or other location unless the cited excerpt actually shows that location and value. A valid quote alone does not justify extra assertions.",
         ASSESSMENT_FACT_RELATION_GUIDANCE,
-        ASSESSMENT_OWN_TARGET_GUIDANCE,
+        ASSESSMENT_OWN_TARGET_GUIDANCE, ASSESSMENT_CONFIRMED_SCOPE_GUIDANCE,
         `For a list of required labels, days, plan names or amounts, cover every fact you actually assert with its cited context. Use compact contiguous excerpts within the item's ${ASSESSMENT_ITEM_CITATION_LIMIT}-citation limit, showing each name together with its corresponding value; do not cite only a price without its plan name, claim four labels when quotations show only three, or infer all intermediate days from two endpoints. If the available evidence cannot justify the complete statement, narrow the explanation and state the unresolved part honestly rather than inventing coverage.`,
         "The supplied ruleEvidence findings were produced by server rules and remain authoritative. Never override a fail as supported. A pass proves only the narrowly described rule, not every aspect of its criterion.",
         "Evaluate literal content such as an agreed business name, menu or opening hours when the source provides evidence. For missing or wrong content, cite the relevant actual page context and state the limited scope of that observation.",
@@ -271,6 +274,7 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
     const presenceCheck = createSourcePresenceEvidenceCheck(sent);
     const businessEvidenceCheck = createSourceBusinessEvidenceCheck(sent, savedBusinessSteps);
     const positiveLiteralCheck = createPositiveLiteralSourceWitnessCheck(sent, savedBusinessSteps);
+    const independentSourceCheck = createAssessmentSourceFindingCheck({files: sent, coverage, language: quote.language, businessSteps: savedBusinessSteps, scope: confirmedScope});
     const labelCitationCheck = createAssessmentLabelCitationCheck(sent);
     const labelSourceFactsCheck = createAssessmentLabelSourceFactsCheck(sent, coverage);
     const nativeCitationCheck = createNativeFormCitationCheck(sent);
@@ -283,8 +287,10 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
         || !["supported", "changes_suggested", "insufficient_evidence"].includes(item.status)) throw failure();
       seen.add(criterion.id);
       let status = item.status as ProofAssessmentItem["status"];
-      let explanation = text(item.explanation, 600).trim();
+      const originalExplanation = text(item.explanation, 600);
+      let explanation = originalExplanation.trim();
       let checkedCitations = resolve(item.citations, ASSESSMENT_ITEM_CITATION_LIMIT);
+      const modelJudgment = {status, explanation: originalExplanation, citations: structuredClone(checkedCitations)};
       let evidenceNeed: ProofEvidenceNeed | undefined;
       let labelCitationAdjusted = false;
       const need = (reason: ProofEvidenceNeed["reason"], targetFiles: readonly string[] = []) => {
@@ -497,8 +503,9 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
           }
         }
       }
+      const sourceFinding = encoding === "catalog_slots" ? independentSourceCheck(criterion) : undefined;
       return { criterionId: criterion.id, status, explanation, citations: checkedCitations, ruleEvidenceIds: related.map(entry => entry.id),
-        ...(encoding === "catalog_slots" ? {obligations: deriveAssessmentObligations(criterion)} : {}),
+        ...(encoding === "catalog_slots" ? {obligations: deriveAssessmentObligations(criterion), modelJudgment, ...(sourceFinding ? {sourceFinding} : {})} : {}),
         ...(encoding === "catalog_slots" && status === "insufficient_evidence" ? {evidenceNeed: evidenceNeed ?? makeAssessmentEvidenceNeed("model_unresolved", [], sent)} : {}) };
     });
     // Keep the report in the agreed order regardless of model output order.
@@ -540,7 +547,7 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
     limitations.push(words(quote, "AI 建议与服务端规则分开记录。人工检查和最终验收由买家完成，不会自动验收、授权或付款。", "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."));
     if (Object.keys(files).some(file => !["html", "css"].includes(staticFileKind(file) ?? ""))) limitations.push(words(quote, "文件清单中的图片已经交付，但像素未送交 AI 分析；从文本分析范围省略不等于图片文件缺失或显示失败。", "Raster files in the inventory were delivered, but their pixels were not sent to AI. Omission from text-source coverage does not mean an image file is missing or failed to display."));
     const tokenUsage = usage(response.data.usage, outputTokenLimit, promptTokenUpperEstimate);
-    return { id: crypto.randomUUID(), deliveryId: delivery.id, method: "source-ai-v1", mode: "live", model, assessedAt: new Date().toISOString(), items, risks: publication.risks, limitations, coverage, ...(publication.withheldRisks ? {withheldRisks: publication.withheldRisks} : {}), ...(tokenUsage ? { usage: tokenUsage } : {}) };
+    return { id: crypto.randomUUID(), deliveryId: delivery.id, method: "source-ai-v1", mode: "live", model, assessedAt: new Date().toISOString(), items, risks: publication.risks, limitations, coverage, ...(confirmedScope ? {scopeContext: {digest: confirmedScope.contextDigest, ...confirmedScope.stamp}} : {}), ...(publication.withheldRisks ? {withheldRisks: publication.withheldRisks} : {}), ...(tokenUsage ? { usage: tokenUsage } : {}) };
   } catch (error) {
     if (error instanceof AssessmentResponseError) throw error;
     throw failure();

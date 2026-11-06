@@ -1,0 +1,9 @@
+{
+  "correction": "Before any provider calls or implementation, independent root found production summaryCoverageUnits split comma produces 3 runtime criteria, not 2. Missing coverage3 reference set insufficient_evidence; no source/criterion modified. Initial corpus/seal preserved. This is a reference completeness correction, not model-result-driven tuning.",
+  "initialSha256": "54bf38022c590e021a4172c8c5747330f7dc13a94efe34070120b20f7c483820",
+  "correctedSha256": "c8061b4be834b5a83ae64621a92761fa0764ff7664b390e489ab61e80318e9dd",
+  "caseCount": 4,
+  "criteriaCount": 9,
+  "providerCalls": 0,
+  "reviewerExposure": false
+}

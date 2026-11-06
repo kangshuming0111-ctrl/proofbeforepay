@@ -31,9 +31,9 @@ function prefix(value:string,budget:number):string{
 }
 /** A labelled, editable request, not a finding, a runtime result or a sent mutation.
  * This reads the saved item explanation only; raw provider responses are not an input. */
-export function buildAssessmentFeedbackDraft(criterion:ProofCriterion|undefined,item:ProofAssessmentItem,language:Language,steps:readonly ProofBusinessCheckStep[]=[]):AssessmentFeedbackDraft|undefined{
+export function buildAssessmentFeedbackDraft(criterion:ProofCriterion|undefined,item:ProofAssessmentItem,language:Language,steps:readonly ProofBusinessCheckStep[]=[],presentation?:{basis:"independent_source";confirmedScope:boolean}):AssessmentFeedbackDraft|undefined{
  const source=assessmentCriterionSource(criterion,item.criterionId);if(source===undefined)return undefined;
- const zh=language==="zh",clarify=needsAssessmentScopeClarification(criterion,item,steps),insufficient=item.status==="insufficient_evidence";
+ const zh=language==="zh",sourceBasis=presentation?.basis==="independent_source",clarify=!presentation?.confirmedScope&&needsAssessmentScopeClarification(criterion,item,steps),insufficient=item.status==="insufficient_evidence";
  const explanation=clarify?(zh?"本项使用页面或表单的角色名称，尚无本项明确文件或已核对的锁定映射。模型提出的具体文件修改建议不作为本次范围确认的依据。":"This requirement names a page or form role without its own explicit file or validated locked mapping. A model-suggested filename does not establish that scope."):item.explanation;
  const need=insufficient&&!clarify?assessmentEvidenceNeedPresentation(item.evidenceNeed,language):undefined;
  let evidenceAction="";
@@ -47,9 +47,9 @@ export function buildAssessmentFeedbackDraft(criterion:ProofCriterion|undefined,
  function compose(sourceText:string,explanationText:string,sourceExcerpted:boolean,explanationExcerpted:boolean){
   const intro=clarify?(zh?"范围澄清草稿（待双方确认）：":"Scope clarification draft (for both parties to confirm):"):insufficient
    ?(zh?"补证草稿（AI 建议，待买家核对）：":"Evidence request draft (AI suggestion for buyer review):")
-   :(zh?"修改草稿（AI 建议，待买家核对）：":"Change request draft (AI suggestion for buyer review):");
+   :sourceBasis?(zh?"修改草稿（独立源码事实，待买家核对）：":"Change request draft (independent source fact for buyer review):"):(zh?"修改草稿（AI 建议，待买家核对）：":"Change request draft (AI suggestion for buyer review):");
   const sourceLabel=sourceExcerpted?(zh?"锁定要求（原文节选；请查看完整约定）：":"Locked requirement (source excerpt; inspect the complete agreed wording):"):(zh?"锁定要求（完整原文）：":"Locked requirement (complete source):");
-  const explanationLabel=clarify?(zh?"需要确认的范围：":"Scope to confirm:"):explanationExcerpted?(zh?"当前 AI 说明（节选；未运行验证）：":"Current AI explanation (excerpt; not verified by execution):"):(zh?"当前 AI 说明（未运行验证）：":"Current AI explanation (not verified by execution):");
+  const explanationLabel=clarify?(zh?"需要确认的范围：":"Scope to confirm:"):sourceBasis?(explanationExcerpted?(zh?"独立源码事实（节选；未运行验证）：":"Independent source fact (excerpt; not verified by execution):"):(zh?"独立源码事实（未运行验证）：":"Independent source fact (not verified by execution):")):explanationExcerpted?(zh?"当前 AI 说明（节选；未运行验证）：":"Current AI explanation (excerpt; not verified by execution):"):(zh?"当前 AI 说明（未运行验证）：":"Current AI explanation (not verified by execution):");
   const next=clarify?(zh?"请双方先确认适用的文件／表单，以及标签应在同一页面还是同一表单。确认后再决定是否修改；当前不要求向模型猜测的文件添加或删除内容。此草稿尚未发送，也不是验收结论。":"First confirm the applicable file/form and whether the labels belong on one page or one form. Then decide whether a change is needed. This does not request adding or removing content in a model-guessed file. This draft is not sent and is not an acceptance decision."):insufficient
    ?(zh?"请补充可复查的交付证据，并逐项对照完整锁定原文。此草稿尚未发送，也不是验收结论。":"Please provide verifiable delivery evidence against the full locked wording. This draft is not sent and is not an acceptance decision.")
    :(zh?"请核对完整约定与证据后修改或说明；AI 建议本身不认定违约。此草稿尚未发送，也不是验收结论。":"Review the full agreement and evidence, then correct or explain the issue. An AI suggestion alone does not establish a breach. This draft is not sent and is not an acceptance decision.");

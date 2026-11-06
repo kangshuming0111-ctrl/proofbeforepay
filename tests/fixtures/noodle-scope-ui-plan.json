@@ -1,0 +1,53 @@
+{
+  "kind": "inert-ui-plan-and-synthetic-acceptance-cases",
+  "baselineNativeCommit": "c01044fb387918e649f547d37a9091164e9bc93f",
+  "scope": "Only the agreed noodle-shop outsourcing flow: bilingual beef-noodle menus at AUD18, Contact Name and Email, and booking/enquiry storage that source alone cannot prove. No marketplace, authentication family, new human-study protocol or required advanced setup.",
+  "awardComparison": [
+    {
+      "project": "Vite Vere",
+      "award": "Gemini API Developer Competition 2024 Most Impactful App and People's Choice",
+      "primarySource": "https://developers.googleblog.com/en/announcing-the-winners-of-the-gemini-api-developer-competition/",
+      "sourcePublicationDate": "2024-11-21",
+      "previouslyVerifiedOn": "2026-11-06",
+      "observationLevel": "Official description of step-by-step task guidance, not a hands-on or same-condition comparison.",
+      "ourGap": "An evidence-needed explanation can prepare a clarification comment, but there is no persisted, per-criterion, explicit two-party scope agreement or clear recheck handoff."
+    },
+    {
+      "project": "Agent Receipt",
+      "award": "IBM Bob 2026 August Challenge Most Innovative",
+      "primarySource": "https://www.bemyapp.com/insights/ai-builders-challenge-with-ibm-bob-2026-winners.html",
+      "sourcePublicationDate": "2026-10-20",
+      "previouslyVerifiedOn": "2026-11-06",
+      "observationLevel": "Official description of evidence association and authority within a workflow. No claim that the competitor has our exact scope-confirmation design.",
+      "ourGap": "An unbound model suggestion must not become authority to choose the target file, modify scope, accept work or pay."
+    }
+  ],
+  "existingBehavior": {
+    "DeliveryAssessment": "Currently labels AI results as suggestion supported/changes/insufficient evidence, displays locked source and source citations, and offers a scope_clarification draft for unresolved source-label role aliases.",
+    "DeliveryOverview": "Already separates system rule mismatches, AI suggestions and human confirmation. Do not create a total score or duplicate immutable version evidence.",
+    "currentBoundary": "The buyer creates/reviews requirements; the seller supplies files. Current delivery replacement invalidates stale evidence. Acceptance and payment are separate actions."
+  },
+  "uiPlan": {
+    "ownedSourceFiles": ["app/components/ScopeClarificationPanel.tsx", "app/scope-clarification.css", "tests/scope-clarification-panel.test.ts"],
+    "sharedIntegrationOwner": "Root wires app/page.tsx and DeliveryAssessment.tsx; this slice does not edit those files.",
+    "domainOwner": "External agent owns final shared decision types, actual server authorization, immutable proposal records, explicit independent buyer/seller confirmation and conservative recheck integration.",
+    "layout": "One compact left-aligned panel per inspected requirement. Use existing green/cream/ochre palette and inherited typography, small spacing, wrapping filenames and one current primary action. No animation or new global layout.",
+    "result": "Separate current fact/suggestion/human status by evidence layer. A supported source fact never becomes accepted delivery or a working backend.",
+    "nextActor": "Name buyer, seller or both and what to supply. For storage unknown, seller supplies actual execution and independently readable stored-record evidence; buyer checks it. Scope unknown asks both to confirm the exact target first.",
+    "proposal": "Preserve the complete locked source. Choose an uploaded HTML file and optionally a declared form id from parser-provided candidates. No user JSON, CSS selector, API key or SHA input. Parser candidates are declarations, not model guesses, visibility or runtime proof.",
+    "confirmation": "Show the exact current proposal and each party's explicit saved confirmation. Selecting a file is not proposing it, proposing it is not either party's confirmation, and one party cannot confirm for the other. Revised proposals must not inherit confirmation from a different proposal.",
+    "recheck": "After a current server-validated two-party agreement, expose an explicit return-to-this-criterion check action. Do not run AI, upload files, save feedback, accept, authorize or pay automatically. Replacement-delivery or historical context is read-only/stale until the server returns a current decision.",
+    "errors": "Pending saves disable incompatible actions; preserve user selections on a failed request when still in the same context. Delivery/criterion/proposal changes cancel stale async completion and reset or key local draft state. Error messages state what was not saved and ask to reload current records when needed.",
+    "reviewLimits": "SSR and callback tests prove rendered text/actions and call identity only. Root must separately test actual role authorization, persistence, stale-response handling and desktop/mobile CUA. Human participants remain zero."
+  },
+  "syntheticCases": [
+    {"id": "normal", "expect": "A source-correct AUD18 item and Name/Email evidence keep their own scope; no implicit acceptance."},
+    {"id": "wrong-price", "expect": "AUD28 for beef noodles does not pass using AUD18 from tea or another page; buyer can inspect and request seller correction."},
+    {"id": "wrong-page-field", "expect": "Another page or neighboring field/form cannot witness the target relationship; no guessed target is preselected as authority."},
+    {"id": "genuine-unknown", "expect": "Static enquiry/booking markup cannot prove storage or email. Show unknown, seller evidence next, buyer review after it."},
+    {"id": "scope-both-confirm", "expect": "Both real parties must explicitly confirm the same current proposal; one party, stale proposal, failed save, or revision is not agreement."},
+    {"id": "seller-replacement", "expect": "The new delivery cannot silently use old confirmation or evidence; old/new same-criterion history remains available through existing UI."},
+    {"id": "explicit-recheck", "expect": "Confirmed scope exposes an explicit criterion-specific recheck entry; no effect runs on render or confirmation."},
+    {"id": "buyer-decision", "expect": "Buyer manually requests changes/evidence or accepts only through existing explicit controls; no scope or AI action triggers payment."}
+  ]
+}

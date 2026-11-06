@@ -89,11 +89,14 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
   }, [busy]);
 
   function renderItem(item: ProofAssessment["items"][number], selected = false) {
-    const canPrepareFeedback = !readOnly && !!onPrepareFeedback && item.status !== "supported";
+    const sourceFinding=item.sourceFinding;
+    const actionableSource=sourceFinding&&(sourceFinding.basis==="locked_business_values"||sourceFinding.scopeBinding)?sourceFinding:undefined;
+    const feedbackItem=actionableSource?{...item,status:actionableSource.status,explanation:actionableSource.explanation,citations:actionableSource.citations,evidenceNeed:undefined}:item;
+    const canPrepareFeedback = !readOnly && !!onPrepareFeedback && feedbackItem.status !== "supported";
     const insufficient = item.status === "insufficient_evidence";
     const criterion = criteria.find(criterion => criterion.id === item.criterionId);
     const lockedSource = assessmentCriterionSource(criterion, item.criterionId);
-    const draft = canPrepareFeedback ? buildAssessmentFeedbackDraft(criterion, item, language, scopeSteps) : undefined;
+    const draft = canPrepareFeedback ? buildAssessmentFeedbackDraft(criterion, feedbackItem, language, scopeSteps, actionableSource?{basis:"independent_source",confirmedScope:!!actionableSource.scopeBinding}:undefined) : undefined;
     const evidenceNeed = insufficient ? assessmentEvidenceNeedPresentation(item.evidenceNeed, language) : undefined;
     return <article className={`assessment-item${selected ? " assessment-item-selected" : ""}`} key={item.criterionId}>
       <div className="assessment-item-heading"><h4>{titleFor(item.criterionId)}</h4><span className={`assessment-status assessment-status-${item.status}`}>{statusLabel(item.status)}</span></div>
@@ -102,7 +105,9 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
         <p>{tr("原样保留的验收要求；界面语言切换不会翻译或缩写这段原文。", "The agreed wording is preserved exactly. Changing interface language does not translate or shorten this source.")}</p>
         <blockquote>{lockedSource}</blockquote>
       </details> : <p className="assessment-source-unavailable">{tr("尚未取得此项的锁定原文，暂不能生成带要求的补证草稿。请重新载入当前交付后核对。", "This criterion’s locked wording is unavailable, so an evidence request cannot be prepared. Reload the current delivery and check again.")}</p>}
+      {sourceFinding&&<section className="assessment-source-finding" aria-label={tr("系统独立源码事实","Independent system source finding")}><strong>{tr("系统独立源码事实：","Independent source finding: ")}{sourceFinding.status==="supported"?tr("源码关系支持","Source relation supported"):sourceFinding.status==="changes_suggested"?tr("发现源码差异","Source difference found"):tr("仅凭源码仍不确定","Source remains inconclusive")}</strong><p>{sourceFinding.explanation}</p><Citations citations={sourceFinding.citations} language={language}/></section>}
       <p className="assessment-explanation">{item.explanation}</p>
+      {item.modelJudgment&&<details className="assessment-original-model"><summary>{tr("查看原始模型判断（独立保留）","Inspect the original model judgment (retained separately)")}</summary><strong>{statusLabel(item.modelJudgment.status)}</strong><p>{item.modelJudgment.explanation}</p><Citations citations={item.modelJudgment.citations} language={language}/></details>}
       {criterion && <AssessmentObligations criterion={criterion} value={item.obligations} language={language}/>}
       {evidenceNeed && <section className="assessment-evidence-need" aria-label={tr("补证方向", "Evidence needed")}>
         <strong>{evidenceNeed.reason}</strong><p>{evidenceNeed.nextStep}</p>
@@ -116,7 +121,7 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
       {canPrepareFeedback && <div className="assessment-feedback-action no-print"><button type="button" className="assessment-feedback-button" disabled={busy || !draft} onClick={() => {
         if (!report || !draft) return;
         onPrepareFeedback?.({ deliveryId: report.deliveryId, criterionId: item.criterionId, comment: draft.comment });
-      }}>{draft?.intent === "scope_clarification" ? tr("先澄清页面归属", "Clarify page scope") : insufficient ? tr("请求补充证据", "Draft an evidence request") : tr("加入修改草稿", "Add to change draft")}</button><span>{tr("仅填入可编辑草稿，不会自动退回。", "Adds an editable draft without sending a change request.")}</span>{draft && (draft.sourceExcerpted || draft.explanationExcerpted) && <p className="assessment-draft-excerpt-note">{tr("草稿上限为 1000 字符，超长部分会明确标为节选。请展开完整锁定原文核对后再编辑发送。", "The draft has a 1000-character limit. Shortened sections are labelled as excerpts. Inspect the complete locked wording before editing and sending.")}</p>}</div>}
+      }}>{draft?.intent === "scope_clarification" ? tr("先澄清页面归属", "Clarify page scope") : feedbackItem.status === "insufficient_evidence" ? tr("请求补充证据", "Draft an evidence request") : tr("加入修改草稿", "Add to change draft")}</button><span>{tr("仅填入可编辑草稿，不会自动退回。", "Adds an editable draft without sending a change request.")}</span>{draft && (draft.sourceExcerpted || draft.explanationExcerpted) && <p className="assessment-draft-excerpt-note">{tr("草稿上限为 1000 字符，超长部分会明确标为节选。请展开完整锁定原文核对后再编辑发送。", "The draft has a 1000-character limit. Shortened sections are labelled as excerpts. Inspect the complete locked wording before editing and sending.")}</p>}</div>}
     </article>;
   }
 
