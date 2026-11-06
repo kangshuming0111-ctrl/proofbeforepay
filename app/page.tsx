@@ -1439,7 +1439,7 @@ export default function Home() {
                 {proof?.requirements && <RequirementsSource agreement={proof.requirements} language={language} criteria={proof.criteria}/>}
                 {customProject?.coverage && <RequirementCoverageSource coverage={customProject.coverage} language={language}/>}
                 <BusinessChecksSource checks={customProject?.businessChecks} language={language}/>
-                {customProject && !customProject.coverage && <p className="requirement-coverage-help">{tr("此旧项目没有逐条需求处理记录；现有约定和验收结果保持原样。", "This earlier project has no per-clause scope record; its existing agreement and acceptance are preserved.")}</p>}
+                {customProject && !customProject.coverage && <p className="requirement-coverage-help">{sampleRoleplay ? tr("内置样例使用预设验收标准；创建自己的项目时，可逐条确认原始需求。", "This built-in example uses a preset checklist. Create your own project to confirm original requirements one by one.") : tr("此旧项目没有逐条需求处理记录；现有约定和验收结果保持原样。", "This earlier project has no per-clause scope record; its existing agreement and acceptance are preserved.")}</p>}
               </> : <>
                 <div className="project-mode-switch no-print" aria-label={tr("项目类型", "Project type")}>
                   <button type="button" disabled={!!busy} className={projectMode === "custom" ? "active" : ""} aria-pressed={projectMode === "custom"} onClick={() => { setProjectMode("custom"); setError(""); }}>{tr("我的项目", "My project")}</button>

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T03:56:22.063Z",
+  "generatedAt": "2026-11-06T04:02:03.039Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -773,8 +773,8 @@
     },
     {
       "file": "app/page.tsx",
-      "bytes": 201356,
-      "sha256": "0d7b718d326c44d4ab2ad518d90c7b94f8c0729360916f20f8f3e64d88b942cd"
+      "bytes": 201597,
+      "sha256": "2423cf85b967b540e47efe4248eaea3ba34e12efd2dbfe2c7124a8df89217b16"
     },
     {
       "file": "app/project-journey.css",
@@ -1948,8 +1948,8 @@
     },
     {
       "file": "docs/collaboration/onboarding-2026-11-06/cycle-27.md",
-      "bytes": 5971,
-      "sha256": "1b555be4df316647a01e7f9c753890fa359234e774c2c50f8a6ed87dd6275206"
+      "bytes": 7271,
+      "sha256": "4e5a358e0af6ec82bb51e11e980e72e36871c63374a80eb78c6a4c9cf5ca9bda"
     },
     {
       "file": "docs/collaboration/real-projects-2026-11-05/README.md",
@@ -6598,8 +6598,8 @@
     },
     {
       "file": "tests/fixtures/onboarding-page-context.json",
-      "bytes": 27525,
-      "sha256": "da8f9396251ad3a7865c1373d16f684bbe6cc068c67d180d12de55d740adec3b"
+      "bytes": 28205,
+      "sha256": "3db790d0eecb917a029c787afe9c890fc6ac2055e21c45a3d506519fb5304052"
     },
     {
       "file": "tests/fixtures/project-assessment-observations/initial-abstention-counterexamples.json",

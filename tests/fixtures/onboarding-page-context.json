@@ -1,7 +1,7 @@
 {
   "purpose": "Inert explicit source excerpts for bounded DeepSeek review; not runtime input, not a whole-page audit",
   "sourceFile": "app/page.tsx",
-  "sourceSha256": "0d7b718d326c44d4ab2ad518d90c7b94f8c0729360916f20f8f3e64d88b942cd",
+  "sourceSha256": "2423cf85b967b540e47efe4248eaea3ba34e12efd2dbfe2c7124a8df89217b16",
   "excerpts": [
     {
       "label": "imports",
@@ -74,6 +74,12 @@
       "startLine": 1621,
       "endLine": 1621,
       "source": "                {quote&&delivery&&custom&&<TechnicalChecksPanel key={`journey-${quote.id}-${delivery.id}-${workspaceRole}`} focusRequest={technicalFocusRequest} quote={quote} role={role} language={language} enabled={!!canRunRuntime&&!busy} request={request} onApply={onConcurrentQuote} onSupplementalChanged={()=>void refreshEvidenceCatalog()} onBusy={value=>setBusy(value?\"journey-check\":\"\")} onDecision={setJourneyDecision} onFeedback={buyer&&collaboration?.stage===\"submitted\"&&!busy?comment=>prepareFeedback({deliveryId:delivery.id,criterionId:\"journey-agreement\",journeyReportId:delivery.journeyReport?.id,comment}):undefined}/>}"
+    },
+    {
+      "label": "sampleChecklistCopy",
+      "startLine": 1442,
+      "endLine": 1442,
+      "source": "                {customProject && !customProject.coverage && <p className=\"requirement-coverage-help\">{sampleRoleplay ? tr(\"内置样例使用预设验收标准；创建自己的项目时，可逐条确认原始需求。\", \"This built-in example uses a preset checklist. Create your own project to confirm original requirements one by one.\") : tr(\"此旧项目没有逐条需求处理记录；现有约定和验收结果保持原样。\", \"This earlier project has no per-clause scope record; its existing agreement and acceptance are preserved.\")}</p>}"
     }
   ]
 }
