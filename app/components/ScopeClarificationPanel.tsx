@@ -26,6 +26,7 @@ export function RequirementNextStep({criterion, item, evidence = [], humanConfir
   const ruleHuman = currentEvidence.some(row => row.finding === "needs_human");
   const need = currentItem?.status === "insufficient_evidence" && isAssessmentEvidenceNeed(currentItem.evidenceNeed) ? currentItem.evidenceNeed : undefined;
   const sourceScopeUnconfirmed = sourceFinding?.basis === "declared_html_labels" && !sourceFinding.scopeBinding;
+  const recordedHumanStep = tr("本项人工核对已记录；源码事实、AI 建议与人工判断分别保留。整版交付的验收和付款状态，请查看流程中的独立记录。", "The human check for this requirement is recorded. Source facts, AI suggestions and the human decision remain separate. Check the workflow’s separate records for delivery acceptance and payment status.");
   let actor = tr("买家", "Buyer");
   let materials = tr("查看本项原文和交付证据，再决定确认、提出修改或补证。", "Review this requirement and its delivery evidence, then decide whether to confirm it, request changes or ask for evidence.");
   if (ruleFailed) {
@@ -38,7 +39,7 @@ export function RequirementNextStep({criterion, item, evidence = [], humanConfir
     actor = tr("卖家补交，买家复核", "Seller supplies a revision; buyer reviews");
     materials = tr("本项已定位的源码证据存在差异。卖家按原始要求修正对应交付并提交新版本，买家重新核对；范围同意不代表修正已经完成。", "The scoped source evidence differs from this requirement. The seller corrects the corresponding delivery and submits a new version for buyer review. Scope agreement does not mean the correction is complete.");
   } else if (sourceFinding?.status === "supported" && (!need || need.reason === "model_unresolved" || need.reason === "no_citations")) {
-    materials = tr("已检查的源码条件有支持，原 AI 的未知不抹去这项源码事实。买家继续核对完整要求；未观察的外观或运行能力仍须分别核对，不能直接当作整项验收。", "The checked source conditions have support; the original AI’s uncertainty does not erase that fact. The buyer reviews the complete requirement. Unobserved appearance or execution still needs separate review; this is not delivery acceptance.");
+    materials = humanConfirmed ? recordedHumanStep : tr("已检查的源码条件有支持。买家核对完整要求；未观察的外观或运行能力分别核对，源码事实本身不替代人工判断或整版验收。", "The checked source conditions have support. The buyer reviews the complete requirement. Unobserved appearance or execution needs separate review; source facts do not replace human judgment or delivery acceptance.");
   } else if (currentItem?.status === "changes_suggested" && !sourceFinding) {
     materials = tr("先核对 AI 引文和锁定要求；确认差异属于本项后，再请卖家修改。AI 建议本身不证明交付不符。", "Compare the AI citations with the locked requirement first. Ask the seller for changes only after checking that the difference belongs to this requirement. An AI suggestion alone does not establish a mismatch.");
   } else if (currentItem?.status === "insufficient_evidence") {
@@ -59,7 +60,7 @@ export function RequirementNextStep({criterion, item, evidence = [], humanConfir
       materials = tr("对照本项要求检查现有材料，决定由卖家补充哪些源码或运行证据，再由买家核对。尚未建立结论，不推断交付失败。", "Review the available material against this requirement, agree what source or execution evidence the seller should add, then have the buyer review it. No conclusion is established; delivery failure is not inferred.");
     }
   } else if (humanConfirmed) {
-    materials = tr("本项人工核对已记录；是否接受整版交付仍需买家单独确认，付款也是另一项操作。", "The human check for this requirement is recorded. Accepting the delivery still needs a separate buyer decision, and payment is a separate action.");
+    materials = recordedHumanStep;
   }
   const ruleLabel = ruleFailed ? tr("不符：规则检查发现差异", "Mismatch: rule check found a difference")
     : ruleSupported && !ruleHuman ? tr("规则证据有支持", "Rule evidence supports the checked facts")

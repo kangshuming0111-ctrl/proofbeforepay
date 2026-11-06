@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T11:33:36.810Z",
+  "generatedAt": "2026-11-06T11:42:36.214Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -548,8 +548,8 @@
     },
     {
       "file": "app/components/ScopeClarificationPanel.tsx",
-      "bytes": 23909,
-      "sha256": "c5b87be6274e114e2fb2c8cdf01f98ea5d5d222f8f42f3b7e9d7c8d402401cfc"
+      "bytes": 24034,
+      "sha256": "af21e78f6a94442a0830fb81c858f85ee64252b17fe67cbaf38cc358bd7ccc9a"
     },
     {
       "file": "app/components/SellerDomAdapterGuide.tsx",
@@ -2003,8 +2003,8 @@
     },
     {
       "file": "docs/collaboration/noodle-core-2026-11-06/integration.md",
-      "bytes": 4638,
-      "sha256": "57a4d5a8a67431d87ef854b4b7e6a2be47013277768fff49f6a17a07d5902970"
+      "bytes": 5167,
+      "sha256": "53a0f2c67c377e515ff3013095737adc1353946d02fe4415670c1510aacc7325"
     },
     {
       "file": "docs/collaboration/onboarding-2026-11-06/cycle-27.md",
@@ -8398,8 +8398,8 @@
     },
     {
       "file": "tests/scope-clarification-panel.test.ts",
-      "bytes": 17866,
-      "sha256": "ac3a12c9f2490bc4d017e03e42e55019a9dc794bae879b097b62c0a292ceb418"
+      "bytes": 19168,
+      "sha256": "9f229443c155b30557d192bc472fe5121d3e35fa76540b752cb2777211a7b0ec"
     },
     {
       "file": "tests/scope-clarifications.test.ts",

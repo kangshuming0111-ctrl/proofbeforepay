@@ -88,8 +88,8 @@ test("manual interpretation remains buyer review and source results never imply 
 
 test("the human check records no accepted-delivery or payment claim", async () => {
   const html = await summary({item: item("supported"), evidence: [evidence("pass")], humanConfirmed: true}, "zh");
-  assert.match(html, /是否接受整版交付仍需买家单独确认/u);
-  assert.match(html, /付款也是另一项操作/u);
+  assert.match(html, /本项人工核对已记录/u);
+  assert.match(html, /验收和付款状态，请查看流程中的独立记录/u);
   assert.doesNotMatch(html, /<button|<input|<form\b/u);
 });
 
@@ -108,13 +108,32 @@ test("established source mismatch is visible and actionable even when the origin
 test("source support survives original model uncertainty, while unagreed label scope asks both parties first", async () => {
   const html = await summary({item: withSourceFinding("supported", false, "locked_business_values")});
   assert.match(html, /Established: source meets the checked conditions/u);
-  assert.match(html, /original AI’s uncertainty does not erase that fact/u);
+  assert.match(html, /The checked source conditions have support/u);
   assert.doesNotMatch(html, /No conclusion is established/u);
   const unbound = await summary({item: withSourceFinding("changes_suggested", false)});
   assert.match(unbound, /Established mismatch: source differs/u);
   assert.match(unbound, /Buyer and seller/u);
   assert.match(unbound, /Do not request repairs on a guessed page/u);
   assert.doesNotMatch(unbound, /Seller supplies a revision/u);
+});
+
+test("positive source copy does not assume an original AI status or ask to repeat a recorded human check", async () => {
+  for (const status of ["supported", "changes_suggested", "insufficient_evidence"] as const) for (const humanConfirmed of [false, true]) {
+    const value = withSourceFinding("supported", false, "locked_business_values");
+    value.modelJudgment!.status = status;
+    const html = await summary({item: value, humanConfirmed});
+    assert.match(html, /Established: source meets the checked conditions/u);
+    assert.doesNotMatch(html, /original AI’s uncertainty does not erase/u);
+    assert.match(html, status === "supported" ? /Original AI suggestion: support/u : status === "changes_suggested" ? /Original AI suggestion: changes/u : /Unknown: insufficient original AI evidence/u);
+    if (humanConfirmed) {
+      assert.match(html, /The human check for this requirement is recorded/u);
+      assert.match(html, /separate records for delivery acceptance and payment status/u);
+      assert.doesNotMatch(html, /The buyer reviews the complete requirement|Accepting the delivery still needs/u);
+    } else {
+      assert.match(html, /The buyer reviews the complete requirement/u);
+      assert.doesNotMatch(html, /The human check for this requirement is recorded/u);
+    }
+  }
 });
 
 type Element = {type?: unknown; key?: unknown; props?: Record<string, unknown>};
