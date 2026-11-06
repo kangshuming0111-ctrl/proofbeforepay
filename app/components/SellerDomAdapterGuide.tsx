@@ -56,7 +56,7 @@ export function SellerDomAdapterGuide({language}:{language:Language}){
   catch{dispatch({type:"notice",message:tr("预检未能完成。请简化 HTML 或修改配置后重试。","Preflight could not finish. Simplify the HTML or edit the configuration, then retry.")});}
  }
  const groups=[["create",tr("预约","Create")],["cancel",tr("取消","Cancel")],["move",tr("改期","Move")],["retry",tr("重试与结果","Retry and result")]];
- return <details className="seller-integration-guide"><summary>{tr("把现有预约网页接入检验","Connect an existing booking page")}</summary>
+ return <details id="seller-dom-setup" className="seller-integration-guide"><summary>{tr("把现有预约网页接入检验","Connect an existing booking page")}</summary>
   <p>{tr("先选择你的测试网页，确认页面里哪些控件用于预约、取消和改期，再检查并下载接入准备文件。","Choose your staging page, confirm which controls create, cancel and move bookings, then check and download preparation files.")}</p>
   <div className="seller-onboarding">
    <nav className="seller-onboarding-steps" aria-label={tr("接入准备步骤","Integration preparation steps")}>{[tr("1 选页面与确认控件","1 Choose page and confirm"),tr("2 本地预检","2 Local preflight"),tr("3 下载准备文件","3 Preparation files")].map((name,i)=><button key={i} type="button" aria-current={step===i?"step":undefined} onClick={()=>dispatch({type:"step",step:i})}>{name}</button>)}</nav>
@@ -66,7 +66,12 @@ export function SellerDomAdapterGuide({language}:{language:Language}){
     {discovery&&!discovery.validDocument&&<p role="alert" className="seller-onboarding-note">{explanations[discovery.documentIssue??""]?tr(...explanations[discovery.documentIssue!]):tr("无法分析此页面。请重新导出精简 UTF-8 HTML。","Could not analyse this page. Export smaller UTF-8 HTML.")}</p>}
     {discovery?.validDocument&&<>
      <p className="seller-onboarding-note">{tr("候选仅为 HTML 标签和属性的预览，点击确认后才应用映射。唯一候选会先展示供核对；多个候选需自行选择。它们不证明实际可见、按钮可用或后台成功。","These suggestions are previews; mappings apply only after Confirm. A unique candidate is shown for review; choose among multiple candidates yourself. Suggestions do not prove visibility, working buttons or backend success.")}</p>
-     <div className="seller-onboarding-candidates">{discovery.fields.map(field=>{
+     <div className="seller-onboarding-groups">{groups.map(([group,label])=>{
+      const fields=discovery.fields.filter(field=>field.key.startsWith(group+".")||group==="retry"&&field.key==="result");
+      const confirmed=fields.filter(field=>state.confirmed[field.key]?.sha256===discovery.source.sha256&&state.confirmed[field.key]?.selector===onboardingFieldValue(config,field.key)).length;
+      return <details className="seller-onboarding-control-group" key={group} open={group==="create"}>
+       <summary><span>{label}</span><small>{tr(`已确认 ${confirmed}/${fields.length}`,`${confirmed}/${fields.length} confirmed`)}</small></summary>
+       <div className="seller-onboarding-candidates">{fields.map(field=>{
       const chosen=field.candidates.find(candidate=>candidate.id===state.selected[field.key]),confirmed=state.confirmed[field.key]?.candidateId===chosen?.id&&Boolean(chosen);
       return <section key={field.key} className="seller-onboarding-candidate" data-confirmed={confirmed||undefined}>
        <div className="seller-onboarding-candidate-heading"><strong>{tr(...fieldNames[field.key])}</strong><span>{confirmed?tr("已确认","Confirmed"):field.state==="ambiguous"?tr("多个候选，需判断","Multiple candidates"):field.candidates.length?tr("待确认","Review required"):tr("待补充","Unresolved")}</span></div>
@@ -76,6 +81,8 @@ export function SellerDomAdapterGuide({language}:{language:Language}){
         <button className="seller-onboarding-confirm" type="button" disabled={!chosen||confirmed} onClick={()=>chosen&&dispatch({type:"confirm",key:field.key,candidateId:chosen.id})}>{confirmed?tr("已确认此控件","Control confirmed"):tr("确认此控件","Confirm this control")}</button>
        </>:<p><small>{field.reason==="candidate_limit"?tr("候选过多。给目标控件添加清楚的标签或唯一 ID，再重新选择 HTML。","Too many candidates. Add a clear label or unique ID, then choose the HTML again."):field.key.endsWith("requestOperation")?tr("未找到含全部固定动作值的测试指令 select。请按协议清单补充后重新选择 HTML；普通预约选项不能代替测试指令。","No instruction select contains all required fixed operations. Add it using the protocol checklist, then choose the HTML again. Ordinary booking options cannot replace test instructions."):tr("没有找到可唯一定位的合适控件。请添加明确标签和稳定 ID，或展开高级配置手工映射；动态控件需另行运行验证。","No suitable uniquely selectable control found. Add a clear label and stable ID, or map it in advanced configuration. Dynamic controls need runtime verification.")}</small></p>}
       </section>;
+       })}</div>
+      </details>;
      })}</div>
      <div className="seller-onboarding-actions"><button type="button" onClick={runCheck}>{confirmedCount===13?tr("检查已确认的控件","Check confirmed controls"):tr("检查当前映射与缺项","Check current mappings and gaps")}</button><a href="https://github.com/kangshuming0111-ctrl/proofbeforepay/blob/codex/public-release/examples/seller-lifecycle-staging/README.md" target="_blank" rel="noreferrer">{tr("固定协议说明","Fixed protocol reference")}</a></div>
     </>}

@@ -4,6 +4,15 @@
 .delivery-overview-heading > svg { flex-shrink: 0; }
 .delivery-overview-heading h3 { margin: 0; font-size: 13px; font-weight: 650; overflow-wrap: anywhere; }
 .delivery-overview-heading > span { flex-shrink: 0; margin-left: auto; font-size: 10px; color: #607350; }
+.delivery-result-focus { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin-top: 6px; }
+.delivery-result-focus > p { flex: 1 1 230px; margin: 0; overflow-wrap: anywhere; font-weight: 600; }
+.delivery-result-focus > button { flex-shrink: 0; margin-left: auto; font-weight: 650; }
+.delivery-result-status { display: flex; flex-wrap: wrap; gap: 3px 16px; margin: 6px 0 0; padding: 0; list-style: none; color: #526747; font-size: 10px; }
+.delivery-result-status > li { min-width: 0; overflow-wrap: anywhere; }
+.delivery-result-status > .overview-attention { color: #875037; }
+.delivery-result-boundary { margin: 5px 0 0; color: #617250; font-size: 10px; overflow-wrap: anywhere; }
+.delivery-result-reports { margin-top: 7px; padding-top: 5px; border-top: 1px solid #dfe6d5; }
+.delivery-result-reports > summary { width: fit-content; cursor: pointer; color: #365f42; font-size: 11px; }
 .delivery-overview-metrics { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 6px; font-size: 11px; color: #617250; }
 .delivery-overview-metrics strong { margin-left: 3px; color: #36563b; }
 .delivery-overview-primary { display: flex; align-items: baseline; gap: 7px; margin-top: 7px; min-width: 0; }

@@ -36,4 +36,16 @@
 .seller-onboarding-advanced{margin-top:.8rem;padding-top:.65rem;border-top:1px solid #dde2d2}
 .seller-onboarding-advanced>summary{font-size:.84rem}
 .seller-onboarding-advanced details{margin-top:.5rem}
+.seller-onboarding-groups{display:grid;gap:.5rem}
+.seller-onboarding-control-group{min-width:0;border:1px solid #cbd5bf;border-radius:.35rem;padding:.45rem .55rem}
+.seller-onboarding-control-group>summary{display:flex;align-items:baseline;justify-content:space-between;gap:.4rem;font-size:.86rem;font-weight:650;cursor:pointer}
+.seller-onboarding-control-group>summary small{font-size:.75rem;font-weight:400;white-space:nowrap}
+.seller-onboarding-control-group .seller-onboarding-candidates{margin-top:.55rem}
+.seller-setup-navigation{margin:.6rem 0;padding:.65rem .75rem;border-left:3px solid #789163;background:#eef1e7}
+.seller-setup-navigation p{max-width:76ch;font-size:.84rem;overflow-wrap:anywhere}
+.seller-setup-navigation .seller-onboarding-steps button{cursor:pointer;min-width:0;white-space:normal;text-align:left}
+.seller-setup-navigation button:focus-visible,.journey-run-setup:focus-visible{outline:3px solid #839f5f;outline-offset:2px}
+.seller-setup-notice{margin:.4rem 0 0;font-weight:600}
+.journey-run-setup{scroll-margin-block:.75rem}
+.journey-run-setup h4{margin:.7rem 0 .4rem;font-size:.95rem}
 @media(max-width:600px){.seller-onboarding-fields,.seller-onboarding-candidates{grid-template-columns:1fr}.seller-onboarding-candidates{max-height:24rem}.seller-onboarding-results li{grid-template-columns:1fr;gap:.1rem}.seller-onboarding-steps button{flex:1;min-width:7rem}}

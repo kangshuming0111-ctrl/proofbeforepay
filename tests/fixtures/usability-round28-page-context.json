@@ -1,0 +1,22 @@
+{
+  "purpose": "Inert bounded source-context fixture for round28 parent wiring; not runtime input or whole-page audit.",
+  "sourceFile": "app/page.tsx",
+  "sourceSha256": "62c49891550faa82be2522bb6adf82f232ae7f7dd457f5a3653fc34b90e3d4b4",
+  "excerpts": [
+    {
+      "label": "enquiryNavigation",
+      "sourceLine": 875,
+      "source": "  function openEnquiryChecks(){\n    setWorkspaceView(\"workbench\");setWorkspacePanel(\"delivery\");setDeliveryTab(\"layout\");\n    window.requestAnimationFrame(()=>{const panel=workspaceRef.current?.querySelector<HTMLDetailsElement>(\".enquiry-checks-panel\");if(panel){panel.open=true;panel.scrollIntoView({block:\"nearest\",behavior:\"smooth\"});panel.querySelector<HTMLElement>(\"summary\")?.focus({preventScroll:true});}});\n  }"
+    },
+    {
+      "label": "transferNavigation",
+      "sourceLine": 887,
+      "source": "  function openTransferChecks() {\n    setWorkspaceView(\"workbench\");setWorkspacePanel(\"delivery\");setDeliveryTab(\"layout\");\n    if(delivery)setTechnicalFocusRequest(previous=>({kind:\"transfer\",deliveryId:delivery.id,id:(previous?.id??0)+1}));\n  }"
+    },
+    {
+      "label": "overviewProps",
+      "sourceLine": 1570,
+      "source": "                onOpenRuntime={runtimePlan?openRuntimeChecks:undefined} onOpenEnquiry={openEnquiryChecks} onOpenTransfer={openTransferChecks} onOpenJourney={openProjectJourney} onOpenModel={openModelChecks} projectId={quote?.id} acceptedSnapshotId={frozenAcceptanceId}"
+    }
+  ]
+}

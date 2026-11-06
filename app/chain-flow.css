@@ -51,10 +51,12 @@
   .proof-app.has-project .mode-banner > svg,
   .proof-app.has-project .mode-banner > div > strong { display: none; }
   .proof-app.has-project .mode-details summary { padding: 2px 0; font-size: 12px; }
-  .proof-app.has-project .guided-workspace-bar:not(.is-busy) > span {
-    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  .proof-app.has-project .guided-workspace-bar > span {
+    position: static; display: block; flex-basis: 100%; width: auto; height: auto;
+    margin: 0; padding: 2px 0; overflow: visible; clip: auto; white-space: normal;
+    line-height: 1.5; overflow-wrap: anywhere;
   }
-  .proof-app.has-project .guided-workspace-bar.is-busy > span { display: flex; flex-basis: 100%; }
-  .proof-app.has-project .guided-workspace-bar { padding-top: 0; padding-bottom: 0; }
+  .proof-app.has-project .guided-workspace-bar.is-busy > span { display: flex; }
+  .proof-app.has-project .guided-workspace-bar { padding-top: 5px; padding-bottom: 5px; }
+  .proof-app.has-project .guided-workspace-bar .workspace-next-action { max-width: 100%; white-space: normal; overflow-wrap: anywhere; text-align: start; }
 }

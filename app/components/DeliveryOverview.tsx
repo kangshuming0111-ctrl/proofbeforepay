@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight, ChevronDown, FileCheck2, History, MessageSquarePlus, ScanLine } from "lucide-react";
+import {useRef} from "react";
 import type { Language, ProofCollaboration, ProofCriterion, ProofDelivery, ProofDeliveryVersion, ProofLayoutWidth, ProofReview, ProofRole } from "@/lib/contracts";
 import { criterionDisplayTitle, deliveryOverview, overviewFeedbackDraft, overviewRowLabel } from "@/lib/delivery-overview";
 import { deliveryLayoutSummary } from "@/lib/delivery-layout-summary";
@@ -11,8 +12,9 @@ import {runtimeReportSummary} from "@/lib/runtime-checks";
 import {runtimeOverviewRows} from "@/lib/runtime-overview";
 import {RuntimeCoverageSummary} from "./RuntimeCoverageSummary";
 import {useModelDiagnosis} from "./useModelDiagnosis";
-import {ModelSpotlight,modelSpotlightTitle} from "./ModelSpotlight";
+import {ModelSpotlight} from "./ModelSpotlight";
 import {ModelDiagnosticComparison} from "./ModelDiagnosticComparison";
+import {deliveryResultEnquiry,deliveryResultFocus,deliveryResultInspection,deliveryResultStatus} from "@/lib/delivery-result-focus";
 import "../delivery-overview.css";
 
 export type DeliveryOverviewProps = {
@@ -32,6 +34,8 @@ export type DeliveryOverviewProps = {
   onOpenLayout?: () => void;
   onOpenBusiness?: () => void;
   onOpenRuntime?: () => void;
+  onOpenEnquiry?: () => void;
+  onOpenTransfer?: () => void;
   onOpenJourney?: () => void;
   onOpenModel?: () => void;
   projectId?: string;
@@ -39,13 +43,12 @@ export type DeliveryOverviewProps = {
   onInspectLayout?: (file: string, width: ProofLayoutWidth) => void;
 };
 
-export function DeliveryOverview({ delivery, criteria, review, manualChecks, language, role, stage, previousVersion, previousVersionLoading=false, busy = false, onInspect, onPrepareFeedback, onViewHistory, onOpenLayout, onOpenBusiness, onOpenRuntime, onOpenJourney, onOpenModel, projectId, acceptedSnapshotId, onInspectLayout }: DeliveryOverviewProps) {
+export function DeliveryOverview({ delivery, criteria, review, manualChecks, language, role, stage, previousVersion, previousVersionLoading=false, busy = false, onInspect, onPrepareFeedback, onViewHistory, onOpenLayout, onOpenBusiness, onOpenRuntime, onOpenEnquiry, onOpenTransfer, onOpenJourney, onOpenModel, projectId, acceptedSnapshotId, onInspectLayout }: DeliveryOverviewProps) {
   const zh = language === "zh";
   const tr = (chinese: string, english: string) => zh ? chinese : english;
   const overview = deliveryOverview({ delivery, criteria, review, manualChecks, previousVersion });
   const layout = deliveryLayoutSummary(delivery);
   const model=useModelDiagnosis(delivery,{projectId,acceptedSnapshotId,accepted:stage==="accepted"});
-  const modelNeedsAttention=model.state!=="none"&&(model.state!=="ready"||model.diagnosis?.outcome!=="compatible");
   const business = buildBusinessSpotlight(delivery, previousVersion);
   const runtime=delivery.runtimeReport?.deliveryId===delivery.id?delivery.runtimeReport:undefined;
   const runtimeSummary=runtime?runtimeReportSummary(runtime.steps):undefined;
@@ -58,20 +61,13 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
     || firstRows[0].humanPending || firstRows[0].ai?.status === "changes_suggested" || firstRows[0].ai?.status === "insufficient_evidence" && !firstRows[0].humanConfirmed);
   const showPrimary = !business || firstRows[0]?.rule === "fail" || firstRows[0]?.rule === "unreviewed" || firstRows[0]?.ai?.status === "changes_suggested";
   const showDraft = role === "buyer" && stage === "submitted" && !!onPrepareFeedback;
-  const title = stage === "accepted" ? tr("买家已接受当前交付", "The buyer accepted this delivery")
-    : modelNeedsAttention ? modelSpotlightTitle(model,language)
-    : !overview.reviewCurrent ? tr("先核查当前交付版本", "Check this delivery version first")
-    : overview.ruleFailures ? tr("有交付要求尚未符合", "Some delivery requirements are unmet")
-    : delivery.journeyPlan&&(!journey||journey.summary.issues||journey.summary.unavailable) ? tr("业务旅程有差异或尚待补证", "The business journey differs or needs more evidence")
-    : runtimeSummary && (runtimeSummary.issues || runtimeSummary.unavailable) ? tr("预约后端仍有不符或未确定步骤", "Booking backend steps differ or remain uncertain")
-    : business && business.issues > 0 ? tr("约定的业务内容存在差异", "Agreed business content differs")
-    : business && business.unavailable > 0 ? tr("部分业务内容仍需核对", "Some business content needs inspection")
-    : overview.aiChanges ? tr("AI 提出了修改建议，请核对", "AI suggests changes for you to review")
-    : business?.groups.some(group => group.row.state === "now_matches") ? tr("对照这次修改，再完成验收", "Review the revision before accepting")
-    : overview.unreviewed ? tr("有要求尚无规则证据", "Some requirements have no rule evidence")
-    : overview.humanRemaining ? tr("还有要求需要你亲自确认", "Some requirements need your direct check")
-    : !overview.assessmentCurrent ? tr("规则已核查，AI 尚未运行", "Rules checked; AI has not run")
-    : tr("本版检查已保存，验收由买家决定", "Checks saved; the buyer decides acceptance");
+  const enquiry=deliveryResultEnquiry(delivery,projectId);
+  const resultInput={delivery,overview,layout,model,business,journey,runtime:runtimeSummary,enquiry,language};
+  const focus=deliveryResultFocus(resultInput),statuses=deliveryResultStatus(resultInput);
+  const detailsRef=useRef<HTMLDetailsElement>(null);
+  const title=stage==="accepted"?tr("买家已接受当前交付","The buyer accepted this delivery"):focus.title;
+  const openDetails=()=>{if(detailsRef.current){detailsRef.current.open=true;detailsRef.current.querySelector<HTMLElement>("summary")?.focus();}};
+  const inspect=deliveryResultInspection(focus,{criterion:onInspect,model:onOpenModel,business:onOpenBusiness??onOpenLayout,journey:onOpenJourney,runtime:onOpenRuntime,enquiry:onOpenEnquiry,transfer:onOpenTransfer??openDetails,layout:onOpenLayout,details:openDetails});
 
   const rowLabel = (row: (typeof overview.rows)[number]) => overviewRowLabel(row, language);
 
@@ -80,9 +76,19 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
 
   return <section className="delivery-overview" aria-label={tr("当前交付结果", "Current delivery results")}>
     <header className="delivery-overview-heading"><FileCheck2 size={16} aria-hidden="true"/><h3>{title}</h3><span>{delivery.sequence ? `v${delivery.sequence}` : tr("当前版", "Current")}</span></header>
+    <div className="delivery-result-focus" data-result-reason={focus.reason}>
+      <p>{focus.key}</p>{inspect&&<button type="button" disabled={busy} onClick={inspect}>{tr("查看这项证据","Inspect this evidence")}<ArrowRight size={12} aria-hidden="true"/></button>}
+    </div>
+    <ul className="delivery-result-status" aria-label={tr("各类结果与未覆盖项","Results and uncovered evidence by layer")}>{statuses.map(row=><li key={row.id} className={row.attention?"overview-attention":undefined}>{row.text}</li>)}</ul>
+    {stage==="accepted"&&<p className="delivery-result-boundary">{tr("验收与付款保留当时冻结的版本和证据；后续检查不会改写原验收，也不会被补记为已接受。","Acceptance and payment retain the originally frozen version and evidence. Later checks do not rewrite acceptance or become retrospectively accepted.")}</p>}
+    {stage==="accepted"&&model.state!=="none"&&model.acceptance!=="not_accepted"&&<p className="delivery-result-boundary">{model.acceptance==="accepted_report"?tr("并发报告由原验收快照引用。","The original acceptance snapshot references this concurrent report."):model.acceptance==="supplemental"?tr("当前并发报告属于补充检查，未被补记为原验收证据。","The current concurrent report is supplemental, not retrospectively accepted evidence."):tr("原并发验收报告关联暂无法确认；当前报告不能补作原验收证明。","The original concurrent-report reference could not be verified; the current report cannot replace historical acceptance evidence.")}</p>}
+    <p className="delivery-result-boundary">{tr("各类数量分别记录；AI 建议或人工复核不代表问题已解决，验收与付款仍需分别确认。","Counts remain separate. AI advice or human review does not establish resolution; acceptance and payment need separate confirmation.")}</p>
+    <details ref={detailsRef} className="delivery-result-reports">
+    <summary>{tr("完整检查与版本证据（选看）","Full checks and version evidence (optional)")}</summary>
     <ModelSpotlight data={model} language={language} busy={busy} onInspect={onOpenModel}/>
     <ModelDiagnosticComparison delivery={delivery} previousVersion={previousVersion} loading={previousVersionLoading} projectId={projectId} language={language} onInspect={onOpenModel}/>
     {business && <BusinessSpotlight delivery={delivery} previousVersion={previousVersion} language={language} busy={busy} onInspect={onOpenBusiness ?? onOpenLayout ?? (() => {})} onPrepareFeedback={showDraft ? onPrepareFeedback : undefined}/>}
+    {(delivery.enquiryPlan||delivery.enquiryReport||delivery.enquiryRun)&&<div className="delivery-overview-layout"><div className="delivery-overview-layout-heading"><strong>{tr("咨询提交与保存检查","Enquiry submission and persistence checks")}</strong>{onOpenEnquiry&&<button type="button" disabled={busy} onClick={onOpenEnquiry}>{tr("查看咨询后台证据","Inspect enquiry-backend evidence")}<ArrowRight size={12}/></button>}</div><p className="delivery-overview-layout-note">{delivery.enquiryRun?.deliveryId===delivery.id?tr("有未完成记录；以下为先前保存的报告，不代替本轮结果。","An unfinished record exists. Any counts below are from a previously saved report, not this run’s result."):""}{enquiry?tr(`${enquiry.summary.supported} 项支持，${enquiry.summary.mismatch} 项不符，${enquiry.summary.unknown} 项未知。`,`${enquiry.summary.supported} supported, ${enquiry.summary.mismatch} mismatched, ${enquiry.summary.unknown} unknown.`):tr("本版尚无可用报告，未作通过判断。","This version has no usable report; no pass is claimed.")}</p><p className="delivery-overview-layout-note">{tr("仅检查已约定的测试后台，不证明网站表单已连接、真实邮件已送达或整站无缺陷。","Covers the agreed test backend, not a connected website form, real email delivery or a defect-free site.")}</p></div>}
     {delivery.journeyPlan&&<div className="delivery-overview-layout"><div className="delivery-overview-layout-heading"><strong>{tr("本版业务旅程","This delivery’s business journey")}: {delivery.journeyRun?tr("运行尚未完成","Run incomplete"):journey?`${journey.summary.observed}/20 ${tr("项观测支持","supported observations")}`:tr("尚未检验","Not checked")}</strong>{onOpenJourney&&<button type="button" disabled={busy} onClick={onOpenJourney}>{tr("查看表单与服务端证据","Inspect form and server evidence")}<ArrowRight size={12}/></button>}</div>{journey&&<p className="delivery-overview-layout-note">{tr("不符","Mismatched")} {journey.summary.issues} · {tr("未确定","Unavailable")} {journey.summary.unavailable} · {tr("创建、取消、改期、响应丢失后原键重试与最终对账分别留证。","Creation, cancellation, moves, original-key retry after lost response, and final reconciliation are recorded separately.")}</p>}<p className="delivery-overview-layout-note">{tr("客户端表单记录＋主站独立读取卖家接口；按登记关联本版文件，不证明源码部署真实性，也不自动接受或付款。","Client form records plus separate server reads of seller endpoints. The operator links this upload; deployed-source provenance is not attested. No automatic acceptance or payment.")}</p></div>}
     {runtime&&runtimeSummary&&<div className="delivery-overview-layout"><div className="delivery-overview-layout-heading"><strong>{tr("预约接口实测","Booking HTTP check")}: {runtimeSummary.observed}/{runtimeSummary.steps} {tr("步有预期观测支持","steps with expected observations")}</strong>{onOpenRuntime&&<button type="button" disabled={busy} onClick={onOpenRuntime}>{tr(`查看 ${runtimeSummary.steps} 步证据`, `Inspect ${runtimeSummary.steps}-step evidence`)}<ArrowRight size={12}/></button>}</div>{runtimeRows.map(row=><p key={row.id} className="delivery-overview-layout-note"><strong>{row.label}</strong>: {row.detail}</p>)}<p className="delivery-overview-layout-note">{tr("不符","Mismatched")} {runtimeSummary.issues} · {tr("未确定","Unavailable")} {runtimeSummary.unavailable}</p><RuntimeCoverageSummary plan={runtime.plan} report={runtime} pending={!!delivery.runtimeRun} language={language}/></div>}
     <div className="delivery-overview-metrics" aria-label={tr("分别记录的检查结果", "Separately recorded check results")}>
@@ -119,7 +125,9 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
       {overview.rows.length > 3 && <p className="delivery-overview-more">{tr(`共 ${overview.rows.length} 项要求；其余项目可在逐项核查中查看。`, `${overview.rows.length} requirements in total; inspect the rest in Evidence checks.`)}</p>}
     </details>
     {delivery.supplementalCatalog&&delivery.supplementalCatalog.rows.length>0&&<div className="delivery-overview-layout"><strong>{tr("补充检验 · 分层证据","Supplemental checks · separate evidence layers")}</strong>{(["source-visibility","deployment-source","time-policy"] as const).map(family=>{const rows=delivery.supplementalCatalog!.rows.filter(r=>r.ref.family===family);if(!rows.length)return null;const counts={supported:0,mismatch:0,unknown:0};for(const r of rows)for(const f of r.findings)counts[f.outcome]++;return <p key={family}><span>{family==="source-visibility"?tr("文本可见性（客户端）","Text visibility (client)"):family==="deployment-source"?tr("部署字节（平台HTTP）","Deployment bytes (platform HTTP)"):tr("时间规则（适配器）","Time rules (adapter)")}</span>{" · "}{tr(`${counts.supported}项支持 / ${counts.mismatch}项不符 / ${counts.unknown}项未知`,`${counts.supported} supported / ${counts.mismatch} mismatch / ${counts.unknown} unknown`)}</p>;})}<p className="delivery-overview-layout-note">{delivery.supplementalDecision?.catalogDigest===delivery.supplementalCatalog.catalogDigest?tr("买家已核对当前目录；是否验收仍需单独确认。","The buyer reviewed the current catalog; delivery acceptance still requires separate confirmation."):tr("下一步：买家展开“补充证据”核对纳入／排除与每项例外，再继续验收。","Next: the buyer reviews included / excluded reports and every exception in Supplemental evidence, then continues acceptance.")}</p></div>}
+    {delivery.supplementalCatalog&&delivery.supplementalCatalog.rows.length>0&&<details className="delivery-overview-details"><summary>{tr("逐项补充证据","Individual supplemental findings")}</summary><ul>{delivery.supplementalCatalog.rows.map(row=><li key={`${row.ref.family}:${row.ref.id}:${row.ref.version}`}><strong>{row.summary}</strong><ul>{row.findings.map(finding=><li key={finding.key}>{finding.outcome==="mismatch"?tr("不符：","Mismatch: "):finding.outcome==="unknown"?tr("未知：","Unknown: "):tr("观察支持：","Observed support: ")}{finding.label}</li>)}</ul></li>)}</ul></details>}
     <footer className="delivery-overview-footer"><span>{tr("各类结果分别记录；AI 建议不代替人工验收。", "Results remain separate; AI advice does not replace buyer acceptance.")}</span>{onViewHistory && delivery.sequence !== 1 && <button type="button" disabled={busy} onClick={onViewHistory}><History size={12} aria-hidden="true"/>{tr("版本对照", "Version history")}</button>}</footer>
     {(ruleComparison || aiComparison) && <p className="delivery-overview-comparison">{tr("已加载历史版", "Loaded historical version")}{overview.previous?.sequence ? ` v${overview.previous.sequence}` : ""} → {delivery.sequence ? `v${delivery.sequence}` : tr("当前版", "current")}{ruleComparison && <span>{tr("规则不符", "Rule mismatches")} {overview.previous?.ruleFailures} → {overview.ruleFailures}</span>}{aiComparison && <span>{tr("AI 修改建议", "AI change suggestions")} {overview.previous?.aiChanges} → {overview.aiChanges}</span>}</p>}
+    </details>
   </section>;
 }

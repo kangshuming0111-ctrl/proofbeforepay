@@ -65,6 +65,7 @@ import {ProofReadinessPanel} from "./components/ProofReadinessPanel";
 import {TechnicalChecksPanel} from "./components/TechnicalChecksPanel";
 import type {TechnicalChecksFocusRequest} from "./components/technical-checks-state";
 import {nextHumanReview} from "@/lib/next-human-review";
+import {revealGuidedTarget} from "./components/reveal-guided-target";
 import {ModelCheckPanel} from "./components/ModelCheckPanel";
 import type {ModelDecision} from "@/lib/model-check-actions";
 import type {ProjectJourneyDecision} from "@/lib/project-journey";
@@ -206,6 +207,7 @@ export default function Home() {
   const [criterionIndex, setCriterionIndex] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
   const workspaceRef = useRef<HTMLDivElement>(null);
+  const workspaceFocusSerial = useRef(0);
   const optionalChecksRef = useRef<HTMLDetailsElement>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -227,6 +229,12 @@ export default function Home() {
 
   function publishQuoteResponseView(view: QuoteResponseView) {
     // State setters are batched. Invalidate pending replies before React commits.
+    // A role/project/delivery transition also retires navigation intents, even
+    // if the user returns to the same identity before the queued frame runs.
+    if(!sameQuoteResponseView(view,currentQuoteView.current)){
+      workspaceFocusSerial.current+=1;
+      setTechnicalFocusRequest(undefined);
+    }
     quoteApplyRevision.current += 1;
     setQuoteRenderRevision(quoteApplyRevision.current);
     currentQuoteView.current = {...view};
@@ -601,7 +609,7 @@ export default function Home() {
       showCaseAddress(result.quote, result.quote.proof.demoRoleplay ? workspaceRole : result.role ?? "buyer");
       setLanguage(result.quote.language);
       setReconciliation(null);
-      window.requestAnimationFrame(() => workspaceRef.current?.focus({ preventScroll: true }));
+      scheduleWorkspaceFocus(root => root.focus({preventScroll:true}));
     });
   }
 
@@ -811,7 +819,7 @@ export default function Home() {
   function openVersionHistory() {
     if (!quote) return;
     setWorkspaceView("workbench"); setWorkspacePanel("payment");
-    window.requestAnimationFrame(() => {
+    scheduleWorkspaceFocus(() => {
       const history = collaborationHistoryRef.current;
       if (!history || history.quoteId !== quote.id) return;
       if (completedCollaborationRef.current) completedCollaborationRef.current.open = true;
@@ -828,15 +836,15 @@ export default function Home() {
   function beginDeliveryAcceptance() {
     setShowDeliveryAcceptance(true); setDeliveryConsent(false);
     setWorkspacePanel("payment"); setDeliveryTab("evidence");
-    window.requestAnimationFrame(() => acceptanceRef.current?.scrollIntoView({block: "nearest", behavior: "smooth"}));
+    scheduleWorkspaceFocus(root => {if(acceptanceRef.current&&root.contains(acceptanceRef.current))acceptanceRef.current.scrollIntoView({block:"nearest",behavior:"smooth"});});
   }
 
   function openCriterion(criterionId?: string) {
     const index = proof?.criteria.findIndex(item => item.id === criterionId) ?? -1;
     if (index < 0) return;
     setWorkspaceView("workbench"); setWorkspacePanel("delivery"); setDeliveryTab("evidence"); setCriterionIndex(index);
-    window.requestAnimationFrame(() => {
-      const article = workspaceRef.current?.querySelectorAll<HTMLElement>(".criterion-evidence")[index];
+    scheduleWorkspaceFocus(root => {
+      const article = root.querySelectorAll<HTMLElement>(".criterion-evidence")[index];
       article?.scrollIntoView({block: "nearest", behavior: "smooth"});
       article?.focus({preventScroll: true});
     });
@@ -856,9 +864,23 @@ export default function Home() {
     setNotice(tr("已定位到可编辑的修改草稿；已有文字会保留。核对后再点击“退回修改”，本次尚未提交。", "Opened the editable change-request draft; existing text is preserved. Check it before clicking Request changes. Nothing has been sent."));
   }
 
+  /** Only the latest request for this exact project/delivery/perspective may
+   * move focus after React commits. A resume never invokes a workflow action. */
+  function scheduleWorkspaceFocus(task:(root:HTMLDivElement)=>void) {
+    const view={...currentQuoteView.current},serial=++workspaceFocusSerial.current;
+    setTechnicalFocusRequest(undefined);
+    window.requestAnimationFrame(()=>{
+      if(serial!==workspaceFocusSerial.current||!sameQuoteResponseView(view,currentQuoteView.current))return;
+      if(workspaceRef.current)task(workspaceRef.current);
+    });
+  }
+
   function focusPanel(panel: "agreement" | "delivery" | "payment", selector?: string) {
     setWorkspaceView("workbench"); setWorkspacePanel(panel);
-    window.requestAnimationFrame(() => workspaceRef.current?.querySelector<HTMLElement>(selector ?? `.${panel === "agreement" ? "scope" : panel === "payment" ? "payment" : "evidence"}-panel`)?.focus({preventScroll: false}));
+    const section=`.${panel === "agreement" ? "scope" : panel === "payment" ? "payment" : "evidence"}-panel`;
+    scheduleWorkspaceFocus(root=>{
+      if(!revealGuidedTarget(root,selector??section,section))setNotice(tr("请查看当前区域的说明；该操作控件暂不可用。", "Read this section’s instructions; the requested control is currently unavailable."));
+    });
   }
 
   async function checkRuntimeBackend() {
@@ -869,24 +891,23 @@ export default function Home() {
     });
   }
   function openRuntimeChecks() {
-    setWorkspaceView("workbench");setWorkspacePanel("delivery");setDeliveryTab("layout");
-    window.requestAnimationFrame(()=>{const panel=workspaceRef.current?.querySelector<HTMLDetailsElement>(".runtime-check-panel");if(panel){panel.open=true;panel.scrollIntoView({block:"nearest",behavior:"smooth"});}});
+    setDeliveryTab("layout");focusPanel("delivery",".runtime-check-panel");
   }
   function openEnquiryChecks(){
-    setWorkspaceView("workbench");setWorkspacePanel("delivery");setDeliveryTab("layout");
-    window.requestAnimationFrame(()=>{const panel=workspaceRef.current?.querySelector<HTMLDetailsElement>(".enquiry-checks-panel");if(panel){panel.open=true;panel.scrollIntoView({block:"nearest",behavior:"smooth"});panel.querySelector<HTMLElement>("summary")?.focus({preventScroll:true});}});
+    setDeliveryTab("layout");focusPanel("delivery",".enquiry-checks-panel");
   }
   function openProjectJourney() {
     setWorkspaceView("workbench");setWorkspacePanel("delivery");setDeliveryTab("layout");
-    if(delivery)setTechnicalFocusRequest(previous=>({kind:"journey",deliveryId:delivery.id,id:(previous?.id??0)+1}));
+    const id=++workspaceFocusSerial.current;
+    setTechnicalFocusRequest(delivery?{kind:"journey",deliveryId:delivery.id,id}:undefined);
   }
   function openModelChecks() {
-    setWorkspaceView("workbench");setWorkspacePanel("delivery");setDeliveryTab("layout");
-    window.requestAnimationFrame(()=>{const panel=workspaceRef.current?.querySelector<HTMLDetailsElement>("#model-checks");if(panel){panel.open=true;panel.scrollIntoView({block:"nearest",behavior:"smooth"});}});
+    setDeliveryTab("layout");focusPanel("delivery","#model-checks");
   }
   function openTransferChecks() {
     setWorkspaceView("workbench");setWorkspacePanel("delivery");setDeliveryTab("layout");
-    if(delivery)setTechnicalFocusRequest(previous=>({kind:"transfer",deliveryId:delivery.id,id:(previous?.id??0)+1}));
+    const id=++workspaceFocusSerial.current;
+    setTechnicalFocusRequest(delivery?{kind:"transfer",deliveryId:delivery.id,id}:undefined);
   }
   function fillBackendExample() {
     fillNoodleBusinessExample();
@@ -926,7 +947,14 @@ export default function Home() {
     if (delivery?.transferCompetitionRun) return {label:tr("查看或关闭未完成的改期竞争检查","Inspect the unfinished transfer competition"),help:tr("本轮正在检查两笔改期争抢空位；完成或明确关闭后才能继续验收。","Two transfers are competing for the remaining places. Finish or explicitly close this run before accepting."),action:openTransferChecks};
     if (delivery?.modelRun) return {label:tr("查看或关闭未完成的并发检查","Inspect the unfinished concurrent check"),help:tr("本次检查尚未结束，旧报告不能代替本次结果。","This run is unfinished; an earlier report cannot stand in for it."),action:openModelChecks};
     if (!deliveryUnlocked) return {label: tr("查看项目状态", "View project state"), help: tr("请先处理约定或付款状态。", "Resolve the agreement or payment state first."), action: () => focusPanel("payment")};
-    if (!delivery) return {label: tr("前往上传交付文件", "Open delivery upload"), help: tr("保存时会同时完成规则核查。", "Saving also runs the rule checks."), action: () => focusPanel("delivery", "#deliveryFiles")};
+    if (!delivery) {
+      if(buyer)return collaboration
+        ? {label:tr("查看交付进度","View delivery progress"),help:tr("交付由实际卖家准备和提交。","The actual seller prepares and submits the delivery."),action:()=>focusPanel("payment")}
+        : {label:tr("切换交付视图，准备文件","Continue in delivery view"),help:tr("进入交付视图准备网站，再切回买家端核查。","Prepare the website in the delivery view, then return to the buyer view to inspect it."),action:()=>switchWorkspaceRole("seller")};
+      return customView
+        ? {label:tr("前往上传交付文件","Open delivery upload"),help:tr("保存时会同时完成规则核查。","Saving also runs the rule checks."),action:()=>focusPanel("delivery","#deliveryFiles")}
+        : {label:tr("选择样例交付","Choose a sample delivery"),help:tr("选择缺陷版或修复版，再检查交付证据。","Choose the flawed or fixed sample, then inspect its evidence."),action:()=>focusPanel("delivery",".demo-quick-deliveries .variant-button.is-flawed")};
+    }
     if (!reviewCurrent) return {label: tr("核查当前交付", "Check this delivery"), help: tr("即时检查保存的文件，不调用 AI。", "Immediate checks of saved files, without AI."), action: () => {void mutate("review", {deliveryId: delivery.id}, tr("规则核查完成。", "Rule checks complete."));}};
     if (!buyer && collaboration) return {label: tr("填写说明并提交验收", "Add a note & submit"), help: tr("AI 评估可按需使用，无需等待即可提交。", "AI assessment is optional; you can submit without it."), action: () => focusPanel("payment", ".collaboration-submission-form textarea")};
     if (failed) return {label: tr("查看未通过项", "Inspect unmet requirements"), help: tr("核对证据，再准备具体修改意见。", "Inspect the evidence and prepare specific feedback."), action: () => openCriterion(evidence.find(item => item.finding === "fail")?.criterionId)};
@@ -1021,11 +1049,7 @@ export default function Home() {
   }
 
   function openBusinessChecks() {
-    setWorkspaceView("workbench"); setWorkspacePanel("delivery"); setDeliveryTab("layout");
-    window.requestAnimationFrame(() => {
-      const panel = workspaceRef.current?.querySelector<HTMLDetailsElement>(".business-check-panel");
-      if (panel) {panel.open = true; panel.scrollIntoView({block: "nearest", behavior: "smooth"}); panel.querySelector<HTMLElement>("button")?.focus({preventScroll: true});}
-    });
+    setDeliveryTab("layout");focusPanel("delivery",".business-check-panel");
   }
 
   async function checkBusinessContent() {
@@ -1414,7 +1438,7 @@ export default function Home() {
 
         {(error || notice) && <div role={error ? "alert" : "status"} className={`feedback no-print ${error ? "error" : "success"}`}><Info size={18} /><div>{error && <strong>{tr("操作未完成", "Action not completed")}</strong>}<span>{error || notice}</span></div><button className="icon-button" aria-label={tr("关闭提示", "Dismiss message")} onClick={() => { setError(""); setNotice(""); }}><X size={16} /></button></div>}
 
-        {workspaceView === "workbench" && welcomeActive && (loading ? <p className="history-loading" role="status">{tr("正在恢复工作台…", "Restoring the workspace…")}</p> : <GettingStarted language={language} busy={!!busy} onStart={beginIntake} onExample={fillNoodleBusinessExample} onDemo={() => {void startRoleDemo();}}/>)}
+        {workspaceView === "workbench" && welcomeActive && (loading ? <p className="history-loading" role="status">{tr("正在恢复工作台…", "Restoring the workspace…")}</p> : <GettingStarted language={language} busy={!!busy} resumeProject={roleRecords[0]?{title:roleRecords[0].title,status:stateLabel(roleRecords[0],true),onOpen:()=>{void openCase(roleRecords[0]);}}:undefined} onStart={beginIntake} onExample={fillNoodleBusinessExample} onDemo={() => {void startRoleDemo();}}/>)}
         {workspaceView === "workbench" && !quote && !sellerEntry && intakeStarted && <button type="button" className="text-button intake-return" disabled={!!busy || loading} onClick={returnToIntroduction}>{tr("返回流程介绍（保留草稿）", "Back to the introduction (keep draft)")}</button>}
         <nav className="compact-panel-nav no-print" hidden={workspaceView !== "workbench" || sellerEntry || !quote} aria-label={tr("工作区分栏", "Workspace panels")}>
           {([["agreement", tr("约定", "Agreement")], ["delivery", tr("交付与证据", "Delivery & evidence")], ["payment", collaboration && !buyer ? tr("交付进度", "Delivery progress") : tr("验收与付款", "Accept & pay")]] as const).map(([panel, label]) => <button key={panel} aria-pressed={workspacePanel === panel} className={workspacePanel === panel ? "active" : ""} onClick={() => setWorkspacePanel(panel)}>{label}</button>)}
@@ -1567,7 +1591,7 @@ export default function Home() {
               {delivery && <div className="current-delivery"><span className={`delivery-version variant-${delivery.variant}`}>{`v${deliverySequence}`}</span><div><strong>{delivery.label}</strong><code>{delivery.id}</code></div><span className={`small-state ${reviewCurrent ? "positive" : ""}`}>{reviewCurrent ? tr("当前版本已核查", "This version reviewed") : tr("新版本 · 待核查", "New version · review needed")}</span></div>}
               {delivery && proof && <DeliveryOverview key={delivery.id} delivery={delivery} criteria={proof.criteria} review={proof.review} manualChecks={confirmedManualChecks} language={language} role={displayRole} stage={collaboration?.stage} busy={!!busy}
                 previousVersion={comparisonVersion} previousVersionLoading={comparisonHistoryLoading}
-                onOpenRuntime={runtimePlan?openRuntimeChecks:undefined} onOpenJourney={openProjectJourney} onOpenModel={openModelChecks} projectId={quote?.id} acceptedSnapshotId={frozenAcceptanceId}
+                onOpenRuntime={runtimePlan?openRuntimeChecks:undefined} onOpenEnquiry={openEnquiryChecks} onOpenTransfer={openTransferChecks} onOpenJourney={openProjectJourney} onOpenModel={openModelChecks} projectId={quote?.id} acceptedSnapshotId={frozenAcceptanceId}
                 onOpenBusiness={businessChecksConfigured || businessReport ? openBusinessChecks : undefined}
                 onOpenLayout={canCheckDelivery || canObserveBrowser || delivery.layoutReport || delivery.browserChecks || businessChecksConfigured ? () => {setWorkspacePanel("delivery"); setDeliveryTab("layout");} : undefined}
                 onInspectLayout={(file, width) => {setPreviewFile(file); setPreviewWidth(width === 375 ? "mobile" : "desktop"); setPreviewEntry(value => value + 1); setDeliveryTab("preview"); setWorkspacePanel("delivery");}}

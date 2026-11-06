@@ -69,6 +69,18 @@ test("rendered bilingual guide starts with local input, keeps advanced mapping c
   const modulePath=path.join(dir,"guide.mjs");await writeFile(modulePath,output);const {SellerDomAdapterGuide}=await import(pathToFileURL(modulePath).href);
   for(const language of["en","zh"]){const html=renderToStaticMarkup(createElement(SellerDomAdapterGuide,{language}));assert.match(html,/type="file"/u);assert.doesNotMatch(html,/\[name=guests\]/u);assert.match(html,/<details class="seller-onboarding-advanced"><summary>/u);assert.doesNotMatch(html,/<details[^>]*\bopen/u);assert.ok(html.indexOf('type="file"')<html.indexOf("seller-onboarding-advanced"));}
   const english=renderToStaticMarkup(createElement(SellerDomAdapterGuide,{language:"en"}));assert.match(english,/Preparation files/u);assert.match(english,/Manual preparation works without HTML/u);assert.match(english,/no upload, scripts or URL requests/u);assert.doesNotMatch(english,/automatically connected|backend verified|booking-protocol\.md/u);assert.doesNotMatch(english,/Check submission, storage, readback and test inbox separately/u);
+  const ownHtml=await readFile(path.join(root,"tests/fixtures/seller-onboarding-independent.html"),"utf8"),ownDiscovery=await discoverSellerControls(ownHtml);
+  const grouped=output.replace(/useReducer\(sellerOnboardingReducer, undefined, createSellerOnboardingState\)/u,`useReducer(sellerOnboardingReducer, undefined, () => sellerOnboardingReducer(sellerOnboardingReducer(createSellerOnboardingState(), {type:"file-start",generation:1}), {type:"file-ready",generation:1,filename:"independent.html",html:${JSON.stringify(ownHtml)},discovery:${JSON.stringify(ownDiscovery)}}))`);
+  assert.notEqual(grouped,output);const groupedPath=path.join(dir,"guide-groups.mjs");await writeFile(groupedPath,grouped);
+  const {SellerDomAdapterGuide:GroupedGuide}=await import(pathToFileURL(groupedPath).href),groupedHtml=renderToStaticMarkup(createElement(GroupedGuide,{language:"en"}));
+  assert.equal((groupedHtml.match(/class="seller-onboarding-control-group"/gu)??[]).length,4);
+  assert.deepEqual([...groupedHtml.matchAll(/(\d+)\/(\d+) confirmed/gu)].map(match=>[Number(match[1]),Number(match[2])]),[[0,4],[0,3],[0,4],[0,2]]);
+  // Closed native groups retain all cards/selects; this is SSR structure, not browser focus/layout proof.
+  assert.equal((groupedHtml.match(/class="seller-onboarding-candidate"/gu)??[]).length,13);
+  assert.equal((groupedHtml.match(/class="seller-onboarding-confirm"/gu)??[]).length,13);
+  assert.match(groupedHtml,/Explicitly confirmed 0\/13 controls/u);
+  assert.match(groupedHtml,/class="seller-onboarding-control-group" open=""/u);
+  assert.equal((groupedHtml.match(/class="seller-onboarding-control-group" open=""/gu)??[]).length,1);
   // Seed only the reducer's initial state to inspect the real download step;
   // the production guide, dependency builder and download controls stay intact.
   const seeded=output.replace(/useReducer\(sellerOnboardingReducer, undefined, createSellerOnboardingState\)/u,'useReducer(sellerOnboardingReducer, undefined, () => { const config = defaultSellerOnboardingConfig(); return {...createSellerOnboardingState(), step: 2, config, report: checkSellerOnboarding(config)}; })')+`\nimport {defaultSellerOnboardingConfig} from ${JSON.stringify(file("lib/seller-onboarding.ts"))};\n`;

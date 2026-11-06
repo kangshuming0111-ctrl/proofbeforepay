@@ -1,0 +1,42 @@
+{
+  "purpose": "Inert explicit current source excerpts for bounded review, not whole-page audit or runtime input.",
+  "sourceFile": "app/page.tsx",
+  "sourceSha256": "62c49891550faa82be2522bb6adf82f232ae7f7dd457f5a3653fc34b90e3d4b4",
+  "excerpts": [
+    {
+      "label": "historyOrder",
+      "sourceLine": 261,
+      "source": "  const roleRecords = records.filter(item => item.proof.demoRoleplay || (recordRoles[item.id] ?? \"buyer\") === workspaceRole);\n  const delivery = proof?.delivery;\n  const versionListKey=JSON.stringify([quote?.id??\"\",delivery?.id??\"\",workspaceRole]);"
+    },
+    {
+      "label": "applyRecords",
+      "sourceLine": 532,
+      "source": "  function apply(next: ProofQuote, nextRole?: ProofRole) {\n    if (!isProof(next)) throw new Error(tr(\"服务器返回的案例格式不受支持。\", \"The server returned an unsupported case.\"));\n    const perspective=next.proof.collaboration && !next.proof.demoRoleplay ? nextRole ?? currentQuoteView.current.role : currentQuoteView.current.role;\n    publishQuoteResponseView({projectId:next.id,deliveryId:next.proof.delivery?.id ?? null,role:perspective});\n    setQuote(next);\n    if (nextRole) {setRole(nextRole); setRecordRoles(old => ({...old, [next.id]: nextRole}));}\n    setRecords(old => [next, ...old.filter(item => item.id !== next.id)]\n      .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)));\n  }"
+    },
+    {
+      "label": "openCase",
+      "sourceLine": 591,
+      "source": "  async function openCase(item: ProofQuote) {\n    await run(\"open\", async () => {\n      const result = await request<CaseResult>(`/api/quotes/${encodeURIComponent(item.id)}`);\n      apply(result.quote, result.role ?? \"buyer\");\n      if (!result.quote.proof.demoRoleplay) {\n        publishQuoteResponseView({...currentQuoteView.current,role:result.role ?? \"buyer\"});\n        setWorkspaceRole(result.role ?? \"buyer\");\n      }\n      setWorkspaceView(\"workbench\");\n      clearReturnContext();\n      showCaseAddress(result.quote, result.quote.proof.demoRoleplay ? workspaceRole : result.role ?? \"buyer\");\n      setLanguage(result.quote.language);\n      setReconciliation(null);\n      window.requestAnimationFrame(() => workspaceRef.current?.focus({ preventScroll: true }));\n    });\n  }\n\n  function startCase() {"
+    },
+    {
+      "label": "focusPanel",
+      "sourceLine": 859,
+      "source": "  function focusPanel(panel: \"agreement\" | \"delivery\" | \"payment\", selector?: string) {\n    setWorkspaceView(\"workbench\"); setWorkspacePanel(panel);\n    window.requestAnimationFrame(() => workspaceRef.current?.querySelector<HTMLElement>(selector ?? `.${panel === \"agreement\" ? \"scope\" : panel === \"payment\" ? \"payment\" : \"evidence\"}-panel`)?.focus({preventScroll: false}));\n  }\n"
+    },
+    {
+      "label": "overviewCaller",
+      "sourceLine": 1568,
+      "source": "              {delivery && proof && <DeliveryOverview key={delivery.id} delivery={delivery} criteria={proof.criteria} review={proof.review} manualChecks={confirmedManualChecks} language={language} role={displayRole} stage={collaboration?.stage} busy={!!busy}\n                previousVersion={comparisonVersion} previousVersionLoading={comparisonHistoryLoading}\n                onOpenRuntime={runtimePlan?openRuntimeChecks:undefined} onOpenEnquiry={openEnquiryChecks} onOpenTransfer={openTransferChecks} onOpenJourney={openProjectJourney} onOpenModel={openModelChecks} projectId={quote?.id} acceptedSnapshotId={frozenAcceptanceId}\n                onOpenBusiness={businessChecksConfigured || businessReport ? openBusinessChecks : undefined}\n                onOpenLayout={canCheckDelivery || canObserveBrowser || delivery.layoutReport || delivery.browserChecks || businessChecksConfigured ? () => {setWorkspacePanel(\"delivery\"); setDeliveryTab(\"layout\");} : undefined}\n                onInspectLayout={(file, width) => {setPreviewFile(file); setPreviewWidth(width === 375 ? \"mobile\" : \"desktop\"); setPreviewEntry(value => value + 1); setDeliveryTab(\"preview\"); setWorkspacePanel(\"delivery\");}}\n                onInspect={openCriterion} onPrepareFeedback={buyer && collaboration?.stage === \"submitted\" && deliveryUnlocked ? prepareFeedback : undefined}\n                onViewHistory={openVersionHistory}/>}\n              {quote && delivery && <SupplementalEvidencePanel quote={quote} role={role} language={language} request={request} onQuote={onConcurrentQuote}/>}"
+    },
+    {
+      "label": "welcomeCaller",
+      "sourceLine": 1417,
+      "source": "        {workspaceView === \"workbench\" && welcomeActive && (loading ? <p className=\"history-loading\" role=\"status\">{tr(\"正在恢复工作台…\", \"Restoring the workspace…\")}</p> : <GettingStarted language={language} busy={!!busy} onStart={beginIntake} onExample={fillNoodleBusinessExample} onDemo={() => {void startRoleDemo();}}/>)}"
+    },
+    {
+      "label": "uploadDefault",
+      "sourceLine": 1527,
+      "source": "              {customView && !buyer && <details className=\"upload-delivery no-print\" open={(!sampleRoleplay && !delivery) || pendingFiles.length > 0 || !!uploadError}>"
+    }
+  ]
+}

@@ -2,9 +2,21 @@
 
 The existing booking-page guide now includes a compact bilingual three-step
 preparation flow. It configures deployment-owned selectors and backend metadata,
-checks a local HTML file without sending it to the server, and downloads four
-separate text files: configuration, connector, setup instructions and a backend
-protocol checklist. No ZIP dependency or remote page execution is used.
+checks a local HTML file without sending it to the server, and generates one
+complete preparation ZIP: current configuration, connector, setup instructions,
+backend protocol checklist, pinned DOM adapter/bridge dependencies and a SHA-256
+inventory. The browser fetches and verifies those fixed dependencies before
+offering the ZIP for download; it does not fetch or execute the seller's site.
+The four individual text templates remain an optional export without dependencies.
+
+The booking area offers four navigation steps: check the supported scope,
+confirm page controls and download preparation, submit deployed staging details,
+then review the actual agreement/registration/run prerequisites. These are
+directions, not completion status. Opening a step does not submit a declaration,
+adopt an agreement, run a test, accept work or pay. Missing permission or setup
+remains explicit in the corresponding existing controls. The 13 confirmations
+are grouped as create (4), cancel (3), move (4), and retry/result (2); closed
+native disclosures retain their controls and mappings.
 
 ## What changed
 
@@ -54,6 +66,9 @@ path and revision, not project source, contracts or runtime credentials. Do not
 enter secrets or customer data in these fields. Common credential-like values
 are refused, but this is not a general secret scanner. The user chooses local
 HTML; its contents are used in memory and are not included in the downloads.
+The ZIP's integrity checks establish its known preparation inventory, not a
+connection to the seller's backend, successful browser download storage or
+approval of a deployed staging site.
 
 Only the existing fixed `booking-lifecycle-http-v1` protocol is supported.
 Configuration does not map arbitrary backend fields automatically. The seller
