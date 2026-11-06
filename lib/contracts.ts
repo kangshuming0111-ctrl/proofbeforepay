@@ -94,7 +94,7 @@ export type ProofAssessmentSourceFinding = {
   scopeBinding?: {proposalId: string; proposalDigest: string; file: string; kind: "page" | "form"; formId?: string};
 };
 /** Explicit source-only reconciliation; never rewrites the retained model item. */
-export type ProofAssessmentPublicationBasis = {schema:"source-publication-v1";reason:"locked_price_mismatch"|"confirmed_form_label_absence"};
+export type ProofAssessmentPublicationBasis = {schema:"source-publication-v1";reason:"locked_price_mismatch"|"confirmed_form_label_absence"|"locked_price_match"};
 export type ProofAssessmentItem = { criterionId: string; status: "supported" | "changes_suggested" | "insufficient_evidence"; explanation: string; citations: ProofAssessmentCitation[]; ruleEvidenceIds: string[]; evidenceNeed?: ProofEvidenceNeed; obligations?: import("./assessment-obligations").AssessmentObligations; modelJudgment?: ProofAssessmentModelJudgment; sourceFinding?: ProofAssessmentSourceFinding; publicationBasis?: ProofAssessmentPublicationBasis };
 export type ProofAssessmentRisk = { title: string; explanation: string; suggestion: string; citations: ProofAssessmentCitation[] };
 /** Validated original AI leads retained outside the active indication pool.

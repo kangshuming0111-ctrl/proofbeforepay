@@ -69,3 +69,14 @@ test("unmarked legacy source findings retain the v89 AI labels and original publ
   assert.doesNotMatch(html,/class="assessment-publication-basis"|Source-check publication:|源码核验发布：/u);
  }assert.deepEqual(base,before);}finally{await cleanup();}
 });
+
+test("a positive locked-price publication uses price provenance and offers no repair with feedback enabled",async()=>{
+ const price={id:"price",title:"Locked beef-noodle price",source:"menu-en.html must list Beef noodles at AUD18."},markup='<article><h2>Beef noodles</h2><p>AUD18.00</p></article>',citation={file:"menu-en.html",start:0,end:markup.length,excerpt:markup};
+ const item:ProofAssessmentItem={criterionId:price.id,status:"supported",explanation:"Canonical saved positive price publication.",citations:[citation],ruleEvidenceIds:[],publicationBasis:{schema:"source-publication-v1",reason:"locked_price_match"},modelJudgment:{status:"supported",explanation:"Original model supports the exact beef-noodle price card.",citations:[citation]},sourceFinding:{version:"source-finding-v1",status:"supported",basis:"locked_business_values",explanation:"The active locked beef-noodle source price is AUD18.",citations:[citation],files:["menu-en.html"]}};
+ const before=structuredClone(item),calls:unknown[]=[],{Component,cleanup}=await assessmentComponentModule();try{for(const language of["zh","en"]as const){
+  const html=renderToStaticMarkup(createElement(Component,{report:report(item),criteria:[price],language,readOnly:false,onPrepareFeedback:(value:unknown)=>calls.push(value)}));
+  assert.match(html,language==="zh"?/源码核验发布：支持/u:/Source-check publication: supported/u);assert.match(html,language==="zh"?/已锁定菜品与价格/u:/locked item and price/u);
+  assert.doesNotMatch(html,/双方确认的表单范围|form confirmed by both parties|class="assessment-feedback-button"|class="assessment-evidence-need"/u);
+  assert.ok(html.includes(item.modelJudgment!.explanation));assert.deepEqual(calls,[]);
+ }assert.deepEqual(item,before);}finally{await cleanup();}
+});

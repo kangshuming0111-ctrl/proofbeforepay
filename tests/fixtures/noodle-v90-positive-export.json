@@ -1,0 +1,732 @@
+{
+  "schema": "noodle-v90-positive-export-fixture-v1",
+  "sourceArtifact": "production-v90-v2-evidence.json",
+  "sourceArtifactSha256": "8a3f42148ef619145449a825bfa46205a991e1595aa1ecd23ff74e04916f15e6",
+  "notes": [
+    "Exact field-value copy of allowlisted source evidence for the fictional controlled noodle shop.",
+    "This old record is raw supported, published insufficient, source supported. It must remain unchanged and consistent under later validators.",
+    "No original provider HTTP body or participant authenticity is asserted by an unsigned evidence export."
+  ],
+  "core": {
+    "schema": "proofbeforepay-evidence-export-v1",
+    "verificationRules": "pbp-static-source-v2",
+    "scope": "current-delivery-only",
+    "project": {
+      "id": "ae5c1d49-450c-42a2-8b8c-e49b2ff7c981",
+      "reference": "PBP-AE5C1D49",
+      "title": "面馆保守发布核对 · 模板价格与约定表单",
+      "summary": "菜单的牛肉面和Beef noodles标价必须为AUD18。\n联系表单源码必须包含标签“姓名”和“邮箱”。",
+      "language": "zh",
+      "criteria": [
+        {
+          "id": "page-1",
+          "title": "独立页面：index.html",
+          "source": "交付独立非空 HTML 文档 index.html，包含 HTML doctype、非空 title 与 body。"
+        },
+        {
+          "id": "page-2",
+          "title": "独立页面：menu.html",
+          "source": "交付独立非空 HTML 文档 menu.html，包含 HTML doctype、非空 title 与 body。"
+        },
+        {
+          "id": "page-3",
+          "title": "独立页面：contact.html",
+          "source": "交付独立非空 HTML 文档 contact.html，包含 HTML doctype、非空 title 与 body。"
+        },
+        {
+          "id": "mobile",
+          "title": "移动端可用",
+          "source": "所有交付页面都必须能在手机屏幕上正常使用；必须由人实际检查。"
+        },
+        {
+          "id": "coverage-1",
+          "title": "原始需求 1",
+          "source": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+        },
+        {
+          "id": "coverage-2",
+          "title": "原始需求 2",
+          "source": "联系表单源码必须包含标签“姓名”和“邮箱”。"
+        }
+      ],
+      "scopeClarifications": [
+        {
+          "id": "beda607a-3fae-4bb6-b598-3db508eaef68",
+          "digest": "ee0cbf292572de57628be65c0361af555a89b543a42b0bc7d20cd8849ca440f3",
+          "criterionId": "coverage-2",
+          "criterionSource": "联系表单源码必须包含标签“姓名”和“邮箱”。",
+          "basis": {
+            "deliveryId": "9f6a8034-56e4-4f27-a473-1fc8e90082d2",
+            "deliveryDigest": "f19a99256ce0b5a67cef2ca8bd5f949bd1f677a4fcbb2b36a7b568577d08755c"
+          },
+          "target": {
+            "kind": "form",
+            "file": "contact.html",
+            "formId": "contact"
+          },
+          "proposedByRole": "buyer",
+          "proposedAt": "2026-11-06T12:47:19.900Z",
+          "basisNote": "提议明确本项的页面或表单范围；原始要求保持不变，仍待双方分别确认。",
+          "confirmationMode": "owner-roleplay",
+          "confirmations": [
+            {
+              "role": "buyer",
+              "at": "2026-11-06T12:47:48.014Z",
+              "basisNote": "明确同意此提案的页面或表单范围；这不确认交付完成，也不接受交付或付款。"
+            },
+            {
+              "role": "seller",
+              "at": "2026-11-06T12:47:56.065Z",
+              "basisNote": "明确同意此提案的页面或表单范围；这不确认交付完成，也不接受交付或付款。"
+            }
+          ]
+        }
+      ],
+      "scopeConfirmationMode": "owner-roleplay",
+      "spec": {
+        "requiredPages": [
+          "index.html",
+          "menu.html",
+          "contact.html"
+        ],
+        "manualRequirements": [],
+        "coverage": {
+          "version": 1,
+          "sourceText": "菜单的牛肉面和Beef noodles标价必须为AUD18。\n联系表单源码必须包含标签“姓名”和“邮箱”。",
+          "confirmedAt": "2026-11-06T12:44:53.464Z",
+          "decisions": [
+            {
+              "id": "coverage-1",
+              "start": 0,
+              "end": 30,
+              "text": "菜单的牛肉面和Beef noodles标价必须为AUD18。",
+              "disposition": "include",
+              "criterionId": "coverage-1"
+            },
+            {
+              "id": "coverage-2",
+              "start": 31,
+              "end": 53,
+              "text": "联系表单源码必须包含标签“姓名”和“邮箱”。",
+              "disposition": "include",
+              "criterionId": "coverage-2"
+            }
+          ]
+        },
+        "businessChecks": [
+          {
+            "id": "business-1",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 30,
+              "excerpt": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "牛肉面",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            }
+          },
+          {
+            "id": "business-2",
+            "criterionId": "coverage-1",
+            "file": "menu.html",
+            "source": {
+              "start": 0,
+              "end": 30,
+              "excerpt": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+            },
+            "expected": {
+              "kind": "item_price",
+              "label": "Beef noodles",
+              "amountMinor": 1800,
+              "currency": "AUD"
+            }
+          }
+        ]
+      }
+    },
+    "delivery": {
+      "id": "80b88b7d-1863-4aed-bb5b-75e391681e46",
+      "variant": "upload",
+      "sequence": 2,
+      "label": "用户上传版本 2",
+      "submittedAt": "2026-11-06T13:17:45.176Z",
+      "files": {
+        "index.html": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><h1>Fictional Melbourne noodle shop</h1><p>牛肉面 AUD18</p><p>Beef noodles AUD18</p><form id=\"other\"><label>姓名<input></label><label>邮箱<input></label></form></body></html>",
+        "menu.html": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><p>牛肉面 AUD 18</p><p>Beef noodles AUD18</p><p>Vegetable noodles AUD18</p><template><p>牛肉面 AUD18</p></template></body></html>",
+        "contact.html": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><form id=\"contact\"><label>姓名<input></label><label>邮箱<input></label></form></body></html>",
+        "site.css": "body{font-family:system-ui}"
+      },
+      "evidence": [
+        {
+          "id": "evidence-page-1",
+          "criterionId": "page-1",
+          "file": "index.html",
+          "excerpt": "<title>Fictional noodle shop</title>",
+          "finding": "pass",
+          "explanation": "已找到此独立文档的 doctype、非空 title 与 body。仅证明源码文档存在，不证明内容完整、视觉质量或功能可用。"
+        },
+        {
+          "id": "evidence-page-2",
+          "criterionId": "page-2",
+          "file": "menu.html",
+          "excerpt": "<title>Fictional noodle shop</title>",
+          "finding": "pass",
+          "explanation": "已找到此独立文档的 doctype、非空 title 与 body。仅证明源码文档存在，不证明内容完整、视觉质量或功能可用。"
+        },
+        {
+          "id": "evidence-page-3",
+          "criterionId": "page-3",
+          "file": "contact.html",
+          "excerpt": "<title>Fictional noodle shop</title>",
+          "finding": "pass",
+          "explanation": "已找到此独立文档的 doctype、非空 title 与 body。仅证明源码文档存在，不证明内容完整、视觉质量或功能可用。"
+        },
+        {
+          "id": "evidence-mobile",
+          "criterionId": "mobile",
+          "file": "site.css",
+          "excerpt": "body{font-family:system-ui}",
+          "finding": "needs_human",
+          "explanation": "静态源码不能证明手机上的可读性、无溢出或可点击性。必须实际检查所有页面；预览禁用脚本及外部资源，不等于完整网站运行验证。"
+        },
+        {
+          "id": "evidence-coverage-1",
+          "criterionId": "coverage-1",
+          "file": "index.html",
+          "excerpt": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><h1>Fictional Melbourne noodle shop</h1><p>牛肉面 AUD18</p><p>Beef noodles AUD18</p><form id=\"other\"><label>姓名<input></label><label>邮箱<input></label></form></body></html>",
+          "finding": "needs_human",
+          "explanation": "逐项核对原始需求：“菜单的牛肉面和Beef noodles标价必须为AUD18。”。如果这一段包含多个要求，必须全部满足；页面存在或 AI 建议不能代替你的确认。"
+        },
+        {
+          "id": "evidence-coverage-2",
+          "criterionId": "coverage-2",
+          "file": "index.html",
+          "excerpt": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><h1>Fictional Melbourne noodle shop</h1><p>牛肉面 AUD18</p><p>Beef noodles AUD18</p><form id=\"other\"><label>姓名<input></label><label>邮箱<input></label></form></body></html>",
+          "finding": "needs_human",
+          "explanation": "逐项核对原始需求：“联系表单源码必须包含标签“姓名”和“邮箱”。”。如果这一段包含多个要求，必须全部满足；页面存在或 AI 建议不能代替你的确认。"
+        }
+      ],
+      "resources": {
+        "method": "static-resources-v1",
+        "checked": 0,
+        "findings": []
+      },
+      "assessment": {
+        "id": "0e3fb686-2bd5-4d63-8e0d-d9f759038f2a",
+        "deliveryId": "80b88b7d-1863-4aed-bb5b-75e391681e46",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-06T13:19:16.749Z",
+        "items": [
+          {
+            "criterionId": "page-1",
+            "status": "supported",
+            "explanation": "index.html 含 doctype、非空 title“Fictional noodle shop”与含 h1 的 body；仅证明静态源码文档存在。",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 0,
+                "end": 275,
+                "excerpt": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><h1>Fictional Melbourne noodle shop</h1><p>牛肉面 AUD18</p><p>Beef noodles AUD18</p><form id=\"other\"><label>姓名<input></label><label>邮箱<input></label></form></body></html>"
+              },
+              {
+                "file": "index.html",
+                "start": 59,
+                "end": 95,
+                "excerpt": "<title>Fictional noodle shop</title>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-page-1"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 58,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 58,
+                  "excerpt": "交付独立非空 HTML 文档 index.html，包含 HTML doctype、非空 title 与 body。"
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "unclassified",
+                  "clauseIndex": 0,
+                  "state": "needs_clarification"
+                }
+              ]
+            },
+            "modelJudgment": {
+              "status": "supported",
+              "explanation": "index.html 含 doctype、非空 title“Fictional noodle shop”与含 h1 的 body；仅证明静态源码文档存在。",
+              "citations": [
+                {
+                  "file": "index.html",
+                  "start": 0,
+                  "end": 275,
+                  "excerpt": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><h1>Fictional Melbourne noodle shop</h1><p>牛肉面 AUD18</p><p>Beef noodles AUD18</p><form id=\"other\"><label>姓名<input></label><label>邮箱<input></label></form></body></html>"
+                },
+                {
+                  "file": "index.html",
+                  "start": 59,
+                  "end": 95,
+                  "excerpt": "<title>Fictional noodle shop</title>"
+                }
+              ]
+            }
+          },
+          {
+            "criterionId": "page-2",
+            "status": "supported",
+            "explanation": "menu.html 含 doctype、非空 title 与含菜单段落的 body；仅证明静态源码文档存在。",
+            "citations": [
+              {
+                "file": "menu.html",
+                "start": 0,
+                "end": 231,
+                "excerpt": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><p>牛肉面 AUD 18</p><p>Beef noodles AUD18</p><p>Vegetable noodles AUD18</p><template><p>牛肉面 AUD18</p></template></body></html>"
+              },
+              {
+                "file": "menu.html",
+                "start": 59,
+                "end": 95,
+                "excerpt": "<title>Fictional noodle shop</title>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-page-2"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 57,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 57,
+                  "excerpt": "交付独立非空 HTML 文档 menu.html，包含 HTML doctype、非空 title 与 body。"
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "source_content",
+                  "clauseIndex": 0,
+                  "state": "source_review_required"
+                }
+              ]
+            },
+            "modelJudgment": {
+              "status": "supported",
+              "explanation": "menu.html 含 doctype、非空 title 与含菜单段落的 body；仅证明静态源码文档存在。",
+              "citations": [
+                {
+                  "file": "menu.html",
+                  "start": 0,
+                  "end": 231,
+                  "excerpt": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><p>牛肉面 AUD 18</p><p>Beef noodles AUD18</p><p>Vegetable noodles AUD18</p><template><p>牛肉面 AUD18</p></template></body></html>"
+                },
+                {
+                  "file": "menu.html",
+                  "start": 59,
+                  "end": 95,
+                  "excerpt": "<title>Fictional noodle shop</title>"
+                }
+              ]
+            }
+          },
+          {
+            "criterionId": "page-3",
+            "status": "supported",
+            "explanation": "contact.html 含 doctype、非空 title 与含表单的 body；仅证明静态源码文档存在。",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 0,
+                "end": 196,
+                "excerpt": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><form id=\"contact\"><label>姓名<input></label><label>邮箱<input></label></form></body></html>"
+              },
+              {
+                "file": "contact.html",
+                "start": 59,
+                "end": 95,
+                "excerpt": "<title>Fictional noodle shop</title>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-page-3"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 60,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 60,
+                  "excerpt": "交付独立非空 HTML 文档 contact.html，包含 HTML doctype、非空 title 与 body。"
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "unclassified",
+                  "clauseIndex": 0,
+                  "state": "needs_clarification"
+                }
+              ]
+            },
+            "modelJudgment": {
+              "status": "supported",
+              "explanation": "contact.html 含 doctype、非空 title 与含表单的 body；仅证明静态源码文档存在。",
+              "citations": [
+                {
+                  "file": "contact.html",
+                  "start": 0,
+                  "end": 196,
+                  "excerpt": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><form id=\"contact\"><label>姓名<input></label><label>邮箱<input></label></form></body></html>"
+                },
+                {
+                  "file": "contact.html",
+                  "start": 59,
+                  "end": 95,
+                  "excerpt": "<title>Fictional noodle shop</title>"
+                }
+              ]
+            }
+          },
+          {
+            "criterionId": "mobile",
+            "status": "insufficient_evidence",
+            "explanation": "本项需要实际手机视口的浏览器观察与买家确认；源码文本不能证明移动端体验。",
+            "citations": [
+              {
+                "file": "site.css",
+                "start": 0,
+                "end": 27,
+                "excerpt": "body{font-family:system-ui}"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-mobile"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 30,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 21,
+                  "excerpt": "所有交付页面都必须能在手机屏幕上正常使用；"
+                },
+                {
+                  "start": 21,
+                  "end": 30,
+                  "excerpt": "必须由人实际检查。"
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "unclassified",
+                  "clauseIndex": 0,
+                  "state": "needs_clarification"
+                },
+                {
+                  "id": "obligation-2",
+                  "kind": "unclassified",
+                  "clauseIndex": 1,
+                  "state": "needs_clarification"
+                }
+              ]
+            },
+            "modelJudgment": {
+              "status": "insufficient_evidence",
+              "explanation": "手机端可用需真人实际检查；静态源码与仅含 font-family 的 CSS 不能证明小屏可读、无溢出或可点击。",
+              "citations": [
+                {
+                  "file": "site.css",
+                  "start": 0,
+                  "end": 27,
+                  "excerpt": "body{font-family:system-ui}"
+                }
+              ]
+            },
+            "evidenceNeed": {
+              "schema": "source-evidence-need-v1",
+              "reason": "browser_observation",
+              "targetFiles": []
+            }
+          },
+          {
+            "criterionId": "coverage-1",
+            "status": "insufficient_evidence",
+            "explanation": "本项已确认业务检查无法全部在有限的静态简单段落中可靠对应；重复或未定位内容、复杂格式或动态来源仍需其他证据。源码建议不能据此确认为符合，原始约定未改变。",
+            "citations": [
+              {
+                "file": "menu.html",
+                "start": 108,
+                "end": 125,
+                "excerpt": "<p>牛肉面 AUD 18</p>"
+              },
+              {
+                "file": "menu.html",
+                "start": 125,
+                "end": 150,
+                "excerpt": "<p>Beef noodles AUD18</p>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-coverage-1"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 30,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 30,
+                  "excerpt": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "source_content",
+                  "clauseIndex": 0,
+                  "state": "source_review_required"
+                }
+              ]
+            },
+            "modelJudgment": {
+              "status": "supported",
+              "explanation": "menu.html 中“牛肉面 AUD 18”与“Beef noodles AUD18”分别对应 amountMinor 1800、AUD；空格差异不改变金额。",
+              "citations": [
+                {
+                  "file": "menu.html",
+                  "start": 108,
+                  "end": 125,
+                  "excerpt": "<p>牛肉面 AUD 18</p>"
+                },
+                {
+                  "file": "menu.html",
+                  "start": 125,
+                  "end": 150,
+                  "excerpt": "<p>Beef noodles AUD18</p>"
+                }
+              ]
+            },
+            "sourceFinding": {
+              "version": "source-finding-v1",
+              "status": "supported",
+              "basis": "locked_business_values",
+              "explanation": "独立源码检查已在买家锁定的文件和对应对象内核对全部 2 个业务值；对应内容与已确认业务值一致；价格检查按同一币种和最小货币单位金额核对，而非金额的字符格式。这是有限源码事实，不证明浏览器可见或运行保存；原始 AI 判断另行保留。",
+              "citations": [
+                {
+                  "file": "menu.html",
+                  "start": 108,
+                  "end": 125,
+                  "excerpt": "<p>牛肉面 AUD 18</p>"
+                },
+                {
+                  "file": "menu.html",
+                  "start": 125,
+                  "end": 150,
+                  "excerpt": "<p>Beef noodles AUD18</p>"
+                }
+              ],
+              "files": [
+                "menu.html"
+              ]
+            },
+            "evidenceNeed": {
+              "schema": "source-evidence-need-v1",
+              "reason": "source_ambiguity",
+              "targetFiles": [
+                "menu.html"
+              ]
+            }
+          },
+          {
+            "criterionId": "coverage-2",
+            "status": "supported",
+            "explanation": "精确引文在 contact.html 的同一表单见证了全部 2 个要求的 HTML 标签文字声明。这只核对所供源码；文件名是实际检查位置，不表示已经确认它对应约定中的业务页面身份。未观察渲染、可见性、无障碍或运行表现，原始要求和引文未改变。",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 127,
+                "end": 151,
+                "excerpt": "<label>姓名<input></label>"
+              },
+              {
+                "file": "contact.html",
+                "start": 151,
+                "end": 175,
+                "excerpt": "<label>邮箱<input></label>"
+              },
+              {
+                "file": "contact.html",
+                "start": 0,
+                "end": 196,
+                "excerpt": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><form id=\"contact\"><label>姓名<input></label><label>邮箱<input></label></form></body></html>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "evidence-coverage-2"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 22,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 22,
+                  "excerpt": "联系表单源码必须包含标签“姓名”和“邮箱”。"
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "source_content",
+                  "clauseIndex": 0,
+                  "state": "source_review_required"
+                }
+              ]
+            },
+            "modelJudgment": {
+              "status": "supported",
+              "explanation": "contact.html 的 form#contact 内含标签文本“姓名”和“邮箱”的 label 元素；仅源码层面，未验证提交或渲染。",
+              "citations": [
+                {
+                  "file": "contact.html",
+                  "start": 127,
+                  "end": 151,
+                  "excerpt": "<label>姓名<input></label>"
+                },
+                {
+                  "file": "contact.html",
+                  "start": 151,
+                  "end": 175,
+                  "excerpt": "<label>邮箱<input></label>"
+                },
+                {
+                  "file": "contact.html",
+                  "start": 0,
+                  "end": 196,
+                  "excerpt": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><form id=\"contact\"><label>姓名<input></label><label>邮箱<input></label></form></body></html>"
+                }
+              ]
+            },
+            "sourceFinding": {
+              "version": "source-finding-v1",
+              "status": "supported",
+              "basis": "declared_html_labels",
+              "explanation": "独立源码检查在同一表单见证了全部 2 个要求的标签文字声明。检查范围来自双方确认的 contact.html / contact。这是源码事实，不证明渲染可见、表单运行或持久保存；原始 AI 判断另行保留。",
+              "citations": [
+                {
+                  "file": "contact.html",
+                  "start": 134,
+                  "end": 136,
+                  "excerpt": "姓名"
+                },
+                {
+                  "file": "contact.html",
+                  "start": 158,
+                  "end": 160,
+                  "excerpt": "邮箱"
+                }
+              ],
+              "files": [
+                "contact.html"
+              ],
+              "scopeBinding": {
+                "proposalId": "beda607a-3fae-4bb6-b598-3db508eaef68",
+                "proposalDigest": "ee0cbf292572de57628be65c0361af555a89b543a42b0bc7d20cd8849ca440f3",
+                "file": "contact.html",
+                "kind": "form",
+                "formId": "contact"
+              }
+            }
+          }
+        ],
+        "risks": [],
+        "limitations": [
+          "已提供文件清单：HTML 3 个、CSS 1 个、栅格图片 0 个。数量只说明文件已提供。本次源码评估未运行浏览器、脚本或后台，也未分析图片像素。",
+          "模型提供了 6 条自述局限；其中事实未经独立核验，未作为检测事实发布。请以逐项证据和系统边界说明为准。",
+          "1 项状态经系统调整，1 条未复核风险暂不采纳，以逐项证据为准。这是发布范围限制，不代表验收、授权或付款。",
+          "引文协议：source-citation-catalog-v1 / catalog_slots，目录 f07f4d2420bbd3279a41b2e87e7397faa0884189ae305816ef5007714f4d4107。模型选择编号，服务器按原始文件位置还原引文；编号有效不代表判断正确。",
+          "已发送全部受支持 HTML/CSS 原文，但完整输入不代表 AI 已正确理解；未运行浏览器、脚本或后台，不能证明功能、安全性或完整交付。",
+          "AI 建议与服务端规则分开记录。人工检查和最终验收由买家完成，不会自动验收、授权或付款。"
+        ],
+        "coverage": {
+          "includedFiles": [
+            "contact.html",
+            "index.html",
+            "menu.html",
+            "site.css"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "publicationPolicy": {
+          "schema": "source-publication-v1",
+          "reconciledCriterionIds": []
+        },
+        "scopeContext": {
+          "digest": "8e594ca04bff5a71d2d24b0507d6f3527752e6e956955dc50fe597fa08d2e562",
+          "proposalCount": 1,
+          "confirmationCounts": [
+            2
+          ]
+        },
+        "withheldRisks": {
+          "version": 1,
+          "reason": "item_status_adjusted",
+          "adjustedCriteria": [
+            {
+              "criterionId": "coverage-1",
+              "originalStatus": "supported",
+              "publishedStatus": "insufficient_evidence"
+            }
+          ],
+          "entries": [
+            {
+              "originalRiskIndex": 0,
+              "risk": {
+                "title": "menu.html 模板内含另一处牛肉面价格文本",
+                "explanation": "menu.html 的 template 元素内有“牛肉面 AUD18”，与可见段落的“牛肉面 AUD 18”并存；源码存在重复价格文本，是否被脚本使用无法从源码判断。",
+                "suggestion": "确认模板内价格文本是否会被渲染或覆盖，避免出现重复或冲突的价格展示。",
+                "citations": [
+                  {
+                    "file": "menu.html",
+                    "start": 0,
+                    "end": 231,
+                    "excerpt": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><p>牛肉面 AUD 18</p><p>Beef noodles AUD18</p><p>Vegetable noodles AUD18</p><template><p>牛肉面 AUD18</p></template></body></html>"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "usage": {
+          "promptTokens": 8977,
+          "completionTokens": 929
+        }
+      }
+    },
+    "fileDigest": "a2ec93c504c9d2377ca6bdadd9bcb1ed1a38c51e20942a7d72e942af5c909b0e",
+    "acceptanceReferences": []
+  }
+}

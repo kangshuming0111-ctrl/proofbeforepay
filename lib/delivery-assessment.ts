@@ -28,7 +28,7 @@ import {makeAssessmentEvidenceNeed} from "./assessment-evidence-needs.ts";
 import {canonicalAssessmentRisk} from "./assessment-risk-fields.ts";
 import {createAssessmentCitationCatalog, resolveCatalogCitations} from "./assessment-citation-catalog.ts";
 import {createAssessmentSourceFindingCheck} from "./assessment-source-findings.ts";
-import {createSourcePublicationCheck,type SourcePublicationGuardReason} from "./assessment-source-publication.ts";
+import {createSourcePublicationCheck,type SourcePublicationGuardReason,type SourcePublicationDecision} from "./assessment-source-publication.ts";
 import {resolveScopeClarifications} from "./scope-clarifications.ts";
 export {AssessmentResponseError} from "./assessment-response.ts";
 
@@ -296,6 +296,8 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
       let evidenceNeed: ProofEvidenceNeed | undefined;
       let labelCitationAdjusted = false;
       let sourcePublicationGuard: SourcePublicationGuardReason | undefined;
+      let positivePublication: SourcePublicationDecision | undefined;
+      let positiveFallback: {explanation: string; citations: ProofAssessmentCitation[]; evidenceNeed?: ProofEvidenceNeed} | undefined;
       const need = (reason: ProofEvidenceNeed["reason"], targetFiles: readonly string[] = []) => {
         if (encoding === "catalog_slots") evidenceNeed = makeAssessmentEvidenceNeed(reason, targetFiles, sent);
       };
@@ -383,6 +385,14 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
               const context = completeMergedUnknownCitations(business);
               if (context) checkedCitations = context;
               need("source_ambiguity", business.checks.filter(check => check.kind === "unknown").map(check => check.file));
+              if (encoding === "catalog_slots") {
+                positivePublication = sourcePublicationCheck(criterion, {rawStatus: modelJudgment.status, rawCitations: modelJudgment.citations, guardedStatus: status, guardReason: "locked_price_match"});
+                if (positivePublication) {
+                  positiveFallback = {explanation, citations: structuredClone(checkedCitations), evidenceNeed};
+                  status = positivePublication.status; explanation = positivePublication.explanation;
+                  checkedCitations = positivePublication.citations; evidenceNeed = undefined;
+                }
+              }
             }
           } else {
             const witness = assessSourceBusinessCitationWitness(business, checkedCitations);
@@ -509,7 +519,7 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
         }
       }
       let sourceFinding = encoding === "catalog_slots" ? independentSourceCheck(criterion) : undefined;
-      const sourcePublication = encoding === "catalog_slots" ? sourcePublicationCheck(criterion, {
+      let sourcePublication = encoding === "catalog_slots" ? sourcePublicationCheck(criterion, {
         rawStatus: modelJudgment.status, rawCitations: modelJudgment.citations,
         guardedStatus: status, guardReason: sourcePublicationGuard,
       }) : undefined;
@@ -517,6 +527,18 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
         status = sourcePublication.status; explanation = sourcePublication.explanation;
         checkedCitations = sourcePublication.citations; sourceFinding = sourcePublication.sourceFinding;
         evidenceNeed = undefined;
+      }
+      // The affirmative exception ran in-place before every later guard.
+      // A later guard may still change its status/prose/citations; in that case
+      // retain the later result and never emit the earlier positive marker.
+      if (positivePublication && status === positivePublication.status && explanation === positivePublication.explanation
+        && JSON.stringify(checkedCitations) === JSON.stringify(positivePublication.citations)) sourcePublication = positivePublication;
+      else if (positivePublication && positiveFallback && status === "supported") {
+        // Do not leave an unmarked affirmative exception if another supported
+        // guard replaced its evidence/prose. This narrow adoption is canonical
+        // or remains at its original conservative unknown boundary.
+        status = "insufficient_evidence"; explanation = positiveFallback.explanation;
+        checkedCitations = positiveFallback.citations; evidenceNeed = positiveFallback.evidenceNeed;
       }
       return { criterionId: criterion.id, status, explanation, citations: checkedCitations, ruleEvidenceIds: related.map(entry => entry.id),
         ...(encoding === "catalog_slots" ? {obligations: deriveAssessmentObligations(criterion), modelJudgment, ...(sourceFinding ? {sourceFinding} : {}), ...(sourcePublication ? {publicationBasis: sourcePublication.publicationBasis} : {})} : {}),

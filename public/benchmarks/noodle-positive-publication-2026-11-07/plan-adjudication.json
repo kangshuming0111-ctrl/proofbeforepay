@@ -1,0 +1,51 @@
+{
+  "schema": "noodle-positive-plan-adjudication-v1",
+  "review": "plan-deepseek.json",
+  "valid": true,
+  "reviewer": "Codex AI, independent source/probe adjudication; not a human study",
+  "decisions": [
+    {
+      "finding": 1,
+      "decision": "reject_future_missing_as_current_P1_accept_boundary",
+      "reason": "Plan explicitly introduces a separate actual supported-business_unknown branch flag and full assessSourceBusinessCitationWitness, not reuses the negative flag. The feature is not implemented yet, so missing new flag is not a current defect. Both requirements are mandatory."
+    },
+    {
+      "finding": 2,
+      "decision": "rejected_as_plan_defect",
+      "reason": "Proposed interface already widens decision status by reason: locked_price_match requires rawsupported and returns supported, original negative reasons rawchanges return changes. GuardedStatus unknown is the actual intermediate state, not final outcome. No raw status changes."
+    },
+    {
+      "finding": 3,
+      "decision": "accepted_placement_boundary",
+      "reason": "Positive is restored at the actual business unknown branch, not final postguard funnel. ALL subsequent guards continue. Marker is emitted only if final status, explanation and full citation array remain the canonical decision; later downgrade/change removes marker."
+    },
+    {
+      "finding": 4,
+      "decision": "rejected",
+      "reason": "Actual noodle price criterion is source_text, confirmed by current recorded independent supported result and source classifier. SourceFinding factory returns observation unknown before price analysis, so the alleged supported sourceFinding despite non-source category is not a reachable path. Do not broaden admission."
+    },
+    {
+      "finding": 5,
+      "decision": "rejected",
+      "reason": "Keep existing publisher and originalStatuses unchanged. Rawsupported->publishedsupported means no status adjustment; existing v4 must still retain complete original risk entries outside actionable findings. Preserving old v1 adjustment on a new report would itself be false; old report is immutable, new report derives new truthful disposition."
+    },
+    {
+      "finding": 6,
+      "decision": "accepted_coordination_boundary",
+      "reason": "Root external owner extends reason enum, export canonical/helper validation and strict replay whitelist; same marker/schema and report ordered list, old reports remain compatible."
+    },
+    {
+      "finding": 7,
+      "decision": "reject_hypothetical_parser_divergence_accept_conservative_positive_guard",
+      "reason": "Both checkers consume same immutable saved check list; IDs/files do not drift between parses. Positive can nevertheless require all strict legacy checks dynamic unknown and compare IDs/files one-to-one to independent allunchanged checks, providing an explicit bounded premise."
+    }
+  ],
+  "additionalRootBoundaries": [
+    "Full original raw citations must cover every independent check complete owner; missing/partial/wrongpage citations cannot be replaced with canonical facts to hide a gap.",
+    "Only plain p/li price owners and plain inert template, conservative page/stylesheet safety. No CSS cascade or rendered visibility claim.",
+    "No edits to existing parser/source facts/default strict checker/negative semantics.",
+    "No new API evaluation or retry. Current server-pipeline test uses synthetic envelope constructed from saved decoded v2modelJudgment, not original provider body/prompt."
+  ],
+  "beforeProbe": "readonly-reproduction.json",
+  "fixtureConsolidation": "tests/fixtures/noodle-positive-publication-v90-v2.json from this plan is retained as ignored original-plan-fixture.json; production/history/pipeline tests reuse root-provided tests/fixtures/noodle-v90-positive-export.json to avoid duplicate tracked fixture."
+}

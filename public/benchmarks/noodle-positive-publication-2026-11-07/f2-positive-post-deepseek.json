@@ -1,0 +1,51 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "tests/fixtures/noodle-positive-f2-review.md",
+      "bytes": 11555,
+      "lines": 87,
+      "sha256": "31814ca8ee26cad4b0f363eca1d62686b56600192b7b3178c6b4de0e4ea8f798"
+    },
+    {
+      "file": "lib/assessment-source-publication.ts",
+      "bytes": 10901,
+      "lines": 140,
+      "sha256": "c2eb1fc990b4b651f1ca141f42bc6c9ea655e052bf53188f7cbd5210f0ef7b06"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Reviewed the supplied packet only: the three exact production diffs (contracts, export, replay), the selected test bodies, and the full frozen shared helper (lib/assessment-source-publication.ts). Overall, the new locked_price_match reason is gated tightly on the positive path: raw status must be supported and raw citations must be present, exact, and within the limit; scope must be source_text; there must be no failing rule evidence; the fact must be supported with locked_business_values and complete citations; the independent fact check must be unchanged and its witness must cover EVERY raw citation; the whole-clause priceOnlyOriginal must bind every label, currency and minor amount; and plainPositivePriceOwners must admit only finite inert HTML, plus the neutral CSS. The export change derives the expected status from the reason, so the reason stays bound to a consistent model/status/source triple in both directions. The two original-change reasons keep their old logic and original negatives. The earlier extra-duty and unplanned-obligation regressions are still tested negatively. The replay/test reasoning in the packet is consistent with these closures. No actionable correctness, security or accessibility defect could be identified within the code actually shown. The residual concerns are limits of the frozen helper's inputs (its callers' business-step construction and the omitted replay metadata construction), and they are recorded as limitations, not findings.\",\"findings\":[],\"limitations\":[\"Scope is limited to the packet: tests/fixtures/noodle-positive-f2-review.md (diff excerpts and selected tests), the full lib/assessment-source-publication.ts, and .agents/skills/proofbeforepay-delivery/SKILL.md. The callers that build SourcePublicationInputs (businessSteps, coverage, scope, ruleEvidence), publicationCheck in the replay script, verifyAdditiveObligationsBaseline, the export metadata formatter, and the full evidence-export assessment() function were not supplied. The packet itself says unchanged code was reviewed in a preceding slice, which cannot be verified here.\",\"The replay test construction line is explicitly omitted (line 79 references an undeclared `report` and uses `packet`/`wire`/`ProofQuote` without visible declaration). The other replay assertions (recompute 1:1, metadata-strip-only, historical-conservative rejection, and the deletion, explanation-change and citation-trim tamper rejections) could therefore not be traced end to end; they were judged only as consistent with the shown verifyAssessmentProvenanceMetadata diff and the helper's exactness checks.\",\"The businessSteps construction and cost/expectation parsing were not supplied. priceOnlyOriginal and the independent/legacy business checks were reviewed on the assumption that steps hold one item_price check per named subject, with currency and amountMinor taken from the buyer's confirmed typed expectations. If a caller could inject or omit checks, the label/amount binding argument would not hold; that cannot be confirmed from this packet.\",\"The line 85-87 note on additional executed negative boundaries (CSS/hidden/style/class/handler/script, native closed containers/popover, duplicated/partial subjects, runtime fields, canonical field tampering) and the pointed-to test log are not in the packet. Those omitted tests were not inspected, and no runtime checks, typechecks, tests or model-quality results were executed or verified by this review.\",\"parse5 behavior for sourceCodeLocation.startOffset/endOffset and scriptingEnabled:true (for example, whether a noscript in head shifts raw offsets) was reasoned about from knowledge, not executed. The helper also normally fails closed because noscript is outside the finite tag set and most scripts trigger a non-missing-doctype parse error; residual assumptions about exact parse5 offsets remain unverified.\",\"judge\",\",\"\",\"Characterization assumption: positive publication relies on the independent fact check reporting kind \\\"unchanged\\\" for all item_price checks. \\\"unchanged\\\" is a value kind whose semantics come from source-business-evidence.ts, which was not supplied; this review assumed it means the source does not contradict the typed expectation, and that a real contradiction surfaces as \\\"mismatch\\\".\",\"A plain `p` or `li` whose rendered content can differ from its single text child (for example HTML entity references, which parse5 decodes into text children) makes citations harder to match, so the rule fails closed; that is an availability limit, not a correctness defect.\",\"This is a read-only source review under the loaded ProofBeforePay skill within the stated constraints. Nothing was edited or run.\"]}",
+  "report": null,
+  "reportValid": false,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": false,
+  "errors": [
+    "report_not_json"
+  ]
+}

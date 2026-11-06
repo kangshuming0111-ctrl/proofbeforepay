@@ -1,0 +1,28 @@
+{
+  "review": "ui-post-deepseek.json",
+  "completed": true,
+  "findings": [],
+  "independentJudgment": "The exact one-condition caption change now treats positive and negative locked-price reasons alike for provenance. It changes no badge, callbacks, action gates, report field or form branch. Existing caveat is intentional: supported source is not execution/storage/acceptance. No further UI changes justified.",
+  "sourceFrozen": true,
+  "files": [
+    {
+      "file": "app/components/DeliveryAssessment.tsx",
+      "sha256": "f336898ce5ed88714bd058cf587d934cb4fac0d1d83db30db704ba3473b3a208",
+      "bytes": 36862
+    },
+    {
+      "file": "tests/noodle-assessment-presentation.test.ts",
+      "sha256": "ed2b5445885c7322951b6b35b9c74f3c29e8242dc5321954c6317a7a4caf587c",
+      "bytes": 11964
+    }
+  ],
+  "focusedPassed": 9,
+  "newTests": 1,
+  "typecheck": {
+    "ownedDiagnostics": 0,
+    "globalPendingOwnerFix": "lib/evidence-export.ts SourcePublicationGuardReason missing locked_price_match; export owner notified"
+  },
+  "productionMutationsByChild": 0,
+  "modelAssessmentApiCallsByChild": 0,
+  "browserVerification": "Root owns actual CUA; static rendering is not browser or real-user proof."
+}

@@ -1,0 +1,91 @@
+{
+  "schema": "noodle-positive-final-review-counterexample-v1",
+  "sourceEdits": 0,
+  "providerCalls": 0,
+  "syntheticFetcherCalls": 1,
+  "selfConsistentOriginalSource": "菜单的牛肉面和Beef noodles标价必须为AUD18。",
+  "expectedSourceSpans": [
+    {
+      "start": 0,
+      "end": 30,
+      "excerpt": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+    },
+    {
+      "start": 0,
+      "end": 30,
+      "excerpt": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+    },
+    {
+      "start": 0,
+      "end": 30,
+      "excerpt": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+    },
+    {
+      "start": 0,
+      "end": 30,
+      "excerpt": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+    }
+  ],
+  "legacy": {
+    "kind": "unknown",
+    "checks": [
+      {
+        "checkId": "business-1",
+        "file": "menu.html",
+        "kind": "unknown",
+        "reason": "dynamic_or_unsupported_source"
+      },
+      {
+        "checkId": "business-2",
+        "file": "menu.html",
+        "kind": "unknown",
+        "reason": "dynamic_or_unsupported_source"
+      }
+    ],
+    "citations": []
+  },
+  "independent": {
+    "kind": "unknown",
+    "checks": [
+      {
+        "checkId": "business-1",
+        "file": "menu.html",
+        "kind": "unchanged",
+        "reason": "explicit_iso_price_equal",
+        "citation": {
+          "file": "menu.html",
+          "start": 108,
+          "end": 125,
+          "excerpt": "<p>牛肉面 AUD 18</p>"
+        },
+        "label": "牛肉面",
+        "expected": "AUD 18.00",
+        "actual": "AUD 18.00"
+      },
+      {
+        "checkId": "business-2",
+        "file": "menu.html",
+        "kind": "unknown",
+        "reason": "noncanonical_or_compound_price"
+      }
+    ],
+    "citations": []
+  },
+  "exactCopy": {
+    "kind": "not_applicable"
+  },
+  "published": {
+    "status": "insufficient_evidence",
+    "raw": "supported",
+    "source": "insufficient_evidence",
+    "marker": null,
+    "evidenceNeed": {
+      "schema": "source-evidence-need-v1",
+      "reason": "source_ambiguity",
+      "targetFiles": [
+        "menu.html"
+      ]
+    }
+  },
+  "interpretation": "Missing second price makes independent evidence unknown; positive never exists. Status already unknown skips later supported-only exact-copy guard, and this price-only source is not an exact-copy directive. No asserted changes_suggested path occurs."
+}

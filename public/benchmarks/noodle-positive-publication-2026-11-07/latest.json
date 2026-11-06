@@ -1,0 +1,9 @@
+{
+  "schema": "noodle-positive-record-v1",
+  "scope": "Fixed fictional noodle-shop positive price publication only. No parser, negative rule, runtime or business expansion.",
+  "before": "before.json",
+  "codeValidation": "code-validation.json",
+  "reviewBoundary": "Valid main plan/final production and UI reviews adjudicated independently. Additional F2 tool review returned malformed JSON, preserved and not counted as valid; existing valid production review and independent strict replay tests remain the basis.",
+  "noNewProviderEvaluationForCodeChecks": true,
+  "liveResults": "Separate post-deployment receipt; never mixed into the retained known/synthetic code test results."
+}

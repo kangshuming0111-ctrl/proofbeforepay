@@ -1,0 +1,43 @@
+{
+  "schema": "noodle-positive-native-container-readonly-v1",
+  "providerCalls": 0,
+  "networkCalls": 0,
+  "cases": [
+    {
+      "name": "actual-v90",
+      "sourceLength": 231,
+      "independent": "unchanged",
+      "positivePublication": "supported"
+    },
+    {
+      "name": "closed-details",
+      "sourceLength": 273,
+      "independent": "unchanged",
+      "positivePublication": "supported"
+    },
+    {
+      "name": "open-details",
+      "sourceLength": 278,
+      "independent": "unchanged",
+      "positivePublication": "supported"
+    },
+    {
+      "name": "closed-dialog",
+      "sourceLength": 248,
+      "independent": "unchanged",
+      "positivePublication": "supported"
+    },
+    {
+      "name": "meta-refresh",
+      "sourceLength": 309,
+      "independent": "unchanged",
+      "positivePublication": "supported"
+    },
+    {
+      "name": "base-url",
+      "sourceLength": 269,
+      "independent": "unknown",
+      "positivePublication": null
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "schema": "noodle-positive-popover-readonly-probe-v1",
+  "providerCalls": 0,
+  "networkCalls": 0,
+  "cases": [
+    {
+      "name": "p-popover",
+      "independent": "unchanged",
+      "publication": "supported"
+    },
+    {
+      "name": "div-popover",
+      "independent": "unchanged",
+      "publication": "supported"
+    },
+    {
+      "name": "div-popover-manual",
+      "independent": "unchanged",
+      "publication": "supported"
+    }
+  ]
+}

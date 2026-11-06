@@ -1,0 +1,65 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "app/components/DeliveryAssessment.tsx",
+      "bytes": 36862,
+      "lines": 246,
+      "sha256": "f336898ce5ed88714bd058cf587d934cb4fac0d1d83db30db704ba3473b3a208"
+    },
+    {
+      "file": "tests/noodle-assessment-presentation.test.ts",
+      "bytes": 11964,
+      "lines": 82,
+      "sha256": "ed2b5445885c7322951b6b35b9c74f3c29e8242dc5321954c6317a7a4caf587c"
+    },
+    {
+      "file": "lib/contracts.ts",
+      "bytes": 18461,
+      "lines": 266,
+      "sha256": "8f1f70c5d88f1731b14f32e957298a07ad41ee7c5f5e4bc37b5442add041a878"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Narrow review of the single allowed change: in DeliveryAssessment.tsx line 116, the price/frozen-basis caption now also renders for publicationBasis.reason === 'locked_price_match', not just 'locked_price_mismatch'. I traced this condition. It only switches which Chinese/English wording appears for items that carry the source-publication-v1 marker. The newly rendered caption ('Publication basis: source checks against the locked item and price.') is provenance text. It sits next to the existing truthful status badge (lines 115), the 'original judgment retained' sentence (line 116), and the page-visible/storage/acceptance caveat. It does not say confirmed-form provenance, does not claim visibility, storage or acceptance, and does not add or enable any action. The source badge, feedback button, evidence-need block and callbacks are unchanged: the only client condition changing is the caption string. The change cannot alter negative or confirmed-form semantics. confirmed_form_label_absence still gets the form wording, locked_price_mismatch keeps the locked wording, and any unknown or missing reason still falls back to the form sentence. The new test (lines 73-82) covers the delta in both languages: supported badge, locked price wording, no form wording, no feedback/evidence-need button, model judgment retained, and a no-mutation check. The legacy negative, form, unmarked and read-only tests remain. I found no concrete new-delta defect.\",\"findings\":[],\"limitations\":[\"Static review only. No tests, typecheck or rendering were executed, and the submitter's reported 9/9 pass is unverified here.\",\"The caption at line 116 still renders the 'does not prove visibility, actual storage or accepted delivery' caveat for the positive match case. That reads slightly awkwardly next to a supported status, but it is the existing shared caption text that the packet says must stay unchanged. I did not treat it as a defect.\",\"Visible for authenticated participants is language-independent and does not grant membership or acceptance. That server-side authorization is outside this narrow scope.\",\"The helper assessmentCriterionSource, buildAssessmentFeedbackDraft, AssessmentObligations and the assessment-component harness were not supplied, so I did not review them. Server-side publication guards that could emit locked_price_match were also not supplied and are out of scope per the task.\",\"The new test's assertion on calls=[] only shows the feedback callback was not invoked during static rendering (no click is simulated). It does not prove click-time behavior.\"]}",
+  "report": {
+    "summary": "Narrow review of the single allowed change: in DeliveryAssessment.tsx line 116, the price/frozen-basis caption now also renders for publicationBasis.reason === 'locked_price_match', not just 'locked_price_mismatch'. I traced this condition. It only switches which Chinese/English wording appears for items that carry the source-publication-v1 marker. The newly rendered caption ('Publication basis: source checks against the locked item and price.') is provenance text. It sits next to the existing truthful status badge (lines 115), the 'original judgment retained' sentence (line 116), and the page-visible/storage/acceptance caveat. It does not say confirmed-form provenance, does not claim visibility, storage or acceptance, and does not add or enable any action. The source badge, feedback button, evidence-need block and callbacks are unchanged: the only client condition changing is the caption string. The change cannot alter negative or confirmed-form semantics. confirmed_form_label_absence still gets the form wording, locked_price_mismatch keeps the locked wording, and any unknown or missing reason still falls back to the form sentence. The new test (lines 73-82) covers the delta in both languages: supported badge, locked price wording, no form wording, no feedback/evidence-need button, model judgment retained, and a no-mutation check. The legacy negative, form, unmarked and read-only tests remain. I found no concrete new-delta defect.",
+    "findings": [],
+    "limitations": [
+      "Static review only. No tests, typecheck or rendering were executed, and the submitter's reported 9/9 pass is unverified here.",
+      "The caption at line 116 still renders the 'does not prove visibility, actual storage or accepted delivery' caveat for the positive match case. That reads slightly awkwardly next to a supported status, but it is the existing shared caption text that the packet says must stay unchanged. I did not treat it as a defect.",
+      "Visible for authenticated participants is language-independent and does not grant membership or acceptance. That server-side authorization is outside this narrow scope.",
+      "The helper assessmentCriterionSource, buildAssessmentFeedbackDraft, AssessmentObligations and the assessment-component harness were not supplied, so I did not review them. Server-side publication guards that could emit locked_price_match were also not supplied and are out of scope per the task.",
+      "The new test's assertion on calls=[] only shows the feedback callback was not invoked during static rendering (no click is simulated). It does not prove click-time behavior."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

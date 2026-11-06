@@ -135,7 +135,7 @@ export async function verifyAssessmentProvenanceMetadata(report,previous,packet,
    }else assert.ok(!Object.hasOwn(item,"sourceFinding"),"A sourceFinding without retained modelJudgment cannot be stripped.");
    if(Object.hasOwn(item,"publicationBasis")){
     assert.ok(object(item.publicationBasis)&&object(item.modelJudgment));assert.deepEqual(Object.keys(item.publicationBasis).sort(),["reason","schema"]);
-    assert.equal(item.publicationBasis.schema,"source-publication-v1");assert.ok(["locked_price_mismatch","confirmed_form_label_absence"].includes(item.publicationBasis.reason));
+    assert.equal(item.publicationBasis.schema,"source-publication-v1");assert.ok(["locked_price_mismatch","confirmed_form_label_absence","locked_price_match"].includes(item.publicationBasis.reason));
     const decision=publicationCheck(packet.criteria[index],{rawStatus:item.modelJudgment.status,rawCitations:item.modelJudgment.citations,guardedStatus:"insufficient_evidence",guardReason:item.publicationBasis.reason});
     assert.ok(decision,"The source publication marker has no rederived legacy guard and source authority.");assert.deepEqual(item.publicationBasis,decision.publicationBasis);assert.equal(item.status,decision.status);assert.equal(item.explanation,decision.explanation);assert.deepEqual(item.citations,decision.citations);assert.deepEqual(item.sourceFinding,decision.sourceFinding);assert.equal(item.evidenceNeed,undefined);
     if(current)accounting.publicationMarkersRecomputed++;else accounting.baselinePublicationMarkersRetained++;

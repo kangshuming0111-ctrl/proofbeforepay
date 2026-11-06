@@ -214,8 +214,9 @@ function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]
     }
     if(result.publicationBasis!==undefined){
       const basis=object(result.publicationBasis,["schema","reason"],"Source publication basis");
-      requireValue(basis.schema==="source-publication-v1"&&["locked_price_mismatch","confirmed_form_label_absence"].includes(basis.reason as string),"The source publication reason is unsupported.");
-      requireValue(result.status==="changes_suggested"&&(result.modelJudgment as ProofAssessmentItem["modelJudgment"])?.status==="changes_suggested"&&(result.sourceFinding as ProofAssessmentItem["sourceFinding"])?.status==="changes_suggested","Source reconciliation must preserve a raw change and a separate negative source fact.");
+      requireValue(basis.schema==="source-publication-v1"&&["locked_price_mismatch","confirmed_form_label_absence","locked_price_match"].includes(basis.reason as string),"The source publication reason is unsupported.");
+      const expectedStatus=basis.reason==="locked_price_match"?"supported":"changes_suggested";
+      requireValue(result.status===expectedStatus&&(result.modelJudgment as ProofAssessmentItem["modelJudgment"])?.status===expectedStatus&&(result.sourceFinding as ProofAssessmentItem["sourceFinding"])?.status===expectedStatus,"Source reconciliation must preserve the matching raw status and separate exact source fact.");
     }
     if(result.obligations!==undefined)requireValue(isAssessmentObligations(result.obligations,agreed.find(c=>c.id===result.criterionId)!),"AI obligation directions do not match the exact locked wording and named rules.");
     if(result.evidenceNeed!==undefined){

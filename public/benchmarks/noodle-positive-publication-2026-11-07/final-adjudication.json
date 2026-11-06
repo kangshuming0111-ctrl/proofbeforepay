@@ -1,0 +1,29 @@
+{
+  "schema": "noodle-positive-final-post-adjudication-v1",
+  "review": "final-post-deepseek.json",
+  "valid": true,
+  "reviewer": "Codex AI independently executed current pipeline fault injection; root separately agreed from source. Not human study.",
+  "decisions": [
+    {
+      "finding": 1,
+      "severity": "P2",
+      "decision": "rejected",
+      "reason": "Executed self-consistent saved original-price source with second active owner currency/amount stripped. Independent evidence becomes unknown, so no positive candidate can exist. Actual published status remains unknown, marker absent. Supported-only later guards do not run on unknown, and finite price-only original is not an exact-copy directive (not_applicable). Claimed exactCopy missing and laterchanges path is not reachable. Genuine later authoritative downgrades remain allowed and must not be overwritten merely because model originally supported.",
+      "receipt": "final-post-counterexample.json"
+    }
+  ],
+  "acceptedP1P2": 0,
+  "productionChangesAfterReview": false,
+  "changedPacketFiles": [],
+  "tests": {
+    "related": "final-positive-tests.log:40/40",
+    "typecheck": "final-typecheck.log:0 diagnostics",
+    "rootFull": "1883/1883",
+    "rootPackager": "13/13"
+  },
+  "limits": [
+    "No new provider evaluation or retry by this agent. Server pipeline uses clearly synthetic envelopes from saved decoded modelJudgment/current catalogs; original provider HTTP/prompt were not retained.",
+    "Only complete finite original price-only statement, all same-currency/minor expected labels, plain p/li price owners and narrow static containers/attrs/CSS admitted. Extra obligations/unknown wording remain conservative.",
+    "Negative/source fact/default strictchecker unchanged. No rendering, backend, acceptance or payment claim."
+  ]
+}

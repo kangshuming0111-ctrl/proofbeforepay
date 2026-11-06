@@ -1,0 +1,87 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/assessment-source-publication.ts",
+      "bytes": 10901,
+      "lines": 140,
+      "sha256": "c2eb1fc990b4b651f1ca141f42bc6c9ea655e052bf53188f7cbd5210f0ef7b06"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 68844,
+      "lines": 591,
+      "sha256": "ac9f418f854d51c765d89fdb808a8a29e7bbfd7890947a93b03f7d700aab8633"
+    },
+    {
+      "file": "lib/contracts.ts",
+      "bytes": 18461,
+      "lines": 266,
+      "sha256": "8f1f70c5d88f1731b14f32e957298a07ad41ee7c5f5e4bc37b5442add041a878"
+    },
+    {
+      "file": "tests/assessment-positive-price-publication.test.ts",
+      "bytes": 12741,
+      "lines": 83,
+      "sha256": "08bab1710e1cc0fb1206f807a6c6a490d9fa64414f41261380eeb1f6e034f4c1"
+    },
+    {
+      "file": "tests/fixtures/noodle-v90-positive-export.json",
+      "bytes": 31361,
+      "lines": 732,
+      "sha256": "f78ce7e357539e142bd5516c1eb153b0ca749f1775b206340cc3a7f2f3822089"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Reviewed the bounded positive-noodle price publication path (locked_price_match) in lib/assessment-source-publication.ts, its adoption and fallback in lib/delivery-assessment.ts, the synthetic tool-envelope tests, and the fixture. The stated constraints appear implemented for the packet as given: priceOnlyOriginal admits only one finite price-only sentence; plainPositivePriceOwners uses a finite tag/attribute allowlist with meta charset-only, inert templates, and blocks popover/details/dialog/datalist/http-equiv/class/style/hidden/aria/data attributes; CSS is limited to empty or exact system-ui body font-family; all raw citations must be sourceFinding/computed-property owners; the positive branch runs before the later guards, and a later change falls back to guarded unknown or downgrade. Packet-local tracing surfaced one P2 product-flow gap: in the narrow case where a later guard replaces a positive result with changes_suggested and the matched business-check fact is then also changes_suggested rather than supported, the positive branch is skipped (list_evidence is missing), no publication marker is attached, yet the code goes on to publish that changes_suggested item without the model having requested a change. No runtime checks or tests were executed.\",\"findings\":[{\"severity\":\"P2\",\"file\":\"lib/delivery-assessment.ts\",\"line\":381,\"title\":\"Server-positive price item can be published as changes_suggested with neither a model request nor a publication basis\",\"evidence\":\"Line 370 enters the status===\\\"supported\\\" block and line 371 computes the legacy business check. Lines 372-374 build positiveLiteral only when item.status is supported, and line 380 branches unknown/mismatch: line 381 sets status=\\\"insufficient_evidence\\\" for unknown, and lines 388-395 run sourcePublicationCheck(..., guardReason:\\\"locked_price_match\\\") only inside that unknown sub-branch. Here unknown means legacyPrice kind===\\\"unknown\\\", whose checks require reason dynamic_or_unsupported_source (assessment-source-publication.ts:122-123). Line 427 then runs exactCopyCheck(criterion) (implementation not in this packet), and lines 429-431 set status=\\\"changes_suggested\\\" with exactCopyEvidenceExplanation when exactCopy.kind===\\\"missing\\\". At line 522 the second sourcePublicationCheck call passes guardReason:sourcePublicationGuard, which is undefined here. In the positive branch of assessment-source-publication.ts:120-125, priceOnlyOriginal and plainPositivePriceOwners need the full original owner citations, but createSourceBusinessEvidenceCheck(files, steps) is unchanged. A code-level seller who strips the currency from an owner (e.g. '<p>Beef noodles</p>' where the criterion is 菜单的牛肉面和Beef noodles标价必须为AUD18。, locked to AUD 1800 on menu.html) makes the owner fail. That owner then gets no citation. The positive pure-price owner in the same menu.html stays clean, so plainPositivePriceOwners passes. The legacy check becomes unknown/dynamic_or_unsupported_source instead of mismatch, so the positive path is skipped. The source finding is computed only after the item loop (line 521), so its changes_suggested/supported status is unknown when line 380 picks the branch. The item is then emitted as changes_suggested with publicationBasis undefined. No check restricts the server-originated downgrade to unexpected changes or requires a model-originated changes_suggested, and publicationPolicy.reconciledCriterionIds (line 586) leaves the item out. This contradicts the stated rule that a positive marker exists only under the exact canonical supported state and that supported items otherwise fall back to unknown.\",\"reproduction\":\"Not executed; source trace only. (1) Use the fixture project's coverage-1 criterion (assessment-source-publication.test.ts:21) with two menu.html owners for 牛肉面 AUD 18 and Beef noodles AUD18. (2) Model, and therefore modelJudgment.status, is supported for every item. (3) Replace the second owner with '<p>Beef noodles</p>'. The legacy per-check fact becomes unknown(dynamic_or_unsupported_source), not mismatch. (4) If exactCopyCheck(criterion) returns missing for the changed owner text (implementation not supplied), lines 429-431 set changes_suggested. No line later re-runs sourcePublicationCheck with locked_price_match, and the line 522 call sees guardReason undefined. (5) Expected: either insufficient_evidence via the positiveFallback at lines 536-542 (unreachable because status is no longer supported), or no publication of the item. Actual: an item with status changes_suggested, publicationBasis undefined, and no reconciled marker is emitted.\",\"suggestion\":\"Keep the positive path reachable after later guards. For example, record a positivePending flag when line 380 sees unknown and priceOnlyOriginal/owner gates pass, then after line 522 run sourcePublicationCheck with locked_price_match again when status===\\\"changes_suggested\\\" and the fact is supported, or route status===\\\"changes_suggested\\\" results that came from a later guard on a price-only criterion to the positiveFallback unknown with need(\\\"source_ambiguity\\\"), so no guard-originated change is published without either the model's own changes_suggested or a publicationBasis.\"}],\"limitations\":[\"Only the six supplied files were reviewed. createExactCopyEvidenceCheck (exact-copy-evidence.ts), createSourceBusinessEvidenceCheck (source-business-evidence.ts), createAssessmentSourceFindingCheck (assessment-source-findings.ts) and assessSourceBusinessCitationWitness were not supplied, so their exact behavior is inferred from names, call sites and packet comments.\",\"No tests, typecheck or runtime checks were executed, and no source text was executed. The finding is a static source trace; the 'missing' return of the exact-copy guard is a precondition that could not be inspected.\",\"The review covers only the locked_price_match positive branch and its later-guard interaction. It does not cover the prefix/condition requirement family, the standards engine, adapters or auth, or evaluates whether other negative branches are correct beyond incidental reading.\",\"The fixture is an unsigned decoded model export placed in a synthetic catalog-slots tool envelope. It does not establish live provider behavior, original HTTP replay or real-model inference, and this review makes no such claim.\",\"End-to-end actual website calls are stated to be owned by root and were not available for review.\"]}",
+  "report": {
+    "summary": "Reviewed the bounded positive-noodle price publication path (locked_price_match) in lib/assessment-source-publication.ts, its adoption and fallback in lib/delivery-assessment.ts, the synthetic tool-envelope tests, and the fixture. The stated constraints appear implemented for the packet as given: priceOnlyOriginal admits only one finite price-only sentence; plainPositivePriceOwners uses a finite tag/attribute allowlist with meta charset-only, inert templates, and blocks popover/details/dialog/datalist/http-equiv/class/style/hidden/aria/data attributes; CSS is limited to empty or exact system-ui body font-family; all raw citations must be sourceFinding/computed-property owners; the positive branch runs before the later guards, and a later change falls back to guarded unknown or downgrade. Packet-local tracing surfaced one P2 product-flow gap: in the narrow case where a later guard replaces a positive result with changes_suggested and the matched business-check fact is then also changes_suggested rather than supported, the positive branch is skipped (list_evidence is missing), no publication marker is attached, yet the code goes on to publish that changes_suggested item without the model having requested a change. No runtime checks or tests were executed.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "lib/delivery-assessment.ts",
+        "line": 381,
+        "title": "Server-positive price item can be published as changes_suggested with neither a model request nor a publication basis",
+        "evidence": "Line 370 enters the status===\"supported\" block and line 371 computes the legacy business check. Lines 372-374 build positiveLiteral only when item.status is supported, and line 380 branches unknown/mismatch: line 381 sets status=\"insufficient_evidence\" for unknown, and lines 388-395 run sourcePublicationCheck(..., guardReason:\"locked_price_match\") only inside that unknown sub-branch. Here unknown means legacyPrice kind===\"unknown\", whose checks require reason dynamic_or_unsupported_source (assessment-source-publication.ts:122-123). Line 427 then runs exactCopyCheck(criterion) (implementation not in this packet), and lines 429-431 set status=\"changes_suggested\" with exactCopyEvidenceExplanation when exactCopy.kind===\"missing\". At line 522 the second sourcePublicationCheck call passes guardReason:sourcePublicationGuard, which is undefined here. In the positive branch of assessment-source-publication.ts:120-125, priceOnlyOriginal and plainPositivePriceOwners need the full original owner citations, but createSourceBusinessEvidenceCheck(files, steps) is unchanged. A code-level seller who strips the currency from an owner (e.g. '<p>Beef noodles</p>' where the criterion is 菜单的牛肉面和Beef noodles标价必须为AUD18。, locked to AUD 1800 on menu.html) makes the owner fail. That owner then gets no citation. The positive pure-price owner in the same menu.html stays clean, so plainPositivePriceOwners passes. The legacy check becomes unknown/dynamic_or_unsupported_source instead of mismatch, so the positive path is skipped. The source finding is computed only after the item loop (line 521), so its changes_suggested/supported status is unknown when line 380 picks the branch. The item is then emitted as changes_suggested with publicationBasis undefined. No check restricts the server-originated downgrade to unexpected changes or requires a model-originated changes_suggested, and publicationPolicy.reconciledCriterionIds (line 586) leaves the item out. This contradicts the stated rule that a positive marker exists only under the exact canonical supported state and that supported items otherwise fall back to unknown.",
+        "reproduction": "Not executed; source trace only. (1) Use the fixture project's coverage-1 criterion (assessment-source-publication.test.ts:21) with two menu.html owners for 牛肉面 AUD 18 and Beef noodles AUD18. (2) Model, and therefore modelJudgment.status, is supported for every item. (3) Replace the second owner with '<p>Beef noodles</p>'. The legacy per-check fact becomes unknown(dynamic_or_unsupported_source), not mismatch. (4) If exactCopyCheck(criterion) returns missing for the changed owner text (implementation not supplied), lines 429-431 set changes_suggested. No line later re-runs sourcePublicationCheck with locked_price_match, and the line 522 call sees guardReason undefined. (5) Expected: either insufficient_evidence via the positiveFallback at lines 536-542 (unreachable because status is no longer supported), or no publication of the item. Actual: an item with status changes_suggested, publicationBasis undefined, and no reconciled marker is emitted.",
+        "suggestion": "Keep the positive path reachable after later guards. For example, record a positivePending flag when line 380 sees unknown and priceOnlyOriginal/owner gates pass, then after line 522 run sourcePublicationCheck with locked_price_match again when status===\"changes_suggested\" and the fact is supported, or route status===\"changes_suggested\" results that came from a later guard on a price-only criterion to the positiveFallback unknown with need(\"source_ambiguity\"), so no guard-originated change is published without either the model's own changes_suggested or a publicationBasis."
+      }
+    ],
+    "limitations": [
+      "Only the six supplied files were reviewed. createExactCopyEvidenceCheck (exact-copy-evidence.ts), createSourceBusinessEvidenceCheck (source-business-evidence.ts), createAssessmentSourceFindingCheck (assessment-source-findings.ts) and assessSourceBusinessCitationWitness were not supplied, so their exact behavior is inferred from names, call sites and packet comments.",
+      "No tests, typecheck or runtime checks were executed, and no source text was executed. The finding is a static source trace; the 'missing' return of the exact-copy guard is a precondition that could not be inspected.",
+      "The review covers only the locked_price_match positive branch and its later-guard interaction. It does not cover the prefix/condition requirement family, the standards engine, adapters or auth, or evaluates whether other negative branches are correct beyond incidental reading.",
+      "The fixture is an unsigned decoded model export placed in a synthetic catalog-slots tool envelope. It does not establish live provider behavior, original HTTP replay or real-model inference, and this review makes no such claim.",
+      "End-to-end actual website calls are stated to be owned by root and were not available for review."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

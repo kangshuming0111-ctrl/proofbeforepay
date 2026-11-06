@@ -1,0 +1,35 @@
+{
+  "schema": "noodle-positive-code-validation-v1",
+  "baselineNativeCommit": "af8d576ffa0bee43af40cff4c9d7e6832ba546be",
+  "fullRegression": {
+    "pass": 1883,
+    "fail": 0,
+    "log": "full-regression-final.log"
+  },
+  "typecheck": {
+    "exitCode": 0,
+    "log": "typecheck-final.log"
+  },
+  "packager": {
+    "pass": 13,
+    "fail": 0
+  },
+  "positiveServerTest": "Saved v90 modelJudgment is retained; tool reply is explicitly reconstructed/synthetic, not an original provider HTTP response. No new model inference in this code test.",
+  "knownNegativeReplay": {
+    "knownFictionalProjects": 4,
+    "focusedCriteria": 9,
+    "providerCalls": 0,
+    "externalNetworkCalls": 0,
+    "blockedNetworkAttempts": 0,
+    "rawStatusMatches": 9,
+    "originalPublishedStatusMatches": 7,
+    "currentPublishedStatusMatches": 9,
+    "changedPublishedItems": 2,
+    "rawJudgmentsPreserved": true,
+    "originalRequestsPreserved": true,
+    "sourceRequirementsAndScopePreserved": true,
+    "optionalRiskOriginalsPreservedAndWithheld": true
+  },
+  "scope": "Only complete already locked noodle-price requirements, strict static owners and complete original citations. Hidden/dynamic/extra-duty conditions stay unresolved.",
+  "liveBrowserTest": "Separate post-deployment receipt, not included in this pre-deployment code record or its model accounting."
+}

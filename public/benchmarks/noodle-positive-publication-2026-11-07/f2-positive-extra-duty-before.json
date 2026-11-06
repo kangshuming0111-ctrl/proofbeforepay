@@ -1,0 +1,22 @@
+{
+  "schema": "positive-extra-duty-readonly-probe-v1",
+  "source": "菜单的牛肉面和Beef noodles标价必须为AUD18且营业时间必须为上午11点到晚上8点。",
+  "units": [
+    "菜单的牛肉面和Beef noodles标价必须为AUD18且营业时间必须为上午11点到晚上8点。"
+  ],
+  "category": {
+    "category": "source_text",
+    "reason": "literal_content"
+  },
+  "helperDecision": "supported",
+  "publishedStatus": "supported",
+  "publicationBasis": {
+    "schema": "source-publication-v1",
+    "reason": "locked_price_match"
+  },
+  "sourceFinding": "supported",
+  "modelStatus": "supported",
+  "menuSourceContainsHours": false,
+  "providerCalls": 0,
+  "networkCalls": 0
+}

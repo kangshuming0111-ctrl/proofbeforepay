@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T13:15:20.527Z",
+  "generatedAt": "2026-11-06T14:04:59.384Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -373,8 +373,8 @@
     },
     {
       "file": "app/components/DeliveryAssessment.tsx",
-      "bytes": 36809,
-      "sha256": "224151cba19be1fe9f2df83a39fb4cdd9161c6b15886aed1326d4d405da97455"
+      "bytes": 36862,
+      "sha256": "f336898ce5ed88714bd058cf587d934cb4fac0d1d83db30db704ba3473b3a208"
     },
     {
       "file": "app/components/DeliveryComparison.tsx",
@@ -2007,6 +2007,16 @@
       "sha256": "53a0f2c67c377e515ff3013095737adc1353946d02fe4415670c1510aacc7325"
     },
     {
+      "file": "docs/collaboration/noodle-positive-publication-2026-11-07/cycle.md",
+      "bytes": 4248,
+      "sha256": "db1c487a6cdd026d555e34919cf2286853dd937d946f3941600f1737091612dd"
+    },
+    {
+      "file": "docs/collaboration/noodle-positive-publication-2026-11-07/f2-review-packet.md",
+      "bytes": 11555,
+      "sha256": "31814ca8ee26cad4b0f363eca1d62686b56600192b7b3178c6b4de0e4ea8f798"
+    },
+    {
       "file": "docs/collaboration/noodle-publication-2026-11-06.md",
       "bytes": 3496,
       "sha256": "f267e62dc1dd0922dfc25c1e78b928b6a3fd62d7a30df916e134402959fd1632"
@@ -2693,8 +2703,8 @@
     },
     {
       "file": "lib/assessment-source-publication.ts",
-      "bytes": 5314,
-      "sha256": "5a8d9bde2b93ab2306da3de2f93687a020853a70a33f2fb4cb73ded2b70a87c3"
+      "bytes": 10901,
+      "sha256": "c2eb1fc990b4b651f1ca141f42bc6c9ea655e052bf53188f7cbd5210f0ef7b06"
     },
     {
       "file": "lib/assessment-source-target.ts",
@@ -2798,8 +2808,8 @@
     },
     {
       "file": "lib/contracts.ts",
-      "bytes": 18440,
-      "sha256": "e4521cfa40dd503d3609d7db1336dbd7ef93b5d26480b40308006eee2c600218"
+      "bytes": 18461,
+      "sha256": "8f1f70c5d88f1731b14f32e957298a07ad41ee7c5f5e4bc37b5442add041a878"
     },
     {
       "file": "lib/cooperative-stage-evidence.ts",
@@ -2818,8 +2828,8 @@
     },
     {
       "file": "lib/delivery-assessment.ts",
-      "bytes": 66973,
-      "sha256": "b4cd6bac6f243fa5a1df042d5775bab7e1db7d167ce8b159604b032848a8c3fe"
+      "bytes": 68844,
+      "sha256": "ac9f418f854d51c765d89fdb808a8a29e7bbfd7890947a93b03f7d700aab8633"
     },
     {
       "file": "lib/delivery-comparison.ts",
@@ -2903,8 +2913,8 @@
     },
     {
       "file": "lib/evidence-export.ts",
-      "bytes": 61998,
-      "sha256": "55981b7d99ed815e7f1a95236995401e84ab796e28621ebd5f2cf49ff24386d1"
+      "bytes": 62106,
+      "sha256": "16b422826ddca6ecfd70a37ec7b2052935c73266e45ae41b1b33ef65a347f161"
     },
     {
       "file": "lib/evidence-followup-sql.ts",
@@ -5202,6 +5212,91 @@
       "sha256": "56c8b1bb7cf5d893cd961c57fd21bbcbf89484a48abb6daa8ad633fc12a4ee10"
     },
     {
+      "file": "public/benchmarks/noodle-positive-publication-2026-11-07/before.json",
+      "bytes": 3776,
+      "sha256": "812a7483585272e76b7c08718c362739c75880cee4f52c2d2783fa7bf845aba2"
+    },
+    {
+      "file": "public/benchmarks/noodle-positive-publication-2026-11-07/code-validation.json",
+      "bytes": 1348,
+      "sha256": "2c6b2f53649eed37b2559ccd03e0874246c59aa607de4d3f92557ef572c00de8"
+    },
+    {
+      "file": "public/benchmarks/noodle-positive-publication-2026-11-07/f2-positive-extra-duty-before.json",
+      "bytes": 700,
+      "sha256": "187d7749eff8b24d11031500b3b309797ab638dd65db2b43c4cbff428b8f7bb0"
+    },
+    {
+      "file": "public/benchmarks/noodle-positive-publication-2026-11-07/f2-positive-native-container-probes.json",
+      "bytes": 981,
+      "sha256": "c9925abe5b3cf8705e6e3cb99011031f7285fbf7bf357cd66e73b26ea6570c37"
+    },
+    {
+      "file": "public/benchmarks/noodle-positive-publication-2026-11-07/f2-positive-popover-before.json",
+      "bytes": 452,
+      "sha256": "d1d2f965c2e459f4a6ddf946934f0fff5077bdbfe7f9d74bada5f672f5eb0938"
+    },
+    {
+      "file": "public/benchmarks/noodle-positive-publication-2026-11-07/f2-positive-post-deepseek.json",
+      "bytes": 5944,
+      "sha256": "40bf2ff3201cfd35ef16cfbc5a1db97a67d39b8c9d48609631ad840e5b8901ef"
+    },
+    {
+      "file": "public/benchmarks/noodle-positive-publication-2026-11-07/f2-positive-source-freeze.json",
+      "bytes": 1795,
+      "sha256": "1d9dc69fb591416e4320df9583c82d6b7362f1dc23d4d659d6220e8954a8e483"
+    },
+    {
+      "file": "public/benchmarks/noodle-positive-publication-2026-11-07/final-adjudication.json",
+      "bytes": 1821,
+      "sha256": "0bdf541198c9b103973d7ff8d26599d44be5731f773b75f5ee465f491cfdc602"
+    },
+    {
+      "file": "public/benchmarks/noodle-positive-publication-2026-11-07/final-post-counterexample.json",
+      "bytes": 2430,
+      "sha256": "e6e8ab4f3a08582235d652fbe8d5ce680d4a31362ed6f96668c081ca4ea886d0"
+    },
+    {
+      "file": "public/benchmarks/noodle-positive-publication-2026-11-07/final-post-deepseek.json",
+      "bytes": 14880,
+      "sha256": "35ffaf9c65f7a5ad11593a3a6990d196a9649a210403297e5872d4b1761662c3"
+    },
+    {
+      "file": "public/benchmarks/noodle-positive-publication-2026-11-07/known-negative-replay.json",
+      "bytes": 59840,
+      "sha256": "ec282a61d8cad691946d9ea4e3a89d834e07e1df4e55dc8393eecb3585d13e5d"
+    },
+    {
+      "file": "public/benchmarks/noodle-positive-publication-2026-11-07/latest.json",
+      "bytes": 686,
+      "sha256": "c165fd637641d13f8e119ce227e3fc7ee9122c9043907e831baecdb3a3cc166e"
+    },
+    {
+      "file": "public/benchmarks/noodle-positive-publication-2026-11-07/manifest.json",
+      "bytes": 2658,
+      "sha256": "a8847a2f716c31ad5eb213ce859fcf3fea73a58d256509046cc4bce780603ff6"
+    },
+    {
+      "file": "public/benchmarks/noodle-positive-publication-2026-11-07/plan-adjudication.json",
+      "bytes": 3835,
+      "sha256": "a69731ba6aa0f98306e5400651d1f49ee0550d02a3a935d4d3570f9663dc01ac"
+    },
+    {
+      "file": "public/benchmarks/noodle-positive-publication-2026-11-07/plan-deepseek.json",
+      "bytes": 39932,
+      "sha256": "4707db4ec794ee7933ea3fe88fa127cf634aa91424fd330f09770574f6fbb00a"
+    },
+    {
+      "file": "public/benchmarks/noodle-positive-publication-2026-11-07/ui-final-adjudication.json",
+      "bytes": 1207,
+      "sha256": "d8fdbb310879d7831d5ee5bbdb14dec4c4919f2653102873a72df600e2471d4e"
+    },
+    {
+      "file": "public/benchmarks/noodle-positive-publication-2026-11-07/ui-post-deepseek.json",
+      "bytes": 6595,
+      "sha256": "92aea900777beb119c05a4824c2acbaa397c7d887b1a06ef3ece3215b800414f"
+    },
+    {
       "file": "public/benchmarks/noodle-publication-2026-11-06/before.json",
       "bytes": 9477,
       "sha256": "7b9335b808b3b80c0a4a45de4da94af1c2205416f6ba396f2467748c2f3d2f5b"
@@ -6798,8 +6893,8 @@
     },
     {
       "file": "scripts/replay-evidence-actions-2026-11-06.mjs",
-      "bytes": 42479,
-      "sha256": "0bfc7bccc98f6bab39d312b9e8503c9d466dac7cacf9e8180b19ecb5744d5502"
+      "bytes": 42500,
+      "sha256": "dd2b158618dd012801b8dad4e162cdf7b4dcc23d27fb068db56f6187bff2906f"
     },
     {
       "file": "scripts/replay-noodle-publication-2026-11-06.mjs",
@@ -7042,6 +7137,11 @@
       "sha256": "77ba71aad936b4159ead7eaabad4c361d77849bffac5a7a8fc5a63905a3bc26e"
     },
     {
+      "file": "tests/assessment-positive-price-publication.test.ts",
+      "bytes": 12741,
+      "sha256": "08bab1710e1cc0fb1206f807a6c6a490d9fa64414f41261380eeb1f6e034f4c1"
+    },
+    {
       "file": "tests/assessment-prompt-guidance.test.ts",
       "bytes": 9737,
       "sha256": "3b2f5b286ae7c444cdb7daf9dd3f0ae2d199b58dd7e8108180030f67d58759b1"
@@ -7083,8 +7183,8 @@
     },
     {
       "file": "tests/assessment-source-publication-export.test.ts",
-      "bytes": 14714,
-      "sha256": "0e1ade6a27031ae2a7829ade3f270fae9066d3f41e7ce631f6ed7e9f6a73a36f"
+      "bytes": 23774,
+      "sha256": "f6307a9f1856dd72ab98dc530ce095385ceb4b0a09ca16b72c12ea3c25db7e34"
     },
     {
       "file": "tests/assessment-source-publication.test.ts",
@@ -7368,8 +7468,8 @@
     },
     {
       "file": "tests/evidence-actions-replay.test.ts",
-      "bytes": 33626,
-      "sha256": "58e8d25d3676e34423bf2d63b2da166ae8bdbb288f4e0889af7841a16ffc72f1"
+      "bytes": 36877,
+      "sha256": "87737d4a763bc72d29cf60779de0b1e09ce62f49bb762beb6d6586ab3137dfcd"
     },
     {
       "file": "tests/evidence-budget.test.ts",
@@ -7722,9 +7822,19 @@
       "sha256": "2c2d922d1d57e2f7bdf87d31315e813857cbd162d03237984d47570e589b600d"
     },
     {
+      "file": "tests/fixtures/noodle-positive-f2-review.md",
+      "bytes": 11555,
+      "sha256": "31814ca8ee26cad4b0f363eca1d62686b56600192b7b3178c6b4de0e4ea8f798"
+    },
+    {
       "file": "tests/fixtures/noodle-scope-ui-plan.json",
       "bytes": 6356,
       "sha256": "7d2ca05f1f8e43def3c92072696eec8ac5fee473f0d3116d707e9772206ebc50"
+    },
+    {
+      "file": "tests/fixtures/noodle-v90-positive-export.json",
+      "bytes": 31361,
+      "sha256": "f78ce7e357539e142bd5516c1eb153b0ca749f1775b206340cc3a7f2f3822089"
     },
     {
       "file": "tests/fixtures/onboarding-page-context.json",
@@ -8138,8 +8248,8 @@
     },
     {
       "file": "tests/noodle-assessment-presentation.test.ts",
-      "bytes": 10169,
-      "sha256": "d5f5ddde5f6259b9262023df63e8b81cf6d1f226ef06b434aa9d4fe9f27a2c81"
+      "bytes": 11964,
+      "sha256": "ed2b5445885c7322951b6b35b9c74f3c29e8242dc5321954c6317a7a4caf587c"
     },
     {
       "file": "tests/noodle-core-api-smoke.py",

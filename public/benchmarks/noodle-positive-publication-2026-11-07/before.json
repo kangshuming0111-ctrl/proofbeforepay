@@ -1,0 +1,106 @@
+{
+  "schema": "noodle-positive-publication-before-v1",
+  "baselineNativeCommit": "af8d576ffa0bee43af40cff4c9d7e6832ba546be",
+  "baselineVersion": 90,
+  "sourceArtifactSha256": "8a3f42148ef619145449a825bfa46205a991e1595aa1ecd23ff74e04916f15e6",
+  "dataKind": "Owned fictional noodle-shop test; retained saved model judgment, not a retained raw provider HTTP response",
+  "originalCriterion": {
+    "id": "coverage-1",
+    "title": "原始需求 1",
+    "source": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+  },
+  "originalPublishedItem": {
+    "criterionId": "coverage-1",
+    "status": "insufficient_evidence",
+    "explanation": "本项已确认业务检查无法全部在有限的静态简单段落中可靠对应；重复或未定位内容、复杂格式或动态来源仍需其他证据。源码建议不能据此确认为符合，原始约定未改变。",
+    "citations": [
+      {
+        "file": "menu.html",
+        "start": 108,
+        "end": 125,
+        "excerpt": "<p>牛肉面 AUD 18</p>"
+      },
+      {
+        "file": "menu.html",
+        "start": 125,
+        "end": 150,
+        "excerpt": "<p>Beef noodles AUD18</p>"
+      }
+    ],
+    "ruleEvidenceIds": [
+      "evidence-coverage-1"
+    ],
+    "obligations": {
+      "schema": "source-obligations-v1",
+      "coverage": "bounded_detection",
+      "sourceLength": 30,
+      "clauses": [
+        {
+          "start": 0,
+          "end": 30,
+          "excerpt": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+        }
+      ],
+      "items": [
+        {
+          "id": "obligation-1",
+          "kind": "source_content",
+          "clauseIndex": 0,
+          "state": "source_review_required"
+        }
+      ]
+    },
+    "modelJudgment": {
+      "status": "supported",
+      "explanation": "menu.html 中“牛肉面 AUD 18”与“Beef noodles AUD18”分别对应 amountMinor 1800、AUD；空格差异不改变金额。",
+      "citations": [
+        {
+          "file": "menu.html",
+          "start": 108,
+          "end": 125,
+          "excerpt": "<p>牛肉面 AUD 18</p>"
+        },
+        {
+          "file": "menu.html",
+          "start": 125,
+          "end": 150,
+          "excerpt": "<p>Beef noodles AUD18</p>"
+        }
+      ]
+    },
+    "sourceFinding": {
+      "version": "source-finding-v1",
+      "status": "supported",
+      "basis": "locked_business_values",
+      "explanation": "独立源码检查已在买家锁定的文件和对应对象内核对全部 2 个业务值；对应内容与已确认业务值一致；价格检查按同一币种和最小货币单位金额核对，而非金额的字符格式。这是有限源码事实，不证明浏览器可见或运行保存；原始 AI 判断另行保留。",
+      "citations": [
+        {
+          "file": "menu.html",
+          "start": 108,
+          "end": 125,
+          "excerpt": "<p>牛肉面 AUD 18</p>"
+        },
+        {
+          "file": "menu.html",
+          "start": 125,
+          "end": 150,
+          "excerpt": "<p>Beef noodles AUD18</p>"
+        }
+      ],
+      "files": [
+        "menu.html"
+      ]
+    },
+    "evidenceNeed": {
+      "schema": "source-evidence-need-v1",
+      "reason": "source_ambiguity",
+      "targetFiles": [
+        "menu.html"
+      ]
+    }
+  },
+  "exactOriginalMenu": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><p>牛肉面 AUD 18</p><p>Beef noodles AUD18</p><p>Vegetable noodles AUD18</p><template><p>牛肉面 AUD18</p></template></body></html>",
+  "oldReportId": "0e3fb686-2bd5-4d63-8e0d-d9f759038f2a",
+  "oldDeliveryId": "80b88b7d-1863-4aed-bb5b-75e391681e46",
+  "scope": "Only positive publication of the already locked noodle prices. No parser or business expansion."
+}
