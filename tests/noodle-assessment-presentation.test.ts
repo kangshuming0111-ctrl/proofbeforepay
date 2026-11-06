@@ -19,3 +19,19 @@ test("source-based feedback identifies its independent basis and retains the exa
 test("read-only historical reports retain source/model evidence while offering no change, run or risk-review write action",async()=>{
  const {Component,cleanup}=await assessmentComponentModule();try{const html=renderToStaticMarkup(createElement(Component,{report:report(base),criteria:[criterion],language:"en",readOnly:true,onPrepareFeedback:()=>{},onRun:()=>{}}));assert.ok(html.includes(base.sourceFinding!.explanation));assert.ok(html.includes(base.modelJudgment!.explanation));assert.ok(!html.includes('class="assessment-feedback-button"'));assert.ok(!html.includes('assessment-run-button'));}finally{await cleanup();}
 });
+
+test("a confirmed scope's source finding leads while the conflicting original publication and old evidence direction remain collapsed and unchanged",async()=>{
+ const oldExplanation="Business page identity is unconfirmed; clarify scope before directing edits.",item:ProofAssessmentItem={...base,status:"insufficient_evidence",explanation:oldExplanation,evidenceNeed:{schema:"source-evidence-need-v1",reason:"page_scope",targetFiles:["visit.html"]}};
+ const before=structuredClone(item),{Component,cleanup}=await assessmentComponentModule();try{for(const language of["zh","en"] as const){
+  const html=renderToStaticMarkup(createElement(Component,{report:report(item),criteria:[criterion],language,onPrepareFeedback:()=>{}}));
+  assert.match(html,/<details class="assessment-published-record">/u);assert.doesNotMatch(html,/<details class="assessment-published-record" open/u);
+  const start=html.indexOf('<details class="assessment-published-record">'),end=html.indexOf('</details>',start),oldAt=html.indexOf(oldExplanation);
+  assert.ok(oldAt>start&&oldAt<end);assert.ok(html.indexOf(item.sourceFinding!.explanation)<start);
+  assert.match(html,language==="zh"?/不会撤销双方的范围确认/u:/does not revoke that agreement/u);assert.match(html,language==="zh"?/>加入修改草稿</u:/>Add to change draft</u);
+  assert.ok(html.includes(item.modelJudgment!.explanation));
+ }assert.deepEqual(item,before);}finally{await cleanup();}
+});
+test("a runtime unknown without independent facts keeps its evidence request visible and never claims confirmed source scope",async()=>{
+ const item:ProofAssessmentItem={...base,sourceFinding:undefined,evidenceNeed:{schema:"source-evidence-need-v1",reason:"record_readback",targetFiles:["visit.html"]}};
+ const {Component,cleanup}=await assessmentComponentModule();try{const html=renderToStaticMarkup(createElement(Component,{report:report(item),criteria:[{...criterion,source:"The submitted enquiry must persist after restart."}],language:"en",onPrepareFeedback:()=>{}}));assert.ok(!html.includes('class="assessment-published-record"'));assert.ok(html.includes('class="assessment-evidence-need"'));assert.match(html,/Draft an evidence request/u);assert.ok(!html.includes('does not revoke that agreement'));}finally{await cleanup();}
+});

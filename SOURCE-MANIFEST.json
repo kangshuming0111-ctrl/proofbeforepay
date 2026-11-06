@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T11:24:59.923Z",
+  "generatedAt": "2026-11-06T11:33:36.810Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -373,8 +373,8 @@
     },
     {
       "file": "app/components/DeliveryAssessment.tsx",
-      "bytes": 32756,
-      "sha256": "340ffef9578860252bc8e5859178f7f1716b2688b2e1f31ab0a60bb39ec0520e"
+      "bytes": 33547,
+      "sha256": "a514f4e40a688ae8efb59e5800012771a7f0dc60a85bb449c8dd6a9d98d8a204"
     },
     {
       "file": "app/components/DeliveryComparison.tsx",
@@ -2003,8 +2003,8 @@
     },
     {
       "file": "docs/collaboration/noodle-core-2026-11-06/integration.md",
-      "bytes": 3395,
-      "sha256": "312b723a56242a40a156126db575b738fbd6b3b89cfce0ed8018094ecafe708d"
+      "bytes": 4638,
+      "sha256": "57a4d5a8a67431d87ef854b4b7e6a2be47013277768fff49f6a17a07d5902970"
     },
     {
       "file": "docs/collaboration/onboarding-2026-11-06/cycle-27.md",
@@ -8033,8 +8033,8 @@
     },
     {
       "file": "tests/noodle-assessment-presentation.test.ts",
-      "bytes": 3893,
-      "sha256": "2cd6bf46b4974a99cde19cbd019fda7988c3df1f9c1349c0fa1407d85c832aca"
+      "bytes": 6174,
+      "sha256": "3bc3be2e29fa82bfc90d843d71f279229652b08b7e92857dd26df2e614dc74d3"
     },
     {
       "file": "tests/noodle-core-api-smoke.py",

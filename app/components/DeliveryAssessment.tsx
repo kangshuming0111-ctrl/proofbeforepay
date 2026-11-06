@@ -98,17 +98,8 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
     const lockedSource = assessmentCriterionSource(criterion, item.criterionId);
     const draft = canPrepareFeedback ? buildAssessmentFeedbackDraft(criterion, feedbackItem, language, scopeSteps, actionableSource?{basis:"independent_source",confirmedScope:!!actionableSource.scopeBinding}:undefined) : undefined;
     const evidenceNeed = insufficient ? assessmentEvidenceNeedPresentation(item.evidenceNeed, language) : undefined;
-    return <article className={`assessment-item${selected ? " assessment-item-selected" : ""}`} key={item.criterionId}>
-      <div className="assessment-item-heading"><h4>{titleFor(item.criterionId)}</h4><span className={`assessment-status assessment-status-${item.status}`}>{statusLabel(item.status)}</span></div>
-      {lockedSource !== undefined ? <details className="assessment-locked-source">
-        <summary><Quote size={12} aria-hidden="true" />{tr("查看完整锁定原文", "Inspect complete locked wording")}<ChevronDown size={13} aria-hidden="true" /></summary>
-        <p>{tr("原样保留的验收要求；界面语言切换不会翻译或缩写这段原文。", "The agreed wording is preserved exactly. Changing interface language does not translate or shorten this source.")}</p>
-        <blockquote>{lockedSource}</blockquote>
-      </details> : <p className="assessment-source-unavailable">{tr("尚未取得此项的锁定原文，暂不能生成带要求的补证草稿。请重新载入当前交付后核对。", "This criterion’s locked wording is unavailable, so an evidence request cannot be prepared. Reload the current delivery and check again.")}</p>}
-      {sourceFinding&&<section className="assessment-source-finding" aria-label={tr("系统独立源码事实","Independent system source finding")}><strong>{tr("系统独立源码事实：","Independent source finding: ")}{sourceFinding.status==="supported"?tr("源码关系支持","Source relation supported"):sourceFinding.status==="changes_suggested"?tr("发现源码差异","Source difference found"):tr("仅凭源码仍不确定","Source remains inconclusive")}</strong><p>{sourceFinding.explanation}</p><Citations citations={sourceFinding.citations} language={language}/></section>}
+    const publishedDetails=<>
       <p className="assessment-explanation">{item.explanation}</p>
-      {item.modelJudgment&&<details className="assessment-original-model"><summary>{tr("查看原始模型判断（独立保留）","Inspect the original model judgment (retained separately)")}</summary><strong>{statusLabel(item.modelJudgment.status)}</strong><p>{item.modelJudgment.explanation}</p><Citations citations={item.modelJudgment.citations} language={language}/></details>}
-      {criterion && <AssessmentObligations criterion={criterion} value={item.obligations} language={language}/>}
       {evidenceNeed && <section className="assessment-evidence-need" aria-label={tr("补证方向", "Evidence needed")}>
         <strong>{evidenceNeed.reason}</strong><p>{evidenceNeed.nextStep}</p>
         {evidenceNeed.targetFiles.length > 0 && <details className="assessment-evidence-need-files"><summary>{tr(`相关源码文件（${evidenceNeed.targetFiles.length}）`, `Related source files (${evidenceNeed.targetFiles.length})`)}</summary>
@@ -117,6 +108,21 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
         {!evidenceNeed.legacy && !evidenceNeed.targetFiles.length && <p>{tr("尚未定位具体文件，请先按锁定要求确认范围。", "No exact target file was recorded; confirm the scope against the locked requirement.")}</p>}
       </section>}
       <Citations citations={item.citations} language={language} />
+    </>;
+    return <article className={`assessment-item${selected ? " assessment-item-selected" : ""}`} key={item.criterionId}>
+      <div className="assessment-item-heading"><h4>{titleFor(item.criterionId)}</h4><span className={`assessment-status assessment-status-${item.status}`}>{statusLabel(item.status)}</span></div>
+      {lockedSource !== undefined ? <details className="assessment-locked-source">
+        <summary><Quote size={12} aria-hidden="true" />{tr("查看完整锁定原文", "Inspect complete locked wording")}<ChevronDown size={13} aria-hidden="true" /></summary>
+        <p>{tr("原样保留的验收要求；界面语言切换不会翻译或缩写这段原文。", "The agreed wording is preserved exactly. Changing interface language does not translate or shorten this source.")}</p>
+        <blockquote>{lockedSource}</blockquote>
+      </details> : <p className="assessment-source-unavailable">{tr("尚未取得此项的锁定原文，暂不能生成带要求的补证草稿。请重新载入当前交付后核对。", "This criterion’s locked wording is unavailable, so an evidence request cannot be prepared. Reload the current delivery and check again.")}</p>}
+      {sourceFinding&&<section className="assessment-source-finding" aria-label={tr("系统独立源码事实","Independent system source finding")}><strong>{tr("系统独立源码事实：","Independent source finding: ")}{sourceFinding.status==="supported"?tr("源码关系支持","Source relation supported"):sourceFinding.status==="changes_suggested"?tr("发现源码差异","Source difference found"):tr("仅凭源码仍不确定","Source remains inconclusive")}</strong><p>{sourceFinding.explanation}</p><Citations citations={sourceFinding.citations} language={language}/></section>}
+      {sourceFinding ? <details className="assessment-published-record"><summary>{tr("查看发布层原说明（独立保留）","Inspect the published explanation (retained separately)")}</summary>
+        {sourceFinding.scopeBinding && <p className="assessment-record-basis">{tr("这份报告的页面／表单范围依据见上方双方确认的源码事实。下方保留发布层原说明，不会撤销双方的范围确认；请按上方结论与下一步处理。","This report’s page/form scope is recorded in the two-sided source finding above. The original published explanation below does not revoke that agreement. Follow the source finding and next action above.")}</p>}
+        {publishedDetails}
+      </details> : publishedDetails}
+      {item.modelJudgment&&<details className="assessment-original-model"><summary>{tr("查看原始模型判断（独立保留）","Inspect the original model judgment (retained separately)")}</summary><strong>{statusLabel(item.modelJudgment.status)}</strong><p>{item.modelJudgment.explanation}</p><Citations citations={item.modelJudgment.citations} language={language}/></details>}
+      {criterion && <AssessmentObligations criterion={criterion} value={item.obligations} language={language}/>}
       {item.ruleEvidenceIds.length > 0 && <p className="assessment-rule-refs">{tr("已关联此要求的规则证据，可与下方核查结果对照。", "Linked to this requirement’s rule evidence; compare it with the rule findings below.")}</p>}
       {canPrepareFeedback && <div className="assessment-feedback-action no-print"><button type="button" className="assessment-feedback-button" disabled={busy || !draft} onClick={() => {
         if (!report || !draft) return;
