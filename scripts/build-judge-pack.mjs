@@ -17,6 +17,12 @@ const LICENSE_TEXT_FILES = new Set([
   ...["bootstrap", "florist", "html5up"].map(name => `docs/fixtures/assessment-transfer-2026-11-04/${name}-LICENSE.txt`),
   ...["business-casual", "modern-business", "corona-admin", "personal", "clean-blog", "html5-boilerplate"].map(name => `public/benchmarks/real-projects-2026-11-05/source-provenance/${name}-LICENSE.txt`),
 ]);
+// Exact runtime and attribution inputs for the opt-in native FastAPI example.
+// Other TXT files and extensionless notes remain outside the source boundary.
+const FASTAPI_HANDOFF_FILES = new Set([
+  "examples/delivery-stage-staging/fastapi-native/requirements.txt",
+  "examples/delivery-stage-staging/fastapi-native/LICENSE",
+]);
 // One immutable benchmark source archive, not a general binary/archive allowance.
 // Its members must also match the exact 20 pre-call implementation hashes.
 const PINNED_SOURCE_ARCHIVES = new Map([["public/benchmarks/five-remediation-2026-11-05/first-implementation.tar.gz", {
@@ -111,7 +117,7 @@ export async function collectPublicSource(root) {
       const name = `${relative}/${entry.name}`;
       if (entry.isSymbolicLink()) throw new Error(`Symlink source rejected: ${name}`);
       if (entry.isDirectory()) await walk(name);
-      else if (entry.isFile() && (EXTENSIONS.has(path.extname(entry.name)) || LICENSE_TEXT_FILES.has(name) || PINNED_SOURCE_ARCHIVES.has(name))) names.push(name);
+      else if (entry.isFile() && (EXTENSIONS.has(path.extname(entry.name)) || LICENSE_TEXT_FILES.has(name) || FASTAPI_HANDOFF_FILES.has(name) || PINNED_SOURCE_ARCHIVES.has(name))) names.push(name);
     }
   }
   for (const directory of SOURCE_DIRS) {

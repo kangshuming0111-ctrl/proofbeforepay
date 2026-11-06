@@ -1,0 +1,65 @@
+{
+  "reviewer": "Root independent source and complete raw-answer inspection",
+  "independentOfCorpusAuthor": true,
+  "baselineFreeze": "cbf392159bf830f2afd3a8e2f8051e3e85240ebcf97633ac8f905c718f93bd53",
+  "rawStatusMatches": 15,
+  "expectedCriteria": 16,
+  "rawMissingCriterionIds": 0,
+  "applicationDeliveredMatchingCriteria": 14,
+  "applicationBlockedProjects": 1,
+  "cases": [
+    {
+      "id": "mdn-original-compound-table",
+      "decision": "accepted",
+      "reason": "Same row values and source labels match; source-only limits retained."
+    },
+    {
+      "id": "mdn-derived-swapped-fields",
+      "decision": "qualified",
+      "reason": "Correct mismatch conclusion, but initial item sentence contradicts the mutated row and the risk ordinal description is imprecise. Do not count full prose as correct."
+    },
+    {
+      "id": "mdn-derived-cross-page-label",
+      "decision": "rejected",
+      "reason": "Correct contact label failure but falsely demands a contiguous sentence for a subject/notes relationship; the same false claim is repeated in optional risk. Risk omits required empty c3 and the entire application response is correctly rejected. Limitation claims no page scope despite Contact restriction."
+    },
+    {
+      "id": "mdn-derived-inert-label-decoys",
+      "decision": "qualified",
+      "reason": "Correct inert-decoy and email source-attribute statuses, but visible/render language overstates static source observation and the acceptability caveat adds unsupported ambiguity."
+    },
+    {
+      "id": "mdn-original-paraphrase",
+      "decision": "accepted",
+      "reason": "Semantic paraphrase and 2802.0 numeric equivalence with row/header context retained."
+    },
+    {
+      "id": "mdn-original-source-properties",
+      "decision": "accepted",
+      "reason": "Static email type and submit text supported; no executed validation claimed."
+    },
+    {
+      "id": "mdn-original-runtime-unknown",
+      "decision": "qualified",
+      "reason": "Both required statuses properly unknown; optional risk invents inaccurate eleven-column count. Potential width clue alone is not observed overflow."
+    },
+    {
+      "id": "mdn-derived-cross-control-enum",
+      "decision": "accepted",
+      "reason": "Correctly distinguishes Service option value from unrelated selector; both required statuses and narrow risk grounded."
+    }
+  ],
+  "accepted": 4,
+  "qualified": 3,
+  "rejected": 1,
+  "directions": [
+    "Preserve strict item/risk/citation rejection; do not pad omitted slots, discard risks or declare response valid.",
+    "Require explicit contiguous/exact-text wording before literal-sentence comparison; otherwise inspect subject-field relationships.",
+    "All empty citation slots remain required by current transport.",
+    "Do not invent ordinal counts or runtime visibility from markup."
+  ],
+  "limits": [
+    "AI-assisted source review, not human validation or unseen model training data.",
+    "Eight finite authored tasks on pinned public examples do not establish general accuracy."
+  ]
+}

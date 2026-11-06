@@ -1,0 +1,4 @@
+.project-intake-blocker { min-width: 0; margin-top: 9px; padding: 9px 10px; border-left: 3px solid #294d40; background: #f0f4e8; color: #3e5845; }
+.project-intake-blocker p { margin: 0 0 5px; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+.project-intake-blocker .text-button { max-width: 100%; min-height: 30px; padding: 3px 0; font-size: 12px; font-weight: 600; white-space: normal; overflow-wrap: anywhere; text-align: start; }
+.project-intake-blocker .text-button:focus-visible { outline: 2px solid #294d40; outline-offset: 3px; }

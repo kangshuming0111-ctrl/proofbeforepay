@@ -1,0 +1,923 @@
+{
+  "schema": "pbp-source-assessment-record-v1",
+  "date": "2026-11-06",
+  "scope": "Bounded educational source-assessment evidence. Synthetic/authored acceptance requirements using pinned official MDN and HTTPbin educational examples. Not real customer orders, a competition win, a general accuracy estimate, human usability or browser/backend execution.",
+  "readerGuide": [
+    "Read status counts AND complete whole-answer reviews. Valid citation IDs and matching labels do not prove semantic correctness.",
+    "Seven distinct stages retain all44 one-shot provider answers, including earlier failures. Known regressions and new first attempts are separated; no failed answer is overwritten.",
+    "Latest24/24 status matches coexist with3 qualified application answers and1 rejected raw whole answer. Optional page-role suggestions and visible wording remain advisory, not agreed defects.",
+    "Unknown runtime requirements are correct boundaries. Unsupported source facts temporarily downgraded to unknown count as coverage loss, not successful AI correction."
+  ],
+  "model": "deepseek-flash",
+  "pricingVerification": {
+    "source": "https://api-docs.deepseek.com/quick_start/pricing/",
+    "rootVerifiedOn": "2026-11-06",
+    "reportsRetainOriginalVerificationDate": true,
+    "inputCacheMissPeakUsdPerMillion": 0.3,
+    "outputUsdPerMillion": 1.2,
+    "invoice": false
+  },
+  "accounting": {
+    "evaluationCalls": 44,
+    "distinctAuthoredCaseVariants": 20,
+    "caseVariantMeaning": "20 distinct authored test cases/project variants derived from a few MDN educational and HTTPbin diagnostic sources; not20 independent applications, customers, merchants or repositories.",
+    "sourcePublishers": 2,
+    "retryCalls": 0,
+    "estimatedCostUsd": 0.2653134,
+    "humanParticipants": 0,
+    "independentMerchantIntegrations": 0
+  },
+  "latestWholeAnswerReview": {
+    "artifact": "reviews/cycle35-root-review.json",
+    "reviewerKind": "Root Codex AI; not human study",
+    "projects": 12,
+    "criteria": 24,
+    "rawStatusMatches": 24,
+    "applicationStatusMatches": 24,
+    "rawRequiredIdsReturned": 24,
+    "citationSpansChecked": 65,
+    "citationSpansExact": 65,
+    "rawWholeAnswerReview": {
+      "accepted": 7,
+      "qualified": 4,
+      "rejected": 1
+    },
+    "applicationWholeAnswerReview": {
+      "accepted": 9,
+      "qualified": 3,
+      "rejected": 0
+    }
+  },
+  "activeApplicationQualifications": [
+    {
+      "id": "mdn-derived-cross-page-label",
+      "cohort": "known-regression",
+      "reason": "Item states and row relationship correct. Optional risk says visible without browser evidence and suggests deciding/removing the index fragment despite scope not establishing that obligation. Conditional review wording reduces, but does not eliminate, presentation risk; these are advisory leads, not established delivery defects.",
+      "rawStateMatches": 2,
+      "applicationStateMatches": 2,
+      "requiredCriteria": 2,
+      "rawIdsComplete": true,
+      "allFullItemsRisksAndLimitationsRead": true,
+      "rawWholeAnswerDecision": "qualified",
+      "applicationWholeAnswerDecision": "qualified"
+    },
+    {
+      "id": "mdn-derived-inert-label-decoys",
+      "cohort": "known-regression",
+      "reason": "Correct missing active-label and declared-email-type judgments. The explanation uses visible for other labels, though only source was inspected; limitations acknowledge visibility unobserved. Accept source conclusion only, not rendered visibility.",
+      "rawStateMatches": 2,
+      "applicationStateMatches": 2,
+      "requiredCriteria": 2,
+      "rawIdsComplete": true,
+      "allFullItemsRisksAndLimitationsRead": true,
+      "rawWholeAnswerDecision": "qualified",
+      "applicationWholeAnswerDecision": "qualified"
+    },
+    {
+      "id": "c34-fresh-signup-cross-page",
+      "cohort": "previously-uncalled-first-attempt",
+      "reason": "Item judgments correctly separate signup and timetable sources. Optional risk calls the index fragment Signup form and conditionally suggests adding Name there; the requirement has no explicit signup-file mapping, so this is scope clarification only, not a confirmed defect. Visible wording also lacks browser observation.",
+      "rawStateMatches": 2,
+      "applicationStateMatches": 2,
+      "requiredCriteria": 2,
+      "rawIdsComplete": true,
+      "allFullItemsRisksAndLimitationsRead": true,
+      "rawWholeAnswerDecision": "qualified",
+      "applicationWholeAnswerDecision": "qualified"
+    }
+  ],
+  "cycleDisposition": {
+    "cycle33": "partial, known wrong-page repair advice retained; not a release-quality closure",
+    "cycle34": "partial, template false pass/extra exact-sentence negative and6 source under-admissions retained",
+    "cycle35": "bounded engineering release, latest statuses24/24 and all65 exact citation spans; raw7accepted/4qualified/1rejected, application9accepted/3qualified/0rejected; no perfection claim"
+  },
+  "cohorts": [
+    {
+      "id": "baseline-first-eight",
+      "exposure": "first attempts before Cycle33 prompt tuning",
+      "report": "records/baseline-first-eight/report.json",
+      "corpus": "records/baseline-first-eight/corpus.json",
+      "requestFreeze": "records/baseline-first-eight/request-freeze.json",
+      "rootWholeAnswerReview": "reviews/baseline-root-review.json",
+      "reviewerKind": "Root Codex AI; not human study",
+      "calls": 8,
+      "criteria": 16,
+      "rawStatusMatches": {
+        "count": 15,
+        "total": 16,
+        "fraction": 0.9375
+      },
+      "applicationStatusMatches": {
+        "count": 14,
+        "total": 16,
+        "fraction": 0.875
+      },
+      "applicationRejectedProjects": 1,
+      "rawRequiredIdCoverage": {
+        "attemptedProjects": 8,
+        "contentParsedProjects": 8,
+        "parsedIdProfileProjects": 8,
+        "firstStoppedCompleteItemProjects": {
+          "count": 8,
+          "total": 8,
+          "fraction": 1
+        },
+        "firstCompletedItemProjects": {
+          "count": 8,
+          "total": 8,
+          "fraction": 1
+        },
+        "completeItemCoverageAmongParsedIdProfiles": {
+          "count": 8,
+          "total": 8,
+          "fraction": 1
+        },
+        "completeStoppedItemCoverageAmongParsedIdProfiles": {
+          "count": 8,
+          "total": 8,
+          "fraction": 1
+        },
+        "strictToolResponseProjects": 8,
+        "legacyJsonResponseProjects": 0,
+        "syntaxNormalizedProjects": 0,
+        "normalizedIdProfileProjects": 0,
+        "originalIdProfileProjects": 8,
+        "missingItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 8,
+          "fraction": 0
+        },
+        "duplicateItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 8,
+          "fraction": 0
+        },
+        "unknownIdProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 8,
+          "fraction": 0
+        },
+        "invalidItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 8,
+          "fraction": 0
+        },
+        "unparsedIdProfileProjects": 0,
+        "outputLimitedProjects": 0
+      },
+      "rawCitationSpans": {
+        "count": 48,
+        "total": 48,
+        "fraction": 1
+      },
+      "applicationCitationSpans": {
+        "count": 40,
+        "total": 40,
+        "fraction": 1
+      },
+      "rawFalsePasses": {
+        "count": 0,
+        "total": 4,
+        "fraction": 0
+      },
+      "applicationFalsePasses": {
+        "count": 0,
+        "total": 4,
+        "fraction": 0
+      },
+      "rawCleanFalseAlarms": {
+        "count": 1,
+        "total": 10,
+        "fraction": 0.1
+      },
+      "applicationCleanFalseAlarms": {
+        "count": 0,
+        "total": 10,
+        "fraction": 0
+      },
+      "applicationCleanUnderAdmission": {
+        "count": 0,
+        "total": 10,
+        "fraction": 0
+      },
+      "applicationDefectConservativeUnknown": {
+        "count": 0,
+        "total": 4,
+        "fraction": 0
+      },
+      "estimatedCostUsd": 0.05457449999999999,
+      "freezeSha256": "cbf392159bf830f2afd3a8e2f8051e3e85240ebcf97633ac8f905c718f93bd53"
+    },
+    {
+      "id": "cycle33-known-eight",
+      "exposure": "known-source regression after tuning; not holdout",
+      "report": "records/cycle33-known-eight/report.json",
+      "corpus": "records/cycle33-known-eight/corpus.json",
+      "requestFreeze": "records/cycle33-known-eight/request-freeze.json",
+      "rootWholeAnswerReview": "reviews/cycle33-root-review.json",
+      "reviewerKind": "Root Codex AI; not human study",
+      "calls": 8,
+      "criteria": 16,
+      "rawStatusMatches": {
+        "count": 16,
+        "total": 16,
+        "fraction": 1
+      },
+      "applicationStatusMatches": {
+        "count": 16,
+        "total": 16,
+        "fraction": 1
+      },
+      "applicationRejectedProjects": 0,
+      "rawRequiredIdCoverage": {
+        "attemptedProjects": 8,
+        "contentParsedProjects": 8,
+        "parsedIdProfileProjects": 8,
+        "firstStoppedCompleteItemProjects": {
+          "count": 8,
+          "total": 8,
+          "fraction": 1
+        },
+        "firstCompletedItemProjects": {
+          "count": 8,
+          "total": 8,
+          "fraction": 1
+        },
+        "completeItemCoverageAmongParsedIdProfiles": {
+          "count": 8,
+          "total": 8,
+          "fraction": 1
+        },
+        "completeStoppedItemCoverageAmongParsedIdProfiles": {
+          "count": 8,
+          "total": 8,
+          "fraction": 1
+        },
+        "strictToolResponseProjects": 8,
+        "legacyJsonResponseProjects": 0,
+        "syntaxNormalizedProjects": 0,
+        "normalizedIdProfileProjects": 0,
+        "originalIdProfileProjects": 8,
+        "missingItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 8,
+          "fraction": 0
+        },
+        "duplicateItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 8,
+          "fraction": 0
+        },
+        "unknownIdProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 8,
+          "fraction": 0
+        },
+        "invalidItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 8,
+          "fraction": 0
+        },
+        "unparsedIdProfileProjects": 0,
+        "outputLimitedProjects": 0
+      },
+      "rawCitationSpans": {
+        "count": 45,
+        "total": 45,
+        "fraction": 1
+      },
+      "applicationCitationSpans": {
+        "count": 45,
+        "total": 45,
+        "fraction": 1
+      },
+      "rawFalsePasses": {
+        "count": 0,
+        "total": 4,
+        "fraction": 0
+      },
+      "applicationFalsePasses": {
+        "count": 0,
+        "total": 4,
+        "fraction": 0
+      },
+      "rawCleanFalseAlarms": {
+        "count": 0,
+        "total": 10,
+        "fraction": 0
+      },
+      "applicationCleanFalseAlarms": {
+        "count": 0,
+        "total": 10,
+        "fraction": 0
+      },
+      "applicationCleanUnderAdmission": {
+        "count": 0,
+        "total": 10,
+        "fraction": 0
+      },
+      "applicationDefectConservativeUnknown": {
+        "count": 0,
+        "total": 4,
+        "fraction": 0
+      },
+      "estimatedCostUsd": 0.05526930000000001,
+      "freezeSha256": "793107cd3871785fa0454dabbd6667d3bbd1eff9282edfaf5ef9e005f793b889"
+    },
+    {
+      "id": "cycle33-first-four",
+      "exposure": "prospective first attempts; two new MDN paths, same publisher/task family",
+      "report": "records/cycle33-first-four/report.json",
+      "corpus": "records/cycle33-first-four/corpus.json",
+      "requestFreeze": "records/cycle33-first-four/request-freeze.json",
+      "rootWholeAnswerReview": "reviews/cycle33-root-review.json",
+      "reviewerKind": "Root Codex AI; not human study",
+      "calls": 4,
+      "criteria": 8,
+      "rawStatusMatches": {
+        "count": 7,
+        "total": 8,
+        "fraction": 0.875
+      },
+      "applicationStatusMatches": {
+        "count": 8,
+        "total": 8,
+        "fraction": 1
+      },
+      "applicationRejectedProjects": 0,
+      "rawRequiredIdCoverage": {
+        "attemptedProjects": 4,
+        "contentParsedProjects": 4,
+        "parsedIdProfileProjects": 4,
+        "firstStoppedCompleteItemProjects": {
+          "count": 4,
+          "total": 4,
+          "fraction": 1
+        },
+        "firstCompletedItemProjects": {
+          "count": 4,
+          "total": 4,
+          "fraction": 1
+        },
+        "completeItemCoverageAmongParsedIdProfiles": {
+          "count": 4,
+          "total": 4,
+          "fraction": 1
+        },
+        "completeStoppedItemCoverageAmongParsedIdProfiles": {
+          "count": 4,
+          "total": 4,
+          "fraction": 1
+        },
+        "strictToolResponseProjects": 4,
+        "legacyJsonResponseProjects": 0,
+        "syntaxNormalizedProjects": 0,
+        "normalizedIdProfileProjects": 0,
+        "originalIdProfileProjects": 4,
+        "missingItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 4,
+          "fraction": 0
+        },
+        "duplicateItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 4,
+          "fraction": 0
+        },
+        "unknownIdProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 4,
+          "fraction": 0
+        },
+        "invalidItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 4,
+          "fraction": 0
+        },
+        "unparsedIdProfileProjects": 0,
+        "outputLimitedProjects": 0
+      },
+      "rawCitationSpans": {
+        "count": 36,
+        "total": 36,
+        "fraction": 1
+      },
+      "applicationCitationSpans": {
+        "count": 36,
+        "total": 36,
+        "fraction": 1
+      },
+      "rawFalsePasses": {
+        "count": 0,
+        "total": 1,
+        "fraction": 0
+      },
+      "applicationFalsePasses": {
+        "count": 0,
+        "total": 1,
+        "fraction": 0
+      },
+      "rawCleanFalseAlarms": {
+        "count": 0,
+        "total": 5,
+        "fraction": 0
+      },
+      "applicationCleanFalseAlarms": {
+        "count": 0,
+        "total": 5,
+        "fraction": 0
+      },
+      "applicationCleanUnderAdmission": {
+        "count": 0,
+        "total": 5,
+        "fraction": 0
+      },
+      "applicationDefectConservativeUnknown": {
+        "count": 0,
+        "total": 1,
+        "fraction": 0
+      },
+      "estimatedCostUsd": 0.022488299999999996,
+      "freezeSha256": "342bb89b4eef1c8bb9e0f60827be56bd009961deb0a63d000a471de7c278fa30"
+    },
+    {
+      "id": "cycle34-known-eight",
+      "exposure": "known-source regression after scope/publication tuning; not holdout",
+      "report": "records/cycle34-known-eight/report.json",
+      "corpus": "records/cycle34-known-eight/corpus.json",
+      "requestFreeze": "records/cycle34-known-eight/request-freeze.json",
+      "rootWholeAnswerReview": "reviews/cycle34-root-review.json",
+      "reviewerKind": "Root Codex AI; not human study",
+      "calls": 8,
+      "criteria": 16,
+      "rawStatusMatches": {
+        "count": 14,
+        "total": 16,
+        "fraction": 0.875
+      },
+      "applicationStatusMatches": {
+        "count": 14,
+        "total": 16,
+        "fraction": 0.875
+      },
+      "applicationRejectedProjects": 0,
+      "rawRequiredIdCoverage": {
+        "attemptedProjects": 8,
+        "contentParsedProjects": 8,
+        "parsedIdProfileProjects": 8,
+        "firstStoppedCompleteItemProjects": {
+          "count": 8,
+          "total": 8,
+          "fraction": 1
+        },
+        "firstCompletedItemProjects": {
+          "count": 8,
+          "total": 8,
+          "fraction": 1
+        },
+        "completeItemCoverageAmongParsedIdProfiles": {
+          "count": 8,
+          "total": 8,
+          "fraction": 1
+        },
+        "completeStoppedItemCoverageAmongParsedIdProfiles": {
+          "count": 8,
+          "total": 8,
+          "fraction": 1
+        },
+        "strictToolResponseProjects": 8,
+        "legacyJsonResponseProjects": 0,
+        "syntaxNormalizedProjects": 0,
+        "normalizedIdProfileProjects": 0,
+        "originalIdProfileProjects": 8,
+        "missingItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 8,
+          "fraction": 0
+        },
+        "duplicateItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 8,
+          "fraction": 0
+        },
+        "unknownIdProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 8,
+          "fraction": 0
+        },
+        "invalidItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 8,
+          "fraction": 0
+        },
+        "unparsedIdProfileProjects": 0,
+        "outputLimitedProjects": 0
+      },
+      "rawCitationSpans": {
+        "count": 49,
+        "total": 49,
+        "fraction": 1
+      },
+      "applicationCitationSpans": {
+        "count": 49,
+        "total": 49,
+        "fraction": 1
+      },
+      "rawFalsePasses": {
+        "count": 1,
+        "total": 4,
+        "fraction": 0.25
+      },
+      "applicationFalsePasses": {
+        "count": 1,
+        "total": 4,
+        "fraction": 0.25
+      },
+      "rawCleanFalseAlarms": {
+        "count": 1,
+        "total": 8,
+        "fraction": 0.125
+      },
+      "applicationCleanFalseAlarms": {
+        "count": 1,
+        "total": 8,
+        "fraction": 0.125
+      },
+      "applicationCleanUnderAdmission": {
+        "count": 0,
+        "total": 8,
+        "fraction": 0
+      },
+      "applicationDefectConservativeUnknown": {
+        "count": 0,
+        "total": 4,
+        "fraction": 0
+      },
+      "estimatedCostUsd": 0.053605799999999995,
+      "freezeSha256": "196f406d5464e806b11acc33fec89c065a31f9788db49b92fa31893e9cf0cc71"
+    },
+    {
+      "id": "cycle34-httpbin-first-four",
+      "exposure": "prospective first attempts, new educational-example publisher; source facts over-abstained by application",
+      "report": "records/cycle34-httpbin-first-four/report.json",
+      "corpus": "records/cycle34-httpbin-first-four/corpus.json",
+      "requestFreeze": "records/cycle34-httpbin-first-four/request-freeze.json",
+      "rootWholeAnswerReview": "reviews/cycle34-root-review.json",
+      "reviewerKind": "Root Codex AI; not human study",
+      "calls": 4,
+      "criteria": 8,
+      "rawStatusMatches": {
+        "count": 8,
+        "total": 8,
+        "fraction": 1
+      },
+      "applicationStatusMatches": {
+        "count": 2,
+        "total": 8,
+        "fraction": 0.25
+      },
+      "applicationRejectedProjects": 0,
+      "rawRequiredIdCoverage": {
+        "attemptedProjects": 4,
+        "contentParsedProjects": 4,
+        "parsedIdProfileProjects": 4,
+        "firstStoppedCompleteItemProjects": {
+          "count": 4,
+          "total": 4,
+          "fraction": 1
+        },
+        "firstCompletedItemProjects": {
+          "count": 4,
+          "total": 4,
+          "fraction": 1
+        },
+        "completeItemCoverageAmongParsedIdProfiles": {
+          "count": 4,
+          "total": 4,
+          "fraction": 1
+        },
+        "completeStoppedItemCoverageAmongParsedIdProfiles": {
+          "count": 4,
+          "total": 4,
+          "fraction": 1
+        },
+        "strictToolResponseProjects": 4,
+        "legacyJsonResponseProjects": 0,
+        "syntaxNormalizedProjects": 0,
+        "normalizedIdProfileProjects": 0,
+        "originalIdProfileProjects": 4,
+        "missingItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 4,
+          "fraction": 0
+        },
+        "duplicateItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 4,
+          "fraction": 0
+        },
+        "unknownIdProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 4,
+          "fraction": 0
+        },
+        "invalidItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 4,
+          "fraction": 0
+        },
+        "unparsedIdProfileProjects": 0,
+        "outputLimitedProjects": 0
+      },
+      "rawCitationSpans": {
+        "count": 22,
+        "total": 22,
+        "fraction": 1
+      },
+      "applicationCitationSpans": {
+        "count": 22,
+        "total": 22,
+        "fraction": 1
+      },
+      "rawFalsePasses": {
+        "count": 0,
+        "total": 1,
+        "fraction": 0
+      },
+      "applicationFalsePasses": {
+        "count": 0,
+        "total": 1,
+        "fraction": 0
+      },
+      "rawCleanFalseAlarms": {
+        "count": 0,
+        "total": 5,
+        "fraction": 0
+      },
+      "applicationCleanFalseAlarms": {
+        "count": 0,
+        "total": 5,
+        "fraction": 0
+      },
+      "applicationCleanUnderAdmission": {
+        "count": 5,
+        "total": 5,
+        "fraction": 1
+      },
+      "applicationDefectConservativeUnknown": {
+        "count": 1,
+        "total": 1,
+        "fraction": 1
+      },
+      "estimatedCostUsd": 0.014658000000000001,
+      "freezeSha256": "e927963f9dcf70b2bb7f818260f7c27b552de8eb1ab54b742c2115a0db161ce1"
+    },
+    {
+      "id": "cycle35-known-eight",
+      "exposure": "known-source regression, including three already-called HTTPbin projects; not holdout",
+      "report": "records/cycle35-known-eight/report.json",
+      "corpus": "records/cycle35-known-eight/corpus.json",
+      "requestFreeze": "records/cycle35-known-eight/request-freeze.json",
+      "rootWholeAnswerReview": "reviews/cycle35-root-review.json",
+      "reviewerKind": "Root Codex AI; not human study",
+      "calls": 8,
+      "criteria": 16,
+      "rawStatusMatches": {
+        "count": 16,
+        "total": 16,
+        "fraction": 1
+      },
+      "applicationStatusMatches": {
+        "count": 16,
+        "total": 16,
+        "fraction": 1
+      },
+      "applicationRejectedProjects": 0,
+      "rawRequiredIdCoverage": {
+        "attemptedProjects": 8,
+        "contentParsedProjects": 8,
+        "parsedIdProfileProjects": 8,
+        "firstStoppedCompleteItemProjects": {
+          "count": 8,
+          "total": 8,
+          "fraction": 1
+        },
+        "firstCompletedItemProjects": {
+          "count": 8,
+          "total": 8,
+          "fraction": 1
+        },
+        "completeItemCoverageAmongParsedIdProfiles": {
+          "count": 8,
+          "total": 8,
+          "fraction": 1
+        },
+        "completeStoppedItemCoverageAmongParsedIdProfiles": {
+          "count": 8,
+          "total": 8,
+          "fraction": 1
+        },
+        "strictToolResponseProjects": 8,
+        "legacyJsonResponseProjects": 0,
+        "syntaxNormalizedProjects": 0,
+        "normalizedIdProfileProjects": 0,
+        "originalIdProfileProjects": 8,
+        "missingItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 8,
+          "fraction": 0
+        },
+        "duplicateItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 8,
+          "fraction": 0
+        },
+        "unknownIdProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 8,
+          "fraction": 0
+        },
+        "invalidItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 8,
+          "fraction": 0
+        },
+        "unparsedIdProfileProjects": 0,
+        "outputLimitedProjects": 0
+      },
+      "rawCitationSpans": {
+        "count": 43,
+        "total": 43,
+        "fraction": 1
+      },
+      "applicationCitationSpans": {
+        "count": 43,
+        "total": 43,
+        "fraction": 1
+      },
+      "rawFalsePasses": {
+        "count": 0,
+        "total": 4,
+        "fraction": 0
+      },
+      "applicationFalsePasses": {
+        "count": 0,
+        "total": 4,
+        "fraction": 0
+      },
+      "rawCleanFalseAlarms": {
+        "count": 0,
+        "total": 10,
+        "fraction": 0
+      },
+      "applicationCleanFalseAlarms": {
+        "count": 0,
+        "total": 10,
+        "fraction": 0
+      },
+      "applicationCleanUnderAdmission": {
+        "count": 0,
+        "total": 10,
+        "fraction": 0
+      },
+      "applicationDefectConservativeUnknown": {
+        "count": 0,
+        "total": 4,
+        "fraction": 0
+      },
+      "estimatedCostUsd": 0.046308,
+      "freezeSha256": "2bfb897761cc4447f194e24b477ea6f20897520ac8fbd1ff95650a63b961e25a"
+    },
+    {
+      "id": "cycle35-mdn-first-four",
+      "exposure": "untouched first attempts, sealed before Cycle34 tuning, two more MDN paths; same publisher/task family",
+      "report": "records/cycle35-mdn-first-four/report.json",
+      "corpus": "records/cycle35-mdn-first-four/corpus.json",
+      "requestFreeze": "records/cycle35-mdn-first-four/request-freeze.json",
+      "rootWholeAnswerReview": "reviews/cycle35-root-review.json",
+      "reviewerKind": "Root Codex AI; not human study",
+      "calls": 4,
+      "criteria": 8,
+      "rawStatusMatches": {
+        "count": 8,
+        "total": 8,
+        "fraction": 1
+      },
+      "applicationStatusMatches": {
+        "count": 8,
+        "total": 8,
+        "fraction": 1
+      },
+      "applicationRejectedProjects": 0,
+      "rawRequiredIdCoverage": {
+        "attemptedProjects": 4,
+        "contentParsedProjects": 4,
+        "parsedIdProfileProjects": 4,
+        "firstStoppedCompleteItemProjects": {
+          "count": 4,
+          "total": 4,
+          "fraction": 1
+        },
+        "firstCompletedItemProjects": {
+          "count": 4,
+          "total": 4,
+          "fraction": 1
+        },
+        "completeItemCoverageAmongParsedIdProfiles": {
+          "count": 4,
+          "total": 4,
+          "fraction": 1
+        },
+        "completeStoppedItemCoverageAmongParsedIdProfiles": {
+          "count": 4,
+          "total": 4,
+          "fraction": 1
+        },
+        "strictToolResponseProjects": 4,
+        "legacyJsonResponseProjects": 0,
+        "syntaxNormalizedProjects": 0,
+        "normalizedIdProfileProjects": 0,
+        "originalIdProfileProjects": 4,
+        "missingItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 4,
+          "fraction": 0
+        },
+        "duplicateItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 4,
+          "fraction": 0
+        },
+        "unknownIdProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 4,
+          "fraction": 0
+        },
+        "invalidItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 4,
+          "fraction": 0
+        },
+        "unparsedIdProfileProjects": 0,
+        "outputLimitedProjects": 0
+      },
+      "rawCitationSpans": {
+        "count": 22,
+        "total": 22,
+        "fraction": 1
+      },
+      "applicationCitationSpans": {
+        "count": 22,
+        "total": 22,
+        "fraction": 1
+      },
+      "rawFalsePasses": {
+        "count": 0,
+        "total": 2,
+        "fraction": 0
+      },
+      "applicationFalsePasses": {
+        "count": 0,
+        "total": 2,
+        "fraction": 0
+      },
+      "rawCleanFalseAlarms": {
+        "count": 0,
+        "total": 4,
+        "fraction": 0
+      },
+      "applicationCleanFalseAlarms": {
+        "count": 0,
+        "total": 4,
+        "fraction": 0
+      },
+      "applicationCleanUnderAdmission": {
+        "count": 0,
+        "total": 4,
+        "fraction": 0
+      },
+      "applicationDefectConservativeUnknown": {
+        "count": 0,
+        "total": 2,
+        "fraction": 0
+      },
+      "estimatedCostUsd": 0.018409499999999995,
+      "freezeSha256": "08ba6557d34e421ea61f632f11d521724a5c7070d92f35601b0e67842a0055ea"
+    }
+  ],
+  "artifactManifest": "manifest.json",
+  "remainingLimits": [
+    "Visible/rendered wording in some model explanations has not been established by static source.",
+    "Conditional suggestions about unresolved page identity remain advisory, not an agreed obligation.",
+    "Model generalization, unfamiliar human usability and independent new merchant integration are not established."
+  ],
+  "awardsComparison": {
+    "primarySource": "https://www.bemyapp.com/insights/ai-builders-challenge-with-ibm-bob-2026-winners.html",
+    "verifiedOn": "2026-11-06",
+    "referenceProjects": [
+      "PHAROS_INC — August1st place",
+      "Agent Receipt — AugustMostInnovative"
+    ],
+    "observationLevel": "official descriptions only; no competitor same-condition measurement, superiority or championship claim"
+  }
+}

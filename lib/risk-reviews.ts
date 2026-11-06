@@ -1,6 +1,7 @@
 import type { ProofQuote, ProofRiskReview, ProofRole } from './contracts.ts';
 import { DomainError } from './domain.ts';
-import {finiteContactPresenceScopeCriterionIds} from './assessment-publication-policy.ts';
+import {finiteContactPresenceScopeCriterionIds,observationOnlyCustomScopeCriterionIds} from './assessment-publication-policy.ts';
+import {getBusinessCheckPlan} from './business-checks.ts';
 
 export type RiskReviewInput = { deliveryId: string; assessmentId: string; riskIndex: number; riskOrigin?: "withheld"; decision: ProofRiskReview['decision']; reason: string };
 
@@ -20,7 +21,9 @@ export function recordRiskReview(quote: ProofQuote, role: ProofRole, value: unkn
     const pool=report.withheldRisks,entry=pool?.entries?.[riskIndex];
     const eligible=pool&&(pool.version===1&&pool.reason==='item_status_adjusted'
       ||pool.version===2&&pool.reason==='source_scope_unestablished'&&Array.isArray(pool.adjustedCriteria)&&pool.adjustedCriteria.length===0&&report.risks.length===0&&Array.isArray(pool.entries)&&pool.entries.length>0&&Array.isArray(pool.scopeCriterionIds)
-        &&JSON.stringify(pool.scopeCriterionIds)===JSON.stringify(finiteContactPresenceScopeCriterionIds(quote.proof.criteria,report.items,delivery.files??{})));
+        &&JSON.stringify(pool.scopeCriterionIds)===JSON.stringify(finiteContactPresenceScopeCriterionIds(quote.proof.criteria,report.items,delivery.files??{}))
+      ||pool.version===3&&pool.reason==='custom_scope_requires_observation'&&Array.isArray(pool.adjustedCriteria)&&pool.adjustedCriteria.length===0&&report.risks.length===0&&Array.isArray(pool.entries)&&pool.entries.length>0&&Array.isArray(pool.scopeCriterionIds)
+        &&JSON.stringify(pool.scopeCriterionIds)===JSON.stringify(observationOnlyCustomScopeCriterionIds(quote.proof.criteria,report.items,{hasBusinessChecks:getBusinessCheckPlan(quote).length>0})));
     if(!eligible||!pool||!Array.isArray(pool.entries)||pool.entries.length>5||!entry||entry.originalRiskIndex!==riskIndex||!entry.risk)throw new DomainError('Choose an exact withheld lead in this report.');
   }else if(riskIndex>=report.risks.length)throw new DomainError('Choose a published risk in this report.');
   if (typeof input.decision !== 'string' || !['confirmed','rejected','needs_evidence'].includes(input.decision)) throw new DomainError('Choose a human review decision.');

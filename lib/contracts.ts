@@ -86,9 +86,11 @@ export type ProofAssessmentItem = { criterionId: string; status: "supported" | "
 export type ProofAssessmentRisk = { title: string; explanation: string; suggestion: string; citations: ProofAssessmentCitation[] };
 /** Validated original AI leads retained outside the active indication pool.
  * v1 preserves status-adjustment publication; v2 records an independently
- * bounded source-scope gate without inventing original status adjustments. */
+ * bounded source-scope gate; v3 separately records unchanged insufficient
+ * custom requirements needing observation, without invented adjustments. */
 export type ProofAssessmentWithheldRisks = ({version: 1; reason: "item_status_adjusted" | "not_withheld"}
-  | {version: 2; reason: "source_scope_unestablished"; scopeCriterionIds: string[]}) & {
+  | {version: 2; reason: "source_scope_unestablished"; scopeCriterionIds: string[]}
+  | {version: 3; reason: "custom_scope_requires_observation"; scopeCriterionIds: string[]}) & {
   adjustedCriteria: {criterionId: string; originalStatus: ProofAssessmentItem["status"]; publishedStatus: ProofAssessmentItem["status"]}[];
   entries: {originalRiskIndex: number; risk: ProofAssessmentRisk}[];
 };
@@ -104,6 +106,8 @@ export type ProofAssessment = {
   usage?: { promptTokens: number; completionTokens: number };
 };
 export type ProofDelivery = {
+  /** Participant-supplied appendix; never an acceptance or execution attestation. */
+  cooperativeStageReports?: import("./cooperative-stage-evidence").CooperativeStageReport[];
   enquiryPlan?: import("./project-enquiry").ProjectEnquiryPlan;
   enquiryRun?: import("./project-enquiry").ProjectEnquiryRun;
   enquiryReport?: import("./project-enquiry").ProjectEnquiryReport;

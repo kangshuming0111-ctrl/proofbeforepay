@@ -48,6 +48,8 @@ import { criterionDisplayTitle } from "@/lib/delivery-overview";
 import { buildBusinessSpotlight } from "@/lib/business-spotlight";
 import { WorkflowChoice, type WorkflowChoiceValue } from "./components/WorkflowChoice";
 import { GettingStarted } from "./components/GettingStarted";
+import {ProjectIntakeBlocker} from "./components/ProjectIntakeBlocker";
+import {projectIntakeBlocker, type ProjectIntakeBlocker as IntakeBlocker} from "@/lib/project-intake-blocker";
 import { AuthorizationStart } from "./components/AuthorizationStart";
 import { RequirementsSource, RequirementsDraftSource } from "./components/RequirementsSource";
 import "./layout-check.css";
@@ -105,6 +107,7 @@ type ProjectMode = "custom" | "demo";
 type CaseResult = {quote: ProofQuote; role?: ProofRole};
 type CaseList = {quotes: unknown[]; roles?: Record<string, ProofRole>};
 type BrowserStepDraft = { from: string; text: string; to: string };
+type IntakeStepFocus = {step: 0 | 1; selector: string; view: QuoteResponseView; workspaceRole: ProofRole; viewSerial: number};
 type VersionListLoad = {key:string;status:"loading"|"ready"|"error"};
 type PreviousComparisonLoad = {key:string;status:"loading"|"ready"|"error";version?:ProofDeliveryVersion};
 type RuntimeTargetList = { context: string; targets: RuntimeTargetDescriptor[]; status: "loading" | "ready" | "error"; error?: string };
@@ -208,6 +211,7 @@ export default function Home() {
   const modalRef = useRef<HTMLDivElement>(null);
   const workspaceRef = useRef<HTMLDivElement>(null);
   const workspaceFocusSerial = useRef(0);
+  const pendingIntakeFocus = useRef<IntakeStepFocus | null>(null);
   const optionalChecksRef = useRef<HTMLDetailsElement>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -253,6 +257,9 @@ export default function Home() {
   const businessDraftsReady = businessDraftReady(businessDrafts, coverageUnits, coverageRows, inputLines(requiredPagesInput));
   const runtimeDraft=buildRuntimePlanDraft({protocol:runtimeProtocol,criterionId:runtimeCriterionId,capacityCriterionId:runtimeCapacityCriterionId,units:coverageUnits,decisions:coverageRows});
   const runtimeDraftReady=runtimeDraft.ready;
+  const intakeBlocker=projectIntakeBlocker({coverageReady,coverageConfirmed,coverageError,coverageRows,
+    hasRequirementsDraft:!!requirementsDraft,requirementsConfirmed,businessCount:businessDrafts.length,businessReady:businessDraftsReady,businessConfirmed,
+    runtimeEnabled,runtimeReady:runtimeDraftReady,runtimeConfirmed});
 
   const proof = quote?.proof;
   const collaboration = proof?.collaboration;
@@ -387,6 +394,10 @@ export default function Home() {
   useEffect(() => {
     document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
   }, [language]);
+
+  // Consume after this step has committed, including rejected intents. Unlike
+  // queued focus, a one-shot navigation cannot replay after a busy or view change.
+  useLayoutEffect(() => {flushIntakeFocus();}, [projectStep,projectMode,workspaceView,workspaceRole,intakeStarted,quote?.id,busy,loading]);
 
   useEffect(() => { setRequirementsConfirmed(false); setCoverageConfirmed(false); }, [requirementsDraft?.id, requiredPagesInput, manualRequirementsInput, browserSteps, projectTitle, projectSummary, projectAmount, currency]);
 
@@ -699,6 +710,26 @@ export default function Home() {
     setIntakeStarted(true); setWorkspaceView("workbench"); setWorkspacePanel("agreement");
     setProjectMode("custom"); setProjectStep(0);
     window.requestAnimationFrame(() => workspaceRef.current?.querySelector<HTMLInputElement>("#projectTitle")?.focus());
+  }
+
+  function moveIntakeStep(step: 0 | 1, selector: string) {
+    pendingIntakeFocus.current={step,selector,view:{...currentQuoteView.current},workspaceRole,viewSerial:workspaceFocusSerial.current};
+    setProjectStep(step);
+  }
+
+  function flushIntakeFocus() {
+    const intent=pendingIntakeFocus.current;
+    pendingIntakeFocus.current=null;
+    if(!intent || quote || projectMode!=="custom" || projectStep!==intent.step || workspaceView!=="workbench" || !intakeStarted
+      || workspaceRole!==intent.workspaceRole || busy || loading || operationLock.current || workspaceFocusSerial.current!==intent.viewSerial || !sameQuoteResponseView(intent.view,currentQuoteView.current))return;
+    if(!revealGuidedTarget(workspaceRef.current,intent.selector,".project-form"))setNotice(tr("请查看当前步骤；所需位置暂时无法定位。", "Review the current step; its requested location could not be focused."));
+  }
+
+  function goToIntakeBlocker(blocker: IntakeBlocker) {
+    if(quote || projectMode!=="custom" || projectStep!==1 || workspaceView!=="workbench" || !intakeStarted || busy || loading || operationLock.current)return;
+    if(blocker.step!==projectStep){moveIntakeStep(blocker.step,blocker.selector);return;}
+    pendingIntakeFocus.current=null;
+    if(!revealGuidedTarget(workspaceRef.current,blocker.selector,".requirement-coverage"))setNotice(tr("请查看当前步骤；所需位置暂时无法定位。", "Review the current step; its requested location could not be focused."));
   }
 
   function returnToIntroduction() {
@@ -1158,7 +1189,7 @@ export default function Home() {
     if (projectMode === "custom" && projectStep === 0) {
       const message = projectBasicsError();
       setError(message);
-      if (!message) setProjectStep(1);
+      if (!message) moveIntakeStep(1,".requirement-coverage h3");
       return;
     }
     await run("create", async () => {
@@ -1505,8 +1536,8 @@ export default function Home() {
                           confirmed={coverageConfirmed} scopeReady={coverageReady && inputLines(requiredPagesInput).length >= 1 && inputLines(requiredPagesInput).length <= 10 && inputLines(requiredPagesInput).includes("index.html") && coverageRows.some(row => row.disposition === "include") && inputLines(requiredPagesInput).every(isHtmlDeliveryPath) && new Set(inputLines(requiredPagesInput).map(file => file.toLowerCase())).size === inputLines(requiredPagesInput).length}
                           aiAvailable={config?.aiMode === "live"} disabled={!!busy || loading} busy={busy === "business-suggestions"} drafts={businessDrafts}
                           onAnalyze={suggestBusinessChecks} onAdopt={adoptBusinessSuggestion} onOpenEditor={openBusinessEditor}/>
-                        <BusinessCheckEditor language={language} units={coverageUnits} decisions={coverageRows} pages={inputLines(requiredPagesInput)} rows={businessDrafts} confirmed={businessConfirmed} disabled={!!busy || loading} onChange={setBusinessDrafts} onConfirm={setBusinessConfirmed}/>
-                        <RuntimePlanEditor language={language} enabled={runtimeEnabled} protocol={runtimeProtocol} criterionId={runtimeCriterionId} capacityCriterionId={runtimeCapacityCriterionId} confirmed={runtimeConfirmed} disabled={!!busy||loading} units={coverageUnits} decisions={coverageRows} onEnabledChange={setRuntimeEnabled} onProtocolChange={setRuntimeProtocol} onCriterionChange={setRuntimeCriterionId} onCapacityCriterionChange={setRuntimeCapacityCriterionId} onConfirmedChange={setRuntimeConfirmed}/>
+                        <div id="intake-business-checks"><BusinessCheckEditor language={language} units={coverageUnits} decisions={coverageRows} pages={inputLines(requiredPagesInput)} rows={businessDrafts} confirmed={businessConfirmed} disabled={!!busy || loading} onChange={setBusinessDrafts} onConfirm={setBusinessConfirmed}/></div>
+                        <div id="intake-runtime-checks"><RuntimePlanEditor language={language} enabled={runtimeEnabled} protocol={runtimeProtocol} criterionId={runtimeCriterionId} capacityCriterionId={runtimeCapacityCriterionId} confirmed={runtimeConfirmed} disabled={!!busy||loading} units={coverageUnits} decisions={coverageRows} onEnabledChange={setRuntimeEnabled} onProtocolChange={setRuntimeProtocol} onCriterionChange={setRuntimeCriterionId} onCapacityCriterionChange={setRuntimeCapacityCriterionId} onConfirmedChange={setRuntimeConfirmed}/></div>
                         <details className="project-advanced-checks"><summary>{tr("补充页面与检查方式（可与开发者一起填写）", "Add pages and checks (with your developer)")}</summary>
                           <label htmlFor="requiredPages">{tr("必须交付的 HTML 页面", "Required HTML pages")}</label><textarea id="requiredPages" value={requiredPagesInput} required rows={3} maxLength={1000} aria-describedby="pages-help" onChange={event => setRequiredPagesInput(event.target.value)} />
                           <p className="form-help" id="pages-help">{tr("默认检查 index.html。可与开发者约定更多页面，每行一个，最多 10 页。", "index.html is checked by default. Agree additional pages with your developer, one per line, up to ten.")}</p>
@@ -1534,7 +1565,8 @@ export default function Home() {
                       <label htmlFor="demoCurrency">{tr("测试币种", "Test currency")}</label><select id="demoCurrency" value={currency} onChange={event => setCurrency(event.target.value as Currency)}><option value="AUD">AUD</option><option value="USD">USD</option></select>
                       <label htmlFor="demoClientName">{tr("客户名称（选填）", "Client name (optional)")}</label><input id="demoClientName" value={clientName} maxLength={100} onChange={event => setClientName(event.target.value)} />
                     </>}
-                    <div className="project-form-actions">{projectMode === "custom" && projectStep === 1 && <button type="button" className="subtle-button" onClick={() => { setProjectStep(0); setError(""); }}>{tr("上一步", "Back")}</button>}<button className="button primary" type="submit" disabled={!!busy || loading || projectMode === "custom" && projectStep === 1 && (!coverageConfirmed || !coverageReady || !!requirementsDraft && !requirementsConfirmed || !!businessDrafts.length && (!businessConfirmed || !businessDraftsReady) || runtimeEnabled && (!runtimeConfirmed||!runtimeDraftReady))}>{busy === "create" ? <LoaderCircle className="spin" size={16} /> : <Plus size={16} />}{projectMode === "custom" && projectStep === 0 ? tr("下一步：验收标准", "Next: acceptance criteria") : projectMode === "custom" ? tr("创建项目", "Create project") : tr("创建内置演示", "Create built-in demo")}<ArrowRight size={15} /></button></div>
+                    {projectMode === "custom" && projectStep === 1 && <ProjectIntakeBlocker blocker={intakeBlocker} language={language} disabled={!!busy || loading} onGo={goToIntakeBlocker}/>}
+                    <div className="project-form-actions">{projectMode === "custom" && projectStep === 1 && <button type="button" className="subtle-button" onClick={() => { moveIntakeStep(0,"#projectTitle"); setError(""); }}>{tr("上一步", "Back")}</button>}<button className="button primary" type="submit" disabled={!!busy || loading || projectMode === "custom" && projectStep === 1 && (!coverageConfirmed || !coverageReady || !!requirementsDraft && !requirementsConfirmed || !!businessDrafts.length && (!businessConfirmed || !businessDraftsReady) || runtimeEnabled && (!runtimeConfirmed||!runtimeDraftReady))}>{busy === "create" ? <LoaderCircle className="spin" size={16} /> : <Plus size={16} />}{projectMode === "custom" && projectStep === 0 ? tr("下一步：验收标准", "Next: acceptance criteria") : projectMode === "custom" ? tr("创建项目", "Create project") : tr("创建内置演示", "Create built-in demo")}<ArrowRight size={15} /></button></div>
                   </fieldset>
                 </form>
               </>}
@@ -1642,7 +1674,7 @@ export default function Home() {
                 <BusinessChecksPanel key={`business-${delivery?.id ?? "empty"}`} language={language} count={customProject?.businessChecks?.length ?? 0} report={businessReport} enabled={canObserveBrowser && !busy} busy={busy === "business-check"} progress={businessCheckProgress} onRun={checkBusinessContent} onCancel={() => {if (!businessCheckSavePending.current) businessCheckController.current?.abort();}} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked && !busy ? (criterionId, comment) => prepareFeedback({deliveryId: delivery!.id, criterionId, comment}) : undefined}/>
                 {busy === "business-check-save" && <p className="layout-check-source" role="status">{tr("正在保存业务内容核对…", "Saving business content observations…")}</p>}
                 {quote&&delivery&&runtimePlan&&<RuntimeCheckPanel language={language} deliveryId={delivery.id} plan={runtimePlan} targetId={delivery.backendTargetId} target={runtimeTargets.find(target=>target.id===delivery.backendTargetId)} registration={delivery.runtimeRegistration} deliveryDigest={delivery.runtimeDeliveryDigest} report={runtimeReport} pending={!!delivery.runtimeRun&&Date.parse(delivery.runtimeRun.expiresAt)>Date.now()} busy={busy==="runtime-check"} enabled={!!canRunRuntime&&!busy} onRun={checkRuntimeBackend} preflightContext={JSON.stringify([quote.id,delivery.id,workspaceRole,role,delivery.backendTargetId,delivery.runtimeDeliveryDigest,runtimePlan,delivery.runtimeRegistration])} onPreflight={signal=>apiRequest<RuntimePreflightResult>(`/api/proofs/${encodeURIComponent(quote.id)}/runtime-preflight`,"POST",{deliveryId:delivery.id},workspaceRole,signal)} onPrepareFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?(criterionId,comment)=>prepareFeedback({deliveryId:delivery.id,criterionId,comment}):undefined}/>}
-                {quote&&delivery&&custom&&<TechnicalChecksPanel key={`journey-${quote.id}-${delivery.id}-${workspaceRole}`} focusRequest={technicalFocusRequest} quote={quote} role={role} language={language} enabled={!!canRunRuntime&&!busy} request={request} onApply={onConcurrentQuote} onSupplementalChanged={()=>void refreshEvidenceCatalog()} onBusy={value=>setBusy(value?"journey-check":"")} onDecision={setJourneyDecision} onFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?comment=>prepareFeedback({deliveryId:delivery.id,criterionId:"journey-agreement",journeyReportId:delivery.journeyReport?.id,comment}):undefined}/>}
+                {quote&&delivery&&custom&&<TechnicalChecksPanel key={`journey-${quote.id}-${delivery.id}-${workspaceRole}`} focusRequest={technicalFocusRequest} stageEvidenceEnabled={!busy} quote={quote} role={role} language={language} enabled={!!canRunRuntime&&!busy} request={request} onApply={onConcurrentQuote} onSupplementalChanged={()=>void refreshEvidenceCatalog()} onBusy={value=>setBusy(value?"journey-check":"")} onDecision={setJourneyDecision} onFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?comment=>prepareFeedback({deliveryId:delivery.id,criterionId:"journey-agreement",journeyReportId:delivery.journeyReport?.id,comment}):undefined}/>}
                 {quote&&delivery&&custom&&<EnquiryChecksPanel key={`enquiry-${quote.id}-${delivery.id}-${workspaceRole}`} viewRevision={quoteRenderRevision} quote={quote} role={displayRole} language={language} enabled={!busy&&deliveryUnlocked} request={request} onApply={onConcurrentQuote} onBusy={(value,token)=>{if(value){enquiryBusyToken.current=token;setBusy("enquiry-check");}else if(enquiryBusyToken.current===token){enquiryBusyToken.current=null;setBusy(current=>current==="enquiry-check"?"":current);}}} onDecision={setEnquiryDecision}/>}
                 {quote&&delivery&&custom&&<ModelCheckPanel key={`model-${quote.id}-${delivery.id}-${workspaceRole}`} quote={quote} role={role} language={language} enabled={!!canRunRuntime&&!busy} explanationEnabled={!busy&&!evidenceRunPending&&!quote.proof.paymentOperation} request={request} onApply={onConcurrentQuote} onBusy={value=>setBusy(value?"model-check":"")} onDecision={setModelDecision} onFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?comment=>prepareFeedback({deliveryId:delivery.id,criterionId:"model-agreement",modelReportId:delivery.modelReport?.id,comment}):undefined}/>}
                 {delivery && <EvidenceHistoryPanel key={`history-${delivery.id}`} delivery={delivery} language={language} projectId={quote?.id} acceptedSnapshotId={frozenAcceptanceId}/>}

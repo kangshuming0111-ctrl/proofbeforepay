@@ -1,0 +1,61 @@
+{
+  "schema": "pbp-prospective-corpus-seal-v1",
+  "createdAt": "2026-11-06T06:10:35.839Z",
+  "cohort": "mdn-fresh-four-prospective-before-cycle33-tuning-2026-11-06",
+  "corpusSha256": "d7f0b3d276185ecc3f15e526560d408813947033e64138d867d3217547d2eb69",
+  "projects": 4,
+  "criteria": 8,
+  "calls": 0,
+  "responsesInspected": 0,
+  "promptTuningNotStarted": true,
+  "notIndependentOfPriorEightTaskFamily": true,
+  "sourceNewToPriorEvaluationPaths": [
+    {
+      "path": "html/tables/advanced/items-sold-headers.html",
+      "gitBlob": "a2d75f06cb10f63bd2241782bba371b3770d07bc",
+      "url": "https://github.com/mdn/learning-area/blob/21973263ba859ff3477919087b488157f9d618a6/html/tables/advanced/items-sold-headers.html",
+      "bytes": 3179,
+      "sha256": "596e16d053290d570f90078a7776bee55a1e87a011ed369b1d46f3336823f677"
+    },
+    {
+      "path": "html/tables/advanced/spending-record-finished.html",
+      "gitBlob": "bc9d54fde979065365aaf8b071b390962c05afb4",
+      "url": "https://github.com/mdn/learning-area/blob/21973263ba859ff3477919087b488157f9d618a6/html/tables/advanced/spending-record-finished.html",
+      "bytes": 1618,
+      "sha256": "a8150ad3b9dfdcecc8833afda5d86b5e41c028648b82007b998ffa39684f2807"
+    },
+    {
+      "path": "html/tables/advanced/minimal-table.css",
+      "gitBlob": "22ccb5931649c12e09dfa18eeb174eabdb21d781",
+      "url": "https://github.com/mdn/learning-area/blob/21973263ba859ff3477919087b488157f9d618a6/html/tables/advanced/minimal-table.css",
+      "bytes": 465,
+      "sha256": "8d2756230bc7bdfc1f43a6b4c89041447f7aafaf1ba971e9882795fd4ecb517b"
+    },
+    {
+      "path": "LICENSE",
+      "gitBlob": "670154e3538863b2d9891fd5483160fbdfc89164",
+      "url": "https://github.com/mdn/learning-area/blob/21973263ba859ff3477919087b488157f9d618a6/LICENSE",
+      "bytes": 6555,
+      "sha256": "36ffd9dc085d529a7e60e1276d73ae5a030b020313e6c5408593a6ae2af39673"
+    }
+  ],
+  "license": "CC0-1.0",
+  "repository": "https://github.com/mdn/learning-area",
+  "commit": "21973263ba859ff3477919087b488157f9d618a6",
+  "deliveryMapping": {
+    "index.html": "html/tables/advanced/items-sold-headers.html",
+    "contact.html": "html/tables/advanced/spending-record-finished.html",
+    "minimal-table.css": "html/tables/advanced/minimal-table.css"
+  },
+  "mutation": {
+    "projectId": "fresh-mdn-derived-wrong-columns",
+    "file": "index.html",
+    "operation": "Swap Antwerp trousers andrings values andappend explicitly untrusted comment; allotherbytes unchanged"
+  },
+  "limits": [
+    "Two different educational HTMLexamples combinedintoone test delivery; not anoriginal upstreammulti-pageproject.",
+    "Authorhas seen originalfiles; no providerresponses exist forthese cases.",
+    "SameMDNpublisher as baseline8, not independentpublishergeneralization.",
+    "This seal locks corpus/source/references; final implementation hash/request freeze must be refreshed aftercodechanges beforefirstcalls."
+  ]
+}

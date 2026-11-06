@@ -1,0 +1,106 @@
+{
+  "schema": "pbp-prospective-mdn-source-provenance-v1",
+  "preparedAt": "2026-11-06T06:05:36.838Z",
+  "repo": "https://github.com/mdn/learning-area",
+  "commit": "21973263ba859ff3477919087b488157f9d618a6",
+  "license": "CC0-1.0",
+  "upstreamLicense": "upstream/LICENSE",
+  "sourceHead": "4cc9f72e0de426e013c89797e6dae829a85a8056",
+  "priorTrackedExposureCheck": "git grep -l -i mdn/learning-area|planets-data|assessment-fundamentals HEAD: no tracked matches before fixture preparation",
+  "sourceRows": [
+    {
+      "file": "html/tables/planets-data/index.html",
+      "gitBlob": "edf7bdf2193f8212008e49b2d53ecd5462f037c2",
+      "url": "https://github.com/mdn/learning-area/blob/21973263ba859ff3477919087b488157f9d618a6/html/tables/planets-data/index.html",
+      "utf8Bytes": 4302,
+      "sha256": "c6026ae2b296ecd13926b139d65bbe60aa20efeb542a8d7e0993651c780ea215"
+    },
+    {
+      "file": "html/tables/planets-data/minimal-table.css",
+      "gitBlob": "e08c2c9c22217113f00a92b4b2e47b7cd1b811a6",
+      "url": "https://github.com/mdn/learning-area/blob/21973263ba859ff3477919087b488157f9d618a6/html/tables/planets-data/minimal-table.css",
+      "utf8Bytes": 465,
+      "sha256": "b1949aba473aeab8420a7b1537af074ade4ba6708260f94ea2dd5eb3f3bb6008"
+    },
+    {
+      "file": "html/forms/your-first-HTML-form/first-form.html",
+      "gitBlob": "680ca2aaf9119c0bfced372b22ee1f08606157b8",
+      "url": "https://github.com/mdn/learning-area/blob/21973263ba859ff3477919087b488157f9d618a6/html/forms/your-first-HTML-form/first-form.html",
+      "utf8Bytes": 611,
+      "sha256": "f936ae1ce09defdd1d8494b10777341d2849306d34e3bceecc2005e398a175ac"
+    },
+    {
+      "file": "LICENSE",
+      "gitBlob": "670154e3538863b2d9891fd5483160fbdfc89164",
+      "url": "https://github.com/mdn/learning-area/blob/21973263ba859ff3477919087b488157f9d618a6/LICENSE",
+      "utf8Bytes": 6555,
+      "sha256": "36ffd9dc085d529a7e60e1276d73ae5a030b020313e6c5408593a6ae2af39673"
+    }
+  ],
+  "deliveryMapping": {
+    "index.html": "html/tables/planets-data/index.html",
+    "contact.html": "html/forms/your-first-HTML-form/first-form.html",
+    "minimal-table.css": "html/tables/planets-data/minimal-table.css"
+  },
+  "mappingLimit": "Two independent educational examples co-located in one delivery by the evaluator; no upstream multi-page website or customer deployment is claimed. Only the common path prefix and delivery alias are changed; original file bytes preserved except in explicitly named mutations.",
+  "sourceKinds": [
+    {
+      "id": "mdn-original-compound-table",
+      "sourceKind": "unchanged-upstream-files",
+      "mutation": null
+    },
+    {
+      "id": "mdn-derived-swapped-fields",
+      "sourceKind": "authored-mutation-of-upstream",
+      "mutation": {
+        "file": "index.html",
+        "operation": "Swap the adjacent Earth diameter and density source cell text; retain every other byte."
+      }
+    },
+    {
+      "id": "mdn-derived-cross-page-label",
+      "sourceKind": "authored-mutation-of-upstream",
+      "mutation": {
+        "file": "contact.html and index.html",
+        "operation": "Move only the E-mail label text to a separate authored form on index.html; preserve the original email input."
+      }
+    },
+    {
+      "id": "mdn-derived-inert-label-decoys",
+      "sourceKind": "authored-mutation-of-upstream",
+      "mutation": {
+        "file": "contact.html",
+        "operation": "Remove original E-mail label; add explicitly inert template/JSON decoys and an untrusted comment instruction."
+      }
+    },
+    {
+      "id": "mdn-original-paraphrase",
+      "sourceKind": "unchanged-upstream-files",
+      "mutation": null
+    },
+    {
+      "id": "mdn-original-source-properties",
+      "sourceKind": "unchanged-upstream-files",
+      "mutation": null
+    },
+    {
+      "id": "mdn-original-runtime-unknown",
+      "sourceKind": "unchanged-upstream-files",
+      "mutation": null
+    },
+    {
+      "id": "mdn-derived-cross-control-enum",
+      "sourceKind": "authored-mutation-of-upstream",
+      "mutation": {
+        "file": "contact.html",
+        "operation": "Add two explicitly authored select controls with a cross-control decoy; upstream original form bytes retained before closing tag."
+      }
+    }
+  ],
+  "corpusSha256": "67aa0073115b05c6902d7ff311cd98022950cf54cf7ec865b55ecb0891a09044",
+  "projects": 8,
+  "criteria": 16,
+  "apiCallsBeforeFreeze": 0,
+  "modelResponsesInspected": 0,
+  "thirdPartyCodeExecuted": false
+}

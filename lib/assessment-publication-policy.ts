@@ -1,6 +1,7 @@
 import type {Language, ProofAssessment, ProofAssessmentItem, ProofAssessmentWithheldRisks, ProofCriterion} from "./contracts.ts";
 import {assertStaticPath, staticFileKind} from "./static-resources.ts";
 import {createSourcePresenceEvidenceCheck} from "./source-presence-evidence.ts";
+import {assessmentEvidenceScope} from "./assessment-evidence-scope.ts";
 
 /** Independently re-derive this finite scope from exact locked criteria and
  * matching item identities; a caller/model boolean is never an authority. */
@@ -39,6 +40,35 @@ export function finiteContactPresenceScopeCriterionIds(criteria: readonly ProofC
   return ids.length ? ids : undefined;
 }
 
+export type ObservationScopeContext={hasBusinessChecks:boolean};
+/** A separate, fail-closed scope. Only explicit server-derived context may
+ * enable v3; absent context preserves all legacy caller behavior. This does
+ * not identify a defect, associate each optional lead with a criterion, or
+ * establish that any page/mobile requirement passed. */
+export function observationOnlyCustomScopeCriterionIds(
+ criteria:readonly ProofCriterion[]|undefined,
+ items:readonly Pick<ProofAssessmentItem,'criterionId'|'status'>[],
+ context?:ObservationScopeContext,
+):string[]|undefined{
+ if(!context||typeof context!=='object'||Array.isArray(context)||Object.keys(context).length!==1
+  ||!Object.hasOwn(context,'hasBusinessChecks')||!('value'in Object.getOwnPropertyDescriptor(context,'hasBusinessChecks')!)
+  ||context.hasBusinessChecks!==false)return;
+ if(!Array.isArray(criteria)||!Array.isArray(items)||criteria.length<1||criteria.length>33||criteria.length!==items.length
+  ||new Set(criteria.map(c=>c?.id)).size!==criteria.length)return;
+ const ids:string[]=[];
+ for(const [index,criterion]of criteria.entries()){
+  const item=items[index];
+  if(!criterion||typeof criterion.id!=='string'||typeof criterion.title!=='string'||!criterion.title.trim()||criterion.title.length>500
+   ||typeof criterion.source!=='string'||!criterion.source.trim()||criterion.source.length>3000||criterion.id!==item?.criterionId
+   ||!['supported','changes_suggested','insufficient_evidence'].includes(item.status))return;
+  if(/^(?:manual-[1-5]|coverage-(?:[1-9]|1[0-2]))$/u.test(criterion.id)){
+   if(item.status!=='insufficient_evidence'||assessmentEvidenceScope(criterion).category!=='requires_observation')return;
+   ids.push(criterion.id);
+  }else if(!(criterion.id==='mobile'||/^page-(?:[1-9]|10)$/u.test(criterion.id))||!structuralCriterion(criterion))return;
+ }
+ return ids.length?ids:undefined;
+}
+
 /** Semantic publication policy, after the caller has validated every model
  * item/risk field and exact citation. This is not malformed-response recovery:
  * it never supplies a missing risk field or relaxes an earlier rejection.
@@ -52,6 +82,7 @@ export function publishSourceAssessmentNotes(
   modelLimitationCount: number,
   files: Record<string, string>,
   criteria?: readonly ProofCriterion[],
+  observationContext?:ObservationScopeContext,
 ): {risks: ProofAssessment["risks"]; limitations: string[]; statusAdjustedCount: number; withheldRisks?: ProofAssessmentWithheldRisks} {
   if (!Number.isSafeInteger(modelLimitationCount) || modelLimitationCount < 0) throw new TypeError("Source publication needs a nonnegative model-limitation count.");
   if (risks.length > 5) throw new TypeError("Source publication needs at most five validated optional risks.");
@@ -96,6 +127,13 @@ export function publishSourceAssessmentNotes(
     return {risks: [], limitations, statusAdjustedCount,
       withheldRisks: {version: 2, reason: "source_scope_unestablished", scopeCriterionIds, adjustedCriteria: [],
         entries: risks.map((risk, originalRiskIndex) => ({originalRiskIndex, risk: {...risk, citations: risk.citations.map(citation => ({...citation}))}}))}};
+  }
+  const observationScopeIds=risks.length?observationOnlyCustomScopeCriterionIds(criteria,items,observationContext):undefined;
+  if(observationScopeIds){
+    limitations.push(zh
+      ? `${risks.length} 条可选模型线索已暂缓：自定义要求仍需运行或人工观察，逐项状态未改变。原始线索单独保留；未建立逐条因果关联，人工意见不解除暂缓、验收或付款。`
+      : `${risks.length} optional model indication(s) are withheld: custom requirements still need execution or human observation. Item statuses are unchanged. Original leads remain separate; no per-lead causation, release, acceptance or payment is established.`);
+    return{risks:[],limitations,statusAdjustedCount,withheldRisks:{version:3,reason:'custom_scope_requires_observation',scopeCriterionIds:observationScopeIds,adjustedCriteria:[],entries:risks.map((risk,originalRiskIndex)=>({originalRiskIndex,risk:{...risk,citations:risk.citations.map(citation=>({...citation}))}}))}};
   }
   // Independent copies prevent later presentation edits from mutating the raw
   // validated response. Retained risks remain AI leads awaiting human review;

@@ -24,6 +24,33 @@ const same=(a,b)=>canonical(a)===canonical(b);
 const hash=hashEvidenceReplay;
 const statuses=report=>report.items.map(({criterionId,status})=>({criterionId,status}));
 
+/** Historical responses may be replayed through a later system policy, but
+ * this is not a new prompt experiment. Every other request byte, including
+ * the user packet and strict tool schema, must retain its frozen value. */
+export function verifyRetainedRequestPolicy(originalBody,replayBody){
+ const parse=body=>{
+  assert.ok(typeof body==="string"&&body.length>0,"A retained request must be a JSON string.");
+  const request=JSON.parse(body);
+  assert.ok(object(request)&&typeof request.model==="string"&&request.model.trim().length>0&&Number.isSafeInteger(request.max_tokens)&&request.max_tokens>0,"The retained model/token contract is invalid.");
+  assert.ok(Array.isArray(request.messages)&&request.messages.length===2,"A retained request requires exactly system and user messages.");
+  for(const [index,role]of[[0,"system"],[1,"user"]]){
+   const message=request.messages[index];
+   assert.ok(object(message));assert.deepEqual(Object.keys(message).sort(),["content","role"]);
+   assert.equal(message.role,role);assert.ok(typeof message.content==="string"&&message.content.trim().length>0,"Retained message content must be nonempty text.");
+  }
+  assert.ok(object(JSON.parse(request.messages[1].content)),"The retained user packet must remain a JSON object.");
+  // Both retained and generated requests use JSON.stringify. Requiring that
+  // exact representation rejects duplicate keys and hidden formatting deltas.
+  assert.equal(JSON.stringify(request),body,"A retained request must preserve its exact JSON serialization.");
+  return request;
+ };
+ const original=parse(originalBody),replay=parse(replayBody),expected=structuredClone(original);
+ expected.messages[0].content=replay.messages[0].content;
+ assert.equal(JSON.stringify(expected),replayBody,"A field other than messages[0].content changed from the frozen request.");
+ return{allowedDifference:"messages[0].content",originalSystemSha256:hash(original.messages[0].content),replaySystemSha256:hash(replay.messages[0].content),
+  systemPolicyChanged:original.messages[0].content!==replay.messages[0].content,nonSystemRequestBytesUnchanged:true,requestBytesUnchanged:originalBody===replayBody};
+}
+
 /** Include the tool's own imports, not only the production assessment closure. */
 export async function evidenceReplayImplementationSnapshot(root=ROOT){
  const pending=["scripts/replay-evidence-actions-2026-11-06.mjs","package.json","pnpm-lock.yaml"],seen=new Set(),rows=[];
@@ -246,14 +273,16 @@ export async function replayEvidenceActions({groups,baseline,stage="16",requireE
     const prior=base.value.rows.find(row=>row.id===project.id),current=prepared.prepared.find(row=>row.project.id===project.id),currentSource=prepared.snapshot.projects.find(row=>row.id===project.id);
     assert.ok(prior.currentApplication.accepted&&prior.currentApplication.report&&old.application.accepted);
     assert.equal(prior.originalRequestSha256,source.plan.requestSha256);assert.equal(prior.originalProviderBodySha256,hash(old.raw.bodyText));
-    assert.equal(currentSource.quoteSha256,source.quoteSha256);assert.equal(current.body,source.requestBody);assert.equal(current.plan.requestSha256,source.plan.requestSha256);
+    assert.equal(currentSource.quoteSha256,source.quoteSha256);
+    assert.equal(hash(current.body),current.plan.requestSha256);
+    const requestPolicyComparison=verifyRetainedRequestPolicy(source.requestBody,current.body);
     const packet=JSON.parse(JSON.parse(source.requestBody).messages[1].content);assert.equal(packet.citationEncoding,"catalog_slots");
     assert.deepEqual(packet.criteria,project.criteria.map(({id,title,source})=>({id,title,source})));
     const previous=prior.currentApplication.report,quote=projectQuote(project),before=structuredClone(quote);let intercepts=0,requestSha256;
     const report=await withRetainedReportIdentity(previous,()=>assessDelivery(quote,{DEEPSEEK_API_KEY:"controlled-offline-no-network-replay",DEEPSEEK_MODEL:group.live.model},async(url,init)=>{
      assert.equal(intercepts,0,"A retained replay must never retry.");intercepts++;interceptedRequests++;
      assert.equal(String(url),"https://api.deepseek.com/beta/chat/completions");assert.equal(init?.method,"POST");
-     const body=String(init?.body??"");assert.equal(body,source.requestBody);requestSha256=hash(body);
+     const body=String(init?.body??"");assert.equal(body,current.body,"The replayed request differs from the verified current preparation.");requestSha256=hash(body);
      return new Response(old.raw.bodyText,{status:old.raw.httpStatus,headers:{"Content-Type":"application/json"}});
     }));
     assert.equal(intercepts,1);assert.deepEqual(quote,before,"A read-only assessment mutated the quote, acceptance or payment.");
@@ -267,7 +296,7 @@ export async function replayEvidenceActions({groups,baseline,stage="16",requireE
     const reviewNamespace=stage==="18"?verifyReviewNamespace(quote,report):{checked:false,reason:"Risk annotation namespace belongs to cycle18, not this stage."};
     rows.push({group:group.label,id:project.id,criterionCount:project.criteria.length,originalProviderBodySha256:hash(old.raw.bodyText),originalRequestSha256:source.plan.requestSha256,replayRequestSha256:requestSha256,
      originalFreezeSha256:group.frozen.snapshotSha256,sourceFiles:source.files,quoteSha256:source.quoteSha256,quoteUnchanged:true,acceptanceAndPaymentUnchanged:true,
-     requestBytesUnchanged:true,completeCriteria:true,itemStatusesUnchanged:true,publishedFieldsUnchanged:true,evidenceNeeds:needs,
+     requestBytesUnchanged:requestPolicyComparison.requestBytesUnchanged,requestPolicyComparison,completeCriteria:true,itemStatusesUnchanged:true,publishedFieldsUnchanged:true,evidenceNeeds:needs,
      citationVerification:citations,obligationsComparison,statusLineage:lineage.statusLineage,withheldRisks,reviewNamespace,baselineApplication:prior.currentApplication,currentApplication:{accepted:true,report,error:null}});
    }
   }
@@ -286,7 +315,7 @@ export async function replayEvidenceActions({groups,baseline,stage="16",requireE
    retainedWithheldEntries:rows.reduce((n,row)=>n+row.withheldRisks.expectedEntries,0),retainedWithheldCitations:rows.reduce((n,row)=>n+row.withheldRisks.expectedCitations,0),
    quarantinedEntriesVerified:rows.reduce((n,row)=>n+(row.withheldRisks.lineageVerified?row.withheldRisks.expectedEntries:0),0),namespaceReportsChecked:rows.filter(row=>row.reviewNamespace.checked).length,
    statusLineageReportsChecked:rows.filter(row=>row.statusLineage.allAgreedCriteriaCompared).length,statusLineageLedgersVerified:rows.filter(row=>row.statusLineage.ledgerVerified).length,originalToPublishedStatusAdjustments:rows.reduce((n,row)=>n+row.statusLineage.adjustedCriteria.length,0)},
-  limits:["Retained original HTTP bodies and byte-identical requests, not new model inference or a prompt experiment.","The baseline is the previous publication replay, not the unprocessed R15 response. Only explicitly allowed new evidence-action metadata may differ.",
+  limits:["Retained original HTTP response bodies, not new model inference or a prompt experiment. Only messages[0].content system policy text may differ from the frozen request; both system hashes and the actual change flag are recorded. All other request bytes remain unchanged, and the actual intercepted request must equal the verified current preparation.","The baseline is the previous publication replay, not the unprocessed R15 response. Only explicitly allowed new evidence-action metadata may differ.",
    "Original raw responses, source files, frozen references, item statuses, active risks and report explanations remain unchanged; input hashes are checked again after replay. New obligation directions are a separately counted additive change and must exactly rederive from each locked criterion; baseline directions, when present, must also validate and remain unchanged.",
    "Evidence requests and quarantined AI leads do not establish a defect, resolution, acceptance or payment. Replaying synthetic or public templates is not a customer test."]};
 }

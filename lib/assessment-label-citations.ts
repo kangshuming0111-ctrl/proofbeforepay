@@ -18,14 +18,27 @@ function labelsIn(source: string): Label[] | undefined {
   let issue = false, visits = 0;
   const document = parse(source, {sourceCodeLocationInfo: true, scriptingEnabled: true,
     onParseError: error => {if (error.code !== "missing-doctype") issue = true;}});
-  const labels: Label[] = [], stack: {node: Node; form?: string; depth: number}[] = [{node: document, depth: 0}];
+  const labels: Label[] = [], links: {label: Label; target: string}[] = [];
+  const controls = new Map<string, {form?: string; explicitForm?: string}[]>(), forms = new Map<string, string[]>(), ids = new Map<string, number>();
+  const stack: {node: Node; form?: string; depth: number}[] = [{node: document, depth: 0}];
   while (stack.length) {
     const {node, form, depth} = stack.pop()!;
     if (++visits > 50_000 || depth > 512) return;
     let group = form;
     if (element(node)) {
-      if (node.namespaceURI !== "http://www.w3.org/1999/xhtml" || INERT.has(node.tagName)) continue;
-      if (node.tagName === "form") group = String(node.sourceCodeLocation?.startOffset ?? "unlocated");
+      if (node.namespaceURI !== "http://www.w3.org/1999/xhtml" || INERT.has(node.tagName) && node.tagName !== "textarea") continue;
+      const nodeId = node.attrs.find(attr => attr.name === "id")?.value;
+      if (nodeId) ids.set(nodeId, (ids.get(nodeId) ?? 0) + 1);
+      if (node.tagName === "form") {
+        group = String(node.sourceCodeLocation?.startOffset ?? "unlocated");
+        const id = node.attrs.find(attr => attr.name === "id")?.value;
+        if (id) forms.set(id, [...(forms.get(id) ?? []), group]);
+      }
+      if (["input", "button", "meter", "output", "progress", "select", "textarea"].includes(node.tagName)
+        && !(node.tagName === "input" && node.attrs.find(attr => attr.name === "type")?.value.toLowerCase() === "hidden")) {
+        const id = node.attrs.find(attr => attr.name === "id")?.value;
+        if (id) controls.set(id, [...(controls.get(id) ?? []), {form: group, explicitForm: node.attrs.find(attr => attr.name === "form")?.value}]);
+      }
       if (node.tagName === "label") {
         const parts: Part[] = [], pending: {node: Node; depth: number}[] = [{node, depth: 0}];
         while (pending.length) {
@@ -38,10 +51,23 @@ function labelsIn(source: string): Label[] | undefined {
           } else if (element(next.node) && (next.node.namespaceURI !== "http://www.w3.org/1999/xhtml" || INERT.has(next.node.tagName))) continue;
           if ("childNodes" in next.node) for (let i = next.node.childNodes.length - 1; i >= 0; i--) pending.push({node: next.node.childNodes[i], depth: next.depth + 1});
         }
-        labels.push({text: normalized(parts.map(p => p.value).join("")), ...(group ? {form: group} : {}), parts: parts.filter(p => normalized(p.value))});
+        const label: Label = {text: normalized(parts.map(p => p.value).join("")), ...(group ? {form: group} : {}), parts: parts.filter(p => normalized(p.value))};
+        labels.push(label);
+        const target = node.attrs.find(attr => attr.name === "for")?.value;
+        if (target !== undefined) links.push({label, target});
       }
     }
+    if (element(node) && node.tagName === "textarea") continue;
     if ("childNodes" in node) for (let i = node.childNodes.length - 1; i >= 0; i--) stack.push({node: node.childNodes[i], form: group, depth: depth + 1});
+  }
+  for (const {label, target} of links) {
+    const matches = controls.get(target) ?? [], control = matches.length === 1 ? matches[0] : undefined;
+    const explicit = control?.explicitForm === undefined ? undefined : forms.get(control.explicitForm);
+    const owner = control?.explicitForm === undefined ? control?.form : explicit?.length === 1 ? explicit[0] : undefined;
+    // Page-label source makes no control-association promise. For a requested
+    // common form, however, a for= target owned elsewhere cannot borrow its
+    // label's ancestor form. Unresolved associations remain unestablished.
+    if (!control || ids.get(target) !== 1 || owner !== label.form) delete label.form;
   }
   return issue ? undefined : labels;
 }

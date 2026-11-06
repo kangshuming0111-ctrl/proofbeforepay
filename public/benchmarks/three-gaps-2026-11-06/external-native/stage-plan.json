@@ -1,0 +1,31 @@
+{
+  "schema": "pbp-delivery-stage-plan-v1",
+  "runId": "stage-fastapi-1acae5a07962",
+  "syntheticOnly": true,
+  "scope": {
+    "projectId": "synthetic-native-fastapi",
+    "deliveryId": "official-tutorial-unmodified",
+    "criterionId": "manual-1",
+    "sourceRevision": "628c34e0cae200564d191c95d7edea78c88c4b5e",
+    "requirement": "Create a synthetic record, retain its native fields, and read the same record after restarting the application. Email is not supported."
+  },
+  "payloadDigest": "cc1521a390beb7aa72b5dec46d3b00454032e1b12aa8aecf29baddd31fdbe01d",
+  "stages": [
+    {
+      "stage": "submit",
+      "coverage": "adapter"
+    },
+    {
+      "stage": "stored_record",
+      "coverage": "adapter"
+    },
+    {
+      "stage": "fresh_readback",
+      "coverage": "adapter"
+    },
+    {
+      "stage": "email_receipt",
+      "coverage": "unsupported"
+    }
+  ]
+}

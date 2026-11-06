@@ -1,0 +1,39 @@
+{
+  "schema": "pbp-cycle35-independent-post-adjudication-v1",
+  "reviewer": "Codex AI independent source and executable counterexamples; not a human usability study",
+  "deepseekReview": "post-deepseek.json",
+  "findings": [
+    {
+      "id": 1,
+      "decision": "rejected",
+      "reason": "The finding itself quotes assessDelivery catalog_slots entry then incorrectly calls production catalog_ids. Actual retained V3 production replay now asserts the canonical extra-verbatim-condition explanation, so unrelated guards do not account for result. Raw unknown stays unknown intentionally."
+    },
+    {
+      "id": 2,
+      "decision": "rejected-as-reproduced",
+      "reason": "The proposed then actually charge suffix contains both then and actually, explicitly rejected by continuation regex. Direct counterexample in focused test confirms requires_observation. An independent different sentence-boundary defect was found by external/root and fixed separately."
+    },
+    {
+      "id": 3,
+      "decision": "rejected",
+      "reason": "Existing repeatedSourceTitle already uses sourceLiteralDirective identity and blanks an identical whole quoted-label title. Executed repeated-title counterexample confirms source_text; no redundant second attribution needed."
+    }
+  ],
+  "independentAcceptedCorrections": [
+    {
+      "finding": "Unquoted source-label operands swallowed a full sentence boundary, e.g E-mail. Persist orders",
+      "fix": "sourceLabels pattern rejects sentence boundary only for unquoted label operands; quoted actionlike literal remains allowed. Same existing parser governs admission and descriptor."
+    },
+    {
+      "finding": "Case-sensitive explicit exact/verbatim marker could drop uppercase copy contracts; overly broad absent regex could bind a later wrong-value clause",
+      "fix": "Case-insensitive source markers; tightly adjacent absent-verbatim claim only, not not missing or another clause."
+    },
+    {
+      "finding": "A nonlabelable duplicate id before matching input was omitted from old label form-owner check",
+      "fix": "Active all-element id count must be exactly one for a referenced common-form label. Page-label source remains declaration-only and does not invent form association."
+    }
+  ],
+  "focusedTests": 53,
+  "typecheckBeforeFinalMinorCorrections": 0,
+  "evaluationCallsThisStage": 0
+}

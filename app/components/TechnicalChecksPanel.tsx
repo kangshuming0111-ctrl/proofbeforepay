@@ -8,13 +8,14 @@ import "../project-journey.css";
 export type TechnicalChecksPanelProps=ComponentProps<typeof ProjectJourneyPanel>&{
   focusRequest?:TechnicalChecksFocusRequest;
   hasSupplementalEvidence?:boolean;
+  stageEvidenceEnabled?:boolean;
 };
 type HistoryStatus={identity:string;state:"loading"|"known"|"unknown";hasRecords?:boolean};
 
 /** Optional developer tools mount on first use or retained technical evidence.
  * Collapsing only changes visibility: it never unmounts a running driver,
  * discards local mappings or resets a saved acceptance acknowledgement. */
-export function TechnicalChecksPanel({focusRequest,hasSupplementalEvidence=false,...journeyProps}:TechnicalChecksPanelProps){
+export function TechnicalChecksPanel({focusRequest,hasSupplementalEvidence=false,stageEvidenceEnabled=true,...journeyProps}:TechnicalChecksPanelProps){
   const {quote,role,language,request}=journeyProps,delivery=quote.proof.delivery!;
   const tr=(zh:string,en:string)=>language==="zh"?zh:en;
   const identity=`${quote.id}:${delivery.id}:${role}`,current=useRef(identity);current.current=identity;
@@ -66,7 +67,7 @@ export function TechnicalChecksPanel({focusRequest,hasSupplementalEvidence=false
       <summary><span>{tr("开发者深度检验（可选）","Developer checks (optional)")}</span><b>{badge}</b></summary>
       <p>{tr("需要核对表单是否保存、预约或取消等动态行为时，再由开发者选择对应工具。展开、查看和读取申请不会自动运行测试、验收或付款。","For form storage, bookings, cancellation or other supported dynamic checks, a developer can choose the relevant tool. Opening, viewing or reading applications does not run tests, accept delivery or pay.")}</p>
       {disclosure.activated&&<>
-        <DeliveryStageEvidence language={language}/>
+        <DeliveryStageEvidence key={`stage-${quote.id}-${delivery.id}-${role}`} language={language} quote={quote} role={role} request={request} onApply={journeyProps.onApply} enabled={stageEvidenceEnabled} onBusy={journeyProps.onBusy}/>
         <ProjectJourneyPanel {...journeyProps}/>
       </>}
     </details>

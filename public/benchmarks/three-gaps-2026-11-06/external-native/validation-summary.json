@@ -1,0 +1,135 @@
+{
+  "schema": "pbp-controlled-native-validation-v1",
+  "date": "2026-11-06",
+  "publishedArtifacts": {
+    "stage-plan.json": {
+      "bytes": 873,
+      "sha256": "c45a97c5a071ac44094cf79220b6b5ce402fa84c7b6bc80c1eacf5b8849cf6d9",
+      "copy": "Byte-identical first frozen local artifact; no scope rewrite"
+    },
+    "stage-report.json": {
+      "bytes": 3119,
+      "sha256": "de2d318ff7c44f5af757f16cc243992c3042318f2f75b81433cccf64e9433152",
+      "copy": "Byte-identical first frozen local artifact; no scope rewrite"
+    },
+    "source-provenance.json": {
+      "bytes": 911,
+      "sha256": "d14e376f9b2f54a325f1c8bafa32b3871d33923da995b8b5606b12df4b57e41f",
+      "copy": "Byte-identical first frozen local artifact; no scope rewrite"
+    }
+  },
+  "stageReportScope": "First frozen developer loopback experiment with fictional generic project/delivery identifiers. The separately observed live workbench used its own downloaded current-scope plan and report.",
+  "actualNativeApplication": {
+    "application": "Official FastAPI SQL tutorial, unmodified upstream Python source",
+    "upstreamCommit": "628c34e0cae200564d191c95d7edea78c88c4b5e",
+    "upstreamSourceSha256": "6e09a1bf5f78a7d69e7d631a0697001a4e819d2b51898e9fc9a7eac488c9679b",
+    "runtimeVersions": {
+      "fastapi": "0.115.12",
+      "sqlmodel": "0.0.24",
+      "uvicorn": "0.34.2"
+    },
+    "actualNativeHttpRequests": [
+      {
+        "method": "GET",
+        "route": "/heroes/",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "route": "/heroes/",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "route": "/heroes/",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "route": "/heroes/1",
+        "status": 200
+      }
+    ],
+    "nativeHttpWriteCount": 1,
+    "nativeSqliteQueries": 2,
+    "applicationRestarts": 1,
+    "automaticWriteRetries": 0,
+    "stageResults": {
+      "matched": 3,
+      "mismatch": 0,
+      "unknown": 0,
+      "unsupported": 1
+    },
+    "unsupportedStage": "email_receipt",
+    "nativeData": "Synthetic only, ephemeral loopback application and disposable SQLite directory",
+    "browserButtonsObserved": false,
+    "externalEmailObserved": false,
+    "authenticationWorkflowObserved": false,
+    "customerProductionWebsiteObserved": false
+  },
+  "localD1AndApiValidation": {
+    "scope": "Owned isolated fresh D1 and actual application routes with synthetic gateway identities",
+    "groupsPassed": 5,
+    "groups": [
+      "Participant authorization and exact scope rejection",
+      "Actual server role, cross-participant readback and concurrent duplicate retention",
+      "Three-record cap without eviction and compact list projection",
+      "New-version stale refusal and immutable old-version report retention",
+      "Append after acceptance preserves the frozen decision and unfunded payment"
+    ],
+    "providerCalls": 0,
+    "realUserLoginsObserved": false,
+    "nativeBackendRunByTheseApiTests": false
+  },
+  "liveWorkbenchValidation": {
+    "observedVersion": 84,
+    "sourceAtObservation": "e5ca13c03ebc988875adbf916862c7f1d48d39ab",
+    "identityMode": "Same-account controlled owner-scoped buyer/seller roleplay",
+    "downloadedCurrentScopePlan": true,
+    "reviewedPublicAdapterExecutedAgainstNativeTutorial": true,
+    "explicitlySavedCooperativeReports": 1,
+    "sellerReloadShowsStoredReport": true,
+    "buyerViewShowsSameStoredReport": true,
+    "wrongScopeSaveDisabled": true,
+    "independentSecondParticipantLoginObserved": false,
+    "reportedObservationMeaning": "A participant-supplied report was explicitly associated with the exact delivery and original criterion. Its persisted association is not an execution signature or deployment-source attestation."
+  },
+  "humanFirstUse": {
+    "participants": 0,
+    "independentUnfamiliarDeveloperAdoptionObserved": false
+  },
+  "reproduction": {
+    "recipePath": "examples/delivery-stage-staging/fastapi-native/README.md",
+    "publicRecipeUrl": "https://github.com/kangshuming0111-ctrl/proofbeforepay/tree/codex/public-release/examples/delivery-stage-staging/fastapi-native",
+    "adapterPath": "examples/delivery-stage-staging/fastapi-native/adapter.mjs",
+    "upstreamFilesLocation": "examples/delivery-stage-staging/fastapi-native/",
+    "dependencyLockPath": "examples/delivery-stage-staging/fastapi-native/requirements.txt",
+    "optInRuntime": "A separately installed isolated Python interpreter is explicitly selected using PBP_FASTAPI_PYTHON. No installer or adapter runs from report import.",
+    "cli": [
+      "node",
+      "--experimental-strip-types",
+      "scripts/run-delivery-stage-probe.mjs",
+      "--plan",
+      "<local-plan.json>",
+      "--adapter",
+      "examples/delivery-stage-staging/fastapi-native/adapter.mjs",
+      "--output",
+      "<new-local-report.json>"
+    ]
+  },
+  "thirdPartyLicense": {
+    "spdx": "MIT",
+    "copyright": "Copyright (c) 2018 Sebastián Ramírez",
+    "licensePath": "examples/delivery-stage-staging/fastapi-native/LICENSE",
+    "upstreamLicenseUrl": "https://raw.githubusercontent.com/fastapi/fastapi/628c34e0cae200564d191c95d7edea78c88c4b5e/LICENSE",
+    "licenseSha256": "4ec89ffc81485b97fec584b2d4a961032eeffe834453894fd9c1274906cc744e"
+  },
+  "limits": [
+    "Third-party framework tutorial exercised by a developer, not an independently adopted merchant website.",
+    "The published report is a cooperative observation record. Its digest checks internal consistency; reporter authenticity and execution are not independently attested.",
+    "The live uploaded scope page is not claimed to be the deployed native backend.",
+    "No external email, payment, AI accuracy improvement or human first-use result is established by this benchmark.",
+    "The three native matching stages and the one unsupported email stage stay separately visible. An accepted POST alone does not establish persistence or email delivery.",
+    "Application acceptance and payment decisions are unchanged by the cooperative appendix."
+  ]
+}

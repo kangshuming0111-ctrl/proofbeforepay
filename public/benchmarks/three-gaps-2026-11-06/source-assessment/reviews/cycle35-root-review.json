@@ -1,0 +1,205 @@
+{
+  "schema": "pbp-cycle35-root-independent-whole-answer-review-v1",
+  "reviewer": "Root Codex AI, separate from corpus author and implementation agent; not a human study",
+  "inputs": [
+    {
+      "file": "known-final-live.json",
+      "sha256": "726bf211dd0801b4ec51b4a5eec60aa761a0019d83564edccf0c087cb0cdb1e6"
+    },
+    {
+      "file": "fresh-first-live.json",
+      "sha256": "8b25b7c78958fc86290062d63ed3a3a8c0e11c48a1d7ba1ea58f7cccb851b858"
+    }
+  ],
+  "sourceReferenceVerification": "Before these calls, root independently inspected untouched signup/timetable source and all sealed references; corpus SHA17880268327895b09b1184835cad1dc6dfd6b3dfeabd15b78d4a93e3feecd154 unchanged. Known HTTPbin and MDN source/reference were independently inspected in earlier same-task phases.",
+  "rows": [
+    {
+      "id": "mdn-derived-cross-page-label",
+      "cohort": "known-regression",
+      "reason": "Item states and row relationship correct. Optional risk says visible without browser evidence and suggests deciding/removing the index fragment despite scope not establishing that obligation. Conditional review wording reduces, but does not eliminate, presentation risk; these are advisory leads, not established delivery defects.",
+      "rawStateMatches": 2,
+      "applicationStateMatches": 2,
+      "requiredCriteria": 2,
+      "rawIdsComplete": true,
+      "allFullItemsRisksAndLimitationsRead": true,
+      "rawWholeAnswerDecision": "qualified",
+      "applicationWholeAnswerDecision": "qualified"
+    },
+    {
+      "id": "mdn-derived-inert-label-decoys",
+      "cohort": "known-regression",
+      "reason": "Correct missing active-label and declared-email-type judgments. The explanation uses visible for other labels, though only source was inspected; limitations acknowledge visibility unobserved. Accept source conclusion only, not rendered visibility.",
+      "rawStateMatches": 2,
+      "applicationStateMatches": 2,
+      "requiredCriteria": 2,
+      "rawIdsComplete": true,
+      "allFullItemsRisksAndLimitationsRead": true,
+      "rawWholeAnswerDecision": "qualified",
+      "applicationWholeAnswerDecision": "qualified"
+    },
+    {
+      "id": "mdn-original-compound-table",
+      "cohort": "known-regression",
+      "reason": "Complete explanations, risks and limitations agree with scoped static facts and correct owners; browser/backend operation is not inferred.",
+      "rawStateMatches": 2,
+      "applicationStateMatches": 2,
+      "requiredCriteria": 2,
+      "rawIdsComplete": true,
+      "allFullItemsRisksAndLimitationsRead": true,
+      "rawWholeAnswerDecision": "accepted",
+      "applicationWholeAnswerDecision": "accepted"
+    },
+    {
+      "id": "mdn-derived-cross-control-enum",
+      "cohort": "known-regression",
+      "reason": "Complete explanations, risks and limitations agree with scoped static facts and correct owners; browser/backend operation is not inferred.",
+      "rawStateMatches": 2,
+      "applicationStateMatches": 2,
+      "requiredCriteria": 2,
+      "rawIdsComplete": true,
+      "allFullItemsRisksAndLimitationsRead": true,
+      "rawWholeAnswerDecision": "accepted",
+      "applicationWholeAnswerDecision": "accepted"
+    },
+    {
+      "id": "mdn-original-runtime-unknown",
+      "cohort": "known-regression",
+      "reason": "Both unknown outcomes are correct. Raw prose invents/overstates a 13-column count and a likely 375px outcome without measurement. Application replaces the explanations with canonical evidence limits and v3 withholds the original optional risk without a fictitious status change.",
+      "rawStateMatches": 2,
+      "applicationStateMatches": 2,
+      "requiredCriteria": 2,
+      "rawIdsComplete": true,
+      "allFullItemsRisksAndLimitationsRead": true,
+      "rawWholeAnswerDecision": "rejected",
+      "applicationWholeAnswerDecision": "accepted",
+      "executedSourceCheck": {
+        "method": "Root Python stdlib HTMLParser, first source table row; one colspan=2 plus ten th cells",
+        "logicalColumns": 12,
+        "rawClaim": 13,
+        "rawClaimCorrect": false,
+        "actualBrowserMeasured": false
+      }
+    },
+    {
+      "id": "httpbin-original-contact-fields",
+      "cohort": "known-regression",
+      "reason": "Complete explanations, risks and limitations agree with scoped static facts and correct owners; browser/backend operation is not inferred.",
+      "rawStateMatches": 2,
+      "applicationStateMatches": 2,
+      "requiredCriteria": 2,
+      "rawIdsComplete": true,
+      "allFullItemsRisksAndLimitationsRead": true,
+      "rawWholeAnswerDecision": "accepted",
+      "applicationWholeAnswerDecision": "accepted"
+    },
+    {
+      "id": "httpbin-original-options-and-time",
+      "cohort": "known-regression",
+      "reason": "Complete explanations, risks and limitations agree with scoped static facts and correct owners; browser/backend operation is not inferred.",
+      "rawStateMatches": 2,
+      "applicationStateMatches": 2,
+      "requiredCriteria": 2,
+      "rawIdsComplete": true,
+      "allFullItemsRisksAndLimitationsRead": true,
+      "rawWholeAnswerDecision": "accepted",
+      "applicationWholeAnswerDecision": "accepted"
+    },
+    {
+      "id": "httpbin-derived-wrong-radio-owner",
+      "cohort": "known-regression",
+      "reason": "Complete explanations, risks and limitations agree with scoped static facts and correct owners; browser/backend operation is not inferred.",
+      "rawStateMatches": 2,
+      "applicationStateMatches": 2,
+      "requiredCriteria": 2,
+      "rawIdsComplete": true,
+      "allFullItemsRisksAndLimitationsRead": true,
+      "rawWholeAnswerDecision": "accepted",
+      "applicationWholeAnswerDecision": "accepted"
+    },
+    {
+      "id": "c34-fresh-signup-original",
+      "cohort": "previously-uncalled-first-attempt",
+      "reason": "Complete explanations, risks and limitations agree with scoped static facts and correct owners; browser/backend operation is not inferred.",
+      "rawStateMatches": 2,
+      "applicationStateMatches": 2,
+      "requiredCriteria": 2,
+      "rawIdsComplete": true,
+      "allFullItemsRisksAndLimitationsRead": true,
+      "rawWholeAnswerDecision": "accepted",
+      "applicationWholeAnswerDecision": "accepted"
+    },
+    {
+      "id": "c34-fresh-signup-cross-page",
+      "cohort": "previously-uncalled-first-attempt",
+      "reason": "Item judgments correctly separate signup and timetable sources. Optional risk calls the index fragment Signup form and conditionally suggests adding Name there; the requirement has no explicit signup-file mapping, so this is scope clarification only, not a confirmed defect. Visible wording also lacks browser observation.",
+      "rawStateMatches": 2,
+      "applicationStateMatches": 2,
+      "requiredCriteria": 2,
+      "rawIdsComplete": true,
+      "allFullItemsRisksAndLimitationsRead": true,
+      "rawWholeAnswerDecision": "qualified",
+      "applicationWholeAnswerDecision": "qualified"
+    },
+    {
+      "id": "c34-fresh-signup-input-types",
+      "cohort": "previously-uncalled-first-attempt",
+      "reason": "Complete explanations, risks and limitations agree with scoped static facts and correct owners; browser/backend operation is not inferred.",
+      "rawStateMatches": 2,
+      "applicationStateMatches": 2,
+      "requiredCriteria": 2,
+      "rawIdsComplete": true,
+      "allFullItemsRisksAndLimitationsRead": true,
+      "rawWholeAnswerDecision": "accepted",
+      "applicationWholeAnswerDecision": "accepted"
+    },
+    {
+      "id": "c34-fresh-conjunction-runtime",
+      "cohort": "previously-uncalled-first-attempt",
+      "reason": "Both conjunctive outcomes correctly unknown. Raw optional screenreader/age hints and colon-exactness limitation are unverified; application canonical explanations/limitations and v3 withheld risks keep them separate from established findings.",
+      "rawStateMatches": 2,
+      "applicationStateMatches": 2,
+      "requiredCriteria": 2,
+      "rawIdsComplete": true,
+      "allFullItemsRisksAndLimitationsRead": true,
+      "rawWholeAnswerDecision": "qualified",
+      "applicationWholeAnswerDecision": "accepted"
+    }
+  ],
+  "summary": {
+    "projects": 12,
+    "criteria": 24,
+    "rawStatusMatches": 24,
+    "applicationStatusMatches": 24,
+    "rawRequiredIdsReturned": 24,
+    "citationSpansChecked": 65,
+    "citationSpansExact": 65,
+    "rawWholeAnswerReview": {
+      "accepted": 7,
+      "qualified": 4,
+      "rejected": 1
+    },
+    "applicationWholeAnswerReview": {
+      "accepted": 9,
+      "qualified": 3,
+      "rejected": 0
+    }
+  },
+  "engineeringDecision": "Proceed with bounded release; observed false-pass/extra-verbatim/over-abstention defects have retained replay tests and targeted guards, with full one-shot outcomes retained. Whole-answer prose remains qualified, optional source risks require human interpretation.",
+  "notClosed": [
+    "Visible/rendered wording in some model explanations has not been established by static source.",
+    "Conditional suggestions about unresolved page identity remain advisory, not an agreed obligation.",
+    "Model generalization, unfamiliar human usability and independent new merchant integration are not established."
+  ],
+  "accounting": {
+    "thisPhaseCalls": 12,
+    "thisTaskEvaluationCalls": 44,
+    "retryCalls": 0,
+    "estimatedTaskEvaluationCostUsd": 0.2653134,
+    "isInvoice": false
+  },
+  "boundaries": [
+    "No automatic repair, acceptance or payment",
+    "No replacement of prior failed first answers by latest results",
+    "No competitor same-condition measurement or championship superiority claim"
+  ]
+}

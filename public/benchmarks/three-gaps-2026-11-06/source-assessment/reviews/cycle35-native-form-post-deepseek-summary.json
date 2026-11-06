@@ -1,0 +1,63 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "completed": true,
+  "errors": [],
+  "report": {
+    "summary": "Focused review of the new native-form descriptor/parser (lib/native-form-source.ts), its single shared use by both admission and the negative-only citation witness, and the 16-test counterexample file. Source review found five concrete defects: (1) the time_attributes fixed step pattern ([1-9][0-9]{0,5}, max 86400) is unreachable for any 'time' control because HTML's step on time inputs is expressed in whole seconds and parsedSource rejects an input without a startTag; more importantly the descriptor accepts step 86400 while a time control's legal step grid is bounded by 86400 s only as the maximum allowed value but the regex accepts steps like '7' that are not multiples of 60 which HTML's time microsyntax forbids (the parser both over-accepts malformed time source sentences and under-accepts valid multiples expressed as step='00:01:00'); (2) descriptor admits an owner name/control name via identifier() that allows ':' and '.' and a leading digit, while witness compares raw name attributes with exact equality and attribute whitespace normalization differences means identifiers with leading/trailing whitespace in the attribute and tolerant literal() normalization are consistent, but the real gap is that identifier allows values like '2024' or 'a:b' that are legal descriptors yet the candidate prefix recognizer (line 41-42) requires 'The form source|The static source|The source content|The static .+? control' so a malformed time clause such as 'The contact control in form.html must declare type time and min 9:00 ...' (single-digit hour) is not candidate-recognized and therefore falls through to the ordinary content allowance; (3) choice label/value parser does not reject duplicate values across distinct labels (intended per packet) but the witness also allows the same input control node to satisfy two pair indexes when pairs share a value ('basic and basic' with distinct labels), which is contrary to 'explicit for unique id or implicit one labelable control' only if not intended — the packet says equal expected values across distinct labels are allowed, so this is consistent and not a finding; (4) labels family matches by normalized label text on label.form, but does not require the label's implicit control to be the only labelable control for the form-ownership claim — labels family is form-scoped only and does not claim binding, which matches the packet's 'labels family ... needs one form'; (5) real defect: labels family does not require a control inside the label at all. The stated rule says labels family needs one form, and packet says labels family explicitly is form source so needs one form; that is satisfied. However, blocker: parse5 renders the form-ownership for lable elements by assigning form only through owner form, matching design.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "lib/native-form-source.ts",
+        "line": 55,
+        "title": "time_attributes grammar accepts steps that are not valid time microsyntax and is inconsistent with valid time step forms",
+        "evidence": "Line 55: `step ([1-9][0-9]{0,5})\\.` only accepts integer seconds 1..999999 and line 56 rejects >86400. For input type=time the HTML step attribute is a step value in seconds or a time microsyntax (HH:MM, HH:MM:SS); the witness at line 151 compares `attr(control.node,\"step\")===descriptor.step` exactly. So a genuine seller page `<input type=\"time\" name=\"appointment\" min=\"09:00\" max=\"17:00\" step=\"00:15:00\">` (valid HTML) is `unknown:attributes_not_witnessed` only if the source sentence used `step 900`; if the sentence said `step 00:15:00`, the parser rejects it. Conversely `step 7` (7 s, not aligned to the 00:01 step base and not a multiple of 60) is accepted by the descriptor, but as an allowed step it is a legal attribute value generally; runtime step validity (step mismatch) is not modeled, so acceptance of odd values alone is not a defect. The actionable defect is the missing valid time-microsyntax form (HH:MM[:SS]) and the missing multiple-of-60 / step-value validity constraint implied by 'type time'.",
+        "reproduction": "Unexecuted reasoning trace: descriptor `The static appointment control in form.html must declare type time and min 09:00 and max 17:00 and step 900.` parses (900 in range). A truthful seller page written as `step=\"00:15:00\"` (browser-equivalent to 900 s) yields attr value \"00:15:00\" ≠ \"900\" and returns unknown('attributes_not_witnessed') even though the source statement is true. `step 00:15:00` in the requirement is rejected by parseNativeFormSourceDirective (no match at line 55). Missing test: no counterexample covers time microsyntax or HH:MM step forms in tests/native-form-source.test.ts.",
+        "suggestion": "Accept both `[1-9][0-9]{0,5}` and `(?:[01][0-9]|2[0-3]):[0-5][0-9](?::[0-5][0-9])?` for step; in the witness normalize both sides to seconds (and require positive step), or document that only integer-second step is supported in the unknown reason. Add tests for `step 00:15:00` and `step=\"900\"` vs `step=\"00:15:00\"`."
+      },
+      {
+        "severity": "P2",
+        "file": "lib/native-form-source.ts",
+        "line": 42,
+        "title": "candidate recognizer does not cover the time_attributes sentence prefix when the owner name contains spaces or when time clause is malformed",
+        "evidence": "Line 42 candidate patterns: `^The static .+? control in .+? must declare `. Line 55 parser requires `^The static (.+?) control in (${FILE}) must declare type time and min ... and step $.` `identifier()` (line 24) allows at most `[A-Za-z0-9_.:-]` with no spaces, so the only valid time owner forms are single identifiers. But a malformed time clause like `The static appointment control in form.html must declare type time and min 9:00 and max 17:00 and step 600.` (single-digit hour) does match the candidate prefix and correctly fails closed. However the labels/input/choice prefixes at lines 41-42 all require the verb form `must include `/`must declare `/`must (?:pair|associate) `; a time family sentence using the unsupported variant `The static appointment control in form.html must declare type time, min 09:00, max 17:00 and step 600.` (commas) hits `^The static .+? control in .+? must declare ` and is closed off — good. The concrete defect: candidate pattern `The static source in ...` (line 41) also matches any non-time `The static source in X must declare ...` sentence, which the parser only accepts for input_types; a malformed input_types such as `The static source in form.html must declare telephone as a tel input and contact as a totally-checks input.` is correctly closed. No over-borrow discovered; the candidate set is at least as broad as the parser for the four families. This entry is therefore not a defect, and should not be reported.",
+        "reproduction": "Not reported.",
+        "suggestion": "Not reported."
+      },
+      {
+        "severity": "P2",
+        "file": "lib/native-form-source.ts",
+        "line": 118,
+        "title": "explicit for association ignores label.form !== control.form only when form= retargets the label's owner",
+        "evidence": "Lines 116-118: `if(!ownForm(control,parsed)||label.form!==control.form)return false;` then for explicit `for` the check is `attr(control.node,\"id\")===id&&parsed.ids.get(id)?.length===1`. parse5 gives a label its form only from an ancestor form; a label outside a form with for=\"x\" pointing at `<input form=\"f\">` inside `<form id=\"f\">` has label.form undefined while control.form is the form, so `label.form!==control.form` returns false. Conversely a label inside `<form id=\"a\">` with for=\"basic\" and `<input id=\"basic\" form=\"b\">` has label.form = a, control.form = b → rejected. These match HTML association semantics (a form= override on a control decouples the label unless the owner is equal) so this is correct, not a finding. Not reported.",
+        "reproduction": "Not reported.",
+        "suggestion": "Not reported."
+      },
+      {
+        "severity": "P2",
+        "file": "lib/native-form-source.ts",
+        "line": 83,
+        "title": "any input missing sourceCodeLocation aborts the whole parsed document, so an unrelated crafted input can force unknown for a truthful criterion",
+        "evidence": "Line 83: `if(!at?.startTag)return;` inside the walk — a single input element anywhere in the document (for example generated by script, or one parse5 produces without a location such as after a stray `<` or from foster parenting in tables) makes parsedSource return undefined, so every criterion for that file becomes `unknown:source_unparseable`, including legitimate truthful ones. parse5 normally provides sourceCodeLocation for inputs when sourceCodeLocationInfo is on; inputs created without location are rare, but the early `return` also skips the `if(issue)return` check and leaves result partially built while being discarded. The behavior is fail-closed (never a false 'covered'), which matches 'missing ... remains unknown', so this is a product-flow quality risk rather than a correctness violation. Borderline; not reported as a defect because the packet explicitly requires unknown on missing/malformed evidence.",
+        "reproduction": "Not reported.",
+        "suggestion": "Not reported."
+      },
+      {
+        "severity": "P2",
+        "file": "lib/native-form-source.ts",
+        "line": 80,
+        "title": "label.form and id maps are captured before ownership checks, so duplicate-id inputs inside blocked subtrees can still collide for implicit binding",
+        "evidence": "Line 79 records every id including ids inside template/script/foreign nodes and hidden elements into result.ids (this is intended, used to reject ambiguous ids at line 118). Line 80: `skip=skip||blocked(node)||node.tagName===\"label\"&&labelAncestor;if(node.tagName===\"form\")owner=node;` A form element marked hidden is not pushed to inputs anyway, and its id still registers. A control in `<template>` with id=\"basic\" therefore makes `parsed.ids.get(\"basic\")?.length===1` false for the real `<input id=\"basic\">`, so a truthful explicit for association returns unknown (fail-closed, conservative). Not a defect under the negative-only rule. Not reported.",
+        "reproduction": "Not reported.",
+        "suggestion": "Not reported."
+      }
+    ],
+    "limitations": [
+      "Read-only review of the packet only; no files, shell, runtime or tests were executed, so test counts (16) and the prior nested-label fix are taken from the prompt, not verified.",
+      "Imported modules evidence only: assertStaticPath/staticFileKind (lib/static-resources.ts), ProofAssessmentCitation/ProofCriterion types, and parse5 behavior (sourceCodeLocation placement, implicit-form ownership for labels, namespace handling) were not in the packet; conclusions about parse5 semantics are based on the HTML spec and known parse5 API, not executed.",
+      "No decoder/contract shape or broader product wiring was in the packet, so warning-only or admission integration behavior (when the descriptor is used for admission scoring and when the witness is consulted) cannot be checked here.",
+      "Counterexample coverage gaps: no tests for time microsyntax steps, leading-digit/colon identifiers, form= retargeting of labels with for=, duplicate ids inside inert subtrees, foreign-namespace namespaced attributes (xml:lang vs lang), CR/null in excerpt, or empty-string name attributes.",
+      "Award comparison is based only on the supplied URL https://www.bemyapp.com/insights/ai-builders-challenge-with-ibm-bob-2026-winners.html and the stated PHAROS_INC2026/AgentReceipt facts; no independent verification or superiority claim is made.",
+      "Root verification date 2026-11-06 and award evidence association were supplied as context only and are not independently verified in this review."
+    ]
+  }
+}

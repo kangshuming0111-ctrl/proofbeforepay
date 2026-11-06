@@ -1,0 +1,287 @@
+{
+  "schema": "pbp-public-artifact-manifest-v1",
+  "artifacts": [
+    {
+      "path": "reviews/baseline-root-review.json",
+      "bytes": 3048,
+      "sha256": "4d86fcdc0563148a61714d1958244d3d0e013c4e0b00cac0b6e41a008a9419ab",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/first-root-independent-whole-answer-review.json",
+      "reviewerKind": "Root Codex AI; not human study"
+    },
+    {
+      "path": "reviews/cycle33-root-review.json",
+      "bytes": 2821,
+      "sha256": "3fa7afb2fa08b5befe3cf30c9ea9db2ffb5331a1cca69bd96bbe3a51e027620b",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/cycle33-root-independent-whole-answer-review.json",
+      "reviewerKind": "Root Codex AI; not human study"
+    },
+    {
+      "path": "reviews/cycle34-root-review.json",
+      "bytes": 8707,
+      "sha256": "3bb68b294598a467e278427cef46c91df5549f4be591d1a8359127237d21a2ec",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/cycle34-root-independent-whole-answer-review.json",
+      "reviewerKind": "Root Codex AI; not human study"
+    },
+    {
+      "path": "reviews/cycle35-root-review.json",
+      "bytes": 9606,
+      "sha256": "205eab7bb08f2363bc90ed88d80875157327f8655581a1e17a07156158681bac",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/cycle35/root-independent-whole-answer-review.json",
+      "reviewerKind": "Root Codex AI; not human study"
+    },
+    {
+      "path": "reviews/cycle35-author-review.json",
+      "bytes": 9445,
+      "sha256": "fe7e549719985d077618ea4e90a9d33f818ac65553d00a845df8d990eff95b28",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/cycle35/source-author-whole-answer-audit.json",
+      "reviewerKind": "Codex AI implementation author; not human study"
+    },
+    {
+      "path": "reviews/cycle35-external-counterexamples.json",
+      "bytes": 4318,
+      "sha256": "e70c1c7f3375ec1f093ce9025c3ad7a726dbb67314049bf494846887ab574fad",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/cycle35/external-final-readonly-check.json",
+      "reviewerKind": "Separate Codex AI agent; not human study"
+    },
+    {
+      "path": "reviews/cycle35-root-owner-before-after.json",
+      "bytes": 1153,
+      "sha256": "7d6fab6eefcaeeec222268a3519514fd4635fac1c1ca1296ca98dc1074d3d65e",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/cycle35-root-duplicate-owner-reproduction.json",
+      "reviewerKind": "Root Codex AI; not human study"
+    },
+    {
+      "path": "reviews/cycle35-plan-adjudication.json",
+      "bytes": 2636,
+      "sha256": "20815c18455da3fc336c40a9e5b259f42646b8a3be61c0fbe88f402ee43e63c7",
+      "reviewerKind": "Codex AI independent adjudication of DeepSeek feedback; not human study"
+    },
+    {
+      "path": "reviews/cycle35-post-adjudication.json",
+      "bytes": 2357,
+      "sha256": "9b7bd4785dd59b8ce5483c0935c9633161859bc597a489c37f5fabb6c14d64f7",
+      "reviewerKind": "Codex AI independent adjudication of DeepSeek feedback; not human study"
+    },
+    {
+      "path": "reviews/cycle35-final-post-adjudication.json",
+      "bytes": 1018,
+      "sha256": "58ad4b74cb039a2515edccadb2a73c964ffb69be1d1de4c26544bab89d8d81e8",
+      "reviewerKind": "Codex AI independent adjudication of DeepSeek feedback; not human study"
+    },
+    {
+      "path": "reviews/cycle35-native-form-final-adjudication.json",
+      "bytes": 4400,
+      "sha256": "725b9072ea0c2dd1d0c3a529898d275514e50a0584bf8d64c2c0f1056a54b7bc",
+      "reviewerKind": "Codex AI independent adjudication of DeepSeek feedback; not human study"
+    },
+    {
+      "path": "reviews/cycle35-plan-deepseek-summary.json",
+      "bytes": 15116,
+      "sha256": "7f77c67de6969e4cc1ea44409ebd99f431b19d0282f36ce80019b1b985590b48",
+      "reviewerKind": "DeepSeek model advisory review; findings may be rejected in independent adjudication"
+    },
+    {
+      "path": "reviews/cycle35-post-deepseek-summary.json",
+      "bytes": 8942,
+      "sha256": "f7abce816490b37bc05b32ce61f48cc40ee97a90ebf341be296447f9eec51ca5",
+      "reviewerKind": "DeepSeek model advisory review; findings may be rejected in independent adjudication"
+    },
+    {
+      "path": "reviews/cycle35-final-post-deepseek-summary.json",
+      "bytes": 5360,
+      "sha256": "202de63187d8c986583eb8e17787864eac9fc8ae2e38b7fc678c5f11041e8827",
+      "reviewerKind": "DeepSeek model advisory review; findings may be rejected in independent adjudication"
+    },
+    {
+      "path": "reviews/cycle35-native-form-post-deepseek-summary.json",
+      "bytes": 12046,
+      "sha256": "16345e759bb7f633b807b991c0816885afc4e7cf9b9371b6a4effc0740f6c11a",
+      "reviewerKind": "DeepSeek model advisory review; findings may be rejected in independent adjudication"
+    },
+    {
+      "path": "reviews/cycle35-native-form-post-fixed-deepseek-summary.json",
+      "bytes": 2811,
+      "sha256": "6637583e351aec0e8a224a344bbd7ea732ac5cfdf60a7f15dccab41901b689e2",
+      "reviewerKind": "DeepSeek model advisory review; findings may be rejected in independent adjudication"
+    },
+    {
+      "path": "provenance/mdn-original-provenance.json",
+      "bytes": 4468,
+      "sha256": "959910dad37646d9a1cc145fd4a6f1e48114ef30bc00c4ceeda7313a5b3442c1",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/provenance.json"
+    },
+    {
+      "path": "provenance/mdn-fresh-first-seal.json",
+      "bytes": 2942,
+      "sha256": "a0765926c6c5adf5bb8647cb7b72a67ff2b37448bef274d4e06a025bda79cada",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/fresh-four/corpus-seal.json"
+    },
+    {
+      "path": "provenance/mdn-final-first-original-seal.json",
+      "bytes": 3143,
+      "sha256": "e6c3dcf1d7b2f56660f4cb8066c9b8750b09ae90c0e812e87d417d4e9f7c5427",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/cycle34/fresh-four/corpus-seal.json"
+    },
+    {
+      "path": "provenance/mdn-final-first-continuation-seal.json",
+      "bytes": 789,
+      "sha256": "bfe28ca1a99069e393f149dc9c708932e0d11226dbdbb7ddcbad4e4de08b0135",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/cycle35/fresh-prospective-seal.json"
+    },
+    {
+      "path": "provenance/httpbin-provenance.json",
+      "bytes": 1229,
+      "sha256": "6b1c3daacd1f22e7f56fb0466a49b0cb0508a00dd4a3eb4fa722cd6336bc389e",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/httpbin-fresh-four/source-provenance.json"
+    },
+    {
+      "path": "provenance/httpbin-first-seal.json",
+      "bytes": 6414,
+      "sha256": "89b29a04027a06ec8d9e383757c38259b63ac1fa46b12bdfb4387bc9a2be08a0",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/httpbin-fresh-four/corpus-seal.json"
+    },
+    {
+      "path": "provenance/httpbin-ISC-license.json",
+      "bytes": 1051,
+      "sha256": "1e4b8b6fd7ce37f3b092980d2fc469837c7d3334dd3d52f3845aaf21dcc4f4ae",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/httpbin-fresh-four/upstream/LICENSE.json"
+    },
+    {
+      "path": "provenance/mdn-CC0-license.json",
+      "bytes": 7022,
+      "sha256": "2ef182242f11d7d328cbba198f46362ec81d39f99b10764fb3bed65c3532ac73"
+    },
+    {
+      "path": "records/baseline-first-eight/report.json",
+      "bytes": 874315,
+      "sha256": "d2194d606670504213efd83c6fef7a9fc47c4d1540750490758ed7649c952ba4",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/first-live.json"
+    },
+    {
+      "path": "records/baseline-first-eight/corpus.json",
+      "bytes": 61309,
+      "sha256": "67aa0073115b05c6902d7ff311cd98022950cf54cf7ec865b55ecb0891a09044",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/corpus.json"
+    },
+    {
+      "path": "records/baseline-first-eight/request-freeze.json",
+      "bytes": 630549,
+      "sha256": "08fd4705b010b8615547c619225561562d4a80099f9b667a78f5eb38ebecdbe3",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/first-freeze.json"
+    },
+    {
+      "path": "records/cycle33-known-eight/report.json",
+      "bytes": 896602,
+      "sha256": "58731f9c11d292bb913606fead6b6fb4ea2ad9bfbee78d18d4ab52cc70a9af1b",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/followup-live.json"
+    },
+    {
+      "path": "records/cycle33-known-eight/corpus.json",
+      "bytes": 61309,
+      "sha256": "67aa0073115b05c6902d7ff311cd98022950cf54cf7ec865b55ecb0891a09044",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/corpus.json"
+    },
+    {
+      "path": "records/cycle33-known-eight/request-freeze.json",
+      "bytes": 644923,
+      "sha256": "e5b06a770a184061decd1ca79923742b70ce617c0b9715de8a1cb6cfa4fd867e",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/followup-freeze.json"
+    },
+    {
+      "path": "records/cycle33-first-four/report.json",
+      "bytes": 434687,
+      "sha256": "665ce1ccbdb05d45df0055e1452387e6055122d06cdd6a3ee620e026973ac3df",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/fresh-four/first-live.json"
+    },
+    {
+      "path": "records/cycle33-first-four/corpus.json",
+      "bytes": 30377,
+      "sha256": "d7f0b3d276185ecc3f15e526560d408813947033e64138d867d3217547d2eb69",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/fresh-four/corpus.json"
+    },
+    {
+      "path": "records/cycle33-first-four/request-freeze.json",
+      "bytes": 287262,
+      "sha256": "1de4f4a449530b7aae9b7cb3aeb1e40e45012893c192545599be872c7c88569a",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/fresh-four/first-freeze.json"
+    },
+    {
+      "path": "records/cycle34-known-eight/report.json",
+      "bytes": 905360,
+      "sha256": "0c4dc2d7dc0c820468bf91ea9552e04c620d30f6c25d6b27badd0ada8690a51b",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/cycle34/known-final-live.json"
+    },
+    {
+      "path": "records/cycle34-known-eight/corpus.json",
+      "bytes": 60948,
+      "sha256": "189f820ac3914e01cee7a10542b08d1a7022c21f496247025c3b8580e7b50b94",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/cycle34/known-regression-corpus.json"
+    },
+    {
+      "path": "records/cycle34-known-eight/request-freeze.json",
+      "bytes": 637012,
+      "sha256": "40ef2cecda29a38d44f72c1a243a0f770deb155997e6b866c14688a343ccd53f",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/cycle34/known-final-freeze.json"
+    },
+    {
+      "path": "records/cycle34-httpbin-first-four/report.json",
+      "bytes": 329782,
+      "sha256": "dcc727acbbd89520ae0cf6e20d7a65ead29397c38cda3b6d2644e2635200c01d",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/httpbin-fresh-four/first-live.json"
+    },
+    {
+      "path": "records/cycle34-httpbin-first-four/corpus.json",
+      "bytes": 16555,
+      "sha256": "b91a6cfebb270e41a110a7ea18f00ebbe30cebf22dbf472730a43d2f4abcf02d",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/httpbin-fresh-four/corpus.json"
+    },
+    {
+      "path": "records/cycle34-httpbin-first-four/request-freeze.json",
+      "bytes": 197462,
+      "sha256": "8ce88f4a21888ca5518de74b851e14a11e162eb6c9536d3453280b006abc7965",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/httpbin-fresh-four/first-current-freeze.json"
+    },
+    {
+      "path": "records/cycle35-known-eight/report.json",
+      "bytes": 810156,
+      "sha256": "726bf211dd0801b4ec51b4a5eec60aa761a0019d83564edccf0c087cb0cdb1e6",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/cycle35/known-final-live.json"
+    },
+    {
+      "path": "records/cycle35-known-eight/corpus.json",
+      "bytes": 50343,
+      "sha256": "eb0976996facf00ac7a5149a7bf22e3726f25b26f1a3de4fd77645fbf09bd4c5",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/cycle35/known-regression-corpus.json"
+    },
+    {
+      "path": "records/cycle35-known-eight/request-freeze.json",
+      "bytes": 556683,
+      "sha256": "7fd8ebf98774201a1f7b59efc8f5a5f2640239cb0a705b471d19ccd14025afb9",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/cycle35/known-final-freeze.json"
+    },
+    {
+      "path": "records/cycle35-mdn-first-four/report.json",
+      "bytes": 374404,
+      "sha256": "8b25b7c78958fc86290062d63ed3a3a8c0e11c48a1d7ba1ea58f7cccb851b858",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/cycle35/fresh-first-live.json"
+    },
+    {
+      "path": "records/cycle35-mdn-first-four/corpus.json",
+      "bytes": 20862,
+      "sha256": "17880268327895b09b1184835cad1dc6dfd6b3dfeabd15b78d4a93e3feecd154",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/cycle35/fresh-prospective-corpus.json"
+    },
+    {
+      "path": "records/cycle35-mdn-first-four/request-freeze.json",
+      "bytes": 225086,
+      "sha256": "70bbacacee1493d56daba92b2cc88bef719470bd1f1ba52934c989f1c3031b01",
+      "originalArtifact": "outputs/three-gaps-2026-11-06/ai-prospective/cycle35/fresh-first-freeze.json"
+    },
+    {
+      "path": "latest.json",
+      "bytes": 28376,
+      "sha256": "2c4b3d5f1d6c126e875c6e1c4a3d98e36af28ff45041a0e7dbd0a5d406de8014"
+    }
+  ],
+  "reviewerMetadata": "AI reviews are labelled separately from human studies. Exact historical root-review bytes preserved; reviewerKind annotations do not rewrite earlier evidence."
+}

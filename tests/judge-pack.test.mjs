@@ -70,6 +70,23 @@ test("the delivery-stage handoff includes both runnable examples and excludes th
   assert.ok(!archive.stdout.includes("private.md"));
 });
 
+test("the native FastAPI handoff retains its exact lock and licence without widening the text allowlist", async t => {
+  const {root,base}=await fixture(t),relative="examples/delivery-stage-staging/fastapi-native",directory=path.join(root,relative);
+  await mkdir(directory,{recursive:true});
+  for(const name of ["requirements.txt","LICENSE"]){await writeFile(path.join(directory,name),await readFile(new URL(`../${relative}/${name}`,import.meta.url)));}
+  for(const name of ["operator-notes.txt","requirements-private.txt","LICENSE-personal"]){await writeFile(path.join(directory,name),"not a source input\n");}
+  const result=await buildJudgePack(root,path.join(base,"native-export")),manifest=JSON.parse(await readFile(result.manifest,"utf8")),archive=spawnSync("tar",["-tzf",result.archive],{encoding:"utf8"});
+  assert.equal(archive.status,0);
+  for(const name of ["requirements.txt","LICENSE"]){const file=`${relative}/${name}`;assert.ok(manifest.files.some(row=>row.file===file));assert.ok(archive.stdout.split("\n").includes(`./${file}`));assert.deepEqual(await readFile(path.join(result.sourceDirectory,file)),await readFile(path.join(directory,name)));}
+  for(const name of ["operator-notes.txt","requirements-private.txt","LICENSE-personal"]){assert.ok(!manifest.files.some(row=>row.file.endsWith(name)));assert.ok(!archive.stdout.includes(name));}
+  for(const name of ["requirements.txt","LICENSE"]){
+    const original=await readFile(path.join(directory,name));
+    await writeFile(path.join(directory,name),"Bearer "+"x".repeat(32));
+    await assert.rejects(buildJudgePack(root,path.join(base,`blocked-${name}`)),/Source export needs manual review/u);
+    await writeFile(path.join(directory,name),original);
+  }
+});
+
 test("template licences are copied byte-for-byte without admitting other TXT or similarly named notes", async t => {
   const {root,base}=await fixture(t),directory=path.join(root,"docs/fixtures/assessment-transfer-2026-11-04");
   await mkdir(directory,{recursive:true});

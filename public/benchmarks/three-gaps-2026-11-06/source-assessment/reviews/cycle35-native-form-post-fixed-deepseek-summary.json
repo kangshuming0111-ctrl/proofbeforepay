@@ -1,0 +1,15 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "completed": true,
+  "errors": [],
+  "report": {
+    "summary": "Reviewed the supplied packet read-only: lib/native-form-source.ts (parser admission, parse5 witness construction, citation coverage, the four witness families), tests/native-form-source.test.ts, lib/static-markup-directive.ts, lib/assessment-limits.ts and the project skill. The two claimed fixes hold as stated: lines 162-163 establish choice-owner uniqueness from same type/name/own-form candidates before value or citation filtering, and `literal` (lines 22-26) rejects unquoted punctuation/continuation while accepting one balanced quotation as data. Both fixes are covered by the new tests on lines 33-54 and 111-118. I found no concrete new regression that is actionable as P1/P2/P3. The remaining issues are conservative false-unknowns or out-of-scope reachability, and are listed under limitations. No files were changed. No tool was called other than the required skill. No tests, parser run or runtime check was executed, so the claimed '19 test groups passed' is not verified here.",
+    "findings": [],
+    "limitations": [
+      "Only the five packet files were available to me. contracts.ts, static-resources.ts, the decoder and the caller that maps NativeFormCitationCoverage to scoring were not supplied. The claim that the decoder is unchanged and that unknown never autopasses could not be checked from source.",
+      "No code was executed. The parse5 admission behaviour (onParseError codes such as duplicate-attribute and unexpected-end-tag, sourceCodeLocation offsets, scriptingEnabled treatment of noscript) is taken from the task description and tests, not observed.",
+      "Potential conservative false-unknowns seen in source but not reported as defects: (1) parser-level parse errors that are not missing-doctype (line 76, e.g. an unexpected end tag) make the whole file unparseable, so a valid labelled control is reported unknown even though the requested clause is met; (2) line 117 `ownForm` treats a `form=` attribute pointing at a duplicated id as unknown; (3) line 84 blocks labels nested inside a <form> inside a <label>; (4) line 50 makes any LF inside the source sentence unparseable while the candidate predicate still matches it. These are fail-closed by design and are not evidence of wrong 'covered' results.",
+      "Out of packet scope: lib/static-markup-directive.ts `literal` (plain character class + continuation regex) is looser than the native-form `literal` for unquoted or punctuated text. It is unreachable from native-form directives because line 133 returns not_applicable first, so it was not reported. The project skill asks for a Chinese prose finish and this user requires one JSON object; the JSON format was followed."
+    ]
+  }
+}

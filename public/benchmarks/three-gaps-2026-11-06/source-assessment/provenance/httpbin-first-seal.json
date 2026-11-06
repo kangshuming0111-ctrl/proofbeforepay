@@ -1,0 +1,155 @@
+{
+  "schema": "pbp-prospective-corpus-seal-v1",
+  "createdAt": "2026-11-06T06:42:29.484Z",
+  "cohort": "httpbin-fresh-four-prospective-before-cycle34-tuning-2026-11-06",
+  "corpusSha256": "b91a6cfebb270e41a110a7ea18f00ebbe30cebf22dbf472730a43d2f4abcf02d",
+  "projects": 4,
+  "criteria": 8,
+  "calls": 0,
+  "responsesInspected": 0,
+  "cycle34ImplementationTuningStarted": false,
+  "reviewerModelExposedToCases": false,
+  "newPublisherComparedWithPriorCohort": "postmanlabs/httpbin versus mdn/learning-area",
+  "repository": "https://github.com/postmanlabs/httpbin",
+  "commit": "f8ec666b4d1b654e4ff6aedd356f510dcac09f83",
+  "sourceFiles": [
+    {
+      "path": "httpbin/templates/forms-post.html",
+      "localFile": "forms-post.html",
+      "url": "https://raw.githubusercontent.com/postmanlabs/httpbin/f8ec666b4d1b654e4ff6aedd356f510dcac09f83/httpbin/templates/forms-post.html",
+      "bytes": 1419,
+      "gitBlob": "81f7afd4b8cc90c723c92549bd4bffa9d503acbf",
+      "mode": "100755",
+      "sha256": "6297c5bca1846ead33fcd6adc0de34c90bce0ca4b7325817ceab72f85ce492fe"
+    },
+    {
+      "path": "LICENSE",
+      "localFile": "LICENSE",
+      "url": "https://raw.githubusercontent.com/postmanlabs/httpbin/f8ec666b4d1b654e4ff6aedd356f510dcac09f83/LICENSE",
+      "bytes": 745,
+      "gitBlob": "885f52d8de8220b4aa0430061054cd2230611656",
+      "mode": "100644",
+      "sha256": "83446f2ba92c3b99d957c70c34d94cd9b9874be5dc79cf6ff9b0d53885430edb"
+    }
+  ],
+  "license": "ISC",
+  "licenseArtifact": "upstream/LICENSE.json",
+  "productionDerivedCriteria": [
+    {
+      "id": "httpbin-original-contact-fields",
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The form source in forms-post.html must include Customer name: and Telephone: and E-mail address: as label text."
+        },
+        {
+          "id": "coverage-2",
+          "title": "Original requirement 2",
+          "source": "The static source in forms-post.html must declare custtel as a tel input and custemail as an email input."
+        }
+      ]
+    },
+    {
+      "id": "httpbin-original-options-and-time",
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The source content in forms-post.html must pair Small and Medium and Large radio labels with the values small and medium and large under the same size name."
+        },
+        {
+          "id": "coverage-2",
+          "title": "Original requirement 2",
+          "source": "The static delivery control in forms-post.html must declare type time and min 11:00 and max 21:00 and step 900."
+        }
+      ]
+    },
+    {
+      "id": "httpbin-derived-wrong-radio-owner",
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The source content in forms-post.html must pair Small and Medium and Large radio labels with the values small and medium and large under the same size name."
+        },
+        {
+          "id": "coverage-2",
+          "title": "Original requirement 2",
+          "source": "The source content in forms-post.html must associate Bacon and Extra Cheese and Onion and Mushroom checkbox labels with the values bacon and cheese and onion and mushroom under the topping name."
+        }
+      ]
+    },
+    {
+      "id": "httpbin-original-runtime-boundary",
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "Submitting the form must store the customer order in a merchant database and retrieve the same order after a server restart."
+        },
+        {
+          "id": "coverage-2",
+          "title": "Original requirement 2",
+          "source": "After the form is submitted a confirmation email must reach the customer external mailbox and the order must be accepted for delivery."
+        }
+      ]
+    }
+  ],
+  "projectSourceKinds": [
+    {
+      "id": "httpbin-original-contact-fields",
+      "kind": "unchanged-upstream-form-plus-authored-companions",
+      "formSha256": "6297c5bca1846ead33fcd6adc0de34c90bce0ca4b7325817ceab72f85ce492fe"
+    },
+    {
+      "id": "httpbin-original-options-and-time",
+      "kind": "unchanged-upstream-form-plus-authored-companions",
+      "formSha256": "6297c5bca1846ead33fcd6adc0de34c90bce0ca4b7325817ceab72f85ce492fe"
+    },
+    {
+      "id": "httpbin-derived-wrong-radio-owner",
+      "kind": "authored-mutation-of-upstream-form-plus-authored-companions",
+      "formSha256": "a2f3cd421c08eb8083b17f2d4f5fc5fb134fb59af28b82a15bad05a69b750e0e"
+    },
+    {
+      "id": "httpbin-original-runtime-boundary",
+      "kind": "unchanged-upstream-form-plus-authored-companions",
+      "formSha256": "6297c5bca1846ead33fcd6adc0de34c90bce0ca4b7325817ceab72f85ce492fe"
+    }
+  ],
+  "authoredCompanions": [
+    {
+      "file": "index.html",
+      "sha256": "f2926f2a9d8e28e03c62a27b825860c6a5f0a10d382477f403c74379f2ee8bbe",
+      "purpose": "Declared standalone navigation wrapper, not upstream source"
+    },
+    {
+      "file": "scope.css",
+      "sha256": "d6798db2f20ab1e797e1a01b2ac87e80fb695018b8c36950cf50dabd417b5f76",
+      "purpose": "Declared companion style, not upstream source"
+    }
+  ],
+  "mutation": {
+    "projectId": "httpbin-derived-wrong-radio-owner",
+    "file": "forms-post.html",
+    "operations": [
+      {
+        "from": "<input type=radio name=size value=\"large\">",
+        "to": "<input type=radio name=size value=\"medium\">"
+      },
+      {
+        "from": "  </form>",
+        "to": "  </form>\n  <input type=hidden name=\"archived_size\" value=\"large\">"
+      }
+    ],
+    "allOtherUpstreamBytesUnchanged": true
+  },
+  "limits": [
+    "One real diagnostic-form source path under a new repository/publisher, not four independent real websites.",
+    "Authored companions adapt the research delivery shape; the original form remains unmodified in three tasks, including its absent title and Jinja action.",
+    "Source reading only: no upstream code, server, form, merchant database, email, payment or browser was executed.",
+    "Human author inspected original source and saw prior task families; no training-data novelty or independent human validation claimed.",
+    "Pre-change freeze is baseline only; final implementation hashes and complete request bodies need a new freeze before calls."
+  ]
+}

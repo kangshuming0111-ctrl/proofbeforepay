@@ -1,0 +1,257 @@
+{
+  "kind": "inert-cycle34-observed-failure-plan",
+  "awardReference": "PHAROS_INC IBM Bob2026 Augustfirst rules+readablereports; AgentReceipt AugustMostInnovative traceableevidence, officialsource only.",
+  "observed": {
+    "rawAndAppStatusAgreementAfterCycle33Known16": "16/16labels do not establish wholeanswer accuracy",
+    "criterionSources": [
+      {
+        "id": "coverage-1",
+        "title": "Original requirement 1",
+        "source": "Contact source labels must include \"Name:\" and \"E-mail:\" and \"Message:\"."
+      },
+      {
+        "id": "coverage-2",
+        "title": "Original requirement 2",
+        "source": "The page content in index.html must say Earth is Our world."
+      }
+    ],
+    "files": {
+      "index.html": "<!DOCTYPE html>\n<html lang=\"en-US\">\n  <head>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width\">\n    <title>Planets data</title>\n    <link href=\"minimal-table.css\" rel=\"stylesheet\" type=\"text/css\">\n  </head>\n  <body>\n    <h1>Planets data</h1>\n\n    <table>\n      <caption>Data about the planets of our solar system (Planetary facts taken from <a href=\"https://nssdc.gsfc.nasa.gov/planetary/factsheet/\">Nasa's Planetary Fact Sheet - Metric</a>).</caption>\n      <colgroup>\n        <col span=\"2\">\n        <col style=\"border: 2px solid black\">\n        <col span=\"9\">\n      </colgroup>\n      <thead>\n        <tr>\n          <td colspan=\"2\"></td>\n          <th scope=\"col\">Name</th>\n          <th scope=\"col\">Mass (10<sup>24</sup>kg)</th>\n          <th scope=\"col\">Diameter (km)</th>\n          <th scope=\"col\">Density (kg/m<sup>3</sup>)</th>\n          <th scope=\"col\">Gravity (m/s<sup>2</sup>)</th>\n          <th scope=\"col\">Length of day (hours)</th>\n          <th scope=\"col\">Distance from Sun (10<sup>6</sup>km)</th>\n          <th scope=\"col\">Mean temperature (°C)</th>\n          <th scope=\"col\">Number of moons</th>\n          <th scope=\"col\">Notes</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <th rowspan=\"4\" colspan=\"2\" scope=\"rowgroup\">Terrestrial planets</th>\n          <th scope=\"row\">Mercury</th>\n          <td>0.330</td>\n          <td>4,879</td>\n          <td>5427</td>\n          <td>3.7</td>\n          <td>4222.6</td>\n          <td>57.9</td>\n          <td>167</td>\n          <td>0</td>\n          <td>Closest to the Sun</td>\n        </tr>\n        <tr>\n          <th scope=\"row\">Venus</th>\n          <td>4.87</td>\n          <td>12,104</td>\n          <td>5243</td>\n          <td>8.9</td>\n          <td>2802.0</td>\n          <td>108.2</td>\n          <td>464</td>\n          <td>0</td>\n          <td></td>\n        </tr>\n        <tr>\n          <th scope=\"row\">Earth</th>\n          <td>5.97</td>\n          <td>12,756</td>\n          <td>5514</td>\n          <td>9.8</td>\n          <td>24.0</td>\n          <td>149.6</td>\n          <td>15</td>\n          <td>1</td>\n          <td>Our world</td>\n        </tr>\n        <tr>\n          <th scope=\"row\">Mars</th>\n          <td>0.642</td>\n          <td>6,792</td>\n          <td>3933</td>\n          <td>3.7</td>\n          <td>24.7</td>\n          <td>227.9</td>\n          <td>-65</td>\n          <td>2</td>\n          <td>The red planet</td>\n        </tr>\n        <tr>\n          <th rowspan=\"4\" scope=\"rowgroup\">Jovian planets</th>\n          <th rowspan=\"2\" scope=\"rowgroup\">Gas giants</th>\n          <th scope=\"row\">Jupiter</th>\n          <td>1898</td>\n          <td>142,984</td>\n          <td>1326</td>\n          <td>23.1</td>\n          <td>9.9</td>\n          <td>778.6</td>\n          <td>-110</td>\n          <td>67</td>\n          <td>The largest planet</td>\n        </tr>\n        <tr>\n          <th scope=\"row\">Saturn</th>\n          <td>568</td>\n          <td>120,536</td>\n          <td>687</td>\n          <td>9.0</td>\n          <td>10.7</td>\n          <td>1433.5</td>\n          <td>-140</td>\n          <td>62</td>\n          <td></td>\n        </tr>\n        <tr>\n          <th rowspan=\"2\" scope=\"rowgroup\">Ice giants</th>\n          <th scope=\"row\">Uranus</th>\n          <td>86.8</td>\n          <td>51,118</td>\n          <td>1271</td>\n          <td>8.7</td>\n          <td>17.2</td>\n          <td>2872.5</td>\n          <td>-195</td>\n          <td>27</td>\n          <td></td>\n        </tr>\n        <tr>\n          <th scope=\"row\">Neptune</th>\n          <td>102</td>\n          <td>49,528</td>\n          <td>1638</td>\n          <td>11.0</td>\n          <td>16.1</td>\n          <td>4495.1</td>\n          <td>-200</td>\n          <td>14</td>\n          <td></td>\n        </tr>\n        <tr>\n          <th colspan=\"2\" scope=\"row\">Dwarf planets</th>\n          <th scope=\"row\">Pluto</th>\n          <td>0.0146</td>\n          <td>2,370</td>\n          <td>2095</td>\n          <td>0.7</td>\n          <td>153.3</td>\n          <td>5906.4</td>\n          <td>-225</td>\n          <td>5</td>\n          <td>Declassified as a planet in 2006, but this <a href=\"https://www.usatoday.com/story/tech/2014/10/02/pluto-planet-solar-system/16578959/\">remains controversial</a>.</td>\n        </tr>\n      </tbody>\n    </table>\n\n\n  <form><label for=\"mail\">E-mail:</label><input id=\"mail\" type=\"email\"></form></body>\n</html>\n",
+      "contact.html": "<!DOCTYPE html>\n<html lang=\"en-US\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<title>Your first HTML form</title>\n\t</head>\n\n\t<body>\n\t\t<form action=\"/my-handling-form-page\" method=\"post\">\n\t\t\t<p>\n\t\t\t\t<label for=\"name\">Name:</label>\n\t\t\t\t<input type=\"text\" id=\"name\" name=\"user_name\" />\n\t\t\t</p>\n\t\t\t<p>\n\t\t\t\t<input type=\"email\" id=\"mail\" name=\"user_mail\" />\n\t\t\t</p>\n\t\t\t<p>\n\t\t\t\t<label for=\"msg\">Message:</label>\n\t\t\t\t<textarea id=\"msg\" name=\"user_message\"></textarea>\n\t\t\t</p>\n\t\t\t<p class=\"button\">\n\t\t\t\t<button type=\"submit\">Send your message</button>\n\t\t\t</p>\n\t\t</form>\n\t</body>\n</html>\n",
+      "minimal-table.css": "html {\n  font-family: sans-serif;\n}\n\ntable {\n  border-collapse: collapse;\n  border: 2px solid rgb(200 200 200);\n  letter-spacing: 1px;\n  font-size: 0.8rem;\n}\n\ntd,\nth {\n  border: 1px solid rgb(190 190 190);\n  padding: 10px 20px;\n}\n\nth {\n  background-color: rgb(235 235 235);\n}\n\ntd {\n  text-align: center;\n}\n\ntr:nth-child(even) td {\n  background-color: rgb(250 250 250);\n}\n\ntr:nth-child(odd) td {\n  background-color: rgb(220 220 220);\n}\n\ncaption {\n  padding: 10px;\n}\n"
+    },
+    "wrongSourceScopeRaw": {
+      "catalogId": "a80dc537d02987a46d419119f3817d9dc3af56ac38dba9ce1843d80a8b88a286",
+      "items": [
+        {
+          "criterionId": "coverage-1",
+          "status": "changes_suggested",
+          "explanation": "index.html contains only an E-mail: label; its sole form has no Name: or Message: labels. contact.html has all three labels, but the check targets index.html.",
+          "citations": {
+            "c1": "s136",
+            "c2": "s140",
+            "c3": "s9",
+            "c4": "s4",
+            "c5": "",
+            "c6": ""
+          }
+        },
+        {
+          "criterionId": "coverage-2",
+          "status": "supported",
+          "explanation": "In index.html the Earth row's row header is \"Earth\" and its Notes cell reads \"Our world\"; page copy \"Earth is Our world\" is not verbatim, but the row binds the fact.",
+          "citations": {
+            "c1": "s53",
+            "c2": "s54",
+            "c3": "s64",
+            "c4": "s27",
+            "c5": "",
+            "c6": ""
+          }
+        }
+      ],
+      "risks": [
+        {
+          "title": "index.html form lacks Name: and Message: labels",
+          "explanation": "The only form in index.html contains a single label, \"E-mail:\", plus the email input; no Name or Message labels appear in that form.",
+          "suggestion": "Add Name: and Message: labels (with corresponding inputs/textarea) to the index.html contact form, or confirm that contact.html is the intended target.",
+          "citations": {
+            "c1": "s136",
+            "c2": "s140",
+            "c3": "s141"
+          }
+        }
+      ],
+      "limitations": [
+        "Source reading only; no browser rendering, form submission or runtime behavior was observed.",
+        "The requirement says \"Earth is Our world\" while the table separates \"Earth\" and \"Our world\" into a row header and Notes cell; exact contiguous wording does not appear.",
+        "It is unclear from scope whether contact labels were intended on index.html or contact.html."
+      ]
+    },
+    "applicationDidNotCorrectWrongScopeProse": true,
+    "freshRuntimeFalseAssurance": {
+      "catalogId": "81882c6be15d1d18d78204b46174a286685a30a0dc83fab6938114539d52dcb6",
+      "items": [
+        {
+          "criterionId": "coverage-1",
+          "status": "insufficient_evidence",
+          "explanation": "contact.html contains a static table with a footer SUM row (118) and purchase costs (30, 18, 65, 5), but no script, edit control or storage/backend code is supplied; recalculation after an edit and persistence across a server restart cannot be established from static source.",
+          "citations": {
+            "c1": "s11",
+            "c2": "s15",
+            "c3": "s40",
+            "c4": "s41",
+            "c5": "",
+            "c6": ""
+          }
+        },
+        {
+          "criterionId": "coverage-2",
+          "status": "supported",
+          "explanation": "index.html table uses header cells with id/headers attributes for section, sub-column, country and city, and data cells list full header chains (e.g. antwerp belgium clothes trousers), giving each cell its row and column headers. The delivered CSS declares no keyboard focus handling; keyboard operability is not evidenced by static source.",
+          "citations": {
+            "c1": "s47",
+            "c2": "s50",
+            "c3": "s56",
+            "c4": "s59",
+            "c5": "s97",
+            "c6": ""
+          }
+        }
+      ],
+      "risks": [],
+      "limitations": [
+        "No script or server-side files are in the inventory, so total recalculation and persistence after restart cannot be verified from source.",
+        "Keyboard navigation focus behavior and screen-reader announcements require runtime/assistive-technology testing; headers attributes only show declared source structure.",
+        "minimal-table.css contains no focus-visible styles; actual keyboard focus indication was not observed.",
+        "Rendered appearance and screen-reader output were not inspected; only supplied static HTML/CSS text was read."
+      ]
+    },
+    "freshRuntimeApplicationStatuses": [
+      {
+        "id": "coverage-1",
+        "status": "insufficient_evidence",
+        "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed."
+      },
+      {
+        "id": "coverage-2",
+        "status": "insufficient_evidence",
+        "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed."
+      }
+    ]
+  },
+  "rootPlanConstraints": [
+    "Keep strict entire-report risk/item validation; no slotpadding/droppedinvalidrisk or retry.",
+    "Do not undo existing runtimeguard: freshsourceaccessibility supported was already changed toinsufficient byapplication, withrawadjustmentrecord.",
+    "A unique named basename from criterion ownsource can be a hint only, not buyer-confirmed business authority. Do not assume contact.html is correct merelyfromfilename.",
+    "Reuse bounded recognised source descriptors where possible; explicit source target beats nearby criterion/summary. Neverparse arbitrary quotedliteral filenames as target.",
+    "Candidate limited guard: only a direct unqualified narrative assertion that the check targetsX without independently established target may become unknown requirement_clarification; preserve exactrawanswer and alloriginalcitations. An established locked target contradicted by a direct assertion can similarly be flagged.",
+    "Existing status-adjustment publication gate withholds optional risks; do not invent scope-conclusive pass or rename reference labels.",
+    "No general natural-language contradiction solver, broadaliasregexautoscopecoverage, contractschemaexpansion, authority or financial changes.",
+    "If adding a runtime-only unestablished-risk gate with unchanged item statuses, do NOT fake adjustedCriteria or silently broaden version2 finitecontact scope. Requires explicit new backwards-compatible reason/version with strict recomputation and exporter/UI/origin validation; otherwise defer thislargerfeature and retain explicitlimits.",
+    "Main mandatory target is user-facing wrong-page actionable advice. Scope guard must be bounded and not claim complete contradiction detection."
+  ],
+  "counterexamples": [
+    "index.html may hold the actual Contact form whilecontact.html iscopyright only; basename hint cannot decide.",
+    "en/contact.html plusfr/contact.html isambiguous.",
+    "Every page/form requirement mustnotbe narrowed toonecandidate.",
+    "Requirement index.html mustshowliteralcontact.html hasquotedfilenameasdata, nottargetcontact.",
+    "Model saying ifthechecktargetsX oraskingwhetheritdoes isconditional,notdirectassertion.",
+    "An evidence comparison can legitimatelyciteanotherpage toshowdecoy; crosspagecitesaloneare notwrongscope.",
+    "Explicitboundpagecorrectclaimmustnotbe downgradedmerelyduetoothercriterionpage."
+  ],
+  "requestedDecision": "Propose minimal owncriterion hint and narrow negative publication gate or safer simplerprompt-only alternative. Identify exactreal source seams, risks and requiredtests. Separate reasoning fromexecutedobservations; no futurecase outcomes are shown.",
+  "allRuntimeAlreadyUnknownPublishedRisks": {
+    "criterionSources": [
+      "The contact form must send a message to the shop and keep a durable record after the server restarts.",
+      "The table must be readable at 375px without horizontal overflow in a real browser."
+    ],
+    "rawCompletion": {
+      "catalogId": "5db6533deb6fe997b33dd4ab19d217022cf82ba6a74b40a4f3b39a78d4d9afde",
+      "items": [
+        {
+          "criterionId": "coverage-1",
+          "status": "insufficient_evidence",
+          "explanation": "contact.html declares a POST form to /my-handling-form-page, but no server handler, persistence layer, or restart-durable storage exists in the supplied files; sending and durability cannot be verified from static source.",
+          "citations": {
+            "c1": "s1",
+            "c2": "s9",
+            "c3": "s12",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          }
+        },
+        {
+          "criterionId": "coverage-2",
+          "status": "insufficient_evidence",
+          "explanation": "The wide 11-column table has fixed cell padding and no responsive/overflow rules; whether it overflows or stays readable at 375px requires a real browser measurement, which source cannot establish.",
+          "citations": {
+            "c1": "s16",
+            "c2": "s141",
+            "c3": "s13",
+            "c4": "",
+            "c5": "",
+            "c6": ""
+          }
+        }
+      ],
+      "risks": [
+        {
+          "title": "Table markup and CSS declare no small-viewport layout adaptation",
+          "explanation": "The table has 11 column headers with no wrapper or media query, and the CSS sets fixed 10px 20px cell padding with no max-width or overflow handling, so narrow-screen overflow is plausible, though unproven without browser rendering.",
+          "suggestion": "Render index.html at 375px width in a browser and check for horizontal scrolling and readability; add responsive wrapping or scroll container if needed.",
+          "citations": {
+            "c1": "s16",
+            "c2": "s141",
+            "c3": ""
+          }
+        },
+        {
+          "title": "Contact form has no delivered backend or storage evidence",
+          "explanation": "contact.html only declares action=\"/my-handling-form-page\" method=\"post\"; the delivery contains no server handler or storage file, so message delivery and restart-durable record keeping are unsubstantiated by the supplied source.",
+          "suggestion": "Confirm with the developer which server endpoint receives the POST and how messages are persisted across restarts; test submission and restart behavior.",
+          "citations": {
+            "c1": "s1",
+            "c2": "s12",
+            "c3": ""
+          }
+        }
+      ],
+      "limitations": [
+        "No runtime or browser evidence was supplied, so message sending, persistence and 375px layout were not observed.",
+        "Raster files: none were listed in the inventory, so no image content was assessed.",
+        "The presence of a form action attribute does not establish that a server handler exists or processes submissions.",
+        "Whether the table causes horizontal overflow depends on rendering and cannot be determined from static markup and CSS alone.",
+        "Buyer confirmation remains required for both criteria; this report is advisory only."
+      ]
+    },
+    "applicationRisks": [
+      {
+        "title": "Table markup and CSS declare no small-viewport layout adaptation",
+        "explanation": "The table has 11 column headers with no wrapper or media query, and the CSS sets fixed 10px 20px cell padding with no max-width or overflow handling, so narrow-screen overflow is plausible, though unproven without browser rendering.",
+        "suggestion": "Render index.html at 375px width in a browser and check for horizontal scrolling and readability; add responsive wrapping or scroll container if needed.",
+        "citations": [
+          {
+            "file": "index.html",
+            "start": 400,
+            "end": 800,
+            "excerpt": ".nasa.gov/planetary/factsheet/\">Nasa's Planetary Fact Sheet - Metric</a>).</caption>\n      <colgroup>\n        <col span=\"2\">\n        <col style=\"border: 2px solid black\">\n        <col span=\"9\">\n      </colgroup>\n      <thead>\n        <tr>\n          <td colspan=\"2\"></td>\n          <th scope=\"col\">Name</th>\n          <th scope=\"col\">Mass (10<sup>24</sup>kg)</th>\n          <th scope=\"col\">Diameter (k"
+          },
+          {
+            "file": "minimal-table.css",
+            "start": 0,
+            "end": 400,
+            "excerpt": "html {\n  font-family: sans-serif;\n}\n\ntable {\n  border-collapse: collapse;\n  border: 2px solid rgb(200 200 200);\n  letter-spacing: 1px;\n  font-size: 0.8rem;\n}\n\ntd,\nth {\n  border: 1px solid rgb(190 190 190);\n  padding: 10px 20px;\n}\n\nth {\n  background-color: rgb(235 235 235);\n}\n\ntd {\n  text-align: center;\n}\n\ntr:nth-child(even) td {\n  background-color: rgb(250 250 250);\n}\n\ntr:nth-child(odd) td {\n  bac"
+          }
+        ]
+      },
+      {
+        "title": "Contact form has no delivered backend or storage evidence",
+        "explanation": "contact.html only declares action=\"/my-handling-form-page\" method=\"post\"; the delivery contains no server handler or storage file, so message delivery and restart-durable record keeping are unsubstantiated by the supplied source.",
+        "suggestion": "Confirm with the developer which server endpoint receives the POST and how messages are persisted across restarts; test submission and restart behavior.",
+        "citations": [
+          {
+            "file": "contact.html",
+            "start": 0,
+            "end": 400,
+            "excerpt": "<!DOCTYPE html>\n<html lang=\"en-US\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<title>Your first HTML form</title>\n\t</head>\n\n\t<body>\n\t\t<form action=\"/my-handling-form-page\" method=\"post\">\n\t\t\t<p>\n\t\t\t\t<label for=\"name\">Name:</label>\n\t\t\t\t<input type=\"text\" id=\"name\" name=\"user_name\" />\n\t\t\t</p>\n\t\t\t<p>\n\t\t\t\t<label for=\"mail\">E-mail:</label>\n\t\t\t\t<input type=\"email\" id=\"mail\" name=\"user_mail\" />\n\t\t\t</p>\n\t\t\t<p>\n"
+          },
+          {
+            "file": "contact.html",
+            "start": 504,
+            "end": 583,
+            "excerpt": "<p class=\"button\">\n\t\t\t\t<button type=\"submit\">Send your message</button>\n\t\t\t</p>"
+          }
+        ]
+      }
+    ],
+    "applicationWithheldRisks": {
+      "version": 1,
+      "reason": "not_withheld",
+      "adjustedCriteria": [],
+      "entries": []
+    },
+    "rootObservation": "Both statuses already unknown, so current item_status_adjusted gate does not fire. Optionalrisk includes unperformed/backend-evidence concern and wrong11columnfact; riskleads need truthful layered presentation, not automatic defect authority."
+  }
+}

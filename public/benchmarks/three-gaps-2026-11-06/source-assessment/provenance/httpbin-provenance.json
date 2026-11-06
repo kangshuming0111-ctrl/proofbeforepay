@@ -1,0 +1,28 @@
+{
+  "repository": "https://github.com/postmanlabs/httpbin",
+  "commit": "f8ec666b4d1b654e4ff6aedd356f510dcac09f83",
+  "files": [
+    {
+      "path": "httpbin/templates/forms-post.html",
+      "localFile": "forms-post.html",
+      "url": "https://raw.githubusercontent.com/postmanlabs/httpbin/f8ec666b4d1b654e4ff6aedd356f510dcac09f83/httpbin/templates/forms-post.html",
+      "bytes": 1419,
+      "gitBlob": "81f7afd4b8cc90c723c92549bd4bffa9d503acbf",
+      "mode": "100755",
+      "sha256": "6297c5bca1846ead33fcd6adc0de34c90bce0ca4b7325817ceab72f85ce492fe"
+    },
+    {
+      "path": "LICENSE",
+      "localFile": "LICENSE",
+      "url": "https://raw.githubusercontent.com/postmanlabs/httpbin/f8ec666b4d1b654e4ff6aedd356f510dcac09f83/LICENSE",
+      "bytes": 745,
+      "gitBlob": "885f52d8de8220b4aa0430061054cd2230611656",
+      "mode": "100644",
+      "sha256": "83446f2ba92c3b99d957c70c34d94cd9b9874be5dc79cf6ff9b0d53885430edb"
+    }
+  ],
+  "kind": "Official HTTP diagnostic form source, not a merchant ordering application",
+  "upstreamExecution": false,
+  "originalSourceChanged": false,
+  "companionFiles": "Authored index.html and scope.css are explicitly separate corpus delivery adaptations, not upstream app files"
+}

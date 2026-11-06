@@ -1,0 +1,106 @@
+{
+  "kind": "INERT actual cycle31 parent excerpt snapshot, not executable app or runtime evidence",
+  "goal": "Explain only existing confirmation-disabled gate; null does not claim fullcreatevalidity. Preserve servercreate and exactdisabledgates, exclusionall valid. Focusnewstepaftercommit viaoneshot consumed layoutEffect with guards. Existingnative :disabled includes parent disabledfieldset. Actualworkbench view is whereformrendered (no create workspace view).",
+  "sourceExcerpts": [
+    {
+      "file": "app/page.tsx",
+      "startLine": 110,
+      "lines": [
+        "type IntakeStepFocus = {step: 0 | 1; selector: string; view: QuoteResponseView; workspaceRole: ProofRole; viewSerial: number};",
+        "type VersionListLoad = {key:string;status:\"loading\"|\"ready\"|\"error\"};"
+      ]
+    },
+    {
+      "file": "app/page.tsx",
+      "startLine": 213,
+      "lines": [
+        "  const workspaceFocusSerial = useRef(0);",
+        "  const pendingIntakeFocus = useRef<IntakeStepFocus | null>(null);",
+        "  const optionalChecksRef = useRef<HTMLDetailsElement>(null);"
+      ]
+    },
+    {
+      "file": "app/page.tsx",
+      "startLine": 260,
+      "lines": [
+        "  const intakeBlocker=projectIntakeBlocker({coverageReady,coverageConfirmed,coverageError,coverageRows,",
+        "    hasRequirementsDraft:!!requirementsDraft,requirementsConfirmed,businessCount:businessDrafts.length,businessReady:businessDraftsReady,businessConfirmed,",
+        "    runtimeEnabled,runtimeReady:runtimeDraftReady,runtimeConfirmed});"
+      ]
+    },
+    {
+      "file": "app/page.tsx",
+      "startLine": 398,
+      "lines": [
+        "  // Consume after this step has committed, including rejected intents. Unlike",
+        "  // queued focus, a one-shot navigation cannot replay after a busy or view change.",
+        "  useLayoutEffect(() => {flushIntakeFocus();}, [projectStep,projectMode,workspaceView,workspaceRole,intakeStarted,quote?.id,busy,loading]);"
+      ]
+    },
+    {
+      "file": "app/page.tsx",
+      "startLine": 715,
+      "lines": [
+        "  function moveIntakeStep(step: 0 | 1, selector: string) {",
+        "    pendingIntakeFocus.current={step,selector,view:{...currentQuoteView.current},workspaceRole,viewSerial:workspaceFocusSerial.current};",
+        "    setProjectStep(step);",
+        "  }",
+        "",
+        "  function flushIntakeFocus() {",
+        "    const intent=pendingIntakeFocus.current;",
+        "    pendingIntakeFocus.current=null;",
+        "    if(!intent || quote || projectMode!==\"custom\" || projectStep!==intent.step || workspaceView!==\"workbench\" || !intakeStarted",
+        "      || workspaceRole!==intent.workspaceRole || busy || loading || operationLock.current || workspaceFocusSerial.current!==intent.viewSerial || !sameQuoteResponseView(intent.view,currentQuoteView.current))return;",
+        "    if(!revealGuidedTarget(workspaceRef.current,intent.selector,\".project-form\"))setNotice(tr(\"请查看当前步骤；所需位置暂时无法定位。\", \"Review the current step; its requested location could not be focused.\"));",
+        "  }",
+        "",
+        "  function goToIntakeBlocker(blocker: IntakeBlocker) {",
+        "    if(quote || projectMode!==\"custom\" || projectStep!==1 || workspaceView!==\"workbench\" || !intakeStarted || busy || loading || operationLock.current)return;",
+        "    if(blocker.step!==projectStep){moveIntakeStep(blocker.step,blocker.selector);return;}",
+        "    pendingIntakeFocus.current=null;",
+        "    if(!revealGuidedTarget(workspaceRef.current,blocker.selector,\".requirement-coverage\"))setNotice(tr(\"请查看当前步骤；所需位置暂时无法定位。\", \"Review the current step; its requested location could not be focused.\"));",
+        "  }",
+        "",
+        "  function returnToIntroduction() {"
+      ]
+    },
+    {
+      "file": "app/page.tsx",
+      "startLine": 1187,
+      "lines": [
+        "  async function create(event: FormEvent) {",
+        "    event.preventDefault();",
+        "    if (projectMode === \"custom\" && projectStep === 0) {",
+        "      const message = projectBasicsError();",
+        "      setError(message);",
+        "      if (!message) moveIntakeStep(1,\".requirement-coverage h3\");",
+        "      return;",
+        "    }",
+        "    await run(\"create\", async () => {"
+      ]
+    },
+    {
+      "file": "app/page.tsx",
+      "startLine": 1539,
+      "lines": [
+        "                        <div id=\"intake-business-checks\"><BusinessCheckEditor language={language} units={coverageUnits} decisions={coverageRows} pages={inputLines(requiredPagesInput)} rows={businessDrafts} confirmed={businessConfirmed} disabled={!!busy || loading} onChange={setBusinessDrafts} onConfirm={setBusinessConfirmed}/></div>",
+        "                        <div id=\"intake-runtime-checks\"><RuntimePlanEditor language={language} enabled={runtimeEnabled} protocol={runtimeProtocol} criterionId={runtimeCriterionId} capacityCriterionId={runtimeCapacityCriterionId} confirmed={runtimeConfirmed} disabled={!!busy||loading} units={coverageUnits} decisions={coverageRows} onEnabledChange={setRuntimeEnabled} onProtocolChange={setRuntimeProtocol} onCriterionChange={setRuntimeCriterionId} onCapacityCriterionChange={setRuntimeCapacityCriterionId} onConfirmedChange={setRuntimeConfirmed}/></div>"
+      ]
+    },
+    {
+      "file": "app/page.tsx",
+      "startLine": 1568,
+      "lines": [
+        "                    {projectMode === \"custom\" && projectStep === 1 && <ProjectIntakeBlocker blocker={intakeBlocker} language={language} disabled={!!busy || loading} onGo={goToIntakeBlocker}/>}",
+        "                    <div className=\"project-form-actions\">{projectMode === \"custom\" && projectStep === 1 && <button type=\"button\" className=\"subtle-button\" onClick={() => { moveIntakeStep(0,\"#projectTitle\"); setError(\"\"); }}>{tr(\"上一步\", \"Back\")}</button>}<button className=\"button primary\" type=\"submit\" disabled={!!busy || loading || projectMode === \"custom\" && projectStep === 1 && (!coverageConfirmed || !coverageReady || !!requirementsDraft && !requirementsConfirmed || !!businessDrafts.length && (!businessConfirmed || !businessDraftsReady) || runtimeEnabled && (!runtimeConfirmed||!runtimeDraftReady))}>{busy === \"create\" ? <LoaderCircle className=\"spin\" size={16} /> : <Plus size={16} />}{projectMode === \"custom\" && projectStep === 0 ? tr(\"下一步：验收标准\", \"Next: acceptance criteria\") : projectMode === \"custom\" ? tr(\"创建项目\", \"Create project\") : tr(\"创建内置演示\", \"Create built-in demo\")}<ArrowRight size={15} /></button></div>"
+      ]
+    }
+  ],
+  "awards": {
+    "source": "https://developers.googleblog.com/en/announcing-the-winners-of-the-gemini-api-developer-competition/",
+    "verifiedByRoot": "2026-11-06",
+    "ViteVere": "Most Impactful App and Peoples Choice 2024; step task assistance",
+    "Prospera": "Most Useful App and Best Flutter App 2024; immediate feedback"
+  },
+  "validation": "Focusedactualcomponent/projection/handler tests passed; no newhumanparticipants. Browser remainsrootpending."
+}

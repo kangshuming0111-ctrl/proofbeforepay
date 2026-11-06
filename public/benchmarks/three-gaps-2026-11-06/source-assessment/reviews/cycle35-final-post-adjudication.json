@@ -1,0 +1,15 @@
+{
+  "schema": "pbp-cycle35-final-post-adjudication-v1",
+  "reviewer": "Codex AI independent read and executable counterexample; not a human study",
+  "deepseekReview": "final-post-deepseek.json",
+  "completed": true,
+  "errors": [],
+  "findings": [
+    {
+      "decision": "rejected",
+      "reason": "The suggested Name Send example has no sentence mark to match; with the grammar-required final period the actual function returns source_text. /u is present, and JavaScript whitespace behavior is not as alleged. Suggested adding !literal(part) would neuter the real sentence-boundary protection since every admitted part already passes literal(). Do not apply. Added exact Name Send source positive counterexample test; retained runtime-tail negatives and quoted-action positives pass."
+    }
+  ],
+  "acceptedCorrectionsUnresolved": 0,
+  "scope": "Finite source-label/native descriptors and negative guard only; no semantic table entailment claim. Actual model behavior still requires frozen one-shot evaluation."
+}

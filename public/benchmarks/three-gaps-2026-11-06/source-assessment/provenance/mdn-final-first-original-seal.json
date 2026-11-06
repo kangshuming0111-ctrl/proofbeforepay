@@ -1,0 +1,77 @@
+{
+  "schema": "pbp-prospective-corpus-seal-v1",
+  "createdAt": "2026-11-06T06:37:19.885Z",
+  "cohort": "cycle34-mdn-fresh-four-source-2026-11-06",
+  "corpusSha256": "17880268327895b09b1184835cad1dc6dfd6b3dfeabd15b78d4a93e3feecd154",
+  "projects": 4,
+  "criteria": 8,
+  "calls": 0,
+  "responsesInspected": 0,
+  "cycle34TuningNotStarted": true,
+  "repository": "https://github.com/mdn/learning-area",
+  "commit": "21973263ba859ff3477919087b488157f9d618a6",
+  "license": "CC0-1.0",
+  "files": [
+    {
+      "path": "accessibility/html/good-form.html",
+      "gitBlob": "cbda380545baed88468157d525b577246a5cab10",
+      "url": "https://github.com/mdn/learning-area/blob/21973263ba859ff3477919087b488157f9d618a6/accessibility/html/good-form.html",
+      "bytes": 496,
+      "sha256": "6fcbfd59fbdbedb4db3f64eacf081979e608f46833904626c5edd75fa84140df"
+    },
+    {
+      "path": "html/tables/advanced/timetable-caption.html",
+      "gitBlob": "acaa7a0b833ef5f389158fb2341bea9f9cb5b22c",
+      "url": "https://github.com/mdn/learning-area/blob/21973263ba859ff3477919087b488157f9d618a6/html/tables/advanced/timetable-caption.html",
+      "bytes": 2089,
+      "sha256": "4bd40caabd196b48506000f053e59836409fa97961e6c9a3939961c2e2fd7db7"
+    },
+    {
+      "path": "html/tables/advanced/minimal-table.css",
+      "gitBlob": "22ccb5931649c12e09dfa18eeb174eabdb21d781",
+      "url": "https://github.com/mdn/learning-area/blob/21973263ba859ff3477919087b488157f9d618a6/html/tables/advanced/minimal-table.css",
+      "bytes": 465,
+      "sha256": "8d2756230bc7bdfc1f43a6b4c89041447f7aafaf1ba971e9882795fd4ecb517b"
+    },
+    {
+      "path": "LICENSE",
+      "gitBlob": "670154e3538863b2d9891fd5483160fbdfc89164",
+      "url": "https://github.com/mdn/learning-area/blob/21973263ba859ff3477919087b488157f9d618a6/LICENSE",
+      "bytes": 6555,
+      "sha256": "36ffd9dc085d529a7e60e1276d73ae5a030b020313e6c5408593a6ae2af39673"
+    }
+  ],
+  "deliveryMapping": {
+    "signup.html": "accessibility/html/good-form.html",
+    "index.html": "html/tables/advanced/timetable-caption.html",
+    "site.css": "html/tables/advanced/minimal-table.css"
+  },
+  "kinds": [
+    {
+      "id": "c34-fresh-signup-original",
+      "kind": "unchanged-upstream-files"
+    },
+    {
+      "id": "c34-fresh-signup-cross-page",
+      "kind": "authored-mutation-of-upstream"
+    },
+    {
+      "id": "c34-fresh-signup-input-types",
+      "kind": "unchanged-upstream-files"
+    },
+    {
+      "id": "c34-fresh-conjunction-runtime",
+      "kind": "unchanged-upstream-files"
+    }
+  ],
+  "mutation": {
+    "project": "c34-fresh-signup-cross-page",
+    "operation": "Removeagelabelonlyfromsignup.html; addexplicitnewseparateage-onlyformtoindex.html"
+  },
+  "limits": [
+    "Twoindependenteducationalexamplescombinedbytheevaluatortotestsourcefilescope,notanupstreammulti-pageapp.",
+    "SameMDNpublisheraspriorcohorts,notnewpublishergeneralization.",
+    "Corpusauthorhasseenearlier20answers; these4referencesarenewlyfixedbeforecycle34changesandresponses,notindependenttask-familyholdout.",
+    "Originalslot/parserhardboundariesandruntimeguardremainnecessary; fullanswerreviewseparate."
+  ]
+}

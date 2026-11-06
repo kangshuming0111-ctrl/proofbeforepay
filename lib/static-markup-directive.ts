@@ -14,7 +14,7 @@ function literal(value: string): boolean {
   return plain.test(text) && !continuation.test(text) && text.split(/\s+/u).length <= 12;
 }
 
-function literalList(value: string): boolean {
+function literalListParts(value: string): string[] | undefined {
   const values: string[] = []; let start = 0, close = "";
   for (let i = 0; i < value.length; i++) {
     const char = value[i];
@@ -26,12 +26,22 @@ function literalList(value: string): boolean {
     const separator = /^(?:,\s*(?:and\s+)?|\s+and\s+)/iu.exec(value.slice(i));
     if (separator) { values.push(value.slice(start, i).trim()); i += separator[0].length - 1; start = i + 1; }
   }
-  if (close) return false;
+  if (close) return;
   values.push(value.slice(start).trim());
-  return values.length >= 1 && values.length <= 6 && values.every(literal);
+  return values.length >= 1 && values.length <= 6 && values.every(literal) ? values : undefined;
+}
+const literalList = (value: string): boolean => literalListParts(value) !== undefined;
+
+/** A complete quoted list is literal label data, even when a label contains
+ * punctuation or words which would be operations outside this closed syntax. */
+export function quotedSourceLabelValues(value: string): string[] | undefined {
+  const parts = literalListParts(value);
+  if (!parts?.every(part => quoted.test(part))) return;
+  const labels = parts.map(part => quoted.exec(part)!.slice(1).find(item => item !== undefined)!);
+  return labels.every(label => label.trim().length > 0 && label.length <= 120 && !/[\u0000-\u001f\u007f]/u.test(label)) ? labels : undefined;
 }
 
-type Pattern = {expression: RegExp; values: number[]; list?: number; path?: number};
+type Pattern = {expression: RegExp; values: number[]; list?: number; sourceLabels?: true; path?: number};
 const patterns: Pattern[] = [
   {expression: new RegExp(`^In the delivered (${CONTEXT}) HTML the (.+?) table must contain the literal headings (.+)\\.$`, "u"), values: [2], list: 3},
   {expression: new RegExp(`^In the delivered (${CONTEXT}) HTML the input immediately under (.+?) must use type=("[^"\\r\\n]{1,40}"|'[^'\\r\\n]{1,40}')(?: rather than type=("[^"\\r\\n]{1,40}"|'[^'\\r\\n]{1,40}'))?\\.$`, "u"), values: [2, 3, 4]},
@@ -39,7 +49,7 @@ const patterns: Pattern[] = [
   {expression: new RegExp(`^The delivered (${CONTEXT}) HTML document title must be (.+?) rather than (?:the generic )?(.+)\\.$`, "u"), values: [2, 3]},
   {expression: /^(.+?) must have (.+?) and (.+?) in (?:his|her|their) source table row\.$/u, values: [1, 2, 3]},
   {expression: new RegExp(`^(${CONTEXT}) source text must not contain (.+)\\.$`, "u"), values: [2]},
-  {expression: new RegExp(`^(${CONTEXT}) source labels must include (.+)\\.$`, "u"), values: [], list: 2},
+  {expression: new RegExp(`^(${CONTEXT}) source labels must include (.+)\\.$`, "u"), values: [], list: 2, sourceLabels: true},
   {expression: new RegExp(`^(${CONTEXT}) source (?:email|password|text|tel|number|url|search) input must have type=("[^"\\r\\n]{1,40}"|'[^'\\r\\n]{1,40}')\\.$`, "u"), values: [2]},
   {expression: new RegExp(`^(${CONTEXT}) source (.+?) link href must be (.+)\\.$`, "u"), values: [2], path: 3},
   {expression: /^The website content must not advertise the template brand (.+?) anywhere in current page copy\.?$/u, values: [1]},
@@ -52,6 +62,7 @@ export function staticMarkupDirective(source: string): string | undefined {
     const match = pattern.expression.exec(text); if (!match) continue;
     if (pattern.values.some(index => match[index] !== undefined && !literal(match[index]))) continue;
     if (pattern.list !== undefined && !literalList(match[pattern.list])) continue;
+    if (pattern.sourceLabels && literalListParts(match[pattern.list!])!.some(part => !quoted.test(part) && /[.!?](?:\s|$)/u.test(part))) continue;
     if (pattern.path !== undefined) {
       const value = match[pattern.path].trim(), quotedPath = quoted.exec(value);
       const path = quotedPath?.slice(1).find(part => part !== undefined) ?? value;
@@ -59,6 +70,19 @@ export function staticMarkupDirective(source: string): string | undefined {
     }
     return text.replace(/[\t ]+/gu, " ");
   }
+}
+
+/** Reuse the SAME already-admitted source-label parse for the citation witness.
+ * A named context here is not a filename mapping or a form association promise.
+ * This family asks for labels in the page source, not one common form. */
+export function staticMarkupLabelDirective(source: string): {identity: string; labels: string[]; context: "page"} | undefined {
+  const identity = staticMarkupDirective(source);
+  if (!identity) return;
+  const match = new RegExp(`^${CONTEXT} source labels must include (.+)\\.$`, "u").exec(source.trim());
+  if (!match) return;
+  const parts = literalListParts(match[1]);
+  if (!parts) return;
+  return {identity, context: "page", labels: parts.map(part => quoted.exec(part)?.slice(1).find(item => item !== undefined) ?? part)};
 }
 
 /** Recognised property families with malformed tails cannot borrow a broader

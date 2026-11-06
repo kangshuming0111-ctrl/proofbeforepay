@@ -1,3 +1,4 @@
+import {assessmentComponentModule} from "./assessment-component-harness.ts";
 import assert from "node:assert/strict";
 import test from "node:test";
 import {mkdtemp,readFile,rm,writeFile} from "node:fs/promises";
@@ -54,38 +55,15 @@ test("the helper retains only the provided saved explanation as an unverified ex
  const explanation="The current report needs execution evidence.",result=buildAssessmentFeedbackDraft(criterion,{...item,explanation,rawProviderText:"UNTRUSTED RUNTIME CLAIM"} as ProofAssessmentItem,"en")!;
  assert.ok(result.comment.includes(explanation));assert.ok(!result.comment.includes("UNTRUSTED RUNTIME CLAIM"));assert.match(result.comment,/Current AI explanation \(not verified by execution\)/u);
 });
-async function componentModule(inspectKeys=false){
- const dir=await mkdtemp(path.join(tmpdir(),"pbp-assessment-ui-")),file=(p:string)=>pathToFileURL(path.join(root,p)).href;
- const source=await readFile(path.join(root,"app/components/DeliveryAssessment.tsx"),"utf8");
- let output=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.ESNext,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022}}).outputText;
- output=output.replace('import "../assessment.css";','').replace(/import \{ AssessmentValidationPanel \} from "\.\/AssessmentValidationPanel";/u,'const AssessmentValidationPanel=()=>null;');
- if(inspectKeys)output=output.replace('import { useEffect, useId, useRef, useState } from "react";', 'const useEffect=()=>{};const useId=()=>"test-id";const useRef=()=>({current:null});const useState=value=>[value,()=>{}];');
- let reviewOutput=ts.transpileModule(await readFile(path.join(root,"app/components/RiskReviewPanel.tsx"),"utf8"),{compilerOptions:{module:ts.ModuleKind.ESNext,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022}}).outputText.replace("import '../risk-reviews.css';","");
- for(const name of["react","react/jsx-runtime"])reviewOutput=reviewOutput.replaceAll(JSON.stringify(name),JSON.stringify(pathToFileURL(require.resolve(name)).href)).replaceAll("'"+name+"'",JSON.stringify(pathToFileURL(require.resolve(name)).href));
- await writeFile(path.join(dir,"risk-review.mjs"),reviewOutput);output=output.replaceAll('"./RiskReviewPanel"','"./risk-review.mjs"');
- let obligationOutput=ts.transpileModule(await readFile(path.join(root,"app/components/AssessmentObligations.tsx"),"utf8"),{compilerOptions:{module:ts.ModuleKind.ESNext,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022}}).outputText;
- for(const name of["react","react/jsx-runtime"])obligationOutput=obligationOutput.replaceAll(JSON.stringify(name),JSON.stringify(pathToFileURL(require.resolve(name)).href));
- obligationOutput=obligationOutput.replaceAll('"@/lib/assessment-obligations"',JSON.stringify(file("lib/assessment-obligations.ts")));
- await writeFile(path.join(dir,"assessment-obligations.mjs"),obligationOutput);output=output.replaceAll('"./AssessmentObligations"','"./assessment-obligations.mjs"');
- for(const name of["react","react/jsx-runtime","lucide-react"])output=output.replaceAll(JSON.stringify(name),JSON.stringify(pathToFileURL(require.resolve(name)).href));
- for(const name of["delivery-overview","assessment-display","assessment-evidence-needs"])output=output.replaceAll(JSON.stringify("@/lib/"+name),JSON.stringify(file("lib/"+name+".ts")));
- output=output.replaceAll('"./assessment-feedback"',JSON.stringify(file("app/components/assessment-feedback.ts")));
- let riskOutput=ts.transpileModule(await readFile(path.join(root,"app/components/RiskRepairPanel.tsx"),"utf8"),{compilerOptions:{module:ts.ModuleKind.ESNext,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022}}).outputText.replace('import "../risk-repairs.css";','');
- for(const name of["react","react/jsx-runtime"])riskOutput=riskOutput.replaceAll(JSON.stringify(name),JSON.stringify(pathToFileURL(require.resolve(name)).href));
- riskOutput=riskOutput.replaceAll('"@/lib/risk-repairs"',JSON.stringify(file("lib/risk-repairs.ts")));
- await writeFile(path.join(dir,"risk-repair.mjs"),riskOutput);output=output.replaceAll('"./RiskRepairPanel"','"./risk-repair.mjs"');
- const modulePath=path.join(dir,"assessment.mjs");await writeFile(modulePath,output);
- const loadedModule=await import(pathToFileURL(modulePath).href);return{Component:loadedModule.DeliveryAssessment,cleanup:()=>rm(dir,{recursive:true,force:true})};
-}
 const escape=(text:string)=>text.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#x27;");
 test("bilingual rendered items preserve the complete 3000-unit locked source as escaped plain text, including its tail",async()=>{
- const {Component,cleanup}=await componentModule();try{
+ const {Component,cleanup}=await assessmentComponentModule();try{
   const tail="TAIL 原卡 record <script>neverExecute()</script>",source=" \n"+"x".repeat(3000-tail.length-2)+tail;
   for(const language of["zh","en"] as const){const html=renderToStaticMarkup(createElement(Component,{report,criteria:[{...criterion,source}],language,onPrepareFeedback:()=>{}}));assert.ok(html.includes(`<blockquote>${escape(source)}</blockquote>`));assert.ok(!html.includes("<script>neverExecute()"));assert.match(html,language==="zh"?/查看完整锁定原文/u:/Inspect complete locked wording/u);assert.match(html,language==="zh"?/明确标为节选/u:/labelled as excerpts/u);assert.match(html,/<details class="assessment-locked-source">/u);}
  }finally{await cleanup();}
 });
 test("rendered draft action retains missing-source, supported, read-only and busy boundaries",async()=>{
- const {Component,cleanup}=await componentModule();try{
+ const {Component,cleanup}=await assessmentComponentModule();try{
   const props={report,criteria:[criterion],language:"en",onPrepareFeedback:()=>{}};
   const normal=renderToStaticMarkup(createElement(Component,props));assert.match(normal,/class="assessment-feedback-button"[^>]*>Draft an evidence request/u);assert.ok(!normal.includes('class="assessment-feedback-button" disabled'));
   const missing=renderToStaticMarkup(createElement(Component,{...props,criteria:[]}));assert.match(missing,/locked wording is unavailable/u);assert.match(missing,/class="assessment-feedback-button" disabled=""/u);
@@ -128,7 +106,7 @@ test("structured evidence actions share bilingual wording and reserve their comp
 });
 
 test("rendered unknown items show saved deterministic actions and complete file paths, with a truthful legacy fallback",async()=>{
- const {Component,cleanup}=await componentModule();try{
+ const {Component,cleanup}=await assessmentComponentModule();try{
   const targets=Array.from({length:40},(_,index)=>`source-${index}.html`),needed={...item,evidenceNeed:{schema:"source-evidence-need-v1" as const,reason:"page_citations" as const,targetFiles:targets}};
   for(const language of["zh","en"] as const){
    const html=renderToStaticMarkup(createElement(Component,{report:{...report,items:[needed]},criteria:[criterion],language,onPrepareFeedback:()=>{}}));
@@ -145,7 +123,7 @@ test("rendered unknown items show saved deterministic actions and complete file 
 });
 
 test("withheld originals preserve a compact separate pool and only editable current views offer namespaced human opinions",async()=>{
- const {Component,cleanup}=await componentModule();try{
+ const {Component,cleanup}=await assessmentComponentModule();try{
   const withheld:ProofAssessmentWithheldRisks={version:1,reason:"item_status_adjusted",adjustedCriteria:[{criterionId:criterion.id,originalStatus:"supported",publishedStatus:"insufficient_evidence"}],entries:[
    {originalRiskIndex:0,risk:{title:'Original <script>neverExecute()</script> & title',explanation:'Unverified <b>model wording</b>',suggestion:'Original suggestion "inspect"',citations:[{file:"index.html",start:12,end:30,excerpt:'<p>Source & 😀</p>'}]}},
    {originalRiskIndex:3,risk:{title:"Another retained lead",explanation:"Possibly unrelated to the adjusted item.",suggestion:"Keep original advice.",citations:[]}},
@@ -173,7 +151,7 @@ test("withheld originals preserve a compact separate pool and only editable curr
 });
 
 test("new no-withholding and adjusted-zero records stay distinct from missing historical originals",async()=>{
- const {Component,cleanup}=await componentModule();try{
+ const {Component,cleanup}=await assessmentComponentModule();try{
   const published={title:"Published lead",explanation:"Review this source indication.",suggestion:"Inspect the exact source.",citations:[]};
   const notWithheld:ProofAssessmentWithheldRisks={version:1,reason:"not_withheld",adjustedCriteria:[],entries:[]};
   for(const language of["zh","en"] as const){
@@ -193,14 +171,14 @@ test("new no-withholding and adjusted-zero records stay distinct from missing hi
 });
 
 test("unsupported withholding metadata shows a record warning without guessing counts",async()=>{
- const {Component,cleanup}=await componentModule();try{
+ const {Component,cleanup}=await assessmentComponentModule();try{
   const html=renderToStaticMarkup(createElement(Component,{report:{...report,withheldRisks:{version:99,reason:"invented",adjustedCriteria:[],entries:[]}},criteria:[criterion],language:"en",readOnly:true}));
   assert.match(html,/record format cannot be checked/u);assert.ok(!html.includes("invented"));
  }finally{await cleanup();}
 });
 
 test("v2 source-scope originals show their own reason without claiming an item status adjustment",async()=>{
- const {Component,cleanup}=await componentModule();try{
+ const {Component,cleanup}=await assessmentComponentModule();try{
   const original={title:"Original extra-page lead",explanation:"An original, unverified model lead.",suggestion:"Inspect the locked scope before deciding.",citations:[{file:"index.html",start:0,end:4,excerpt:"Home"}]};
   const scope:ProofAssessmentWithheldRisks={version:2,reason:"source_scope_unestablished",scopeCriterionIds:[criterion.id],adjustedCriteria:[],entries:[{originalRiskIndex:0,risk:original}]};
   const saved={...report,items:[{...item,status:"supported" as const}],risks:[],withheldRisks:scope};
@@ -221,7 +199,7 @@ test("v2 source-scope originals show their own reason without claiming an item s
 });
 
 test("delivery review panels use the original withheld index and remount drafts for a different origin or actor",async()=>{
- const {Component,cleanup}=await componentModule(true);try{
+ const {Component,cleanup}=await assessmentComponentModule(true);try{
   const risk={title:"Synthetic indication",explanation:"Source lead only.",suggestion:"Inspect the source.",citations:[]};
   const withheld:ProofAssessmentWithheldRisks={version:1,reason:"item_status_adjusted",adjustedCriteria:[{criterionId:criterion.id,originalStatus:"supported",publishedStatus:"insufficient_evidence"}],entries:[{originalRiskIndex:0,risk},{originalRiskIndex:3,risk}]};
   const published={...report,risks:[risk],withheldRisks:{version:1 as const,reason:"not_withheld" as const,adjustedCriteria:[],entries:[]}},quarantined={...report,withheldRisks:withheld};

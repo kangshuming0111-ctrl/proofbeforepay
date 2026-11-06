@@ -1,0 +1,23 @@
+{
+  "repository": "fastapi/fastapi",
+  "tag": "0.115.12",
+  "commit": "628c34e0cae200564d191c95d7edea78c88c4b5e",
+  "files": [
+    {
+      "upstreamPath": "docs_src/sql_databases/tutorial001_py310.py",
+      "url": "https://raw.githubusercontent.com/fastapi/fastapi/628c34e0cae200564d191c95d7edea78c88c4b5e/docs_src/sql_databases/tutorial001_py310.py",
+      "bytes": 1760,
+      "sha256": "6e09a1bf5f78a7d69e7d631a0697001a4e819d2b51898e9fc9a7eac488c9679b",
+      "localFile": "upstream.py"
+    },
+    {
+      "upstreamPath": "LICENSE",
+      "url": "https://raw.githubusercontent.com/fastapi/fastapi/628c34e0cae200564d191c95d7edea78c88c4b5e/LICENSE",
+      "bytes": 1086,
+      "sha256": "4ec89ffc81485b97fec584b2d4a961032eeffe834453894fd9c1274906cc744e",
+      "localFile": "LICENSE"
+    }
+  ],
+  "sourceChanged": false,
+  "application": "Official SQL databases tutorial; not a merchant or whole-site test"
+}

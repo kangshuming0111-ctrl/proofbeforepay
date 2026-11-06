@@ -1,0 +1,88 @@
+{
+  "status": "FROZEN for AI integration/root workflow",
+  "sourceFiles": [
+    {
+      "file": "lib/native-form-source.ts",
+      "sha256": "afd4c762ab2e54febb47fc5ab4e40158dce6c6d82c183e68748b8189847d4b3e",
+      "bytes": 15689
+    },
+    {
+      "file": "tests/native-form-source.test.ts",
+      "sha256": "26b0071b0cfd33c0284efc17cd90847957229b99fa3ba51f2d636df8c5670e9b",
+      "bytes": 17036
+    }
+  ],
+  "planAuthority": "Root/AI agent cycle35 plan-adjudication.json and explicit IMPLEMENTGO; no unseen/future corpus read by module author",
+  "actualValidation": {
+    "focused": {
+      "passed": 19,
+      "failed": 0,
+      "skipped": 0,
+      "log": "native-form-tests-final19.log"
+    },
+    "typeDiagnostics": 0,
+    "typeLog": "native-form-typecheck-fixed.log",
+    "commands": [
+      "pinned-node --experimental-strip-types --test tests/native-form-source.test.ts",
+      "pinned-node node_modules/typescript/bin/tsc --noEmit"
+    ]
+  },
+  "acceptedFindings": [
+    {
+      "origin": "Own initial tests",
+      "finding": "Nested inner label was counted despite invalid parent label",
+      "fix": "Carry label-ancestor exclusion; outer and inner invalid nesting do not witness labels. Initial15/16 log preserved."
+    },
+    {
+      "origin": "Root independent actual function counterexample",
+      "finding": "Expected-value filter hid same-label wrong-value duplicate owner",
+      "fix": "Establish all same-form/name/type+label owners independently of expected value and citation; only one owner may then match. Distinct expected pairs cannot reuse one control. Unrequested other-label choices still allowed."
+    },
+    {
+      "origin": "External independent actual function counterexample",
+      "finding": "Greedy unquoted label operand consumed earlier sentence end and runtime second sentence",
+      "fix": "Unquoted hard sentence/semicolon boundaries and grammar continuations rejected. Explicit balanced quoted action-like or punctuated labels remain source data. Added multiple suffix/semicolon/and-then counterexamples."
+    }
+  ],
+  "deepseek": {
+    "initialPost": "native-form-post-deepseek.json",
+    "finalPost": "native-form-post-fixed-deepseek.json",
+    "finalValid": true,
+    "finalFindings": 0,
+    "independentAdjudication": [
+      {
+        "finding": "step HH:MM is valid and 7 seconds invalid",
+        "decision": "rejected",
+        "evidence": "WHATWG step is positive floating-point or any. Time step is not an HH:MM duration syntax; integer-second descriptor is an explicit finite subset, not native validation. No grammar expansion needed.",
+        "source": "https://html.spec.whatwg.org/multipage/input.html#the-step-attribute",
+        "verified": "2026-11-06"
+      },
+      {
+        "finding": "candidate missing time prefixes / explicitfor semantics / missing locations / hidden duplicate IDs",
+        "decision": "rejected-as-actionable-findings",
+        "evidence": "Initial reviewer entries themselves conclude Not reported or conservative unknown; candidate code covers its parser families, missing locations intentionally unknown, explicit external form associations unsupported, native ID ambiguity fail-closed. Final post reports no actionable finding."
+      }
+    ]
+  },
+  "independentExternalFinal": {
+    "moduleSha256": "afd4c762ab2e54febb47fc5ab4e40158dce6c6d82c183e68748b8189847d4b3e",
+    "zeroNetworkCounterexamples": [
+      "multi-sentence runtime suffix now not admitted",
+      "wrong-value duplicate owner unknown",
+      "cross-form pair unknown",
+      "template/hidden label unknown",
+      "cross-field time attributes unknown",
+      "ordinary sameform radio covered",
+      "ordinary named time attrs covered"
+    ],
+    "remainingConfirmedP1P2": 0,
+    "noFutureCorpusRead": true
+  },
+  "limits": [
+    "Only four closed English grammar families, 2-6 entries for lists, 40 files/256 KiB text and bounded DOM visits.",
+    "Source facts and exact citations only; no rendering, native validation, execution, submission, persistence or email attestation.",
+    "More complex external form= associations remain unknown rather than broadening ownership.",
+    "Negative-only witness: caller may downgrade unsupported model support to unknown; no automatic pass or invented citation.",
+    "App wiring, full response tests, real model and user acceptance owned by parent AI/root agents; not claimed here."
+  ]
+}

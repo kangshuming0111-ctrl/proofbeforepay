@@ -1,0 +1,184 @@
+{
+  "schema": "proofbeforepay-frozen-project-corpus-v1",
+  "cohort": "httpbin-fresh-four-prospective-before-cycle34-tuning-2026-11-06",
+  "scope": "Four newly authored source-evaluation tasks using one unmodified official HTTP diagnostic-form template from a different publisher than the preceding MDN cohort; three use unchanged form bytes and one is an explicitly authored control-owner mutation. Every delivery adds an openly authored index.html and scope.css companion to meet the three-file/two-HTML research corpus shape. Not four independent apps, a merchant website, model-training holdout, human usability or representative production accuracy. No runtime or native backend is executed.",
+  "referenceMethod": "Original source facts, derived mutation and unknown execution boundaries fixed before cycle34 tuning or any provider responses on this cohort. Production intake derives all criterion IDs, titles and exact original source. References remain outside model input. Final implementation/request freeze must be regenerated before first provider I/O.",
+  "projects": [
+    {
+      "id": "httpbin-original-contact-fields",
+      "stratum": "clean",
+      "language": "en",
+      "title": "httpbin-original-contact-fields",
+      "summary": "The form source in forms-post.html must include Customer name: and Telephone: and E-mail address: as label text.\nThe static source in forms-post.html must declare custtel as a tel input and custemail as an email input.",
+      "files": {
+        "index.html": "<!doctype html><html><head><meta charset=\"utf-8\"><title>Form collection</title><link rel=\"stylesheet\" href=\"scope.css\"></head><body><h1>Form collection</h1><a href=\"forms-post.html\">Request form</a></body></html>\n",
+        "forms-post.html": "<!DOCTYPE html>\n<html>\n  <head>\n  </head>\n  <body>\n  <!-- Example form from HTML5 spec http://www.w3.org/TR/html5/forms.html#writing-a-form's-user-interface -->\n  <form method=\"post\" action=\"{{ url_for('view_post') }}\">\n   <p><label>Customer name: <input name=\"custname\"></label></p>\n   <p><label>Telephone: <input type=tel name=\"custtel\"></label></p>\n   <p><label>E-mail address: <input type=email name=\"custemail\"></label></p>\n   <fieldset>\n    <legend> Pizza Size </legend>\n    <p><label> <input type=radio name=size value=\"small\"> Small </label></p>\n    <p><label> <input type=radio name=size value=\"medium\"> Medium </label></p>\n    <p><label> <input type=radio name=size value=\"large\"> Large </label></p>\n   </fieldset>\n   <fieldset>\n    <legend> Pizza Toppings </legend>\n    <p><label> <input type=checkbox name=\"topping\" value=\"bacon\"> Bacon </label></p>\n    <p><label> <input type=checkbox name=\"topping\" value=\"cheese\"> Extra Cheese </label></p>\n    <p><label> <input type=checkbox name=\"topping\" value=\"onion\"> Onion </label></p>\n    <p><label> <input type=checkbox name=\"topping\" value=\"mushroom\"> Mushroom </label></p>\n   </fieldset>\n   <p><label>Preferred delivery time: <input type=time min=\"11:00\" max=\"21:00\" step=\"900\" name=\"delivery\"></label></p>\n   <p><label>Delivery instructions: <textarea name=\"comments\"></textarea></label></p>\n   <p><button>Submit order</button></p>\n  </form>\n  </body>\n</html>\n",
+        "scope.css": "body { margin: 1rem; }\n"
+      },
+      "requiredPages": [
+        "index.html",
+        "forms-post.html"
+      ],
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The form source in forms-post.html must include Customer name: and Telephone: and E-mail address: as label text.",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "The unchanged native template has three label elements containing Customer name: and Telephone: and E-mail address:. Nested input elements do not remove the surrounding label text. This claims source labels only, not visible rendering or form submission.",
+            "relevantFiles": [
+              "forms-post.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-2",
+          "title": "Original requirement 2",
+          "source": "The static source in forms-post.html must declare custtel as a tel input and custemail as an email input.",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "The native custtel control explicitly has type=tel and custemail explicitly has type=email. Bind each name to its own input; no claim that a browser validated either field.",
+            "relevantFiles": [
+              "forms-post.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "httpbin-original-options-and-time",
+      "stratum": "clean",
+      "language": "en",
+      "title": "httpbin-original-options-and-time",
+      "summary": "The source content in forms-post.html must pair Small and Medium and Large radio labels with the values small and medium and large under the same size name.\nThe static delivery control in forms-post.html must declare type time and min 11:00 and max 21:00 and step 900.",
+      "files": {
+        "index.html": "<!doctype html><html><head><meta charset=\"utf-8\"><title>Form collection</title><link rel=\"stylesheet\" href=\"scope.css\"></head><body><h1>Form collection</h1><a href=\"forms-post.html\">Request form</a></body></html>\n",
+        "forms-post.html": "<!DOCTYPE html>\n<html>\n  <head>\n  </head>\n  <body>\n  <!-- Example form from HTML5 spec http://www.w3.org/TR/html5/forms.html#writing-a-form's-user-interface -->\n  <form method=\"post\" action=\"{{ url_for('view_post') }}\">\n   <p><label>Customer name: <input name=\"custname\"></label></p>\n   <p><label>Telephone: <input type=tel name=\"custtel\"></label></p>\n   <p><label>E-mail address: <input type=email name=\"custemail\"></label></p>\n   <fieldset>\n    <legend> Pizza Size </legend>\n    <p><label> <input type=radio name=size value=\"small\"> Small </label></p>\n    <p><label> <input type=radio name=size value=\"medium\"> Medium </label></p>\n    <p><label> <input type=radio name=size value=\"large\"> Large </label></p>\n   </fieldset>\n   <fieldset>\n    <legend> Pizza Toppings </legend>\n    <p><label> <input type=checkbox name=\"topping\" value=\"bacon\"> Bacon </label></p>\n    <p><label> <input type=checkbox name=\"topping\" value=\"cheese\"> Extra Cheese </label></p>\n    <p><label> <input type=checkbox name=\"topping\" value=\"onion\"> Onion </label></p>\n    <p><label> <input type=checkbox name=\"topping\" value=\"mushroom\"> Mushroom </label></p>\n   </fieldset>\n   <p><label>Preferred delivery time: <input type=time min=\"11:00\" max=\"21:00\" step=\"900\" name=\"delivery\"></label></p>\n   <p><label>Delivery instructions: <textarea name=\"comments\"></textarea></label></p>\n   <p><button>Submit order</button></p>\n  </form>\n  </body>\n</html>\n",
+        "scope.css": "body { margin: 1rem; }\n"
+      },
+      "requiredPages": [
+        "index.html",
+        "forms-post.html"
+      ],
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The source content in forms-post.html must pair Small and Medium and Large radio labels with the values small and medium and large under the same size name.",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "The Pizza Size fieldset contains the three nested radio labels; their same name=size controls pair Small with small, Medium with medium and Large with large. Values and owners both matter.",
+            "relevantFiles": [
+              "forms-post.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-2",
+          "title": "Original requirement 2",
+          "source": "The static delivery control in forms-post.html must declare type time and min 11:00 and max 21:00 and step 900.",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "The delivery input directly declares type=time min=\"11:00\" max=\"21:00\" step=\"900\" name=\"delivery\". This is an attribute fact, not evidence of successful time validation or actual delivery scheduling.",
+            "relevantFiles": [
+              "forms-post.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "httpbin-derived-wrong-radio-owner",
+      "stratum": "mismatch",
+      "language": "en",
+      "title": "httpbin-derived-wrong-radio-owner",
+      "summary": "The source content in forms-post.html must pair Small and Medium and Large radio labels with the values small and medium and large under the same size name.\nThe source content in forms-post.html must associate Bacon and Extra Cheese and Onion and Mushroom checkbox labels with the values bacon and cheese and onion and mushroom under the topping name.",
+      "files": {
+        "index.html": "<!doctype html><html><head><meta charset=\"utf-8\"><title>Form collection</title><link rel=\"stylesheet\" href=\"scope.css\"></head><body><h1>Form collection</h1><a href=\"forms-post.html\">Request form</a></body></html>\n",
+        "forms-post.html": "<!DOCTYPE html>\n<html>\n  <head>\n  </head>\n  <body>\n  <!-- Example form from HTML5 spec http://www.w3.org/TR/html5/forms.html#writing-a-form's-user-interface -->\n  <form method=\"post\" action=\"{{ url_for('view_post') }}\">\n   <p><label>Customer name: <input name=\"custname\"></label></p>\n   <p><label>Telephone: <input type=tel name=\"custtel\"></label></p>\n   <p><label>E-mail address: <input type=email name=\"custemail\"></label></p>\n   <fieldset>\n    <legend> Pizza Size </legend>\n    <p><label> <input type=radio name=size value=\"small\"> Small </label></p>\n    <p><label> <input type=radio name=size value=\"medium\"> Medium </label></p>\n    <p><label> <input type=radio name=size value=\"medium\"> Large </label></p>\n   </fieldset>\n   <fieldset>\n    <legend> Pizza Toppings </legend>\n    <p><label> <input type=checkbox name=\"topping\" value=\"bacon\"> Bacon </label></p>\n    <p><label> <input type=checkbox name=\"topping\" value=\"cheese\"> Extra Cheese </label></p>\n    <p><label> <input type=checkbox name=\"topping\" value=\"onion\"> Onion </label></p>\n    <p><label> <input type=checkbox name=\"topping\" value=\"mushroom\"> Mushroom </label></p>\n   </fieldset>\n   <p><label>Preferred delivery time: <input type=time min=\"11:00\" max=\"21:00\" step=\"900\" name=\"delivery\"></label></p>\n   <p><label>Delivery instructions: <textarea name=\"comments\"></textarea></label></p>\n   <p><button>Submit order</button></p>\n  </form>\n  <input type=hidden name=\"archived_size\" value=\"large\">\n  </body>\n</html>\n",
+        "scope.css": "body { margin: 1rem; }\n"
+      },
+      "requiredPages": [
+        "index.html",
+        "forms-post.html"
+      ],
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "The source content in forms-post.html must pair Small and Medium and Large radio labels with the values small and medium and large under the same size name.",
+          "reference": {
+            "expectedStatus": "changes_suggested",
+            "rationale": "The explicitly authored mutation changes only the Large radio control value from large to medium. A separate hidden archived_size control outside the form still contains value=large; that other control cannot satisfy the Large radio owner under name=size. Small and Medium remain unchanged.",
+            "relevantFiles": [
+              "forms-post.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-2",
+          "title": "Original requirement 2",
+          "source": "The source content in forms-post.html must associate Bacon and Extra Cheese and Onion and Mushroom checkbox labels with the values bacon and cheese and onion and mushroom under the topping name.",
+          "reference": {
+            "expectedStatus": "supported",
+            "rationale": "The native Pizza Toppings fieldset is unchanged: four checkbox owners under name=topping pair Bacon/bacon, Extra Cheese/cheese, Onion/onion and Mushroom/mushroom. The independent wrong size radio value does not alter this fieldset.",
+            "relevantFiles": [
+              "forms-post.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "httpbin-original-runtime-boundary",
+      "stratum": "boundary",
+      "language": "en",
+      "title": "httpbin-original-runtime-boundary",
+      "summary": "Submitting the form must store the customer order in a merchant database and retrieve the same order after a server restart.\nAfter the form is submitted a confirmation email must reach the customer external mailbox and the order must be accepted for delivery.",
+      "files": {
+        "index.html": "<!doctype html><html><head><meta charset=\"utf-8\"><title>Form collection</title><link rel=\"stylesheet\" href=\"scope.css\"></head><body><h1>Form collection</h1><a href=\"forms-post.html\">Request form</a></body></html>\n",
+        "forms-post.html": "<!DOCTYPE html>\n<html>\n  <head>\n  </head>\n  <body>\n  <!-- Example form from HTML5 spec http://www.w3.org/TR/html5/forms.html#writing-a-form's-user-interface -->\n  <form method=\"post\" action=\"{{ url_for('view_post') }}\">\n   <p><label>Customer name: <input name=\"custname\"></label></p>\n   <p><label>Telephone: <input type=tel name=\"custtel\"></label></p>\n   <p><label>E-mail address: <input type=email name=\"custemail\"></label></p>\n   <fieldset>\n    <legend> Pizza Size </legend>\n    <p><label> <input type=radio name=size value=\"small\"> Small </label></p>\n    <p><label> <input type=radio name=size value=\"medium\"> Medium </label></p>\n    <p><label> <input type=radio name=size value=\"large\"> Large </label></p>\n   </fieldset>\n   <fieldset>\n    <legend> Pizza Toppings </legend>\n    <p><label> <input type=checkbox name=\"topping\" value=\"bacon\"> Bacon </label></p>\n    <p><label> <input type=checkbox name=\"topping\" value=\"cheese\"> Extra Cheese </label></p>\n    <p><label> <input type=checkbox name=\"topping\" value=\"onion\"> Onion </label></p>\n    <p><label> <input type=checkbox name=\"topping\" value=\"mushroom\"> Mushroom </label></p>\n   </fieldset>\n   <p><label>Preferred delivery time: <input type=time min=\"11:00\" max=\"21:00\" step=\"900\" name=\"delivery\"></label></p>\n   <p><label>Delivery instructions: <textarea name=\"comments\"></textarea></label></p>\n   <p><button>Submit order</button></p>\n  </form>\n  </body>\n</html>\n",
+        "scope.css": "body { margin: 1rem; }\n"
+      },
+      "requiredPages": [
+        "index.html",
+        "forms-post.html"
+      ],
+      "criteria": [
+        {
+          "id": "coverage-1",
+          "title": "Original requirement 1",
+          "source": "Submitting the form must store the customer order in a merchant database and retrieve the same order after a server restart.",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "Only template and companion source is supplied. A POST form and Jinja action do not establish a merchant database write, record identity, application restart or independent readback. httpbin is a request/response diagnostic application, not merchant-order acceptance evidence.",
+            "relevantFiles": [
+              "forms-post.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        },
+        {
+          "id": "coverage-2",
+          "title": "Original requirement 2",
+          "source": "After the form is submitted a confirmation email must reach the customer external mailbox and the order must be accepted for delivery.",
+          "reference": {
+            "expectedStatus": "insufficient_evidence",
+            "rationale": "An email input and Submit order button do not establish a sent email, actual external mailbox receipt or merchant acceptance. No server, browser, mailbox or delivery process was executed in this source assessment.",
+            "relevantFiles": [
+              "forms-post.html"
+            ],
+            "requiresSemanticReview": true
+          }
+        }
+      ]
+    }
+  ]
+}

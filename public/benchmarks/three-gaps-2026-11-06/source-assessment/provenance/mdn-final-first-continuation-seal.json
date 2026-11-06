@@ -1,0 +1,16 @@
+{
+  "schema": "pbp-prospective-existing-corpus-seal-continuation-v1",
+  "recordedAt": "2026-11-06T07:06:41.638759+00:00",
+  "originalCorpus": "../cycle34/fresh-four/corpus.json",
+  "originalSeal": "../cycle34/fresh-four/corpus-seal.json",
+  "corpusSha256": "17880268327895b09b1184835cad1dc6dfd6b3dfeabd15b78d4a93e3feecd154",
+  "originalSealSha256": "e6c3dcf1d7b2f56660f4cb8066c9b8750b09ae90c0e812e87d417d4e9f7c5427",
+  "originalPreparedAt": "2026-11-06T06:37:19.885Z",
+  "originallySealedBeforeCycle34Tuning": true,
+  "copiedBytesUnchanged": true,
+  "providerCallsOnTheseCases": 0,
+  "newEvaluationProjects": 4,
+  "criteria": 8,
+  "knownNotNewPublisher": "MDNsamepublisher; twofurtheruncalledexamplepaths,nottrainingdataholdout",
+  "rootIndependentReferencesPendingReconfirmation": true
+}

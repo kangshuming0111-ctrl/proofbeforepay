@@ -38,6 +38,7 @@ test("each retained booking setting, report and pending lease remains discoverab
   const withManifest=catalog();withManifest.context.artifactManifest={id:"synthetic-manifest",manifestDigest:"f".repeat(64)};
   assert.equal(hasTechnicalChecksState({...delivery(),supplementalCatalog:withManifest}),true);
   assert.equal(hasTechnicalChecksState(delivery(),true),true);
+  assert.equal(hasTechnicalChecksState({...delivery(),cooperativeStageReports:[{}] as never}),true);
 });
 test("collapsing after activation keeps children mounted; an arriving record does not undo an explicit collapse",()=>{
   let state=initialTechnicalChecksDisclosure(false);assert.deepEqual(state,{activated:false,open:false});
@@ -86,21 +87,21 @@ test("real bilingual wrapper renders no heavy children while cold, and exposes t
     const compile=(source:string)=>ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.ESNext,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022}}).outputText;
     const imports=(output:string)=>["react","react/jsx-runtime"].reduce((value,name)=>value.replaceAll(JSON.stringify(name),JSON.stringify(pathToFileURL(require.resolve(name)).href)),output);
     let stage=imports(compile(await readFile(path.join(root,"app/components/DeliveryStageEvidence.tsx"),"utf8")));
-    stage=stage.replaceAll('"@/lib/delivery-stage-evidence"',JSON.stringify(url("lib/delivery-stage-evidence.ts")));
+    stage=stage.replaceAll('"@/lib/delivery-stage-evidence"',JSON.stringify(url("lib/delivery-stage-evidence.ts")));stage=stage.replaceAll('"@/lib/cooperative-stage-evidence"',JSON.stringify(url("lib/cooperative-stage-evidence.ts")));
     await writeFile(path.join(dir,"stage.mjs"),stage);
     let output=imports(compile(await readFile(path.join(root,"app/components/TechnicalChecksPanel.tsx"),"utf8")));
     output=output.replace('import "../project-journey.css";','').replaceAll('"./ProjectJourneyPanel"','"./journey-stub.mjs"').replaceAll('"./DeliveryStageEvidence"','"./stage.mjs"').replaceAll('"./technical-checks-state"',JSON.stringify(url("app/components/technical-checks-state.ts")));
     await writeFile(path.join(dir,"panel.mjs"),output);
     const {TechnicalChecksPanel}=await import(pathToFileURL(path.join(dir,"panel.mjs")).href),stub=await import(pathToFileURL(path.join(dir,"journey-stub.mjs")).href);
-    const props={quote:{id:"synthetic-project",proof:{delivery:delivery()}},role:"buyer",enabled:true,request:async()=>{throw Error("SSR must not run client effects");},onApply(){},onBusy(){},onDecision(){}};
+    const props={quote:{id:"synthetic-project",proof:{criteria:[],delivery:delivery()}},role:"buyer",enabled:true,request:async()=>{throw Error("SSR must not run client effects");},onApply(){},onBusy(){},onDecision(){}};
     for(const language of["en","zh"]){
       const cold=renderToStaticMarkup(createElement(TechnicalChecksPanel,{...props,language}));
       assert.doesNotMatch(cold,/Synthetic booking subtree|type="file"/u);assert.ok(cold.includes(language==="en"?"ordinary website-file delivery":"普通网页文件交付可跳过"));
     }
     assert.equal(stub.seen.length,0);
-    const existing={...props,quote:{...props.quote,proof:{delivery:{...delivery(),journeyPlan:{syntheticPresenceOnly:true}}}},language:"en"};
+    const existing={...props,quote:{...props.quote,proof:{...props.quote.proof,delivery:{...delivery(),journeyPlan:{syntheticPresenceOnly:true}}}},language:"en"};
     const active=renderToStaticMarkup(createElement(TechnicalChecksPanel,existing));
-    assert.equal(stub.seen.length,1);assert.match(active,/type="file"/u);assert.ok(active.indexOf("Check submission, storage, readback and test inbox separately")<active.indexOf("Synthetic booking subtree"));
+    assert.equal(stub.seen.length,1);assert.match(active,/type="file"/u);assert.match(active,/Share dynamic-check records/u);assert.ok(active.indexOf("Share dynamic-check records")<active.indexOf("Synthetic booking subtree"));
     assert.deepEqual(stub.seen[0],{id:"synthetic-project",role:"buyer",enabled:true});
     // Seed only a valid disclosure state reached by the tested reducer. The
     // actual component must keep its children while the details are collapsed.

@@ -1,3 +1,4 @@
+import {assertCooperativeStageBounds} from "./cooperative-stage-evidence.ts";
 import type { ProofAcceptanceEvidence, ProofDelivery, ProofQuote } from "./contracts.ts";
 import { DomainError } from "./domain.ts";
 import {inlineModelReportsFor,modelArchiveRefs,modelReportsFor} from "./model-report-archive.ts";
@@ -37,7 +38,9 @@ function retained<T extends {id: string; deliveryId: string}>(delivery: ProofDel
   return result;
 }
 function histories(delivery: ProofDelivery) {
+  assertCooperativeStageBounds(delivery.cooperativeStageReports);
   return {
+    cooperativeStageReports: delivery.cooperativeStageReports,
     runtime: retained(delivery, delivery.runtimeHistory, delivery.runtimeReport),
     enquiry: retained(delivery, delivery.enquiryHistory, delivery.enquiryReport),
     journey: retained(delivery, delivery.journeyHistory, delivery.journeyReport),

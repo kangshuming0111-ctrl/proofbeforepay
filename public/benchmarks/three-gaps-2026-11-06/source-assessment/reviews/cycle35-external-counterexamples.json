@@ -1,0 +1,123 @@
+{
+  "schema": "pbp-cycle35-readonly-independent-check-v1",
+  "createdAt": "2026-11-06T07:25:23.798Z",
+  "reviewer": "Codex child independent read-only execution; not human usability testing",
+  "sourceFreeze": {
+    "file": "outputs/three-gaps-2026-11-06/ai-prospective/cycle35/owned-final-freeze.json",
+    "sha256": "fec3ed20260a91e4c420498bb1ce9856dc796e2b76cd081ae69cb339c42a8223"
+  },
+  "checkedFiles": [
+    {
+      "file": "lib/static-markup-directive.ts",
+      "sha256": "de10b4c6e26b356ea993383e986db2f371ca750733bf13e329c133b61420fb71"
+    },
+    {
+      "file": "lib/source-literal-directive.ts",
+      "sha256": "047f4827abdd59c863c922c17a62967abadbc6427b0bbb6ffd032e04466146c8"
+    },
+    {
+      "file": "lib/assessment-evidence-scope.ts",
+      "sha256": "b79ce478dc4843ad0f689b9402037260aaba13a9df949fbf12c279d526f78c9c"
+    },
+    {
+      "file": "lib/assessment-label-citations.ts",
+      "sha256": "bb2cd28997fac7bbc394148f58d8d39088ae56ea9b2c7cb9d0f1e32ee438fce2"
+    },
+    {
+      "file": "lib/assessment-unestablished-verbatim.ts",
+      "sha256": "d54394433f42e95f7d3856a7c3eff8ef1544756b44cf4c47bf7720a218b5f814"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "sha256": "71f33fdd36683768fe30251c8820b74a7e88ca3fae6884d5dec666e9bfe7d300"
+    }
+  ],
+  "conclusion": "The two independently reproduced legacy grammar/owner counterexamples now fail closed. The checked explicit-copy marker and narrow-negation counterexamples remain protected. No remaining reproducible P1/P2 was found within this bounded final recheck.",
+  "findings": [],
+  "observations": [
+    {
+      "case": "original complete runtime sentence tail",
+      "source": "Contact source labels must include Name and E-mail. Persist orders.",
+      "admitted": false,
+      "scope": "requires_observation"
+    },
+    {
+      "case": "original complete runtime sentence tail",
+      "source": "Contact source labels must include Name and E-mail. Submit payment.",
+      "admitted": false,
+      "scope": "requires_observation"
+    },
+    {
+      "case": "original complete runtime sentence tail",
+      "source": "Contact source labels must include Name and E-mail. Send confirmation emails.",
+      "admitted": false,
+      "scope": "requires_observation"
+    },
+    {
+      "case": "balanced quoted punctuation remains literal data",
+      "source": "Contact source labels must include \"Name\" and \"E-mail. Persist orders\".",
+      "scope": "source_text"
+    },
+    {
+      "case": "non-labelable duplicate ID prevents common-form for-target witness",
+      "result": {
+        "kind": "incomplete",
+        "context": "form",
+        "missingLabels": [
+          "E-mail:"
+        ]
+      }
+    },
+    {
+      "case": "explicit exact-copy marker remains protected",
+      "marker": "exact",
+      "guardApplied": false
+    },
+    {
+      "case": "explicit exact-copy marker remains protected",
+      "marker": "EXACT",
+      "guardApplied": false
+    },
+    {
+      "case": "explicit exact-copy marker remains protected",
+      "marker": "Verbatim",
+      "guardApplied": false
+    },
+    {
+      "case": "explicit exact-copy marker remains protected",
+      "marker": "WORD-FOR-WORD",
+      "guardApplied": false
+    },
+    {
+      "case": "finite absent exact sentence objection without exact-copy agreement",
+      "guardApplied": true
+    },
+    {
+      "case": "negation/presence/quoted-data counterexample",
+      "explanation": "The exact sentence is not missing.",
+      "guardApplied": false
+    },
+    {
+      "case": "negation/presence/quoted-data counterexample",
+      "explanation": "The exact sentence is present.",
+      "guardApplied": false
+    },
+    {
+      "case": "negation/presence/quoted-data counterexample",
+      "explanation": "The source contains \"the exact statement is missing\" as data.",
+      "guardApplied": false
+    },
+    {
+      "case": "linked business check disables optional verbatim guard",
+      "guardApplied": false
+    }
+  ],
+  "providerCalls": 0,
+  "networkCalls": 0,
+  "sourceEdits": 0,
+  "limits": [
+    "No fresh cohort/corpus was read or changed.",
+    "No new model inference or browser execution was performed.",
+    "This bounded review does not establish universal natural-language entailment, accessibility, visibility or runtime correctness."
+  ]
+}

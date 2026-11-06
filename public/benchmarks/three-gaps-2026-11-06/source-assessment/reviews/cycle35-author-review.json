@@ -1,0 +1,238 @@
+{
+  "schema": "pbp-cycle35-whole-answer-author-audit-v1",
+  "reviewer": "Codex AI code author independently read all complete raw items, risks, limitations, application metadata and source relationships. Not a human review or blind external study. Root Codex independent review remains separate.",
+  "rows": [
+    {
+      "id": "mdn-derived-cross-page-label",
+      "cohort": "known_regression",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "reviewedAllItemExplanations": true,
+      "reviewedAllRisks": true,
+      "reviewedAllLimitations": true,
+      "rawStatusAgreement": 2,
+      "applicationStatusAgreement": 2,
+      "criteria": 2,
+      "notes": [
+        "Statuses and source row relationship correct. Optional risk uses unobserved visible label wording; page-role targets remain conditional and require confirmation, not established file mapping. Stray fragment is an authored mutation fact, not a buyer-agreed prohibition."
+      ],
+      "sourceReport": "known-final-live.json"
+    },
+    {
+      "id": "mdn-derived-inert-label-decoys",
+      "cohort": "known_regression",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "reviewedAllItemExplanations": true,
+      "reviewedAllRisks": true,
+      "reviewedAllLimitations": true,
+      "rawStatusAgreement": 2,
+      "applicationStatusAgreement": 2,
+      "criteria": 2,
+      "notes": [
+        "False template support corrected. Optional risk and item still say visible for active labels even though no rendering was observed; canonical UI should be read as source declaration only."
+      ],
+      "sourceReport": "known-final-live.json"
+    },
+    {
+      "id": "mdn-original-compound-table",
+      "cohort": "known_regression",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "reviewedAllItemExplanations": true,
+      "reviewedAllRisks": true,
+      "reviewedAllLimitations": true,
+      "rawStatusAgreement": 2,
+      "applicationStatusAgreement": 2,
+      "criteria": 2,
+      "notes": [
+        "Both source relationships and complete cited owner/header facts agree; no extra risk."
+      ],
+      "sourceReport": "known-final-live.json"
+    },
+    {
+      "id": "mdn-derived-cross-control-enum",
+      "cohort": "known_regression",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "reviewedAllItemExplanations": true,
+      "reviewedAllRisks": true,
+      "reviewedAllLimitations": true,
+      "rawStatusAgreement": 2,
+      "applicationStatusAgreement": 2,
+      "criteria": 2,
+      "notes": [
+        "Wrong economy value is tied to Service select, not borrowed from Example select. Optional extra-select action explicitly asks confirmation."
+      ],
+      "sourceReport": "known-final-live.json"
+    },
+    {
+      "id": "mdn-original-runtime-unknown",
+      "cohort": "known_regression",
+      "rawWholeAnswer": "rejected",
+      "applicationWholeAnswer": "accepted",
+      "reviewedAllItemExplanations": true,
+      "reviewedAllRisks": true,
+      "reviewedAllLimitations": true,
+      "rawStatusAgreement": 2,
+      "applicationStatusAgreement": 2,
+      "criteria": 2,
+      "notes": [
+        "Raw statuses correctly unknown, but raw explanation/risk assert13columns. Exact header row has colspan2 +10th=12logical columns, not13; fabricated calculation must not become a detected defect. v3 withheld original risk and system canonical observation explanation replaced raw prose. This is application protection, not raw model correctness."
+      ],
+      "sourceReport": "known-final-live.json"
+    },
+    {
+      "id": "httpbin-original-contact-fields",
+      "cohort": "known_regression",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "reviewedAllItemExplanations": true,
+      "reviewedAllRisks": true,
+      "reviewedAllLimitations": true,
+      "rawStatusAgreement": 2,
+      "applicationStatusAgreement": 2,
+      "criteria": 2,
+      "notes": [
+        "Six earlier over-conservative source facts recovered across this and next two tasks without auto-promotion: actual raw statuses/citations retained. Labels/types only, no submission claim."
+      ],
+      "sourceReport": "known-final-live.json"
+    },
+    {
+      "id": "httpbin-original-options-and-time",
+      "cohort": "known_regression",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "reviewedAllItemExplanations": true,
+      "reviewedAllRisks": true,
+      "reviewedAllLimitations": true,
+      "rawStatusAgreement": 2,
+      "applicationStatusAgreement": 2,
+      "criteria": 2,
+      "notes": [
+        "Same size-name radio controls and literal time attributes supported by exact source owners. Runtime remains unclaimed."
+      ],
+      "sourceReport": "known-final-live.json"
+    },
+    {
+      "id": "httpbin-derived-wrong-radio-owner",
+      "cohort": "known_regression",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "reviewedAllItemExplanations": true,
+      "reviewedAllRisks": true,
+      "reviewedAllLimitations": true,
+      "rawStatusAgreement": 2,
+      "applicationStatusAgreement": 2,
+      "criteria": 2,
+      "notes": [
+        "Large wrong value correctly identified; outside hidden archived_size value not borrowed. Four topping pairs correctly identified."
+      ],
+      "sourceReport": "known-final-live.json"
+    },
+    {
+      "id": "c34-fresh-signup-original",
+      "cohort": "prospective_first",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "reviewedAllItemExplanations": true,
+      "reviewedAllRisks": true,
+      "reviewedAllLimitations": true,
+      "rawStatusAgreement": 2,
+      "applicationStatusAgreement": 2,
+      "criteria": 2,
+      "notes": [
+        "Fresh first answer covers both exact labels and caption; no defect based on different title/h1."
+      ],
+      "sourceReport": "fresh-first-live.json"
+    },
+    {
+      "id": "c34-fresh-signup-cross-page",
+      "cohort": "prospective_first",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified",
+      "reviewedAllItemExplanations": true,
+      "reviewedAllRisks": true,
+      "reviewedAllLimitations": true,
+      "rawStatusAgreement": 2,
+      "applicationStatusAgreement": 2,
+      "criteria": 2,
+      "notes": [
+        "Statuses correctly distinguish split labels and unchanged caption. Optional risk2 title projects signup role onto index; suggestion is conditional on buyer confirmation rather than claiming established target, but can confuse and is not an agreed defect. Visible wording unobserved."
+      ],
+      "sourceReport": "fresh-first-live.json"
+    },
+    {
+      "id": "c34-fresh-signup-input-types",
+      "cohort": "prospective_first",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "reviewedAllItemExplanations": true,
+      "reviewedAllRisks": true,
+      "reviewedAllLimitations": true,
+      "rawStatusAgreement": 2,
+      "applicationStatusAgreement": 2,
+      "criteria": 2,
+      "notes": [
+        "Correct age field mismatch and adjacent name field match with separate exact label/input citations."
+      ],
+      "sourceReport": "fresh-first-live.json"
+    },
+    {
+      "id": "c34-fresh-conjunction-runtime",
+      "cohort": "prospective_first",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "reviewedAllItemExplanations": true,
+      "reviewedAllRisks": true,
+      "reviewedAllLimitations": true,
+      "rawStatusAgreement": 2,
+      "applicationStatusAgreement": 2,
+      "criteria": 2,
+      "notes": [
+        "Both runtime conjunctions correctly unknown. Raw extra colon exact-wording limitation is not established by requirement; extra screenreader corner-cell lead is speculative. Raw limitations replaced with canonical boundaries and optional risks withheld via v3, without altering unchanged unknown statuses."
+      ],
+      "sourceReport": "fresh-first-live.json"
+    }
+  ],
+  "summary": {
+    "known_regression": {
+      "rawWholeAnswer": {
+        "accepted": 5,
+        "qualified": 2,
+        "rejected": 1
+      },
+      "applicationWholeAnswer": {
+        "accepted": 6,
+        "qualified": 2,
+        "rejected": 0
+      }
+    },
+    "prospective_first": {
+      "rawWholeAnswer": {
+        "accepted": 2,
+        "qualified": 2,
+        "rejected": 0
+      },
+      "applicationWholeAnswer": {
+        "accepted": 3,
+        "qualified": 1,
+        "rejected": 0
+      }
+    }
+  },
+  "statusNumbersDoNotEqualSemanticPerfection": true,
+  "coverageUnderAdmissionCount": 0,
+  "missingMandatoryAnswers": 0,
+  "providerCalls": 12,
+  "retries": 0,
+  "costUsdEstimate": 0.0647175,
+  "all44EvaluationCallsCostUsdEstimate": 0.2653134,
+  "limits": [
+    "Tiny authored educational-example tasks, not real customer acceptance or a statistical accuracy estimate.",
+    "Known8 were exposed repeatedly; fresh4 references were sealed before tuning, same MDN publisher and task family.",
+    "All earlier32 answers and reviews retained, including schema failure, false pass, false alarm and6 source under-admissions.",
+    "No backend/browser operation by these source-evaluation provider calls. Human participants=0.",
+    "Accepted means bounded inspected source answer, not absence of every unrecognized semantic failure."
+  ]
+}

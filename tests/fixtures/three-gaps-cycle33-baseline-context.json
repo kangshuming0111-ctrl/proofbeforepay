@@ -1,0 +1,83 @@
+{
+  "kind": "inert-review-context-not-runtime",
+  "observation": "First prospective8onproductionassessmentcode4cc9f72,exacthashlockbeforecalls",
+  "baseline": {
+    "projects": 8,
+    "criteria": 16,
+    "rawStatusMatches": 15,
+    "appDeliveredMatches": 14,
+    "rawItemIDsComplete": 16,
+    "appRejectedProjects": 1,
+    "noAutomaticRetries": true
+  },
+  "failure": {
+    "sourceRequirement": "The page content in index.html must say Earth is Our world.",
+    "sourceWitness": "<tr><th scope=\"row\">Earth</th><td>5.97</td><td>12,756</td><td>5514</td><td>9.8</td><td>24.0</td><td>149.6</td><td>15</td><td>1</td><td>Our world</td></tr>",
+    "rawCompletion": {
+      "catalogId": "a80dc537d02987a46d419119f3817d9dc3af56ac38dba9ce1843d80a8b88a286",
+      "items": [
+        {
+          "criterionId": "coverage-1",
+          "status": "changes_suggested",
+          "explanation": "contact.html contains literal labels \"Name:\" and \"Message:\", and index.html contains \"E-mail:\", but contact.html's E-mail input has no label text at all, so \"E-mail:\" is missing from the contact form.",
+          "citations": {
+            "c1": "s4",
+            "c2": "s6",
+            "c3": "s9",
+            "c4": "s140",
+            "c5": "",
+            "c6": ""
+          }
+        },
+        {
+          "criterionId": "coverage-2",
+          "status": "changes_suggested",
+          "explanation": "index.html's Earth table row has the notes cell \"Our world\" and the row's planet name \"Earth\", but no contiguous text \"Earth is Our world\" appears in the page.",
+          "citations": {
+            "c1": "s53",
+            "c2": "s64",
+            "c3": "s54",
+            "c4": "s58",
+            "c5": "",
+            "c6": ""
+          }
+        }
+      ],
+      "risks": [
+        {
+          "title": "Contact form lacks an \"E-mail:\" label next to the email input",
+          "explanation": "contact.html shows an email input with no associated label element or text, while Name and Message inputs do have labels; the only \"E-mail:\" label text is in index.html.",
+          "suggestion": "Add a label with text \"E-mail:\" (for=\"mail\") to the email input in contact.html and confirm the intended page for the three labels.",
+          "citations": {
+            "c1": "s6",
+            "c2": "s8",
+            "c3": "s140"
+          }
+        },
+        {
+          "title": "index.html does not contain the phrase \"Earth is Our world\"",
+          "explanation": "The Earth row uses \"Earth\" as the row header and \"Our world\" as the Notes cell; no sentence joining them exists in the page source.",
+          "suggestion": "Decide with the buyer whether the notes cell \"Our world\" suffices or an explicit \"Earth is Our world\" string is required; if so, add it.",
+          "citations": {
+            "c1": "s54",
+            "c2": "s64"
+          }
+        }
+      ],
+      "limitations": [
+        "No browser rendering, form submission, or email delivery was tested; findings are static-markup only.",
+        "Whether the labels are visually displayed or correctly associated in a rendered page was not observed.",
+        "The requirement does not specify which page must carry all three labels; index.html and contact.html each supply part of the text.",
+        "No raster files were supplied in the inventory; visual confirmation is unavailable."
+      ]
+    },
+    "applicationFailureReason": "risk_fields"
+  },
+  "rootAdjudication": "Preserve hard strict output validation. Do not pad/drop malformed optional risk citation slots or silently salvage reports. Improve prompt instruction only: ordinary factual relationships need not become a contiguous exact string; relate row/column/control/file before facts. Explicit exact quoted requirements remain exact. Generated fixed-slot guidance lists ALL required slots and empty-string policy for unused entries for both criterion and risk objects. One corpus artifact is not general model accuracy.",
+  "outOfScope": [
+    "No UI/permission/payment changes",
+    "No model response laundering",
+    "Do not send new heldout corpus/reference labels to provider or reviewer prompt",
+    "Do not fabricate deterministic semantic pass"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "license": "ISC",
+  "url": "https://raw.githubusercontent.com/postmanlabs/httpbin/f8ec666b4d1b654e4ff6aedd356f510dcac09f83/LICENSE",
+  "gitBlob": "885f52d8de8220b4aa0430061054cd2230611656",
+  "sha256": "83446f2ba92c3b99d957c70c34d94cd9b9874be5dc79cf6ff9b0d53885430edb",
+  "text": "ISC License\n\nCopyright (c) 2017 Kenneth Reitz.\n\nPermission to use, copy, modify, and/or distribute this software for any\npurpose with or without fee is hereby granted, provided that the above\ncopyright notice and this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\nWITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\nMERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\nANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\nWHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\nACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF\nOR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\n"
+}

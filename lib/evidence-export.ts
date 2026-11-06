@@ -1,10 +1,11 @@
+import {validateCooperativeStageReports} from "./cooperative-stage-evidence.ts";
 import {validateSavedEnquiryEvidence,validateEnquiryReportDecision,projectEnquiryReportsFor} from "./project-enquiry.ts";
 import {ASSESSMENT_ITEM_CITATION_LIMIT, ASSESSMENT_RISK_CITATION_LIMIT} from "./assessment-limits.ts";
 import {ASSESSMENT_EVIDENCE_NEED_REASONS} from "./assessment-evidence-needs.ts";
 import {isAssessmentObligations} from "./assessment-obligations.ts";
-import {finiteContactPresenceScopeCriterionIds} from "./assessment-publication-policy.ts";
+import {finiteContactPresenceScopeCriterionIds,observationOnlyCustomScopeCriterionIds,type ObservationScopeContext} from "./assessment-publication-policy.ts";
 import {staticFileKind} from "./static-resources.ts";
-import type {Language, ProofAssessment, ProofCriterion, ProofDelivery, ProofEvidence, ProofQuote, ProofFeedback, StaticProjectSpec} from "./contracts.ts";
+import type {Language, ProofAssessment, ProofAssessmentItem, ProofCriterion, ProofDelivery, ProofEvidence, ProofQuote, ProofFeedback, StaticProjectSpec} from "./contracts.ts";
 import {DomainError} from "./domain.ts";
 import {createUploadedDelivery, parseStaticProject, validateStaticFiles} from "./static-project.ts";
 import {getProofFixture, inspectProofFiles, proofCriteria} from "./proof-evidence.ts";
@@ -29,7 +30,7 @@ import {validateModelArchive} from "./model-report-archive.ts";
 export const EVIDENCE_EXPORT_SCHEMA = "proofbeforepay-evidence-export-v1";
 export const EVIDENCE_EXPORT_RULES = "pbp-static-source-v2";
 export const EVIDENCE_EXPORT_BYTE_LIMIT = 4 * 1024 * 1024;
-const DELIVERY_KEYS = ["id","variant","sequence","label","submittedAt","files","evidence","resources","layoutReport","layoutHistory","browserChecks","browserCheckHistory","businessChecks","businessCheckHistory","assessment","riskReviews","acceptanceEvidence","backendTargetId","runtimeDeliveryDigest","runtimeRegistration","runtimeReport","runtimeHistory","runtimeRun","journeyPlan","journeyReport","journeyHistory","journeyPlanSuggestions","journeyPlanAdoption","journeyExplanation","modelRun","modelReport","modelHistory","modelArchiveRefs","modelArchive","modelExplanation","enquiryPlan","enquiryRun","enquiryReport","enquiryHistory"] as const;
+const DELIVERY_KEYS = ["cooperativeStageReports","id","variant","sequence","label","submittedAt","files","evidence","resources","layoutReport","layoutHistory","browserChecks","browserCheckHistory","businessChecks","businessCheckHistory","assessment","riskReviews","acceptanceEvidence","backendTargetId","runtimeDeliveryDigest","runtimeRegistration","runtimeReport","runtimeHistory","runtimeRun","journeyPlan","journeyReport","journeyHistory","journeyPlanSuggestions","journeyPlanAdoption","journeyExplanation","modelRun","modelReport","modelHistory","modelArchiveRefs","modelArchive","modelExplanation","enquiryPlan","enquiryRun","enquiryReport","enquiryHistory"] as const;
 const SNAPSHOT_KEYS = ["id","deliveryId","at","browserReportId","layoutReportId","assessmentId","businessReportId","businessExceptionReason","runtimeReportId","runtimeExceptionReason","runtimeAcknowledgedSteps","runtimeDeliveryDigest","runtimeTargetId","runtimeRegistration","journeyReportId","journeyDeliveryDigest","journeyPlanDigest","journeyRegistration","journeyExceptionReason","journeyAcknowledgedSteps","journeyClientObservationAcknowledged","modelReportId","modelSpecDigest","modelDeliveryDigest","modelDecision","enquiryReportId","enquiryDeliveryDigest","enquiryDecision","criteria","evidence","manualChecks","review","assessment","riskReviews"];
 type AcceptanceReference = {kind:"delivery-acceptance"|"capture-consent";deliveryId:string;evidenceSnapshotId:string|null};
 export type EvidenceExport = {
@@ -176,7 +177,7 @@ function sourceReference(value:unknown,source:string):void{
   const row=object(value,["start","end","excerpt"],"Source reference");
   requireValue(Number.isSafeInteger(row.start)&&Number.isSafeInteger(row.end)&&(row.start as number)>=0&&(row.end as number)>(row.start as number)&&(row.end as number)<=source.length&&typeof row.excerpt==="string"&&row.excerpt===source.slice(row.start as number,row.end as number),"A source reference does not match its exact UTF-16 span.");
 }
-function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]):void{
+function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[],observationContext?:ObservationScopeContext):void{
   const row=object(value,["id","deliveryId","method","mode","model","assessedAt","items","risks","limitations","coverage","usage","withheldRisks"],"AI assessment");
   text(row.id,100);text(row.model,200);requireValue(row.deliveryId===delivery.id&&row.method==="source-ai-v1"&&row.mode==="live"&&typeof row.assessedAt==="string"&&Number.isFinite(Date.parse(row.assessedAt)),"AI assessment binding is invalid.");
   const cite=(value:unknown,limit:number)=>array(value,limit,"AI citations").forEach(entry=>{
@@ -211,16 +212,20 @@ function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]
   for(const risk of activeRisks)validateRisk(risk,row.withheldRisks!==undefined);
   if(row.withheldRisks!==undefined){
     const pool=object(row.withheldRisks,["version","reason","scopeCriterionIds","adjustedCriteria","entries"],"AI withheld-risk disposition");
-    const scopeWithheld=pool.version===2&&pool.reason==="source_scope_unestablished";
-    requireValue(pool.version===1&&["item_status_adjusted","not_withheld"].includes(pool.reason as string)||scopeWithheld,"Unsupported AI withheld-risk disposition.");
+    const scopeWithheld=pool.version===2&&pool.reason==="source_scope_unestablished",observationWithheld=pool.version===3&&pool.reason==="custom_scope_requires_observation",scoped=scopeWithheld||observationWithheld;
+    requireValue(pool.version===1&&["item_status_adjusted","not_withheld"].includes(pool.reason as string)||scoped,"Unsupported AI withheld-risk disposition.");
     const adjustments=array(pool.adjustedCriteria,33,"AI status adjustments"),entries=array(pool.entries,5,"Withheld AI leads"),ids=new Set<string>();
     if(scopeWithheld){
       const scopeIds=array(pool.scopeCriterionIds,17,"AI custom contact scope"),expected=finiteContactPresenceScopeCriterionIds(agreed,items.map(value=>({criterionId:(value as Record<string,unknown>).criterionId as string})),delivery.files!);
       requireValue(adjustments.length===0&&activeRisks.length===0&&entries.length>0&&expected&&same(scopeIds,expected),"A source-scope disposition needs exact finite custom contact criteria, original leads, no invented adjustments and no active risks.");
     }
+    else if(observationWithheld){
+      const scopeIds=array(pool.scopeCriterionIds,17,"AI custom observation scope"),expected=observationOnlyCustomScopeCriterionIds(agreed,items.map(value=>({criterionId:(value as ProofAssessmentItem).criterionId,status:(value as ProofAssessmentItem).status})),observationContext);
+      requireValue(adjustments.length===0&&activeRisks.length===0&&entries.length>0&&expected&&same(scopeIds,expected),"An observation-scope disposition needs exact insufficient custom requirements, explicit no-business context, original leads, no adjustments and no active risks.");
+    }
     else requireValue(!Object.hasOwn(pool,"scopeCriterionIds"),"A legacy withholding disposition cannot claim the new source-scope metadata.");
-    if(!scopeWithheld&&pool.reason==="not_withheld")requireValue(adjustments.length===0&&entries.length===0,"A not-withheld disposition cannot retain adjustments or withheld leads.");
-    else if(!scopeWithheld)requireValue(adjustments.length>0&&activeRisks.length===0,"A status-adjusted disposition needs an adjustment and no active risks.");
+    if(!scoped&&pool.reason==="not_withheld")requireValue(adjustments.length===0&&entries.length===0,"A not-withheld disposition cannot retain adjustments or withheld leads.");
+    else if(!scoped)requireValue(adjustments.length>0&&activeRisks.length===0,"A status-adjusted disposition needs an adjustment and no active risks.");
     for(const value of adjustments){
       const adjustment=object(value,["criterionId","originalStatus","publishedStatus"],"AI status adjustment"),id=text(adjustment.criterionId,80),item=items.find(value=>(value as Record<string,unknown>).criterionId===id) as Record<string,unknown>|undefined;
       requireValue(!ids.has(id)&&item&&["supported","changes_suggested","insufficient_evidence"].includes(adjustment.originalStatus as string)&&adjustment.originalStatus!==adjustment.publishedStatus&&adjustment.publishedStatus===item.status,"An AI status adjustment has a duplicated, foreign or conflicting criterion/status binding.");ids.add(id);
@@ -239,7 +244,7 @@ function riskBindings(value:unknown,deliveryId:string,reports:ProofAssessment[])
     requireValue(!withheld||row.riskOrigin==="withheld","Unsupported risk annotation origin.");
     requireValue(!ids.has(id)&&row.deliveryId===deliveryId&&report&&Number.isSafeInteger(row.riskIndex)&&(row.riskIndex as number)>=0,"Risk annotation references another delivery, report or risk.");ids.add(id);
     const index=row.riskIndex as number;
-    if(withheld){const pool=report.withheldRisks,eligible=pool&&(pool.version===1&&pool.reason==="item_status_adjusted"||pool.version===2&&pool.reason==="source_scope_unestablished"&&pool.adjustedCriteria.length===0&&pool.entries.length>0&&report.risks.length===0);requireValue(eligible&&pool?.entries[index]?.originalRiskIndex===index&&pool.entries[index]?.risk,"Risk annotation references a missing or unbound withheld lead.");}
+    if(withheld){const pool=report.withheldRisks,eligible=pool&&(pool.version===1&&pool.reason==="item_status_adjusted"||(pool.version===2&&pool.reason==="source_scope_unestablished"||pool.version===3&&pool.reason==="custom_scope_requires_observation")&&pool.adjustedCriteria.length===0&&pool.entries.length>0&&report.risks.length===0);requireValue(eligible&&pool?.entries[index]?.originalRiskIndex===index&&pool.entries[index]?.risk,"Risk annotation references a missing or unbound withheld lead.");}
     else requireValue(index<report.risks.length,"Risk annotation references a missing published risk.");
     requireValue(["confirmed","rejected","needs_evidence"].includes(row.decision as string)&&["buyer","seller"].includes(row.actorRole as string)&&typeof row.reviewedAt==="string"&&Number.isFinite(Date.parse(row.reviewedAt)),"Risk annotation fields are invalid.");text(row.reason,1000);
   }
@@ -278,6 +283,7 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
   if(!structure)return result;
   if(bundle.delivery.modelArchiveRefs!==undefined||bundle.delivery.modelArchive!==undefined)await check("model-archive-integrity",()=>validateModelArchive(bundle.delivery,bundle.project.id),"Archived model report payloads match their exact SHA-256 bytes and a complete project/delivery/report manifest; this is internal consistency, not an execution signature.");
   await check("file-digest",async()=>{requireValue(await runtimeDeliveryDigest(bundle.delivery.files)===bundle.fileDigest,"File digest mismatch.");if(bundle.delivery.runtimeDeliveryDigest!==undefined)requireValue(bundle.delivery.runtimeDeliveryDigest===bundle.fileDigest,"Runtime digest mismatch.");},"The file-map SHA-256 matches the exported files; this is not a trusted signature.");
+  if(bundle.delivery.cooperativeStageReports!==undefined)await check("cooperative-stage-bindings",async()=>{await validateCooperativeStageReports(bundle.delivery.cooperativeStageReports,{projectId:bundle.project.id,deliveryId:bundle.delivery.id,deliveryDigest:bundle.fileDigest,criteria:bundle.project.criteria});},"Participant-supplied stage reports match the declared current files and original criterion. Reporter authenticity, native execution and acceptance are not proven.");
   await check("requirements",()=>{
     const {spec,requirements}=bundle.project;
     if(spec?.coverage){const coverage=validateSavedCoverage(spec.coverage);requireValue(coverage.sourceText===bundle.project.summary.trim(),"The original requirements differ.");}
@@ -306,7 +312,7 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
     const reports=[bundle.delivery.assessment,...(bundle.delivery.acceptanceEvidence??[]).map(snapshot=>snapshot.assessment)].filter((report):report is ProofAssessment=>!!report);
     immutableIds(reports);
     immutableIds([...(bundle.delivery.riskReviews??[]),...(bundle.delivery.acceptanceEvidence??[]).flatMap(snapshot=>snapshot.riskReviews??[])]);
-    for(const report of reports)assessment(report,bundle.delivery,bundle.project.criteria);
+    for(const report of reports)assessment(report,bundle.delivery,bundle.project.criteria,{hasBusinessChecks:bundle.project.spec?.businessChecks!==undefined&&(!Array.isArray(bundle.project.spec.businessChecks)||bundle.project.spec.businessChecks.length>0)});
     riskBindings(bundle.delivery.riskReviews,bundle.delivery.id,reports);
   },"Included AI citations resolve to source; risk annotations, optional evidence-need metadata and withheld-risk dispositions have valid saved bindings. Model judgment, the asserted original statuses or cause of an evidence gap, human identity and provider execution are not proven.");
   if(bundle.riskRepairs)await check("risk-repair-chain",()=>{
@@ -395,7 +401,7 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
       for(const [key,reports] of [["browserReportId",browser],["businessReportId",business],["layoutReportId",layout]] as const){const ref=snapshot[key];requireValue(ref===null||ref===undefined||reports.some(row=>row.id===ref),"A historical report reference is missing.");}
       requireValue(snapshot.assessmentId===(snapshot.assessment as ProofAssessment|undefined)?.id||snapshot.assessmentId===null&&snapshot.assessment===undefined,"Historical AI reference is invalid.");
       if(snapshot.enquiryReportId){const report=projectEnquiryReportsFor(delivery).find(row=>row.id===snapshot.enquiryReportId);requireValue(report&&snapshot.enquiryDeliveryDigest===bundle.fileDigest,"Frozen enquiry report is missing or has another file digest.");validateEnquiryReportDecision(report,snapshot.enquiryDecision);}else requireValue(!delivery.enquiryPlan&&snapshot.enquiryDeliveryDigest===undefined&&snapshot.enquiryDecision===undefined,"Acceptance omits its optional enquiry agreement/report.");
-      if(snapshot.assessment)assessment(snapshot.assessment,delivery,bundle.project.criteria);
+      if(snapshot.assessment)assessment(snapshot.assessment,delivery,bundle.project.criteria,{hasBusinessChecks:bundle.project.spec?.businessChecks!==undefined&&(!Array.isArray(bundle.project.spec.businessChecks)||bundle.project.spec.businessChecks.length>0)});
       riskBindings(snapshot.riskReviews,delivery.id,snapshot.assessment?[snapshot.assessment as ProofAssessment]:[]);
       if(snapshot.review){const review=snapshot.review as Record<string,unknown>;requireValue(review.deliveryId===snapshot.deliveryId&&["demo","live"].includes(review.mode as string)&&typeof review.reviewedAt==="string"&&Number.isFinite(Date.parse(review.reviewedAt)),"Historical rule review references another delivery.");text(review.summary,5000);}
       requireValue(!runtimeRequired||typeof snapshot.runtimeReportId==="string"&&!!snapshot.runtimeReportId,"A runtime-enabled acceptance must retain its original runtime report.");

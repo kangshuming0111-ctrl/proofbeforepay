@@ -59,7 +59,9 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
   const coverage = report ? assessmentCoverageGroups(report) : undefined;
   const withheld = report?.withheldRisks && Array.isArray(report.withheldRisks.adjustedCriteria) && Array.isArray(report.withheldRisks.entries)
     && (report.withheldRisks.version === 1 && ["item_status_adjusted", "not_withheld"].includes(report.withheldRisks.reason)
-    || report.withheldRisks.version === 2 && report.withheldRisks.reason === "source_scope_unestablished" && Array.isArray(report.withheldRisks.scopeCriterionIds) && report.withheldRisks.scopeCriterionIds.length > 0 && report.withheldRisks.scopeCriterionIds.length <= 17
+    || (report.withheldRisks.version === 2 && report.withheldRisks.reason === "source_scope_unestablished" || report.withheldRisks.version === 3 && report.withheldRisks.reason === "custom_scope_requires_observation")
+      && Array.isArray(report.withheldRisks.scopeCriterionIds)
+      && (report.withheldRisks.version!==3 || report.withheldRisks.entries.length<=5 && report.withheldRisks.scopeCriterionIds.every(criterionId=>report.items.some(item=>item.criterionId===criterionId&&item.status==='insufficient_evidence'))) && report.withheldRisks.scopeCriterionIds.length > 0 && report.withheldRisks.scopeCriterionIds.length <= 17
       && new Set(report.withheldRisks.scopeCriterionIds).size === report.withheldRisks.scopeCriterionIds.length && report.withheldRisks.scopeCriterionIds.every(criterionId => typeof criterionId === "string" && criteria.some(criterion => criterion.id === criterionId))
       && report.withheldRisks.adjustedCriteria.length === 0 && report.withheldRisks.entries.length > 0 && report.risks.length === 0)
     ? report.withheldRisks : undefined;
@@ -161,6 +163,7 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
             : tr("暂缓 AI 线索记录（未保存）", "Withheld AI indication record (not saved)")}</span>
           {withheld?.reason === "item_status_adjusted" && <small>{tr(`${withheld.adjustedCriteria.length} 项状态调整后的统一暂缓`, `Report-wide gate after ${withheld.adjustedCriteria.length} item status adjustment(s)`)}</small>}
           {withheld?.reason === "source_scope_unestablished" && <small>{tr("独立约定范围未建立 · 逐项状态未调整", "Agreed indication scope unestablished · item statuses unchanged")}</small>}
+          {withheld?.reason === "custom_scope_requires_observation" && <small>{tr("自定义要求待观察 · 逐项状态未调整", "Custom requirements need observation · item statuses unchanged")}</small>}
           <ChevronDown size={13} aria-hidden="true" /></summary>
           <div className="assessment-withheld-body">
             {!withheld ? <p className="assessment-empty">{report.withheldRisks === undefined
@@ -170,11 +173,14 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
                 : <>
                   <p className="assessment-risk-notice">{withheld.reason === "source_scope_unestablished"
                     ? tr("这些可选模型线索尚未与独立、明确的约定范围建立依据，因此原件按电话／邮箱文字自定义范围单独暂缓。所有逐项结论保持不变，也不认定其他页面、链接或手机要求通过。这里没有状态调整记录，也不表示线索已证实、被驳回或问题已解决。", "These optional model indications have not established their own independent, explicit agreed scope, so originals are withheld under the custom phone/email text scope. All item findings are unchanged; other page, link or mobile requirements are not declared passed. There is no status-adjustment record, and the indications are not confirmed, rejected or resolved.")
+                    : withheld.reason === "custom_scope_requires_observation"
+                    ? tr("自定义要求的逐项结论仍为证据不足，并且独立范围检查确认仍需运行或人工观察，因此本报告的可选模型线索统一暂缓。原始线索与引文单独保留；没有改变逐项状态，也没有认定每条线索由某项要求造成。人工意见不解除暂缓，不代表问题已解决、验收或付款。", "The custom items remain insufficient, and an independent scope check requires execution or human observation, so this report’s optional model indications are withheld together. Original wording and citations are retained separately. Item statuses are unchanged; no per-lead causation, release, resolution, acceptance or payment is established by human opinions.")
                     : tr("部分逐项状态经规则或证据校验调整，因此本报告的全部可选 AI 线索统一暂缓。这不表示每条线索都由下列要求造成，也不表示线索已证实、被驳回或问题已解决。", "Some item statuses changed under rule or evidence checks, so this report's optional AI indications were withheld together. This does not establish that every indication is caused by the items below, confirm or reject a defect, or show that an issue was resolved.")}</p>
                   {withheld.reason === "item_status_adjusted" && <details className="assessment-withheld-adjustments"><summary>{tr(`查看状态调整的要求（${withheld.adjustedCriteria.length}）`, `Inspect adjusted requirements (${withheld.adjustedCriteria.length})`)}</summary>
                     <ul>{withheld.adjustedCriteria.map(adjustment => <li key={adjustment.criterionId}><strong>{titleFor(adjustment.criterionId)}</strong><span>{tr("原 AI 建议 → 发布状态：", "Original model suggestion → Published status: ")}{statusLabel(adjustment.originalStatus)} → {statusLabel(adjustment.publishedStatus)}</span></li>)}</ul>
                   </details>}
                   {withheld.version === 2 && <details className="assessment-withheld-scope"><summary>{tr(`查看自定义文字范围（${withheld.scopeCriterionIds.length}）`, `Inspect custom text scope (${withheld.scopeCriterionIds.length})`)}</summary><ul>{withheld.scopeCriterionIds.map(criterionId => <li key={criterionId}>{titleFor(criterionId)}</li>)}</ul></details>}
+                  {withheld.version === 3 && <details className="assessment-withheld-scope"><summary>{tr(`查看待观察的自定义要求（${withheld.scopeCriterionIds.length}）`, `Inspect custom requirements needing observation (${withheld.scopeCriterionIds.length})`)}</summary><ul>{withheld.scopeCriterionIds.map(criterionId => <li key={criterionId}>{titleFor(criterionId)}</li>)}</ul></details>}
                   <p className="assessment-risk-notice">{tr("下列保留原模型线索原文与来源引用。人工核对意见单独追加保存，不计入上方已发布线索数量；本区不提供关联返工操作。", "The original model wording and source citations below are preserved. Human opinions are appended separately and excluded from the published indication count above. This section offers no linked repair actions.")}</p>
                   {withheld.entries.length ? withheld.entries.map(entry => <article className="assessment-risk assessment-withheld-risk" key={entry.originalRiskIndex} data-original-risk-index={entry.originalRiskIndex}>
                     <span className="assessment-risk-basis">{tr(`原模型线索 ${entry.originalRiskIndex + 1} · 暂缓，待复核`, `Original model indication ${entry.originalRiskIndex + 1} · Withheld, awaiting review`)}</span>

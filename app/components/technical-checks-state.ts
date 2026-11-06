@@ -8,7 +8,7 @@ export type TechnicalChecksDisclosureAction = {type:"needed"}|{type:"open"}|{typ
  * Source-visibility checks remain in the ordinary browser flow. Follow-up heads
  * have no family field, so they cannot independently imply backend activity. */
 export function hasTechnicalChecksState(delivery:ProofDelivery,hasSupplementalEvidence=false):boolean{
-  return Boolean(delivery.journeyPlan||delivery.journeyRun||delivery.journeyReport||delivery.journeyPlanSuggestions
+  return Boolean(delivery.cooperativeStageReports?.length||delivery.journeyPlan||delivery.journeyRun||delivery.journeyReport||delivery.journeyPlanSuggestions
     ||delivery.journeyPlanAdoption||delivery.journeyExplanation||delivery.journeyHistory?.length
     ||delivery.journeyEvidenceReservation||delivery.transferCompetitionRun||hasSupplementalEvidence
     ||delivery.supplementalCatalog?.context.artifactManifest

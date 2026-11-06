@@ -1,0 +1,46 @@
+{
+  "schema": "pbp-cycle35-plan-adjudication-v1",
+  "review": "plan-deepseek.json",
+  "valid": true,
+  "beforeAwardRecord": "docs/collaboration/three-gaps-2026-11-06/cycle-35.md",
+  "freshCorpusSha256": "17880268327895b09b1184835cad1dc6dfd6b3dfeabd15b78d4a93e3feecd154",
+  "freshCalls": 0,
+  "decisions": [
+    {
+      "finding": "Quotedcolon/nonASCIIliteral labels excludedbyoldLABEL grammar",
+      "decision": "accept-bounded-extension",
+      "reason": "Addonlycompletequotedtokenalternative/sharedquoted-labeldescriptor, notblanketunquotedgrammarwidening. Admissionandwitnessmustconsume sameparsedlabels."
+    },
+    {
+      "finding": "Native namedtypes/radio/checkbox/timefamilies notadmitted",
+      "decision": "accept",
+      "reason": "Actualsixpuredeclaredsourcefacts over-abstained. Addfullyanchorednativeparserandrequiredownerwitness; nooperationsuffix admitted."
+    },
+    {
+      "finding": "literalList separator arithmetic drops and",
+      "decision": "reject",
+      "reason": "Actualnodecounterexamplelist-split-counterexample.json showscurrentstaticMarkupDirective correctlyaccepts3labels. Theloopincrementsaftersettingstart; reviewertraceiswrong. No change toworkingarithmetic."
+    },
+    {
+      "finding": "Currentform-labelgroup accepts outsideform form=label",
+      "decision": "reject-as-currentbug",
+      "reason": "Reviewerowntraceprovesoutside labelhasundefinedformandisdroppedforformcontext. label form= isnottrustedassociationauthority. Newnativewitnessstillmusttreatcrossform/form-retargetambiguityconservatively."
+    },
+    {
+      "finding": "Positive literal guard promotespartial nativefacts",
+      "decision": "reject-as-currentbug",
+      "reason": "ExistingpositiveLiteralCheckisfinitebarephraseplusvalidatedtypedbusinesssteps, notnativeformdescriptor. DoNOTwirenewnativecaseintothatpromotion. Newwitnessonlydowngradesrawsupportedwhenuncorroborated."
+    },
+    {
+      "finding": "Needfullgenericrowsemanticparser",
+      "decision": "reject-scope-expansion",
+      "reason": "C35negativeexactnessguarddoesnotproveordinaryfact; onlyremovesunjustifiedexactsentence-demandwithunknownmanualreview. Noauto-passoruniversalsemanticverifier."
+    }
+  ],
+  "implementation": [
+    "Nativeparser/witnessownedbyseparateagent newmodule+tests only, nofuturecases exposed.",
+    "Quotedlegacylabeldescriptor/coverageandnonexactnegativeguard+actualscope/assessmentwiringownedbyAIagent.",
+    "Usefreshsealbeforeedits; fullrequest/sourcefreezesrequiredafterallreviewsbeforelivecalls.",
+    "PreservestrictIDs/citation/riskrejection, noautoretry, allprevious32answers andfixedreferencesunchanged."
+  ]
+}

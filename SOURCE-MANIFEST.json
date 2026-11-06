@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T05:11:29.370Z",
+  "generatedAt": "2026-11-06T07:34:56.529Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -187,6 +187,11 @@
       "sha256": "0a008a86e0cba8b8278b6eef0d9869c50425559a5d4c36c254cad1e9484e5b5c"
     },
     {
+      "file": "app/api/proofs/[id]/stage-evidence/route.ts",
+      "bytes": 1645,
+      "sha256": "7cd1814f10d3695c60f11ce1d1b05e0c9fe159e5dd753ffd3e4fece7460dd666"
+    },
+    {
       "file": "app/api/proofs/[id]/supplemental-evidence/route.ts",
       "bytes": 1209,
       "sha256": "269616ce75403c1534afa955fc0592d5bad205fb174c261034b1bcecc6157989"
@@ -248,8 +253,8 @@
     },
     {
       "file": "app/assessment-benchmark.css",
-      "bytes": 2819,
-      "sha256": "c3800365da381b29d90feac4f42d06c5b029cb1b87edbd03075c43e92a222aad"
+      "bytes": 2977,
+      "sha256": "0d95d15551b3dab14d088223c24cc469c4e4a8f5ec9ec256b3ba5a2cb1d11910"
     },
     {
       "file": "app/assessment.css",
@@ -303,8 +308,8 @@
     },
     {
       "file": "app/components/AssessmentBenchmarkPanel.tsx",
-      "bytes": 12644,
-      "sha256": "f47374f6746d4fb93dea940bc51a31aeae3a3317ca8ad2fb76a8fb1708c70562"
+      "bytes": 13264,
+      "sha256": "f76351c7c519aa69e1413ffaf807833edcbc91f9fc13ae240347ba3bc8ea3510"
     },
     {
       "file": "app/components/AssessmentObligations.tsx",
@@ -363,8 +368,8 @@
     },
     {
       "file": "app/components/DeliveryAssessment.tsx",
-      "bytes": 26328,
-      "sha256": "b02a9980aeab745fc590750e126bfc2c1be58127e9f18dddda4668539fb8c321"
+      "bytes": 28129,
+      "sha256": "9327265766158cb4cbeca75fdb19ee6b5d9499b4d2304bbbe3dae7762b522fb9"
     },
     {
       "file": "app/components/DeliveryComparison.tsx",
@@ -378,8 +383,8 @@
     },
     {
       "file": "app/components/DeliveryStageEvidence.tsx",
-      "bytes": 8227,
-      "sha256": "938a4e05abe2e6c3f5733f693ba12eb21edc13cbc37e3d8c1eb16e2002598616"
+      "bytes": 20643,
+      "sha256": "ce932afd5797c1b4017d236b2ba4a12e6401218af9bf48d9a77f20387b3af9c8"
     },
     {
       "file": "app/components/DeploymentSourcePanel.tsx",
@@ -455,6 +460,11 @@
       "file": "app/components/ModelSpotlight.tsx",
       "bytes": 3800,
       "sha256": "72e542f93f20e250a43ca8abd3a584d9ac8ea1a20443b12b0cc6407bb0a02cc5"
+    },
+    {
+      "file": "app/components/ProjectIntakeBlocker.tsx",
+      "bytes": 2926,
+      "sha256": "d67661b40ece182f15c92352623734d90e2152de8ba1aa7d63ea3ba035a46a23"
     },
     {
       "file": "app/components/ProjectJourneyPanel.tsx",
@@ -558,8 +568,8 @@
     },
     {
       "file": "app/components/TechnicalChecksPanel.tsx",
-      "bytes": 5774,
-      "sha256": "fa630a5992d01ba7cd35f02e0218f4ed74d3a32687bb566eac881d13ba72ed9f"
+      "bytes": 6017,
+      "sha256": "c6c173c86c7ebe52543f5ba8588c121df825a9be9595b19ae93e9dd4a02c20fa"
     },
     {
       "file": "app/components/TimePolicyPanel.tsx",
@@ -613,8 +623,8 @@
     },
     {
       "file": "app/components/technical-checks-state.ts",
-      "bytes": 2950,
-      "sha256": "9d4404ce183c38511f61bc4c3420ffe9b62d74ca154f3897ed3dbd4eadc87e30"
+      "bytes": 2992,
+      "sha256": "de919ed05ef92e24857cc0a6b5aaa83877f11c91be2cc7e8b9ed58d7e58860fd"
     },
     {
       "file": "app/components/useModelDiagnosis.ts",
@@ -783,8 +793,13 @@
     },
     {
       "file": "app/page.tsx",
-      "bytes": 202751,
-      "sha256": "2d4ede70a9bb33b7b593407adf228ff6384521a21280e2502effb1b7aa69c800"
+      "bytes": 205607,
+      "sha256": "492e0c0f99a572afd2a13dab943800167e0d1ab3bac05eac3aab3e6a80787e3b"
+    },
+    {
+      "file": "app/project-intake-blocker.css",
+      "bytes": 550,
+      "sha256": "24a29939af7a4c1c0e0dc86eb222fdd5408248d553d67c547a532f05b96393e0"
     },
     {
       "file": "app/project-journey.css",
@@ -2017,6 +2032,31 @@
       "sha256": "d52d1a600c84755c96a1d1ad3c694bf4ba9bb28c881ec5a1be2859f5f1fdf46e"
     },
     {
+      "file": "docs/collaboration/three-gaps-2026-11-06/cycle-31.md",
+      "bytes": 3388,
+      "sha256": "da33915698f2288c01533e32c4ac278414c541661ce3e0bd6ba145b1c6c27d5f"
+    },
+    {
+      "file": "docs/collaboration/three-gaps-2026-11-06/cycle-32.md",
+      "bytes": 4607,
+      "sha256": "6cbd1745bc5a003d6369014005ec75a9b00074bcfe1f0b297dcccbe869b9dd37"
+    },
+    {
+      "file": "docs/collaboration/three-gaps-2026-11-06/cycle-33.md",
+      "bytes": 3784,
+      "sha256": "2c2a153b2b21ecfb6cc38c8b76fd47b0cf463e94b447f74b2db07fa27aa5f7f8"
+    },
+    {
+      "file": "docs/collaboration/three-gaps-2026-11-06/cycle-34.md",
+      "bytes": 4955,
+      "sha256": "f4149d49e309d68745c48491fa86f53daf4913f509c537f5b41932aa3300b1bb"
+    },
+    {
+      "file": "docs/collaboration/three-gaps-2026-11-06/cycle-35.md",
+      "bytes": 7444,
+      "sha256": "3d62c0bfe836481001cc6f422e9179bef35a742ad3b151ceb6bb5380569d24a7"
+    },
+    {
       "file": "docs/collaboration/usability-cycles-2026-11-06/cycle-28.md",
       "bytes": 5037,
       "sha256": "cf49884876bffa29aeef486ea62273dc9402a4bde378865599d2445a613343a7"
@@ -2195,6 +2235,41 @@
       "file": "examples/delivery-stage-staging/adapter.mjs",
       "bytes": 2166,
       "sha256": "2fe098fd60424607d0ab6eaa43f281bde9a0dc470e754fb90d9d237761c1d464"
+    },
+    {
+      "file": "examples/delivery-stage-staging/fastapi-native/LICENSE",
+      "bytes": 1086,
+      "sha256": "4ec89ffc81485b97fec584b2d4a961032eeffe834453894fd9c1274906cc744e"
+    },
+    {
+      "file": "examples/delivery-stage-staging/fastapi-native/README.md",
+      "bytes": 3439,
+      "sha256": "097d6c881a6c37e6592d11776407f87c5ad118f0c07fe4e0ca0f408555015923"
+    },
+    {
+      "file": "examples/delivery-stage-staging/fastapi-native/adapter.mjs",
+      "bytes": 5223,
+      "sha256": "251e5a178c62b85558beb985d711ffb9b03c658291e609ad649454169ccf3c89"
+    },
+    {
+      "file": "examples/delivery-stage-staging/fastapi-native/requirements.txt",
+      "bytes": 251,
+      "sha256": "8ee3a75d4fcd407ce4726f5fe25c77630ac661a2701631360c0778c85646b76e"
+    },
+    {
+      "file": "examples/delivery-stage-staging/fastapi-native/serve.py",
+      "bytes": 641,
+      "sha256": "9ac98177d098b9b3be69ea101600cd1efc74a3015228c2ee360ed967248ef0b9"
+    },
+    {
+      "file": "examples/delivery-stage-staging/fastapi-native/source-provenance.json",
+      "bytes": 911,
+      "sha256": "d14e376f9b2f54a325f1c8bafa32b3871d33923da995b8b5606b12df4b57e41f"
+    },
+    {
+      "file": "examples/delivery-stage-staging/fastapi-native/upstream.py",
+      "bytes": 1760,
+      "sha256": "6e09a1bf5f78a7d69e7d631a0697001a4e819d2b51898e9fc9a7eac488c9679b"
     },
     {
       "file": "examples/delivery-stage-staging/server.mjs",
@@ -2498,8 +2573,8 @@
     },
     {
       "file": "lib/assessment-evidence-scope.ts",
-      "bytes": 22171,
-      "sha256": "a4e7c9c6ceca64810b51c0c9980b14950875a3d19cc4e0b68e24b6cf5b06ee13"
+      "bytes": 22834,
+      "sha256": "b79ce478dc4843ad0f689b9402037260aaba13a9df949fbf12c279d526f78c9c"
     },
     {
       "file": "lib/assessment-failure-presentation.ts",
@@ -2508,8 +2583,8 @@
     },
     {
       "file": "lib/assessment-label-citations.ts",
-      "bytes": 7292,
-      "sha256": "97fd5a5dea3e2dd5baa9c4b696b3866b2f8196f7d3dc64604f598c3594736c78"
+      "bytes": 9209,
+      "sha256": "bb2cd28997fac7bbc394148f58d8d39088ae56ea9b2c7cb9d0f1e32ee438fce2"
     },
     {
       "file": "lib/assessment-limits.ts",
@@ -2522,9 +2597,14 @@
       "sha256": "39d58e3c3168c4f689876d1ab88f5285a96499e05e8cd9af4f8f3ee6c0b82810"
     },
     {
+      "file": "lib/assessment-prompt-guidance.ts",
+      "bytes": 4898,
+      "sha256": "67216acda78a172a0b26594d24bb0e59ecacfef7d993eb82e682bee4d2a1e856"
+    },
+    {
       "file": "lib/assessment-publication-policy.ts",
-      "bytes": 8840,
-      "sha256": "283bdb65f24c262916132d4fb04ec4bb051f27a2e58827fbdcbdd91ef7984e40"
+      "bytes": 11842,
+      "sha256": "6ebd9c037e78aecd6c5f8523b5f0ba6a8a3dece27dae80efda4f61a8091d131b"
     },
     {
       "file": "lib/assessment-response.ts",
@@ -2535,6 +2615,16 @@
       "file": "lib/assessment-risk-fields.ts",
       "bytes": 1495,
       "sha256": "14b21b863a6f4cf5ff6380c821a21122c66c35dcac84e030b8f65cdf211b8cf8"
+    },
+    {
+      "file": "lib/assessment-source-target.ts",
+      "bytes": 10399,
+      "sha256": "d6c77380bd399e270ac8ab86f732cf8a523f2d21288aa8dea9595f0928940f0d"
+    },
+    {
+      "file": "lib/assessment-unestablished-verbatim.ts",
+      "bytes": 2497,
+      "sha256": "d54394433f42e95f7d3856a7c3eff8ef1544756b44cf4c47bf7720a218b5f814"
     },
     {
       "file": "lib/booking-capacity.ts",
@@ -2628,8 +2718,13 @@
     },
     {
       "file": "lib/contracts.ts",
-      "bytes": 16393,
-      "sha256": "fd4633e593e1ffacca0fb77991463f71b36ba353849cf5efaff776cd55ba1a67"
+      "bytes": 16736,
+      "sha256": "87c7b3a8495a9691d4692e222a4695e94a963bc01ff4d14f7f75d43a6232b1e0"
+    },
+    {
+      "file": "lib/cooperative-stage-evidence.ts",
+      "bytes": 7501,
+      "sha256": "b203dafd29eb943063b73d75fca38d7aab73a7012e8343af4bf114259497008d"
     },
     {
       "file": "lib/delivery-artifacts-store.ts",
@@ -2643,8 +2738,8 @@
     },
     {
       "file": "lib/delivery-assessment.ts",
-      "bytes": 59939,
-      "sha256": "13820b695ffa3bc6620999c45398e5d3eaea623791f1986f6a0fca78437e6e16"
+      "bytes": 61809,
+      "sha256": "71f33fdd36683768fe30251c8820b74a7e88ca3fae6884d5dec666e9bfe7d300"
     },
     {
       "file": "lib/delivery-comparison.ts",
@@ -2713,8 +2808,8 @@
     },
     {
       "file": "lib/evidence-budget.ts",
-      "bytes": 20545,
-      "sha256": "eea26bbfa690b773efe5985358eebacbf3c121aa42f3002f7859dd497684adf8"
+      "bytes": 20752,
+      "sha256": "f5a429a390691fbb4c9fca9f87919388332a84246f5198390a7f3184f110bb39"
     },
     {
       "file": "lib/evidence-bundle-store.ts",
@@ -2728,8 +2823,8 @@
     },
     {
       "file": "lib/evidence-export.ts",
-      "bytes": 52538,
-      "sha256": "ef9439b47add7a1a0873dcc219f9cc0c845a636f7d25cb96517a16ba5a287c4b"
+      "bytes": 54380,
+      "sha256": "a757e117a93d82cf8157b9a2affed0d2bdd8ead160b6ab4472d3cb29afc7ab85"
     },
     {
       "file": "lib/evidence-followup-sql.ts",
@@ -2932,6 +3027,11 @@
       "sha256": "b2ef3d9bc0ad880b8c8e9c9f509be1ffb3544091ab6094f9d486b876f89c9674"
     },
     {
+      "file": "lib/native-form-source.ts",
+      "bytes": 15689,
+      "sha256": "afd4c762ab2e54febb47fc5ab4e40158dce6c6d82c183e68748b8189847d4b3e"
+    },
+    {
       "file": "lib/next-human-review.ts",
       "bytes": 987,
       "sha256": "40bd43427d0e0a73ce620615608eba34a67534b97924f0433270a68a4ab4f35d"
@@ -2960,6 +3060,11 @@
       "file": "lib/project-enquiry.ts",
       "bytes": 13513,
       "sha256": "abe5107534ca861c23a7a2755475976bcd57b6022f0ad45ba68bff31f55d34ef"
+    },
+    {
+      "file": "lib/project-intake-blocker.ts",
+      "bytes": 2650,
+      "sha256": "ea57dd44ff018693d76166e72fb84cb44f9900d6df044e7fb4bfd19c31eedf6f"
     },
     {
       "file": "lib/project-journey-actions.ts",
@@ -3003,8 +3108,8 @@
     },
     {
       "file": "lib/proof-store.ts",
-      "bytes": 16141,
-      "sha256": "a6c671888f47a5221573f51a79ad04856fe3accb4d127ab5b31d9cac774d409c"
+      "bytes": 16276,
+      "sha256": "96dc785218836d41183c443babe1a9ad7ef642dfd7fcb8ee15108669059b1986"
     },
     {
       "file": "lib/proof-workflow.ts",
@@ -3053,8 +3158,8 @@
     },
     {
       "file": "lib/risk-reviews.ts",
-      "bytes": 4280,
-      "sha256": "c00d4d874ccf4842ceef0bb2f78b4fd06098a6523857eceb3ad1f0108743970d"
+      "bytes": 4840,
+      "sha256": "a5e51be394ee17e0958136657216c534f3d035f399dad3df62f93932529ba2fe"
     },
     {
       "file": "lib/runtime-actions.ts",
@@ -3213,8 +3318,8 @@
     },
     {
       "file": "lib/source-literal-directive.ts",
-      "bytes": 3712,
-      "sha256": "cc65f84581ee8cca00afe49efc9626dea8bce91393fcf25137cc76a6338bb002"
+      "bytes": 4265,
+      "sha256": "047f4827abdd59c863c922c17a62967abadbc6427b0bbb6ffd032e04466146c8"
     },
     {
       "file": "lib/source-presence-evidence.ts",
@@ -3243,8 +3348,8 @@
     },
     {
       "file": "lib/static-markup-directive.ts",
-      "bytes": 5328,
-      "sha256": "1695a5ef3bbda3e5e996c32bcf9c7a6b750d1e3a048310929827476a5cfc22e1"
+      "bytes": 6984,
+      "sha256": "de10b4c6e26b356ea993383e986db2f371ca750733bf13e329c133b61420fb71"
     },
     {
       "file": "lib/static-project.ts",
@@ -5412,6 +5517,261 @@
       "sha256": "c8766bd88ab633e21b60576f102e4e9ab09a1d770e5f7f4b8e959fb16807ef54"
     },
     {
+      "file": "public/benchmarks/three-gaps-2026-11-06/external-native/source-provenance.json",
+      "bytes": 911,
+      "sha256": "d14e376f9b2f54a325f1c8bafa32b3871d33923da995b8b5606b12df4b57e41f"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/external-native/stage-plan.json",
+      "bytes": 873,
+      "sha256": "c45a97c5a071ac44094cf79220b6b5ce402fa84c7b6bc80c1eacf5b8849cf6d9"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/external-native/stage-report.json",
+      "bytes": 3119,
+      "sha256": "de2d318ff7c44f5af757f16cc243992c3042318f2f75b81433cccf64e9433152"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/external-native/validation-summary.json",
+      "bytes": 6041,
+      "sha256": "a69bb75a7329fbbb94a1c7041e93c1ba9bd764339573a7e11fa14769ca888e26"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/latest.json",
+      "bytes": 28376,
+      "sha256": "2c4b3d5f1d6c126e875c6e1c4a3d98e36af28ff45041a0e7dbd0a5d406de8014"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/manifest.json",
+      "bytes": 13372,
+      "sha256": "d9270b76dc2973034f359601671da912a75fe15e6bc610f7a1a28e80100d2dac"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/provenance/httpbin-ISC-license.json",
+      "bytes": 1051,
+      "sha256": "1e4b8b6fd7ce37f3b092980d2fc469837c7d3334dd3d52f3845aaf21dcc4f4ae"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/provenance/httpbin-first-seal.json",
+      "bytes": 6414,
+      "sha256": "89b29a04027a06ec8d9e383757c38259b63ac1fa46b12bdfb4387bc9a2be08a0"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/provenance/httpbin-provenance.json",
+      "bytes": 1229,
+      "sha256": "6b1c3daacd1f22e7f56fb0466a49b0cb0508a00dd4a3eb4fa722cd6336bc389e"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/provenance/mdn-CC0-license.json",
+      "bytes": 7022,
+      "sha256": "2ef182242f11d7d328cbba198f46362ec81d39f99b10764fb3bed65c3532ac73"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/provenance/mdn-final-first-continuation-seal.json",
+      "bytes": 789,
+      "sha256": "bfe28ca1a99069e393f149dc9c708932e0d11226dbdbb7ddcbad4e4de08b0135"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/provenance/mdn-final-first-original-seal.json",
+      "bytes": 3143,
+      "sha256": "e6c3dcf1d7b2f56660f4cb8066c9b8750b09ae90c0e812e87d417d4e9f7c5427"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/provenance/mdn-fresh-first-seal.json",
+      "bytes": 2942,
+      "sha256": "a0765926c6c5adf5bb8647cb7b72a67ff2b37448bef274d4e06a025bda79cada"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/provenance/mdn-original-provenance.json",
+      "bytes": 4468,
+      "sha256": "959910dad37646d9a1cc145fd4a6f1e48114ef30bc00c4ceeda7313a5b3442c1"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/baseline-first-eight/corpus.json",
+      "bytes": 61309,
+      "sha256": "67aa0073115b05c6902d7ff311cd98022950cf54cf7ec865b55ecb0891a09044"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/baseline-first-eight/report.json",
+      "bytes": 874315,
+      "sha256": "d2194d606670504213efd83c6fef7a9fc47c4d1540750490758ed7649c952ba4"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/baseline-first-eight/request-freeze.json",
+      "bytes": 630549,
+      "sha256": "08fd4705b010b8615547c619225561562d4a80099f9b667a78f5eb38ebecdbe3"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/cycle33-first-four/corpus.json",
+      "bytes": 30377,
+      "sha256": "d7f0b3d276185ecc3f15e526560d408813947033e64138d867d3217547d2eb69"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/cycle33-first-four/report.json",
+      "bytes": 434687,
+      "sha256": "665ce1ccbdb05d45df0055e1452387e6055122d06cdd6a3ee620e026973ac3df"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/cycle33-first-four/request-freeze.json",
+      "bytes": 287262,
+      "sha256": "1de4f4a449530b7aae9b7cb3aeb1e40e45012893c192545599be872c7c88569a"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/cycle33-known-eight/corpus.json",
+      "bytes": 61309,
+      "sha256": "67aa0073115b05c6902d7ff311cd98022950cf54cf7ec865b55ecb0891a09044"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/cycle33-known-eight/report.json",
+      "bytes": 896602,
+      "sha256": "58731f9c11d292bb913606fead6b6fb4ea2ad9bfbee78d18d4ab52cc70a9af1b"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/cycle33-known-eight/request-freeze.json",
+      "bytes": 644923,
+      "sha256": "e5b06a770a184061decd1ca79923742b70ce617c0b9715de8a1cb6cfa4fd867e"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/cycle34-httpbin-first-four/corpus.json",
+      "bytes": 16555,
+      "sha256": "b91a6cfebb270e41a110a7ea18f00ebbe30cebf22dbf472730a43d2f4abcf02d"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/cycle34-httpbin-first-four/report.json",
+      "bytes": 329782,
+      "sha256": "dcc727acbbd89520ae0cf6e20d7a65ead29397c38cda3b6d2644e2635200c01d"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/cycle34-httpbin-first-four/request-freeze.json",
+      "bytes": 197462,
+      "sha256": "8ce88f4a21888ca5518de74b851e14a11e162eb6c9536d3453280b006abc7965"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/cycle34-known-eight/corpus.json",
+      "bytes": 60948,
+      "sha256": "189f820ac3914e01cee7a10542b08d1a7022c21f496247025c3b8580e7b50b94"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/cycle34-known-eight/report.json",
+      "bytes": 905360,
+      "sha256": "0c4dc2d7dc0c820468bf91ea9552e04c620d30f6c25d6b27badd0ada8690a51b"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/cycle34-known-eight/request-freeze.json",
+      "bytes": 637012,
+      "sha256": "40ef2cecda29a38d44f72c1a243a0f770deb155997e6b866c14688a343ccd53f"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/cycle35-known-eight/corpus.json",
+      "bytes": 50343,
+      "sha256": "eb0976996facf00ac7a5149a7bf22e3726f25b26f1a3de4fd77645fbf09bd4c5"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/cycle35-known-eight/report.json",
+      "bytes": 810156,
+      "sha256": "726bf211dd0801b4ec51b4a5eec60aa761a0019d83564edccf0c087cb0cdb1e6"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/cycle35-known-eight/request-freeze.json",
+      "bytes": 556683,
+      "sha256": "7fd8ebf98774201a1f7b59efc8f5a5f2640239cb0a705b471d19ccd14025afb9"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/cycle35-mdn-first-four/corpus.json",
+      "bytes": 20862,
+      "sha256": "17880268327895b09b1184835cad1dc6dfd6b3dfeabd15b78d4a93e3feecd154"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/cycle35-mdn-first-four/report.json",
+      "bytes": 374404,
+      "sha256": "8b25b7c78958fc86290062d63ed3a3a8c0e11c48a1d7ba1ea58f7cccb851b858"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/records/cycle35-mdn-first-four/request-freeze.json",
+      "bytes": 225086,
+      "sha256": "70bbacacee1493d56daba92b2cc88bef719470bd1f1ba52934c989f1c3031b01"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/reviews/baseline-root-review.json",
+      "bytes": 3048,
+      "sha256": "4d86fcdc0563148a61714d1958244d3d0e013c4e0b00cac0b6e41a008a9419ab"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/reviews/cycle33-root-review.json",
+      "bytes": 2821,
+      "sha256": "3fa7afb2fa08b5befe3cf30c9ea9db2ffb5331a1cca69bd96bbe3a51e027620b"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/reviews/cycle34-root-review.json",
+      "bytes": 8707,
+      "sha256": "3bb68b294598a467e278427cef46c91df5549f4be591d1a8359127237d21a2ec"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/reviews/cycle35-author-review.json",
+      "bytes": 9445,
+      "sha256": "fe7e549719985d077618ea4e90a9d33f818ac65553d00a845df8d990eff95b28"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/reviews/cycle35-external-counterexamples.json",
+      "bytes": 4318,
+      "sha256": "e70c1c7f3375ec1f093ce9025c3ad7a726dbb67314049bf494846887ab574fad"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/reviews/cycle35-final-post-adjudication.json",
+      "bytes": 1018,
+      "sha256": "58ad4b74cb039a2515edccadb2a73c964ffb69be1d1de4c26544bab89d8d81e8"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/reviews/cycle35-final-post-deepseek-summary.json",
+      "bytes": 5360,
+      "sha256": "202de63187d8c986583eb8e17787864eac9fc8ae2e38b7fc678c5f11041e8827"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/reviews/cycle35-native-form-final-adjudication.json",
+      "bytes": 4400,
+      "sha256": "725b9072ea0c2dd1d0c3a529898d275514e50a0584bf8d64c2c0f1056a54b7bc"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/reviews/cycle35-native-form-post-deepseek-summary.json",
+      "bytes": 12046,
+      "sha256": "16345e759bb7f633b807b991c0816885afc4e7cf9b9371b6a4effc0740f6c11a"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/reviews/cycle35-native-form-post-fixed-deepseek-summary.json",
+      "bytes": 2811,
+      "sha256": "6637583e351aec0e8a224a344bbd7ea732ac5cfdf60a7f15dccab41901b689e2"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/reviews/cycle35-plan-adjudication.json",
+      "bytes": 2636,
+      "sha256": "20815c18455da3fc336c40a9e5b259f42646b8a3be61c0fbe88f402ee43e63c7"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/reviews/cycle35-plan-deepseek-summary.json",
+      "bytes": 15116,
+      "sha256": "7f77c67de6969e4cc1ea44409ebd99f431b19d0282f36ce80019b1b985590b48"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/reviews/cycle35-post-adjudication.json",
+      "bytes": 2357,
+      "sha256": "9b7bd4785dd59b8ce5483c0935c9633161859bc597a489c37f5fabb6c14d64f7"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/reviews/cycle35-post-deepseek-summary.json",
+      "bytes": 8942,
+      "sha256": "f7abce816490b37bc05b32ce61f48cc40ee97a90ebf341be296447f9eec51ca5"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/reviews/cycle35-root-owner-before-after.json",
+      "bytes": 1153,
+      "sha256": "7d6fab6eefcaeeec222268a3519514fd4635fac1c1ca1296ca98dc1074d3d65e"
+    },
+    {
+      "file": "public/benchmarks/three-gaps-2026-11-06/source-assessment/reviews/cycle35-root-review.json",
+      "bytes": 9606,
+      "sha256": "205eab7bb08f2363bc90ed88d80875157327f8655581a1e17a07156158681bac"
+    },
+    {
       "file": "public/deployment-source-demo/index.html",
       "bytes": 1047,
       "sha256": "aca0fca2903d15b0a3d38e28f57c21f40494e439b7fad41c0980361a73dd5da6"
@@ -5508,8 +5868,8 @@
     },
     {
       "file": "scripts/build-judge-pack.mjs",
-      "bytes": 34473,
-      "sha256": "2989e5f7836900aa4410a75f02f6b758e279acdc9decdaaa279ae0b5660047c5"
+      "bytes": 34839,
+      "sha256": "376baf025dddc978f3f9b81f33e4ecbe6ffafdc36777d2ada3c4a30583f32ac8"
     },
     {
       "file": "scripts/build-real-project-assessment-corpus-2026-11-05.mjs",
@@ -5878,8 +6238,8 @@
     },
     {
       "file": "scripts/replay-evidence-actions-2026-11-06.mjs",
-      "bytes": 27451,
-      "sha256": "6969b3e55dc76dad4846e5b381973167e63a9866b28a682317506a5368eba471"
+      "bytes": 30037,
+      "sha256": "cc697743d0c7a3f174600b0354be03ed70f2bf04e4e86c42303975c0ed1d956d"
     },
     {
       "file": "scripts/replay-publication-policy-2026-11-06.mjs",
@@ -6042,6 +6402,11 @@
       "sha256": "7656e626883d1441c9dea698fe47aa8d33c13fc9e00a22cef816cbe0924f795e"
     },
     {
+      "file": "tests/assessment-component-harness.ts",
+      "bytes": 4101,
+      "sha256": "c69779ed35b6290d778b8a1dd8cf95be81c91a27c9d92157464ee51239031b5d"
+    },
+    {
       "file": "tests/assessment-display.test.ts",
       "bytes": 6808,
       "sha256": "38a9a8ad636b38065c4399ecc14411da95b12222907d6654c140d134e60f4ff1"
@@ -6068,8 +6433,8 @@
     },
     {
       "file": "tests/assessment-feedback.test.ts",
-      "bytes": 28804,
-      "sha256": "f9d7e45594cecede5a35e480b1f2927eda678667e3ff1ddd8f681a3a7f6f8d92"
+      "bytes": 25362,
+      "sha256": "6e22331d1ff4af7e73ce363e431fb678560f00389e455e8298f389647b209166"
     },
     {
       "file": "tests/assessment-label-citation-coverage.test.ts",
@@ -6090,6 +6455,26 @@
       "file": "tests/assessment-obligations.test.ts",
       "bytes": 15837,
       "sha256": "bafdbbc5c357fc7e0eb537c2be028dbeaac8d515ec6ecea0c9a78a6eb3fd7c77"
+    },
+    {
+      "file": "tests/assessment-observation-fixture.ts",
+      "bytes": 3368,
+      "sha256": "a3484474e0c60f1471043558723ec195140dc4908d76a67dace8615cd05e1152"
+    },
+    {
+      "file": "tests/assessment-observation-withholding.test.ts",
+      "bytes": 11387,
+      "sha256": "77ba71aad936b4159ead7eaabad4c361d77849bffac5a7a8fc5a63905a3bc26e"
+    },
+    {
+      "file": "tests/assessment-prompt-guidance.test.ts",
+      "bytes": 7123,
+      "sha256": "b78729e0c8de6ea1888d5ec81f1d9b13836933dafa9e294a372e446bd37185d6"
+    },
+    {
+      "file": "tests/assessment-public-record.test.ts",
+      "bytes": 5067,
+      "sha256": "22529a5f236630d935ff9f32ce7f09a9d1f62f7880784e17b1116ea5ba466145"
     },
     {
       "file": "tests/assessment-publication-policy.test.ts",
@@ -6115,6 +6500,16 @@
       "file": "tests/assessment-source-literal-scope.test.ts",
       "bytes": 9347,
       "sha256": "5567d0ebd0eba3cc926ba9bd0e20db580f7c0681548a58ec31c2b17ef04f7bc3"
+    },
+    {
+      "file": "tests/assessment-source-target.test.ts",
+      "bytes": 10971,
+      "sha256": "ccbdd07286b20b95d6d5caf6af66c3cd3c0419766e5f34d04fe8778602ffcbc1"
+    },
+    {
+      "file": "tests/assessment-source-witness-cycle35.test.ts",
+      "bytes": 9924,
+      "sha256": "4d6ce1a806dab8d08e293c0d1373b8e5809601c9da1d93a812cd3fe4285ef1a4"
     },
     {
       "file": "tests/assessment-static-markup-scope.test.ts",
@@ -6247,6 +6642,21 @@
       "sha256": "230695c10a0bb12b021338df388cab9d0a305ab090f2b3d1da18138c6995ef85"
     },
     {
+      "file": "tests/cooperative-stage-api-smoke.py",
+      "bytes": 9331,
+      "sha256": "c27e741fe5460af4e6e90dadb0b9f27354bd6cd97be0261b6b5f6c5aff5dbabd"
+    },
+    {
+      "file": "tests/cooperative-stage-evidence.test.ts",
+      "bytes": 10877,
+      "sha256": "12ed5ab41a689f02b12b3bbb5f7d66218578814b8c65ad8b15fe9fd707b4cdec"
+    },
+    {
+      "file": "tests/cooperative-stage-ui.test.ts",
+      "bytes": 7718,
+      "sha256": "40dc3749b2c5d27056bdaddf7a257c2ce94d34d1e9becf324e90fd90bb98dedc"
+    },
+    {
       "file": "tests/custom-project-api-smoke.py",
       "bytes": 7881,
       "sha256": "c1e1f9d3788ba9582cb794869cd992924fb757975bbcef2bb2621a1217ba3eec"
@@ -6363,8 +6773,8 @@
     },
     {
       "file": "tests/evidence-actions-replay.test.ts",
-      "bytes": 12902,
-      "sha256": "e82eba29dce74d745795960e56cbe737c6dff3ebbf6aa214b67f3b6ebb5918c9"
+      "bytes": 19011,
+      "sha256": "b0af771e0347af466e142ffa4a9de386e230c4353cbaa58db735edb764ee306e"
     },
     {
       "file": "tests/evidence-budget.test.ts",
@@ -6500,6 +6910,11 @@
       "file": "tests/fixtures/booking-backend/worker/policy-booking-api.js",
       "bytes": 9262,
       "sha256": "a34a03db551b29d17ed66eecbd9646ad4fb3ac0550d135d9e2df21ccd871b3c9"
+    },
+    {
+      "file": "tests/fixtures/cooperative-fastapi-adapter-context.json",
+      "bytes": 10203,
+      "sha256": "f7227a80584c2c84a8f6fa93978aef35cdf8f56756584bce12a9001888cce93d"
     },
     {
       "file": "tests/fixtures/evidence-issuer/public-preflight.json",
@@ -6727,6 +7142,46 @@
       "sha256": "5d01e3b6ae2789b0dacf70ac4fb95f2884e430020b62e096b50019270c504ec6"
     },
     {
+      "file": "tests/fixtures/three-gaps-cycle31-intake-context.json",
+      "bytes": 24281,
+      "sha256": "592be9f6fce315b6a7e6fdfe3985646ecfbd4cef6e0ade288aa5bab190bffcb9"
+    },
+    {
+      "file": "tests/fixtures/three-gaps-cycle31-intake-final-context.json",
+      "bytes": 7176,
+      "sha256": "ec3ee7928a8d04b480962c387b0b1440f3c29c2b1cfd5e46cdb799949c2632a1"
+    },
+    {
+      "file": "tests/fixtures/three-gaps-cycle33-baseline-context.json",
+      "bytes": 4218,
+      "sha256": "29bc7169c6042fdfc315af22d31ddab3f7b491260bf538344c5fa5085e7eb660"
+    },
+    {
+      "file": "tests/fixtures/three-gaps-cycle34-plan-v2-context.json",
+      "bytes": 21071,
+      "sha256": "3f32b484e7445d955bad6e0666b4c35b1778c006c40535c54079f0e70b2df7c3"
+    },
+    {
+      "file": "tests/fixtures/three-gaps-cycle34-scope-context.json",
+      "bytes": 13615,
+      "sha256": "9a99c5ae64932497f75140dee8e3bfd0a24e98bc31b63f8a4ee8f4835ee4e5b3"
+    },
+    {
+      "file": "tests/fixtures/three-gaps-cycle35-plan-context.json",
+      "bytes": 40733,
+      "sha256": "f36ed38ad1f0b72b80b8c99cf9c086af76a0f9253cc95c73d5612f27d64b1979"
+    },
+    {
+      "file": "tests/fixtures/three-gaps-cycle35-replay-context.json",
+      "bytes": 36687,
+      "sha256": "2c9128810fbb4dbd395c2c06ccb9a81d30e9bdf0b2a60e857dcd7e77b6faadb2"
+    },
+    {
+      "file": "tests/fixtures/three-gaps-public-record-review-context.json",
+      "bytes": 28376,
+      "sha256": "2c4b3d5f1d6c126e875c6e1c4a3d98e36af28ff45041a0e7dbd0a5d406de8014"
+    },
+    {
       "file": "tests/fixtures/time-policy-v1-frozen.json",
       "bytes": 4920,
       "sha256": "4a8d8b7188c9f7e712968e4a5e52ca8660f1553887f78b3041d42cf20f384f6c"
@@ -6838,8 +7293,8 @@
     },
     {
       "file": "tests/judge-pack.test.mjs",
-      "bytes": 13872,
-      "sha256": "64a68d05ef75a4d74c7d5ec59fd5bb5046f3cef83ff18efb058da8217e8c8033"
+      "bytes": 15606,
+      "sha256": "c9338db42524004f3ccdf372a389949055931a65b3a1540113b9ba8caa3363df"
     },
     {
       "file": "tests/layout-api-smoke.py",
@@ -6962,6 +7417,11 @@
       "sha256": "1813d4e7f26b92e52debf164a21d957cff8764bb1290a6287cb43928244cc930"
     },
     {
+      "file": "tests/native-form-source.test.ts",
+      "bytes": 17036,
+      "sha256": "26b0071b0cfd33c0284efc17cd90847957229b99fa3ba51f2d636df8c5670e9b"
+    },
+    {
       "file": "tests/next-human-review.test.ts",
       "bytes": 1882,
       "sha256": "8eb6ba0eda0dce0c306fa8dfdaac6d65851b741bbc5cb3d82fa71686d873e005"
@@ -7000,6 +7460,11 @@
       "file": "tests/project-assessment-strict-transport.test.ts",
       "bytes": 10226,
       "sha256": "29dcdb0ca2626663cf63c33782ff5654d6888cc456500d0016d2e54f74b8eb9d"
+    },
+    {
+      "file": "tests/project-intake-blocker.test.ts",
+      "bytes": 13798,
+      "sha256": "21b11848478463c4096f63f9362b83c2cb8161ad59885a14d0af30e5be140788"
     },
     {
       "file": "tests/project-journey-api-smoke.py",
@@ -7143,8 +7608,8 @@
     },
     {
       "file": "tests/run-collaborative-sandbox-local.mjs",
-      "bytes": 11995,
-      "sha256": "55e3e4198e5de5201ec13a01d64891f891a9a2a5ae189153eb325a7fb214ae5d"
+      "bytes": 12107,
+      "sha256": "554f80ab1b2b840637c5158591acd9bd7a0d1e5a21a732d0a9d29bf0de54d9ee"
     },
     {
       "file": "tests/run-model-archive-local.mjs",
@@ -7343,8 +7808,8 @@
     },
     {
       "file": "tests/seller-onboarding-ui-state.test.ts",
-      "bytes": 17858,
-      "sha256": "58d90261792d96b5c83978963b101d3ceb659fb6206b69e054a9d9444282c40e"
+      "bytes": 17989,
+      "sha256": "232520335ce77e6be4233092d81b92f4501759231b94a7ff4016c5bf5bf8cbf5"
     },
     {
       "file": "tests/seller-onboarding.test.ts",
@@ -7458,8 +7923,8 @@
     },
     {
       "file": "tests/technical-checks-panel.test.ts",
-      "bytes": 10830,
-      "sha256": "9e81f8a5e2c150b624990219275c1122e4130a27b0d7760cd3307e4d08239b14"
+      "bytes": 11100,
+      "sha256": "e95129a7136cb3098d38f77d4eb33172ccfae4b0156cd19d88b3a2167726798e"
     },
     {
       "file": "tests/time-policy-api-smoke.py",

@@ -1,0 +1,213 @@
+{
+  "schema": "pbp-cycle34-root-independent-whole-answer-review-v1",
+  "reviewer": "Root Codex AI, separate from corpus author and implementation agent; independent source/reference and whole-response inspection, not a human study",
+  "inputs": [
+    {
+      "path": "ai-prospective/cycle34/known-final-live.json",
+      "sha256": "0c4dc2d7dc0c820468bf91ea9552e04c620d30f6c25d6b27badd0ada8690a51b"
+    },
+    {
+      "path": "httpbin-fresh-four/first-live.json",
+      "sha256": "dcc727acbbd89520ae0cf6e20d7a65ead29397c38cda3b6d2644e2635200c01d"
+    }
+  ],
+  "rows": [
+    {
+      "id": "mdn-derived-cross-page-label",
+      "cohort": "known-regression",
+      "decision": "rejected",
+      "notes": "Contact missing-label finding now points to the correct form. However coverage-2 admits Earth row/Our world association and still wrongly demands exact sentence, contrary to ordinary source-content requirement; false change and false repair survive publication.",
+      "rawStateAgreement": 1,
+      "applicationStateAgreement": 1,
+      "criteria": 2,
+      "rawItemIds": [
+        "coverage-1",
+        "coverage-2"
+      ],
+      "allRequiredIdsReturned": true,
+      "allFullItemsRisksAndLimitationsRead": true
+    },
+    {
+      "id": "mdn-original-runtime-unknown",
+      "cohort": "known-regression",
+      "decision": "qualified",
+      "notes": "Unknown item states appropriate. Unverified/overstated optional column-count or header-association criticism remains raw; v3 accurately withholds it without inventing status adjustment. Published fixed boundary is safe; raw prose is not independently reliable.",
+      "rawStateAgreement": 2,
+      "applicationStateAgreement": 2,
+      "criteria": 2,
+      "rawItemIds": [
+        "coverage-1",
+        "coverage-2"
+      ],
+      "allRequiredIdsReturned": true,
+      "allFullItemsRisksAndLimitationsRead": true
+    },
+    {
+      "id": "mdn-original-compound-table",
+      "cohort": "known-regression",
+      "decision": "accepted",
+      "notes": "Complete item explanations, optional risk explanations/suggestions and declared limitations reviewed. Static source properties correctly bounded; no runtime success claimed.",
+      "rawStateAgreement": 2,
+      "applicationStateAgreement": 2,
+      "criteria": 2,
+      "rawItemIds": [
+        "coverage-1",
+        "coverage-2"
+      ],
+      "allRequiredIdsReturned": true,
+      "allFullItemsRisksAndLimitationsRead": true
+    },
+    {
+      "id": "mdn-derived-inert-label-decoys",
+      "cohort": "known-regression",
+      "decision": "rejected",
+      "notes": "Raw and published coverage-1 supported uses the E-mail label inside inert template, while optional risk itself admits template ownership. Active form association not established; source-text occurrence is not form-label evidence.",
+      "rawStateAgreement": 1,
+      "applicationStateAgreement": 1,
+      "criteria": 2,
+      "rawItemIds": [
+        "coverage-1",
+        "coverage-2"
+      ],
+      "allRequiredIdsReturned": true,
+      "allFullItemsRisksAndLimitationsRead": true
+    },
+    {
+      "id": "mdn-derived-cross-control-enum",
+      "cohort": "known-regression",
+      "decision": "accepted",
+      "notes": "Complete item explanations, optional risk explanations/suggestions and declared limitations reviewed. Static source properties correctly bounded; no runtime success claimed.",
+      "rawStateAgreement": 2,
+      "applicationStateAgreement": 2,
+      "criteria": 2,
+      "rawItemIds": [
+        "coverage-1",
+        "coverage-2"
+      ],
+      "allRequiredIdsReturned": true,
+      "allFullItemsRisksAndLimitationsRead": true
+    },
+    {
+      "id": "mdn-derived-swapped-fields",
+      "cohort": "known-regression",
+      "decision": "accepted",
+      "notes": "Complete item explanations, optional risk explanations/suggestions and declared limitations reviewed. Static source properties correctly bounded; no runtime success claimed.",
+      "rawStateAgreement": 2,
+      "applicationStateAgreement": 2,
+      "criteria": 2,
+      "rawItemIds": [
+        "coverage-1",
+        "coverage-2"
+      ],
+      "allRequiredIdsReturned": true,
+      "allFullItemsRisksAndLimitationsRead": true
+    },
+    {
+      "id": "fresh-mdn-original-runtime-boundary",
+      "cohort": "known-regression",
+      "decision": "qualified",
+      "notes": "Unknown item states appropriate. Unverified/overstated optional column-count or header-association criticism remains raw; v3 accurately withholds it without inventing status adjustment. Published fixed boundary is safe; raw prose is not independently reliable.",
+      "rawStateAgreement": 2,
+      "applicationStateAgreement": 2,
+      "criteria": 2,
+      "rawItemIds": [
+        "coverage-1",
+        "coverage-2"
+      ],
+      "allRequiredIdsReturned": true,
+      "allFullItemsRisksAndLimitationsRead": true
+    },
+    {
+      "id": "fresh-mdn-original-facts",
+      "cohort": "known-regression",
+      "decision": "accepted",
+      "notes": "Complete item explanations, optional risk explanations/suggestions and declared limitations reviewed. Static source properties correctly bounded; no runtime success claimed.",
+      "rawStateAgreement": 2,
+      "applicationStateAgreement": 2,
+      "criteria": 2,
+      "rawItemIds": [
+        "coverage-1",
+        "coverage-2"
+      ],
+      "allRequiredIdsReturned": true,
+      "allFullItemsRisksAndLimitationsRead": true
+    },
+    {
+      "id": "httpbin-original-contact-fields",
+      "cohort": "first-httpbin",
+      "decision": "raw-accepted-application-under-admitted",
+      "notes": "All actual label/control/attribute facts and mismatched owner distinction correctly identified in raw answer. Application unnecessarily demotes all six source-only facts to insufficient evidence; record as loss of coverage, not successful error prevention.",
+      "rawStateAgreement": 2,
+      "applicationStateAgreement": 0,
+      "criteria": 2,
+      "rawItemIds": [
+        "coverage-1",
+        "coverage-2"
+      ],
+      "allRequiredIdsReturned": true,
+      "allFullItemsRisksAndLimitationsRead": true
+    },
+    {
+      "id": "httpbin-original-options-and-time",
+      "cohort": "first-httpbin",
+      "decision": "raw-accepted-application-under-admitted",
+      "notes": "All actual label/control/attribute facts and mismatched owner distinction correctly identified in raw answer. Application unnecessarily demotes all six source-only facts to insufficient evidence; record as loss of coverage, not successful error prevention.",
+      "rawStateAgreement": 2,
+      "applicationStateAgreement": 0,
+      "criteria": 2,
+      "rawItemIds": [
+        "coverage-1",
+        "coverage-2"
+      ],
+      "allRequiredIdsReturned": true,
+      "allFullItemsRisksAndLimitationsRead": true
+    },
+    {
+      "id": "httpbin-derived-wrong-radio-owner",
+      "cohort": "first-httpbin",
+      "decision": "raw-accepted-application-under-admitted",
+      "notes": "All actual label/control/attribute facts and mismatched owner distinction correctly identified in raw answer. Application unnecessarily demotes all six source-only facts to insufficient evidence; record as loss of coverage, not successful error prevention.",
+      "rawStateAgreement": 2,
+      "applicationStateAgreement": 0,
+      "criteria": 2,
+      "rawItemIds": [
+        "coverage-1",
+        "coverage-2"
+      ],
+      "allRequiredIdsReturned": true,
+      "allFullItemsRisksAndLimitationsRead": true
+    },
+    {
+      "id": "httpbin-original-runtime-boundary",
+      "cohort": "first-httpbin",
+      "decision": "accepted",
+      "notes": "Complete item explanations, optional risk explanations/suggestions and declared limitations reviewed. Static source properties correctly bounded; no runtime success claimed.",
+      "rawStateAgreement": 2,
+      "applicationStateAgreement": 2,
+      "criteria": 2,
+      "rawItemIds": [
+        "coverage-1",
+        "coverage-2"
+      ],
+      "allRequiredIdsReturned": true,
+      "allFullItemsRisksAndLimitationsRead": true
+    }
+  ],
+  "decision": "PARTIAL_NOT_RELEASED",
+  "requiredNext": [
+    "Prevent inert template label false support with scoped DOM evidence",
+    "Prevent ordinary paraphrase from being failed solely for missing literal sentence",
+    "Admit and verify bounded native form source facts without granting runtime success"
+  ],
+  "accounting": {
+    "newCalls": 12,
+    "totalCallsThisTask": 32,
+    "conservativeEstimatedUsd": 0.2005959,
+    "retryCalls": 0
+  },
+  "limits": [
+    "No independent customer or unfamiliar human sample",
+    "No generic correctness or championship claim",
+    "Raw labels, application labels and whole-answer quality are separate measurements"
+  ]
+}

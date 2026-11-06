@@ -1,0 +1,72 @@
+{
+  "reviewer": "Root independent complete raw explanations, risks and limitations; application guard outputs separately inspected",
+  "followupFreeze": "793107cd3871785fa0454dabbd6667d3bbd1eff9282edfaf5ef9e005f793b889",
+  "freshFirstFreeze": "342bb89b4eef1c8bb9e0f60827be56bd009961deb0a63d000a471de7c278fa30",
+  "knownEight": {
+    "rawStateAgreement": [
+      16,
+      16
+    ],
+    "applicationStateAgreement": [
+      16,
+      16
+    ],
+    "wholeAnswers": {
+      "accepted": [
+        "mdn-original-compound-table",
+        "mdn-derived-swapped-fields",
+        "mdn-original-paraphrase",
+        "mdn-original-source-properties",
+        "mdn-derived-cross-control-enum"
+      ],
+      "qualified": [
+        {
+          "id": "mdn-derived-inert-label-decoys",
+          "reason": "Correct source mismatch, but advice unnecessarily reopens whether the explicitly required source label is required."
+        },
+        {
+          "id": "mdn-original-runtime-unknown",
+          "reason": "Both required unknown statuses are safe; model invents questionable column count and optional unsupported-backend indication remains published. These leads are not executed defects."
+        }
+      ],
+      "rejected": [
+        {
+          "id": "mdn-derived-cross-page-label",
+          "reason": "Correct category by coincidence; explicitly asserts the check targets index.html, falsely says contact.html has all three labels and proposes repair on the wrong page. Source citations exactness does not validate this ownership claim."
+        }
+      ]
+    }
+  },
+  "freshFourFirst": {
+    "rawStateAgreement": [
+      7,
+      8
+    ],
+    "applicationStateAgreement": [
+      8,
+      8
+    ],
+    "wholeAnswers": [
+      {
+        "id": "fresh-mdn-original-facts",
+        "decision": "accepted"
+      },
+      {
+        "id": "fresh-mdn-derived-wrong-columns",
+        "decision": "qualified",
+        "reason": "Correct source mismatch and supporting values; optional suggestion unnecessarily asks whether fixed buyer expectation is a deliberate swap."
+      },
+      {
+        "id": "fresh-mdn-original-equivalent-phrasing",
+        "decision": "accepted"
+      },
+      {
+        "id": "fresh-mdn-original-runtime-boundary",
+        "rawDecision": "rejected",
+        "applicationDecision": "safe-unknown",
+        "reason": "Raw supported keyboard/screenreader assertion contradicts its own no-keyboard-evidence explanation. Existing application guard correctly changes it to unknown and publishes fixed evidence-needed wording with no risks."
+      }
+    ]
+  },
+  "disposition": "Cycle33 partial; do not publish a claim that all gaps are closed. Cycle34 must prevent unsupported page-target actions, retain strict parsers, and distinguish raw errors from application protection. All first responses retained."
+}

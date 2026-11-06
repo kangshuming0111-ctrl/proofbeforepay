@@ -1,6 +1,7 @@
 import type { Language, ProofCriterion } from "./contracts.ts";
 import {exactCopyLiteral} from "./exact-copy-directive.ts";
-import {isSourceLiteralDirectiveCandidate, sourceLiteralDirective} from "./source-literal-directive.ts";
+import {isSourceLiteralDirectiveCandidate, parseSourceLiteralDirective, sourceLiteralDirective} from "./source-literal-directive.ts";
+import {isNativeFormSourceDirectiveCandidate, parseNativeFormSourceDirective} from "./native-form-source.ts";
 import {isStaticMarkupDirectiveCandidate, staticMarkupDirective, withoutWorkingTimeUnits} from "./static-markup-directive.ts";
 import {assertStaticPath} from "./static-resources.ts";
 
@@ -150,14 +151,18 @@ function isStaticRelationCandidate(source: string): boolean {
 
 /** Admission controls do not establish whether a model's cited inference is true. */
 export function assessmentEvidenceScope(criterion: ProofCriterion): AssessmentEvidenceScope {
-  const literal = exactCopyLiteral(criterion.source), sourceDirective = sourceLiteralDirective(criterion.source), relationDirective = staticRelationDirective(criterion.source);
-  const markupDirective = staticMarkupDirective(criterion.source) ?? relationDirective?.identity;
+  const literal = exactCopyLiteral(criterion.source), sourceDescriptor = parseSourceLiteralDirective(criterion.source), sourceDirective = sourceDescriptor?.identity, relationDirective = staticRelationDirective(criterion.source);
+  const nativeDirective = parseNativeFormSourceDirective(criterion.source);
+  const nativeIdentity = nativeDirective ? criterion.source.trim() : undefined;
+  const quotedLabels = sourceDescriptor?.kind === "html_labels" && sourceDescriptor.quotedLabels;
+  const markupDirective = staticMarkupDirective(criterion.source) ?? relationDirective?.identity ?? nativeIdentity ?? (quotedLabels ? sourceDirective : undefined);
   // A title that repeats the same whole exact-copy directive adds no separate
   // obligation. Other titles retain their own runtime/financial/record veto.
   // In particular, do not infer a text-only scope from a truncated title.
   const repeatedLiteralTitle = literal !== undefined && exactCopyLiteral(criterion.title) === literal;
   const repeatedSourceTitle = sourceDirective !== undefined && sourceLiteralDirective(criterion.title) === sourceDirective;
-  const repeatedMarkupTitle = markupDirective !== undefined && (staticMarkupDirective(criterion.title) ?? staticRelationDirective(criterion.title)?.identity) === markupDirective;
+  const repeatedMarkupTitle = markupDirective !== undefined && (staticMarkupDirective(criterion.title) ?? staticRelationDirective(criterion.title)?.identity
+    ?? (parseNativeFormSourceDirective(criterion.title) ? criterion.title.trim() : undefined)) === markupDirective;
   const title = repeatedLiteralTitle || repeatedSourceTitle || repeatedMarkupTitle ? "" : criterion.title;
   const sourceOnlyDirective = literal !== undefined || sourceDirective !== undefined || markupDirective !== undefined;
   // Complete quoted literals and atomic markup-property statements bind their
@@ -168,7 +173,7 @@ export function assessmentEvidenceScope(criterion: ProofCriterion): AssessmentEv
   if (FINANCIAL_ACTION.test(combined) || CARD_DEBIT_ACTION.test(combined)) return { category: "requires_observation", reason: "financial_action" };
   if (RECORD_ACTION.test(combined) || CUSTOMER_DATA_REBOOT.test(combined)) return { category: "requires_observation", reason: "durable_record" };
   if (EMAIL_DELIVERY_ACTION.test(combined)) return {category: "requires_observation", reason: "runtime_or_subjective"};
-  if (!sourceOnlyDirective && (isSourceLiteralDirectiveCandidate(criterion.source) || isStaticMarkupDirectiveCandidate(criterion.source) || isStaticRelationCandidate(criterion.source))) return {category: "requires_observation", reason: "unclassified_requirement"};
+  if (!sourceOnlyDirective && (isSourceLiteralDirectiveCandidate(criterion.source) || isStaticMarkupDirectiveCandidate(criterion.source) || isStaticRelationCandidate(criterion.source) || isNativeFormSourceDirectiveCandidate(criterion.source))) return {category: "requires_observation", reason: "unclassified_requirement"};
   if (sourceOnlyDirective) return OBSERVATION_REQUIRED.test(withoutWorkingTimeUnits(title))
     || relationDirective !== undefined && /\b(?:visib(?:le|ility)|visually|masked|masking|security|secure(?:ly)?|protection|protect(?:s|ed|ing)?)\b/iu.test(title)
     ? {category: "requires_observation", reason: "runtime_or_subjective"}
