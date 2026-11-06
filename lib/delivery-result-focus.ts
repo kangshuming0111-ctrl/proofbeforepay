@@ -83,7 +83,7 @@ export function deliveryResultFocus(input:DeliveryResultInput):DeliveryResultFoc
   const supplemental=deliveryResultStatus(input).find(row=>["supplemental","source-visibility","deployment-source","time-policy"].includes(row.id)&&row.attention);
   if(supplemental)return focus("supplemental_attention","details",tr("补充证据仍有不符或未确定项","Supplemental evidence has mismatches or unknowns"),supplemental.text);
   const aiChange=overview.rows.find(row=>row.ai?.status==="changes_suggested");
-  if(aiChange)return criterion("ai_change",aiChange.ai?.publicationBasis?.schema === "source-publication-v1" ? tr("系统源码核验发布了差异，请核对", "System source checks published a difference to review") : tr("AI 提出了修改建议，请核对","AI suggests changes for you to review"),aiChange);
+  if(aiChange)return criterion("ai_change",["source-publication-v1", "source-publication-v2"].includes(aiChange.ai?.publicationBasis?.schema ?? "") ? tr("系统源码核验发布了差异，请核对", "System source checks published a difference to review") : tr("AI 提出了修改建议，请核对","AI suggests changes for you to review"),aiChange);
   const human=overview.rows.find(row=>row.humanPending);
   if(human)return criterion("human_pending",tr("还有要求需要你亲自确认","Some requirements need your direct check"),human);
   const unreviewed=overview.rows.find(row=>row.rule==="unreviewed");
@@ -105,7 +105,7 @@ export function deliveryResultStatus(input:DeliveryResultInput):{id:string;text:
   const rows:{id:string;text:string;attention:boolean}[]=[];
   const add=(id:string,text:string,attention=false)=>rows.push({id,text,attention});
   add("rules",overview.reviewCurrent?tr(`规则：${overview.ruleFailures} 项不符，${overview.unreviewed} 项未核查`,`Rules: ${overview.ruleFailures} mismatches, ${overview.unreviewed} unchecked requirements`):tr(`规则：本版尚未核查（${overview.unreviewed} 项）`,`Rules: this version not checked (${overview.unreviewed} requirements)`),!overview.reviewCurrent||!!overview.ruleFailures||!!overview.unreviewed);
-  const sourcePublished = delivery.assessment?.deliveryId === delivery.id && delivery.assessment.items.some(item => item.publicationBasis?.schema === "source-publication-v1");
+  const sourcePublished = delivery.assessment?.deliveryId === delivery.id && delivery.assessment.items.some(item => ["source-publication-v1", "source-publication-v2"].includes(item.publicationBasis?.schema ?? ""));
   add("ai",overview.assessmentCurrent?sourcePublished?tr(`发布结论（含源码核验）：${overview.aiChanges} 项需修改，${overview.aiInsufficient} 项证据不足`,`Published findings (including source checks): ${overview.aiChanges} needing changes, ${overview.aiInsufficient} insufficient-evidence requirements`):tr(`AI：${overview.aiChanges} 项建议修改，${overview.aiInsufficient} 项证据不足`,`AI: ${overview.aiChanges} change suggestions, ${overview.aiInsufficient} insufficient-evidence requirements`):tr("AI：本版尚无评估","AI: no assessment for this version"),!!overview.aiChanges||!!overview.aiInsufficient);
   add("human",overview.reviewCurrent?tr(`人工：${overview.humanRemaining} 项待确认，已确认 ${overview.humanConfirmed}/${overview.humanRequired}`,`Human: ${overview.humanRemaining} left, ${overview.humanConfirmed}/${overview.humanRequired} confirmed`):tr("人工：待本版核查后确认","Human: confirm after this version is checked"),!!overview.humanRemaining);
   if(overview.risks?.total)add("risks",tr(`AI 潜在线索：${overview.risks.total} 条，${overview.risks.unreviewed} 条尚未复核`,`Potential AI issues: ${overview.risks.total}, ${overview.risks.unreviewed} without human review`),overview.risks.unreviewed>0);

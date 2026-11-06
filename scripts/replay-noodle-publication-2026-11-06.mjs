@@ -36,6 +36,7 @@ try {
     });
     assert.equal(intercepted, 1);
     assert.equal(JSON.stringify(quote), before, "Replay must not mutate source, locked requirements or scope history.");
+    assert.equal(report.publicationPolicy.schema, "source-publication-v2", "Current replay must retain its named source-publication strategy.");
     const changed = [];
     for (const item of report.items) {
       const old = entry.originalApplication.items.find(row => row.criterionId === item.criterionId);
@@ -45,7 +46,7 @@ try {
       if (reason) {
         assert.equal(old.status, "insufficient_evidence");
         assert.equal(item.status, "changes_suggested");
-        assert.deepEqual(item.publicationBasis, {schema: "source-publication-v1", reason});
+        assert.deepEqual(item.publicationBasis, {schema: "source-publication-v2", reason});
         assert.equal(item.explanation, item.sourceFinding.explanation);
         assert.deepEqual(item.citations, item.sourceFinding.citations);
         assert.equal(item.evidenceNeed, undefined);
@@ -74,7 +75,7 @@ assert.equal(focused.filter(item => item.originalPublished === item.reference).l
 assert.equal(focused.filter(item => item.published === item.reference).length, 9);
 assert.equal(results.flatMap(entry => entry.changedPublishedCriterionIds).length, 2);
 assert.equal(blockedNetworkAttempts, 0);
-const implementationFiles = ["lib/delivery-assessment.ts", "lib/assessment-source-publication.ts", "lib/assessment-publication-policy.ts", "lib/assessment-source-findings.ts", "lib/contracts.ts", "lib/evidence-export.ts"];
+const implementationFiles = ["lib/delivery-assessment.ts", "lib/assessment-source-publication.ts", "lib/assessment-publication-policy.ts", "lib/assessment-source-findings.ts", "lib/assessment-requirement-completeness.ts", "lib/menu-dom-source-v2.ts", "lib/menu-source-publication-v2.ts", "lib/contracts.ts", "lib/evidence-export.ts"];
 const implementation = await Promise.all(implementationFiles.map(async file => ({file, sha256: sha(await readFile(path.join(root, file)))})));
 const result = {schema: "noodle-negative-publication-replay-v1", createdAt: new Date().toISOString(),
   fixture: {file: fixturePath, sha256: sha(fixtureBytes), firstLiveFreezeSha256: fixture.firstLiveFreezeSha256}, implementation,
@@ -84,6 +85,6 @@ const result = {schema: "noodle-negative-publication-replay-v1", createdAt: new 
     sourceRequirementsAndScopePreserved: true, optionalRiskOriginalsPreservedAndWithheld: true},
   limitations: ["Known authored fictional regression inputs; this is a zero-network replay, not a new model experiment or new real-merchant trial.",
     "9/9 describes these nine status references only, not whole-answer accuracy, browser behavior, backend persistence, security or general reliability.",
-    "Old 7/9 reports and references remain unchanged. Runtime obligations remain unresolved; no automatic scope agreement, acceptance or payment."], results};
+    "Old 7/9 reports and references remain unchanged. Current reports explicitly use source-publication-v2; historical schema1 records retain their original semantics. Runtime obligations remain unresolved; no automatic scope agreement, acceptance or payment."], results};
 await writeFile(path.resolve(output), JSON.stringify(result, null, 2) + "\n", {flag: "wx"});
 console.log(JSON.stringify(result.summary));

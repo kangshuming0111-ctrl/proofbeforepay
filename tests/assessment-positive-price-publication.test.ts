@@ -35,7 +35,7 @@ async function synthetic(q:ProofQuote,retained=true){
 test("saved v90v2 decoded model items gain only a witnessed positive source publication, never claiming original HTTP replay",async()=>{
  const q=quote(),result=await synthetic(q),item=result.items.find(i=>i.criterionId==='coverage-1')!;
  assert.deepEqual(item.modelJudgment,saved.delivery.assessment.items.find((i:any)=>i.criterionId===item.criterionId).modelJudgment);
- assert.equal(item.status,'supported');assert.equal(item.sourceFinding!.status,'supported');assert.deepEqual(item.publicationBasis,{schema:'source-publication-v1',reason:'locked_price_match'});assert.equal(item.evidenceNeed,undefined);
+ assert.equal(item.status,'supported');assert.equal(item.sourceFinding!.status,'supported');assert.deepEqual(item.publicationBasis,{schema:'source-publication-v2',reason:'locked_price_match'});assert.equal(item.evidenceNeed,undefined);
  assert.equal(item.explanation,item.sourceFinding!.explanation);assert.deepEqual(item.citations,item.sourceFinding!.citations);assert.deepEqual(result.publicationPolicy!.reconciledCriterionIds,['coverage-1']);
  assert.equal(result.items.find(i=>i.criterionId==='mobile')!.status,'insufficient_evidence');assert.equal(result.risks.length,0);assert.equal(result.withheldRisks!.reason,'optional_source_leads_unverified');assert.deepEqual(result.withheldRisks!.entries,saved.delivery.assessment.withheldRisks.entries);
  assert.equal(saved.delivery.assessment.items.find((i:any)=>i.criterionId==='coverage-1').status,'insufficient_evidence');

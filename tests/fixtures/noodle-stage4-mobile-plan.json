@@ -1,0 +1,132 @@
+{
+  "schema": "stage4-mobile-plan-review-v1",
+  "state": "NOT IMPLEMENTED; stage4 waits root stage3 GO; plan review only",
+  "scope": "Fixed noodle outsourcing: mobile observation guidance; optional display-only generic requirement-title excerpt. No new inspection family.",
+  "exactRootIntegration": {
+    "currentSource": "app/page.tsx:962-977,1690,1727-1735,1759-1761",
+    "callback": "function openMobileChecks() { setDeliveryTab(\"layout\"); focusPanel(\"delivery\", \".layout-check-panel\"); }",
+    "existingFence": "focusPanel calls scheduleWorkspaceFocus; captured currentQuoteView and workspaceFocusSerial prevent a stale project/delivery/perspective focus. revealGuidedTarget opens native details and focuses summary, dispatching no click/change/submit.",
+    "proposedProps": "Optional mobileObservation={requiredPages:actual saved project requiredPages, onOpen:openMobileChecks} into current RequirementNextStep and current DeliveryAssessment only. Do not pass live callbacks into assessmentHistory/readOnly.",
+    "eligibility": "Built-in mobile criterion and known saved requiredPages only. No AI call needed. No semantic page-role inference. Actual structured browser_observation empty-target copy can use the separate locked observation scope; custom requirements and unknown context retain cautious wording.",
+    "noNewDetector": "Do not edit LayoutCheckPanel, layout probe, report/API/domain acceptance gates, report fields, saved AI status, manual checks or payment."
+  },
+  "eligibilityAndTruth": [
+    "Do not require a model run to expose manual mobile navigation: built-in criterion mobile + actual locked requiredPages is sufficient for the separate observation guide.",
+    "Suppress generic target-unlocated copy only for the structured browser_observation mobile case with known project pages. For custom browser requirements or malformed/legacy need metadata retain existing cautious semantics.",
+    "Do not populate or mutate stored evidenceNeed.targetFiles. Agreed observation scope is distinct from the model/source citation target set.",
+    "History/readOnly renders may show old facts but must not navigate into or act on the current delivery as if it were the old report.",
+    "Unavailable, missing, unobserved and width-only measured pages are never promoted to mobile pass; existing manual confirmation and exact-version gates remain authoritative."
+  ],
+  "acceptanceTable": [
+    {
+      "id": "M1",
+      "given": "Current built-in mobile, locked index/menu/contact, stored browser_observation with empty targets",
+      "action": "Read the selected requirement",
+      "expect": "Lists all three as agreed observation pages, not source citation targets; no target-unlocated claim."
+    },
+    {
+      "id": "M2",
+      "given": "Same current view with existing layout report disclosure closed",
+      "action": "Click the explicit browser-check navigation button",
+      "expect": "Existing layout tab and details open/focus; no probe/model/save/feedback/confirmation/accept/payment called."
+    },
+    {
+      "id": "M3",
+      "given": "Mobile criterion before any AI assessment",
+      "action": "Read/click the same navigation",
+      "expect": "Same route available; AI remains unrun and manual remains unchecked."
+    },
+    {
+      "id": "M4",
+      "given": "Navigation scheduled then project/delivery/perspective changes",
+      "action": "Run scheduled focus frame",
+      "expect": "Existing focus fence cancels the old frame; it never runs a workflow action."
+    },
+    {
+      "id": "M5",
+      "given": "One required HTML missing from delivery",
+      "action": "Read scope and inspect existing all-page layout result",
+      "expect": "Missing required page retained and unavailable, never substituted by an unrelated extra HTML or marked as pass."
+    },
+    {
+      "id": "M6",
+      "given": "Custom browser_observation requirement, empty/unknown project scope, invalid legacy need metadata",
+      "action": "Read/click guidance",
+      "expect": "Does not borrow mobile all-page scope or infer a cause from model prose."
+    },
+    {
+      "id": "M7",
+      "given": "Read-only historical report or busy current view",
+      "action": "Inspect action controls",
+      "expect": "No live current-delivery callback from history; busy action disabled, no automatic probe."
+    },
+    {
+      "id": "M8",
+      "given": "Actual width observations saved, then buyer returns to mobile criterion",
+      "action": "Review/confirm using existing explicit manual checkbox",
+      "expect": "AI unknown unchanged, width-only limitations retained, manual confirms only after user action and remains tied to exact current version."
+    },
+    {
+      "id": "M9",
+      "given": "Chinese/English and375px/desktop",
+      "action": "Navigate report→browser checks→saved375px preview→manual criterion",
+      "expect": "Action/known pages/limitations readable with existing compact layout; no horizontal overflow or stale focus. Root actualCUA verifies, not SSR claim."
+    }
+  ],
+  "sourceExcerpts": {
+    "app/page.tsx:962": {
+      "file": "app/page.tsx",
+      "lineStart": 962,
+      "sha256": "c94485994eae23cecd0ab2efaa1d6da4f037f29c916ed4e34173c000050999e8",
+      "text": "  function scheduleWorkspaceFocus(task:(root:HTMLDivElement)=>void) {\n    const view={...currentQuoteView.current},serial=++workspaceFocusSerial.current;\n    setTechnicalFocusRequest(undefined);\n    window.requestAnimationFrame(()=>{\n      if(serial!==workspaceFocusSerial.current||!sameQuoteResponseView(view,currentQuoteView.current))return;\n      if(workspaceRef.current)task(workspaceRef.current);\n    });\n  }\n\n  function focusPanel(panel: \"agreement\" | \"delivery\" | \"payment\", selector?: string) {\n    setWorkspaceView(\"workbench\"); setWorkspacePanel(panel);\n    const section=`.${panel === \"agreement\" ? \"scope\" : panel === \"payment\" ? \"payment\" : \"evidence\"}-panel`;\n    scheduleWorkspaceFocus(root=>{\n      if(!revealGuidedTarget(root,selector??section,section))setNotice(tr(\"请查看当前区域的说明；该操作控件暂不可用。\", \"Read this section’s instructions; the requested control is currently unavailable.\"));\n    });\n  }"
+    },
+    "app/components/reveal-guided-target.ts:1": {
+      "file": "app/components/reveal-guided-target.ts",
+      "lineStart": 1,
+      "sha256": "e3a23d297b6eb85e51c3df2ebd2a15ed69a2612107c654833090423fd5414fbf",
+      "text": "/** Reveal an existing scoped target without activating its action. Native\n * details may emit toggle; no input, change, click or submit is dispatched.\n * A fallback can receive focus, but true always means the primary succeeded. */\nexport function revealGuidedTarget(root:HTMLElement|null,selector:string,fallbackSelector?:string):boolean{\n if(!root)return false;\n function reveal(selected:string):boolean{\n  try{\n   const matches=[...(root!.matches(selected)?[root!]:[]),...root!.querySelectorAll<HTMLElement>(selected)];\n   if(matches.length!==1)return false;\n   const target=matches[0],ancestors:HTMLElement[]=[];\n   for(let node:HTMLElement|null=target;node;node=node.parentElement){\n    ancestors.push(node);if(node===root)break;\n   }\n   if(ancestors.at(-1)!==root)return false;\n   // Open only within this root, from the outer disclosure to the target.\n   for(const node of [...ancestors].reverse())if(node.tagName===\"DETAILS\")node.setAttribute(\"open\",\"\");\n   const focusTarget=target.tagName===\"DETAILS\"?[...target.children].find(node=>node.tagName===\"SUMMARY\") as HTMLElement|undefined:target;\n   const candidate=focusTarget??target;\n   if(candidate.matches(\":disabled,[aria-disabled=true]\"))return false;\n   for(let node:HTMLElement|null=candidate;node;node=node.parentElement){\n    if(node.hasAttribute(\"hidden\")||node.hasAttribute(\"inert\")||node.getAttribute(\"aria-hidden\")===\"true\")return false;\n    const visibility=node.ownerDocument.defaultView?.getComputedStyle(node).visibility;\n    if(visibility===\"hidden\"||visibility===\"collapse\")return false;\n   }\n   if(![...candidate.getClientRects()].some(rect=>rect.width>0&&rect.height>0))return false;\n   if(candidate.tabIndex<0&&!candidate.hasAttribute(\"tabindex\"))candidate.setAttribute(\"tabindex\",\"-1\");\n   candidate.focus({preventScroll:true});\n   if(candidate.ownerDocument.activeElement!==candidate)return false;\n   candidate.scrollIntoView({block:\"nearest\",inline:\"nearest\"});\n   return true;\n  }catch{return false;}\n }\n if(reveal(selector))return true;\n if(fallbackSelector&&fallbackSelector!==selector)reveal(fallbackSelector);\n return false;\n}"
+    },
+    "app/components/DeliveryAssessment.tsx:17": {
+      "file": "app/components/DeliveryAssessment.tsx",
+      "lineStart": 17,
+      "sha256": "eedd640ac26d5f325e1a6e058be29f8586fc63320ce1abd113419e7d10f29915",
+      "text": "\nexport type DeliveryAssessmentProps = {\n  report?: ProofAssessment;\n  criteria: ProofCriterion[];\n  scopeSteps?: ProofBusinessCheckStep[];\n  language: Language;\n  selectedCriterionId?: string;\n  enabled?: boolean;\n  busy?: boolean;\n  configured?: boolean;\n  onRun?: () => void;\n  onPrepareFeedback?: (input: { deliveryId: string; criterionId: string; comment: string } | RiskFeedbackDraft) => void;\n  readOnly?: boolean;\n  riskReviews?: ProofRiskReview[];\n  actorRole?: ProofRole;\n  onSaveRiskReview?: (value: RiskReviewInput) => Promise<boolean>;"
+    },
+    "app/components/DeliveryAssessment.tsx:93": {
+      "file": "app/components/DeliveryAssessment.tsx",
+      "lineStart": 93,
+      "sha256": "eedd640ac26d5f325e1a6e058be29f8586fc63320ce1abd113419e7d10f29915",
+      "text": "  function renderItem(item: ProofAssessment[\"items\"][number], selected = false) {\n    const sourcePublication = item.publicationBasis?.schema === \"source-publication-v1\" ? item.publicationBasis : undefined;\n    const sourceFinding=item.sourceFinding;\n    const criterion = criteria.find(criterion => criterion.id === item.criterionId);\n    const policy=report?.requirementCompletenessPolicy;\n    const completeness=criterion&&policy?.schema===\"requirement-completeness-v1\"&&policy.version===\"bounded-original-zh-v1\"\n      ?createRequirementCompletenessCheck({businessSteps:scopeSteps,version:policy.version})(criterion):undefined;\n    const incompleteSourceSupport=sourceFinding?.status===\"supported\"&&completeness?.kind===\"incomplete\";\n    const actionableSource=!incompleteSourceSupport&&sourceFinding&&(sourceFinding.basis===\"locked_business_values\"||sourceFinding.scopeBinding)?sourceFinding:undefined;\n    const feedbackItem=actionableSource?{...item,status:actionableSource.status,explanation:actionableSource.explanation,citations:actionableSource.citations,evidenceNeed:undefined}:item;\n    const canPrepareFeedback = !readOnly && !!onPrepareFeedback && feedbackItem.status !== \"supported\";\n    const insufficient = item.status === \"insufficient_evidence\";\n    const lockedSource = assessmentCriterionSource(criterion, item.criterionId);\n    const draft = canPrepareFeedback ? buildAssessmentFeedbackDraft(criterion, feedbackItem, language, scopeSteps, actionableSource?{basis:\"independent_source\",confirmedScope:!!actionableSource.scopeBinding}:undefined) : undefined;\n    const evidenceNeed = insufficient ? assessmentEvidenceNeedPresentation(item.evidenceNeed, language) : undefined;\n    const publishedDetails=<>\n      <p className=\"assessment-explanation\">{item.explanation}</p>\n      {evidenceNeed && <section className=\"assessment-evidence-need\" aria-label={tr(\"补证方向\", \"Evidence needed\")}>\n        <strong>{evidenceNeed.reason}</strong><p>{evidenceNeed.nextStep}</p>\n        {evidenceNeed.targetFiles.length > 0 && <details className=\"assessment-evidence-need-files\"><summary>{tr(`相关源码文件（${evidenceNeed.targetFiles.length}）`, `Related source files (${evidenceNeed.targetFiles.length})`)}</summary>\n          <ul>{evidenceNeed.targetFiles.map(file => <li key={file}><code>{file}</code></li>)}</ul>\n        </details>}\n        {!evidenceNeed.legacy && !evidenceNeed.targetFiles.length && <p>{tr(\"尚未定位具体文件，请先按锁定要求确认范围。\", \"No exact target file was recorded; confirm the scope against the locked requirement.\")}</p>}\n      </section>}\n      <Citations citations={item.citations} language={language} />"
+    },
+    "app/components/ScopeClarificationPanel.tsx:9": {
+      "file": "app/components/ScopeClarificationPanel.tsx",
+      "lineStart": 9,
+      "sha256": "f5e3584d77087035f5b68929895b8bef6fa16cff90455ee6cb38a2744a104479",
+      "text": "\nexport type RequirementNextStepProps = {\n  criterion: ProofCriterion;\n  item?: ProofAssessmentItem;\n  evidence?: readonly ProofEvidence[];\n  humanConfirmed?: boolean;\n  businessSteps?: readonly ProofBusinessCheckStep[];\n  requirementCompletenessPolicy?: ProofAssessment[\"requirementCompletenessPolicy\"];\n  language: Language;\n};\n\n/** A presentation of existing evidence, never a new verdict or acceptance gate. */\nexport function RequirementNextStep({criterion, item, evidence = [], humanConfirmed = false, businessSteps = [], requirementCompletenessPolicy, language}: RequirementNextStepProps) {\n  const tr = (zh: string, en: string) => language === \"zh\" ? zh : en;\n  const currentItem = item?.criterionId === criterion.id ? item : undefined;\n  const model = currentItem?.modelJudgment ?? currentItem;\n  const sourceFinding = currentItem?.sourceFinding;\n  const completeness=requirementCompletenessPolicy?.schema===\"requirement-completeness-v1\"&&requirementCompletenessPolicy.version===\"bounded-original-zh-v1\"\n    ?createRequirementCompletenessCheck({businessSteps,version:requirementCompletenessPolicy.version})(criterion):undefined;\n  const incompleteSourceSupport=sourceFinding?.status===\"supported\"&&completeness?.kind===\"incomplete\";\n  const currentEvidence = evidence.filter(row => row.criterionId === criterion.id);"
+    },
+    "app/components/ScopeClarificationPanel.tsx:49": {
+      "file": "app/components/ScopeClarificationPanel.tsx",
+      "lineStart": 49,
+      "sha256": "f5e3584d77087035f5b68929895b8bef6fa16cff90455ee6cb38a2744a104479",
+      "text": "    materials = `${humanConfirmed ? `${recordedHumanStep} ` : \"\"}${requirementCompletenessExplanation(completeness, language)}`;\n  } else if (sourceFinding?.status === \"supported\" && (!need || need.reason === \"model_unresolved\" || need.reason === \"no_citations\")) {\n    materials = humanConfirmed ? recordedHumanStep : tr(\"已检查的源码条件有支持。买家核对完整要求；未观察的外观或运行能力分别核对，源码事实本身不替代人工判断或整版验收。\", \"The checked source conditions have support. The buyer reviews the complete requirement. Unobserved appearance or execution needs separate review; source facts do not replace human judgment or delivery acceptance.\");\n  } else if (currentItem?.status === \"changes_suggested\" && !sourceFinding) {\n    materials = tr(\"先核对 AI 引文和锁定要求；确认差异属于本项后，再请卖家修改。AI 建议本身不证明交付不符。\", \"Compare the AI citations with the locked requirement first. Ask the seller for changes only after checking that the difference belongs to this requirement. An AI suggestion alone does not establish a mismatch.\");\n  } else if (currentItem?.status === \"insufficient_evidence\") {\n    const reason = need?.reason;\n    if (reason === \"page_scope\" || reason === \"requirement_clarification\") {\n      actor = tr(\"买卖双方\", \"Buyer and seller\");\n      materials = tr(\"先确认本项对应哪个页面，以及是否限定同一表单；双方明确确认后，再回到本项重新检查。证据不足不等于没有做到。\", \"First agree which page this requirement applies to and whether it concerns one form. After both parties explicitly confirm that scope, return to this requirement and check again. Insufficient evidence does not mean the work failed.\");\n    } else if (reason === \"manual_interpretation\") {\n      materials = tr(\"对照完整要求和交付文字核对含义；还不能仅凭未证实的表述差异要求卖家返工。\", \"Compare the complete requirement with the delivered wording. An unestablished wording difference alone is not a repair demand.\");\n    } else if (reason === \"record_readback\") {\n      actor = tr(\"卖家补证，买家核对\", \"Seller provides evidence; buyer reviews\");\n      materials = tr(\"卖家补充实际提交，以及重新读取后仍能找到对应记录的证据；买家核对两者是否为同一次测试。页面源码或成功提示不能证明已保存。\", \"The seller provides evidence of an actual submission and a fresh read that still finds its matching record. The buyer checks that both refer to the same test. Page source or a success message does not prove storage.\");\n    } else if (reason && reason !== \"model_unresolved\") {\n      actor = tr(\"卖家补证，买家核对\", \"Seller provides evidence; buyer reviews\");\n      materials = assessmentEvidenceNeedPresentation(need, language).nextStep;\n    } else {\n      actor = tr(\"买卖双方\", \"Buyer and seller\");\n      materials = tr(\"对照本项要求检查现有材料，决定由卖家补充哪些源码或运行证据，再由买家核对。尚未建立结论，不推断交付失败。\", \"Review the available material against this requirement, agree what source or execution evidence the seller should add, then have the buyer review it. No conclusion is established; delivery failure is not inferred.\");\n    }\n  } else if (humanConfirmed) {"
+    },
+    "app/components/LayoutCheckPanel.tsx:41": {
+      "file": "app/components/LayoutCheckPanel.tsx",
+      "lineStart": 41,
+      "sha256": "895a3d4feb3fe6d93bd2ca6dcda15938ad82fabb05ab9ab12b6ae26e6ee77e04",
+      "text": "export function LayoutCheckPanel({ language, report, enabled, busy, progress, onRun, onCancel, onInspect }: LayoutCheckPanelProps) {\n  const zh = language === \"zh\";\n  const tr = (chinese: string, english: string) => zh ? chinese : english;\n  const detailsRef = useRef<HTMLDetailsElement>(null);\n  // Keep later renders from changing the reader's native disclosure choice.\n  const initiallyExpanded = useRef(!report);\n  const headingId = useId();\n  const sourceId = useId();\n  const limitsId = useId();\n  const total = Math.max(1, progress?.total ?? 1);\n  const done = Math.min(total, Math.max(0, progress?.done ?? 0));\n\n  useEffect(() => {\n    if (busy && detailsRef.current) detailsRef.current.open = true;\n  }, [busy]);\n\n  return <details className=\"layout-check-panel\" ref={detailsRef} open={initiallyExpanded.current} data-has-report={report ? \"true\" : \"false\"}>\n    <summary className=\"layout-check-heading\" id={headingId}>\n      <span className=\"layout-check-title\"><ScanLine size={16} aria-hidden=\"true\" />{tr(\"浏览器布局检查\", \"Browser layout check\")}</span>\n      <span className=\"layout-check-summary\">\n        {busy ? <span>{tr(\"测量中\", \"Measuring\")}</span> : report ? <>\n          {report.summary.overflow > 0 && <span className=\"layout-check-count-overflow\">{tr(`${report.summary.overflow} 处溢出`, `${report.summary.overflow} overflow reading${report.summary.overflow === 1 ? \"\" : \"s\"}`)}</span>}\n          {report.summary.unavailable > 0 && <span className=\"layout-check-count-unavailable\">{tr(`${report.summary.unavailable} 项不可测`, `${report.summary.unavailable} unavailable`)}</span>}\n          {report.summary.measured > 0 && report.summary.overflow === 0 && <span>{report.summary.unavailable > 0\n            ? tr(\"已测项未发现横向溢出；仍有未覆盖项\", \"No horizontal overflow found in measured items; some items remain uncovered\")\n            : tr(\"未发现文档横向溢出（不代表手机可用）\", \"No document overflow found (does not establish mobile usability)\")}</span>}\n          {report.summary.measured === 0 && report.summary.unavailable === 0 && <span>{tr(\"尚无测量读数\", \"No measurement readings\")}</span>}\n        </> : <span>{tr(\"尚未测量\", \"Not measured yet\")}</span>}\n      </span>\n      <ChevronDown className=\"layout-check-chevron\" size={15} aria-hidden=\"true\" />\n    </summary>\n\n    <div className=\"layout-check-body\" aria-labelledby={headingId}>\n      <p className=\"layout-check-source\" id={sourceId}>{tr(\n        \"当前浏览器测量；已保存数据由客户端上报，非服务器独立验证。\",\n        \"Measured in the current browser. Saved data is reported by the client and has not been independently verified by the server.\",\n      )}</p>\n\n      <div className=\"layout-check-toolbar no-print\">\n        <button className=\"layout-check-run\" type=\"button\" onClick={onRun} disabled={!enabled || busy} aria-describedby={`${sourceId} ${limitsId}`}>\n          {busy ? <LoaderCircle className=\"layout-check-spinner\" size={14} aria-hidden=\"true\" /> : report ? <RotateCcw size={14} aria-hidden=\"true\" /> : <ScanLine size={14} aria-hidden=\"true\" />}\n          {busy ? tr(\"正在测量…\", \"Measuring…\") : report ? tr(\"重新测量全部页面\", \"Measure all pages again\") : tr(\"一键测量全部页面\", \"Measure all pages\")}\n        </button>\n        {busy && <button className=\"layout-check-cancel\" type=\"button\" onClick={onCancel}><Square size={12} aria-hidden=\"true\" />{tr(\"取消\", \"Cancel\")}</button>}\n        {!enabled && !busy && <span className=\"layout-check-disabled-note\">{tr(\"当前交付暂不能运行测量。\", \"Measurement is unavailable for this delivery right now.\")}</span>}\n      </div>"
+    },
+    "lib/layout-report.ts:47": {
+      "file": "lib/layout-report.ts",
+      "lineStart": 47,
+      "sha256": "9a9ee0d48ce62e3e7e73d69773dea31154ca904ef234f744e3590689fc385e5a",
+      "text": "    const canonical = name.toLowerCase();\n    if (actualNames.has(canonical) || [...actualNames].some(prior => prior.startsWith(`${canonical}/`) || canonical.startsWith(`${prior}/`))) throw new DomainError(\"Saved paths must not collide as files/directories or when letter case is ignored.\");\n    actualNames.add(canonical);\n    if (staticFileKind(name) === \"html\") names.add(name);\n  }\n  if (quote.proof.project) {\n    if (!Array.isArray(quote.proof.project.requiredPages)) throw new DomainError(\"Required layout pages must be a list.\");\n    for (const file of quote.proof.project.requiredPages) names.add(safeName(file, true));\n  } else {\n    // The fixed demo contract requires these pages, independently of its optional manifest.\n    for (const file of DEMO_PAGES) names.add(file);\n  }\n  if (!names.size || names.size * LAYOUT_WIDTHS.length > 60) {\n    throw new DomainError(\"Layout observations must cover between 1 and 30 HTML files.\");"
+    }
+  },
+  "changesNotRequested": [
+    "No new detector/API/schema/model-call family.",
+    "No source edits now, no CUA or production data changes by this agent.",
+    "No changed AI verdict, automatic human check, acceptance, payment or historical report rewrite."
+  ],
+  "awardBoundary": "This slice belongs to root ordered four-stage cycle and its official award table. Compare next-action clarity only; no competitor runtime/human-user claims or winning score."
+}

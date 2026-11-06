@@ -13,10 +13,12 @@ import {resolveCatalogCitations} from "../lib/assessment-citation-catalog.ts";
 import {canonicalAssessmentRisk} from "../lib/assessment-risk-fields.ts";
 import {recordRiskReview} from "../lib/risk-reviews.ts";
 import {isAssessmentObligations} from "../lib/assessment-obligations.ts";
-import {createAssessmentSourceFindingCheck} from "../lib/assessment-source-findings.ts";
+import {createAssessmentSourceFindingCheck,sourceFindingVersionForPublication} from "../lib/assessment-source-findings.ts";
+import {assessMenuPricePublicationAdmissionV2} from "../lib/menu-source-publication-v2.ts";
 import {resolveAssessmentScopeContext} from "../lib/scope-clarifications.ts";
 import {getBusinessCheckPlan} from "../lib/business-checks.ts";
 import {createSourcePublicationCheck} from "../lib/assessment-source-publication.ts";
+import {createRequirementCompletenessCheck} from "../lib/assessment-requirement-completeness.ts";
 import {prepareProjectEvaluation,projectQuote,validateProjectCorpus} from "./run-project-assessment-evaluation.ts";
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),"..");
@@ -107,35 +109,52 @@ export async function verifyAssessmentProvenanceMetadata(report,previous,packet,
   assert.ok(typeof wire.explanation==="string"&&wire.explanation.trim().length>0&&wire.explanation.length<=600);
   originals.set(wire.criterionId,{status:wire.status,explanation:wire.explanation,citations:resolveCatalogCitations(assessmentCitationSelection(wire.citations,ASSESSMENT_ITEM_CITATION_LIMIT,"catalog_slots"),packet.citationCatalog,ASSESSMENT_ITEM_CITATION_LIMIT)});
  }
- const accounting={schema:"retained-assessment-provenance-additions-v1",rawModelItemsVerified:0,sourceFindingsRecomputed:0,currentScopeStampVerified:false,baselineModelItemsRetained:0,baselineSourceFindingsRetained:0,baselineScopeStampRetained:false,publicationPoliciesVerified:0,publicationMarkersRecomputed:0,baselinePublicationPoliciesRetained:0,baselinePublicationMarkersRetained:0,publishedCoreFieldsUnchanged:true};
+ const accounting={schema:"retained-assessment-provenance-additions-v1",rawModelItemsVerified:0,sourceFindingsRecomputed:0,currentScopeStampVerified:false,baselineModelItemsRetained:0,baselineSourceFindingsRetained:0,baselineScopeStampRetained:false,publicationPoliciesVerified:0,publicationMarkersRecomputed:0,baselinePublicationPoliciesRetained:0,baselinePublicationMarkersRetained:0,requirementCompletenessPoliciesVerified:0,requirementCompletenessChecksRecomputed:0,baselineRequirementCompletenessPoliciesRetained:0,publishedCoreFieldsUnchanged:true};
  const normalize=async(value,current)=>{
   assert.deepEqual(value.items.map(i=>i.criterionId),packet.criteria.map(c=>c.id));
   if(current)assert.ok(Object.hasOwn(value,"scopeContext"),"Current catalog report lacks its exact scope-context stamp.");
   const scope=await resolveAssessmentScopeContext(quote,value);
-  const sourceCheck=createAssessmentSourceFindingCheck({files:packet.files,coverage:value.coverage,language:quote.language,businessSteps:getBusinessCheckPlan(quote),scope});
-  const publicationCheck=createSourcePublicationCheck({files:packet.files,coverage:value.coverage,language:quote.language,businessSteps:getBusinessCheckPlan(quote),scope,ruleEvidence:quote.proof.delivery.evidence});
+  const publicationSchema=value.publicationPolicy?.schema??"source-publication-v1",businessSteps=getBusinessCheckPlan(quote);
+  const sourceCheck=createAssessmentSourceFindingCheck({files:packet.files,coverage:value.coverage,language:quote.language,businessSteps,scope,version:sourceFindingVersionForPublication(publicationSchema)});
+  const publicationCheck=createSourcePublicationCheck({files:packet.files,coverage:value.coverage,language:quote.language,businessSteps,scope,ruleEvidence:quote.proof.delivery.evidence,requirementCompletenessVersion:value.requirementCompletenessPolicy?.version??"bounded-original-zh-v1",publicationSchema});
   const markedIds=packet.criteria.filter(c=>value.items.some(i=>i.criterionId===c.id&&Object.hasOwn(i,"publicationBasis"))).map(c=>c.id);
   if(current)assert.ok(Object.hasOwn(value,"publicationPolicy"),"Current catalog report lacks its explicit source-publication policy.");
   if(Object.hasOwn(value,"publicationPolicy")){
    assert.ok(object(value.publicationPolicy));assert.deepEqual(Object.keys(value.publicationPolicy).sort(),["reconciledCriterionIds","schema"]);
-   assert.equal(value.publicationPolicy.schema,"source-publication-v1");assert.deepEqual(value.publicationPolicy.reconciledCriterionIds,markedIds,"Publication policy must list exactly the marked criteria in agreed order.");
+   assert.ok(["source-publication-v1","source-publication-v2"].includes(value.publicationPolicy.schema));assert.deepEqual(value.publicationPolicy.reconciledCriterionIds,markedIds,"Publication policy must list exactly the marked criteria in agreed order.");
+   if(publicationSchema==="source-publication-v2")assert.ok(Object.hasOwn(value,"requirementCompletenessPolicy")&&value.items.every(item=>Object.hasOwn(item,"modelJudgment")),"Version2 must retain its whole-original policy and every original decoded model item.");
    if(current)accounting.publicationPoliciesVerified++;else accounting.baselinePublicationPoliciesRetained++;
   }else assert.deepEqual(markedIds,[],"An item marker without an explicit report policy cannot be stripped.");
+  if(current)assert.ok(Object.hasOwn(value,"requirementCompletenessPolicy"),"Current catalog report lacks its named whole-original publication policy.");
+  let completenessCheck;
+  if(Object.hasOwn(value,"requirementCompletenessPolicy")){
+   const policy=value.requirementCompletenessPolicy;
+   assert.ok(object(policy));assert.deepEqual(Object.keys(policy).sort(),["schema","version"]);
+   assert.equal(policy.schema,"requirement-completeness-v1");assert.ok(["bounded-original-zh-v1","bilingual-bounded-v2"].includes(policy.version));
+   completenessCheck=createRequirementCompletenessCheck({businessSteps:getBusinessCheckPlan(quote),version:policy.version});
+   if(current)accounting.requirementCompletenessPoliciesVerified++;else accounting.baselineRequirementCompletenessPoliciesRetained++;
+  }
   const copy=structuredClone(value);
   for(const[index,item]of value.items.entries()){
+   const expected=sourceCheck(packet.criteria[index]);
+   if(completenessCheck){
+    const result=completenessCheck(packet.criteria[index]);
+    assert.ok(item.status!=="supported"||result.kind!=="incomplete","A partial fact cannot hide an unverified part of the locked original requirement.");
+    if(current)accounting.requirementCompletenessChecksRecomputed++;
+   }
    if(current)assert.ok(Object.hasOwn(item,"modelJudgment"),"Current catalog item lacks its original decoded model judgment.");
    if(Object.hasOwn(item,"modelJudgment")){
     assert.ok(object(item.modelJudgment));assert.deepEqual(Object.keys(item.modelJudgment).sort(),["citations","explanation","status"]);
     assert.deepEqual(item.modelJudgment,originals.get(item.criterionId),"Retained modelJudgment differs from the exact original decoded provider item.");
-    const expected=sourceCheck(packet.criteria[index]);
     if(expected===undefined)assert.ok(!Object.hasOwn(item,"sourceFinding"),"An unsupported independent source field cannot be stripped.");
     else assert.deepEqual(item.sourceFinding,expected,"Independent sourceFinding differs from exact source/scope recomputation.");
     if(current){accounting.rawModelItemsVerified++;if(expected!==undefined)accounting.sourceFindingsRecomputed++;}
     else{accounting.baselineModelItemsRetained++;if(expected!==undefined)accounting.baselineSourceFindingsRetained++;}
    }else assert.ok(!Object.hasOwn(item,"sourceFinding"),"A sourceFinding without retained modelJudgment cannot be stripped.");
+   if(publicationSchema==="source-publication-v2"&&item.status==="supported"&&businessSteps.some(step=>step.criterionId===item.criterionId&&step.expected.kind==="item_price"))assert.ok(item.modelJudgment?.status==="supported"&&assessMenuPricePublicationAdmissionV2(packet.files,expected,item.modelJudgment.citations,value.coverage),"Every version2 affirmative price path needs complete exact owners and finite HTML/CSS admission.");
    if(Object.hasOwn(item,"publicationBasis")){
     assert.ok(object(item.publicationBasis)&&object(item.modelJudgment));assert.deepEqual(Object.keys(item.publicationBasis).sort(),["reason","schema"]);
-    assert.equal(item.publicationBasis.schema,"source-publication-v1");assert.ok(["locked_price_mismatch","confirmed_form_label_absence","locked_price_match"].includes(item.publicationBasis.reason));
+    assert.equal(item.publicationBasis.schema,publicationSchema);assert.ok(["source-publication-v1","source-publication-v2"].includes(item.publicationBasis.schema));assert.ok(["locked_price_mismatch","confirmed_form_label_absence","locked_price_match"].includes(item.publicationBasis.reason));
     const decision=publicationCheck(packet.criteria[index],{rawStatus:item.modelJudgment.status,rawCitations:item.modelJudgment.citations,guardedStatus:"insufficient_evidence",guardReason:item.publicationBasis.reason});
     assert.ok(decision,"The source publication marker has no rederived legacy guard and source authority.");assert.deepEqual(item.publicationBasis,decision.publicationBasis);assert.equal(item.status,decision.status);assert.equal(item.explanation,decision.explanation);assert.deepEqual(item.citations,decision.citations);assert.deepEqual(item.sourceFinding,decision.sourceFinding);assert.equal(item.evidenceNeed,undefined);
     if(current)accounting.publicationMarkersRecomputed++;else accounting.baselinePublicationMarkersRetained++;
@@ -144,6 +163,7 @@ export async function verifyAssessmentProvenanceMetadata(report,previous,packet,
   }
   if(Object.hasOwn(value,"scopeContext")){assert.ok(object(value.scopeContext));if(current)accounting.currentScopeStampVerified=true;else accounting.baselineScopeStampRetained=true;delete copy.scopeContext;}
   delete copy.publicationPolicy;
+  delete copy.requirementCompletenessPolicy;
   return copy;
  };
  return{report:await normalize(report,true),previous:await normalize(previous,false),accounting};

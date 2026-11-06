@@ -25,12 +25,20 @@ test("one deterministic result keeps rule failure above AI and model suggestions
 });
 
 test("marked source publications change attribution but not counts, inspection identity or rule priority",()=>{
- const value=input(),item=value.delivery.assessment!.items[0];item.status="changes_suggested";item.publicationBasis={schema:"source-publication-v1",reason:"locked_price_mismatch"};
+ for(const schema of["source-publication-v1","source-publication-v2"]as const){
+ const value=input(),item=value.delivery.assessment!.items[0];item.status="changes_suggested";item.publicationBasis={schema,reason:"locked_price_mismatch"};
  value.overview=deliveryOverview({delivery:value.delivery,criteria:value.overview.rows.map(row=>row.criterion),review:{deliveryId:"current",reviewedAt:"2026-11-06T00:00:00Z",mode:"demo",summary:"Synthetic"},manualChecks:[]});
  const before=structuredClone(value);assert.equal(deliveryResultFocus(value).reason,"ai_change");assert.equal(deliveryResultFocus(value).criterionId,"page");assert.match(deliveryResultFocus(value).title,/System source checks published/u);
  assert.match(deliveryResultStatus(value).find(row=>row.id==="ai")!.text,/Published findings \(including source checks\): 1 needing changes, 0 insufficient/u);assert.deepEqual(value,before);
  delete item.publicationBasis;assert.match(deliveryResultFocus(value).title,/AI suggests changes/u);assert.match(deliveryResultStatus(value).find(row=>row.id==="ai")!.text,/^AI: 1 change suggestions/u);assert.equal(value.overview.aiChanges,1);
- item.publicationBasis={schema:"source-publication-v1",reason:"locked_price_mismatch"};value.overview.rows[0].rule="fail";value.overview.ruleFailures=1;assert.equal(deliveryResultFocus(value).reason,"rule_failure");
+ item.publicationBasis={schema,reason:"locked_price_mismatch"};value.overview.rows[0].rule="fail";value.overview.ruleFailures=1;assert.equal(deliveryResultFocus(value).reason,"rule_failure");
+ }
+});
+
+test("an unknown future publication schema is not presented as system source authority",()=>{
+ const value=input(),item=value.delivery.assessment!.items[0];item.status="changes_suggested";item.publicationBasis={schema:"source-publication-future",reason:"locked_price_mismatch"}as never;
+ value.overview=deliveryOverview({delivery:value.delivery,criteria:value.overview.rows.map(row=>row.criterion),review:{deliveryId:"current",reviewedAt:"2026-11-06T00:00:00Z",mode:"demo",summary:"Synthetic"},manualChecks:[]});const before=structuredClone(value);
+ assert.match(deliveryResultFocus(value).title,/AI suggests changes/u);assert.match(deliveryResultStatus(value).find(row=>row.id==="ai")!.text,/^AI: 1 change suggestions/u);assert.deepEqual(value,before);
 });
 test("every independent attention layer resolves a matching key and inspect target",()=>{
   const cases:[string,string,(v:DeliveryResultInput)=>void][]=[
@@ -126,8 +134,8 @@ test("actual overview keeps one outer inspect button, all original diagnostics m
     // Missing layer callbacks never make the suggested inspection an inert button.
     value.delivery.evidence[0].finding="pass";const noCallback=renderToStaticMarkup(createElement(DeliveryOverview,{...props,onOpenLayout:undefined,language:"en"}));assert.equal((noCallback.slice(0,noCallback.indexOf('<details class="delivery-result-reports">')).match(/<button\b/gu)??[]).length,0);
     // Exercise the actual mixed-report component, preserving the unmarked row's origin.
-    for(const language of["zh","en"]as const){
-      const mixed=structuredClone(value.delivery),marked=mixed.assessment!.items[0];marked.status="changes_suggested";marked.publicationBasis={schema:"source-publication-v1",reason:"locked_price_mismatch"};
+    for(const schema of["source-publication-v1","source-publication-v2"]as const)for(const language of["zh","en"]as const){
+      const mixed=structuredClone(value.delivery),marked=mixed.assessment!.items[0];marked.status="changes_suggested";marked.publicationBasis={schema,reason:"locked_price_mismatch"};
       const other={id:"other",title:"Other requirement",source:"Check another original requirement."};mixed.assessment!.items.push({criterionId:"other",status:"insufficient_evidence",explanation:"Original unknown remains unknown.",citations:[],ruleEvidenceIds:[]});mixed.evidence.push({id:"other-e",criterionId:"other",finding:"pass",file:"index.html",excerpt:"Other source",explanation:"Rule evidence only"});
       const html=renderToStaticMarkup(createElement(DeliveryOverview,{...props,delivery:mixed,criteria:[...props.criteria,other],language}));
       assert.match(html,language==="zh"?/发布结论（含源码核验）：1 项需修改，1 项证据不足/u:/Published findings \(including source checks\): 1 needing changes, 1 insufficient/u);
@@ -135,6 +143,9 @@ test("actual overview keeps one outer inspect button, all original diagnostics m
       assert.match(html,language==="zh"?/AI 证据不足/u:/AI: insufficient evidence/u);
       delete marked.publicationBasis;const legacy=renderToStaticMarkup(createElement(DeliveryOverview,{...props,delivery:mixed,criteria:[...props.criteria,other],language}));
       assert.match(legacy,language==="zh"?/AI 建议修改/u:/AI change suggestions/u);assert.doesNotMatch(legacy,/Published findings \(including source checks\)|发布结论（含源码核验）/u);
+      const previous=structuredClone(mixed);previous.id="earlier";previous.sequence=1;previous.submittedAt="2026-11-05T00:00:00.000Z";previous.assessment!.deliveryId=previous.id;previous.assessment!.items[0].publicationBasis={schema,reason:"locked_price_mismatch"};const before=structuredClone(previous);
+      const historical=renderToStaticMarkup(createElement(DeliveryOverview,{...props,delivery:mixed,criteria:[...props.criteria,other],language,previousVersion:{delivery:previous,review:{...props.review,deliveryId:previous.id},feedback:[],archivedAt:"2026-11-05T00:01:00.000Z"}}));
+      assert.match(historical,language==="zh"?/发布结论需修改/u:/Published findings needing changes/u);assert.deepEqual(previous,before);
     }
   }finally{await rm(dir,{recursive:true,force:true});}
 });

@@ -4,8 +4,9 @@ import {readFile} from "node:fs/promises";
 import {createElement} from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 import ts from "typescript";
-import type {ProofAssessmentItem, ProofCriterion, ProofEvidence, ProofQuote} from "../lib/contracts.ts";
+import type {ProofAssessmentItem, ProofBusinessCheckStep, ProofCriterion, ProofEvidence, ProofQuote} from "../lib/contracts.ts";
 import type {ScopeContext, ScopeTargetCandidate} from "../lib/scope-clarifications.ts";
+import {ASSESSMENT_EVIDENCE_NEED_REASONS} from "../lib/assessment-evidence-needs.ts";
 
 const criterion: ProofCriterion = {id: "coverage-1", title: "Contact fields", source: "Contact source labels must include Name and Email."};
 const item = (status: ProofAssessmentItem["status"], reason?: NonNullable<ProofAssessmentItem["evidenceNeed"]>["reason"]): ProofAssessmentItem => ({criterionId: criterion.id, status, explanation: "Preserved report wording", citations: [], ruleEvidenceIds: [], ...(reason ? {evidenceNeed: {schema: "source-evidence-need-v1", reason, targetFiles: []}} : {})});
@@ -16,6 +17,7 @@ const components = (async () => {
   let js = ts.transpileModule(source, {compilerOptions: {module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022}}).outputText.replace('import "../scope-clarification.css";', "");
   for (const name of ["react", "react/jsx-runtime"]) js = js.replaceAll(JSON.stringify(name), JSON.stringify(import.meta.resolve(name)));
   js = js.replaceAll('"@/lib/assessment-evidence-needs"', JSON.stringify(new URL("../lib/assessment-evidence-needs.ts", import.meta.url).href));
+  js = js.replaceAll('"@/lib/assessment-requirement-completeness"', JSON.stringify(new URL("../lib/assessment-requirement-completeness.ts", import.meta.url).href));
   return import(`data:text/javascript;base64,${Buffer.from(js).toString("base64")}`);
 })();
 async function summary(input: Record<string, unknown> = {}, language: "zh" | "en" = "en") {
@@ -257,4 +259,49 @@ test("local editor identity resets across project, delivery, source, role and pr
   const key = (overrides: Record<string, unknown>) => ScopeClarificationPanel({...props, ...overrides}).key;
   const baseline = key({});
   for (const override of [{role: "seller"}, {quote: {...quote, id: "other-project"}}, {quote: {...quote, proof: {...quote.proof, delivery: {...quote.proof.delivery, id: "delivery-v3"}}}}, {criterion: {...criterion, source: "Another locked source"}}, {scopeContext: context("pending")}]) assert.notEqual(key(override), baseline);
+});
+
+const compoundPrice={...criterion,source:"菜单的牛肉面和Beef noodles标价必须为AUD18且营业时间必须为上午11点到晚上8点。"};
+const completenessPolicy={schema:"requirement-completeness-v1",version:"bounded-original-zh-v1"}as const;
+const businessSteps:ProofBusinessCheckStep[]=["牛肉面","Beef noodles"].map((label,index)=>({stepId:`step-${index}`,checkId:`price-${index}`,criterionId:compoundPrice.id,file:"menu.html",viewportWidth:375,source:{start:0,end:compoundPrice.source.length,excerpt:compoundPrice.source},expected:{kind:"item_price",label,currency:"AUD",amountMinor:1800}}));
+
+test("incomplete whole-original guidance is keyed to the policy and pure check, not the raw AI or saved evidence-needed reason",async()=>{
+ for(const reason of[undefined,"model_unresolved","no_citations","requirement_clarification"]as const)for(const status of["supported","changes_suggested","insufficient_evidence"]as const)for(const language of["zh","en"]as const){
+  const value=withSourceFinding("supported",false,"locked_business_values");value.modelJudgment!.status=status;value.evidenceNeed=reason?{schema:"source-evidence-need-v1",reason,targetFiles:[]}:undefined;
+  const before=structuredClone(value),html=await summary({criterion:compoundPrice,item:value,businessSteps,requirementCompletenessPolicy:completenessPolicy},language);
+  assert.match(html,language==="zh"?/已核业务值有支持，整条要求仍待核对/u:/Checked business values have support; the whole requirement still needs review/u);
+  assert.match(html,language==="zh"?/买卖双方/u:/Buyer and seller/u);assert.match(html,language==="zh"?/对照完整原文/u:/review the full wording/u);
+  assert.doesNotMatch(html,language==="zh"?/已证实：源码符合已检查条件|卖家补证，买家核对/u:/Established: source meets the checked conditions|Seller provides evidence; buyer reviews/u);assert.deepEqual(value,before);
+ }
+});
+
+test("incomplete guidance does not erase a recorded human check or supersede a real rule/source mismatch",async()=>{
+ const positive=withSourceFinding("supported",false,"locked_business_values"),input={criterion:compoundPrice,item:positive,businessSteps,requirementCompletenessPolicy:completenessPolicy};
+ const recorded=await summary({...input,humanConfirmed:true});assert.match(recorded,/The human check for this requirement is recorded|Buyer confirmed this requirement manually/u);assert.match(recorded,/whole requirement still needs review/u);
+ const rule=await summary({...input,evidence:[evidence("fail")]});assert.match(rule,/Mismatch: rule check found a difference|Seller supplies a revision; buyer reviews/u);assert.doesNotMatch(rule,/Both parties should review the full wording/u);
+ const negative=withSourceFinding("changes_suggested",false,"locked_business_values"),source=await summary({...input,item:negative});assert.match(source,/Established mismatch: source differs|Seller supplies a revision; buyer reviews/u);assert.doesNotMatch(source,/whole requirement still needs review/u);
+});
+
+test("whole-original presentation leaves unmarked legacy and complete price-only source facts under their original guidance",async()=>{
+ const value=withSourceFinding("supported",false,"locked_business_values");
+ for(const policy of[undefined,{schema:"requirement-completeness-v1",version:"future-v2"}]){const html=await summary({criterion:compoundPrice,item:value,businessSteps,requirementCompletenessPolicy:policy});assert.match(html,/Established: source meets the checked conditions/u);assert.doesNotMatch(html,/whole requirement still needs review/u);}
+ const complete={...compoundPrice,source:"菜单的牛肉面和Beef noodles标价必须为AUD18。"},html=await summary({criterion:complete,item:value,businessSteps,requirementCompletenessPolicy:completenessPolicy});assert.match(html,/Established: source meets the checked conditions/u);assert.doesNotMatch(html,/whole requirement still needs review/u);
+});
+
+test("incomplete untyped whole requirements without source facts always ask both parties to check every condition, not guess a page or form",async()=>{
+ const original={...criterion,source:"The page content must show the restaurant name and opening hours."};
+ for(const reason of[undefined,...ASSESSMENT_EVIDENCE_NEED_REASONS])for(const raw of["supported","changes_suggested","insufficient_evidence"]as const)for(const language of["zh","en"]as const){
+  const value={...item("insufficient_evidence",reason),modelJudgment:{status:raw,explanation:"Original raw wording retained.",citations:[]}},before=structuredClone(value);
+  const html=await summary({criterion:original,item:value,businessSteps:[],requirementCompletenessPolicy:completenessPolicy},language);
+  assert.match(html,language==="zh"?/整条要求仍待核对/u:/The whole requirement still needs review/u);assert.match(html,language==="zh"?/买卖双方/u:/Buyer and seller/u);assert.match(html,language==="zh"?/逐项明确检查方法与材料/u:/Agree how each condition will be checked/u);
+  assert.doesNotMatch(html,/已核业务值有支持|已核源码子条件有支持|已证实：源码符合|Checked business values have support|Checked source subconditions have support|Established: source meets|whether it concerns one form|先确认本项对应哪个页面/u);assert.deepEqual(value,before);
+ }
+});
+
+test("untyped incomplete guidance retains human and raw records, while actual negative evidence and old-policy guidance keep their existing priority",async()=>{
+ const original={...criterion,source:"The page content must show the restaurant name and opening hours."},value=item("insufficient_evidence","requirement_clarification"),input={criterion:original,item:value,businessSteps:[],requirementCompletenessPolicy:completenessPolicy};
+ const human=await summary({...input,humanConfirmed:true});assert.match(human,/The human check for this requirement is recorded/u);assert.match(human,/Agree how each condition will be checked/u);
+ const failed=await summary({...input,evidence:[evidence("fail")]});assert.match(failed,/Seller supplies a revision; buyer reviews/u);assert.doesNotMatch(failed,/Agree how each condition will be checked/u);
+ const negative=await summary({...input,item:withSourceFinding("changes_suggested")});assert.match(negative,/Seller supplies a revision; buyer reviews/u);assert.doesNotMatch(negative,/Agree how each condition will be checked/u);
+ const legacy=await summary({...input,requirementCompletenessPolicy:undefined});assert.match(legacy,/whether it concerns one form/u);assert.doesNotMatch(legacy,/The whole requirement still needs review/u);
 });

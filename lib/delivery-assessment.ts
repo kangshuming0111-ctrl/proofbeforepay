@@ -1,4 +1,6 @@
 import type { ProofAssessment, ProofAssessmentCitation, ProofAssessmentItem, ProofBusinessCheck, ProofEvidenceNeed, ProofQuote } from "./contracts.ts";
+import {assessMenuPricePublicationAdmissionV2} from "./menu-source-publication-v2.ts";
+import {createRequirementCompletenessCheck,requirementCompletenessExplanation} from "./assessment-requirement-completeness.ts";
 import { DomainError } from "./domain.ts";
 import { DEFAULT_DEEPSEEK_MODEL, ProviderError, requestJson, type Fetcher, type ProviderEnv } from "./providers.ts";
 import { validateStaticFiles } from "./static-project.ts";
@@ -27,7 +29,7 @@ import {publishSourceAssessmentNotes} from "./assessment-publication-policy.ts";
 import {makeAssessmentEvidenceNeed} from "./assessment-evidence-needs.ts";
 import {canonicalAssessmentRisk} from "./assessment-risk-fields.ts";
 import {createAssessmentCitationCatalog, resolveCatalogCitations} from "./assessment-citation-catalog.ts";
-import {createAssessmentSourceFindingCheck} from "./assessment-source-findings.ts";
+import {createAssessmentSourceFindingCheck,sourceFindingVersionForPublication} from "./assessment-source-findings.ts";
 import {createSourcePublicationCheck,type SourcePublicationGuardReason,type SourcePublicationDecision} from "./assessment-source-publication.ts";
 import {resolveScopeClarifications} from "./scope-clarifications.ts";
 export {AssessmentResponseError} from "./assessment-response.ts";
@@ -274,9 +276,11 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
     const exactCopyCheck = createExactCopyEvidenceCheck(sent);
     const presenceCheck = createSourcePresenceEvidenceCheck(sent);
     const businessEvidenceCheck = createSourceBusinessEvidenceCheck(sent, savedBusinessSteps);
+    const requirementCompletenessCheck = createRequirementCompletenessCheck({businessSteps: savedBusinessSteps, version: "bilingual-bounded-v2"});
+    const sourcePublicationSchema = "source-publication-v2" as const;
     const positiveLiteralCheck = createPositiveLiteralSourceWitnessCheck(sent, savedBusinessSteps);
-    const independentSourceCheck = createAssessmentSourceFindingCheck({files: sent, coverage, language: quote.language, businessSteps: savedBusinessSteps, scope: confirmedScope});
-    const sourcePublicationCheck = createSourcePublicationCheck({files: sent, coverage, language: quote.language, businessSteps: savedBusinessSteps, scope: confirmedScope, ruleEvidence: evidence});
+    const independentSourceCheck = createAssessmentSourceFindingCheck({files: sent, coverage, language: quote.language, businessSteps: savedBusinessSteps, scope: confirmedScope, version: sourceFindingVersionForPublication(sourcePublicationSchema)});
+    const sourcePublicationCheck = createSourcePublicationCheck({files: sent, coverage, language: quote.language, businessSteps: savedBusinessSteps, scope: confirmedScope, ruleEvidence: evidence, requirementCompletenessVersion: "bilingual-bounded-v2", publicationSchema: sourcePublicationSchema});
     const labelCitationCheck = createAssessmentLabelCitationCheck(sent);
     const labelSourceFactsCheck = createAssessmentLabelSourceFactsCheck(sent, coverage);
     const nativeCitationCheck = createNativeFormCitationCheck(sent);
@@ -540,6 +544,27 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
         status = "insufficient_evidence"; explanation = positiveFallback.explanation;
         checkedCitations = positiveFallback.citations; evidenceNeed = positiveFallback.evidenceNeed;
       }
+      // Final affirmative boundary: normal unchanged, literal and source
+      // publication paths all meet the same whole-original coverage rule.
+      // Subfact support is not a complete verdict on an untested obligation.
+      if (encoding === "catalog_slots" && status === "supported") {
+        const completeness = requirementCompletenessCheck(criterion);
+        if (completeness.kind === "incomplete") {
+          status = "insufficient_evidence";
+          explanation = requirementCompletenessExplanation(completeness, quote.language);
+          need("requirement_clarification");
+          sourcePublication = undefined;
+        }
+      }
+      if (encoding === "catalog_slots" && status === "supported" && savedBusinessSteps.some(step => step.criterionId === criterion.id && step.expected.kind === "item_price")
+        && !assessMenuPricePublicationAdmissionV2(sent, sourceFinding, modelJudgment.citations, coverage)) {
+        status = "insufficient_evidence";
+        explanation = words(quote,
+          "已核对的价格声明单独保留，但当前同页完整对象、原始引用或 HTML／CSS 尚未满足本次有限静态发布门槛。请核对相应完整来源或补实际浏览器观察；这不证明页面已隐藏、价格做错、运行成功或交付失败。",
+          "Price declarations remain separate, but complete same-page owners, original quotations or HTML/CSS do not meet this bounded static publication rule. Review the complete source or provide actual browser observations. This does not establish hiding, a wrong price, successful execution or delivery failure.");
+        need("source_ambiguity", sourceFinding?.files ?? savedBusinessSteps.filter(step => step.criterionId === criterion.id).map(step => step.file));
+        sourcePublication = undefined;
+      }
       return { criterionId: criterion.id, status, explanation, citations: checkedCitations, ruleEvidenceIds: related.map(entry => entry.id),
         ...(encoding === "catalog_slots" ? {obligations: deriveAssessmentObligations(criterion), modelJudgment, ...(sourceFinding ? {sourceFinding} : {}), ...(sourcePublication ? {publicationBasis: sourcePublication.publicationBasis} : {})} : {}),
         ...(encoding === "catalog_slots" && status === "insufficient_evidence" ? {evidenceNeed: evidenceNeed ?? makeAssessmentEvidenceNeed("model_unresolved", [], sent)} : {}) };
@@ -583,7 +608,7 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
     limitations.push(words(quote, "AI 建议与服务端规则分开记录。人工检查和最终验收由买家完成，不会自动验收、授权或付款。", "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."));
     if (Object.keys(files).some(file => !["html", "css"].includes(staticFileKind(file) ?? ""))) limitations.push(words(quote, "文件清单中的图片已经交付，但像素未送交 AI 分析；从文本分析范围省略不等于图片文件缺失或显示失败。", "Raster files in the inventory were delivered, but their pixels were not sent to AI. Omission from text-source coverage does not mean an image file is missing or failed to display."));
     const tokenUsage = usage(response.data.usage, outputTokenLimit, promptTokenUpperEstimate);
-    return { id: crypto.randomUUID(), deliveryId: delivery.id, method: "source-ai-v1", mode: "live", model, assessedAt: new Date().toISOString(), items, risks: publication.risks, limitations, coverage, ...(encoding === "catalog_slots" ? {publicationPolicy: {schema: "source-publication-v1", reconciledCriterionIds: items.filter(item => item.publicationBasis).map(item => item.criterionId)}} : {}), ...(confirmedScope ? {scopeContext: {digest: confirmedScope.contextDigest, ...confirmedScope.stamp}} : {}), ...(publication.withheldRisks ? {withheldRisks: publication.withheldRisks} : {}), ...(tokenUsage ? { usage: tokenUsage } : {}) };
+    return { id: crypto.randomUUID(), deliveryId: delivery.id, method: "source-ai-v1", mode: "live", model, assessedAt: new Date().toISOString(), items, risks: publication.risks, limitations, coverage, ...(encoding === "catalog_slots" ? {publicationPolicy: {schema: sourcePublicationSchema, reconciledCriterionIds: items.filter(item => item.publicationBasis).map(item => item.criterionId)}, requirementCompletenessPolicy: {schema: "requirement-completeness-v1", version: "bilingual-bounded-v2"}} : {}), ...(confirmedScope ? {scopeContext: {digest: confirmedScope.contextDigest, ...confirmedScope.stamp}} : {}), ...(publication.withheldRisks ? {withheldRisks: publication.withheldRisks} : {}), ...(tokenUsage ? { usage: tokenUsage } : {}) };
   } catch (error) {
     if (error instanceof AssessmentResponseError) throw error;
     throw failure();

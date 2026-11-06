@@ -4,6 +4,7 @@ import {validateSavedEnquiryEvidence,validateEnquiryReportDecision,projectEnquir
 import {ASSESSMENT_ITEM_CITATION_LIMIT, ASSESSMENT_RISK_CITATION_LIMIT} from "./assessment-limits.ts";
 import {ASSESSMENT_EVIDENCE_NEED_REASONS} from "./assessment-evidence-needs.ts";
 import {isAssessmentObligations} from "./assessment-obligations.ts";
+import {createRequirementCompletenessCheck} from "./assessment-requirement-completeness.ts";
 import {finiteContactPresenceScopeCriterionIds,observationOnlyCustomScopeCriterionIds,type ObservationScopeContext} from "./assessment-publication-policy.ts";
 import {staticFileKind} from "./static-resources.ts";
 import type {Language, ProofAssessment, ProofAssessmentItem, ProofCriterion, ProofDelivery, ProofEvidence, ProofQuote, ProofFeedback, StaticProjectSpec} from "./contracts.ts";
@@ -22,7 +23,8 @@ import {browserReportsFor, businessReportsFor, layoutReportsFor} from "./accepta
 import {validateSavedCoverage} from "./requirement-coverage.ts";
 import {createBrowserCheckReport} from "./browser-check-report.ts";
 import {createBusinessCheckReport,getBusinessCheckPlan} from "./business-checks.ts";
-import {createAssessmentSourceFindingCheck} from "./assessment-source-findings.ts";
+import {createAssessmentSourceFindingCheck,sourceFindingVersionForPublication} from "./assessment-source-findings.ts";
+import {assessMenuPricePublicationAdmissionV2} from "./menu-source-publication-v2.ts";
 import {createLayoutReport} from "./layout-report.ts";
 import {assertModelAcceptanceReference,modelReportsFor} from "./model-check-actions.ts";
 import {MODEL_SPEC_DIGEST,modelCheckReportFromTrace,validateStoredModelCheckReport} from "./model-checks.ts";
@@ -182,7 +184,7 @@ function sourceReference(value:unknown,source:string):void{
   requireValue(Number.isSafeInteger(row.start)&&Number.isSafeInteger(row.end)&&(row.start as number)>=0&&(row.end as number)>(row.start as number)&&(row.end as number)<=source.length&&typeof row.excerpt==="string"&&row.excerpt===source.slice(row.start as number,row.end as number),"A source reference does not match its exact UTF-16 span.");
 }
 function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[],observationContext?:ObservationScopeContext):void{
-  const row=object(value,["id","deliveryId","method","mode","model","assessedAt","items","risks","limitations","coverage","usage","withheldRisks","scopeContext","publicationPolicy"],"AI assessment");
+  const row=object(value,["id","deliveryId","method","mode","model","assessedAt","items","risks","limitations","coverage","usage","withheldRisks","scopeContext","publicationPolicy","requirementCompletenessPolicy"],"AI assessment");
   text(row.id,100);text(row.model,200);requireValue(row.deliveryId===delivery.id&&row.method==="source-ai-v1"&&row.mode==="live"&&typeof row.assessedAt==="string"&&Number.isFinite(Date.parse(row.assessedAt)),"AI assessment binding is invalid.");
   const cite=(value:unknown,limit:number)=>array(value,limit,"AI citations").forEach(entry=>{
     const citation=object(entry,["file","start","end","excerpt"],"AI citation"),file=text(citation.file,200);
@@ -201,7 +203,7 @@ function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]
     if(result.sourceFinding!==undefined){
       requireValue(result.modelJudgment!==undefined,"A new independent source finding must retain the separate decoded model item.");
       const source=object(result.sourceFinding,["version","status","basis","explanation","citations","files","scopeBinding"],"Independent source finding");
-      requireValue(source.version==="source-finding-v1"&&["supported","changes_suggested","insufficient_evidence"].includes(source.status as string)&&["declared_html_labels","locked_business_values"].includes(source.basis as string),"The independent source finding schema is invalid.");
+      requireValue(source.version===((row.publicationPolicy as ProofAssessment["publicationPolicy"])?.schema==="source-publication-v2"?"source-finding-v2":"source-finding-v1")&&["supported","changes_suggested","insufficient_evidence"].includes(source.status as string)&&["declared_html_labels","locked_business_values"].includes(source.basis as string),"The independent source finding schema must match its saved report policy.");
       text(source.explanation,3000);cite(source.citations,8);
       const files=array(source.files,40,"Independent checked files");
       requireValue(new Set(files).size===files.length,"Independent source files must be unique.");
@@ -214,7 +216,7 @@ function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]
     }
     if(result.publicationBasis!==undefined){
       const basis=object(result.publicationBasis,["schema","reason"],"Source publication basis");
-      requireValue(basis.schema==="source-publication-v1"&&["locked_price_mismatch","confirmed_form_label_absence","locked_price_match"].includes(basis.reason as string),"The source publication reason is unsupported.");
+      requireValue(["source-publication-v1","source-publication-v2"].includes(basis.schema as string)&&basis.schema===(row.publicationPolicy as ProofAssessment["publicationPolicy"])?.schema&&["locked_price_mismatch","confirmed_form_label_absence","locked_price_match"].includes(basis.reason as string),"The source publication reason or saved report schema is unsupported.");
       const expectedStatus=basis.reason==="locked_price_match"?"supported":"changes_suggested";
       requireValue(result.status===expectedStatus&&(result.modelJudgment as ProofAssessmentItem["modelJudgment"])?.status===expectedStatus&&(result.sourceFinding as ProofAssessmentItem["sourceFinding"])?.status===expectedStatus,"Source reconciliation must preserve the matching raw status and separate exact source fact.");
     }
@@ -233,8 +235,14 @@ function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]
   const markedIds=agreed.filter(c=>items.some(item=>(item as ProofAssessmentItem).criterionId===c.id&&(item as ProofAssessmentItem).publicationBasis!==undefined)).map(c=>c.id);
   if(row.publicationPolicy!==undefined){
     const policy=object(row.publicationPolicy,["schema","reconciledCriterionIds"],"Source publication policy"),ids=array(policy.reconciledCriterionIds,33,"Reconciled criteria");
-    requireValue(policy.schema==="source-publication-v1"&&same(ids,markedIds),"The publication policy must list exactly the marked criteria in agreed order.");
+    requireValue(["source-publication-v1","source-publication-v2"].includes(policy.schema as string)&&same(ids,markedIds),"The publication policy must list exactly the marked criteria in agreed order.");
+    if(policy.schema==="source-publication-v2")requireValue(row.requirementCompletenessPolicy!==undefined&&items.every(item=>(item as ProofAssessmentItem).modelJudgment!==undefined),"A version2 source policy must retain its whole-original policy and every original decoded model item.");
   }else requireValue(markedIds.length===0,"A source publication basis requires its explicit report policy.");
+  if(row.requirementCompletenessPolicy!==undefined){
+    const policy=object(row.requirementCompletenessPolicy,["schema","version"],"Whole-original publication policy");
+    requireValue(policy.schema==="requirement-completeness-v1"&&["bounded-original-zh-v1","bilingual-bounded-v2"].includes(policy.version as string),"Unsupported whole-original publication policy.");
+    requireValue(items.every(item=>(item as ProofAssessmentItem).modelJudgment!==undefined),"A current whole-original policy must retain every original decoded model item.");
+  }
   const validateRisk=(value:unknown,strict:boolean)=>{
     const risk=object(value,["title","explanation","suggestion","citations"],"AI risk");
     text(risk.title,strict?120:500);text(risk.explanation,strict?600:3000);text(risk.suggestion,strict?400:3000);
@@ -354,13 +362,19 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
     immutableIds([...(bundle.delivery.riskReviews??[]),...(bundle.delivery.acceptanceEvidence??[]).flatMap(snapshot=>snapshot.riskReviews??[])]);
     for(const report of reports){const reportScope=await resolveAssessmentScopeContext(scopeQuote,report,mode);
       assessment(report,bundle.delivery,bundle.project.criteria,{hasBusinessChecks:bundle.project.spec?.businessChecks!==undefined&&(!Array.isArray(bundle.project.spec.businessChecks)||bundle.project.spec.businessChecks.length>0)});
+      if(report.requirementCompletenessPolicy){
+        const checkWholeOriginal=createRequirementCompletenessCheck({businessSteps:getBusinessCheckPlan(scopeQuote),version:report.requirementCompletenessPolicy.version});
+        for(const item of report.items)requireValue(item.status!=="supported"||checkWholeOriginal(bundle.project.criteria.find(c=>c.id===item.criterionId)!).kind!=="incomplete","A partial price/source fact cannot establish support for the complete locked original requirement.");
+      }
       // New source facts are recomputed from current exported bytes and the
       // report's immutable historical scope prefix, never from model prose.
-      const checkSource=createAssessmentSourceFindingCheck({files:Object.fromEntries(Object.entries(bundle.delivery.files!).filter(([file])=>["html","css"].includes(staticFileKind(file)??""))),coverage:report.coverage,language:bundle.project.language,businessSteps:getBusinessCheckPlan(scopeQuote),scope:reportScope});
-      const checkPublication=createSourcePublicationCheck({files:Object.fromEntries(Object.entries(bundle.delivery.files!).filter(([file])=>["html","css"].includes(staticFileKind(file)??""))),coverage:report.coverage,language:bundle.project.language,businessSteps:getBusinessCheckPlan(scopeQuote),scope:reportScope,ruleEvidence:bundle.delivery.evidence});
-      for(const item of report.items)if(item.modelJudgment!==undefined||item.sourceFinding!==undefined){
+      const sourceFiles=Object.fromEntries(Object.entries(bundle.delivery.files!).filter(([file])=>["html","css"].includes(staticFileKind(file)??""))),businessSteps=getBusinessCheckPlan(scopeQuote),publicationSchema=report.publicationPolicy?.schema??"source-publication-v1";
+      const checkSource=createAssessmentSourceFindingCheck({files:sourceFiles,coverage:report.coverage,language:bundle.project.language,businessSteps,scope:reportScope,version:sourceFindingVersionForPublication(publicationSchema)});
+      const checkPublication=createSourcePublicationCheck({files:sourceFiles,coverage:report.coverage,language:bundle.project.language,businessSteps,scope:reportScope,ruleEvidence:bundle.delivery.evidence,requirementCompletenessVersion:report.requirementCompletenessPolicy?.version??"bounded-original-zh-v1",publicationSchema});
+      for(const item of report.items)if(publicationSchema==="source-publication-v2"||item.modelJudgment!==undefined||item.sourceFinding!==undefined){
         const expected=checkSource(bundle.project.criteria.find(c=>c.id===item.criterionId)!);
         requireValue(same(item.sourceFinding??null,expected??null),"The independent source finding differs from exact source/scope replay.");
+        if(publicationSchema==="source-publication-v2"&&item.status==="supported"&&businessSteps.some(step=>step.criterionId===item.criterionId&&step.expected.kind==="item_price"))requireValue(item.modelJudgment?.status==="supported"&&assessMenuPricePublicationAdmissionV2(sourceFiles,expected,item.modelJudgment.citations,report.coverage),"Every version2 affirmative price path needs complete source ownership, original citations and finite HTML/CSS eligibility.");
         const adjustment=report.withheldRisks?.adjustedCriteria.find(row=>row.criterionId===item.criterionId);
         if(adjustment)requireValue(adjustment.originalStatus===item.modelJudgment?.status,"The retained original AI status conflicts with its adjustment ledger.");
         if(item.publicationBasis!==undefined){

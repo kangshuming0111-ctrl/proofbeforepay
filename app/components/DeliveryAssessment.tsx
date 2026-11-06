@@ -11,8 +11,9 @@ import { AssessmentValidationPanel } from "./AssessmentValidationPanel";
 import { assessmentCriterionSource, buildAssessmentFeedbackDraft } from "./assessment-feedback";
 import type { RiskReviewInput } from "@/lib/risk-reviews";
 import { assessmentCoverageGroups, assessmentReviewSummary, assessmentRiskPresentation } from "@/lib/assessment-display";
-import {assessmentEvidenceNeedPresentation} from "@/lib/assessment-evidence-needs";
+import {assessmentEvidenceNeedPresentation, isAssessmentEvidenceNeed} from "@/lib/assessment-evidence-needs";
 import {AssessmentObligations} from "./AssessmentObligations";
+import {createRequirementCompletenessCheck, requirementCompletenessExplanation} from "@/lib/assessment-requirement-completeness";
 
 export type DeliveryAssessmentProps = {
   report?: ProofAssessment;
@@ -29,6 +30,7 @@ export type DeliveryAssessmentProps = {
   riskReviews?: ProofRiskReview[];
   actorRole?: ProofRole;
   onSaveRiskReview?: (value: RiskReviewInput) => Promise<boolean>;
+  mobileObservation?: {requiredPages: readonly string[]; onOpen?: () => void; disabled?: boolean};
 };
 
 function displayTime(value: string) {
@@ -48,7 +50,7 @@ function Citations({ citations, language }: { citations: ProofAssessmentCitation
   </details>;
 }
 
-export function DeliveryAssessment({ report, criteria, scopeSteps = [], language, selectedCriterionId, enabled = false, busy = false, configured = false, onRun, onPrepareFeedback, readOnly = false, riskReviews, actorRole, onSaveRiskReview }: DeliveryAssessmentProps) {
+export function DeliveryAssessment({ report, criteria, scopeSteps = [], language, selectedCriterionId, enabled = false, busy = false, configured = false, onRun, onPrepareFeedback, readOnly = false, riskReviews, actorRole, onSaveRiskReview, mobileObservation }: DeliveryAssessmentProps) {
   const zh = language === "zh";
   const tr = (chinese: string, english: string) => zh ? chinese : english;
   const id = useId();
@@ -61,7 +63,7 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
   const poolMarker = report?.withheldRisks as {version?:unknown;reason?:unknown}|undefined;
   const unboundNamespace = poolMarker?.version === 4 || poolMarker?.reason === "optional_source_leads_unverified";
   const publishedRiskCount = unboundNamespace ? 0 : report?.risks.length ?? 0;
-  const hasSourcePublication = !!report?.items.some(item => item.publicationBasis?.schema === "source-publication-v1");
+  const hasSourcePublication = !!report?.items.some(item => ["source-publication-v1", "source-publication-v2"].includes(item.publicationBasis?.schema ?? ""));
   const withheld = report?.withheldRisks && Array.isArray(report.withheldRisks.adjustedCriteria) && Array.isArray(report.withheldRisks.entries)
     && (report.withheldRisks.version === 1 && ["item_status_adjusted", "not_withheld"].includes(report.withheldRisks.reason)
     || (report.withheldRisks.version === 2 && report.withheldRisks.reason === "source_scope_unestablished" || report.withheldRisks.version === 3 && report.withheldRisks.reason === "custom_scope_requires_observation")
@@ -90,24 +92,36 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
   }, [busy]);
 
   function renderItem(item: ProofAssessment["items"][number], selected = false) {
-    const sourcePublication = item.publicationBasis?.schema === "source-publication-v1" ? item.publicationBasis : undefined;
+    const sourcePublication = ["source-publication-v1", "source-publication-v2"].includes(item.publicationBasis?.schema ?? "") ? item.publicationBasis : undefined;
     const sourceFinding=item.sourceFinding;
-    const actionableSource=sourceFinding&&(sourceFinding.basis==="locked_business_values"||sourceFinding.scopeBinding)?sourceFinding:undefined;
+    const criterion = criteria.find(criterion => criterion.id === item.criterionId);
+    const mobilePages=criterion?.id==="mobile"&&mobileObservation?.requiredPages.length&&mobileObservation.requiredPages.every(file=>typeof file==="string"&&file.length>0)?mobileObservation.requiredPages:undefined;
+    const mobileNeed=!!mobilePages&&isAssessmentEvidenceNeed(item.evidenceNeed)&&item.evidenceNeed.reason==="browser_observation";
+    const policy=report?.requirementCompletenessPolicy;
+    const completeness=criterion&&policy?.schema==="requirement-completeness-v1"&&(policy.version==="bounded-original-zh-v1"||policy.version==="bilingual-bounded-v2")
+      ?createRequirementCompletenessCheck({businessSteps:scopeSteps,version:policy.version})(criterion):undefined;
+    const incompleteSourceSupport=sourceFinding?.status==="supported"&&completeness?.kind==="incomplete";
+    const actionableSource=!incompleteSourceSupport&&sourceFinding&&(sourceFinding.basis==="locked_business_values"||sourceFinding.scopeBinding)?sourceFinding:undefined;
     const feedbackItem=actionableSource?{...item,status:actionableSource.status,explanation:actionableSource.explanation,citations:actionableSource.citations,evidenceNeed:undefined}:item;
     const canPrepareFeedback = !readOnly && !!onPrepareFeedback && feedbackItem.status !== "supported";
     const insufficient = item.status === "insufficient_evidence";
-    const criterion = criteria.find(criterion => criterion.id === item.criterionId);
+    const incompleteWholeRequirement=insufficient&&completeness?.kind==="incomplete"&&sourceFinding?.status!=="changes_suggested";
     const lockedSource = assessmentCriterionSource(criterion, item.criterionId);
     const draft = canPrepareFeedback ? buildAssessmentFeedbackDraft(criterion, feedbackItem, language, scopeSteps, actionableSource?{basis:"independent_source",confirmedScope:!!actionableSource.scopeBinding}:undefined) : undefined;
     const evidenceNeed = insufficient ? assessmentEvidenceNeedPresentation(item.evidenceNeed, language) : undefined;
     const publishedDetails=<>
       <p className="assessment-explanation">{item.explanation}</p>
       {evidenceNeed && <section className="assessment-evidence-need" aria-label={tr("补证方向", "Evidence needed")}>
-        <strong>{evidenceNeed.reason}</strong><p>{evidenceNeed.nextStep}</p>
+        <strong>{incompleteWholeRequirement?tr("整条要求仍待核对", "The whole requirement still needs review"):evidenceNeed.reason}</strong><p>{incompleteWholeRequirement&&completeness?requirementCompletenessExplanation(completeness,language):mobileNeed?tr("买家按下方已约定的全部页面逐页观察手机显示；缺页或无法观察时再请卖家补交。源码和宽度读数不能替代人工确认。", "The buyer inspects mobile presentation on every agreed page listed below. Ask the seller for missing or unobservable pages. Source and width readings do not replace human confirmation."):evidenceNeed.nextStep}</p>
+        {mobileNeed&&mobilePages&&<>
+          <p><strong>{tr("约定的全部页面：", "All agreed pages: ")}</strong>{mobilePages.map((file,index)=><span key={`${index}-${file}`}>{index>0?" · ":""}<code>{file}</code></span>)}</p>
+          {!readOnly&&mobileObservation?.onOpen&&<div className="assessment-feedback-action no-print"><button type="button" className="button primary" disabled={busy||!!mobileObservation.disabled} onClick={()=>{if(!busy&&!mobileObservation.disabled)mobileObservation.onOpen?.();}}>{tr("打开手机显示检查", "Open mobile checks")}</button><span>{tr("仅打开现有浏览器检查，不运行、确认、验收或付款。", "Opens existing checks only; does not run, confirm, accept or pay.")}</span></div>}
+          <p>{tr("先用测量按钮记录各页宽度，再点结果中的 375px 查看；也可在现有预览中逐页选择 375px。预览停用脚本和外部资源，实际交互仍需另行验证。", "Use the measurement button to record page widths, then inspect their 375px results, or choose each page at 375px in the existing preview. Scripts and external resources are disabled; working interactions need separate verification.")}</p>
+        </>}
         {evidenceNeed.targetFiles.length > 0 && <details className="assessment-evidence-need-files"><summary>{tr(`相关源码文件（${evidenceNeed.targetFiles.length}）`, `Related source files (${evidenceNeed.targetFiles.length})`)}</summary>
           <ul>{evidenceNeed.targetFiles.map(file => <li key={file}><code>{file}</code></li>)}</ul>
         </details>}
-        {!evidenceNeed.legacy && !evidenceNeed.targetFiles.length && <p>{tr("尚未定位具体文件，请先按锁定要求确认范围。", "No exact target file was recorded; confirm the scope against the locked requirement.")}</p>}
+        {!incompleteWholeRequirement && !mobileNeed && !evidenceNeed.legacy && !evidenceNeed.targetFiles.length && <p>{tr("尚未定位具体文件，请先按锁定要求确认范围。", "No exact target file was recorded; confirm the scope against the locked requirement.")}</p>}
       </section>}
       <Citations citations={item.citations} language={language} />
     </>;
@@ -119,7 +133,7 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
         <p>{tr("原样保留的验收要求；界面语言切换不会翻译或缩写这段原文。", "The agreed wording is preserved exactly. Changing interface language does not translate or shorten this source.")}</p>
         <blockquote>{lockedSource}</blockquote>
       </details> : <p className="assessment-source-unavailable">{tr("尚未取得此项的锁定原文，暂不能生成带要求的补证草稿。请重新载入当前交付后核对。", "This criterion’s locked wording is unavailable, so an evidence request cannot be prepared. Reload the current delivery and check again.")}</p>}
-      {sourceFinding&&<section className="assessment-source-finding" aria-label={tr("系统独立源码事实","Independent system source finding")}><strong>{tr("系统独立源码事实：","Independent source finding: ")}{sourceFinding.status==="supported"?tr("源码关系支持","Source relation supported"):sourceFinding.status==="changes_suggested"?tr("发现源码差异","Source difference found"):tr("仅凭源码仍不确定","Source remains inconclusive")}</strong><p>{sourceFinding.explanation}</p><Citations citations={sourceFinding.citations} language={language}/></section>}
+      {sourceFinding&&<section className="assessment-source-finding" aria-label={tr("系统独立源码事实","Independent system source finding")}><strong>{tr("系统独立源码事实：","Independent source finding: ")}{incompleteSourceSupport?sourceFinding.basis==="locked_business_values"?tr("已核业务值有支持，整条要求仍待核对","Checked business values have support; the whole requirement still needs review"):tr("已核源码子条件有支持，整条要求仍待核对","Checked source subconditions have support; the whole requirement still needs review"):sourceFinding.status==="supported"?tr("源码关系支持","Source relation supported"):sourceFinding.status==="changes_suggested"?tr("发现源码差异","Source difference found"):tr("仅凭源码仍不确定","Source remains inconclusive")}</strong><p>{sourceFinding.explanation}</p><Citations citations={sourceFinding.citations} language={language}/></section>}
       {sourceFinding ? <details className="assessment-published-record"><summary>{sourcePublication ? tr("查看本次发布说明（源码核验）", "Inspect this publication’s source-check explanation") : tr("查看发布层原说明（独立保留）","Inspect the published explanation (retained separately)")}</summary>
         {sourceFinding.scopeBinding && <p className="assessment-record-basis">{sourcePublication ? tr("本次发布采用上方双方确认的表单范围和源码事实。范围确认不等于运行成功、验收或付款。", "This publication uses the confirmed form scope and source facts above. Scope confirmation does not establish execution, acceptance or payment.") : tr("这份报告的页面／表单范围依据见上方双方确认的源码事实。下方保留发布层原说明，不会撤销双方的范围确认；请按上方结论与下一步处理。","This report’s page/form scope is recorded in the two-sided source finding above. The original published explanation below does not revoke that agreement. Follow the source finding and next action above.")}</p>}
         {publishedDetails}

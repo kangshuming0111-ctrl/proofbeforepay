@@ -1,0 +1,10 @@
+{
+  "schema": "fictional-static-menu-stage3-v1",
+  "kind": "Owned fictional source fixture copied without account/project metadata; no real merchant data",
+  "files": {
+    "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Fictional Melbourne noodle shop</title><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><link rel=\"stylesheet\" href=\"site.css\"></head><body><h1>Fictional Melbourne noodle shop</h1><nav><a href=\"menu.html\">Menu</a><a href=\"contact.html\">Contact</a></nav><p>A fictional source-verification test, no orders or payments.</p></body></html>",
+    "menu.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Fictional noodle menu</title><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><link rel=\"stylesheet\" href=\"site.css\"></head><body><h1>Menu</h1><nav><a href=\"index.html\">Home</a><a href=\"contact.html\">Contact</a></nav><p><strong>牛肉面</strong> <span>AUD28.00</span></p><div class=\"menu-item\"><h3>Beef noodles</h3><p class=\"price\">AUD 28</p></div></body></html>",
+    "contact.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Contact the fictional shop</title><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><link rel=\"stylesheet\" href=\"site.css\"></head><body><h1>Contact</h1><nav><a href=\"index.html\">Home</a><a href=\"menu.html\">Menu</a></nav><p>This fictional shop does not accept bookings.</p></body></html>",
+    "site.css": "body{font-family:system-ui;margin:1rem;max-width:60rem}nav{display:flex;gap:1rem;flex-wrap:wrap}.menu-item{border:1px solid #777;padding:1rem}"
+  }
+}

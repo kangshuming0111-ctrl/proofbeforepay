@@ -1,0 +1,215 @@
+{
+  "schema": "stage3-ui-publication-post-v1",
+  "state": "implemented explicit display compatibility only; mobile held",
+  "task": "New source-publication-v2 is already a declared domain/report schema from F1/F2. UI eight existing exact v1 predicates now admit exactly v1 OR v2, never arbitrary future schemas. Preserve original model/source/published data and unchanged history/gates/counts/targets. No parser/protocol/decoder changes in this slice.",
+  "reasons": [
+    "locked_price_mismatch",
+    "locked_price_match",
+    "confirmed_form_label_absence"
+  ],
+  "changes": [
+    "DeliveryAssessment current/header/badge provenance, source vs original publication/model disclosures.",
+    "DeliveryOverview current/previous comparison/row attribution.",
+    "deliveryResultFocus source vs AI title and published counter label; focus reason/key/criterion IDs unchanged.",
+    "overviewFeedbackDraft source attribution only; exact version1000UTF16 budget/rule priority unchanged."
+  ],
+  "tests": "Actual component SSR v1/v2×3reasons×2languages×readonlyfalse/true; complete source/model/published preservation/no writes; actual mixed overview/current and previous; pure focus/draft attribution/targets/counts/rule priority; unknown future schema remains non-authoritative.",
+  "sourceExcerpts": {
+    "app/components/DeliveryAssessment.tsx": {
+      "sha256": "f28df274021bc2c5614b17869ac05c0570b6e6e9d0b1939bb8f49082fa751f1e",
+      "lines": [
+        {
+          "line": 63,
+          "text": "  const unboundNamespace = poolMarker?.version === 4 || poolMarker?.reason === \"optional_source_leads_unverified\";"
+        },
+        {
+          "line": 64,
+          "text": "  const publishedRiskCount = unboundNamespace ? 0 : report?.risks.length ?? 0;"
+        },
+        {
+          "line": 65,
+          "text": "  const hasSourcePublication = !!report?.items.some(item => [\"source-publication-v1\", \"source-publication-v2\"].includes(item.publicationBasis?.schema ?? \"\"));"
+        },
+        {
+          "line": 66,
+          "text": "  const withheld = report?.withheldRisks && Array.isArray(report.withheldRisks.adjustedCriteria) && Array.isArray(report.withheldRisks.entries)"
+        },
+        {
+          "line": 67,
+          "text": "    && (report.withheldRisks.version === 1 && [\"item_status_adjusted\", \"not_withheld\"].includes(report.withheldRisks.reason)"
+        },
+        {
+          "line": 92,
+          "text": ""
+        },
+        {
+          "line": 93,
+          "text": "  function renderItem(item: ProofAssessment[\"items\"][number], selected = false) {"
+        },
+        {
+          "line": 94,
+          "text": "    const sourcePublication = [\"source-publication-v1\", \"source-publication-v2\"].includes(item.publicationBasis?.schema ?? \"\") ? item.publicationBasis : undefined;"
+        },
+        {
+          "line": 95,
+          "text": "    const sourceFinding=item.sourceFinding;"
+        },
+        {
+          "line": 96,
+          "text": "    const criterion = criteria.find(criterion => criterion.id === item.criterionId);"
+        }
+      ]
+    },
+    "app/components/DeliveryOverview.tsx": {
+      "sha256": "76db24c93ce099142e31093429ea068f6a230f4809e56222cfc82dfc2987e009",
+      "lines": [
+        {
+          "line": 48,
+          "text": "  const tr = (chinese: string, english: string) => zh ? chinese : english;"
+        },
+        {
+          "line": 49,
+          "text": "  const overview = deliveryOverview({ delivery, criteria, review, manualChecks, previousVersion });"
+        },
+        {
+          "line": 50,
+          "text": "  const hasSourcePublication = delivery.assessment?.deliveryId === delivery.id && delivery.assessment.items.some(item => [\"source-publication-v1\", \"source-publication-v2\"].includes(item.publicationBasis?.schema ?? \"\"));"
+        },
+        {
+          "line": 51,
+          "text": "  const comparedSourcePublication = hasSourcePublication || !!previousVersion?.delivery.assessment?.items.some(item => [\"source-publication-v1\", \"source-publication-v2\"].includes(item.publicationBasis?.schema ?? \"\"));"
+        },
+        {
+          "line": 52,
+          "text": "  const layout = deliveryLayoutSummary(delivery);"
+        },
+        {
+          "line": 53,
+          "text": "  const model=useModelDiagnosis(delivery,{projectId,acceptedSnapshotId,accepted:stage===\"accepted\"});"
+        },
+        {
+          "line": 72,
+          "text": "  const inspect=deliveryResultInspection(focus,{criterion:onInspect,model:onOpenModel,business:onOpenBusiness??onOpenLayout,journey:onOpenJourney,runtime:onOpenRuntime,enquiry:onOpenEnquiry,transfer:onOpenTransfer??openDetails,layout:onOpenLayout,details:openDetails});"
+        },
+        {
+          "line": 73,
+          "text": ""
+        },
+        {
+          "line": 74,
+          "text": "  const rowLabel = (row: (typeof overview.rows)[number]) => row.rule !== \"fail\" && row.ai?.status === \"changes_suggested\" && [\"source-publication-v1\", \"source-publication-v2\"].includes(row.ai.publicationBasis?.schema ?? \"\") ? tr(\"系统源码核验发布：不符\", \"System source-check publication: mismatch\") : overviewRowLabel(row, language);"
+        },
+        {
+          "line": 75,
+          "text": ""
+        },
+        {
+          "line": 76,
+          "text": "  const ruleComparison = overview.previous?.ruleFailures !== undefined && overview.ruleFailures !== undefined;"
+        }
+      ]
+    },
+    "lib/delivery-overview.ts": {
+      "sha256": "2dab5a55608b410be6bec044bb87956dac290c46517f9981a0d2959c3d363329",
+      "lines": [
+        {
+          "line": 111,
+          "text": "  const introduction = row.rule === \"fail\""
+        },
+        {
+          "line": 112,
+          "text": "    ? zh ? \"规则核查发现不符，请按已确认的要求修改：\\n\" : \"Rule checks found a mismatch. Please revise against the agreed requirement:\\n\""
+        },
+        {
+          "line": 113,
+          "text": "    : row.ai?.status === \"changes_suggested\" && [\"source-publication-v1\", \"source-publication-v2\"].includes(row.ai.publicationBasis?.schema ?? \"\")"
+        },
+        {
+          "line": 114,
+          "text": "      ? zh ? \"系统源码核验差异（待买家核对）：\\n\" : \"System source-check difference (for buyer review):\\n\""
+        },
+        {
+          "line": 115,
+          "text": "    : row.ai?.status === \"changes_suggested\""
+        }
+      ]
+    },
+    "lib/delivery-result-focus.ts": {
+      "sha256": "e6a63903a3e701a5671ca8a96ffe3c40a6783838810d59ae472f8bea1b9081f6",
+      "lines": [
+        {
+          "line": 84,
+          "text": "  if(supplemental)return focus(\"supplemental_attention\",\"details\",tr(\"补充证据仍有不符或未确定项\",\"Supplemental evidence has mismatches or unknowns\"),supplemental.text);"
+        },
+        {
+          "line": 85,
+          "text": "  const aiChange=overview.rows.find(row=>row.ai?.status===\"changes_suggested\");"
+        },
+        {
+          "line": 86,
+          "text": "  if(aiChange)return criterion(\"ai_change\",[\"source-publication-v1\", \"source-publication-v2\"].includes(aiChange.ai?.publicationBasis?.schema ?? \"\") ? tr(\"系统源码核验发布了差异，请核对\", \"System source checks published a difference to review\") : tr(\"AI 提出了修改建议，请核对\",\"AI suggests changes for you to review\"),aiChange);"
+        },
+        {
+          "line": 87,
+          "text": "  const human=overview.rows.find(row=>row.humanPending);"
+        },
+        {
+          "line": 88,
+          "text": "  if(human)return criterion(\"human_pending\",tr(\"还有要求需要你亲自确认\",\"Some requirements need your direct check\"),human);"
+        },
+        {
+          "line": 106,
+          "text": "  const add=(id:string,text:string,attention=false)=>rows.push({id,text,attention});"
+        },
+        {
+          "line": 107,
+          "text": "  add(\"rules\",overview.reviewCurrent?tr(`规则：${overview.ruleFailures} 项不符，${overview.unreviewed} 项未核查`,`Rules: ${overview.ruleFailures} mismatches, ${overview.unreviewed} unchecked requirements`):tr(`规则：本版尚未核查（${overview.unreviewed} 项）`,`Rules: this version not checked (${overview.unreviewed} requirements)`),!overview.reviewCurrent||!!overview.ruleFailures||!!overview.unreviewed);"
+        },
+        {
+          "line": 108,
+          "text": "  const sourcePublished = delivery.assessment?.deliveryId === delivery.id && delivery.assessment.items.some(item => [\"source-publication-v1\", \"source-publication-v2\"].includes(item.publicationBasis?.schema ?? \"\"));"
+        },
+        {
+          "line": 109,
+          "text": "  add(\"ai\",overview.assessmentCurrent?sourcePublished?tr(`发布结论（含源码核验）：${overview.aiChanges} 项需修改，${overview.aiInsufficient} 项证据不足`,`Published findings (including source checks): ${overview.aiChanges} needing changes, ${overview.aiInsufficient} insufficient-evidence requirements`):tr(`AI：${overview.aiChanges} 项建议修改，${overview.aiInsufficient} 项证据不足`,`AI: ${overview.aiChanges} change suggestions, ${overview.aiInsufficient} insufficient-evidence requirements`):tr(\"AI：本版尚无评估\",\"AI: no assessment for this version\"),!!overview.aiChanges||!!overview.aiInsufficient);"
+        },
+        {
+          "line": 110,
+          "text": "  add(\"human\",overview.reviewCurrent?tr(`人工：${overview.humanRemaining} 项待确认，已确认 ${overview.humanConfirmed}/${overview.humanRequired}`,`Human: ${overview.humanRemaining} left, ${overview.humanConfirmed}/${overview.humanRequired} confirmed`):tr(\"人工：待本版核查后确认\",\"Human: confirm after this version is checked\"),!!overview.humanRemaining);"
+        }
+      ]
+    },
+    "tests/noodle-assessment-presentation.test.ts": {
+      "sha256": "bd7fc5de78acf67c7998ecaff58cd9a9288250fc95f1fcb74b2a4affeac5c6e4",
+      "blocks": [
+        {
+          "lineStart": 130,
+          "text": "test(\"explicit source-publication v1 and v2 retain source authority for all three reasons, separate evidence layers and readonly boundaries\",async()=>{\n const {Component,cleanup}=await assessmentComponentModule();try{for(const schema of[\"source-publication-v1\",\"source-publication-v2\"]as const)for(const reason of[\"locked_price_mismatch\",\"locked_price_match\",\"confirmed_form_label_absence\"]as const)for(const readOnly of[false,true])for(const language of[\"zh\",\"en\"]as const){\n  const positive=reason===\"locked_price_match\",isPrice=reason!==\"confirmed_form_label_absence\",status=positive?\"supported\":\"changes_suggested\",item:ProofAssessmentItem={...structuredClone(base),status,explanation:\"Exact published source-check explanation.\",publicationBasis:{schema,reason},modelJudgment:{status,explanation:\"Exact retained original model explanation.\",citations:[]}};\n  item.sourceFinding!.version=schema===\"source-publication-v2\"?\"source-finding-v2\":\"source-finding-v1\";item.sourceFinding!.status=status;item.sourceFinding!.explanation=\"Exact independently checked source fact.\";if(isPrice){item.sourceFinding!.basis=\"locked_business_values\";delete item.sourceFinding!.scopeBinding;}\n  const saved={...report(item),publicationPolicy:{schema,reconciledCriterionIds:[criterion.id]}},before=structuredClone(saved),calls:unknown[]=[],html=renderToStaticMarkup(createElement(Component,{report:saved,criteria:[criterion],language,readOnly,onRun:()=>calls.push(\"run\"),onPrepareFeedback:()=>calls.push(\"feedback\")}));\n  assert.match(html,language===\"zh\"?/交付评估 · 含源码核验|已保存的发布结论/u:/Delivery assessment · includes source checks|Saved publication findings/u);assert.match(html,positive?(language===\"zh\"?/源码核验发布：支持/u:/Source-check publication: supported/u):(language===\"zh\"?/源码核验发布：不符/u:/Source-check publication: mismatch/u));\n  assert.match(html,isPrice?(language===\"zh\"?/已锁定菜品与价格/u:/locked item and price/u):(language===\"zh\"?/双方确认的表单范围/u:/form confirmed by both parties/u));assert.ok(html.includes(item.explanation));assert.ok(html.includes(item.modelJudgment!.explanation));assert.ok(html.includes(item.sourceFinding!.explanation));assert.match(html,/class=\"assessment-published-record\"|class=\"assessment-original-model\"/u);\n  if(isPrice)assert.doesNotMatch(html,/发布依据：双方确认的表单范围|Publication basis: agreed-label source/u);if(readOnly||positive)assert.doesNotMatch(html,/class=\"assessment-feedback-button\"|class=\"assessment-run-button\"/u);assert.deepEqual(calls,[]);assert.deepEqual(saved,before);\n }}finally{await cleanup();}\n});\n\ntest(\"future source-publication schema is not silently labelled as an accepted source publication\",async()=>{\n const item={...structuredClone(base),publicationBasis:{schema:\"source-publication-future\",reason:\"locked_price_mismatch\"}}as unknown as ProofAssessmentItem,before=structuredClone(item),{Component,cleanup}=await assessmentComponentModule();try{\n  const html=renderToStaticMarkup(createElement(Component,{report:report(item),criteria:[criterion],language:\"en\",readOnly:true}));assert.match(html,/AI delivery assessment|Saved AI suggestions/u);assert.doesNotMatch(html,/Source-check publication:|class=\"assessment-publication-basis\"/u);assert.ok(html.includes(item.modelJudgment!.explanation));assert.ok(html.includes(item.sourceFinding!.explanation));assert.deepEqual(item,before);\n }finally{await cleanup();}\n});"
+        }
+      ]
+    },
+    "tests/delivery-overview.test.ts": {
+      "sha256": "00289ee65a62459f29ad336e5335b234651048b6d53f905fbb4b43d4a4e06873",
+      "blocks": [
+        {
+          "lineStart": 111,
+          "text": "test(\"a marked source publication drafts its real origin without changing version, budget or rule priority\",()=>{\n for(const schema of[\"source-publication-v1\",\"source-publication-v2\"]as const){\n const value=delivery(),row=deliveryOverview({delivery:value,criteria,review:review(),manualChecks:[]}).rows[0];\n row.ai!.publicationBasis={schema,reason:\"locked_price_mismatch\"};const before=structuredClone(row);\n for(const language of[\"zh\",\"en\"]as const){\n  const draft=overviewFeedbackDraft(row,\"exact-current-version\",language);assert.match(draft.comment,language===\"zh\"?/^系统源码核验差异（待买家核对）：/u:/^System source-check difference \\(for buyer review\\):/u);assert.equal(draft.deliveryId,\"exact-current-version\");assert.equal(draft.criterionId,row.criterion.id);assert.deepEqual(row,before);\n  const long={...row,explanation:\"😀\".repeat(1000)},bounded=overviewFeedbackDraft(long,\"exact-current-version\",language);assert.ok(bounded.comment.length<=1000);assert.doesNotMatch(bounded.comment,/[\\uD800-\\uDBFF]$/u);\n }\n row.rule=\"fail\";assert.match(overviewFeedbackDraft(row,\"exact-current-version\",\"en\").comment,/^Rule checks found a mismatch/u);\n }\n});\n\ntest(\"overview drafts never promote an unknown future publication schema into source-check attribution\",()=>{\n const row=deliveryOverview({delivery:delivery(),criteria,review:review(),manualChecks:[]}).rows[0];row.ai!.publicationBasis={schema:\"source-publication-future\",reason:\"locked_price_mismatch\"}as never;const before=structuredClone(row);\n assert.match(overviewFeedbackDraft(row,\"exact-current-version\",\"en\").comment,/^AI change suggestion/u);assert.deepEqual(row,before);\n});"
+        }
+      ]
+    },
+    "tests/delivery-result-focus.test.ts": {
+      "sha256": "24618549a705add0999337cf9f2261b6d8668a87e47b1c3a72da0f2c54c5438b",
+      "blocks": [
+        {
+          "lineStart": 27,
+          "text": "test(\"marked source publications change attribution but not counts, inspection identity or rule priority\",()=>{\n for(const schema of[\"source-publication-v1\",\"source-publication-v2\"]as const){\n const value=input(),item=value.delivery.assessment!.items[0];item.status=\"changes_suggested\";item.publicationBasis={schema,reason:\"locked_price_mismatch\"};\n value.overview=deliveryOverview({delivery:value.delivery,criteria:value.overview.rows.map(row=>row.criterion),review:{deliveryId:\"current\",reviewedAt:\"2026-11-06T00:00:00Z\",mode:\"demo\",summary:\"Synthetic\"},manualChecks:[]});\n const before=structuredClone(value);assert.equal(deliveryResultFocus(value).reason,\"ai_change\");assert.equal(deliveryResultFocus(value).criterionId,\"page\");assert.match(deliveryResultFocus(value).title,/System source checks published/u);\n assert.match(deliveryResultStatus(value).find(row=>row.id===\"ai\")!.text,/Published findings \\(including source checks\\): 1 needing changes, 0 insufficient/u);assert.deepEqual(value,before);\n delete item.publicationBasis;assert.match(deliveryResultFocus(value).title,/AI suggests changes/u);assert.match(deliveryResultStatus(value).find(row=>row.id===\"ai\")!.text,/^AI: 1 change suggestions/u);assert.equal(value.overview.aiChanges,1);\n item.publicationBasis={schema,reason:\"locked_price_mismatch\"};value.overview.rows[0].rule=\"fail\";value.overview.ruleFailures=1;assert.equal(deliveryResultFocus(value).reason,\"rule_failure\");\n }\n});\n\ntest(\"an unknown future publication schema is not presented as system source authority\",()=>{\n const value=input(),item=value.delivery.assessment!.items[0];item.status=\"changes_suggested\";item.publicationBasis={schema:\"source-publication-future\",reason:\"locked_price_mismatch\"}as never;\n value.overview=deliveryOverview({delivery:value.delivery,criteria:value.overview.rows.map(row=>row.criterion),review:{deliveryId:\"current\",reviewedAt:\"2026-11-06T00:00:00Z\",mode:\"demo\",summary:\"Synthetic\"},manualChecks:[]});const before=structuredClone(value);\n assert.match(deliveryResultFocus(value).title,/AI suggests changes/u);assert.match(deliveryResultStatus(value).find(row=>row.id===\"ai\")!.text,/^AI: 1 change suggestions/u);assert.deepEqual(value,before);\n});\ntest(\"every independent attention layer resolves a matching key and inspect target\",()=>{\n  const cases:[string,string,(v:DeliveryResultInput)=>void][]=[\n    [\"rules_missing\",\"criterion\",v=>{v.overview.reviewCurrent=false;}],\n    [\"model_checking\",\"model\",v=>{v.model={state:\"checking\",acceptance:\"not_accepted\"};}],\n    [\"model_invalid\",\"model\",v=>{v.model={state:\"invalid\",acceptance:\"not_accepted\"};}],\n    [\"model_attention\",\"model\",v=>{v.model=model();}],\n    [\"business_invalid\",\"business\",v=>{v.delivery.businessChecks={} as ProofDelivery[\"businessChecks\"];}],\n    [\"journey_unknown\",\"journey\",v=>{v.delivery.journeyPlan={} as ProofDelivery[\"journeyPlan\"];}],"
+        },
+        {
+          "lineStart": 136,
+          "text": "    // Exercise the actual mixed-report component, preserving the unmarked row's origin.\n    for(const schema of[\"source-publication-v1\",\"source-publication-v2\"]as const)for(const language of[\"zh\",\"en\"]as const){\n      const mixed=structuredClone(value.delivery),marked=mixed.assessment!.items[0];marked.status=\"changes_suggested\";marked.publicationBasis={schema,reason:\"locked_price_mismatch\"};\n      const other={id:\"other\",title:\"Other requirement\",source:\"Check another original requirement.\"};mixed.assessment!.items.push({criterionId:\"other\",status:\"insufficient_evidence\",explanation:\"Original unknown remains unknown.\",citations:[],ruleEvidenceIds:[]});mixed.evidence.push({id:\"other-e\",criterionId:\"other\",finding:\"pass\",file:\"index.html\",excerpt:\"Other source\",explanation:\"Rule evidence only\"});\n      const html=renderToStaticMarkup(createElement(DeliveryOverview,{...props,delivery:mixed,criteria:[...props.criteria,other],language}));\n      assert.match(html,language===\"zh\"?/发布结论（含源码核验）：1 项需修改，1 项证据不足/u:/Published findings \\(including source checks\\): 1 needing changes, 1 insufficient/u);\n      assert.match(html,language===\"zh\"?/系统源码核验发布：不符/u:/System source-check publication: mismatch/u);\n      assert.match(html,language===\"zh\"?/AI 证据不足/u:/AI: insufficient evidence/u);\n      delete marked.publicationBasis;const legacy=renderToStaticMarkup(createElement(DeliveryOverview,{...props,delivery:mixed,criteria:[...props.criteria,other],language}));\n      assert.match(legacy,language===\"zh\"?/AI 建议修改/u:/AI change suggestions/u);assert.doesNotMatch(legacy,/Published findings \\(including source checks\\)|发布结论（含源码核验）/u);\n      const previous=structuredClone(mixed);previous.id=\"earlier\";previous.sequence=1;previous.submittedAt=\"2026-11-05T00:00:00.000Z\";previous.assessment!.deliveryId=previous.id;previous.assessment!.items[0].publicationBasis={schema,reason:\"locked_price_mismatch\"};const before=structuredClone(previous);\n      const historical=renderToStaticMarkup(createElement(DeliveryOverview,{...props,delivery:mixed,criteria:[...props.criteria,other],language,previousVersion:{delivery:previous,review:{...props.review,deliveryId:previous.id},feedback:[],archivedAt:\"2026-11-05T00:01:00.000Z\"}}));\n      assert.match(historical,language===\"zh\"?/发布结论需修改/u:/Published findings needing changes/u);assert.deepEqual(previous,before);\n    }\n  }finally{await rm(dir,{recursive:true,force:true});}\n});"
+        }
+      ]
+    }
+  },
+  "boundaries": "No stage4. Root owns source-F2 export protocol and old replay handling, native deploy and actualCUA, whole-cycle award comparison. Source-rendering review is not live UX or model accuracy evidence."
+}

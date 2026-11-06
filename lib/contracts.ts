@@ -87,14 +87,14 @@ export type ProofAssessmentModelJudgment = {status: "supported" | "changes_sugge
 /** Independent, replayable source-only finding. It never attests rendering,
  * persistence, acceptance or payment, and does not rewrite the raw model item. */
 export type ProofAssessmentSourceFinding = {
-  version: "source-finding-v1";
+  version: "source-finding-v1" | "source-finding-v2";
   status: "supported" | "changes_suggested" | "insufficient_evidence";
   basis: "declared_html_labels" | "locked_business_values";
   explanation: string; citations: ProofAssessmentCitation[]; files: string[];
   scopeBinding?: {proposalId: string; proposalDigest: string; file: string; kind: "page" | "form"; formId?: string};
 };
 /** Explicit source-only reconciliation; never rewrites the retained model item. */
-export type ProofAssessmentPublicationBasis = {schema:"source-publication-v1";reason:"locked_price_mismatch"|"confirmed_form_label_absence"|"locked_price_match"};
+export type ProofAssessmentPublicationBasis = {schema:"source-publication-v1"|"source-publication-v2";reason:"locked_price_mismatch"|"confirmed_form_label_absence"|"locked_price_match"};
 export type ProofAssessmentItem = { criterionId: string; status: "supported" | "changes_suggested" | "insufficient_evidence"; explanation: string; citations: ProofAssessmentCitation[]; ruleEvidenceIds: string[]; evidenceNeed?: ProofEvidenceNeed; obligations?: import("./assessment-obligations").AssessmentObligations; modelJudgment?: ProofAssessmentModelJudgment; sourceFinding?: ProofAssessmentSourceFinding; publicationBasis?: ProofAssessmentPublicationBasis };
 export type ProofAssessmentRisk = { title: string; explanation: string; suggestion: string; citations: ProofAssessmentCitation[] };
 /** Validated original AI leads retained outside the active indication pool.
@@ -114,7 +114,10 @@ export type ProofAssessmentWithheldRisks = ({version: 1; reason: "item_status_ad
 export type ProofRiskReview = { id: string; deliveryId: string; assessmentId: string; riskIndex: number; riskOrigin?: "withheld"; decision: "confirmed" | "rejected" | "needs_evidence"; reason: string; actorRole: ProofRole; reviewedAt: string };
 export type ProofResourceReport = { method: "static-resources-v1"; checked: number; findings: { from: string; reference: string; target?: string; kind: "missing" | "blocked" | "uninspectable" }[] };
 export type ProofAssessment = {
-  publicationPolicy?: {schema:"source-publication-v1";reconciledCriterionIds:string[]};
+  /** Named whole-original publication guard. Absence preserves historical
+   * reports; a newer grammar must use a new version, never reinterpret v1. */
+  requirementCompletenessPolicy?: {schema:"requirement-completeness-v1";version:"bounded-original-zh-v1"|"bilingual-bounded-v2"};
+  publicationPolicy?: {schema:"source-publication-v1"|"source-publication-v2";reconciledCriterionIds:string[]};
   scopeContext?: import("./scope-clarifications").ScopeAssessmentContext;
   id: string; deliveryId: string; method: "source-ai-v1"; mode: "live"; model: string; assessedAt: string;
   items: ProofAssessmentItem[]; risks: ProofAssessmentRisk[]; limitations: string[];

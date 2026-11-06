@@ -3,6 +3,14 @@ import {assessmentEvidenceScope, assessmentObservationExplanation} from "./asses
 import {createIndependentLabelSourceFactsCheck} from "./assessment-label-citations.ts";
 import {createIndependentSourceBusinessFactCheck, sourceBusinessEvidenceExplanation} from "./source-business-evidence.ts";
 import {parseSourceLiteralDirective} from "./source-literal-directive.ts";
+import {createMenuDomSourceBusinessFactCheckV2} from "./menu-dom-source-v2.ts";
+
+export type SourcePublicationSchema=NonNullable<ProofAssessment["publicationPolicy"]>["schema"];
+export function sourceFindingVersionForPublication(schema:SourcePublicationSchema="source-publication-v1"):ProofAssessmentSourceFinding["version"]{
+  if(schema==="source-publication-v1")return"source-finding-v1";
+  if(schema==="source-publication-v2")return"source-finding-v2";
+  throw new TypeError("Unsupported source publication schema.");
+}
 
 /** A projection of the validated scope-domain context, never client authority. */
 export type SourceFindingScope = {
@@ -12,6 +20,7 @@ export type SourceFindingScope = {
 export type SourceFindingInputs = {
   files: Record<string, string>; coverage: ProofAssessment["coverage"]; language: Language;
   businessSteps: readonly ProofBusinessCheckStep[]; scope?: SourceFindingScope;
+  version?: ProofAssessmentSourceFinding["version"];
 };
 const uniqueCitations = (citations: ProofAssessmentCitation[]) => citations.filter((c, i, all) => all.findIndex(other => other.file === c.file && other.start === c.start && other.end === c.end && other.excerpt === c.excerpt) === i);
 
@@ -20,8 +29,11 @@ const uniqueCitations = (citations: ProofAssessmentCitation[]) => citations.filt
  * visibility, operation, acceptance or payment. Export replay uses this same seam. */
 export function createAssessmentSourceFindingCheck(input: SourceFindingInputs) {
   const {language} = input, zh = language === "zh", files = {...input.files};
+  const version=input.version??"source-finding-v1";
+  if(version!=="source-finding-v1"&&version!=="source-finding-v2")throw new TypeError("Unsupported source finding version.");
+  const coverage=structuredClone(input.coverage);
   const scope = input.scope ? structuredClone(input.scope) : undefined;
-  const business = createIndependentSourceBusinessFactCheck(files, input.businessSteps);
+  const business = (version==="source-finding-v1"?createIndependentSourceBusinessFactCheck:createMenuDomSourceBusinessFactCheckV2)(files, input.businessSteps);
   const labels = createIndependentLabelSourceFactsCheck(files, input.coverage);
   return (criterion: ProofCriterion): ProofAssessmentSourceFinding | undefined => {
     const labelDirective = parseSourceLiteralDirective(criterion.source)?.kind === "html_labels";
@@ -32,7 +44,7 @@ export function createAssessmentSourceFindingCheck(input: SourceFindingInputs) {
     const binding = candidates.length === 1 ? candidates[0] : undefined;
     const bindingRef = binding ? {proposalId: binding.proposalId, proposalDigest: binding.proposalDigest, file: binding.file, kind: binding.kind, ...(binding.formId !== undefined ? {formId: binding.formId} : {})} : undefined;
     const scopedFiles = (binding ? [binding.file] : prices.kind !== "not_applicable" ? [...new Set(prices.checks.map(c => c.file))] : Object.keys(files).filter(file => /\.html$/iu.test(file)).sort()).filter(file => Object.hasOwn(files, file));
-    const result = (status: ProofAssessmentSourceFinding["status"], explanation: string, citations: ProofAssessmentCitation[] = []): ProofAssessmentSourceFinding => ({version: "source-finding-v1", status, basis, explanation, citations, files: scopedFiles, ...(bindingRef ? {scopeBinding: bindingRef} : {})});
+    const result = (status: ProofAssessmentSourceFinding["status"], explanation: string, citations: ProofAssessmentCitation[] = []): ProofAssessmentSourceFinding => ({version, status, basis, explanation, citations, files: scopedFiles, ...(bindingRef ? {scopeBinding: bindingRef} : {})});
     const observation = assessmentEvidenceScope(criterion);
     if (observation.category === "requires_observation") return result("insufficient_evidence", assessmentObservationExplanation(observation, language));
     const state = scope?.states.find(s => s.criterionId === criterion.id);
@@ -43,6 +55,9 @@ export function createAssessmentSourceFindingCheck(input: SourceFindingInputs) {
       if (binding && prices.checks.some(c => c.file !== binding.file)) return result("insufficient_evidence", zh
         ? "已确认范围与原有买家锁定的业务检查文件冲突，需双方澄清；系统没有擅自选择一方。"
         : "The confirmed scope conflicts with the buyer-locked business-check file. Clarification is required; the system did not choose one silently.");
+      if(version==="source-finding-v2"&&prices.checks.some(check=>!coverage.includedFiles.includes(check.file)||coverage.omittedFiles.includes(check.file)||coverage.truncatedFiles.includes(check.file)))return result("insufficient_evidence",zh
+        ?"买家锁定目标文件的源码文本未完整提供；不能从已提供的片段确认整页唯一的菜名与价格关联。请补齐该目标的完整源码后复检。"
+        :"The buyer-locked target source is incomplete. A supplied fragment cannot establish the whole file's unique item/price ownership. Supply the complete target source and recheck.");
       const citations = uniqueCitations(prices.checks.flatMap(c => c.citation ? [c.citation] : []));
       if (citations.length > 8) return result("insufficient_evidence", zh ? "完整源码事实超出保存引用额度，需逐项核查。" : "The complete source facts exceed the retained citation budget; inspect each check separately.");
       const status = prices.kind === "unchanged" ? "supported" : prices.kind === "mismatch" ? "changes_suggested" : "insufficient_evidence";

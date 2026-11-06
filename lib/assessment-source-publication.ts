@@ -1,12 +1,15 @@
 import {parse,type DefaultTreeAdapterTypes} from "parse5";
-import type {ProofAssessmentCitation,ProofAssessmentItem,ProofAssessmentSourceFinding,ProofCriterion,ProofEvidence} from "./contracts.ts";
+import type {ProofAssessmentCitation,ProofAssessmentItem,ProofAssessmentSourceFinding,ProofCriterion,ProofEvidence,ProofAssessmentPublicationBasis} from "./contracts.ts";
 import {assessmentEvidenceScope} from "./assessment-evidence-scope.ts";
 import {ASSESSMENT_ITEM_CITATION_LIMIT} from "./assessment-limits.ts";
-import {createAssessmentSourceFindingCheck,type SourceFindingInputs} from "./assessment-source-findings.ts";
+import {createAssessmentSourceFindingCheck,sourceFindingVersionForPublication,type SourceFindingInputs,type SourcePublicationSchema} from "./assessment-source-findings.ts";
 import {createSourceBusinessEvidenceCheck,createIndependentSourceBusinessFactCheck,assessSourceBusinessCitationWitness} from "./source-business-evidence.ts";
 import {createAssessmentLabelSourceFactsCheck} from "./assessment-label-citations.ts";
 import {parseSourceLiteralDirective} from "./source-literal-directive.ts";
+import {createMenuDomSourceBusinessFactCheckV2} from "./menu-dom-source-v2.ts";
+import {assessMenuPricePublicationAdmissionV2} from "./menu-source-publication-v2.ts";
 import {staticFileKind} from "./static-resources.ts";
+import {priceOnlyOriginalForVersion,type RequirementCompletenessVersion} from "./assessment-requirement-completeness.ts";
 
 export type SourcePublicationGuardReason="locked_price_mismatch"|"confirmed_form_label_absence"|"locked_price_match";
 export type SourcePublicationCandidate={
@@ -18,11 +21,11 @@ export type SourcePublicationCandidate={
   guardReason?:SourcePublicationGuardReason;
 };
 export type SourcePublicationDecision={
-  publicationBasis:{schema:"source-publication-v1";reason:SourcePublicationGuardReason};
+  publicationBasis:ProofAssessmentPublicationBasis;
   status:"changes_suggested"|"supported";
   explanation:string;citations:ProofAssessmentCitation[];sourceFinding:ProofAssessmentSourceFinding;
 };
-export type SourcePublicationInputs=SourceFindingInputs&{ruleEvidence:readonly Pick<ProofEvidence,"criterionId"|"finding">[]};
+export type SourcePublicationInputs=Omit<SourceFindingInputs,"version">&{ruleEvidence:readonly Pick<ProofEvidence,"criterionId"|"finding">[];requirementCompletenessVersion?:RequirementCompletenessVersion;publicationSchema?:SourcePublicationSchema};
 
 /** Extra conservative admission for the NEW affirmative exception only.
  * It is not CSS/rendering analysis. Unfamiliar styling remains unknown. */
@@ -64,42 +67,16 @@ function plainPositivePriceOwners(files:Record<string,string>,citations:readonly
  return true;
 }
 
-/** Whole-clause admission, not a bag of source_text keywords. This one
- * finite price-only wording binds EVERY named subject/currency/amount to the
- * buyer's complete typed expectation set. Extra duties stay unverified. */
-function priceOnlyOriginal(criterion:ProofCriterion,steps:SourceFindingInputs["businessSteps"]):boolean{
- const source=criterion.source.trim();if(/[\r\n]/u.test(source))return false;
- const match=/^菜单的([\s\S]+)标价必须为(AUD|USD)\s*(0|[1-9]\d*)(?:\.(\d{1,2}))?[。.]?$/u.exec(source);
- if(!match)return false;
- const checks=steps.filter((s,i)=>steps.findIndex(other=>other.checkId===s.checkId)===i);
- if(!checks.length||checks.length>6||checks.some(s=>s.expected.kind!=="item_price"))return false;
- const minor=Number(match[3])*100+Number((match[4]??"").padEnd(2,"0"));if(!Number.isSafeInteger(minor))return false;
- const labels:string[]=[];
- for(const check of checks){
-  if(check.expected.kind!=="item_price"||check.expected.currency!==match[2]||check.expected.amountMinor!==minor)return false;
-  const label=check.expected.label;
-  if(label!==label.trim()||!/^[\p{L}\p{N}][\p{L}\p{N} '’-]{0,79}$/u.test(label)
-   ||/必须|标价|价格|营业时间|持久|保存|提交|且|以及|同时|\b(?:must|shall|should|hours?|prices?|save|persist|submit)\b/iu.test(label))return false;
-  labels.push(label);
- }
- if(new Set(labels).size!==labels.length)return false;
- const consume=(remaining:string,names:readonly string[]):boolean=>names.some((label,index)=>{
-  if(!remaining.startsWith(label))return false;const rest=remaining.slice(label.length).trim();
-  if(names.length===1)return rest==="";
-  return rest.startsWith("和")&&consume(rest.slice(1).trim(),names.filter((_,i)=>i!==index));
- });
- return consume(match[1].trim(),labels);
-}
-
 /** A bounded source-based publication restoration, never a model correction.
  * The strict checker stays unchanged. Two negative branches and one narrowly
  * witnessed plain-price positive branch use independently proved source facts.
  * No raw unknown, runtime, ambiguity or citation subset is promoted. */
 export function createSourcePublicationCheck(input:SourcePublicationInputs){
  const files={...input.files},coverage=structuredClone(input.coverage),steps=structuredClone(input.businessSteps),scope=input.scope?structuredClone(input.scope):undefined;
- const rules=structuredClone(input.ruleEvidence);
- const sourceCheck=createAssessmentSourceFindingCheck({...input,files,coverage,businessSteps:steps,scope});
- const legacyPrice=createSourceBusinessEvidenceCheck(files,steps),priceFacts=createIndependentSourceBusinessFactCheck(files,steps);
+ const schema=input.publicationSchema??"source-publication-v1";
+ const rules=structuredClone(input.ruleEvidence),completenessVersion=input.requirementCompletenessVersion??"bounded-original-zh-v1";
+ const sourceCheck=createAssessmentSourceFindingCheck({...input,files,coverage,businessSteps:steps,scope,version:sourceFindingVersionForPublication(schema)});
+ const legacyPrice=createSourceBusinessEvidenceCheck(files,steps),priceFacts=schema==="source-publication-v2"?createMenuDomSourceBusinessFactCheckV2(files,steps):createIndependentSourceBusinessFactCheck(files,steps);
  const legacyLabels=createAssessmentLabelSourceFactsCheck(files,coverage);
  const exact=(c:ProofAssessmentCitation)=>Object.hasOwn(files,c.file)&&Number.isSafeInteger(c.start)&&Number.isSafeInteger(c.end)&&c.start>=0&&c.end>c.start&&c.end<=files[c.file].length&&c.excerpt===files[c.file].slice(c.start,c.end)&&c.excerpt.length<=500;
  return(criterion:ProofCriterion,candidate:SourcePublicationCandidate):SourcePublicationDecision|undefined=>{
@@ -118,13 +95,13 @@ export function createSourcePublicationCheck(input:SourcePublicationInputs){
    if(fact.basis!=="locked_business_values"||!selected.length||selected.some(s=>s.expected.kind!=="item_price"))return;
    const legacy=legacyPrice(criterion.id),independent=priceFacts(criterion.id);
    if(positive){
-    if(!priceOnlyOriginal(criterion,selected))return;
-    if(legacy.kind!=="unknown"||!legacy.checks.length||legacy.checks.some(c=>c.kind!=="unknown"||c.reason!=="dynamic_or_unsupported_source")
+    if(!priceOnlyOriginalForVersion(criterion,selected,completenessVersion))return;
+    if(legacy.kind!=="unknown"||!legacy.checks.length||legacy.checks.some(c=>c.kind!=="unknown"||!(schema==="source-publication-v2"?["dynamic_or_unsupported_source","complex_or_unlocated_item"]:["dynamic_or_unsupported_source"]).includes(c.reason))
      ||independent.kind!=="unchanged"||independent.checks.some(c=>c.kind!=="unchanged"||!c.citation)
      ||legacy.checks.length!==independent.checks.length||legacy.checks.some((c,i)=>c.checkId!==independent.checks[i].checkId||c.file!==independent.checks[i].file)
-     ||assessSourceBusinessCitationWitness(independent,candidate.rawCitations).kind!=="covered"||!plainPositivePriceOwners(files,fact.citations))return;
+     ||assessSourceBusinessCitationWitness(independent,candidate.rawCitations).kind!=="covered"||(schema==="source-publication-v2"?!assessMenuPricePublicationAdmissionV2(files,fact,candidate.rawCitations,coverage):!plainPositivePriceOwners(files,fact.citations)))return;
    }else if(legacy.kind!=="unknown"||!legacy.checks.some(c=>c.kind==="unknown")
-    ||legacy.checks.some(c=>c.kind==="unknown"&&c.reason!=="dynamic_or_unsupported_source")
+    ||legacy.checks.some(c=>c.kind==="unknown"&&!(schema==="source-publication-v2"?["dynamic_or_unsupported_source","complex_or_unlocated_item"]:["dynamic_or_unsupported_source"]).includes(c.reason))
     ||independent.kind!=="mismatch"||independent.checks.some(c=>c.kind==="unknown"||!c.citation))return;
   }else if(candidate.guardReason==="confirmed_form_label_absence"){
    const descriptor=parseSourceLiteralDirective(criterion.source);
@@ -135,6 +112,6 @@ export function createSourcePublicationCheck(input:SourcePublicationInputs){
   }else return;
   // Preserve the entire fact-citation set. Trimming would hide an unresolved
   // seven/eight-citation requirement behind a smaller publication budget.
-  return{publicationBasis:{schema:"source-publication-v1",reason:candidate.guardReason},status:expectedStatus,explanation:fact.explanation,citations:structuredClone(fact.citations),sourceFinding:fact};
+  return{publicationBasis:{schema,reason:candidate.guardReason},status:expectedStatus,explanation:fact.explanation,citations:structuredClone(fact.citations),sourceFinding:fact};
  };
 }

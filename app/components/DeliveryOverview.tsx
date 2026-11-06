@@ -47,8 +47,8 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
   const zh = language === "zh";
   const tr = (chinese: string, english: string) => zh ? chinese : english;
   const overview = deliveryOverview({ delivery, criteria, review, manualChecks, previousVersion });
-  const hasSourcePublication = delivery.assessment?.deliveryId === delivery.id && delivery.assessment.items.some(item => item.publicationBasis?.schema === "source-publication-v1");
-  const comparedSourcePublication = hasSourcePublication || !!previousVersion?.delivery.assessment?.items.some(item => item.publicationBasis?.schema === "source-publication-v1");
+  const hasSourcePublication = delivery.assessment?.deliveryId === delivery.id && delivery.assessment.items.some(item => ["source-publication-v1", "source-publication-v2"].includes(item.publicationBasis?.schema ?? ""));
+  const comparedSourcePublication = hasSourcePublication || !!previousVersion?.delivery.assessment?.items.some(item => ["source-publication-v1", "source-publication-v2"].includes(item.publicationBasis?.schema ?? ""));
   const layout = deliveryLayoutSummary(delivery);
   const model=useModelDiagnosis(delivery,{projectId,acceptedSnapshotId,accepted:stage==="accepted"});
   const business = buildBusinessSpotlight(delivery, previousVersion);
@@ -71,7 +71,7 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
   const openDetails=()=>{if(detailsRef.current){detailsRef.current.open=true;detailsRef.current.querySelector<HTMLElement>("summary")?.focus();}};
   const inspect=deliveryResultInspection(focus,{criterion:onInspect,model:onOpenModel,business:onOpenBusiness??onOpenLayout,journey:onOpenJourney,runtime:onOpenRuntime,enquiry:onOpenEnquiry,transfer:onOpenTransfer??openDetails,layout:onOpenLayout,details:openDetails});
 
-  const rowLabel = (row: (typeof overview.rows)[number]) => row.rule !== "fail" && row.ai?.status === "changes_suggested" && row.ai.publicationBasis?.schema === "source-publication-v1" ? tr("系统源码核验发布：不符", "System source-check publication: mismatch") : overviewRowLabel(row, language);
+  const rowLabel = (row: (typeof overview.rows)[number]) => row.rule !== "fail" && row.ai?.status === "changes_suggested" && ["source-publication-v1", "source-publication-v2"].includes(row.ai.publicationBasis?.schema ?? "") ? tr("系统源码核验发布：不符", "System source-check publication: mismatch") : overviewRowLabel(row, language);
 
   const ruleComparison = overview.previous?.ruleFailures !== undefined && overview.ruleFailures !== undefined;
   const aiComparison = overview.previous?.aiChanges !== undefined && overview.aiChanges !== undefined;
