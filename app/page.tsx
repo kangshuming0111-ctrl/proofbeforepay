@@ -62,7 +62,9 @@ import { RuntimeCheckPanel, RuntimeAcceptanceDecision, currentRuntimeReport } fr
 import {acceptanceBasis} from "@/lib/acceptance-basis";
 import {hasPendingEvidenceRun,hasFrozenCaptureEvidence,captureEvidenceReady} from "@/lib/proof-readiness";
 import {ProofReadinessPanel} from "./components/ProofReadinessPanel";
-import {ProjectJourneyPanel} from "./components/ProjectJourneyPanel";
+import {TechnicalChecksPanel} from "./components/TechnicalChecksPanel";
+import type {TechnicalChecksFocusRequest} from "./components/technical-checks-state";
+import {nextHumanReview} from "@/lib/next-human-review";
 import {ModelCheckPanel} from "./components/ModelCheckPanel";
 import type {ModelDecision} from "@/lib/model-check-actions";
 import type {ProjectJourneyDecision} from "@/lib/project-journey";
@@ -197,12 +199,14 @@ export default function Home() {
   const [workspaceView, setWorkspaceView] = useState<"workbench" | "audit" | "history">("workbench");
   const [workspacePanel, setWorkspacePanel] = useState<"agreement" | "delivery" | "payment">("agreement");
   const [deliveryTab, setDeliveryTab] = useState<"preview" | "evidence" | "layout">("preview");
+  const [technicalFocusRequest,setTechnicalFocusRequest]=useState<TechnicalChecksFocusRequest>();
   const [layoutProgress, setLayoutProgress] = useState<{done: number; total: number}>();
   const [browserCheckProgress, setBrowserCheckProgress] = useState<{done: number; total: number}>();
   const [businessCheckProgress, setBusinessCheckProgress] = useState<{done: number; total: number}>();
   const [criterionIndex, setCriterionIndex] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
   const workspaceRef = useRef<HTMLDivElement>(null);
+  const optionalChecksRef = useRef<HTMLDetailsElement>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
@@ -291,6 +295,7 @@ export default function Home() {
   const confirmedManualChecks = acceptedCurrent ? collaboration.acceptance!.manualChecks : manualChecks;
   const allHumanChecked = humanCriteria.every(criterion => confirmedManualChecks.includes(criterion.id));
   const pendingHumanCriteria = humanCriteria.filter(criterion => !confirmedManualChecks.includes(criterion.id));
+  const pendingHumanReview = nextHumanReview(pendingHumanCriteria,delivery);
   const pendingCapture = proof?.paymentOperation === "capture";
   const pendingVoid = proof?.paymentOperation === "void";
   const paymentPending = pendingCapture || pendingVoid;
@@ -321,6 +326,9 @@ export default function Home() {
   const runtimeDecisionReady=!runtimePlan || !!runtimeReport && !delivery?.runtimeRun && (!runtimeIssues.length || runtimeAcknowledged && runtimeReason.trim().length>=10);
   const runtimeDecision=runtimePlan&&runtimeReport?{reportId:runtimeReport.id,...(runtimeIssues.length?{exceptionReason:runtimeReason.trim(),acknowledgedSteps:runtimeAcknowledged?runtimeIssues.map(step=>step.id):[]}:{})}:undefined;
   useEffect(()=>setRuntimeConfirmed(false),[projectSummary,runtimeCriterionId,runtimeCapacityCriterionId,runtimeEnabled,runtimeProtocol,coverageDraftKey]);
+  useEffect(()=>{
+    if(projectStep===1 && (businessDrafts.length>0&&!businessConfirmed || runtimeEnabled&&!runtimeConfirmed) && optionalChecksRef.current)optionalChecksRef.current.open=true;
+  },[projectStep,businessDrafts.length,businessConfirmed,runtimeEnabled,runtimeConfirmed]);
   useEffect(()=>{
     const id=delivery?.backendTargetId??"",registration=delivery?.runtimeRegistration;
     const fingerprint=registration?runtimeTargetFingerprint({id:registration.id,label:registration.label,protocol:registration.protocol,revision:registration.deploymentRevision,
@@ -835,7 +843,7 @@ export default function Home() {
   }
 
   function openPendingHumanCheck() {
-    if (pendingHumanCriteria.length) openCriterion(pendingHumanCriteria[0].id);
+    if (pendingHumanReview.criterion) openCriterion(pendingHumanReview.criterion.id);
     else if (collaboration?.stage === "submitted") beginDeliveryAcceptance();
     else setWorkspacePanel("payment");
   }
@@ -870,7 +878,7 @@ export default function Home() {
   }
   function openProjectJourney() {
     setWorkspaceView("workbench");setWorkspacePanel("delivery");setDeliveryTab("layout");
-    window.requestAnimationFrame(()=>{const panel=workspaceRef.current?.querySelector<HTMLDetailsElement>("#project-journey");if(panel){panel.open=true;panel.scrollIntoView({block:"nearest",behavior:"smooth"});}});
+    if(delivery)setTechnicalFocusRequest(previous=>({kind:"journey",deliveryId:delivery.id,id:(previous?.id??0)+1}));
   }
   function openModelChecks() {
     setWorkspaceView("workbench");setWorkspacePanel("delivery");setDeliveryTab("layout");
@@ -878,7 +886,7 @@ export default function Home() {
   }
   function openTransferChecks() {
     setWorkspaceView("workbench");setWorkspacePanel("delivery");setDeliveryTab("layout");
-    window.requestAnimationFrame(()=>{const parent=workspaceRef.current?.querySelector<HTMLDetailsElement>("#project-journey"),panel=workspaceRef.current?.querySelector<HTMLDetailsElement>("#transfer-competition");if(parent)parent.open=true;if(panel){panel.open=true;panel.scrollIntoView({block:"nearest",behavior:"smooth"});}});
+    if(delivery)setTechnicalFocusRequest(previous=>({kind:"transfer",deliveryId:delivery.id,id:(previous?.id??0)+1}));
   }
   function fillBackendExample() {
     fillNoodleBusinessExample();
@@ -933,7 +941,7 @@ export default function Home() {
     if(delivery.journeyPlan&&!journeyDecisionReady)return {label:tr("复核本版业务旅程证据","Review this delivery’s journey evidence"),help:tr("查看步骤、未知项和已保存报告，再明确确认检验边界。","Inspect steps, unknowns and the saved report, then acknowledge its observation limits."),action:openProjectJourney};
     if(delivery.modelReport&&!modelDecisionReady)return {label:tr("复核本版并发状态报告","Review the concurrent state report"),help:tr("查看合法顺序、实际记录及未确定项，再明确确认。","Inspect legal orders, actual records and unknowns before acknowledging."),action:openModelChecks};
     if(runtimePlan && (!runtimeReport || runtimeIssues.length && !runtimeDecisionReady || delivery?.runtimeRun))return {label:tr("核查预约后端流程","Inspect booking backend flow"),help:tr("独立回读、重复请求和错误输入分别留证。","Keep separate evidence for readback, replay and invalid input."),action:openRuntimeChecks};
-    if (!allHumanChecked) return {label: tr(`检查下一项 · 剩余 ${pendingHumanCriteria.length} 项`, `Check next · ${pendingHumanCriteria.length} remaining`), help: tr(`人工检查已确认 ${humanCriteria.length - pendingHumanCriteria.length}/${humanCriteria.length} 项。`, `Human checks confirmed: ${humanCriteria.length - pendingHumanCriteria.length}/${humanCriteria.length}.`), action: openPendingHumanCheck};
+    if (!allHumanChecked) return {label: pendingHumanReview.reason === "ai_change" ? tr("先核对 AI 建议修改项", "Review the AI change suggestion") : tr(`检查下一项 · 剩余 ${pendingHumanCriteria.length} 项`, `Check next · ${pendingHumanCriteria.length} remaining`), help: tr(`人工检查已确认 ${humanCriteria.length - pendingHumanCriteria.length}/${humanCriteria.length} 项。`, `Human checks confirmed: ${humanCriteria.length - pendingHumanCriteria.length}/${humanCriteria.length}.`), action: openPendingHumanCheck};
     return {label: collaboration ? tr("继续验收确认（不付款）", "Continue acceptance — no payment") : tr("继续验收与付款确认", "Continue to acceptance & payment"), help: tr("下一步仍需你的明确确认。", "Your explicit confirmation is still required."), action: () => collaboration ? beginDeliveryAcceptance() : focusPanel("payment")};
   }
 
@@ -1396,7 +1404,7 @@ export default function Home() {
       </header>
 
       <main className="main-wrap cockpit-main">
-        <div className="first-use-guide-shell" hidden={workspaceView !== "workbench"}><FirstUseGuide language={language} busy={!!busy||loading}/></div>
+        <div className="first-use-guide-shell" hidden={workspaceView !== "workbench" || !quote}><FirstUseGuide language={language} busy={!!busy||loading}/></div>
         <h1 className="sr-only">{tr("交付验收工作台", "Delivery acceptance workspace")}</h1>
         <div className="workflow no-print" hidden={welcomeActive} aria-label={tr("验收流程", "Acceptance workflow")}>
           {steps.map((step, index) => <div className={`workflow-step ${index === currentStep ? "current" : ""} ${index < currentStep && completedSteps[index] ? "done" : ""}`} key={step}><span>{index < currentStep && completedSteps[index] ? <Check size={13} /> : `0${index + 1}`}</span><strong>{step}</strong>{index < steps.length - 1 && <ChevronRight className="step-arrow" size={15} />}</div>)}
@@ -1437,22 +1445,29 @@ export default function Home() {
                   <button type="button" disabled={!!busy} className={projectMode === "custom" ? "active" : ""} aria-pressed={projectMode === "custom"} onClick={() => { setProjectMode("custom"); setError(""); }}>{tr("我的项目", "My project")}</button>
                   <button type="button" disabled={!!busy} className={projectMode === "demo" ? "active" : ""} aria-pressed={projectMode === "demo"} onClick={() => { setProjectMode("demo"); chooseWorkflow("demo"); setError(""); }}>{tr("内置演示", "Built-in demo")}</button>
                 </div>
-                <form onSubmit={create} className="project-form no-print">
+                <form onSubmit={create} onInvalidCapture={event=>{
+                  // Native validation may target a required field in an optional group.
+                  // Reveal its ancestors before the browser moves focus to the field.
+                  let parent=event.target instanceof HTMLElement?event.target.parentElement:null;
+                  while(parent){if(parent instanceof HTMLDetailsElement)parent.open=true;parent=parent.parentElement;}
+                }} className="project-form no-print">
                   <fieldset disabled={!!busy}>
                     {projectMode === "custom" ? <>
                       <ol className="project-steps" aria-label={tr("新建项目步骤", "Project setup steps")}><li aria-current={projectStep === 0 ? "step" : undefined}>{tr("01 项目与金额", "01 Project & price")}</li><li aria-current={projectStep === 1 ? "step" : undefined}>{tr("02 验收标准", "02 Acceptance")}</li></ol>
                       {projectStep === 0 ? <>
                         <p className="form-help">{tr("没有合同也可以开始。直接描述需求，下一步确认具体的验收标准。", "Start without a contract. Describe your requirements, then confirm specific acceptance criteria.")}</p>
+                        <details className="project-optional"><summary>{tr("用示例填入（选填）", "Fill from an example (optional)")}</summary>
                         <button type="button" className="subtle-button business-example-button" disabled={!!busy || loading} onClick={fillNoodleBusinessExample}><ClipboardCheck size={13}/>{tr("填入面馆业务验收示例", "Fill a noodle-shop content-check example")}</button><button type="button" className="subtle-button" disabled={!!busy||loading} onClick={fillBackendExample}>{tr("填入预约后端深度检验示例","Fill a backend verification example")}</button><button type="button" className="subtle-button" disabled={!!busy||loading} onClick={fillCapacityExample}>{tr("填入时段容量争抢示例","Fill a slot-capacity race example")}</button>
+                        </details>
                         <label htmlFor="projectTitle">{tr("项目名称", "Project title")}</label><input id="projectTitle" name="projectTitle" value={projectTitle} maxLength={120} required placeholder={tr("例如：咖啡店网站交付", "e.g. Café website delivery")} onChange={event => setProjectTitle(event.target.value)} />
                         <label htmlFor="projectSummary">{tr("网站需求", "Website requirements")}</label><textarea id="projectSummary" value={projectSummary} maxLength={1000} required rows={3} placeholder={tr("例如：面馆网站展示菜单、价格、营业时间和地址。支持中文与英文。预约入口说明如何联系店家。每行一项会更清楚。", "For example: show the menu, prices, opening hours and address. Support Chinese and English. Explain how to contact the shop to arrange a booking. One requirement per line helps.")} onChange={event => {updateProjectSummary(event.target.value); if (requirementsFromBrief) {setRequirementsDraft(undefined); setRequirementsConfirmed(false); setRequirementsFromBrief(false);}}} />
                         <button type="button" className="requirements-button" disabled={!!busy || loading || !projectSummary.trim()} onClick={analyzeProjectBrief}>{busy === "requirements" ? <LoaderCircle size={13} className="spin"/> : <Sparkles size={13}/>} {config?.aiMode === "live" ? tr("用 AI 整理这些需求", "Organize these requirements with AI") : tr("用规则整理这些需求", "Organize these requirements with rules")}</button>
                         <p className="form-help">{tr("整理是可选的；下一步会保留原文并逐条确认验收范围。AI 整理会把上方需求发送给 DeepSeek；金额单独填写。", "Organizing is optional; the next step retains the source and confirms each row’s acceptance scope. AI organizing sends the requirements above to DeepSeek. Enter the price separately.")}</p>
                         <RequirementsIntake language={language} busy={!!busy || loading} aiMode={config?.aiMode} initialDraft={requirementsFromBrief ? undefined : requirementsDraft} onAnalyze={analyzeRequirements} onApply={draft => applyRequirements(draft)} onClear={() => {setRequirementsDraft(undefined); setRequirementsConfirmed(false); setRequirementsFromBrief(false);}} />
-                        <div className="project-price-fields"><div><label htmlFor="projectAmount">{tr("项目金额", "Amount")}</label><input id="projectAmount" value={projectAmount} inputMode="decimal" required placeholder="480.00" aria-describedby="amount-help" onChange={event => setProjectAmount(event.target.value)} /></div><div><label htmlFor="currency">{tr("测试币种", "Currency")}</label><select id="currency" value={currency} onChange={event => setCurrency(event.target.value as Currency)}><option value="AUD">AUD</option><option value="USD">USD</option></select></div></div>
+                        <label htmlFor="projectAmount">{tr(`项目金额（${currency}）`, `Amount (${currency})`)}</label><input id="projectAmount" value={projectAmount} inputMode="decimal" required placeholder="480.00" aria-describedby="amount-help" onChange={event => setProjectAmount(event.target.value)} />
                         <p className="form-help" id="amount-help">{tr("0.01–10000.00，最多两位小数。后续付款使用测试资金。", "0.01–10000.00, up to two decimal places. Payments use test funds.")}</p>
                         <WorkflowChoice value={sandboxCollaboration ? "collaborative-sandbox" : sandboxRehearsal ? "sandbox" : customRoleDemo ? "demo" : collaborative ? "collaborative" : "single"} language={language} sandboxAvailable={config?.paymentMode === "sandbox"} onChange={chooseWorkflow}/>
-                        <details className="project-optional"><summary>{tr("客户名称（选填）", "Client name (optional)")}</summary><label className="sr-only" htmlFor="clientName">{tr("客户名称", "Client name")}</label><input id="clientName" value={clientName} maxLength={100} onChange={event => setClientName(event.target.value)} /></details>
+                        <details className="project-optional"><summary>{tr(`币种与客户名称（选填）· ${currency}`, `Currency & client name (optional) · ${currency}`)}</summary><label htmlFor="currency">{tr("测试币种", "Test currency")}</label><select id="currency" value={currency} onChange={event=>setCurrency(event.target.value as Currency)}><option value="AUD">AUD</option><option value="USD">USD</option></select><label htmlFor="clientName">{tr("客户名称", "Client name")}</label><input id="clientName" value={clientName} maxLength={100} onChange={event => setClientName(event.target.value)} /></details>
                       </> : <>
                         {requirementsDraft && <div className="requirements-confirm-summary"><strong>{tr("从原始需求整理的验收清单", "Checklist prepared from your requirements")}</strong><p>{requirementsDraft.mode === "live" ? tr("AI 建议，已保存原文依据；请逐项编辑确认。", "AI suggestions with saved source excerpts. Edit and confirm every item.") : tr("规则整理 · 未调用 AI。请逐项编辑确认，补足未明确要求。", "Rule-based extraction · no AI request. Edit and confirm every item and resolve unclear requirements.")}</p>{requirementsDraft.unresolved.length > 0 && <p>{tr(`还有 ${requirementsDraft.unresolved.length} 条原文需要自行确认，已保留在原始需求中。`, `${requirementsDraft.unresolved.length} source clauses still need your review and remain in the original requirements.`)}</p>}</div>}
                         {requirementsDraft && <RequirementsDraftSource draft={requirementsDraft} language={language} />}
@@ -1460,6 +1475,8 @@ export default function Home() {
                           onDecisionChange={decision => {setCoverageDecisions(current => ({...current, [decision.id]: decision})); setCoverageConfirmed(false);}}
                           onConfirmChange={setCoverageConfirmed}/>
                         {coverageError && <p className="requirement-coverage-warning" role="alert">{coverageError}</p>}
+                        <details ref={optionalChecksRef} className="project-optional project-extra-checks"><summary>{tr("添加自动检查（选填，可与开发者一起设置）", "Add automated checks (optional, with your developer)")}{(businessDrafts.length>0 || runtimeEnabled) && <small>{tr(` · ${businessDrafts.length} 项业务内容${runtimeEnabled?" + 后端协议":""}${businessDrafts.length>0&&!businessConfirmed || runtimeEnabled&&!runtimeConfirmed?" · 待确认":""}`, ` · ${businessDrafts.length} content checks${runtimeEnabled?" + backend protocol":""}${businessDrafts.length>0&&!businessConfirmed || runtimeEnabled&&!runtimeConfirmed?" · confirmation required":""}`)}</small>}</summary>
+                        <p className="form-help">{tr("原文逐项确认即可继续。需要自动比对价格、电话，或约定后端流程时再补充；已选的检查仍须单独确认。", "You can continue after confirming each source row. Add price/contact comparisons or an agreed backend flow when needed; selected checks still need separate confirmation.")}</p>
                         <BusinessCheckSuggestions language={language} summary={projectSummary} pages={inputLines(requiredPagesInput)} coverageRows={coverageRows}
                           confirmed={coverageConfirmed} scopeReady={coverageReady && inputLines(requiredPagesInput).length >= 1 && inputLines(requiredPagesInput).length <= 10 && inputLines(requiredPagesInput).includes("index.html") && coverageRows.some(row => row.disposition === "include") && inputLines(requiredPagesInput).every(isHtmlDeliveryPath) && new Set(inputLines(requiredPagesInput).map(file => file.toLowerCase())).size === inputLines(requiredPagesInput).length}
                           aiAvailable={config?.aiMode === "live"} disabled={!!busy || loading} busy={busy === "business-suggestions"} drafts={businessDrafts}
@@ -1482,6 +1499,7 @@ export default function Home() {
                             </div>)}
                             <button type="button" className="subtle-button" disabled={browserSteps.length >= 5} onClick={() => setBrowserSteps(current => [...current, {from: "index.html", text: "", to: ""}])}><Plus size={12}/>{tr("添加浏览步骤", "Add a browser step")}</button>
                           </section>
+                        </details>
                         </details>
                         {requirementsDraft && <label className="requirements-confirm"><input type="checkbox" checked={requirementsConfirmed} onChange={event => setRequirementsConfirmed(event.target.checked)}/><span>{tr("我已核对原文、未明确项和最终清单。新增或改写的标准由我确认；解析不决定金额、验收或付款。", "I reviewed the source, unclear clauses and final checklist. I confirm any added or edited checks. Extraction does not decide the price, acceptance or payment.")}</span></label>}
                       </>}
@@ -1508,7 +1526,8 @@ export default function Home() {
 
               {customView && !buyer && <details className="upload-delivery no-print" open={(!sampleRoleplay && !delivery) || pendingFiles.length > 0 || !!uploadError}>
                 <summary><Upload size={15} /><span className="upload-summary-label">{delivery ? tr("提交替换版本", "Submit a replacement") : tr("上传网站文件或文件夹", "Upload website files or folder")}</span>{delivery && <small>{tr(`${Object.keys(deliveryFiles ?? {}).length} 个已保存文件`, `${Object.keys(deliveryFiles ?? {}).length} saved files`)}</small>}</summary>
-                <p className="upload-help">{tr("保留目录结构，根目录包含 index.html。最多 40 个 HTML/CSS/PNG/JPEG/WebP 文件；文本每个 64 KiB、合计 256 KiB，图片每个 256 KiB、合计 1 MiB。脚本、表单和外部资源不运行。", "Keep the folder structure with index.html at its root. Up to 40 HTML/CSS/PNG/JPEG/WebP files: text 64 KiB each, 256 KiB total; images 256 KiB each, 1 MiB total. Scripts, forms and external resources do not run.")}</p>
+                <p className="upload-help">{tr("选择开发者交付的网站文件或文件夹，保留目录结构，根目录包含 index.html。ZIP 请先解压。", "Choose the website files or folder delivered by the developer. Keep the folder structure with index.html at its root. Unzip ZIP files first.")}</p>
+                <details className="project-optional"><summary>{tr("支持的文件与限制", "Supported files and limits")}</summary><p className="upload-help">{tr("最多 40 个 HTML/CSS/PNG/JPEG/WebP 文件；文本每个 64 KiB、合计 256 KiB，图片每个 256 KiB、合计 1 MiB。脚本、表单和外部资源不运行。", "Up to 40 HTML/CSS/PNG/JPEG/WebP files: text 64 KiB each, 256 KiB total; images 256 KiB each, 1 MiB total. Scripts, forms and external resources do not run.")}</p></details>
                 {runtimePlan&&<div className="runtime-target-choice">
                   <label htmlFor="runtimeTargetChoice">{tr("选择本次交付的测试目标","Choose the test target for this delivery")}</label>
                   <select id="runtimeTargetChoice" value={selectedBackendTargetId} disabled={!!busy||!canManageDelivery||runtimeTargetsLoading||!!runtimeTargetsError} onChange={event=>{
@@ -1599,7 +1618,7 @@ export default function Home() {
                 <BusinessChecksPanel key={`business-${delivery?.id ?? "empty"}`} language={language} count={customProject?.businessChecks?.length ?? 0} report={businessReport} enabled={canObserveBrowser && !busy} busy={busy === "business-check"} progress={businessCheckProgress} onRun={checkBusinessContent} onCancel={() => {if (!businessCheckSavePending.current) businessCheckController.current?.abort();}} onPrepareFeedback={buyer && collaboration?.stage === "submitted" && deliveryUnlocked && !busy ? (criterionId, comment) => prepareFeedback({deliveryId: delivery!.id, criterionId, comment}) : undefined}/>
                 {busy === "business-check-save" && <p className="layout-check-source" role="status">{tr("正在保存业务内容核对…", "Saving business content observations…")}</p>}
                 {quote&&delivery&&runtimePlan&&<RuntimeCheckPanel language={language} deliveryId={delivery.id} plan={runtimePlan} targetId={delivery.backendTargetId} target={runtimeTargets.find(target=>target.id===delivery.backendTargetId)} registration={delivery.runtimeRegistration} deliveryDigest={delivery.runtimeDeliveryDigest} report={runtimeReport} pending={!!delivery.runtimeRun&&Date.parse(delivery.runtimeRun.expiresAt)>Date.now()} busy={busy==="runtime-check"} enabled={!!canRunRuntime&&!busy} onRun={checkRuntimeBackend} preflightContext={JSON.stringify([quote.id,delivery.id,workspaceRole,role,delivery.backendTargetId,delivery.runtimeDeliveryDigest,runtimePlan,delivery.runtimeRegistration])} onPreflight={signal=>apiRequest<RuntimePreflightResult>(`/api/proofs/${encodeURIComponent(quote.id)}/runtime-preflight`,"POST",{deliveryId:delivery.id},workspaceRole,signal)} onPrepareFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?(criterionId,comment)=>prepareFeedback({deliveryId:delivery.id,criterionId,comment}):undefined}/>}
-                {quote&&delivery&&custom&&<ProjectJourneyPanel key={`journey-${quote.id}-${delivery.id}-${workspaceRole}`} quote={quote} role={role} language={language} enabled={!!canRunRuntime&&!busy} request={request} onApply={onConcurrentQuote} onSupplementalChanged={()=>void refreshEvidenceCatalog()} onBusy={value=>setBusy(value?"journey-check":"")} onDecision={setJourneyDecision} onFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?comment=>prepareFeedback({deliveryId:delivery.id,criterionId:"journey-agreement",journeyReportId:delivery.journeyReport?.id,comment}):undefined}/>}
+                {quote&&delivery&&custom&&<TechnicalChecksPanel key={`journey-${quote.id}-${delivery.id}-${workspaceRole}`} focusRequest={technicalFocusRequest} quote={quote} role={role} language={language} enabled={!!canRunRuntime&&!busy} request={request} onApply={onConcurrentQuote} onSupplementalChanged={()=>void refreshEvidenceCatalog()} onBusy={value=>setBusy(value?"journey-check":"")} onDecision={setJourneyDecision} onFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?comment=>prepareFeedback({deliveryId:delivery.id,criterionId:"journey-agreement",journeyReportId:delivery.journeyReport?.id,comment}):undefined}/>}
                 {quote&&delivery&&custom&&<EnquiryChecksPanel key={`enquiry-${quote.id}-${delivery.id}-${workspaceRole}`} viewRevision={quoteRenderRevision} quote={quote} role={displayRole} language={language} enabled={!busy&&deliveryUnlocked} request={request} onApply={onConcurrentQuote} onBusy={(value,token)=>{if(value){enquiryBusyToken.current=token;setBusy("enquiry-check");}else if(enquiryBusyToken.current===token){enquiryBusyToken.current=null;setBusy(current=>current==="enquiry-check"?"":current);}}} onDecision={setEnquiryDecision}/>}
                 {quote&&delivery&&custom&&<ModelCheckPanel key={`model-${quote.id}-${delivery.id}-${workspaceRole}`} quote={quote} role={role} language={language} enabled={!!canRunRuntime&&!busy} explanationEnabled={!busy&&!evidenceRunPending&&!quote.proof.paymentOperation} request={request} onApply={onConcurrentQuote} onBusy={value=>setBusy(value?"model-check":"")} onDecision={setModelDecision} onFeedback={buyer&&collaboration?.stage==="submitted"&&!busy?comment=>prepareFeedback({deliveryId:delivery.id,criterionId:"model-agreement",modelReportId:delivery.modelReport?.id,comment}):undefined}/>}
                 {delivery && <EvidenceHistoryPanel key={`history-${delivery.id}`} delivery={delivery} language={language} projectId={quote?.id} acceptedSnapshotId={frozenAcceptanceId}/>}

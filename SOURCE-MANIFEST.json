@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-05T18:43:07.440Z",
+  "generatedAt": "2026-11-06T03:56:22.063Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -408,13 +408,13 @@
     },
     {
       "file": "app/components/FirstUseGuide.tsx",
-      "bytes": 6400,
-      "sha256": "a88928dfa14d7ceb4d5541335fd2f2c433a0ad1d721a39feb9928c819ed7a31c"
+      "bytes": 6531,
+      "sha256": "0cfa17f4b0a5fc79071a252ef03dc9768a8d5cca32d49f9c0a786febe07f342e"
     },
     {
       "file": "app/components/GettingStarted.tsx",
-      "bytes": 4759,
-      "sha256": "face00d5373b2d7d7e7ee0cfd92358eeaabbdf5bfcf030891aaed599251f63ea"
+      "bytes": 4685,
+      "sha256": "adf17f42bf6cdc47b876c2b266465a2310360cb6990975413a36eef7be74b660"
     },
     {
       "file": "app/components/LatestAssessmentValidation.tsx",
@@ -458,8 +458,8 @@
     },
     {
       "file": "app/components/ProjectJourneyPanel.tsx",
-      "bytes": 25114,
-      "sha256": "969cc037ce2e501ece1e4d7cddd1e50f430cdd1ca8869678194c2b80c305fd90"
+      "bytes": 25116,
+      "sha256": "f2bcbe574dbe196292416c18381d87d9f53ca48459547c6325c5254a5af66665"
     },
     {
       "file": "app/components/ProofReadinessPanel.tsx",
@@ -533,8 +533,8 @@
     },
     {
       "file": "app/components/SellerDomAdapterGuide.tsx",
-      "bytes": 24677,
-      "sha256": "0e1578c016605ec194f0546b50516d15d9efe489ee7645fc36243cbd996cbed2"
+      "bytes": 24567,
+      "sha256": "da804d0c9ee0a56af6f85bfe3a852060e84ce4fe722c8ba6c8692d9b6a6dd7db"
     },
     {
       "file": "app/components/SellerIntegrationGuide.tsx",
@@ -550,6 +550,11 @@
       "file": "app/components/SupplementalEvidencePanel.tsx",
       "bytes": 7739,
       "sha256": "4d2608aedba1d81f9edc3486c081886cde405c0c627aa56b547f556ce4ed114f"
+    },
+    {
+      "file": "app/components/TechnicalChecksPanel.tsx",
+      "bytes": 5774,
+      "sha256": "fa630a5992d01ba7cd35f02e0218f4ed74d3a32687bb566eac881d13ba72ed9f"
     },
     {
       "file": "app/components/TimePolicyPanel.tsx",
@@ -568,8 +573,8 @@
     },
     {
       "file": "app/components/WorkflowChoice.tsx",
-      "bytes": 3880,
-      "sha256": "68672d4ba0a571bdb2ca8af5f1ee23cfaf00007ec398754e4f7bb46870e6995c"
+      "bytes": 6404,
+      "sha256": "3baac65481300606e15908db3fc80d8609115df7969485844b2dd0f60c44484d"
     },
     {
       "file": "app/components/assessment-feedback.ts",
@@ -595,6 +600,11 @@
       "file": "app/components/seller-onboarding.css",
       "bytes": 4497,
       "sha256": "5923e67faa0d0084f6e9ed36b146b2dd97c5b35db7de32905d7848605f294b8b"
+    },
+    {
+      "file": "app/components/technical-checks-state.ts",
+      "bytes": 2950,
+      "sha256": "9d4404ce183c38511f61bc4c3420ffe9b62d74ca154f3897ed3dbd4eadc87e30"
     },
     {
       "file": "app/components/useModelDiagnosis.ts",
@@ -763,8 +773,8 @@
     },
     {
       "file": "app/page.tsx",
-      "bytes": 198739,
-      "sha256": "176cf26082b275c795d8868978a6474728edf9df0efa944ceac11ebee6ccf188"
+      "bytes": 201356,
+      "sha256": "0d7b718d326c44d4ab2ad518d90c7b94f8c0729360916f20f8f3e64d88b942cd"
     },
     {
       "file": "app/project-journey.css",
@@ -843,8 +853,8 @@
     },
     {
       "file": "app/welcome.css",
-      "bytes": 3351,
-      "sha256": "f8973af00db57235ae0e62b86e4b1ceb5cf7fd5e4c4cab7039726747cb0852c0"
+      "bytes": 3834,
+      "sha256": "33b5e275843da3767d3845311f9e952776f8ae9aae87119ce44949276e6c6b74"
     },
     {
       "file": "cloudflare-env.d.ts",
@@ -1937,6 +1947,11 @@
       "sha256": "4c4b448d6a7a521a3384d8b71ebb3dc05f2d423d8015ae1d7c61b40573ec4d93"
     },
     {
+      "file": "docs/collaboration/onboarding-2026-11-06/cycle-27.md",
+      "bytes": 5971,
+      "sha256": "1b555be4df316647a01e7f9c753890fa359234e774c2c50f8a6ed87dd6275206"
+    },
+    {
       "file": "docs/collaboration/real-projects-2026-11-05/README.md",
       "bytes": 5773,
       "sha256": "eb65320b63ffb0ca34c8b97cbd5f5d3ddcb2b5166163efdbfaabe2e6908361f8"
@@ -2885,6 +2900,11 @@
       "file": "lib/module-dependencies.ts",
       "bytes": 14144,
       "sha256": "b2ef3d9bc0ad880b8c8e9c9f509be1ffb3544091ab6094f9d486b876f89c9674"
+    },
+    {
+      "file": "lib/next-human-review.ts",
+      "bytes": 987,
+      "sha256": "40bd43427d0e0a73ce620615608eba34a67534b97924f0433270a68a4ab4f35d"
     },
     {
       "file": "lib/onboarding-document.ts",
@@ -6383,8 +6403,8 @@
     },
     {
       "file": "tests/first-use-guide.test.ts",
-      "bytes": 4980,
-      "sha256": "77d5b958ebd4788cd7c49f7d661dd917a30b3e853096a24ee6a29b1a216ddfdd"
+      "bytes": 5244,
+      "sha256": "15c9e8e0ce7dad9fe5fa5b7ac5e929be32a05e28c72a73acd30a975f8959976e"
     },
     {
       "file": "tests/first-use-session.test.ts",
@@ -6575,6 +6595,11 @@
       "file": "tests/fixtures/noodle-navigation/v2/visit.html",
       "bytes": 624,
       "sha256": "2c2d922d1d57e2f7bdf87d31315e813857cbd162d03237984d47570e589b600d"
+    },
+    {
+      "file": "tests/fixtures/onboarding-page-context.json",
+      "bytes": 27525,
+      "sha256": "da8f9396251ad3a7865c1373d16f684bbe6cc068c67d180d12de55d740adec3b"
     },
     {
       "file": "tests/fixtures/project-assessment-observations/initial-abstention-counterexamples.json",
@@ -6880,6 +6905,11 @@
       "file": "tests/module-dependencies.test.ts",
       "bytes": 18473,
       "sha256": "1813d4e7f26b92e52debf164a21d957cff8764bb1290a6287cb43928244cc930"
+    },
+    {
+      "file": "tests/next-human-review.test.ts",
+      "bytes": 1882,
+      "sha256": "8eb6ba0eda0dce0c306fa8dfdaac6d65851b741bbc5cb3d82fa71686d873e005"
     },
     {
       "file": "tests/noodle-navigation.test.ts",
@@ -7258,8 +7288,8 @@
     },
     {
       "file": "tests/seller-onboarding-ui-state.test.ts",
-      "bytes": 16268,
-      "sha256": "0bd93f32aa16b7f904c59ba9de5d05008ea7b14e985a2ebe6d23ec584dd6008d"
+      "bytes": 16201,
+      "sha256": "0a213f50fba207b0298c8777304293c8348666b25052929f47b4fcbec42dad65"
     },
     {
       "file": "tests/seller-onboarding.test.ts",
@@ -7367,6 +7397,11 @@
       "sha256": "dc8f7b1d4012db02d0edd04ec33f6c66aad04465a27b1ea23f176eedb28cad95"
     },
     {
+      "file": "tests/technical-checks-panel.test.ts",
+      "bytes": 10830,
+      "sha256": "9e81f8a5e2c150b624990219275c1122e4130a27b0d7760cd3307e4d08239b14"
+    },
+    {
       "file": "tests/time-policy-api-smoke.py",
       "bytes": 8701,
       "sha256": "dbfd8e37b21167c26fa30c16ff34b0f7895b28dfbdf0505cd3e357d34a0c4ab9"
@@ -7420,6 +7455,11 @@
       "file": "tests/universal-tag-evidence.test.ts",
       "bytes": 15079,
       "sha256": "a47950d00236c1f32a2a8dbfc538dc56d11cb6d9112becb5ddbb83979736e2d7"
+    },
+    {
+      "file": "tests/workflow-choice.test.ts",
+      "bytes": 6765,
+      "sha256": "d0d94dad2a484a7bca6af3289a97630072b50143f16e3695b878c097b5ef5e9c"
     },
     {
       "file": "tsconfig.json",
