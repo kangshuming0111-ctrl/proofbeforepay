@@ -1,0 +1,36 @@
+{
+  "schema": "pbp-cycle36-plan-adjudication-v1",
+  "reviewer": "Codex AI independent source reading and actual parse5 counterexamples; not human study",
+  "validReview": "cycle36-plan-v2-deepseek.json",
+  "priorInvalidReview": "cycle36-plan-deepseek.json report_not_json retained, not accepted as completed review",
+  "accepted": [
+    {
+      "point": "The existing citation-coverage incomplete result is not an absence fact",
+      "decision": "Agreed as existing proposal constraint: new separate whole-source structured facts check reuses parser but NEVER derives absence from missing cited labels. Positive actual file/group facts need richer helper output."
+    },
+    {
+      "point": "Unresolved form owner, omitted/truncated HTML, DOM parse issue and skipped foreign HTML islands must disable whole-source absence",
+      "decision": "Accept. Add negative-only completeness check for unresolved matching-label owners and iframe/document islands, plus actual HTML descendant labels under skipped foreign namespace. Do not loosen positive witness."
+    }
+  ],
+  "rejected": [
+    {
+      "point": "xmp is not rawtext and contains parse5 HTML label elements",
+      "reason": "Actual pinned parse5 parse produced zero HTML labels; text is rawtext. Do not reinterpret xmp/comment/template/source attributes as active labels."
+    },
+    {
+      "point": "A page containing only E-mail contradicts absence of a full Name/E-mail/Message group",
+      "reason": "One label is not the required full set. Kept source grouping explicit PAGE versus FORM; no single-largest-group absence shortcut."
+    }
+  ],
+  "implementationPlan": {
+    "boundary": "Only finite html_labels source descriptor, source_text scope, catalog_slots and no linked business checks; historical report unchanged.",
+    "positive": "Complete citation witness yields canonical declared-source explanation with actual cited location; raw supported only, never promotes unknown.",
+    "negative": "Check every actual sent HTML with strict no omission/truncation; parse all bounded source and resolve required owners. If no complete page/form group exists, retain raw changes and explain that limited source fact without target-role mapping or visibility.",
+    "conflict": "Raw changes plus actual complete source group, incomplete source or unresolved parsing/owner =>insufficient_evidence/manual source clarification, never auto-pass.",
+    "sourceScope": "PAGE groups source pages; FORM groups actual verified form owners. Role aliases never establish file identity. Linked business checks stay under existing exact guards.",
+    "preservation": "No new contracts field, no mutation to strict IDs/cites, acceptance/payment/membership; exact raw eval answers retained."
+  },
+  "freshCorpusExposedToReviewer": false,
+  "evaluationCalls": 0
+}

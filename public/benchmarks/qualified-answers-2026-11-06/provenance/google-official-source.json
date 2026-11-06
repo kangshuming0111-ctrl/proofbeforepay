@@ -1,0 +1,20 @@
+{
+  "repository": "https://github.com/GoogleChromeLabs/css-web-ui-demos",
+  "commit": "ab443bf0912eab79053f973b752a6acd3c7f4dd6",
+  "files": [
+    {
+      "path": "html-in-canvas/public/demos/text-input.html",
+      "url": "https://raw.githubusercontent.com/GoogleChromeLabs/css-web-ui-demos/ab443bf0912eab79053f973b752a6acd3c7f4dd6/html-in-canvas/public/demos/text-input.html",
+      "sha256": "1781cff7dad378da17642c153c61eabd8243501ae3de722626a5bf96163d8263",
+      "bytes": 4748
+    },
+    {
+      "path": "LICENSE",
+      "url": "https://raw.githubusercontent.com/GoogleChromeLabs/css-web-ui-demos/ab443bf0912eab79053f973b752a6acd3c7f4dd6/LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "bytes": 11358
+    }
+  ],
+  "sourceExecuted": false,
+  "calls": 0
+}

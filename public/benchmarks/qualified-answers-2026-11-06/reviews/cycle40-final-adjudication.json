@@ -1,0 +1,27 @@
+{
+  "schema": "pbp-cycle40-final-adjudication-v1",
+  "review": "cycle40-post-deepseek.json",
+  "reviewer": "Codex AI independent source/actual test inspection; not human study",
+  "completed": true,
+  "errors": [],
+  "findings": [],
+  "clarifications": [
+    "DeepSeek summary broadly says missing doctype yields unknown; actual parser intentionally ignores missing-doctype only, as before. No new doctype rule or claim is adopted.",
+    "Raw unknown is never re-fed for a status upgrade; actual final branch excludes insufficient_evidence.",
+    "Pure parse5 tree/source strings are immutable for these synchronous checks; no nondeterminism demonstrated by speculation."
+  ],
+  "verification": {
+    "focusedTestsPassed": 26,
+    "typecheckExit": 0,
+    "rootGlobalTestsPassed": 1783,
+    "externalReadonlyControlsPassed": 12,
+    "actualRetainedFalsePassReplays": 2
+  },
+  "limits": [
+    "Finite source-label group refutation, not arbitrary semantic or browser verification.",
+    "Original raw supported remains in v1 adjustedCriteria, active model risks withheld without changing originals.",
+    "Explicit runtime/unknown/business-mapped/emptycitation/incomplete-source paths stay unresolved."
+  ],
+  "earlier17AnswersAndReferencesUnchanged": true,
+  "newEvaluationCalls": 0
+}

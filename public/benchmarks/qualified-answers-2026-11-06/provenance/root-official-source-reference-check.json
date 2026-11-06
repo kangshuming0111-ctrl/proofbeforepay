@@ -1,0 +1,12 @@
+{
+  "officialSourceBytes": 4748,
+  "officialSourceSha256": "1781cff7dad378da17642c153c61eabd8243501ae3de722626a5bf96163d8263",
+  "licenseBytes": 11358,
+  "licenseSha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+  "originalCaseByteEqual": [
+    true,
+    true
+  ],
+  "referencesIndependentlyReadBeforeCalls": true,
+  "sourceExecuted": false
+}

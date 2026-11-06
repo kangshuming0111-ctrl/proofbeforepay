@@ -5,7 +5,7 @@ import {tmpdir} from "node:os";
 import path from "node:path";
 import {spawnSync} from "node:child_process";
 import {fileURLToPath} from "node:url";
-import {evidenceReplayImplementationSnapshot,hashEvidenceReplay,stripEvidenceActionMetadata,verifyAdditiveObligationsBaseline,verifyAdjustedCriteriaLineage,verifyRetainedRequestPolicy,verifyWithheldRiskLineage,writeEvidenceReplay} from "../scripts/replay-evidence-actions-2026-11-06.mjs";
+import {evidenceReplayImplementationSnapshot,hashEvidenceReplay,stripEvidenceActionMetadata,verifyAdditiveObligationsBaseline,verifyAdjustedCriteriaLineage,verifyRetainedRequestPolicy,verifyV4PublicationMigrationBaseline,verifyWithheldRiskLineage,writeEvidenceReplay} from "../scripts/replay-evidence-actions-2026-11-06.mjs";
 import {deriveAssessmentObligations} from "../lib/assessment-obligations.ts";
 import {validateProjectCorpus} from "../scripts/run-project-assessment-evaluation.ts";
 
@@ -119,6 +119,19 @@ test("new no-adjustment reports explicitly record not_withheld without removing 
  assert.equal(verifyWithheldRiskLineage(emptyRiskReport,{adjustedCriteria:adjusted,candidates:[]},files,criteria,true).disposition,"item_status_adjusted");
 });
 
+test("explicit v4 migration accounts unchanged original leads and fixed notice without claiming unchanged publication",()=>{
+ const criteria=[{id:'coverage-1',title:'Original content',source:'The page content must list the shop address.'}],citation={file:'index.html',start:0,end:11,excerpt:'<p>Home</p>'},risks=[{title:'Original lead',explanation:'Original explanation.',suggestion:'Original proposal.',citations:[citation]},{title:'Second lead',explanation:'Other original explanation.',suggestion:'Other proposal.',citations:[{...citation}]}];
+ const previous={id:'retained-report',items:[{criterionId:'coverage-1',status:'supported',explanation:'Retained item.',citations:[citation],ruleEvidenceIds:[]}],risks,limitations:['Retained inventory.','Retained model limits.','Retained protocol.'],withheldRisks:{version:1,reason:'not_withheld',adjustedCriteria:[],entries:[]}},notice='2 optional source-model proposal(s) lack independent agreed-scope, page-owner or observation bindings. Originals are retained outside actionable findings. Item findings are unchanged; human opinions do not release the gate, accept work or make a payment.';
+ const report={...structuredClone(previous),items:previous.items.map(i=>({...structuredClone(i),obligations:deriveAssessmentObligations(criteria[0])})),risks:[],limitations:[previous.limitations[0],previous.limitations[1],notice,previous.limitations[2]],withheldRisks:{version:4,reason:'optional_source_leads_unverified',adjustedCriteria:[],entries:risks.map((risk,originalRiskIndex)=>({originalRiskIndex,risk:structuredClone(risk)}))}};
+ const before=structuredClone({previous,report}),checked=verifyV4PublicationMigrationBaseline(report,previous,criteria,'en');assert.equal(checked.publishedCoreFieldsUnchanged,false);assert.equal(checked.allOtherPublishedCoreFieldsUnchanged,true);assert.equal(checked.publicationMigration.publishedFieldsUnchanged,false);assert.equal(checked.publicationMigration.originalRiskCount,2);assert.deepEqual(checked.publicationMigration.originalActiveRisks,risks);assert.deepEqual(checked.publicationMigration.newWithheldEntries,report.withheldRisks.entries);assert.deepEqual({previous,report},before);
+ const legacy:any=structuredClone(previous);delete legacy.withheldRisks;assert.equal(verifyV4PublicationMigrationBaseline(report,legacy,criteria,'en').publicationMigration.originalDisposition,'legacy_without_disposition');
+ for(const disposition of[undefined,{version:1,reason:'item_status_adjusted',adjustedCriteria:[],entries:[]},{version:2,reason:'source_scope_unestablished',scopeCriterionIds:['coverage-1'],adjustedCriteria:[],entries:[]}])assert.throws(()=>verifyV4PublicationMigrationBaseline(report,{...previous,withheldRisks:disposition},criteria,'en'));
+ const mutations:((v:any)=>void)[]=[v=>{v.withheldRisks.entries.pop();},v=>{v.withheldRisks.entries[0].risk.title='Changed';},v=>{v.withheldRisks.entries[0].risk.citations[0].excerpt='changed';},v=>{v.withheldRisks.entries.reverse();v.withheldRisks.entries.forEach((e:any,i:number)=>e.originalRiskIndex=i);},v=>{v.withheldRisks.entries[0].originalRiskIndex=1;},v=>{v.withheldRisks.scopeCriterionIds=[];},v=>{v.withheldRisks.adjustedCriteria=[{criterionId:'coverage-1',originalStatus:'changes_suggested',publishedStatus:'supported'}];},v=>{v.items.push({...v.items[0],criterionId:'coverage-2'});},v=>{v.items[0].status='changes_suggested';},v=>{v.items[0].explanation='Changed';},v=>{v.items[0].extra='new field';},v=>{v.limitations[0]='Changed inventory';},v=>{v.limitations[2]='Different notice';},v=>{v.limitations.push('Invented limitation');},v=>{v.risks=[v.withheldRisks.entries[0].risk];}];
+ for(const mutate of mutations){const changed=structuredClone(report);mutate(changed);assert.throws(()=>verifyV4PublicationMigrationBaseline(changed,previous,criteria,'en'));}
+ const lineage={adjustedCriteria:[],candidates:[],originalRisks:risks.map((risk,originalRiskIndex)=>({risk,originalRiskIndex}))};assert.equal(verifyWithheldRiskLineage(report,lineage,{'index.html':'<p>Home</p>'},criteria,true).expectedEntries,2);
+ assert.throws(()=>verifyWithheldRiskLineage(report,{...lineage,originalRisks:lineage.originalRisks.slice(1)},{'index.html':'<p>Home</p>'},criteria,true));
+});
+
 test("retained replay remains runnable in an exported tree with public fixtures and no ignored outputs",async()=>{
  const dir=await mkdtemp(path.join(tmpdir(),"pbp-exported-evidence-replay-"));
  try{
@@ -138,7 +151,12 @@ test("retained replay remains runnable in an exported tree with public fixtures 
   assert.equal(run.status,0,run.stdout+run.stderr);
   const report=JSON.parse(await readFile(output,"utf8"));
   assert.equal(report.projects,6);assert.equal(report.criteria,6);assert.equal(report.apiCalls,0);assert.equal(report.networkCalls,0);assert.equal(report.blockedNetworkAttempts,0);
-  assert.ok(report.rows.every((row:{publishedFieldsUnchanged:boolean;acceptanceAndPaymentUnchanged:boolean})=>row.publishedFieldsUnchanged&&row.acceptanceAndPaymentUnchanged));
+  let migrated=0,moved=0;
+  for(const row of report.rows){assert.equal(row.acceptanceAndPaymentUnchanged,true);const prior=rows.find((prior:{id:string})=>prior.id===row.id).currentApplication.report;
+   if(row.publicationMigration){migrated++;moved+=prior.risks.length;assert.equal(row.publishedFieldsUnchanged,false);assert.equal(row.publicationMigration.publishedFieldsUnchanged,false);assert.deepEqual(row.publicationMigration.originalActiveRisks,prior.risks);assert.deepEqual(row.publicationMigration.newWithheldEntries.map((entry:{risk:unknown})=>entry.risk),prior.risks);assert.equal(row.publicationMigration.oneToOneOriginalOrderAndCitations,true);assert.equal(row.obligationsComparison.allOtherPublishedCoreFieldsUnchanged,true);}
+   else assert.equal(row.publishedFieldsUnchanged,true);
+  }
+  assert.equal(report.totals.publicationMigratedReports,migrated);assert.equal(report.totals.originalActiveRisksMovedToWithheld,moved);assert.ok(migrated>0);
   const originalFreeze=JSON.parse(await readFile(new URL("cycle-15-scope-freeze.json",publicRoot),"utf8"));
   assert.ok(report.rows.every((row:{id:string;originalRequestSha256:string;replayRequestSha256:string;requestBytesUnchanged:boolean;requestPolicyComparison:{allowedDifference:string;originalSystemSha256:string;replaySystemSha256:string;systemPolicyChanged:boolean;nonSystemRequestBytesUnchanged:boolean;requestBytesUnchanged:boolean}})=>{
    const retained=originalFreeze.snapshot.projects.find((project:{id:string})=>project.id===row.id),policy=row.requestPolicyComparison;

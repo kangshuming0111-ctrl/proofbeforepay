@@ -38,13 +38,14 @@ test("every final status difference is counted and a missing original status fai
   assert.throws(()=>publishSourceAssessmentNotes("zh",items,new Map([["coverage-1","supported"]]),risks(),2,files),TypeError);
 });
 
-test("unchanged statuses retain all validated risk details in independent arrays and objects", () => {
+test("unchanged statuses retain otherwise-unbound optional leads outside active findings in independent objects", () => {
   const items = [item(), item("coverage-2", "changes_suggested"), item("coverage-3", "insufficient_evidence")], original = new Map(items.map(row => [row.criterionId, row.status])), modelRisks = risks(), before = structuredClone(modelRisks);
   const result = publishSourceAssessmentNotes("en", items, original, modelRisks, 1, files);
-  assert.equal(result.statusAdjustedCount, 0); assert.deepEqual(result.risks, modelRisks); assert.equal(result.limitations.length, 2);
-  assert.notEqual(result.risks, modelRisks); assert.notEqual(result.risks[0], modelRisks[0]);
-  assert.notEqual(result.risks[0].citations, modelRisks[0].citations); assert.notEqual(result.risks[0].citations[0], modelRisks[0].citations[0]);
-  result.risks[0].suggestion = "Presentation copy changed"; result.risks[0].citations[0].excerpt = "Changed";
+  assert.equal(result.statusAdjustedCount, 0); assert.deepEqual(result.risks, []); assert.equal(result.limitations.length, 3);
+  assert.equal(result.withheldRisks?.version,4);assert.equal(result.withheldRisks?.reason,"optional_source_leads_unverified");
+  const retained=result.withheldRisks!.entries[0].risk;assert.deepEqual(retained,modelRisks[0]);assert.notEqual(retained,modelRisks[0]);
+  assert.notEqual(retained.citations, modelRisks[0].citations); assert.notEqual(retained.citations[0], modelRisks[0].citations[0]);
+  retained.suggestion = "Presentation copy changed"; retained.citations[0].excerpt = "Changed";
   assert.deepEqual(modelRisks, before);
 });
 
@@ -73,6 +74,6 @@ test("the publication gate supplies no missing risk fields and preserves its cal
   // It does not fill a missing suggestion or recast a risk as a valid result.
   const invalid = [{title: "Invalid caller fixture", explanation: "Missing suggestion.", citations: []}] as unknown as ProofAssessment["risks"];
   const result = publishSourceAssessmentNotes("en", [item()], new Map([["coverage-1", "supported"]]), invalid, 0, files);
-  assert.equal(Object.hasOwn(result.risks[0], "suggestion"), false);
+  assert.equal(Object.hasOwn(result.withheldRisks!.entries[0].risk, "suggestion"), false);
   for (const count of [-1, 1.5, Number.NaN]) assert.throws(() => publishSourceAssessmentNotes("en", [], new Map(), [], count, files), TypeError);
 });

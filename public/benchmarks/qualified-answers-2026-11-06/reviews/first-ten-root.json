@@ -1,0 +1,197 @@
+{
+  "schema": "pbp-qualified-root-whole-answer-review-v1",
+  "reviewer": "Root Codex AI independent of corpus author; not human study",
+  "inputs": [
+    {
+      "file": "known-first-live.json",
+      "sha256": "43cb7828c44e427d94c6a756196001df0e09516d4ab400cd8c408a54a876b9af"
+    },
+    {
+      "file": "known-repeat-live.json",
+      "sha256": "82ed57bb1660e7fe5aa8fb49582c2f0bd1ed4d6c04fed3aa055e413b1baf32bd"
+    },
+    {
+      "file": "fresh-first-live.json",
+      "sha256": "84ee5050c87e701bfc2c305e357ec85760e280be10e98710bbb7f8e1294c904d"
+    }
+  ],
+  "rows": [
+    {
+      "batch": "known-first-live.json",
+      "id": "mdn-derived-cross-page-label",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "note": "Targeted visible/page-owner overclaims are no longer actionable: source-derived explanation and original optional leads outside the findings/repair path.",
+      "targetedUnsupportedVisibilityOrGuessedPageActionPublished": false,
+      "allFullItemsRisksLimitationsRead": true,
+      "rawMatches": 2,
+      "appMatches": 2,
+      "criteria": 2,
+      "applicationAccepted": true,
+      "error": null,
+      "riskDisposition": "optional_source_leads_unverified"
+    },
+    {
+      "batch": "known-first-live.json",
+      "id": "mdn-derived-inert-label-decoys",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "note": "Targeted visible/page-owner overclaims are no longer actionable: source-derived explanation and original optional leads outside the findings/repair path.",
+      "targetedUnsupportedVisibilityOrGuessedPageActionPublished": false,
+      "allFullItemsRisksLimitationsRead": true,
+      "rawMatches": 2,
+      "appMatches": 2,
+      "criteria": 2,
+      "applicationAccepted": true,
+      "error": null,
+      "riskDisposition": "optional_source_leads_unverified"
+    },
+    {
+      "batch": "known-first-live.json",
+      "id": "c34-fresh-signup-cross-page",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "note": "Targeted visible/page-owner overclaims are no longer actionable: source-derived explanation and original optional leads outside the findings/repair path.",
+      "targetedUnsupportedVisibilityOrGuessedPageActionPublished": false,
+      "allFullItemsRisksLimitationsRead": true,
+      "rawMatches": 2,
+      "appMatches": 2,
+      "criteria": 2,
+      "applicationAccepted": true,
+      "error": null,
+      "riskDisposition": "optional_source_leads_unverified"
+    },
+    {
+      "batch": "known-repeat-live.json",
+      "id": "mdn-derived-cross-page-label",
+      "rawWholeAnswer": "rejected",
+      "applicationWholeAnswer": "qualified_conservative_unknown",
+      "note": "Raw merges labels across files as supported. Existing exact same-page witness blocks the false pass to unknown; reference defect remains unresolved, not counted as correct detection.",
+      "targetedUnsupportedVisibilityOrGuessedPageActionPublished": false,
+      "allFullItemsRisksLimitationsRead": true,
+      "rawMatches": 1,
+      "appMatches": 1,
+      "criteria": 2,
+      "applicationAccepted": true,
+      "error": null,
+      "riskDisposition": "item_status_adjusted"
+    },
+    {
+      "batch": "known-repeat-live.json",
+      "id": "mdn-derived-inert-label-decoys",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "note": "Targeted visible/page-owner overclaims are no longer actionable: source-derived explanation and original optional leads outside the findings/repair path.",
+      "targetedUnsupportedVisibilityOrGuessedPageActionPublished": false,
+      "allFullItemsRisksLimitationsRead": true,
+      "rawMatches": 2,
+      "appMatches": 2,
+      "criteria": 2,
+      "applicationAccepted": true,
+      "error": null,
+      "riskDisposition": "optional_source_leads_unverified"
+    },
+    {
+      "batch": "known-repeat-live.json",
+      "id": "c34-fresh-signup-cross-page",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "note": "Targeted visible/page-owner overclaims are no longer actionable: source-derived explanation and original optional leads outside the findings/repair path.",
+      "targetedUnsupportedVisibilityOrGuessedPageActionPublished": false,
+      "allFullItemsRisksLimitationsRead": true,
+      "rawMatches": 2,
+      "appMatches": 2,
+      "criteria": 2,
+      "applicationAccepted": true,
+      "error": null,
+      "riskDisposition": "optional_source_leads_unverified"
+    },
+    {
+      "batch": "fresh-first-live.json",
+      "id": "chrome-canvas-original-label-source",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "note": "Exact source label declarations and legend factual; custom controls/canvas rendering explicitly unobserved.",
+      "targetedUnsupportedVisibilityOrGuessedPageActionPublished": false,
+      "allFullItemsRisksLimitationsRead": true,
+      "rawMatches": 2,
+      "appMatches": 2,
+      "criteria": 2,
+      "applicationAccepted": true,
+      "error": null,
+      "riskDisposition": "not_withheld"
+    },
+    {
+      "batch": "fresh-first-live.json",
+      "id": "chrome-canvas-derived-cross-page-label",
+      "rawWholeAnswer": "rejected",
+      "applicationWholeAnswer": "not_delivered",
+      "note": "Provider omitted the entire required limitations key; strict decoder rejects whole report. Raw also wrongly titles slider absent though it remains in source. No field repair/retry, no published conclusion.",
+      "targetedUnsupportedVisibilityOrGuessedPageActionPublished": false,
+      "allFullItemsRisksLimitationsRead": true,
+      "rawMatches": 1,
+      "appMatches": 0,
+      "criteria": 2,
+      "applicationAccepted": false,
+      "error": "structure",
+      "riskDisposition": null
+    },
+    {
+      "batch": "fresh-first-live.json",
+      "id": "chrome-canvas-derived-inert-and-literal-visible",
+      "rawWholeAnswer": "rejected",
+      "applicationWholeAnswer": "qualified_conservative_unknown",
+      "note": "Raw counts template label as supported. App blocks that item to unknown; quoted literal Visible label remains correctly source-supported. Unresolved reference defect is retained separately.",
+      "targetedUnsupportedVisibilityOrGuessedPageActionPublished": false,
+      "allFullItemsRisksLimitationsRead": true,
+      "rawMatches": 1,
+      "appMatches": 1,
+      "criteria": 2,
+      "applicationAccepted": true,
+      "error": null,
+      "riskDisposition": "item_status_adjusted"
+    },
+    {
+      "batch": "fresh-first-live.json",
+      "id": "chrome-canvas-original-runtime-conjunction",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "note": "Runtime remains unknown. Raw optional no-submission claim overstates a declared inline handler; unbound lead is withheld, not a runtime fact or action.",
+      "targetedUnsupportedVisibilityOrGuessedPageActionPublished": false,
+      "allFullItemsRisksLimitationsRead": true,
+      "rawMatches": 2,
+      "appMatches": 2,
+      "criteria": 2,
+      "applicationAccepted": true,
+      "error": null,
+      "riskDisposition": "optional_source_leads_unverified"
+    }
+  ],
+  "summary": {
+    "attempts": 10,
+    "distinctCases": 7,
+    "criteriaAttempts": 20,
+    "rawStatusMatches": 17,
+    "applicationStatusMatches": 16,
+    "rawReview": {
+      "accepted": 1,
+      "qualified": 6,
+      "rejected": 3
+    },
+    "applicationReview": {
+      "accepted": 7,
+      "qualified_conservative_unknown": 2,
+      "not_delivered": 1
+    },
+    "targetedUnverifiedVisibilityOrGuessedPageActionCount": 0,
+    "retries": 0,
+    "estimatedUsd": 0.0538494
+  },
+  "decision": "C36/C37 targeted publication changes meet bounded source-fact/authority criteria. C38 action is separately tested. Continue C39 for the new provider top-level omission; do not claim all tests/first attempts are correct.",
+  "preservation": [
+    "All first responses, source references and request freezes retained",
+    "Existing missing-field decoder unchanged; malformed answer stays rejected",
+    "Unknown protects user but does not count as a matched defect reference",
+    "Only pinned official source HTML was inspected, no original canvas/custom-element execution"
+  ]
+}

@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { ChevronDown, FileSearch, LoaderCircle, Quote, TriangleAlert } from "lucide-react";
-import type { Language, ProofAssessment, ProofAssessmentCitation, ProofCriterion, ProofRiskReview, ProofRole } from "@/lib/contracts";
+import type { Language, ProofAssessment, ProofAssessmentCitation, ProofBusinessCheckStep, ProofCriterion, ProofRiskReview, ProofRole } from "@/lib/contracts";
 import { criterionDisplayTitle } from "@/lib/delivery-overview";
 import "../assessment.css";
 import { RiskReviewPanel } from "./RiskReviewPanel";
@@ -17,6 +17,7 @@ import {AssessmentObligations} from "./AssessmentObligations";
 export type DeliveryAssessmentProps = {
   report?: ProofAssessment;
   criteria: ProofCriterion[];
+  scopeSteps?: ProofBusinessCheckStep[];
   language: Language;
   selectedCriterionId?: string;
   enabled?: boolean;
@@ -47,7 +48,7 @@ function Citations({ citations, language }: { citations: ProofAssessmentCitation
   </details>;
 }
 
-export function DeliveryAssessment({ report, criteria, language, selectedCriterionId, enabled = false, busy = false, configured = false, onRun, onPrepareFeedback, readOnly = false, riskReviews, actorRole, onSaveRiskReview }: DeliveryAssessmentProps) {
+export function DeliveryAssessment({ report, criteria, scopeSteps = [], language, selectedCriterionId, enabled = false, busy = false, configured = false, onRun, onPrepareFeedback, readOnly = false, riskReviews, actorRole, onSaveRiskReview }: DeliveryAssessmentProps) {
   const zh = language === "zh";
   const tr = (chinese: string, english: string) => zh ? chinese : english;
   const id = useId();
@@ -57,13 +58,21 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
   const otherItems = report?.items.filter(item => item !== selectedItem) ?? [];
   const reviewSummary = report ? assessmentReviewSummary(report, riskReviews) : undefined;
   const coverage = report ? assessmentCoverageGroups(report) : undefined;
+  const poolMarker = report?.withheldRisks as {version?:unknown;reason?:unknown}|undefined;
+  const unboundNamespace = poolMarker?.version === 4 || poolMarker?.reason === "optional_source_leads_unverified";
+  const publishedRiskCount = unboundNamespace ? 0 : report?.risks.length ?? 0;
   const withheld = report?.withheldRisks && Array.isArray(report.withheldRisks.adjustedCriteria) && Array.isArray(report.withheldRisks.entries)
     && (report.withheldRisks.version === 1 && ["item_status_adjusted", "not_withheld"].includes(report.withheldRisks.reason)
     || (report.withheldRisks.version === 2 && report.withheldRisks.reason === "source_scope_unestablished" || report.withheldRisks.version === 3 && report.withheldRisks.reason === "custom_scope_requires_observation")
       && Array.isArray(report.withheldRisks.scopeCriterionIds)
       && (report.withheldRisks.version!==3 || report.withheldRisks.entries.length<=5 && report.withheldRisks.scopeCriterionIds.every(criterionId=>report.items.some(item=>item.criterionId===criterionId&&item.status==='insufficient_evidence'))) && report.withheldRisks.scopeCriterionIds.length > 0 && report.withheldRisks.scopeCriterionIds.length <= 17
       && new Set(report.withheldRisks.scopeCriterionIds).size === report.withheldRisks.scopeCriterionIds.length && report.withheldRisks.scopeCriterionIds.every(criterionId => typeof criterionId === "string" && criteria.some(criterion => criterion.id === criterionId))
-      && report.withheldRisks.adjustedCriteria.length === 0 && report.withheldRisks.entries.length > 0 && report.risks.length === 0)
+      && report.withheldRisks.adjustedCriteria.length === 0 && report.withheldRisks.entries.length > 0 && report.risks.length === 0
+    || report.withheldRisks.version === 4 && report.withheldRisks.reason === "optional_source_leads_unverified"
+      && report.method === "source-ai-v1" && report.mode === "live" && report.risks.length === 0
+      && Object.keys(report.withheldRisks).sort().join(",") === "adjustedCriteria,entries,reason,version"
+      && report.withheldRisks.adjustedCriteria.length === 0 && report.withheldRisks.entries.length > 0 && report.withheldRisks.entries.length <= 5
+      && report.withheldRisks.entries.every((entry, index) => entry && entry.originalRiskIndex === index && entry.risk))
     ? report.withheldRisks : undefined;
   const titleFor = (criterionId: string) => {
     const criterion = criteria.find(item => item.id === criterionId);
@@ -84,7 +93,7 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
     const insufficient = item.status === "insufficient_evidence";
     const criterion = criteria.find(criterion => criterion.id === item.criterionId);
     const lockedSource = assessmentCriterionSource(criterion, item.criterionId);
-    const draft = canPrepareFeedback ? buildAssessmentFeedbackDraft(criterion, item, language) : undefined;
+    const draft = canPrepareFeedback ? buildAssessmentFeedbackDraft(criterion, item, language, scopeSteps) : undefined;
     const evidenceNeed = insufficient ? assessmentEvidenceNeedPresentation(item.evidenceNeed, language) : undefined;
     return <article className={`assessment-item${selected ? " assessment-item-selected" : ""}`} key={item.criterionId}>
       <div className="assessment-item-heading"><h4>{titleFor(item.criterionId)}</h4><span className={`assessment-status assessment-status-${item.status}`}>{statusLabel(item.status)}</span></div>
@@ -107,7 +116,7 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
       {canPrepareFeedback && <div className="assessment-feedback-action no-print"><button type="button" className="assessment-feedback-button" disabled={busy || !draft} onClick={() => {
         if (!report || !draft) return;
         onPrepareFeedback?.({ deliveryId: report.deliveryId, criterionId: item.criterionId, comment: draft.comment });
-      }}>{insufficient ? tr("请求补充证据", "Draft an evidence request") : tr("加入修改草稿", "Add to change draft")}</button><span>{tr("仅填入可编辑草稿，不会自动退回。", "Adds an editable draft without sending a change request.")}</span>{draft && (draft.sourceExcerpted || draft.explanationExcerpted) && <p className="assessment-draft-excerpt-note">{tr("草稿上限为 1000 字符，超长部分会明确标为节选。请展开完整锁定原文核对后再编辑发送。", "The draft has a 1000-character limit. Shortened sections are labelled as excerpts. Inspect the complete locked wording before editing and sending.")}</p>}</div>}
+      }}>{draft?.intent === "scope_clarification" ? tr("先澄清页面归属", "Clarify page scope") : insufficient ? tr("请求补充证据", "Draft an evidence request") : tr("加入修改草稿", "Add to change draft")}</button><span>{tr("仅填入可编辑草稿，不会自动退回。", "Adds an editable draft without sending a change request.")}</span>{draft && (draft.sourceExcerpted || draft.explanationExcerpted) && <p className="assessment-draft-excerpt-note">{tr("草稿上限为 1000 字符，超长部分会明确标为节选。请展开完整锁定原文核对后再编辑发送。", "The draft has a 1000-character limit. Shortened sections are labelled as excerpts. Inspect the complete locked wording before editing and sending.")}</p>}</div>}
     </article>;
   }
 
@@ -139,8 +148,8 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
           {selectedItem ? renderItem(selectedItem, true) : <p className="assessment-empty">{selectedCriterionId ? tr("此报告没有当前所选标准的建议，不能据此视为通过。", "This report has no suggestion for the selected criterion; it cannot be treated as a pass.") : tr("此报告没有逐项建议。", "This report has no criterion suggestions.")}</p>}
           {otherItems.length > 0 && <details className="assessment-other-items"><summary>{tr(`查看其余 ${otherItems.length} 条要求`, `Inspect the other ${otherItems.length} criteria`)}<ChevronDown size={13} aria-hidden="true" /></summary><div>{otherItems.map(item => renderItem(item))}</div></details>}
         </div>
-        <details className="assessment-risks"><summary><TriangleAlert size={13} aria-hidden="true" />{tr(`已发布、待核查的 AI 线索（${report.risks.length}）`, `Published AI indications to review (${report.risks.length})`)}<ChevronDown size={13} aria-hidden="true" /></summary>
-          <div className="assessment-risk-body">{report.risks.length ? <><p className="assessment-risk-notice">{tr("源码线索尚未运行验证，需要复现后确认。", "Source-level indications have not been verified by execution. Reproduce them before drawing a conclusion.")}</p>
+        <details className="assessment-risks"><summary><TriangleAlert size={13} aria-hidden="true" />{tr(`已发布、待核查的 AI 线索（${publishedRiskCount}）`, `Published AI indications to review (${publishedRiskCount})`)}<ChevronDown size={13} aria-hidden="true" /></summary>
+          <div className="assessment-risk-body">{publishedRiskCount ? <><p className="assessment-risk-notice">{tr("源码线索尚未运行验证，需要复现后确认。", "Source-level indications have not been verified by execution. Reproduce them before drawing a conclusion.")}</p>
             {reviewSummary && <section className="assessment-review-summary" aria-label={tr("潜在线索的人工复核概览", "Human review summary for potential issues")}>
               <strong>{tr(`共 ${reviewSummary.total} 条线索，${reviewSummary.unreviewed} 条尚无人工记录`, `Potential issues: ${reviewSummary.total}; without any human record: ${reviewSummary.unreviewed}`)}</strong>
               <dl>{(["buyer", "seller"] as const).map(role => { const positions = reviewSummary.participants[role]; return <div key={role}><dt>{role === "buyer" ? tr("买家最新意见", "Buyer’s latest positions") : tr("卖家最新意见", "Seller’s latest positions")}</dt><dd>{tr(`核实 ${positions.confirmed} · 驳回 ${positions.rejected} · 仍需证据 ${positions.needsEvidence} · 未记录 ${positions.unreviewed}`, `Confirmed ${positions.confirmed} · Rejected ${positions.rejected} · Needs evidence ${positions.needsEvidence} · No record ${positions.unreviewed}`)}</dd></div>; })}</dl>
@@ -159,11 +168,14 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
         <details className="assessment-withheld-risks"><summary><TriangleAlert size={13} aria-hidden="true" />
           <span>{withheld ? withheld.reason === "not_withheld"
             ? tr("本次没有暂缓 AI 线索（0）", "No AI indications were withheld (0)")
+            : withheld.version === 4
+            ? tr(`未核验模型提议（${withheld.entries.length}）`, `Unverified model proposals (${withheld.entries.length})`)
             : tr(`已暂缓 AI 线索（${withheld.entries.length}，待复核）`, `Withheld AI indications (${withheld.entries.length}, awaiting review)`)
             : tr("暂缓 AI 线索记录（未保存）", "Withheld AI indication record (not saved)")}</span>
           {withheld?.reason === "item_status_adjusted" && <small>{tr(`${withheld.adjustedCriteria.length} 项状态调整后的统一暂缓`, `Report-wide gate after ${withheld.adjustedCriteria.length} item status adjustment(s)`)}</small>}
           {withheld?.reason === "source_scope_unestablished" && <small>{tr("独立约定范围未建立 · 逐项状态未调整", "Agreed indication scope unestablished · item statuses unchanged")}</small>}
           {withheld?.reason === "custom_scope_requires_observation" && <small>{tr("自定义要求待观察 · 逐项状态未调整", "Custom requirements need observation · item statuses unchanged")}</small>}
+          {withheld?.reason === "optional_source_leads_unverified" && <small>{tr("未建立独立约定与观察依据 · 逐项状态未调整", "Independent scope and observations unestablished · item statuses unchanged")}</small>}
           <ChevronDown size={13} aria-hidden="true" /></summary>
           <div className="assessment-withheld-body">
             {!withheld ? <p className="assessment-empty">{report.withheldRisks === undefined
@@ -175,6 +187,8 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
                     ? tr("这些可选模型线索尚未与独立、明确的约定范围建立依据，因此原件按电话／邮箱文字自定义范围单独暂缓。所有逐项结论保持不变，也不认定其他页面、链接或手机要求通过。这里没有状态调整记录，也不表示线索已证实、被驳回或问题已解决。", "These optional model indications have not established their own independent, explicit agreed scope, so originals are withheld under the custom phone/email text scope. All item findings are unchanged; other page, link or mobile requirements are not declared passed. There is no status-adjustment record, and the indications are not confirmed, rejected or resolved.")
                     : withheld.reason === "custom_scope_requires_observation"
                     ? tr("自定义要求的逐项结论仍为证据不足，并且独立范围检查确认仍需运行或人工观察，因此本报告的可选模型线索统一暂缓。原始线索与引文单独保留；没有改变逐项状态，也没有认定每条线索由某项要求造成。人工意见不解除暂缓，不代表问题已解决、验收或付款。", "The custom items remain insufficient, and an independent scope check requires execution or human observation, so this report’s optional model indications are withheld together. Original wording and citations are retained separately. Item statuses are unchanged; no per-lead causation, release, resolution, acceptance or payment is established by human opinions.")
+                    : withheld.reason === "optional_source_leads_unverified"
+                    ? tr("这些可选源码模型提议没有独立绑定约定要求、页面归属或实际观察，因此不作为已发现问题或可执行返工依据。下方仅按编号保留未核验原文；其中的页面名称、可见性与修改建议均不是系统认定。逐项结论保持不变，人工意见不能解除暂缓、验收或付款。", "These optional source-model proposals lack independent bindings to agreed obligations, page identity or actual observations. They are not established findings or authority for repair work. Numbered records retain unverified original wording; their page names, visibility claims and suggestions are not system determinations. Item findings are unchanged, and human opinions do not release the gate, accept work or make a payment.")
                     : tr("部分逐项状态经规则或证据校验调整，因此本报告的全部可选 AI 线索统一暂缓。这不表示每条线索都由下列要求造成，也不表示线索已证实、被驳回或问题已解决。", "Some item statuses changed under rule or evidence checks, so this report's optional AI indications were withheld together. This does not establish that every indication is caused by the items below, confirm or reject a defect, or show that an issue was resolved.")}</p>
                   {withheld.reason === "item_status_adjusted" && <details className="assessment-withheld-adjustments"><summary>{tr(`查看状态调整的要求（${withheld.adjustedCriteria.length}）`, `Inspect adjusted requirements (${withheld.adjustedCriteria.length})`)}</summary>
                     <ul>{withheld.adjustedCriteria.map(adjustment => <li key={adjustment.criterionId}><strong>{titleFor(adjustment.criterionId)}</strong><span>{tr("原 AI 建议 → 发布状态：", "Original model suggestion → Published status: ")}{statusLabel(adjustment.originalStatus)} → {statusLabel(adjustment.publishedStatus)}</span></li>)}</ul>
@@ -184,8 +198,13 @@ export function DeliveryAssessment({ report, criteria, language, selectedCriteri
                   <p className="assessment-risk-notice">{tr("下列保留原模型线索原文与来源引用。人工核对意见单独追加保存，不计入上方已发布线索数量；本区不提供关联返工操作。", "The original model wording and source citations below are preserved. Human opinions are appended separately and excluded from the published indication count above. This section offers no linked repair actions.")}</p>
                   {withheld.entries.length ? withheld.entries.map(entry => <article className="assessment-risk assessment-withheld-risk" key={entry.originalRiskIndex} data-original-risk-index={entry.originalRiskIndex}>
                     <span className="assessment-risk-basis">{tr(`原模型线索 ${entry.originalRiskIndex + 1} · 暂缓，待复核`, `Original model indication ${entry.originalRiskIndex + 1} · Withheld, awaiting review`)}</span>
-                    <h4>{entry.risk.title}</h4><p>{entry.risk.explanation}</p><p className="assessment-risk-suggestion"><strong>{tr("模型原建议：", "Original model suggestion: ")}</strong>{entry.risk.suggestion}</p>
-                    <Citations citations={entry.risk.citations} language={language} />
+                    {withheld.version === 4 ? <>
+                      <h4>{tr(`未核验模型提议 ${entry.originalRiskIndex + 1}`, `Unverified model proposal ${entry.originalRiskIndex + 1}`)}</h4>
+                      <details className="assessment-original-risk" data-unverified-original="true"><summary>{tr("查看原模型措辞与引文（未核验）", "Inspect original model wording and citations (unverified)")}</summary>
+                        <strong>{entry.risk.title}</strong><p>{entry.risk.explanation}</p><p className="assessment-risk-suggestion"><strong>{tr("模型原建议：", "Original model suggestion: ")}</strong>{entry.risk.suggestion}</p>
+                        <Citations citations={entry.risk.citations} language={language} />
+                      </details>
+                    </> : <><h4>{entry.risk.title}</h4><p>{entry.risk.explanation}</p><p className="assessment-risk-suggestion"><strong>{tr("模型原建议：", "Original model suggestion: ")}</strong>{entry.risk.suggestion}</p><Citations citations={entry.risk.citations} language={language} /></>}
                     <RiskReviewPanel key={`${report.deliveryId}-${report.id}-withheld-${entry.originalRiskIndex}-${actorRole ?? "buyer"}`} deliveryId={report.deliveryId} assessmentId={report.id} riskIndex={entry.originalRiskIndex} riskOrigin="withheld" reviews={riskReviews} role={actorRole} language={language} busy={busy} readOnly={readOnly} onSave={onSaveRiskReview} />
                   </article>) : <p className="assessment-empty">{tr("本次有状态调整，但暂缓线索为 0 条；没有暂缓原件需要查看。", "Item statuses were adjusted, but there are 0 withheld indications and no quarantined originals to inspect.")}</p>}
                 </>}

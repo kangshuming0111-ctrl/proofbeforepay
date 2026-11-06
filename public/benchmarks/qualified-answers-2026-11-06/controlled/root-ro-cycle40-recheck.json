@@ -1,0 +1,257 @@
+{
+  "schema": "pbp-root-readonly-cycle40-recheck-v1",
+  "createdAt": "2026-11-06T09:00:21.183Z",
+  "reviewer": "Independent Codex child; not a human study",
+  "sources": [
+    {
+      "file": "lib/delivery-assessment.ts",
+      "sha256": "97abed3e2ceebf8700375197dfe606fb4a7f2c125a35f01821adc77acfbb2780"
+    },
+    {
+      "file": "lib/assessment-label-citations.ts",
+      "sha256": "24b9106b0cd8abef97fa1a8b6460b27180641d58bc4808dde25e7ffbd66fd851"
+    },
+    {
+      "file": "lib/assessment-evidence-scope.ts",
+      "sha256": "b79ce478dc4843ad0f689b9402037260aaba13a9df949fbf12c279d526f78c9c"
+    }
+  ],
+  "findings": [],
+  "observations": [
+    {
+      "name": "complete cross-PAGE source independently refutes original support",
+      "rawStatus": "supported",
+      "expected": "changes_suggested",
+      "itemStatus": "changes_suggested",
+      "evidenceNeed": null,
+      "originalCitationsUnchanged": true,
+      "quoteUnchanged": true,
+      "rawAnswerUntouched": true,
+      "interceptedRequests": 1,
+      "explanation": "All 2 supplied HTML files were checked completely, without HTML omission, truncation or unresolved label ownership. No single page contains all 2 required declared label texts. This is a limited source discrepancy, not an observation of visibility or operation, or a confirmed business-page identity. Clarify the applicable scope before directing page edits. Original requirements and citations are unchanged.",
+      "adjustments": [
+        {
+          "criterionId": "coverage-1",
+          "originalStatus": "supported",
+          "publishedStatus": "changes_suggested"
+        }
+      ]
+    },
+    {
+      "name": "raw unknown never promoted",
+      "rawStatus": "insufficient_evidence",
+      "expected": "insufficient_evidence",
+      "itemStatus": "insufficient_evidence",
+      "evidenceNeed": {
+        "schema": "source-evidence-need-v1",
+        "reason": "model_unresolved",
+        "targetFiles": []
+      },
+      "originalCitationsUnchanged": true,
+      "quoteUnchanged": true,
+      "rawAnswerUntouched": true,
+      "interceptedRequests": 1,
+      "explanation": "Raw controlled model claim; do not assign a business page.",
+      "adjustments": []
+    },
+    {
+      "name": "empty citations never become a source defect",
+      "rawStatus": "supported",
+      "expected": "insufficient_evidence",
+      "itemStatus": "insufficient_evidence",
+      "evidenceNeed": {
+        "schema": "source-evidence-need-v1",
+        "reason": "field_relationship",
+        "targetFiles": []
+      },
+      "originalCitationsUnchanged": true,
+      "quoteUnchanged": true,
+      "rawAnswerUntouched": true,
+      "interceptedRequests": 1,
+      "explanation": "Source citations do not cover these labels in one HTML page: Name; E-mail. Add citations; this is an evidence gap, not proof of missing delivery fields.",
+      "adjustments": [
+        {
+          "criterionId": "coverage-1",
+          "originalStatus": "supported",
+          "publishedStatus": "insufficient_evidence"
+        }
+      ]
+    },
+    {
+      "name": "actual complete group with one missing citation stays unknown",
+      "rawStatus": "supported",
+      "expected": "insufficient_evidence",
+      "itemStatus": "insufficient_evidence",
+      "evidenceNeed": {
+        "schema": "source-evidence-need-v1",
+        "reason": "field_relationship",
+        "targetFiles": []
+      },
+      "originalCitationsUnchanged": true,
+      "quoteUnchanged": true,
+      "rawAnswerUntouched": true,
+      "interceptedRequests": 1,
+      "explanation": "Source citations do not cover these labels in one HTML page: E-mail. Add citations; this is an evidence gap, not proof of missing delivery fields.",
+      "adjustments": [
+        {
+          "criterionId": "coverage-1",
+          "originalStatus": "supported",
+          "publishedStatus": "insufficient_evidence"
+        }
+      ]
+    },
+    {
+      "name": "implicit external FORM owner stays unknown",
+      "rawStatus": "supported",
+      "expected": "insufficient_evidence",
+      "itemStatus": "insufficient_evidence",
+      "evidenceNeed": {
+        "schema": "source-evidence-need-v1",
+        "reason": "field_relationship",
+        "targetFiles": []
+      },
+      "originalCitationsUnchanged": true,
+      "quoteUnchanged": true,
+      "rawAnswerUntouched": true,
+      "interceptedRequests": 1,
+      "explanation": "Source citations do not cover these labels in one HTML form: Name; E-mail. Add citations; this is an evidence gap, not proof of missing delivery fields.",
+      "adjustments": [
+        {
+          "criterionId": "coverage-1",
+          "originalStatus": "supported",
+          "publishedStatus": "insufficient_evidence"
+        }
+      ]
+    },
+    {
+      "name": "genuine split FORM groups can be independently refuted",
+      "rawStatus": "supported",
+      "expected": "changes_suggested",
+      "itemStatus": "changes_suggested",
+      "evidenceNeed": null,
+      "originalCitationsUnchanged": true,
+      "quoteUnchanged": true,
+      "rawAnswerUntouched": true,
+      "interceptedRequests": 1,
+      "explanation": "All 2 supplied HTML files were checked completely, without HTML omission, truncation or unresolved label ownership. No single form contains all 2 required declared label texts. This is a limited source discrepancy, not an observation of visibility or operation, or a confirmed business-page identity. Clarify the applicable scope before directing page edits. Original requirements and citations are unchanged.",
+      "adjustments": [
+        {
+          "criterionId": "coverage-1",
+          "originalStatus": "supported",
+          "publishedStatus": "changes_suggested"
+        }
+      ]
+    },
+    {
+      "name": "PAGE does not inherit a FORM grouping condition",
+      "rawStatus": "supported",
+      "expected": "supported",
+      "itemStatus": "supported",
+      "evidenceNeed": null,
+      "originalCitationsUnchanged": true,
+      "quoteUnchanged": true,
+      "rawAnswerUntouched": true,
+      "interceptedRequests": 1,
+      "explanation": "Exact citations witness all 2 required declared HTML label texts in one page in index.html. This checks supplied source only. The filename is an inspected location, not a confirmed business-page identity. Rendering, visibility, accessibility and operation were not observed. The original requirement and citations are unchanged.",
+      "adjustments": []
+    },
+    {
+      "name": "runtime title never enters finite label refutation",
+      "rawStatus": "supported",
+      "expected": "insufficient_evidence",
+      "itemStatus": "insufficient_evidence",
+      "evidenceNeed": {
+        "schema": "source-evidence-need-v1",
+        "reason": "direct_observation",
+        "targetFiles": []
+      },
+      "originalCitationsUnchanged": true,
+      "quoteUnchanged": true,
+      "rawAnswerUntouched": true,
+      "interceptedRequests": 1,
+      "explanation": "This is not an explicit source-checkable text-content requirement, or it includes runtime, interaction, mobile or subjective claims. Other evidence or direct buyer confirmation is needed.",
+      "adjustments": [
+        {
+          "criterionId": "coverage-1",
+          "originalStatus": "supported",
+          "publishedStatus": "insufficient_evidence"
+        }
+      ]
+    },
+    {
+      "name": "same-criterion saved business mapping excludes new conversion",
+      "rawStatus": "supported",
+      "expected": "insufficient_evidence",
+      "itemStatus": "insufficient_evidence",
+      "evidenceNeed": {
+        "schema": "source-evidence-need-v1",
+        "reason": "source_ambiguity",
+        "targetFiles": [
+          "index.html"
+        ]
+      },
+      "originalCitationsUnchanged": true,
+      "quoteUnchanged": true,
+      "rawAnswerUntouched": true,
+      "interceptedRequests": 1,
+      "explanation": "Not all confirmed business checks can be reliably matched within the limited static simple-block format. Duplicate or unlocated content, complex markup or dynamic sources need other evidence. Source suggestions cannot establish compliance; the locked agreement is unchanged.",
+      "adjustments": [
+        {
+          "criterionId": "coverage-1",
+          "originalStatus": "supported",
+          "publishedStatus": "insufficient_evidence"
+        }
+      ]
+    },
+    {
+      "name": "foreign HTML island remains unresolved",
+      "rawStatus": "supported",
+      "expected": "insufficient_evidence",
+      "itemStatus": "insufficient_evidence",
+      "evidenceNeed": {
+        "schema": "source-evidence-need-v1",
+        "reason": "field_relationship",
+        "targetFiles": []
+      },
+      "originalCitationsUnchanged": true,
+      "quoteUnchanged": true,
+      "rawAnswerUntouched": true,
+      "interceptedRequests": 1,
+      "explanation": "Source citations do not cover these labels in one HTML page: E-mail. Add citations; this is an evidence gap, not proof of missing delivery fields.",
+      "adjustments": [
+        {
+          "criterionId": "coverage-1",
+          "originalStatus": "supported",
+          "publishedStatus": "insufficient_evidence"
+        }
+      ]
+    },
+    {
+      "name": "truncated HTML independent fact cannot authorize conversion",
+      "helperFact": {
+        "kind": "unknown",
+        "context": "page",
+        "reason": "incomplete_source"
+      }
+    },
+    {
+      "name": "omitted HTML independent fact cannot authorize conversion",
+      "helperFact": {
+        "kind": "unknown",
+        "context": "page",
+        "reason": "incomplete_source"
+      }
+    }
+  ],
+  "controlledAssessmentCalls": 10,
+  "interceptedRequests": 10,
+  "providerCalls": 0,
+  "networkCalls": 0,
+  "blockedNetworkAttempts": 0,
+  "productionEdits": 0,
+  "limits": [
+    "Authored controls only; no gold/corpus edits or new provider inference.",
+    "The receipt verifies bounded current wiring and source guard behavior, not universal HTML semantics or model accuracy.",
+    "Runtime/coverage helper controls remain conservative; no business role is assigned to a filename."
+  ]
+}

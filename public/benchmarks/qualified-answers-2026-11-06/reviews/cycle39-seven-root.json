@@ -1,0 +1,98 @@
+{
+  "schema": "pbp-root-whole-answer-review-v1",
+  "checkedAt": "2026-11-06T08:51:24.215575+00:00",
+  "reviewer": "Codex root independently read all 7 raw/application items, risk title/explanation/suggestion, model/application limitations; not a human evaluation",
+  "report": "cycle39-known-seven-live.json",
+  "reportSha256": "1f74a62dabe749e5587389f00e4ef649317325c6c10a7817ab25209ae617b69b",
+  "batchIsKnownRegression": true,
+  "rows": [
+    {
+      "projectId": "mdn-derived-cross-page-label",
+      "rawWholeAnswer": "qualified_page_mapping",
+      "applicationWholeAnswer": "accepted",
+      "decisionNote": "Raw makes an inferred contact-role/file mapping; app uses all-source page-label absence and preserves the mapping caveat; raw optional suggestions remain withheld in full.",
+      "rawItemCount": 2,
+      "applicationItemCount": 2,
+      "rawRisks": 2,
+      "activeApplicationRisks": 0,
+      "originalWithheldRisks": 2
+    },
+    {
+      "projectId": "mdn-derived-inert-label-decoys",
+      "rawWholeAnswer": "qualified_rendering_and_scope_prose",
+      "applicationWholeAnswer": "accepted",
+      "decisionNote": "Raw optional lead says active rendered label without observation; app finite source explanation and neutral withheld originals do not publish that as an observed defect.",
+      "rawItemCount": 2,
+      "applicationItemCount": 2,
+      "rawRisks": 1,
+      "activeApplicationRisks": 0,
+      "originalWithheldRisks": 1
+    },
+    {
+      "projectId": "c34-fresh-signup-cross-page",
+      "rawWholeAnswer": "qualified_page_mapping",
+      "applicationWholeAnswer": "accepted",
+      "decisionNote": "Raw infers signup.html role; app does not establish business identity and C38 requires clarification before page edits.",
+      "rawItemCount": 2,
+      "applicationItemCount": 2,
+      "rawRisks": 1,
+      "activeApplicationRisks": 0,
+      "originalWithheldRisks": 1
+    },
+    {
+      "projectId": "chrome-canvas-original-label-source",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "decisionNote": "All-label source witness and declared legend are scoped source facts; no rendered visibility claimed.",
+      "rawItemCount": 2,
+      "applicationItemCount": 2,
+      "rawRisks": 0,
+      "activeApplicationRisks": 0,
+      "originalWithheldRisks": 0
+    },
+    {
+      "projectId": "chrome-canvas-derived-cross-page-label",
+      "rawWholeAnswer": "rejected_cross_page_false_supported",
+      "applicationWholeAnswer": "qualified_conservative_unknown",
+      "decisionNote": "Raw combines labels from two files and falsely supports one-page label requirement. App blocks to unknown, but does not yet diagnose the independently checkable all-source discrepancy. This remains a real coverage gap, not a correct detection.",
+      "rawItemCount": 2,
+      "applicationItemCount": 2,
+      "rawRisks": 1,
+      "activeApplicationRisks": 0,
+      "originalWithheldRisks": 1
+    },
+    {
+      "projectId": "chrome-canvas-derived-inert-and-literal-visible",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "decisionNote": "Template label is not active source; quoted literal Visible remains a valid label string without a visibility claim.",
+      "rawItemCount": 2,
+      "applicationItemCount": 2,
+      "rawRisks": 1,
+      "activeApplicationRisks": 0,
+      "originalWithheldRisks": 1
+    },
+    {
+      "projectId": "chrome-canvas-original-runtime-conjunction",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "decisionNote": "Operational conjunctions remain unknown. Static declared for/id text and conditional handler reasoning are not browser execution; app source-only limitation retained and optional lead withheld.",
+      "rawItemCount": 2,
+      "applicationItemCount": 2,
+      "rawRisks": 1,
+      "activeApplicationRisks": 0,
+      "originalWithheldRisks": 1
+    }
+  ],
+  "summary": {
+    "rawAccepted": 3,
+    "rawQualified": 3,
+    "rawRejected": 1,
+    "applicationAccepted": 6,
+    "applicationQualifiedUnknown": 1,
+    "applicationRejectedOrUndelivered": 0,
+    "targetedUnverifiedVisibilityOrGuessedPageRepairPublished": 0
+  },
+  "residual": "C39 cross-page raw supported->safe unknown is a remaining detection gap; consider independently proven complete-source no-group fact in a separate reviewed round, retaining all original records.",
+  "noPaymentAcceptanceHumanOrIndependentMerchantEvidence": true
+}

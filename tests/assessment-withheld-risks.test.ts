@@ -25,9 +25,10 @@ test("publication retains deep independent validated leads and exact status tran
  assert.deepEqual({items,original,risks},before);result.withheldRisks!.entries[0].risk.citations[0].excerpt="later UI mutation";result.withheldRisks!.adjustedCriteria[0].originalStatus="changes_suggested";assert.deepEqual({items,original,risks},before);
 });
 
-test("adjusted zero-risk reports retain a true empty pool, while unchanged reports record not-withheld",()=>{
+test("zero-risk reports retain their true empty v1 disposition; unchanged nonempty leads retain exact v4 originals",()=>{
  const empty=publishSourceAssessmentNotes("zh",[item()],new Map([["manual-1","supported"]]),[],0,{"index.html":html});assert.equal(empty.withheldRisks!.entries.length,0);assert.equal(empty.withheldRisks!.adjustedCriteria.length,1);assert.match(empty.limitations[2],/0 条未复核风险/);
- const unchanged=publishSourceAssessmentNotes("en",[item()],new Map([["manual-1","insufficient_evidence"]]),[risk()],0,{"index.html":html});assert.deepEqual(unchanged.withheldRisks,{version:1,reason:"not_withheld",adjustedCriteria:[],entries:[]});assert.deepEqual(unchanged.risks,[risk()]);
+ const unchanged=publishSourceAssessmentNotes("en",[item()],new Map([["manual-1","insufficient_evidence"]]),[risk()],0,{"index.html":html});assert.deepEqual(unchanged.withheldRisks,{version:4,reason:"optional_source_leads_unverified",adjustedCriteria:[],entries:[{originalRiskIndex:0,risk:risk()}]});assert.deepEqual(unchanged.risks,[]);
+ const noRisks=publishSourceAssessmentNotes("en",[item()],new Map([["manual-1","insufficient_evidence"]]),[],0,{"index.html":html});assert.deepEqual(noRisks.withheldRisks,{version:1,reason:"not_withheld",adjustedCriteria:[],entries:[]});assert.deepEqual(noRisks.risks,[]);
 });
 
 test("bounded withheld metadata round-trips current and historical assessments without proving AI truth",async()=>{
@@ -75,7 +76,7 @@ async function controlled(status="supported",patch?:(output:Record<string,unknow
 
 test("actual active assessor retains validated risks after adjustment with one controlled response and no domain mutation",async()=>{
  const {q,before,result,calls}=await controlled();assert.equal(calls,1);assert.deepEqual(q,before);assert.deepEqual(result.risks,[]);assert.equal(result.withheldRisks!.reason,"item_status_adjusted");assert.equal(result.withheldRisks!.entries.length,1);assert.ok(result.withheldRisks!.adjustedCriteria.length>0);assert.equal(result.withheldRisks!.entries[0].risk.title,"Inspect source");assert.equal(q.proof.paymentState,"unfunded");
- const unchanged=await controlled("insufficient_evidence");assert.deepEqual(unchanged.result.withheldRisks,{version:1,reason:"not_withheld",adjustedCriteria:[],entries:[]});assert.equal(unchanged.result.risks.length,1);
+ const unchanged=await controlled("insufficient_evidence");assert.deepEqual(unchanged.result.withheldRisks,{version:4,reason:"optional_source_leads_unverified",adjustedCriteria:[],entries:[{originalRiskIndex:0,risk:{title:"Inspect source",explanation:"A potential source detail needs human review.",suggestion:"Inspect the original source.",citations:[{file:"index.html",start:0,end:html.length,excerpt:html}]}}]});assert.deepEqual(unchanged.result.risks,[]);assert.equal(unchanged.calls,1);assert.deepEqual(unchanged.q,unchanged.before);assert.ok(unchanged.result.items.every(item=>item.status==="insufficient_evidence"));
 });
 
 test("invalid original risk fields or quotes reject the whole assessor response before quarantine",async()=>{

@@ -63,7 +63,7 @@ test("finite verbatim objection guard preserves actual copy, business expectatio
     assert.equal(hasUnestablishedVerbatimObjection(c("The page content must say A is B."), text), false, text);
 });
 
-test("retained real first answers replay against unchanged catalogs: false template support and invented exact sentence cannot publish actionable verdicts", async () => {
+test("retained first answers keep exact catalogs: only independently verified template-source discrepancy may become changes; invented exact sentence stays unknown", async () => {
   const context = JSON.parse(await readFile(new URL("./fixtures/three-gaps-cycle35-replay-context.json", import.meta.url), "utf8"));
   for (const entry of context.cases) {
     const quote = projectQuote(entry.project as EvaluationProject), before = structuredClone(quote), raw = structuredClone(entry.raw); let calls = 0;
@@ -74,7 +74,11 @@ test("retained real first answers replay against unchanged catalogs: false templ
     });
     assert.equal(calls, 1); assert.deepEqual(quote, before); assert.deepEqual(raw, entry.raw);
     const item = report.items.find(i => i.criterionId === (entry.project.id.includes("inert") ? "coverage-1" : "coverage-2"))!;
-    assert.equal(item.status, "insufficient_evidence"); assert.notEqual(item.explanation, raw.items.find((i: any) => i.criterionId === item.criterionId).explanation);
+    // C40 adds finite complete-source refutation of a raw false positive.
+    // This changes the application guard expectation, never the old reference
+    // or provider first answer. Ordinary verbatim ambiguity remains unknown.
+    assert.equal(item.status, entry.project.id.includes("inert") ? "changes_suggested" : "insufficient_evidence");
+    assert.notEqual(item.explanation, raw.items.find((i: any) => i.criterionId === item.criterionId).explanation);
     if (!entry.project.id.includes("inert")) assert.match(item.explanation, /additional verbatim-copy condition/u);
     assert.equal(report.risks.length, 0); assert.equal(report.withheldRisks?.reason, "item_status_adjusted");
     for (const selected of report.items.flatMap(i => i.citations)) assert.equal(entry.project.files[selected.file].slice(selected.start, selected.end), selected.excerpt);

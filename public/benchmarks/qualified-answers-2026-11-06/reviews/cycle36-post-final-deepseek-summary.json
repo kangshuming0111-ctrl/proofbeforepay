@@ -1,0 +1,19 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "completed": true,
+  "errors": [],
+  "report": {
+    "summary": "Reviewed the supplied packet only: assessment-label-citations.ts, delivery-assessment.ts, assessment-label-source-facts.test.ts and the project skill. No files or commands were run. The foreign-subtree-text fix is in the right place and fails closed. The traversal at lines 68-75 has no cycle guard, so a hostile recursive SVG document reaches the 50,000-visit cap. That cap makes every label witness unresolved, both the positive one and the absence witness. This matches the task requirement, but it turns the walk into a denial-of-service amplifier. I found no defect in the negative gate, the canonical explanation or the linked-business skip, and no change to strict output. The packet does not include exact-copy-directive.ts, so I could not check what the normalizer (normalized) strips.",
+    "findings": [],
+    "limitations": [
+      "Packet scope only. Files that are imported but not supplied were not inspected, including exact-copy-directive.ts (the normalizer normalized), source-literal-directive.ts (how html_labels and its context are parsed), static-resources.ts (staticFileKind), assessment-limits.ts and contracts.ts.",
+      "Things that could not be checked: what normalized() treats as whitespace and whether it strips zero-width characters, how the html_labels directive's context and labels are parsed, and which staticFileKind values the .HTML case-insensitivity test relies on.",
+      "Nothing was executed. All findings about the cycles and text counting come from reading parse5's default tree adapter semantics (entity-decoded #text value, parent pointer present) and from reading the code. They are labelled as unexecuted reasoning, not observed behaviour.",
+      "The exported function labelsIn (line 18) is only called from within this module in the packet. Whether other modules outside the packet call it was not checked.",
+      "The no-findings result rests on inference for: PAGE requiring only declared HTML label text (lines 55-83 and 144-146 ignore any for/id association); FORM requiring a common owner, with unresolved owners disabling the absence fact (lines 88-99 and 136); the strict output path (delivery-assessment.ts lines 248-263, keys/record/text checks unchanged); the linked-business skip (lines 308-309 and 470-471); and the canonical explanation (lines 151-162). All were read, but none was proven by a run.",
+      "The source-with-line-numbers text is treated as the complete file. Hashing and byte counts were not verified, and the line numbers cited assume the given line map matches the real file.",
+      "An SVG <title> inside a label counts as foreign text, so it makes the label witness unknown. This is a conservative false unknown, not a defect, and the packet says no future sealed corpus is supplied.",
+      "Item-level delivery-assessment semantics outside label handling were not re-audited, because the task scope is the label fix, the negative gate, the explanation, the business skip and strict outputs."
+    ]
+  }
+}

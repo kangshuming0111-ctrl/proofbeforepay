@@ -1,0 +1,27 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "completed": true,
+  "errors": [],
+  "report": {
+    "summary": "The patch at lib/assessment-label-citations.ts lines 105–117 follows the stated finite rule for implicit labels, which avoids a false whole-source absence claim or a cross-form combination when the implicit control's form owner cannot be positively resolved. However, the negative branch still treats a positive-declared implicit label with an empty text as a required label that a form has to group. That can cause a false 'no_complete_group' (definite absence) for a bare <label><input></label> whose input is implicitly bound to the form. The positive and citation paths correctly keep this case as 'declared'. The schema-derived completeness guidance (assessment-prompt-guidance.ts:6–10, wired at delivery-assessment.ts:184) remains generation advice, and the strict decoder still rejects a reply that omits a top-level key once (delivery-assessment.ts:250, validated by the test at tests/assessment-prompt-guidance.test.ts:101–110). The patch tests also still run the supplied cases through the single decoder. No other correctness defect was found inside the supplied packet.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "lib/assessment-label-citations.ts",
+        "line": 107,
+        "title": "Implicit label with no text is still added to a form group, so a negative check can wrongly say the labels are absent",
+        "evidence": "When a label contains exactly one labelable control and that control has no form attribute, line 107 `if (nested.length === 1 && explicit === undefined) continue;` keeps `label.form` set to the label's ancestor form. Line 157 then includes it, because the condition `if (!labels.includes(label.text) || context === \"form\" && !label.form) continue;` checks only that text appears in the required labels. Line 160 `groups.get(owner)!.add(label.text)` stores the empty text \"\", and line 162 does not require the group to contain every required label as a non-empty fact. A bare `<label><input></label>` is an implicit label with empty text, but it still counts as producing text \"\" in form F. This is the same class of false whole-source absence finding that the patch was meant to eliminate for nested implicit labels. The positive branch and `labelsIn` citations avoid this through `label.parts.length` / `.filter(p => normalized(p.value))`, but the finite negative scan has no equivalent guard.",
+        "reproduction": "Not executed. Trace: the directive is context form, labels are [\"Name\", \"E-mail\"], the model reply has status changes_suggested, and the only HTML is '<!doctype html><html><body><form><label>Name</label><label><input></label></form><label>E-mail</label></body></html>'. Then: 'Name' → form F; the bare '<label><input></label>' → nested.length 1 and explicit undefined, so line 107 continues and line 157 adds text \"\" to F; the external '<label>E-mail</label>' (no control) is unowned, so it is skipped. groups = {F: {\"Name\", \"\"}} and F does not contain 'E-mail', so the function returns `{kind: \"no_complete_group\", context: \"form\", ...}` rather than an unknown. A marker-like empty label such as `<label><input type=\"checkbox\"></label>` produces the same result.",
+        "suggestion": "In the negative scan, skip labels with no non-whitespace parts (for example, add `label.parts.length === 0` to the continue condition at line 157, or add no implicit placeholder labels there). That makes an empty implicit label leave ownership unresolved instead of adding a fact. Add a test case with a bare implicit label to the existing variants."
+      }
+    ],
+    "limitations": [
+      "The review is read-only and only covers the six supplied files. It does not include lib/assessment-completion.ts, assessment-citation-selection.ts, assessment-response.ts, assessment-citation-catalog.ts, or the fixtures named in the test files, so their exact schemas and decoder messages were not checked directly.",
+      "No files were executed and no tests, typecheck, or build were run. Both the finding and the checks of the existing behaviour are reasoning traces over the supplied line-numbered source.",
+      "Coverage is limited to the finite-source-fact path in catalog_slots mode with status supported or changes_suggested and without saved business steps. The legacy_quotes and catalog_ids replay paths and the supported-status citation path were not re-derived in full.",
+      "Parse5's exact tree-shaping behaviour (for example, where a label or input ends up once a stray sub-form element is present) was not verified by running it. The finding relies on ordinary parse5 handling of a simple form, label and input.",
+      "The negative path's existing behaviour tied to form-owned explicit labels, foreign HTML detection, and unresolved-owner handling was checked only at the level of the supplied code. It was not checked against unseen corpora.",
+      "The follow-up corpus cases are known to the requester. They cannot be judged as new independent evidence until they are frozen and approved."
+    ]
+  }
+}

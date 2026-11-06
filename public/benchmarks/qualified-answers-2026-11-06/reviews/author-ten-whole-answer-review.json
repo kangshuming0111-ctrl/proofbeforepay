@@ -1,0 +1,125 @@
+{
+  "schema": "pbp-qualified-ten-author-whole-answer-review-v1",
+  "reviewer": "Codex AI implementation author read all complete raw items/risks/limitations and application output, not human study or root-independent review",
+  "rows": [
+    {
+      "id": "mdn-derived-cross-page-label",
+      "batch": "known-first-live.json",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "allItemsRisksAndLimitationsRead": true,
+      "missingTopLevelKeys": [],
+      "reason": "Declared-source facts, exact Earth row/header association and source-role caveat agree. Optional change is conditional on confirming file, not an established obligation."
+    },
+    {
+      "id": "mdn-derived-inert-label-decoys",
+      "batch": "known-first-live.json",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "allItemsRisksAndLimitationsRead": true,
+      "missingTopLevelKeys": [],
+      "reason": "Raw optional risk says rendered paragraph without browser observation. Canonical complete-source item removes this observation claim; v4 retains risk only in unverified pool."
+    },
+    {
+      "id": "c34-fresh-signup-cross-page",
+      "batch": "known-first-live.json",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "allItemsRisksAndLimitationsRead": true,
+      "missingTopLevelKeys": [],
+      "reason": "Raw risk visible label wording and guessed page role are unestablished. Main item is canonical source-only discrepancy; optional proposals not active."
+    },
+    {
+      "id": "mdn-derived-cross-page-label",
+      "batch": "known-repeat-live.json",
+      "rawWholeAnswer": "rejected",
+      "applicationWholeAnswer": "qualified",
+      "allItemsRisksAndLimitationsRead": true,
+      "missingTopLevelKeys": [],
+      "reason": "Raw false-pass combines label fragments across two pages despite mandatory same-page grouping. Citation guard safely changes supported to unknown; this is an unresolved defect, NOT a correct changes verdict."
+    },
+    {
+      "id": "mdn-derived-inert-label-decoys",
+      "batch": "known-repeat-live.json",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "allItemsRisksAndLimitationsRead": true,
+      "missingTopLevelKeys": [],
+      "reason": "Raw source result correct, but visible/rendered optional prose is not an observation. Active application facts and unverified pool are separated."
+    },
+    {
+      "id": "c34-fresh-signup-cross-page",
+      "batch": "known-repeat-live.json",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "allItemsRisksAndLimitationsRead": true,
+      "missingTopLevelKeys": [],
+      "reason": "Raw proposed file-specific repair uses inferred signup role. Canonical source result retains correct changes; no active unbound risk."
+    },
+    {
+      "id": "chrome-canvas-original-label-source",
+      "batch": "fresh-first-live.json",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "allItemsRisksAndLimitationsRead": true,
+      "missingTopLevelKeys": [],
+      "reason": "Four actual source labels and panel legend supported; no observed canvas rendering/operation claim."
+    },
+    {
+      "id": "chrome-canvas-derived-cross-page-label",
+      "batch": "fresh-first-live.json",
+      "rawWholeAnswer": "rejected",
+      "applicationWholeAnswer": "rejected",
+      "allItemsRisksAndLimitationsRead": true,
+      "missingTopLevelKeys": [
+        "limitations"
+      ],
+      "reason": "Provider omitted the entire schema-required limitations key; strict whole-report rejection is correct but leaves2 required application results undelivered. Raw primary criterion conservative unknown versus reference changes, optional risk title incorrectly says slider absent though md-slider remains; no padding or retry."
+    },
+    {
+      "id": "chrome-canvas-derived-inert-and-literal-visible",
+      "batch": "fresh-first-live.json",
+      "rawWholeAnswer": "rejected",
+      "applicationWholeAnswer": "qualified",
+      "allItemsRisksAndLimitationsRead": true,
+      "missingTopLevelKeys": [],
+      "reason": "Raw template false-pass conflicts own optional risk explaining inert source. Guard safely publishes unknown for missing active source label, never auto-fail; literal Visible source label correctly stays supported. Safe application still leaves defect unresolved."
+    },
+    {
+      "id": "chrome-canvas-original-runtime-conjunction",
+      "batch": "fresh-first-live.json",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "allItemsRisksAndLimitationsRead": true,
+      "missingTopLevelKeys": [],
+      "reason": "Raw runtime unknowns correct; optional title overstates no actual submission without observed execution, despite body caveat. Application keeps unknown and withholds unverified optional lead."
+    }
+  ],
+  "summary": {
+    "raw": {
+      "accepted": 2,
+      "qualified": 5,
+      "rejected": 3
+    },
+    "application": {
+      "accepted": 7,
+      "qualified": 2,
+      "rejected": 1
+    }
+  },
+  "accounting": {
+    "calls": 10,
+    "retryCalls": 0,
+    "sameThreeProjectsRepeatedTwice": true,
+    "newSourceCaseVariants": 4,
+    "costUsdEstimate": 0.0538494,
+    "prior44CallsRetained": true
+  },
+  "limits": [
+    "State agreement is not complete-answer correctness.",
+    "Two raw false passes were safely unknown, not repaired changes verdicts.",
+    "One strictly rejected missing-key report leaves2 criteria undelivered.",
+    "Source-correct items were not all forced unknown; no acceptance/payment mutation.",
+    "New4 are one official educational-example path plus explicit authored mutations/companions, not4 independent real apps."
+  ]
+}

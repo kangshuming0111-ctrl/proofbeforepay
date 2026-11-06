@@ -1,0 +1,49 @@
+{
+  "schema": "pbp-cycle37-risk-plan-adjudication-v1",
+  "createdAt": "2026-11-06T08:24:04.297Z",
+  "before": "outputs/three-gaps-2026-11-06/cycle37-risk-before.json",
+  "review": {
+    "file": "outputs/three-gaps-2026-11-06/cycle37-risk-plan-deepseek-valid.json",
+    "completed": true,
+    "reportValid": true,
+    "initialInvalidRetained": "outputs/three-gaps-2026-11-06/cycle36-risk-plan-deepseek.json"
+  },
+  "findings": [
+    {
+      "title": "Withheld-branch gating order lets v4 annotations pass the legacy published/not_withheld paths",
+      "decision": "partially accepted",
+      "accepted": "Explicit v4 discriminator must validate strict exclusive metadata before permitting withheld comments: exact version/reason, no scope, zero active/adjustments, bounded contiguous original entries. Add malformed-version/reason/active-pool counterexamples.",
+      "rejected": "The claimed legacy not_withheld eligibility is contradicted by the supplied expression and by the reviewer own reproduction. There is no outer report-v4 type that can be routed through a version1 pool; version lives only in the actual disposition. Existing v1-v3 semantics remain unchanged by requirement."
+    },
+    {
+      "title": "Pool-less v4 report with nonempty active risks has no explicit rule; legacy handling would publish and repair them",
+      "decision": "rejected",
+      "reason": "A pool-less v4-typed report is not a representable state: there is no report-level v4 marker or v4 item status. Without the new disposition, a package is a legacy report and must preserve legacy import behavior. New source publication always writes its nonempty v4 disposition. A v4 marker or v4 reason on malformed metadata will be explicitly blocked at the repair namespace. No validator can infer removed provenance or prove original provider authenticity."
+    },
+    {
+      "title": "Exact-citation requirement does not constrain raw wording placement; only image-gap rows are disclosed",
+      "decision": "accepted",
+      "action": "Use a distinct v4 neutral entry renderer, never assessmentRiskPresentation. Keep raw title, explanation, suggestion AND exact citations together inside one explicitly unverified original-wording disclosure; human comments outside it. Assert disclosure nesting and no linked repair with real component SSR."
+    }
+  ],
+  "plannedOwnedFiles": [
+    "lib/contracts.ts",
+    "lib/assessment-publication-policy.ts",
+    "lib/evidence-export.ts",
+    "lib/risk-reviews.ts",
+    "lib/risk-repairs.ts",
+    "app/components/DeliveryAssessment.tsx",
+    "tests/assessment-publication-policy.test.ts",
+    "tests/assessment-unbound-withholding.test.ts",
+    "necessary synthetic test fixture/helper only"
+  ],
+  "acceptance": [
+    "v1-v3 and empty-risk priorities unchanged",
+    "All otherwise unbound source optional leads enter v4; no active risk remains",
+    "Items/statuses and all original risk data/order/citations remain unchanged",
+    "No invented per-risk obligation, owner, observed visibility or adjustment",
+    "Exact export/review/repair namespaces reject forged v4 metadata without broadening legacy contracts",
+    "Three original first-answer captures replay with explicit new publication accounting; original files unchanged"
+  ],
+  "status": "Plan adjudicated before production edits; implementation subject to root coordination."
+}

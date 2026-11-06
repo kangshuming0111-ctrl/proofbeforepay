@@ -1,0 +1,21 @@
+{
+  "schema": "pbp-cycle39-final-post-adjudication-v1",
+  "reviewer": "Codex AI independent source and executed test judgement; not human study",
+  "reviews": [
+    "cycle39-post-deepseek.json",
+    "cycle39-post-final-deepseek.json"
+  ],
+  "completed": true,
+  "errors": [],
+  "acceptedRealCorrections": [
+    "Schema-derived top-level required-key guidance; no decoder change.",
+    "External implicit control@form owner P2: FORM unknown unless finite common owner established; PAGE does not promise association."
+  ],
+  "finalFinding": {
+    "decision": "rejected",
+    "reason": "Required labels are Name/E-mail; actual code skips any label whose normalized text is not in that list, so empty text is not added. labels.every explicitly checks the complete required list. Reviewer example genuinely has no E-mail label in any form (outside E-mail has no associated control). no_complete_group is correct; skipping empty labels would not change it or logically yield unknown. Added exact bare implicit-label counterexample test."
+  },
+  "strictPreservation": "The actual first missing-limitations response remains whole-report structure rejection once, with catalog/quote/raw unchanged. No padding, auto retry or status promotion.",
+  "boundedOwnerLimits": "External implicit form mapping deliberately left unknown; no complete browser algorithm claim.",
+  "futureTestExposure": "All7planned followup cases are already called, original first reports/reference unchanged; no new holdout claim."
+}

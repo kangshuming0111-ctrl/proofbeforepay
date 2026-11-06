@@ -1,0 +1,13 @@
+{
+  "schema": "pbp-review-adjudication-v1",
+  "reviewer": "Root Codex AI",
+  "review": "cycle38-plan-deepseek.json",
+  "completed": true,
+  "findings": [],
+  "acceptedPlanLimits": [
+    "Mapping must come from getBusinessCheckPlan validation of current saved quote, never a model flag or first citation.",
+    "UI gates/readOnly/busy and source1000 UTF16 must be actually tested.",
+    "No network or acceptance/payment action from drafting."
+  ],
+  "implementationDecision": "Proceed with pure draft intent plus validated optional scope steps; source-only display and risk pool remain separately owned cycles36/37."
+}

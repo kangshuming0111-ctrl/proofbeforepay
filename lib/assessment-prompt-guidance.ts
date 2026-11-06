@@ -3,6 +3,12 @@ import {ASSESSMENT_ITEM_CITATION_LIMIT, ASSESSMENT_RISK_CITATION_LIMIT} from "./
 
 const slotNames = (maximum: number) => Array.from({length: maximum}, (_, index) => `c${index + 1}`).join(",");
 
+/** Read the actual selected tool's top-level schema. This clarifies generation;
+ * the unchanged strict decoder still rejects an omitted or malformed field. */
+export function assessmentReportPromptGuidance(requiredTopLevelKeys: readonly string[]): string {
+  return `Report completeness: include EVERY top-level key required by this tool schema: ${requiredTopLevelKeys.join(",")}. Do not add other top-level keys. The risks and limitations keys are required arrays even when empty: use risks:[] or limitations:[] when appropriate, but never omit either key. Complete all mandatory items and the full report object before returning; empty arrays do not permit missing criterion answers or missing citation slots.`;
+}
+
 /** Instructions clarify the existing protocol; decoding remains strict. Empty
  * trailing slots are different from selecting no evidence for the item. */
 export function assessmentCitationPromptGuidance(encoding: AssessmentCitationEncoding): string[] {

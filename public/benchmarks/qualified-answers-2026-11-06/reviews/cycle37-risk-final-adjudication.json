@@ -1,0 +1,110 @@
+{
+  "schema": "pbp-cycle37-risk-post-adjudication-v1",
+  "createdAt": "2026-11-06T08:32:31.729Z",
+  "review": {
+    "file": "outputs/three-gaps-2026-11-06/cycle37-risk-post-deepseek.json",
+    "completed": true,
+    "reportValid": true
+  },
+  "findings": [
+    {
+      "title": "Withheld-origin human comment is not bound to its published criterion and seeds linked repair work on any ordinary criterion",
+      "decision": "rejected",
+      "reason": "The review invents a criterion binding on an origin-only human annotation. ProofRiskReview intentionally identifies delivery+assessment+origin+original index and does not promise a criterion. Its own reproduction admits requestChanges fails closed under v4. The asserted later risk at index0 belongs to a different report ID/origin and cannot relabel an immutable existing report. No extra criterion or invented obligation is appropriate.",
+      "executedCounterexample": "Extended the existing v4 comments test: after buyer and seller confirmed opinions, requestChanges with the same index/report on either manual-1 or manual-2 rejects with cannot authorize linked repair; assessment, gate, acceptance and payment remain unchanged."
+    }
+  ],
+  "verification": {
+    "focusedPassed": 37,
+    "focusedFailed": 0,
+    "typecheckExitCode": 0,
+    "retainedReplay": "outputs/three-gaps-2026-11-06/cycle37-risk-retained-replay.json",
+    "projects": 3,
+    "rawRisksPreserved": 5,
+    "networkCalls": 0,
+    "providerCalls": 0,
+    "ssr": "Actual bilingual DeliveryAssessment component; raw wording and citations verified together inside unverified disclosure; malformed active-v4 risk hidden and repair unavailable.",
+    "routeLimit": "requestChanges/snapshotRiskFeedbackSource domain API verified; no real authenticated HTTP endpoint test is claimed here."
+  },
+  "postReviewChanges": "Only a test assertion was added to execute the reviewer own after-comment repair hypothesis; no production source changed after the valid review.",
+  "awardBefore": "outputs/three-gaps-2026-11-06/cycle37-risk-before.json",
+  "comparisonAfter": [
+    {
+      "dimension": "用户价值",
+      "status": "partly narrowed",
+      "evidence": "New v4 public heading is neutral numbering; Signup/visible instructions are only unverified originals. No human first-use validation yet."
+    },
+    {
+      "dimension": "功能深度",
+      "status": "local gate met",
+      "evidence": "v4 closes nonempty otherwise-unbound source leads while v1-v3 and empty behavior remain tested; items are not all unknown."
+    },
+    {
+      "dimension": "AI 实际贡献",
+      "status": "local gate met",
+      "evidence": "3 retained answers keep informative item statuses and all5 original leads/citations, but no optional model prose grants authority."
+    },
+    {
+      "dimension": "完整产品流程",
+      "status": "local gate met",
+      "evidence": "Comments append without release; both direct snapshot and requestChanges reject v4 repair sources, including malformed active pool."
+    },
+    {
+      "dimension": "可信度与说服力",
+      "status": "local gate met; tooling migration pending",
+      "evidence": "Strict export rejects metadata/citation/namespace forgery and legacy imports remain readable. Historical tool requires separately authorized explicit v4 migration accounting; no old published-core unchanged claim."
+    },
+    {
+      "dimension": "易用性与真实接入",
+      "status": "partly narrowed",
+      "evidence": "Actual component SSR confirms disclosure structure in both languages. No human usability, new merchant integration or same-condition winner superiority is established."
+    }
+  ],
+  "remaining": [
+    "Implement and review separately authorized historical replay migration accounting; existing strict exported-tree regression currently rejects intentional v4 publication delta.",
+    "Root-owned C38 scope-clarification next action and AI-owned item-source facts are independent, pending integration.",
+    "Root final full suite/build/live UI and authentic-user usability evidence remain separate."
+  ],
+  "sources": [
+    {
+      "file": "lib/contracts.ts",
+      "bytes": 16880,
+      "sha256": "0e2eeffdca185ffcca1c152e1521195d2f92ec039700dc62a1c6b2c663b6bb3c"
+    },
+    {
+      "file": "lib/assessment-publication-policy.ts",
+      "bytes": 12720,
+      "sha256": "360a5106a5d2b90e2011ebf0cef6fb577309d636a8ba4f6843626009c00d0605"
+    },
+    {
+      "file": "lib/evidence-export.ts",
+      "bytes": 54779,
+      "sha256": "7edd66e917bc3329183a7812efa8bd979e0afa4f7647dd796018d7770f7d73a1"
+    },
+    {
+      "file": "lib/risk-reviews.ts",
+      "bytes": 7138,
+      "sha256": "5d205652d74f43a8637d143dff1fc31795d52525cceb7f6c8724c57aca3a20fa"
+    },
+    {
+      "file": "lib/risk-repairs.ts",
+      "bytes": 14579,
+      "sha256": "16f4defc1e718f741f40c15c7e65e2c5d1f2e6f00dec6ef2eddd07bf9b4f059b"
+    },
+    {
+      "file": "app/components/DeliveryAssessment.tsx",
+      "bytes": 31063,
+      "sha256": "ac8fc4b8ab37187cec99b42ba1082a52bf9cf49abfc920dde6e17adaafb3ffbf"
+    },
+    {
+      "file": "tests/assessment-publication-policy.test.ts",
+      "bytes": 6902,
+      "sha256": "fa011393b07934fc664475a5b001b5af4e07dc63ec9fe212eff4d04106f02f4b"
+    },
+    {
+      "file": "tests/assessment-unbound-withholding.test.ts",
+      "bytes": 14073,
+      "sha256": "cfd5063d9f2a8a35f17cc679430ee0708f9470aad5dbb29a7a005c32bee030c5"
+    }
+  ]
+}

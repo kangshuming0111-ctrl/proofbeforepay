@@ -1,0 +1,368 @@
+{
+  "schema": "pbp-qualified-public-manifest-v1",
+  "artifacts": [
+    {
+      "path": "reviews/previous-cycle35-root.json",
+      "sha256": "205eab7bb08f2363bc90ed88d80875157327f8655581a1e17a07156158681bac",
+      "bytes": 9606,
+      "originalArtifact": "public/benchmarks/three-gaps-2026-11-06/source-assessment/reviews/cycle35-root-review.json",
+      "reviewerKind": "Root Codex AI, separate from implementation author; not human study"
+    },
+    {
+      "path": "reviews/first-ten-root.json",
+      "sha256": "52bf305d46fea3d7110aca3998cf31b613e38a4ece31c4492b3ef3c48d37f3e0",
+      "bytes": 8293,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/root-first-ten-whole-answer-review.json",
+      "reviewerKind": "Root Codex AI, separate from implementation author; not human study"
+    },
+    {
+      "path": "reviews/final-seven-root.json",
+      "sha256": "d4d1693931ec4167a51ba21799a221256e98600204d2ce0f5197922b62508221",
+      "bytes": 5240,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/root-cycle40-seven-whole-answer-review.json",
+      "reviewerKind": "Root Codex AI, separate from implementation author; not human study"
+    },
+    {
+      "path": "reviews/cycle39-seven-root.json",
+      "sha256": "25df5c38308ce5171e402fe8c9e7167939c20ca14a458f883f20de39a454d93e",
+      "bytes": 4474,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/root-cycle39-seven-whole-answer-review.json",
+      "reviewerKind": "Root Codex AI, separate from implementation author; not human study"
+    },
+    {
+      "path": "reviews/author-ten-whole-answer-review.json",
+      "sha256": "ad860e8efe5031a5319468efbe12af398f95d3bd46a0168fabb2e01385a392cc",
+      "bytes": 5794,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/author-ten-whole-answer-review.json",
+      "reviewerKind": "Codex AI implementation author; not human study"
+    },
+    {
+      "path": "reviews/author-cycle39-seven-whole-answer-review.json",
+      "sha256": "643c7847bbf63980c0d962220a153233594bbef4ebd76dd4218aba797838678e",
+      "bytes": 3983,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/author-cycle39-seven-whole-answer-review.json",
+      "reviewerKind": "Codex AI implementation author; not human study"
+    },
+    {
+      "path": "reviews/author-cycle40-seven-whole-answer-review.json",
+      "sha256": "000c7034d3a739668cc76949e3bc6fbf0756f8c5a21bc6c51cf6590a66466f4e",
+      "bytes": 4392,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/author-cycle40-seven-whole-answer-review.json",
+      "reviewerKind": "Codex AI implementation author; not human study"
+    },
+    {
+      "path": "controlled/three-original-qualified-answers.json",
+      "sha256": "3d16d2b55067840c32e444897c5c247b76522ddece1635732ea1dbb54b78c137",
+      "bytes": 28059,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/qualified-three-replay.json",
+      "reviewerKind": "Retained C35 provider first replies, known regressions, not new calls"
+    },
+    {
+      "path": "controlled/three-production-pipeline-replay.json",
+      "sha256": "4c6e5b45b893d134d2e7165e7b1f544e7411aa2fa4e181e45725b3d0b607d2ea",
+      "bytes": 34576,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/cycle36-37-qualified-pipeline-replay.json",
+      "reviewerKind": "Codex AI local injected-provider replay; zero provider network, browser or payment calls"
+    },
+    {
+      "path": "controlled/two-independent-source-refutations.json",
+      "sha256": "b3b6d85f345e76c3cc896ef0b335b94a765e83c797397c90d98ba8c48ce0b2ed",
+      "bytes": 38810,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/cycle40-controlled-source-refutation-replay.json",
+      "reviewerKind": "Codex AI current production pipeline with retained genuine raw replies injected; zero new provider calls"
+    },
+    {
+      "path": "provenance/fresh-four-original-seal.json",
+      "sha256": "5f8c73467cf11cad37eaa0ffa0f435755af6959993f715ea750ef1ced18f1815",
+      "bytes": 2773,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/fresh-four-seal.json"
+    },
+    {
+      "path": "provenance/fresh-four-pre-change-request-freeze.json",
+      "sha256": "a19ff319b16df04dbf8ee60b84444b02fcf1e5f2feee450d1e2dc0c2b8f8b22f",
+      "bytes": 211486,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/fresh-four-pre-change-freeze.json"
+    },
+    {
+      "path": "provenance/google-official-source.json",
+      "sha256": "25b28c87128a74e706964a920316a80dbdc4eee6bc41a620bd1c72541898ded1",
+      "bytes": 812,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/upstream-googlechrome/provenance.json"
+    },
+    {
+      "path": "provenance/google-NOTICE-check.json",
+      "sha256": "ba366c0d58166f31511c3651f3e79aabbe72a23c5c2f6aea7560ba33be6b7e1b",
+      "bytes": 196,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/upstream-googlechrome/notice-check.json"
+    },
+    {
+      "path": "provenance/root-official-source-reference-check.json",
+      "sha256": "054599124c5bcd645ec36e40e4d108ae03f0346a2b72ecd3cb7451680224f397",
+      "bytes": 370,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/root-fresh-source-reference-check.json",
+      "reviewerKind": "Root Codex AI, separate from implementation author; not human study"
+    },
+    {
+      "path": "controlled/root-ro-owner-recheck.json",
+      "sha256": "58c91e450fe0d4920773a8f56080cbd1485e4b670f9ec8a1c8d9fa66ed2e12ba",
+      "bytes": 7982,
+      "reviewerKind": "Separate Codex AI read-only actual function checks; zero provider calls, not browser/human study"
+    },
+    {
+      "path": "controlled/root-ro-cycle40-recheck.json",
+      "sha256": "9941402c8d6cb36ba902981e6eb18484628ec9b7496898745e452ff8d4cc9bb1",
+      "bytes": 10057,
+      "reviewerKind": "Separate Codex AI read-only actual function checks; zero provider calls, not browser/human study"
+    },
+    {
+      "path": "provenance/google-Apache-2-license.json",
+      "sha256": "44397d7e79224fe1e89b370a3df57cf03a9d3cf97a2e85a7ca3032fb513f8164",
+      "bytes": 12231
+    },
+    {
+      "path": "provenance/google-original-source.json",
+      "sha256": "dabec80fa2f143d0fc7334bb6b802c31c23799e0ee4c0dc82c1d8d61010c2e1e",
+      "bytes": 5478
+    },
+    {
+      "path": "reviews/cycle36-plan-adjudication.json",
+      "sha256": "3149fc154ece680647a9a88859f0e3e94c636fb51b69d5eadd47079b23f0395f",
+      "bytes": 2813,
+      "reviewerKind": "Codex AI independent adjudication of model feedback; not human study"
+    },
+    {
+      "path": "reviews/cycle36-post-adjudication.json",
+      "sha256": "c63a594d0e14f2772b8140b8a77bde7706f85b66403d23bef31b856015a7a9ba",
+      "bytes": 1311,
+      "reviewerKind": "Codex AI independent adjudication of model feedback; not human study"
+    },
+    {
+      "path": "reviews/cycle36-final-adjudication.json",
+      "sha256": "2065974252295a5e67c613cad224602377bddc70db118c4a12a92ece9cd5a9ec",
+      "bytes": 1286,
+      "reviewerKind": "Codex AI independent adjudication of model feedback; not human study"
+    },
+    {
+      "path": "reviews/cycle38-plan-adjudication.json",
+      "sha256": "2ec2280653e13827ef57cf60fad50f112a0b2e1cce9c4e40dedb250feb42f3e0",
+      "bytes": 619,
+      "reviewerKind": "Codex AI independent adjudication of model feedback; not human study"
+    },
+    {
+      "path": "reviews/cycle38-post-adjudication.json",
+      "sha256": "febb69437f800b63614139facfe9899236dd4423e33b4333300b75d4095c7bc6",
+      "bytes": 1437,
+      "reviewerKind": "Codex AI independent adjudication of model feedback; not human study"
+    },
+    {
+      "path": "reviews/cycle39-plan-adjudication.json",
+      "sha256": "6f33f337c8b0b48816d61125b9e97356af528ce47e282ec6d2a409189f6d8e41",
+      "bytes": 785,
+      "reviewerKind": "Codex AI independent adjudication of model feedback; not human study"
+    },
+    {
+      "path": "reviews/cycle39-final-adjudication.json",
+      "sha256": "7be0ae46cf810e9b26e22afb20252632c4f44f54a26b5a7d8baa791e7fbeecab",
+      "bytes": 1498,
+      "reviewerKind": "Codex AI independent adjudication of model feedback; not human study"
+    },
+    {
+      "path": "reviews/cycle40-plan-adjudication.json",
+      "sha256": "c45ce9fd3d50ebe64756b659aeb7f7225ab52c75c73a1a6e634699558f1db431",
+      "bytes": 2558,
+      "reviewerKind": "Codex AI independent adjudication of model feedback; not human study"
+    },
+    {
+      "path": "reviews/cycle40-final-adjudication.json",
+      "sha256": "d5b0d66e22fcee1917caf0382a377440617c10c5d691527888c1c5e992970145",
+      "bytes": 1283,
+      "reviewerKind": "Codex AI independent adjudication of model feedback; not human study"
+    },
+    {
+      "path": "reviews/cycle36-plan-deepseek-summary.json",
+      "sha256": "65474b15b52f623b9054557f1b8af1cde418cd93905d7e996cec8466c84dfd8f",
+      "bytes": 135,
+      "reviewerKind": "DeepSeek model advisory only; false/invalid findings remain labelled and independently adjudicated"
+    },
+    {
+      "path": "reviews/cycle36-plan-v2-deepseek-summary.json",
+      "sha256": "b07f68c2d0ef9776176e0d22e0398f2a5a241206e5909099cc49466ea06be6e6",
+      "bytes": 9147,
+      "reviewerKind": "DeepSeek model advisory only; false/invalid findings remain labelled and independently adjudicated"
+    },
+    {
+      "path": "reviews/cycle36-post-deepseek-summary.json",
+      "sha256": "480d923cfa77180b30ba5030c54e61a6fce0ebe16d9cde774ea3215bdf6a6617",
+      "bytes": 5396,
+      "reviewerKind": "DeepSeek model advisory only; false/invalid findings remain labelled and independently adjudicated"
+    },
+    {
+      "path": "reviews/cycle36-post-final-deepseek-summary.json",
+      "sha256": "1868a14535976c92526ad7047595e960c6a9541a27ea06312fec002acaa7f653",
+      "bytes": 3114,
+      "reviewerKind": "DeepSeek model advisory only; false/invalid findings remain labelled and independently adjudicated"
+    },
+    {
+      "path": "reviews/cycle38-plan-deepseek-summary.json",
+      "sha256": "a21dd4fb66fd8922213cbce2eee7a89151c9efea84590839ebeac2dab09e9583",
+      "bytes": 3231,
+      "reviewerKind": "DeepSeek model advisory only; false/invalid findings remain labelled and independently adjudicated"
+    },
+    {
+      "path": "reviews/cycle38-post-deepseek-summary.json",
+      "sha256": "26f0d930cd60dc13fce64e9efb79e0edcb250bcc189277e6de66cf42e4cf14d4",
+      "bytes": 2289,
+      "reviewerKind": "DeepSeek model advisory only; false/invalid findings remain labelled and independently adjudicated"
+    },
+    {
+      "path": "reviews/cycle39-plan-deepseek-summary.json",
+      "sha256": "100d5a80f4a5dcc596231c9178de774bb48048dadf3da8a904c98c7aefae1eb0",
+      "bytes": 2764,
+      "reviewerKind": "DeepSeek model advisory only; false/invalid findings remain labelled and independently adjudicated"
+    },
+    {
+      "path": "reviews/cycle39-post-deepseek-summary.json",
+      "sha256": "4d1adf58e0e6f570572fb83c354cdf6e6649cddcc58b9c95b5cbd07c6e7a5b06",
+      "bytes": 2694,
+      "reviewerKind": "DeepSeek model advisory only; false/invalid findings remain labelled and independently adjudicated"
+    },
+    {
+      "path": "reviews/cycle39-post-final-deepseek-summary.json",
+      "sha256": "daac923f84cea227c50e4133d8fa2b4ccc2e7a2403d1a944ee70f27f14ac5be3",
+      "bytes": 5155,
+      "reviewerKind": "DeepSeek model advisory only; false/invalid findings remain labelled and independently adjudicated"
+    },
+    {
+      "path": "reviews/cycle40-plan-deepseek-summary.json",
+      "sha256": "2d113d17c391b1d9872efefd83c36d5feab87efc7caf44d799ee11f8277c999e",
+      "bytes": 10838,
+      "reviewerKind": "DeepSeek model advisory only; false/invalid findings remain labelled and independently adjudicated"
+    },
+    {
+      "path": "reviews/cycle40-post-deepseek-summary.json",
+      "sha256": "7b53b2d5a17865ca4c4ec2286e053459236c8c28b3b53fe8884aac816b20d857",
+      "bytes": 3329,
+      "reviewerKind": "DeepSeek model advisory only; false/invalid findings remain labelled and independently adjudicated"
+    },
+    {
+      "path": "reviews/cycle37-risk-plan-adjudication.json",
+      "sha256": "b1be9622fc8b0aca2684eefdd11b001e11edf0e3eda58e1a4da2daf0a91c5dd7",
+      "bytes": 3368,
+      "reviewerKind": "Separate Codex AI adjudication; not human study"
+    },
+    {
+      "path": "reviews/cycle37-risk-final-adjudication.json",
+      "sha256": "9b65e54efe8421380f0319d34d3a795cc82d625351cd599528de8d10b7e6d56d",
+      "bytes": 5434,
+      "reviewerKind": "Separate Codex AI adjudication; not human study"
+    },
+    {
+      "path": "reviews/cycle37-risk-plan-deepseek-valid-summary.json",
+      "sha256": "f636a90102bf883e4eaa77510b6bf685ae6e6134d6384ac7d0f278f87c5694f5",
+      "bytes": 8378,
+      "reviewerKind": "DeepSeek advisory; independently adjudicated, not human study"
+    },
+    {
+      "path": "reviews/cycle37-risk-post-deepseek-summary.json",
+      "sha256": "5a949b924fa1d67d8268b2648ebb1147ebc1c70ca38885e312d608aee1c951f5",
+      "bytes": 5727,
+      "reviewerKind": "DeepSeek advisory; independently adjudicated, not human study"
+    },
+    {
+      "path": "records/known-three-first/report.json",
+      "sha256": "43cb7828c44e427d94c6a756196001df0e09516d4ab400cd8c408a54a876b9af",
+      "bytes": 353097,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/known-first-live.json"
+    },
+    {
+      "path": "records/known-three-first/corpus.json",
+      "sha256": "5c5dca850b49144775fc8c3f0a5f2bb57a43057112c227f7cc5afb23e580a1a5",
+      "bytes": 20617,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/known-three-first-pass-corpus.json"
+    },
+    {
+      "path": "records/known-three-first/request-freeze.json",
+      "sha256": "70ac1e4dc331d8b44b2051ec48e19bb2fca1ef5cb140c685d7e3f34b9cb2b1db",
+      "bytes": 225429,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/known-first-freeze.json"
+    },
+    {
+      "path": "records/known-three-repeat/report.json",
+      "sha256": "82ed57bb1660e7fe5aa8fb49582c2f0bd1ed4d6c04fed3aa055e413b1baf32bd",
+      "bytes": 349498,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/known-repeat-live.json"
+    },
+    {
+      "path": "records/known-three-repeat/corpus.json",
+      "sha256": "4efb4b656df67433ac4556782035fc4d1270fc6f42ebd59bf1eb98f2b859ec0b",
+      "bytes": 20618,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/known-three-repeat-pass-corpus.json"
+    },
+    {
+      "path": "records/known-three-repeat/request-freeze.json",
+      "sha256": "34590fa0ecad3135fd33386f18aa90e84f140ef6893e44001a1b3edf810213fe",
+      "bytes": 225430,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/known-repeat-freeze.json"
+    },
+    {
+      "path": "records/google-four-first/report.json",
+      "sha256": "84ee5050c87e701bfc2c305e357ec85760e280be10e98710bbb7f8e1294c904d",
+      "bytes": 358424,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/fresh-first-live.json"
+    },
+    {
+      "path": "records/google-four-first/corpus.json",
+      "sha256": "1cf8bae6683ab05bc39f0c6b55b4e367400dea8703dc913cdab79d93afd61209",
+      "bytes": 29492,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/fresh-four-corpus.json"
+    },
+    {
+      "path": "records/google-four-first/request-freeze.json",
+      "sha256": "1353a284566273cdbc933c8b1c11da542f43d656345df6a19791a1ac958c719a",
+      "bytes": 213948,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/fresh-first-freeze.json"
+    },
+    {
+      "path": "records/cycle39-known-seven/report.json",
+      "sha256": "1f74a62dabe749e5587389f00e4ef649317325c6c10a7817ab25209ae617b69b",
+      "bytes": 688907,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/cycle39-known-seven-live.json"
+    },
+    {
+      "path": "records/cycle39-known-seven/corpus.json",
+      "sha256": "0693ebe787e4e1db18442aa96f6576ac5ef9cfb1a737ac037fb3aa04b9c5a319",
+      "bytes": 49355,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/cycle39-known-seven-corpus.json"
+    },
+    {
+      "path": "records/cycle39-known-seven/request-freeze.json",
+      "sha256": "fc2cde74038a6b45fff8f3f2adfc345da0373622a3e508f53faf189f0bc5f998",
+      "bytes": 434919,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/cycle39-known-seven-freeze.json"
+    },
+    {
+      "path": "records/cycle40-known-seven/report.json",
+      "sha256": "5c01e128bd58ee824f0c1a6f54eb681ba0911fda418bbb2df00cd337f094bc7a",
+      "bytes": 680795,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/cycle40-known-seven-live.json"
+    },
+    {
+      "path": "records/cycle40-known-seven/corpus.json",
+      "sha256": "42c7564c938a9f7b6f909a7fbf814ea729751b3b3bd78c486e54f05fb2b1bedc",
+      "bytes": 49230,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/cycle40-known-seven-corpus.json"
+    },
+    {
+      "path": "records/cycle40-known-seven/request-freeze.json",
+      "sha256": "0f298caf0541431ac24ea88dd607fa8ee876d4d29b6cbdddc494b60d8b0af128",
+      "bytes": 434907,
+      "originalArtifact": "outputs/qualified-answers-2026-11-06/cycle40-known-seven-freeze.json"
+    },
+    {
+      "path": "latest.json",
+      "sha256": "b11b4954b28455e05563815fdf3c82edbf49eccda1bf56c75140d03023612ef1",
+      "bytes": 22710
+    }
+  ],
+  "preservation": "Historical reports/references/root reviews copied byte-for-byte. Advisory adjudication local paths may be privacy-normalized; reviewer identities explicitly AI, not human studies."
+}

@@ -1,0 +1,38 @@
+{
+  "schema": "pbp-cycle40-plan-adjudication-v1",
+  "review": "cycle40-plan-deepseek.json",
+  "reviewer": "Codex AI independent source inspection, actual parser controls and root/external feasibility checks; not human study",
+  "accepted": [
+    {
+      "point": "Finite full-source proof sufficient only with exact eligibility and complete actual delivery input",
+      "decision": "Accept root gates raw supported + explicit labelCitationAdjusted + valid nonempty checkedCitations + source-only branch + no linked business + only no_complete_group. Add explicit byte-for-byte full delivered HTML vs sent HTML inventory invariant as defense in depth."
+    },
+    {
+      "point": "Unlocated form placeholder could merge forms",
+      "decision": "No reachable real source reproduction supplied, but remove the shared unlocated placeholder defensively; unavailable form source location makes parser unresolved."
+    }
+  ],
+  "rejected": [
+    {
+      "point": "Reachable production can omit HTML from both sent and coverage using sourcePacket",
+      "reason": "sourcePacket builds both from the same validated delivery map with the same staticFileKind used by proof helper; no user-controlled filtered coverage record is used. Invented mismatched map/coverage is not current production path. Explicit full-inventory invariant still makes the proof precondition auditable."
+    },
+    {
+      "point": "Current branch passes insufficient_evidence into facts scan and manual/coverage IDs cannot be source_text",
+      "reason": "Actual branch requires status!==insufficient_evidence; source_text is evidence category, not criterion ID. Entire proposed correction is inside existing source-only else. This allegation confuses existing API with not-yet-implemented proposal."
+    },
+    {
+      "point": "Citation bytes can be mismatched and still refuted",
+      "reason": "Strict resolve validates catalog membership/bytes before guards; an invalid quote rejects full report first. Same criterion/source parsed synchronously by same parser in guard and proof, with explicit local trigger flag, so no descriptor drift demonstrated."
+    }
+  ],
+  "preservation": [
+    "Raw unknown never upgraded",
+    "Incomplete/missing citation with complete source group remains unknown",
+    "Foreign/implicitowner/coverage uncertainty never becomes changes",
+    "Actual statuses audited as raw supported to published changes, not model credit",
+    "Original17reports and all references unchanged"
+  ],
+  "implementationApprovedWithinRootScope": true,
+  "newCalls": 0
+}

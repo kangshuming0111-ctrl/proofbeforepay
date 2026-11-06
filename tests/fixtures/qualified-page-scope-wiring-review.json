@@ -1,0 +1,16 @@
+{
+  "sourceFile": "app/page.tsx",
+  "sha256": "bcb55aa869c8ddcbf2e122844f228acdf2376a77c0a66d2db7c0ed9efca9fa66",
+  "selection": "All occurrences of the new scope helper in the unchanged current app page; full file exceeds120KiB review-file boundary",
+  "lines": [
+    {
+      "line": 36,
+      "text": "import {assessmentFeedbackScopeSteps} from \"./components/assessment-feedback\";"
+    },
+    {
+      "line": 1698,
+      "text": "              {delivery && proof && <DeliveryAssessment report={delivery.assessment?.deliveryId === delivery.id ? delivery.assessment : undefined} riskReviews={delivery.riskReviews} actorRole={displayRole} onSaveRiskReview={saveRiskReview} criteria={proof.criteria} scopeSteps={assessmentFeedbackScopeSteps(quote)} language={language} selectedCriterionId={proof.criteria[criterionIndex]?.id} configured={config?.aiMode === \"live\"} enabled={!!canCheckDelivery && reviewCurrent && !!delivery.files && !busy} busy={busy === \"assess\"} onPrepareFeedback={buyer && collaboration?.stage === \"submitted\" && deliveryUnlocked && !busy ? prepareFeedback : undefined} onRun={() => mutate(\"assess\", {deliveryId: delivery.id, confirm: true}, tr(\"已保存当前版本的 AI 评估。建议与规则证据独立，最终仍由买家验收。\", \"AI assessment saved for this version. Advice remains separate from rule evidence; the buyer decides acceptance.\"))} />}"
+    }
+  ],
+  "limits": "Only these exact source lines, full page not reviewed"
+}

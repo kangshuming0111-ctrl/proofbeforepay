@@ -1,0 +1,88 @@
+{
+  "schema": "pbp-cycle39-seven-author-whole-answer-review-v1",
+  "reviewer": "Codex AI implementation author separately read all full raw/application answers; not root-independent or human study",
+  "rows": [
+    {
+      "id": "mdn-derived-cross-page-label",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "allItemsRisksAndLimitationsRead": true,
+      "reason": "Raw source judgments match, but unbound role-specific repair/stray-fragment suggestions do not establish agreed obligations. Canonical source discrepancy and unverified pool separate these."
+    },
+    {
+      "id": "mdn-derived-inert-label-decoys",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "allItemsRisksAndLimitationsRead": true,
+      "reason": "Raw optional active/rendered and visibility-related suggestions remain unobserved. Application finite source facts and original unverified leads are separated."
+    },
+    {
+      "id": "c34-fresh-signup-cross-page",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "allItemsRisksAndLimitationsRead": true,
+      "reason": "Raw roles rely on source/content hints, with conditional scope question; main item canonical does not confirm a business target and root C38 draft asks scope."
+    },
+    {
+      "id": "chrome-canvas-original-label-source",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "allItemsRisksAndLimitationsRead": true,
+      "reason": "All actual declared source labels and panel legend grounded. No browser/canvas visibility assertion."
+    },
+    {
+      "id": "chrome-canvas-derived-cross-page-label",
+      "rawWholeAnswer": "rejected",
+      "applicationWholeAnswer": "qualified_conservative_unknown",
+      "allItemsRisksAndLimitationsRead": true,
+      "reason": "Raw false-pass combines labels split across files. Application blocks it to unknown, retains source citations and original proposal, but does not supply the reference changes verdict. Not an accuracy success."
+    },
+    {
+      "id": "chrome-canvas-derived-inert-and-literal-visible",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "allItemsRisksAndLimitationsRead": true,
+      "reason": "Actual active-label absence correctly distinguished from inert template; quoted Visible remains literal data. Canonical full-source facts preserve correct changes/support."
+    },
+    {
+      "id": "chrome-canvas-original-runtime-conjunction",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "allItemsRisksAndLimitationsRead": true,
+      "reason": "Both runtime conjunctions remain unknown with source-only reasons. Optional submit-handler statement is conditional on execution; original unverified lead is separate from actionable findings."
+    }
+  ],
+  "summary": {
+    "raw": {
+      "accepted": 3,
+      "qualified": 3,
+      "rejected": 1
+    },
+    "application": {
+      "accepted": 6,
+      "qualified_conservative_unknown": 1,
+      "not_delivered": 0
+    }
+  },
+  "measurements": {
+    "rawStateMatches": 13,
+    "applicationStateMatches": 13,
+    "criteria": 14,
+    "rawIdsComplete": 14,
+    "citationSpansExact": 43,
+    "applicationRejectedReports": 0,
+    "remainingRawFalsePassSafelyUnknown": 1,
+    "newFirstCases": 0,
+    "calls": 7,
+    "retries": 0,
+    "costUsdEstimate": 0.0353223,
+    "phase17CallsCostUsdEstimate": 0.0891717,
+    "all61CallsCostUsdEstimate": 0.3544851
+  },
+  "boundaries": [
+    "The original missing-limitations first reply remains retained and exact replay still rejects.",
+    "This is a known regression after a coherent code/prompt change, not a replacement first attempt or a new holdout.",
+    "Unknown protection is not a correct changes verdict, and complete syntax does not prove semantics.",
+    "No browser, customer operation, acceptance or payment was run by these source model calls."
+  ]
+}

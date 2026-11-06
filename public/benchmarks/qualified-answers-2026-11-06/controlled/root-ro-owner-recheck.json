@@ -1,0 +1,214 @@
+{
+  "schema": "pbp-root-readonly-owner-recheck-v1",
+  "createdAt": "2026-11-06T08:51:34.647Z",
+  "reviewer": "Independent Codex child; not a human study",
+  "sourceFreeze": {
+    "file": "outputs/qualified-answers-2026-11-06/cycle39-owned-source-freeze.json",
+    "sha256": "6982d895553143354ab7780b635f31d061406ee0b46b2cefdd7bcfbbc30ed05a",
+    "knownSevenRequestFreeze": "outputs/qualified-answers-2026-11-06/cycle39-known-seven-freeze.json",
+    "requestSnapshotSha256": "19c5764fb065abc9ebd08e128f0e6d854df83ee46411068f701953da8942f477"
+  },
+  "sources": [
+    {
+      "file": "lib/assessment-label-citations.ts",
+      "sha256": "7694bbca79a99bf26e9ed166b296d0e8737a68a4cb37f78a29fb52c379910fbc"
+    },
+    {
+      "file": "lib/assessment-publication-policy.ts",
+      "sha256": "360a5106a5d2b90e2011ebf0cef6fb577309d636a8ba4f6843626009c00d0605"
+    },
+    {
+      "file": "lib/risk-reviews.ts",
+      "sha256": "5d205652d74f43a8637d143dff1fc31795d52525cceb7f6c8724c57aca3a20fa"
+    },
+    {
+      "file": "lib/risk-repairs.ts",
+      "sha256": "16f4defc1e718f741f40c15c7e65e2c5d1f2e6f00dec6ef2eddd07bf9b4f059b"
+    },
+    {
+      "file": "lib/evidence-export.ts",
+      "sha256": "7edd66e917bc3329183a7812efa8bd979e0afa4f7647dd796018d7770f7d73a1"
+    },
+    {
+      "file": "app/components/assessment-feedback.ts",
+      "sha256": "7d720bb8d23c4744b1cf9765ced45eabd550aff991ae0ae752dd86c97134bf6e"
+    }
+  ],
+  "originalP2": {
+    "before": "C36 complete FORM negative incorrectly returned no_complete_group for two implicit labels whose controls both used external form=f.",
+    "after": "Original exact counterexample and related owner variants now return unknown on both positive and negative paths. Ordinary same-form and PAGE declaration controls remain usable."
+  },
+  "observations": [
+    {
+      "name": "original implicit external owner",
+      "source": "Contact form source content must label \"Name:\" and \"E-mail:\".",
+      "htmlBody": "<form id=\"f\"></form><label>Name:<input name=\"name\" form=\"f\"></label><label>E-mail:<input name=\"mail\" form=\"f\"></label>",
+      "positive": {
+        "kind": "unknown",
+        "context": "form",
+        "reason": "citation_witness"
+      },
+      "negative": {
+        "kind": "unknown",
+        "context": "form",
+        "reason": "unresolved_parse_or_owner"
+      }
+    },
+    {
+      "name": "different DOM forms same external owner",
+      "source": "Contact form source content must label \"Name:\" and \"E-mail:\".",
+      "htmlBody": "<form id=\"f\"></form><form id=\"a\"><label>Name:<input form=\"f\"></label></form><form id=\"b\"><label>E-mail:<input form=\"f\"></label></form>",
+      "positive": {
+        "kind": "unknown",
+        "context": "form",
+        "reason": "citation_witness"
+      },
+      "negative": {
+        "kind": "unknown",
+        "context": "form",
+        "reason": "unresolved_parse_or_owner"
+      }
+    },
+    {
+      "name": "same DOM form divergent control owner",
+      "source": "Contact form source content must label \"Name:\" and \"E-mail:\".",
+      "htmlBody": "<form id=\"f\"><label>Name:<input form=\"g\"></label><label>E-mail:<input form=\"f\"></label></form><form id=\"g\"></form>",
+      "positive": {
+        "kind": "unknown",
+        "context": "form",
+        "reason": "citation_witness"
+      },
+      "negative": {
+        "kind": "unknown",
+        "context": "form",
+        "reason": "unresolved_parse_or_owner"
+      }
+    },
+    {
+      "name": "ambiguous implicit multiple labelable controls",
+      "source": "Contact form source content must label \"Name:\" and \"E-mail:\".",
+      "htmlBody": "<form><label>Name:<input><button></button></label><label>E-mail:<input></label></form>",
+      "positive": {
+        "kind": "unknown",
+        "context": "form",
+        "reason": "citation_witness"
+      },
+      "negative": {
+        "kind": "unknown",
+        "context": "form",
+        "reason": "unresolved_parse_or_owner"
+      }
+    },
+    {
+      "name": "non-form duplicate id prevents implicit form binding",
+      "source": "Contact form source content must label \"Name:\" and \"E-mail:\".",
+      "htmlBody": "<div id=\"f\"></div><form id=\"f\"><label>Name:<input form=\"f\"></label><label>E-mail:<input form=\"f\"></label></form>",
+      "positive": {
+        "kind": "unknown",
+        "context": "form",
+        "reason": "citation_witness"
+      },
+      "negative": {
+        "kind": "unknown",
+        "context": "form",
+        "reason": "unresolved_parse_or_owner"
+      }
+    },
+    {
+      "name": "ordinary nested labels remain admitted",
+      "source": "Contact form source content must label \"Name:\" and \"E-mail:\".",
+      "htmlBody": "<form><label>Name:<input></label><label>E-mail:<input></label></form>",
+      "positive": {
+        "kind": "declared",
+        "context": "form",
+        "file": "index.html",
+        "labelCount": 2
+      },
+      "negative": {
+        "kind": "unknown",
+        "context": "form",
+        "reason": "source_disagrees_with_change"
+      }
+    },
+    {
+      "name": "same actual DOM form explicit form attribute remains admitted",
+      "source": "Contact form source content must label \"Name:\" and \"E-mail:\".",
+      "htmlBody": "<form id=\"f\"><label>Name:<input form=\"f\"></label><label>E-mail:<input form=\"f\"></label></form>",
+      "positive": {
+        "kind": "declared",
+        "context": "form",
+        "file": "index.html",
+        "labelCount": 2
+      },
+      "negative": {
+        "kind": "unknown",
+        "context": "form",
+        "reason": "source_disagrees_with_change"
+      }
+    },
+    {
+      "name": "PAGE declaration ignores control-owner limitation",
+      "source": "Contact page source content must label \"Name:\" and \"E-mail:\".",
+      "htmlBody": "<form id=\"f\"></form><label>Name:<input form=\"f\"></label><label>E-mail:<input form=\"f\"></label>",
+      "positive": {
+        "kind": "declared",
+        "context": "page",
+        "file": "index.html",
+        "labelCount": 2
+      },
+      "negative": {
+        "kind": "unknown",
+        "context": "page",
+        "reason": "source_disagrees_with_change"
+      }
+    },
+    {
+      "name": "valid v4 origin-only comment cannot release or create repair",
+      "reportUnchanged": true,
+      "repairRejected": true,
+      "exportConsistency": "consistent"
+    },
+    {
+      "name": "malformed v4 active-v4",
+      "repairRejected": true,
+      "withheldCommentRejected": true,
+      "exportRejected": true
+    },
+    {
+      "name": "malformed v4 reason-only-marker",
+      "repairRejected": true,
+      "withheldCommentRejected": true,
+      "exportRejected": true
+    },
+    {
+      "name": "malformed v4 scope-metadata",
+      "repairRejected": true,
+      "withheldCommentRejected": true,
+      "exportRejected": true
+    },
+    {
+      "name": "C38 exact same-criterion saved mapping",
+      "clarification": false
+    },
+    {
+      "name": "C38 unrelated saved criterion",
+      "intent": "scope_clarification",
+      "originalModelCommandCopied": false
+    },
+    {
+      "name": "C38 stale current source",
+      "intent": "scope_clarification",
+      "originalModelCommandCopied": false
+    }
+  ],
+  "findings": [],
+  "providerCalls": 0,
+  "networkCalls": 0,
+  "productionEdits": 0,
+  "setupNote": "The earlier attempt to export an evaluator-only custom-criterion quote correctly failed source-rule-replay; it was not repaired or reused. Export/repair checks here use the existing controlled complete observationScopeFixture and actual publisher fallback with absent criteria, not a historical report reconstruction.",
+  "limits": [
+    "Pure-helper/domain/export checks using controlled source; no actual authenticated HTTP request, browser observation or provider inference.",
+    "No gold/corpus/frozen responses were changed or new evaluation samples inspected.",
+    "No complete external form-owner implementation or universal HTML correctness is claimed."
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "pbp-cycle36-post-adjudication-v1",
+  "reviewer": "Codex AI independent source/counterexample review; not human study",
+  "review": "cycle36-post-deepseek.json",
+  "findings": [
+    {
+      "decision": "rejected",
+      "reason": "PAGE descriptor asks actual declared HTML label text, not for/id accessibility or same-form association. An unresolved control ID does not erase an actual page label. Complete page labels contradict a model missing-label change, so unknown/source_disagrees_with_change is intentionally correct. The suggested filtering PAGE by control association would invent a new requirement. Added direct valid-positive and conflicting-negative counterexamples; FORM unresolved owner remains unknown."
+    }
+  ],
+  "independentAcceptedCorrection": {
+    "issue": "Foreign text nested inside an actual HTML label was silently omitted by the old citation parser, allowing an incomplete label string to look complete or whole-source absence to be asserted.",
+    "fix": "Bounded foreign subtree text detection makes the finite label witness unresolved whenever nonempty foreign text would be subtracted. Textless decorative SVG remains ignorable. Both positive and negative paths fail closed; no automatic failure/pass."
+  },
+  "freshCorpusExposed": false,
+  "evaluationCalls": 0
+}

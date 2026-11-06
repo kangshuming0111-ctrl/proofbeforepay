@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {assessDelivery, assessDeliveryCatalogReplay, assessDeliveryLegacyReplay} from "../lib/delivery-assessment.ts";
 import {AssessmentResponseError} from "../lib/assessment-response.ts";
+import {readFile} from "node:fs/promises";
 import {projectQuote, type EvaluationProject} from "../scripts/run-project-assessment-evaluation.ts";
 
 const paragraph = "<p>Harbour Studio offers flowers.</p>";
@@ -35,7 +36,10 @@ test("the actual V3 request explains every schema-required slot and distinguishe
   const report = await assessDelivery(quote, {DEEPSEEK_API_KEY: "controlled-no-network"}, fake.fetcher);
   assert.equal(fake.calls.length, 1); assert.deepEqual(quote, before); assert.equal(report.items.length, 2);
   assert.ok(report.items.every(item => item.status === "supported" && item.citations.length === 1));
-  assert.equal(report.risks.length, 1); assert.equal(report.risks[0].citations.length, 1);
+  assert.deepEqual(report.risks, []);
+  const packet=JSON.parse(fake.calls[0].request.messages[1].content),expectedRisks=fake.calls[0].response.risks.map((risk:any)=>({...risk,citations:Object.values(risk.citations).filter(id=>id!=="").map(id=>{const{id:_,...span}=packet.citationCatalog.entries.find((entry:any)=>entry.id===id);return span;})}));
+  assert.deepEqual(report.withheldRisks,{version:4,reason:"optional_source_leads_unverified",adjustedCriteria:[],entries:expectedRisks.map((risk:any,originalRiskIndex:number)=>({originalRiskIndex,risk}))});
+  assert.equal(report.withheldRisks!.entries[0].risk.citations.length, 1);
   const {request} = fake.calls[0], prompt = request.messages[0].content, schema = request.tools[0].function.parameters;
   const itemKeys = schema.properties.items.items.properties.citations.required, riskKeys = schema.properties.risks.items.properties.citations.required;
   assert.ok(prompt.includes(`Every item MUST include ALL keys ${itemKeys.join(",")}`));
@@ -81,4 +85,27 @@ test("all real request encodings retain factual binding and exact-copy boundarie
     assert.equal(fake.calls.length, 1);
     assert.doesNotMatch(prompt, /MDN|Our world|Earth|corpus|15\/16/u);
   }
+});
+
+test("report completeness instruction uses the actual selected top-level schema in every encoding", async () => {
+  for (const assess of [assessDelivery, assessDeliveryCatalogReplay, assessDeliveryLegacyReplay]) {
+    const fake = transport(); await assess(fixture(), {DEEPSEEK_API_KEY: "controlled-no-network"}, fake.fetcher);
+    const request = fake.calls[0].request, schema = request.tools[0].function.parameters;
+    assert.ok(request.messages[0].content.includes(`EVERY top-level key required by this tool schema: ${schema.required.join(",")}.`));
+    assert.deepEqual([...schema.required].sort(), Object.keys(schema.properties).sort());
+    assert.match(request.messages[0].content, /risks:\[\] or limitations:\[\].*never omit either key/u);
+    assert.equal(schema.additionalProperties, false); assert.ok(schema.required.includes("limitations"));
+  }
+});
+
+test("the actual missing-limitations first reply is still rejected whole once, without filling keys or changing the catalog or quote", async () => {
+  const known = JSON.parse(await readFile(new URL("./fixtures/qualified-answers-malformed-top-level.json", import.meta.url), "utf8"));
+  const q = projectQuote(known.project), before = structuredClone(q), raw = structuredClone(known.raw); let calls = 0;
+  assert.ok(!Object.hasOwn(raw, "limitations"));
+  await assert.rejects(assessDelivery(q, {DEEPSEEK_API_KEY: "controlled-no-network"}, async (_url, init) => {
+    calls++; const request = JSON.parse(String(init?.body)), packet = JSON.parse(request.messages[1].content);
+    assert.equal(packet.citationCatalog.catalogId, raw.catalogId);
+    return Response.json({choices: [{finish_reason: "tool_calls", message: {tool_calls: [{type: "function", function: {name: request.tools[0].function.name, arguments: JSON.stringify(raw)}}]}}]});
+  }), error => error instanceof AssessmentResponseError && error.reason === "structure");
+  assert.equal(calls, 1); assert.deepEqual(q, before); assert.deepEqual(raw, known.raw); assert.ok(!Object.hasOwn(raw, "limitations"));
 });

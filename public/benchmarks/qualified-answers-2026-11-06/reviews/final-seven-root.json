@@ -1,0 +1,111 @@
+{
+  "schema": "pbp-root-whole-answer-review-v1",
+  "checkedAt": "2026-11-06T09:04:40.611485+00:00",
+  "reviewer": "Codex root independently read all 7 raw/application item explanations, risk titles/explanations/suggestions, model/application limitations; not a human evaluation",
+  "report": "cycle40-known-seven-live.json",
+  "reportSha256": "5c01e128bd58ee824f0c1a6f54eb681ba0911fda418bbb2df00cd337f094bc7a",
+  "batchIsKnownRegression": true,
+  "rows": [
+    {
+      "projectId": "mdn-derived-cross-page-label",
+      "rawWholeAnswer": "rejected_wrong_target_and_verbatim_objection",
+      "applicationWholeAnswer": "qualified_conservative_unknown",
+      "decisionNote": "Raw falsely assigns Contact to index via generic rule evidence, says contact holds all labels when it does not, and invents exact-sentence obligation for the Earth/Our world table relation. App independently establishes bounded source label absence, holds verbatim objection as unknown, and withholds both original risks.",
+      "rawItemCount": 2,
+      "applicationItemCount": 2,
+      "rawRisks": 2,
+      "activeApplicationRisks": 0,
+      "originalWithheldRisks": 2
+    },
+    {
+      "projectId": "mdn-derived-inert-label-decoys",
+      "rawWholeAnswer": "qualified_optional_source_ordinal",
+      "applicationWholeAnswer": "accepted",
+      "decisionNote": "Main source facts correct; raw optional explanation calls email the third field although it is the second field block. Originals retained unverified; app finite item facts do not publish that ordinal assertion.",
+      "rawItemCount": 2,
+      "applicationItemCount": 2,
+      "rawRisks": 1,
+      "activeApplicationRisks": 0,
+      "originalWithheldRisks": 1
+    },
+    {
+      "projectId": "c34-fresh-signup-cross-page",
+      "rawWholeAnswer": "qualified_page_mapping",
+      "applicationWholeAnswer": "accepted",
+      "decisionNote": "Raw suggests signup role mapping; app finite all-source labels statement avoids business-page identity, and scope question remains the next action.",
+      "rawItemCount": 2,
+      "applicationItemCount": 2,
+      "rawRisks": 1,
+      "activeApplicationRisks": 0,
+      "originalWithheldRisks": 1
+    },
+    {
+      "projectId": "chrome-canvas-original-label-source",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "decisionNote": "Declared four labels and legend facts are tied to exact source; actual rendering explicitly unobserved.",
+      "rawItemCount": 2,
+      "applicationItemCount": 2,
+      "rawRisks": 0,
+      "activeApplicationRisks": 0,
+      "originalWithheldRisks": 0
+    },
+    {
+      "projectId": "chrome-canvas-derived-cross-page-label",
+      "rawWholeAnswer": "qualified_conservative_unknown",
+      "applicationWholeAnswer": "qualified_conservative_unknown",
+      "decisionNote": "Raw and app leave known cross-page label discrepancy unknown, with explicit role ambiguity. No automatic raw-unknown upgrade is allowed. This is a real remaining detection/clarification gap; not a correct diagnosis or a pass.",
+      "rawItemCount": 2,
+      "applicationItemCount": 2,
+      "rawRisks": 1,
+      "activeApplicationRisks": 0,
+      "originalWithheldRisks": 1
+    },
+    {
+      "projectId": "chrome-canvas-derived-inert-and-literal-visible",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "decisionNote": "Template and literal Visible source facts remain distinct; no actual visible or operational capability is asserted.",
+      "rawItemCount": 2,
+      "applicationItemCount": 2,
+      "rawRisks": 1,
+      "activeApplicationRisks": 0,
+      "originalWithheldRisks": 1
+    },
+    {
+      "projectId": "chrome-canvas-original-runtime-conjunction",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "decisionNote": "Both operational conjunctions remain unknown; static conditional handler explanation is not runtime verification. Optional original lead retained unverified.",
+      "rawItemCount": 2,
+      "applicationItemCount": 2,
+      "rawRisks": 1,
+      "activeApplicationRisks": 0,
+      "originalWithheldRisks": 1
+    }
+  ],
+  "summary": {
+    "rawAccepted": 3,
+    "rawQualified": 3,
+    "rawRejected": 1,
+    "applicationAccepted": 5,
+    "applicationQualifiedUnknown": 2,
+    "applicationRejectedOrUndelivered": 0,
+    "targetedUnverifiedVisibilityOrGuessedPageRepairPublished": 0,
+    "rawReferenceAgreement": {
+      "count": 12,
+      "total": 14
+    },
+    "applicationReferenceAgreement": {
+      "count": 12,
+      "total": 14
+    }
+  },
+  "remainingCoverage": [
+    "Source table-row meaning vs newly invented verbatim-copy objection remains a safe unknown.",
+    "Original raw unknown for the Flight cross-page criterion remains unknown; finite refutation deliberately does not promote raw unknown."
+  ],
+  "implementationEvidenceDistinctFromSampling": "C40 correctly refutes two retained raw false positives with exact references and audit in controlled offline replays. This batch did not repeat those raw supported false positives, so its12/14 is not proof of a live correction on those answers.",
+  "noExtraCallsNoGoldChanges": true,
+  "noPaymentAcceptanceHumanOrIndependentMerchantEvidence": true
+}

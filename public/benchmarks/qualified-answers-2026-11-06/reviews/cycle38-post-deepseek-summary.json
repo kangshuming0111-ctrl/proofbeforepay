@@ -1,0 +1,17 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "completed": true,
+  "errors": [],
+  "report": {
+    "summary": "Reviewed the supplied packet: assessment feedback, criterion source targeting, the current saved-business-check validation path, DeliveryAssessment renderItem wiring, focused tests, and the two snapshot page lines. The gating conditions hold: a missing or mismatched criterion, a supported item, readOnly, no callback and busy states all block or redirect the draft. Only drafts with an undefined, stale or forged context get a scope clarification. Native explicit file wording and validated locked mappings keep the normal change draft. The clarification body does not contain a model-produced repair instruction, and the 1000 UTF-16 limit, surrogate safety and excerpt labels are preserved. I found no actionable defect in the reviewed scope.",
+    "findings": [],
+    "limitations": [
+      "No files were modified, and no tests, typecheck, build or browser checks were run; the findings are based only on reading the supplied source.",
+      "app/page.tsx was not supplied in full. The wiring conclusion relies only on the snapshot lines 36 and 1698 and their hash; the surrounding definition of quote and other props was not reviewed.",
+      "The reference sources imported by the packet (source-literal-directive.ts, assessment-evidence-needs.ts, contracts.ts, static-resources.ts, the RiskRepairPanel RiskFeedbackDraft type, the Risk-v4 risk section and the assessment-component-harness) were not supplied, so their exact behavior was not verified.",
+      "Only test source lines were inspected. The tests' pass/fail state and the component harness's re-render behavior for the busy and readOnly gates are not claimed.",
+      "Whether prefix-clipping a clarifying source's excerpt completes the trailing quotes (which the literal directives expect) was not checked against source-literal-directive.ts. The draft is still a correct scope question and the excerpt is labelled, so this was not raised as a finding.",
+      "Looking up an item only by criterionId, without checking the report or delivery identity, is an injection point for callers. The page-level gating that was shown was not fully verifiable, so this was not raised as a finding."
+    ]
+  }
+}

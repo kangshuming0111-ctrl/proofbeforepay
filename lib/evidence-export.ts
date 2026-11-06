@@ -213,7 +213,8 @@ function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]
   if(row.withheldRisks!==undefined){
     const pool=object(row.withheldRisks,["version","reason","scopeCriterionIds","adjustedCriteria","entries"],"AI withheld-risk disposition");
     const scopeWithheld=pool.version===2&&pool.reason==="source_scope_unestablished",observationWithheld=pool.version===3&&pool.reason==="custom_scope_requires_observation",scoped=scopeWithheld||observationWithheld;
-    requireValue(pool.version===1&&["item_status_adjusted","not_withheld"].includes(pool.reason as string)||scoped,"Unsupported AI withheld-risk disposition.");
+    const unboundWithheld=pool.version===4&&pool.reason==="optional_source_leads_unverified";
+    requireValue(pool.version===1&&["item_status_adjusted","not_withheld"].includes(pool.reason as string)||scoped||unboundWithheld,"Unsupported AI withheld-risk disposition.");
     const adjustments=array(pool.adjustedCriteria,33,"AI status adjustments"),entries=array(pool.entries,5,"Withheld AI leads"),ids=new Set<string>();
     if(scopeWithheld){
       const scopeIds=array(pool.scopeCriterionIds,17,"AI custom contact scope"),expected=finiteContactPresenceScopeCriterionIds(agreed,items.map(value=>({criterionId:(value as Record<string,unknown>).criterionId as string})),delivery.files!);
@@ -223,8 +224,9 @@ function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]
       const scopeIds=array(pool.scopeCriterionIds,17,"AI custom observation scope"),expected=observationOnlyCustomScopeCriterionIds(agreed,items.map(value=>({criterionId:(value as ProofAssessmentItem).criterionId,status:(value as ProofAssessmentItem).status})),observationContext);
       requireValue(adjustments.length===0&&activeRisks.length===0&&entries.length>0&&expected&&same(scopeIds,expected),"An observation-scope disposition needs exact insufficient custom requirements, explicit no-business context, original leads, no adjustments and no active risks.");
     }
-    else requireValue(!Object.hasOwn(pool,"scopeCriterionIds"),"A legacy withholding disposition cannot claim the new source-scope metadata.");
-    if(!scoped&&pool.reason==="not_withheld")requireValue(adjustments.length===0&&entries.length===0,"A not-withheld disposition cannot retain adjustments or withheld leads.");
+    else requireValue(!Object.hasOwn(pool,"scopeCriterionIds"),"A non-scoped withholding disposition cannot claim source-scope metadata.");
+    if(unboundWithheld)requireValue(adjustments.length===0&&activeRisks.length===0&&entries.length>0,"An unverified source-lead disposition needs complete original leads, no invented adjustments and no active risks.");
+    else if(!scoped&&pool.reason==="not_withheld")requireValue(adjustments.length===0&&entries.length===0,"A not-withheld disposition cannot retain adjustments or withheld leads.");
     else if(!scoped)requireValue(adjustments.length>0&&activeRisks.length===0,"A status-adjusted disposition needs an adjustment and no active risks.");
     for(const value of adjustments){
       const adjustment=object(value,["criterionId","originalStatus","publishedStatus"],"AI status adjustment"),id=text(adjustment.criterionId,80),item=items.find(value=>(value as Record<string,unknown>).criterionId===id) as Record<string,unknown>|undefined;
@@ -244,7 +246,7 @@ function riskBindings(value:unknown,deliveryId:string,reports:ProofAssessment[])
     requireValue(!withheld||row.riskOrigin==="withheld","Unsupported risk annotation origin.");
     requireValue(!ids.has(id)&&row.deliveryId===deliveryId&&report&&Number.isSafeInteger(row.riskIndex)&&(row.riskIndex as number)>=0,"Risk annotation references another delivery, report or risk.");ids.add(id);
     const index=row.riskIndex as number;
-    if(withheld){const pool=report.withheldRisks,eligible=pool&&(pool.version===1&&pool.reason==="item_status_adjusted"||(pool.version===2&&pool.reason==="source_scope_unestablished"||pool.version===3&&pool.reason==="custom_scope_requires_observation")&&pool.adjustedCriteria.length===0&&pool.entries.length>0&&report.risks.length===0);requireValue(eligible&&pool?.entries[index]?.originalRiskIndex===index&&pool.entries[index]?.risk,"Risk annotation references a missing or unbound withheld lead.");}
+    if(withheld){const pool=report.withheldRisks,eligible=pool&&(pool.version===1&&pool.reason==="item_status_adjusted"||(pool.version===2&&pool.reason==="source_scope_unestablished"||pool.version===3&&pool.reason==="custom_scope_requires_observation"||pool.version===4&&pool.reason==="optional_source_leads_unverified")&&pool.adjustedCriteria.length===0&&pool.entries.length>0&&report.risks.length===0);requireValue(eligible&&pool?.entries[index]?.originalRiskIndex===index&&pool.entries[index]?.risk,"Risk annotation references a missing or unbound withheld lead.");}
     else requireValue(index<report.risks.length,"Risk annotation references a missing published risk.");
     requireValue(["confirmed","rejected","needs_evidence"].includes(row.decision as string)&&["buyer","seller"].includes(row.actorRole as string)&&typeof row.reviewedAt==="string"&&Number.isFinite(Date.parse(row.reviewedAt)),"Risk annotation fields are invalid.");text(row.reason,1000);
   }

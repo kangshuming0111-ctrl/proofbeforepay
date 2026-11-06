@@ -113,7 +113,9 @@ test("complete provider body, extra risks, limitations and full application repo
   const p = provider({ extraRisk: true }), report = await run(subset(0), p.fetcher), result = report.results[0];
   assert.equal(result.raw?.bodyText, p.rawBodies[0]); assert.equal(result.raw?.bodyComplete, true);
   assert.equal((result.raw?.risks as unknown[]).length, 1); assert.deepEqual(result.raw?.limitations, ["Synthetic model limitation remains verbatim."]);
-  assert.equal(result.application?.report?.risks.length, 1); assert.ok(result.application!.report!.limitations.length > 1);
+  const packet=JSON.parse(JSON.parse(p.bodies[0]).messages[1].content),rawRisk=(result.raw!.risks as {title:string;explanation:string;suggestion:string;citations:Record<string,string>}[])[0];
+  const expectedRisk={...rawRisk,citations:Object.values(rawRisk.citations).filter(id=>id!=="").map(id=>{const{id:_,...span}=packet.citationCatalog.entries.find((entry:{id:string})=>entry.id===id);return span;})};
+  assert.deepEqual(result.application!.report!.risks,[]);assert.deepEqual(result.application!.report!.withheldRisks,{version:4,reason:"optional_source_leads_unverified",adjustedCriteria:[],entries:[{originalRiskIndex:0,risk:expectedRisk}]});assert.ok(result.application!.report!.limitations.length > 1);
   assert.equal(result.raw?.riskCitationChecks[0][0].valid, true);
   assert.equal(result.criteria[0].rawCitations[0].valid, true); assert.equal(result.criteria[0].applicationCitations[0].valid, true);
   assert.equal(result.wholeAnswerSemanticReview, "pending_independent_adjudication");

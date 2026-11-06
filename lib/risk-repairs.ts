@@ -61,6 +61,8 @@ export function snapshotRiskFeedbackSource(quote: ProofQuote, criterionId: strin
   const criterion = quote.proof.criteria.find(item => item.id === criterionId);
   if (!criterion || criterionId === "journey-agreement" || criterionId === "model-agreement") fail("A risk must be explicitly linked to an existing ordinary agreed criterion.");
   if (!delivery || !report || report.deliveryId !== delivery.id || input.assessmentId !== report.id) fail("The delivery or AI report changed. Refresh before returning it.");
+  const marker = report.withheldRisks as {version?:unknown;reason?:unknown}|undefined;
+  if (marker?.version === 4 || marker?.reason === "optional_source_leads_unverified") fail("Unverified optional source proposals cannot authorize linked repair work.");
   if (!Number.isSafeInteger(input.riskIndex) || Number(input.riskIndex) < 0 || Number(input.riskIndex) >= report.risks.length) fail("Choose an exact risk in the current AI report.");
   const source = validateRiskFeedbackSource({deliveryId: delivery.id, assessmentId: report.id, riskIndex: input.riskIndex, criterion, risk: report.risks[Number(input.riskIndex)]});
   for (const citation of source.risk.citations) {

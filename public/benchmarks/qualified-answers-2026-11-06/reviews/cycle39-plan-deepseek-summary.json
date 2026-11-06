@@ -1,0 +1,17 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "completed": true,
+  "errors": [],
+  "report": {
+    "summary": "The proposed cycle-39 plan (PLAN only) adds one generic top-level completeness sentence to the system prompt so the model knows that catalog envelopes (catalogId/items/risks/limitations) and legacy envelopes (items/risks/limitations) require every lifecycle key, with risks/limitations always arrays (empty [] allowed but omission not). It also proposes a request assertion that prompt-declared keys equal the actual tool.required keys, plus a kept rejection test replaying the retained malformed top-level fixture once with no state mutation. The plan is deterministic, does not change the strict decoder (delivery-assessment.ts line 248 keys() remains), and makes no auto-pass or unknown-promotion. Review of the supplied packet finds no actionable defect in the plan itself. The retained failure is real: the first response omitted limitations while catalogId/items/risks were present, contradicting line 179's envelope example. Two hazards are noted below as informational (not defects): wording that could invite an extra top-level key, and a prompt-vs-schema equality assertion that must be scoped to the top-level object only, not the per-item/risk citation keys, or it will disagree with the nested slot requirements.",
+    "findings": [],
+    "limitations": [
+      "Plan-only review: no code changed and no tests, typecheck, build, model call, fixture replay or runtime check was executed or claimed.",
+      "The actual tool schema definitions (assessmentSlotsToolDefinition/assessmentCatalogToolDefinition/assessmentToolDefinition, OBJECT_SCHEMA/additionalProperties) in lib/assessment-completion.ts were not supplied, so whether the proposed 'prompt keys match tool.required' assertion is well-formed versus those schemas cannot be verified from the packet.",
+      "The completeness wording's exact placement/token change is unspecified; at 8 criteria the worst-case request and 4,480-token output ceiling (delivery-assessment.ts lines 40-46) leave headroom, while at 33 criteria the 6,400 cap applies, so added prompt bytes are a minor hazard only.",
+      "Only the retained malformed fixture's content was reviewed; whether its risks/citations still decode identically against the current catalog builder (assessment-citation-catalog.ts) is unverified because that file and the replay harness were not supplied.",
+      "The followup7 known-case set, request/source freeze/rootGO procedure and champion-cycle comparison record were not part of the packet, so those acceptance conditions remain unverified.",
+      "This review is advisory; it does not authorize edits, acceptance, payment, or a new-holdout claim."
+    ]
+  }
+}

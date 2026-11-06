@@ -50,19 +50,20 @@ test("publication retains independent original copies and never mutates item sta
   result.withheldRisks!.entries[0].risk.citations[0].excerpt = "mutated copy";
   assert.deepEqual(modelRisks, before.modelRisks);
 });
-test("existing status-adjustment v1 takes priority and zero-risk or absent-criteria behavior remains v1", () => {
+test("status-adjustment and zero-risk v1 stay unchanged; absent criteria cannot grant v2 scope and use v4", () => {
   const q = fixture(), d = q.proof.delivery!, a = d.assessment!, originals = new Map(a.items.map(i => [i.criterionId, i.status])); originals.set("manual-1", "changes_suggested");
   const result = publishSourceAssessmentNotes("en", a.items, originals, [risk()], 0, d.files!, q.proof.criteria);
   assert.equal(result.withheldRisks!.version, 1); assert.equal(result.withheldRisks!.reason, "item_status_adjusted");
   assert.deepEqual(result.withheldRisks!.adjustedCriteria, [{criterionId: "manual-1", originalStatus: "changes_suggested", publishedStatus: "supported"}]);
   const unchanged = new Map(a.items.map(i => [i.criterionId, i.status]));
-  for (const result of [publishSourceAssessmentNotes("en", a.items, unchanged, [], 0, d.files!, q.proof.criteria), publishSourceAssessmentNotes("en", a.items, unchanged, [risk()], 0, d.files!)]) assert.deepEqual(result.withheldRisks, {version: 1, reason: "not_withheld", adjustedCriteria: [], entries: []});
+  const empty=publishSourceAssessmentNotes("en", a.items, unchanged, [], 0, d.files!, q.proof.criteria);assert.deepEqual(empty.withheldRisks,{version:1,reason:"not_withheld",adjustedCriteria:[],entries:[]});assert.deepEqual(empty.risks,[]);
+  const absent=publishSourceAssessmentNotes("en", a.items, unchanged, [risk()], 0, d.files!);assert.deepEqual(absent.withheldRisks,{version:4,reason:"optional_source_leads_unverified",adjustedCriteria:[],entries:[{originalRiskIndex:0,risk:risk()}]});assert.deepEqual(absent.risks,[]);
 });
 test("mixed custom price/runtime requirements and mismatched IDs cannot borrow contact scope", () => {
   for (const source of ["The page content must list Tea at AUD 18.", "The form must email the owner."]) {
     const q = fixture("en", [phone, source]), a = q.proof.delivery!.assessment!;
     assert.equal(finiteContactPresenceScopeCriterionIds(q.proof.criteria, a.items, q.proof.delivery!.files!), undefined);
-    assert.equal(a.withheldRisks!.version, 1); assert.equal(a.withheldRisks!.reason, "not_withheld"); assert.equal(a.risks.length, 2);
+    assert.deepEqual(a.risks,[]);assert.deepEqual(a.withheldRisks,{version:4,reason:"optional_source_leads_unverified",adjustedCriteria:[],entries:[{originalRiskIndex:0,risk:risk()},{originalRiskIndex:1,risk:risk("Second original lead")}]});
   }
   const q = fixture(), a = q.proof.delivery!.assessment!, ids = structuredClone(a.items); ids[0].criterionId = "foreign";
   assert.equal(finiteContactPresenceScopeCriterionIds(q.proof.criteria, ids, q.proof.delivery!.files!), undefined);

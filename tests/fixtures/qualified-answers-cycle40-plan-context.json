@@ -1,0 +1,571 @@
+{
+  "schema": "pbp-cycle40-known-source-refutation-plan-context-v1",
+  "cases": [
+    {
+      "project": {
+        "id": "chrome-canvas-derived-cross-page-label",
+        "stratum": "mismatch",
+        "language": "en",
+        "title": "chrome-canvas-derived-cross-page-label",
+        "summary": "Flight source labels must include \"Engage Hyperdrive\" and \"Alpha Centauri\" and \"Betelgeuse\" and \"Shield Strength:\".\nThe page content in contact.html must identify the control panel as Spaceship Control Panel.",
+        "files": {
+          "contact.html": "<!doctype html>\n<!--\n Copyright 2026 Google LLC\n SPDX-License-Identifier: Apache-2.0\n-->\n\n    <meta http-equiv=\"origin-trial\" content=\"AjU2FUEJRmjXjbBrLIswW7UfJd1qhYAyWcADl3EvP2v93xJVt0DoZdwIC98eFnYO5ZlFy7pYN6CNH89wzjnaIwUAAABQeyJvcmlnaW4iOiJodHRwczovL2Nocm9tZS5kZXY6NDQzIiwiZmVhdHVyZSI6IkhUTUxJbkNhbnZhcyIsImV4cGlyeSI6MTc4NzYxNjAwMH0=\">\n<meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <meta name=\"description\"\n        content=\"Native HTML text input fields rendered inside a canvas using the layoutsubtree API. Demonstrates full interactivity and accessibility for form elements.\">\n    <meta name=\"keywords\" content=\"HTML in Canvas, layoutsubtree, Text Input, Form, Accessibility, Interactivity\">\n    <title>Native Text Input (HTML-in-Canvas)</title>\n<link rel=\"stylesheet\" href=\"../css/theme.css\">\n<script type=\"module\" src=\"../js/material-web-bundle.js\"></script>\n\n<style>\n  body {\n    background-color: var(--md-sys-color-background);\n    color: var(--md-sys-color-on-background);\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    height: 100vh;\n    margin: 0;\n    font-family: system-ui, sans-serif;\n  }\n\n  canvas {\n    border: 1px solid var(--md-sys-color-outline);\n    border-radius: 12px;\n    width: 638px;\n    height: 600px;\n    background-color: var(--md-sys-color-surface-container);\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);\n  }\n\n  #draw_element {\n    padding: 20px;\n    color: var(--md-sys-color-on-surface);\n  }\n\n  form p {\n    margin: 12px 0;\n    display: flex;\n    align-items: center;\n    gap: 12px;\n  }\n\n  fieldset {\n    border: 1px solid var(--md-sys-color-outline-variant);\n    border-radius: 8px;\n    padding: 16px;\n    margin-bottom: 16px;\n  }\n\n  legend {\n    font-weight: 600;\n    color: var(--md-sys-color-primary);\n    padding: 0 8px;\n    font-size: 1.1em;\n  }\n</style>\n\n<canvas id=\"canvas\" width=\"638\" height=\"600\" content=\"drawable\" layoutsubtree=\"true\">\n  <div id=\"draw_element\" drawable style=\"width: 578px\">\n    <form id=\"demo-form\" action=\"#\" method=\"get\" onsubmit=\"event.preventDefault(); console.log('Spaceship Launched!')\">\n      <fieldset>\n        <legend>🚀 Spaceship Control Panel</legend>\n        <p>\n          <md-outlined-text-field label=\"Ship Name\" id=\"shipName\" value=\"The 'Canvas' Voyager\"\n            style=\"width: 100%\"></md-outlined-text-field>\n        </p>\n        <p>\n          <md-checkbox id=\"hyperdrive\" checked></md-checkbox>\n          <label for=\"hyperdrive\">Engage Hyperdrive</label>\n        </p>\n        <fieldset>\n          <legend>Target System</legend>\n          <p>\n            <md-radio id=\"alpha\" name=\"system\" value=\"alpha\" checked></md-radio>\n            <label for=\"alpha\">Alpha Centauri</label>\n          </p>\n          <p>\n            <md-radio id=\"beta\" name=\"system\" value=\"beta\"></md-radio>\n            <label for=\"beta\">Betelgeuse</label>\n          </p>\n        </fieldset>\n        <p style=\"flex-direction: column; align-items: flex-start;\">\n          \n          <md-slider id=\"shieldLevel\" min=\"0\" max=\"100\" value=\"75\" style=\"width: 100%\"></md-slider>\n        </p>\n        <p style=\"justify-content: flex-end; margin: 0;\">\n          <md-filled-button style=\"width: 100%\" type=\"submit\">Launch!</md-filled-button>\n        </p>\n      </fieldset>\n    </form>\n  </div>\n</canvas>\n\n<script>\n  const canvas = document.getElementById('canvas');\n  const ctx = canvas.getContext('2d');\n  const draw_element = document.getElementById('draw_element');\n\n  let posX = 0;\n  let posY = 0;\n\n  const observer = new ResizeObserver(([entry]) => {\n    canvas.width = entry.devicePixelContentBoxSize[0].inlineSize;\n    canvas.height = entry.devicePixelContentBoxSize[0].blockSize;\n    posX = canvas.width / 25;\n    posY = canvas.height / 25;\n  });\n  // Track geometry bounds\n  observer.observe(canvas, { box: 'device-pixel-content-box' });\n\n  // Chrome HTML-in-Canvas demands drawElementImage is invoked within onpaint\n  canvas.onpaint = () => {\n    ctx.clearRect(0, 0, canvas.width, canvas.height);\n    try {\n      const transform = ctx.drawElementImage(draw_element, posX, posY);\n      if (transform !== undefined && typeof transform?.toString === 'function') {\n        draw_element.style.transform = transform.toString();\n      } else if (draw_element.style.transform) {\n        draw_element.style.transform = '';\n      }\n    } catch (e) {\n      console.warn(\"Skipping frame: Paint record not ready yet\");\n    }\n  };\n</script>\n  <a href=\"https://github.com/GoogleChromeLabs/css-web-ui-demos/blob/main/html-in-canvas/public/demos/text-input.html\" class=\"github-link\" target=\"_blank\" rel=\"noopener noreferrer\">\n    View Source\n  </a>\n",
+          "index.html": "<!doctype html><html><head><title>Authored source companion</title></head><body><form><label for=\"shieldLevel\" style=\"font-weight: 500;\">Shield Strength:</label></form></body></html>",
+          "site.css": "/* Authored companion, not the upstream canvas theme. */ body{margin:0}"
+        },
+        "requiredPages": [
+          "index.html",
+          "contact.html"
+        ],
+        "criteria": [
+          {
+            "id": "coverage-1",
+            "title": "Original requirement 1",
+            "source": "Flight source labels must include \"Engage Hyperdrive\" and \"Alpha Centauri\" and \"Betelgeuse\" and \"Shield Strength:\".",
+            "reference": {
+              "expectedStatus": "changes_suggested",
+              "rationale": "Move only Shield Strength label into a separate authored index page. No single supplied page now has all four exact declared labels. Flight is a source-role hint, not confirmation that either filename is its business target; do not infer a new obligation for index.",
+              "relevantFiles": [
+                "contact.html",
+                "index.html"
+              ],
+              "requiresSemanticReview": true
+            }
+          },
+          {
+            "id": "coverage-2",
+            "title": "Original requirement 2",
+            "source": "The page content in contact.html must identify the control panel as Spaceship Control Panel.",
+            "reference": {
+              "expectedStatus": "supported",
+              "rationale": "The original legend remains unchanged in contact.html.",
+              "relevantFiles": [
+                "contact.html"
+              ],
+              "requiresSemanticReview": true
+            }
+          }
+        ]
+      },
+      "raw": {
+        "catalogId": "c221b73d647c433ec24a14a09badccdc44c37a77e65571dce377a4b6e42bf850",
+        "items": [
+          {
+            "criterionId": "coverage-1",
+            "status": "supported",
+            "explanation": "contact.html contains label elements \"Engage Hyperdrive\", \"Alpha Centauri\", \"Betelgeuse\"; \"Shield Strength:\" appears as a label in index.html. All four labels exist in supplied source.",
+            "citations": {
+              "c1": "s11",
+              "c2": "s13",
+              "c3": "s16",
+              "c4": "s25",
+              "c5": "",
+              "c6": ""
+            }
+          },
+          {
+            "criterionId": "coverage-2",
+            "status": "supported",
+            "explanation": "contact.html fieldset legend reads \"🚀 Spaceship Control Panel\" in source content.",
+            "citations": {
+              "c1": "s7",
+              "c2": "s6",
+              "c3": "",
+              "c4": "",
+              "c5": "",
+              "c6": ""
+            }
+          }
+        ],
+        "risks": [
+          {
+            "title": "\"Shield Strength:\" label and its slider are split across two files",
+            "explanation": "contact.html's slider has id shieldLevel but no label text, while the \"Shield Strength:\" label lives in index.html's separate form, so within contact.html alone the label is not bound to the slider.",
+            "suggestion": "Confirm the intended file for the shield control, and whether the Shield Strength: label should appear alongside the slider in contact.html.",
+            "citations": {
+              "c1": "s17",
+              "c2": "s25",
+              "c3": ""
+            }
+          }
+        ],
+        "limitations": [
+          "Source inspection only: no browser was run, so rendering of the canvas-drawn form, visibility or interactivity is unverified.",
+          "contact.html references ../css/theme.css and ../js/material-web-bundle.js, which are not in the supplied inventory.",
+          "The criterion placement of \"Shield Strength:\" varies between files; whether the buyer accepts the label in index.html rather than contact.html is a human decision."
+        ]
+      },
+      "previousApplication": {
+        "id": "6f0d10e1-5498-4b33-88bc-d2023e236c77",
+        "deliveryId": "eval-chrome-canvas-derived-cross-page-label",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-06T08:48:58.350Z",
+        "items": [
+          {
+            "criterionId": "coverage-1",
+            "status": "insufficient_evidence",
+            "explanation": "Source citations do not cover these labels in one HTML page: Shield Strength:. Add citations; this is an evidence gap, not proof of missing delivery fields.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 2475,
+                "end": 2524,
+                "excerpt": "<label for=\"hyperdrive\">Engage Hyperdrive</label>"
+              },
+              {
+                "file": "contact.html",
+                "start": 2705,
+                "end": 2746,
+                "excerpt": "<label for=\"alpha\">Alpha Centauri</label>"
+              },
+              {
+                "file": "contact.html",
+                "start": 2859,
+                "end": 2895,
+                "excerpt": "<label for=\"beta\">Betelgeuse</label>"
+              },
+              {
+                "file": "index.html",
+                "start": 86,
+                "end": 161,
+                "excerpt": "<label for=\"shieldLevel\" style=\"font-weight: 500;\">Shield Strength:</label>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-1"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 115,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 115,
+                  "excerpt": "Flight source labels must include \"Engage Hyperdrive\" and \"Alpha Centauri\" and \"Betelgeuse\" and \"Shield Strength:\"."
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "source_content",
+                  "clauseIndex": 0,
+                  "state": "source_review_required"
+                }
+              ]
+            },
+            "evidenceNeed": {
+              "schema": "source-evidence-need-v1",
+              "reason": "field_relationship",
+              "targetFiles": []
+            }
+          },
+          {
+            "criterionId": "coverage-2",
+            "status": "supported",
+            "explanation": "contact.html fieldset legend reads \"🚀 Spaceship Control Panel\" in source content.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 2000,
+                "end": 2400,
+                "excerpt": "e style=\"width: 578px\">\n    <form id=\"demo-form\" action=\"#\" method=\"get\" onsubmit=\"event.preventDefault(); console.log('Spaceship Launched!')\">\n      <fieldset>\n        <legend>🚀 Spaceship Control Panel</legend>\n        <p>\n          <md-outlined-text-field label=\"Ship Name\" id=\"shipName\" value=\"The 'Canvas' Voyager\"\n            style=\"width: 100%\"></md-outlined-text-field>\n        </p>\n        <"
+              },
+              {
+                "file": "contact.html",
+                "start": 1600,
+                "end": 2000,
+                "excerpt": "x;\n  }\n\n  fieldset {\n    border: 1px solid var(--md-sys-color-outline-variant);\n    border-radius: 8px;\n    padding: 16px;\n    margin-bottom: 16px;\n  }\n\n  legend {\n    font-weight: 600;\n    color: var(--md-sys-color-primary);\n    padding: 0 8px;\n    font-size: 1.1em;\n  }\n</style>\n\n<canvas id=\"canvas\" width=\"638\" height=\"600\" content=\"drawable\" layoutsubtree=\"true\">\n  <div id=\"draw_element\" drawabl"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-2"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 92,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 92,
+                  "excerpt": "The page content in contact.html must identify the control panel as Spaceship Control Panel."
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "source_content",
+                  "clauseIndex": 0,
+                  "state": "source_review_required"
+                }
+              ]
+            }
+          }
+        ],
+        "risks": [],
+        "limitations": [
+          "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+          "The model supplied 3 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+          "1 item status(es) were adjusted by system checks. 1 unreviewed optional AI risk(s) are temporarily withheld; use item-level evidence. This publication gate does not accept work, authorize or trigger payment.",
+          "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog c221b73d647c433ec24a14a09badccdc44c37a77e65571dce377a4b6e42bf850. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+          "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "coverage": {
+          "includedFiles": [
+            "contact.html",
+            "index.html",
+            "site.css"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "withheldRisks": {
+          "version": 1,
+          "reason": "item_status_adjusted",
+          "adjustedCriteria": [
+            {
+              "criterionId": "coverage-1",
+              "originalStatus": "supported",
+              "publishedStatus": "insufficient_evidence"
+            }
+          ],
+          "entries": [
+            {
+              "originalRiskIndex": 0,
+              "risk": {
+                "title": "\"Shield Strength:\" label and its slider are split across two files",
+                "explanation": "contact.html's slider has id shieldLevel but no label text, while the \"Shield Strength:\" label lives in index.html's separate form, so within contact.html alone the label is not bound to the slider.",
+                "suggestion": "Confirm the intended file for the shield control, and whether the Shield Strength: label should appear alongside the slider in contact.html.",
+                "citations": [
+                  {
+                    "file": "contact.html",
+                    "start": 2939,
+                    "end": 3123,
+                    "excerpt": "<p style=\"flex-direction: column; align-items: flex-start;\">\n          \n          <md-slider id=\"shieldLevel\" min=\"0\" max=\"100\" value=\"75\" style=\"width: 100%\"></md-slider>\n        </p>"
+                  },
+                  {
+                    "file": "index.html",
+                    "start": 86,
+                    "end": 161,
+                    "excerpt": "<label for=\"shieldLevel\" style=\"font-weight: 500;\">Shield Strength:</label>"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "usage": {
+          "promptTokens": 11400,
+          "completionTokens": 531
+        }
+      }
+    },
+    {
+      "project": {
+        "id": "mdn-derived-cross-page-label",
+        "stratum": "mismatch",
+        "language": "en",
+        "title": "MDN prospective derived-cross-page-label",
+        "summary": "Contact source labels must include \"Name:\" and \"E-mail:\" and \"Message:\".\nThe page content in index.html must say Earth is Our world.",
+        "files": {
+          "index.html": "<!DOCTYPE html>\n<html lang=\"en-US\">\n  <head>\n    <meta charset=\"utf-8\">\n    <meta name=\"viewport\" content=\"width=device-width\">\n    <title>Planets data</title>\n    <link href=\"minimal-table.css\" rel=\"stylesheet\" type=\"text/css\">\n  </head>\n  <body>\n    <h1>Planets data</h1>\n\n    <table>\n      <caption>Data about the planets of our solar system (Planetary facts taken from <a href=\"https://nssdc.gsfc.nasa.gov/planetary/factsheet/\">Nasa's Planetary Fact Sheet - Metric</a>).</caption>\n      <colgroup>\n        <col span=\"2\">\n        <col style=\"border: 2px solid black\">\n        <col span=\"9\">\n      </colgroup>\n      <thead>\n        <tr>\n          <td colspan=\"2\"></td>\n          <th scope=\"col\">Name</th>\n          <th scope=\"col\">Mass (10<sup>24</sup>kg)</th>\n          <th scope=\"col\">Diameter (km)</th>\n          <th scope=\"col\">Density (kg/m<sup>3</sup>)</th>\n          <th scope=\"col\">Gravity (m/s<sup>2</sup>)</th>\n          <th scope=\"col\">Length of day (hours)</th>\n          <th scope=\"col\">Distance from Sun (10<sup>6</sup>km)</th>\n          <th scope=\"col\">Mean temperature (°C)</th>\n          <th scope=\"col\">Number of moons</th>\n          <th scope=\"col\">Notes</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr>\n          <th rowspan=\"4\" colspan=\"2\" scope=\"rowgroup\">Terrestrial planets</th>\n          <th scope=\"row\">Mercury</th>\n          <td>0.330</td>\n          <td>4,879</td>\n          <td>5427</td>\n          <td>3.7</td>\n          <td>4222.6</td>\n          <td>57.9</td>\n          <td>167</td>\n          <td>0</td>\n          <td>Closest to the Sun</td>\n        </tr>\n        <tr>\n          <th scope=\"row\">Venus</th>\n          <td>4.87</td>\n          <td>12,104</td>\n          <td>5243</td>\n          <td>8.9</td>\n          <td>2802.0</td>\n          <td>108.2</td>\n          <td>464</td>\n          <td>0</td>\n          <td></td>\n        </tr>\n        <tr>\n          <th scope=\"row\">Earth</th>\n          <td>5.97</td>\n          <td>12,756</td>\n          <td>5514</td>\n          <td>9.8</td>\n          <td>24.0</td>\n          <td>149.6</td>\n          <td>15</td>\n          <td>1</td>\n          <td>Our world</td>\n        </tr>\n        <tr>\n          <th scope=\"row\">Mars</th>\n          <td>0.642</td>\n          <td>6,792</td>\n          <td>3933</td>\n          <td>3.7</td>\n          <td>24.7</td>\n          <td>227.9</td>\n          <td>-65</td>\n          <td>2</td>\n          <td>The red planet</td>\n        </tr>\n        <tr>\n          <th rowspan=\"4\" scope=\"rowgroup\">Jovian planets</th>\n          <th rowspan=\"2\" scope=\"rowgroup\">Gas giants</th>\n          <th scope=\"row\">Jupiter</th>\n          <td>1898</td>\n          <td>142,984</td>\n          <td>1326</td>\n          <td>23.1</td>\n          <td>9.9</td>\n          <td>778.6</td>\n          <td>-110</td>\n          <td>67</td>\n          <td>The largest planet</td>\n        </tr>\n        <tr>\n          <th scope=\"row\">Saturn</th>\n          <td>568</td>\n          <td>120,536</td>\n          <td>687</td>\n          <td>9.0</td>\n          <td>10.7</td>\n          <td>1433.5</td>\n          <td>-140</td>\n          <td>62</td>\n          <td></td>\n        </tr>\n        <tr>\n          <th rowspan=\"2\" scope=\"rowgroup\">Ice giants</th>\n          <th scope=\"row\">Uranus</th>\n          <td>86.8</td>\n          <td>51,118</td>\n          <td>1271</td>\n          <td>8.7</td>\n          <td>17.2</td>\n          <td>2872.5</td>\n          <td>-195</td>\n          <td>27</td>\n          <td></td>\n        </tr>\n        <tr>\n          <th scope=\"row\">Neptune</th>\n          <td>102</td>\n          <td>49,528</td>\n          <td>1638</td>\n          <td>11.0</td>\n          <td>16.1</td>\n          <td>4495.1</td>\n          <td>-200</td>\n          <td>14</td>\n          <td></td>\n        </tr>\n        <tr>\n          <th colspan=\"2\" scope=\"row\">Dwarf planets</th>\n          <th scope=\"row\">Pluto</th>\n          <td>0.0146</td>\n          <td>2,370</td>\n          <td>2095</td>\n          <td>0.7</td>\n          <td>153.3</td>\n          <td>5906.4</td>\n          <td>-225</td>\n          <td>5</td>\n          <td>Declassified as a planet in 2006, but this <a href=\"https://www.usatoday.com/story/tech/2014/10/02/pluto-planet-solar-system/16578959/\">remains controversial</a>.</td>\n        </tr>\n      </tbody>\n    </table>\n\n\n  <form><label for=\"mail\">E-mail:</label><input id=\"mail\" type=\"email\"></form></body>\n</html>\n",
+          "contact.html": "<!DOCTYPE html>\n<html lang=\"en-US\">\n\t<head>\n\t\t<meta charset=\"utf-8\" />\n\t\t<title>Your first HTML form</title>\n\t</head>\n\n\t<body>\n\t\t<form action=\"/my-handling-form-page\" method=\"post\">\n\t\t\t<p>\n\t\t\t\t<label for=\"name\">Name:</label>\n\t\t\t\t<input type=\"text\" id=\"name\" name=\"user_name\" />\n\t\t\t</p>\n\t\t\t<p>\n\t\t\t\t<input type=\"email\" id=\"mail\" name=\"user_mail\" />\n\t\t\t</p>\n\t\t\t<p>\n\t\t\t\t<label for=\"msg\">Message:</label>\n\t\t\t\t<textarea id=\"msg\" name=\"user_message\"></textarea>\n\t\t\t</p>\n\t\t\t<p class=\"button\">\n\t\t\t\t<button type=\"submit\">Send your message</button>\n\t\t\t</p>\n\t\t</form>\n\t</body>\n</html>\n",
+          "minimal-table.css": "html {\n  font-family: sans-serif;\n}\n\ntable {\n  border-collapse: collapse;\n  border: 2px solid rgb(200 200 200);\n  letter-spacing: 1px;\n  font-size: 0.8rem;\n}\n\ntd,\nth {\n  border: 1px solid rgb(190 190 190);\n  padding: 10px 20px;\n}\n\nth {\n  background-color: rgb(235 235 235);\n}\n\ntd {\n  text-align: center;\n}\n\ntr:nth-child(even) td {\n  background-color: rgb(250 250 250);\n}\n\ntr:nth-child(odd) td {\n  background-color: rgb(220 220 220);\n}\n\ncaption {\n  padding: 10px;\n}\n"
+        },
+        "requiredPages": [
+          "index.html",
+          "contact.html"
+        ],
+        "criteria": [
+          {
+            "id": "coverage-1",
+            "title": "Original requirement 1",
+            "source": "Contact source labels must include \"Name:\" and \"E-mail:\" and \"Message:\".",
+            "reference": {
+              "expectedStatus": "changes_suggested",
+              "rationale": "The contact form has no E-mail label; another form on another file cannot fill the named contact source label requirement.",
+              "relevantFiles": [
+                "contact.html",
+                "index.html"
+              ],
+              "requiresSemanticReview": true
+            }
+          },
+          {
+            "id": "coverage-2",
+            "title": "Original requirement 2",
+            "source": "The page content in index.html must say Earth is Our world.",
+            "reference": {
+              "expectedStatus": "supported",
+              "rationale": "Original Earth notes cell still has Our world. This concerns source text only.",
+              "relevantFiles": [
+                "index.html"
+              ],
+              "requiresSemanticReview": true
+            }
+          }
+        ]
+      },
+      "raw": {
+        "catalogId": "a80dc537d02987a46d419119f3817d9dc3af56ac38dba9ce1843d80a8b88a286",
+        "items": [
+          {
+            "criterionId": "coverage-1",
+            "status": "supported",
+            "explanation": "contact.html declares label \"Name:\" (paired input), \"Message:\" (paired textarea) and index.html declares an \"E-mail:\" label. All three labels exist; \"E-mail:\" sits on a separate form in index.html.",
+            "citations": {
+              "c1": "s3",
+              "c2": "s8",
+              "c3": "s140",
+              "c4": "s141",
+              "c5": "s6",
+              "c6": ""
+            }
+          },
+          {
+            "criterionId": "coverage-2",
+            "status": "supported",
+            "explanation": "index.html Earth row's final cell contains \"Our world\" under the row header \"Earth\"; together they express \"Earth is Our world\" (Notes column).",
+            "citations": {
+              "c1": "s53",
+              "c2": "s54",
+              "c3": "s64",
+              "c4": "s27",
+              "c5": "",
+              "c6": ""
+            }
+          }
+        ],
+        "risks": [
+          {
+            "title": "E-mail label is placed on a separate form in index.html rather than with the contact form labels",
+            "explanation": "contact.html's form contains \"Name:\" and \"Message:\" labels but the email input has no label there; index.html contains a separate standalone form with \"E-mail:\" label. The three labels are not together on one contact form.",
+            "suggestion": "Confirm with the buyer whether all three labels are expected on one contact form; if so, add an \"E-mail:\" label to the email input in contact.html and get the stray index.html form removed.",
+            "citations": {
+              "c1": "s6",
+              "c2": "s3",
+              "c3": "s136"
+            }
+          }
+        ],
+        "limitations": [
+          "Source-only review: label visibility, rendering and form submission behavior were not observed.",
+          "The \"E-mail:\" label appears only in index.html; the agreement does not state which page hosts the contact form.",
+          "No browser or accessibility check was performed on label/input associations."
+        ]
+      },
+      "previousApplication": {
+        "id": "1027f227-eddc-47f5-9ecc-e73efa26061d",
+        "deliveryId": "eval-mdn-derived-cross-page-label",
+        "method": "source-ai-v1",
+        "mode": "live",
+        "model": "deepseek-flash",
+        "assessedAt": "2026-11-06T08:37:52.481Z",
+        "items": [
+          {
+            "criterionId": "coverage-1",
+            "status": "insufficient_evidence",
+            "explanation": "Source citations do not cover these labels in one HTML page: E-mail:. Add citations; this is an evidence gap, not proof of missing delivery fields.",
+            "citations": [
+              {
+                "file": "contact.html",
+                "start": 185,
+                "end": 285,
+                "excerpt": "<p>\n\t\t\t\t<label for=\"name\">Name:</label>\n\t\t\t\t<input type=\"text\" id=\"name\" name=\"user_name\" />\n\t\t\t</p>"
+              },
+              {
+                "file": "contact.html",
+                "start": 358,
+                "end": 462,
+                "excerpt": "<p>\n\t\t\t\t<label for=\"msg\">Message:</label>\n\t\t\t\t<textarea id=\"msg\" name=\"user_message\"></textarea>\n\t\t\t</p>"
+              },
+              {
+                "file": "index.html",
+                "start": 4291,
+                "end": 4324,
+                "excerpt": "<label for=\"mail\">E-mail:</label>"
+              },
+              {
+                "file": "index.html",
+                "start": 4324,
+                "end": 4354,
+                "excerpt": "<input id=\"mail\" type=\"email\">"
+              },
+              {
+                "file": "contact.html",
+                "start": 289,
+                "end": 354,
+                "excerpt": "<p>\n\t\t\t\t<input type=\"email\" id=\"mail\" name=\"user_mail\" />\n\t\t\t</p>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-1"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 72,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 72,
+                  "excerpt": "Contact source labels must include \"Name:\" and \"E-mail:\" and \"Message:\"."
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "source_content",
+                  "clauseIndex": 0,
+                  "state": "source_review_required"
+                }
+              ]
+            },
+            "evidenceNeed": {
+              "schema": "source-evidence-need-v1",
+              "reason": "field_relationship",
+              "targetFiles": []
+            }
+          },
+          {
+            "criterionId": "coverage-2",
+            "status": "supported",
+            "explanation": "index.html Earth row's final cell contains \"Our world\" under the row header \"Earth\"; together they express \"Earth is Our world\" (Notes column).",
+            "citations": [
+              {
+                "file": "index.html",
+                "start": 1883,
+                "end": 2156,
+                "excerpt": "<tr>\n          <th scope=\"row\">Earth</th>\n          <td>5.97</td>\n          <td>12,756</td>\n          <td>5514</td>\n          <td>9.8</td>\n          <td>24.0</td>\n          <td>149.6</td>\n          <td>15</td>\n          <td>1</td>\n          <td>Our world</td>\n        </tr>"
+              },
+              {
+                "file": "index.html",
+                "start": 1898,
+                "end": 1924,
+                "excerpt": "<th scope=\"row\">Earth</th>"
+              },
+              {
+                "file": "index.html",
+                "start": 2124,
+                "end": 2142,
+                "excerpt": "<td>Our world</td>"
+              },
+              {
+                "file": "index.html",
+                "start": 1154,
+                "end": 1180,
+                "excerpt": "<th scope=\"col\">Notes</th>"
+              }
+            ],
+            "ruleEvidenceIds": [
+              "eval-evidence-2"
+            ],
+            "obligations": {
+              "schema": "source-obligations-v1",
+              "coverage": "bounded_detection",
+              "sourceLength": 59,
+              "clauses": [
+                {
+                  "start": 0,
+                  "end": 59,
+                  "excerpt": "The page content in index.html must say Earth is Our world."
+                }
+              ],
+              "items": [
+                {
+                  "id": "obligation-1",
+                  "kind": "source_content",
+                  "clauseIndex": 0,
+                  "state": "source_review_required"
+                }
+              ]
+            }
+          }
+        ],
+        "risks": [],
+        "limitations": [
+          "Supplied inventory: 2 HTML, 1 CSS and 0 raster image file(s). Counts establish supplied files only. This source assessment did not run a browser, scripts or backend, or analyze image pixels.",
+          "The model supplied 3 self-described limitations; their facts were not independently verified, so they are not published as detection findings. Use item evidence and system boundaries.",
+          "1 item status(es) were adjusted by system checks. 1 unreviewed optional AI risk(s) are temporarily withheld; use item-level evidence. This publication gate does not accept work, authorize or trigger payment.",
+          "Citation protocol: source-citation-catalog-v1 / catalog_slots, catalog a80dc537d02987a46d419119f3817d9dc3af56ac38dba9ce1843d80a8b88a286. The model selected IDs; the server restored exact source offsets. Valid IDs do not establish correct judgment.",
+          "Complete supported HTML/CSS text was supplied, but complete input does not establish correct model understanding. No browser, scripts or backend were run; functionality, security and full delivery are not established.",
+          "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."
+        ],
+        "coverage": {
+          "includedFiles": [
+            "contact.html",
+            "index.html",
+            "minimal-table.css"
+          ],
+          "truncatedFiles": [],
+          "omittedFiles": []
+        },
+        "withheldRisks": {
+          "version": 1,
+          "reason": "item_status_adjusted",
+          "adjustedCriteria": [
+            {
+              "criterionId": "coverage-1",
+              "originalStatus": "supported",
+              "publishedStatus": "insufficient_evidence"
+            }
+          ],
+          "entries": [
+            {
+              "originalRiskIndex": 0,
+              "risk": {
+                "title": "E-mail label is placed on a separate form in index.html rather than with the contact form labels",
+                "explanation": "contact.html's form contains \"Name:\" and \"Message:\" labels but the email input has no label there; index.html contains a separate standalone form with \"E-mail:\" label. The three labels are not together on one contact form.",
+                "suggestion": "Confirm with the buyer whether all three labels are expected on one contact form; if so, add an \"E-mail:\" label to the email input in contact.html and get the stray index.html form removed.",
+                "citations": [
+                  {
+                    "file": "contact.html",
+                    "start": 289,
+                    "end": 354,
+                    "excerpt": "<p>\n\t\t\t\t<input type=\"email\" id=\"mail\" name=\"user_mail\" />\n\t\t\t</p>"
+                  },
+                  {
+                    "file": "contact.html",
+                    "start": 185,
+                    "end": 285,
+                    "excerpt": "<p>\n\t\t\t\t<label for=\"name\">Name:</label>\n\t\t\t\t<input type=\"text\" id=\"name\" name=\"user_name\" />\n\t\t\t</p>"
+                  },
+                  {
+                    "file": "index.html",
+                    "start": 4000,
+                    "end": 4377,
+                    "excerpt": "5906.4</td>\n          <td>-225</td>\n          <td>5</td>\n          <td>Declassified as a planet in 2006, but this <a href=\"https://www.usatoday.com/story/tech/2014/10/02/pluto-planet-solar-system/16578959/\">remains controversial</a>.</td>\n        </tr>\n      </tbody>\n    </table>\n\n\n  <form><label for=\"mail\">E-mail:</label><input id=\"mail\" type=\"email\"></form></body>\n</html>\n"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "usage": {
+          "promptTokens": 21459,
+          "completionTokens": 565
+        }
+      }
+    }
+  ],
+  "proposal": {
+    "eligibility": "catalog_slots, source_text finite html_labels, original raw supported, specifically the label citation guard changed supported to insufficient_evidence, nonempty valid original citations, no linked buyer-saved business check.",
+    "independentProof": "Run actual complete sent HTML scan with coverage/parse/owner bounds. ONLY no_complete_group -> changes_suggested canonical source facts. This is independently proved finite source discrepancy, not model success or absence inferred from citations.",
+    "audit": "Original raw status remains supported in existing status-adjusted audit; original model risks retained/withheld by existing publication gates. No new contract field needed.",
+    "never": "Never promote raw unknown. No complete-source proof for truncation/omission, parse errors, foreign HTML islands, unresolved implicit form owner, or complete group present with incomplete citations. Empty model citations do not qualify. Runtime/conditioned source and explicit buyer business mappings do not qualify.",
+    "scope": "PAGE is per actual source page, FORM per bounded form owner. Role aliases never mapped to filename. Existing C38 feedback asks clarification before editing an unmapped role; no payment/acceptance authority."
+  },
+  "awards": {
+    "source": "https://www.bemyapp.com/insights/ai-builders-challenge-with-ibm-bob-2026-winners.html",
+    "verifiedOn": "2026-11-06",
+    "PHAROS_INC": "August1st clear deterministic rules/reporting",
+    "AgentReceipt": "AugustMostInnovative evidence/assigned authority"
+  },
+  "allCasesAlreadyCalled": true,
+  "first17AnswersPreserved": true,
+  "codeNotYetChanged": true
+}

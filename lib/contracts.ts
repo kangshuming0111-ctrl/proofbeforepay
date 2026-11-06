@@ -87,10 +87,12 @@ export type ProofAssessmentRisk = { title: string; explanation: string; suggesti
 /** Validated original AI leads retained outside the active indication pool.
  * v1 preserves status-adjustment publication; v2 records an independently
  * bounded source-scope gate; v3 separately records unchanged insufficient
- * custom requirements needing observation, without invented adjustments. */
+ * custom requirements needing observation, without invented adjustments.
+ * v4 retains otherwise-unbound optional source leads outside actionable findings. */
 export type ProofAssessmentWithheldRisks = ({version: 1; reason: "item_status_adjusted" | "not_withheld"}
   | {version: 2; reason: "source_scope_unestablished"; scopeCriterionIds: string[]}
-  | {version: 3; reason: "custom_scope_requires_observation"; scopeCriterionIds: string[]}) & {
+  | {version: 3; reason: "custom_scope_requires_observation"; scopeCriterionIds: string[]}
+  | {version: 4; reason: "optional_source_leads_unverified"}) & {
   adjustedCriteria: {criterionId: string; originalStatus: ProofAssessmentItem["status"]; publishedStatus: ProofAssessmentItem["status"]}[];
   entries: {originalRiskIndex: number; risk: ProofAssessmentRisk}[];
 };

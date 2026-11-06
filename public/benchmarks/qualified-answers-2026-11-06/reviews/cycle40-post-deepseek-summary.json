@@ -1,0 +1,16 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "completed": true,
+  "errors": [],
+  "report": {
+    "summary": "Reviewed the supplied packet only (lib/assessment-label-citations.ts, lib/delivery-assessment.ts, lib/assessment-publication-policy.ts, the two label-source tests and the project skill). The new guard at delivery-assessment.ts:476-487 is correctly gated: catalog_slots only, raw model status supported AND published status insufficient_evidence AND labelCitationAdjusted (explicitly set only at :429) AND nonempty already-validated checkedCitations AND completeSentHtmlInventory AND no same-criterion saved business step. The negative fact is only produced by an independent full all-complete-HTML scan (labelsIn over every sent HTML with coverage completeness checks), never from citation `incomplete`. Raw unknown is only re-fed at :488-498, where unknown never upgrades. Supported-to-published changes flow through publishSourceAssessmentNotes v1, which records adjustedCriteria and retains originals as withheldRisks (assessment-publication-policy.ts:107-121), and no role assignment or payment/acceptance action is reachable. Foreign namespaces, iframes/objects/embeds, foreign text inside labels, implicit owners, missing doctype / parse errors, duplicate ids and ambiguous form owners all yield unknown, not no_complete_group. I found no concrete reachable correctness, security, accessibility or product-flow defect inside this packet. The issues I did find depend on files not supplied (source-literal-directive.ts, assessment-citation-catalog.ts, static-resources.ts) or are low-severity maintainability points, so they are not reported as findings.",
+    "findings": [],
+    "limitations": [
+      "Read-only, static review only. No tests, typecheck or build were executed, and the test assertions are taken as written.",
+      "Not supplied and not inspected: source-literal-directive.ts (parseSourceLiteralDirective semantics, including whether unrecognised html_labels-like needs fall through to not_applicable), assessment-citation-catalog.ts, static-resources.ts/staticFileKind (case-insensitivity of .HTML handling), static-project.ts, contracts.ts, source-presence-evidence.ts, positive-literal-source-witness.ts, universal-tag/source-list checks, business-checks.ts, and the fixture files qualified-answers-cycle40-plan-context.json and qualified-answers-three-replay.json.",
+      "Not verifiable from the packet: whether labelsIn is deterministic across calls (the parsed-map caching at assessment-label-citations.ts:153 would let a first-call nondeterminism become sticky); catalogue overlapping/large spans for memory safety; and whether a criterion can match both label and exact-copy families in a way that makes :434-444 unreachable.",
+      "The 'supported' branch of createAssessmentLabelSourceFactsCheck (:139-144) is only reached at :488-498, where its declared/unknown results never change status. The claim that status ordering keeps it from clobbering an earlier changes_suggested depends on guards in modules not supplied.",
+      "Scope excludes any provider-outcome evaluation, fresh cohort, production runtime behaviour, accessibility of rendered output, and payment/acceptance flows. Nothing in the source points to any defect, and no findings are reported."
+    ]
+  }
+}

@@ -109,6 +109,39 @@ export function verifyAdditiveObligationsBaseline(report,previous,criteria){
  return{validated:criteria.length,additions,alreadyRetainedUnchanged:retained,exactLockedWording:true,publishedCoreFieldsUnchanged:true};
 }
 
+/** One explicit publication migration, not a broader baseline exception.
+ * Source/raw-response lineage is verified separately against the retained
+ * provider body; this comparison cannot prove provider authenticity. */
+export function verifyV4PublicationMigrationBaseline(report,previous,criteria,language){
+ assert.ok(language==="en"||language==="zh");
+ assert.ok(Array.isArray(previous.risks)&&previous.risks.length>0&&previous.risks.length<=5);
+ const old=previous.withheldRisks,pool=report.withheldRisks;
+ if(Object.hasOwn(previous,"withheldRisks")){
+  assert.ok(object(old));assert.deepEqual(Object.keys(old).sort(),["adjustedCriteria","entries","reason","version"]);
+  assert.equal(old.version,1);assert.equal(old.reason,"not_withheld");assert.deepEqual(old.adjustedCriteria,[]);assert.deepEqual(old.entries,[]);
+ }
+ assert.ok(object(pool));assert.deepEqual(Object.keys(pool).sort(),["adjustedCriteria","entries","reason","version"]);
+ assert.equal(pool.version,4);assert.equal(pool.reason,"optional_source_leads_unverified");assert.deepEqual(pool.adjustedCriteria,[]);assert.deepEqual(report.risks,[]);
+ assert.ok(Array.isArray(pool.entries));assert.equal(pool.entries.length,previous.risks.length);
+ for(const[index,entry]of pool.entries.entries()){
+  assert.deepEqual(Object.keys(entry).sort(),["originalRiskIndex","risk"]);assert.equal(entry.originalRiskIndex,index);
+  assert.deepEqual(entry.risk,previous.risks[index],"A migrated optional lead changed, was removed, or moved from its original index.");
+ }
+ const count=previous.risks.length,notice=language==="zh"
+  ? `${count} 条可选源码模型提议未建立独立的约定、页面归属或观察依据，已单独保留原文，不作为可执行返工依据。逐项结论未改变；人工意见不解除暂缓，也不代表验收或付款。`
+  : `${count} optional source-model proposal(s) lack independent agreed-scope, page-owner or observation bindings. Originals are retained outside actionable findings. Item findings are unchanged; human opinions do not release the gate, accept work or make a payment.`;
+ assert.ok(Array.isArray(previous.limitations)&&previous.limitations.length>=2);
+ assert.deepEqual(report.limitations,[...previous.limitations.slice(0,2),notice,...previous.limitations.slice(2)],"Only the exact fixed v4 notice may be inserted; every previous limitation must remain in order.");
+ // Restore only the two explicitly accounted publication changes, then use
+ // the original strict core/obligation comparison for every remaining field.
+ const compared=structuredClone(report);compared.risks=structuredClone(previous.risks);compared.limitations=structuredClone(previous.limitations);
+ const obligations=verifyAdditiveObligationsBaseline(compared,previous,criteria);
+ return{...obligations,publishedCoreFieldsUnchanged:false,allOtherPublishedCoreFieldsUnchanged:true,
+  publicationMigration:{schema:"optional-source-leads-v4-migration-v1",originalDisposition:old===undefined?"legacy_without_disposition":"not_withheld",newDisposition:"optional_source_leads_unverified",
+   originalActiveRisks:structuredClone(previous.risks),newWithheldEntries:structuredClone(pool.entries),originalRiskCount:count,
+   oneToOneOriginalOrderAndCitations:true,fixedNotice:notice,allOtherPublishedCoreFieldsUnchanged:true,publishedFieldsUnchanged:false}};
+}
+
 function verifyCitations(report,files,criteria){
  assert.ok(object(report)&&Array.isArray(report.items)&&Array.isArray(report.risks)&&Array.isArray(report.limitations));
  assert.deepEqual(report.items.map(item=>item.criterionId),criteria.map(item=>item.id));
@@ -174,17 +207,19 @@ function retainedRiskLineage(old,packet,report,required){
   return{originalRiskIndex,risk:resolved,providerRiskSha256:hash(canonical(entry)),resolvedRiskSha256:hash(canonical(resolved))};
  });
  assert.equal(risks.length,old.application.report.risks.length);
- return{statusLineage,adjustedCriteria:statusLineage.adjustedCriteria,candidates:statusLineage.adjustedCriteria.length?risks:[]};
+ return{statusLineage,adjustedCriteria:statusLineage.adjustedCriteria,originalRisks:risks,candidates:statusLineage.adjustedCriteria.length?risks:[]};
 }
 
 export function verifyWithheldRiskLineage(report,lineage,files,criteria,required=false){
- const metadata=report.withheldRisks,expected=lineage.candidates;
+ const metadata=report.withheldRisks,unbound=metadata?.version===4&&metadata?.reason==="optional_source_leads_unverified",expected=unbound?lineage.originalRisks:lineage.candidates;
+ assert.ok(Array.isArray(expected),"The risk-publication disposition needs its independent retained provider lineage.");
  let exactCitations=0;
  for(const entry of expected)exactCitations+=verifyCitations({...report,risks:[entry.risk]},files,criteria).riskCitations;
  if(metadata===undefined){assert.ok(!required,"Every new V3 report must explicitly record its risk-publication disposition.");return{expectedEntries:expected.length,expectedCitations:exactCitations,present:false,disposition:null,lineageVerified:false,entries:expected};}
  assert.deepEqual(Object.keys(metadata).sort(),["adjustedCriteria","entries","reason","version"]);
  const adjusted=lineage.adjustedCriteria.length>0;
- assert.equal(metadata.version,1);assert.equal(metadata.reason,adjusted?"item_status_adjusted":"not_withheld");
+ assert.equal(metadata.version,unbound?4:1);assert.equal(metadata.reason,unbound?"optional_source_leads_unverified":adjusted?"item_status_adjusted":"not_withheld");
+ if(unbound)assert.ok(!adjusted&&expected.length>0,"V4 cannot replace a status-adjustment ledger or create an empty gate.");
  assert.ok(same(metadata.adjustedCriteria,lineage.adjustedCriteria));
  assert.ok(Array.isArray(metadata.entries)&&metadata.entries.length<=5);assert.equal(metadata.entries.length,expected.length);
  for(let index=0;index<metadata.entries.length;index++){
@@ -194,7 +229,7 @@ export function verifyWithheldRiskLineage(report,lineage,files,criteria,required
   for(const [key,maximum]of[["title",120],["explanation",600],["suggestion",400]])assert.ok(typeof entry.risk[key]==="string"&&entry.risk[key].trim().length>0&&entry.risk[key].length<=maximum);
   assert.ok(entry.risk.citations.length>=1&&entry.risk.citations.length<=3);
  }
- if(adjusted)assert.equal(report.risks.length,0,"Quarantined risks must never be appended to the active pool.");
+ if(adjusted||unbound)assert.equal(report.risks.length,0,"Quarantined risks must never be appended to the active pool.");
  return{expectedEntries:expected.length,expectedCitations:exactCitations,present:true,disposition:metadata.reason,lineageVerified:true,entries:expected};
 }
 
@@ -287,7 +322,8 @@ export async function replayEvidenceActions({groups,baseline,stage="16",requireE
     }));
     assert.equal(intercepts,1);assert.deepEqual(quote,before,"A read-only assessment mutated the quote, acceptance or payment.");
     assert.deepEqual(statuses(report),statuses(previous));
-    const obligationsComparison=verifyAdditiveObligationsBaseline(report,previous,packet.criteria);
+    const migrating=report.withheldRisks?.version===4&&previous.risks.length>0;
+    const obligationsComparison=migrating?verifyV4PublicationMigrationBaseline(report,previous,packet.criteria,project.language):verifyAdditiveObligationsBaseline(report,previous,packet.criteria);
     for(const item of report.items)if(item.status!=="insufficient_evidence")assert.equal(item.evidenceNeed,undefined);
     const needs=evidenceNeeds(report,project.files);
     if(requireEvidenceNeeds)assert.ok(needs.every(row=>row.hasActionableReason),"An unknown lacks structured evidence-needed metadata.");
@@ -296,7 +332,8 @@ export async function replayEvidenceActions({groups,baseline,stage="16",requireE
     const reviewNamespace=stage==="18"?verifyReviewNamespace(quote,report):{checked:false,reason:"Risk annotation namespace belongs to cycle18, not this stage."};
     rows.push({group:group.label,id:project.id,criterionCount:project.criteria.length,originalProviderBodySha256:hash(old.raw.bodyText),originalRequestSha256:source.plan.requestSha256,replayRequestSha256:requestSha256,
      originalFreezeSha256:group.frozen.snapshotSha256,sourceFiles:source.files,quoteSha256:source.quoteSha256,quoteUnchanged:true,acceptanceAndPaymentUnchanged:true,
-     requestBytesUnchanged:requestPolicyComparison.requestBytesUnchanged,requestPolicyComparison,completeCriteria:true,itemStatusesUnchanged:true,publishedFieldsUnchanged:true,evidenceNeeds:needs,
+     requestBytesUnchanged:requestPolicyComparison.requestBytesUnchanged,requestPolicyComparison,completeCriteria:true,itemStatusesUnchanged:true,publishedFieldsUnchanged:obligationsComparison.publishedCoreFieldsUnchanged,
+     publicationMigration:obligationsComparison.publicationMigration??null,evidenceNeeds:needs,
      citationVerification:citations,obligationsComparison,statusLineage:lineage.statusLineage,withheldRisks,reviewNamespace,baselineApplication:prior.currentApplication,currentApplication:{accepted:true,report,error:null}});
    }
   }
@@ -310,13 +347,13 @@ export async function replayEvidenceActions({groups,baseline,stage="16",requireE
   harness:{file:"scripts/replay-evidence-actions-2026-11-06.mjs",sha256:hash(harnessBytes)},runtime:{node:process.version,platform:process.platform,reportIdentityMode:"frozen_baseline_clock_and_uuid"},
   inputs:allInputs.map(({file,bytes,sha256})=>({file,bytes:bytes.length,sha256})),currentImplementations:implementations,
   toolImplementation:toolClosure,runtimeClosureSha256:hash(canonical(toolClosure)),rows,
-  totals:{unknowns:rows.reduce((n,row)=>n+row.evidenceNeeds.length,0),unknownsWithEvidenceNeed:rows.reduce((n,row)=>n+row.evidenceNeeds.filter(x=>x.hasActionableReason).length,0),
+  totals:{publicationMigratedReports:rows.filter(row=>row.publicationMigration!==null).length,originalActiveRisksMovedToWithheld:rows.reduce((n,row)=>n+(row.publicationMigration?.originalRiskCount??0),0),unknowns:rows.reduce((n,row)=>n+row.evidenceNeeds.length,0),unknownsWithEvidenceNeed:rows.reduce((n,row)=>n+row.evidenceNeeds.filter(x=>x.hasActionableReason).length,0),
    itemCitations:rows.reduce((n,row)=>n+row.citationVerification.itemCitations,0),activeRiskCitations:rows.reduce((n,row)=>n+row.citationVerification.riskCitations,0),
    retainedWithheldEntries:rows.reduce((n,row)=>n+row.withheldRisks.expectedEntries,0),retainedWithheldCitations:rows.reduce((n,row)=>n+row.withheldRisks.expectedCitations,0),
    quarantinedEntriesVerified:rows.reduce((n,row)=>n+(row.withheldRisks.lineageVerified?row.withheldRisks.expectedEntries:0),0),namespaceReportsChecked:rows.filter(row=>row.reviewNamespace.checked).length,
    statusLineageReportsChecked:rows.filter(row=>row.statusLineage.allAgreedCriteriaCompared).length,statusLineageLedgersVerified:rows.filter(row=>row.statusLineage.ledgerVerified).length,originalToPublishedStatusAdjustments:rows.reduce((n,row)=>n+row.statusLineage.adjustedCriteria.length,0)},
   limits:["Retained original HTTP response bodies, not new model inference or a prompt experiment. Only messages[0].content system policy text may differ from the frozen request; both system hashes and the actual change flag are recorded. All other request bytes remain unchanged, and the actual intercepted request must equal the verified current preparation.","The baseline is the previous publication replay, not the unprocessed R15 response. Only explicitly allowed new evidence-action metadata may differ.",
-   "Original raw responses, source files, frozen references, item statuses, active risks and report explanations remain unchanged; input hashes are checked again after replay. New obligation directions are a separately counted additive change and must exactly rederive from each locked criterion; baseline directions, when present, must also validate and remain unchanged.",
+   "Original raw responses, source files, frozen references, item statuses and report explanations remain unchanged; input hashes are checked again after replay. An explicitly counted v4 publication migration may move the complete unchanged active risks into original-indexed withheld entries and insert only its exact fixed notice; such rows explicitly report publishedFieldsUnchanged=false. Every other core field is compared strictly. New obligation directions are a separately counted additive change and must exactly rederive from each locked criterion; baseline directions, when present, must also validate and remain unchanged.",
    "Evidence requests and quarantined AI leads do not establish a defect, resolution, acceptance or payment. Replaying synthetic or public templates is not a customer test."]};
 }
 

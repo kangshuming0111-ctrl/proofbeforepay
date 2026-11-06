@@ -1,0 +1,95 @@
+{
+  "schema": "pbp-cycle40-seven-author-whole-answer-review-v1",
+  "reviewer": "Codex AI implementation author read complete raw/application text; not root-independent or human study",
+  "rows": [
+    {
+      "id": "mdn-derived-cross-page-label",
+      "rawWholeAnswer": "rejected",
+      "applicationWholeAnswer": "qualified_conservative_unknown",
+      "allItemsRisksAndLimitationsRead": true,
+      "reason": "Raw invents Contact=index target, falsely says contact.html has all labels and incorrectly demands contiguous Earth wording. App canonical source discrepancy removes page assignment; Earth is safely unknown, not supported.",
+      "residual": "clean_source_left_unknown"
+    },
+    {
+      "id": "mdn-derived-inert-label-decoys",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "allItemsRisksAndLimitationsRead": true,
+      "reason": "Raw optional risk calls email the third field although actual field is second; active source judgments are correct. All optional proposals retained as unverified; app canonical source result is bounded.",
+      "residual": null
+    },
+    {
+      "id": "c34-fresh-signup-cross-page",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "accepted",
+      "allItemsRisksAndLimitationsRead": true,
+      "reason": "Raw role-specific source interpretation still relies on inferred signup identity. Canonical item reports only whole-source group discrepancy, not target-file authority.",
+      "residual": null
+    },
+    {
+      "id": "chrome-canvas-original-label-source",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "allItemsRisksAndLimitationsRead": true,
+      "reason": "All four declared labels and legend correctly grounded, no observed rendering/operation claim.",
+      "residual": null
+    },
+    {
+      "id": "chrome-canvas-derived-cross-page-label",
+      "rawWholeAnswer": "qualified",
+      "applicationWholeAnswer": "qualified_conservative_unknown",
+      "allItemsRisksAndLimitationsRead": true,
+      "reason": "Original raw unknown explicitly acknowledges source-role ambiguity. Preserved unknown rather than automatically failing, although authored reference expects changes. No active visible assertion or guessed page-edit command.",
+      "residual": "reference_defect_left_unknown"
+    },
+    {
+      "id": "chrome-canvas-derived-inert-and-literal-visible",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "allItemsRisksAndLimitationsRead": true,
+      "reason": "Template inert source distinguished from actual labels; quoted Visible preserved as literal source data. Canonical source discrepancy correct.",
+      "residual": null
+    },
+    {
+      "id": "chrome-canvas-original-runtime-conjunction",
+      "rawWholeAnswer": "accepted",
+      "applicationWholeAnswer": "accepted",
+      "allItemsRisksAndLimitationsRead": true,
+      "reason": "Both runtime requirements unknown. Declared handler/source dependencies separated from actual operation; optional proposed verification unbound and withheld.",
+      "residual": null
+    }
+  ],
+  "summary": {
+    "raw": {
+      "accepted": 3,
+      "qualified": 3,
+      "rejected": 1
+    },
+    "application": {
+      "accepted": 5,
+      "qualified_conservative_unknown": 2,
+      "not_delivered": 0
+    }
+  },
+  "measurements": {
+    "rawStatusMatches": 12,
+    "applicationStatusMatches": 12,
+    "criteria": 14,
+    "rawRequiredIdsReturned": 14,
+    "exactCitationSpans": 38,
+    "applicationRejectedReports": 0,
+    "rawSupportedRefutedToChangesThisLiveBatch": 0,
+    "actualRetainedFalsePassControlledReplays": 2,
+    "calls": 7,
+    "retries": 0,
+    "estimatedUsd": 0.0352599,
+    "phase24EstimatedUsd": 0.1244316,
+    "all68EstimatedUsd": 0.389745
+  },
+  "decision": "Finalize bounded evidence; no additional provider calls or semantic-engine expansion. Do not call12/14 allcorrect or unknown an accurate change verdict.",
+  "limits": [
+    "C40 diagnostic feature evidenced by exact prior false-positive replays and adversarial function controls, not by zero occurrences of raw supported false positives in this live batch.",
+    "Original raw unknown never upgraded; preserved reference/gold and all prior17 reports.",
+    "Only finite source-label groups; no full form/browser/visibility proof or business role mapping."
+  ]
+}

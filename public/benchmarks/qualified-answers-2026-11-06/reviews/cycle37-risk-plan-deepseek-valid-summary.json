@@ -1,0 +1,45 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "completed": true,
+  "errors": [],
+  "report": {
+    "summary": "The v4 plan is directionally sound: it keeps the active/withheld separation, never releases the gate from human opinions, preserves earlier v1–v3 branches, and relocates unbound source leads rather than binding them. Three design hazards remain, all confined to the packet. (1) Checklist item (4) as written is ambiguous, and the legacy withheld rule present in the packet would let an active v4 report be annotated as if it had a 'not_withheld'/status-adjusted pool. The v4 branch must be checked for first, and a strict whitelist must gate every branch. (2) Checklist item (5) does not say what a pool-less v4 report with nonempty active risks should do. Without an explicit rule it would silently pass through legacy handling, be shown as published and offered in feedback tasks. (3) Checklist item (6) requires the exact citations to be retained, but does not say they must appear inside the unverified disclosure or stay associated with their risk. The existing renderer groups a whole risk into one image-gap disclosure only when text regexes match, so identical raw wording can appear outside any unverified label. Additional notes: the award comparison is honest and limited to authority/evidence separation; item findings remain informative throughout.",
+    "findings": [
+      {
+        "severity": "P2",
+        "file": "lib/risk-reviews.ts",
+        "line": 28,
+        "title": "Withheld-branch gating order lets v4 annotations pass the legacy published/not_withheld paths",
+        "evidence": "Lines 20–27 compute `eligible` only for `withheld`. Without `riskOrigin`, line 28 checks only `riskIndex >= report.risks.length`. For v4, `report.risks` is always `[]` (checklist item 2), so no-index annotation is rejected. But the pool rules at lines 22–26 accept only v1 item_status_adjusted, v2 source_scope_unestablished and v3 custom_scope_requires_observation. They never check that the pool is absent or `not_withheld`, never check `report.risks.length===0`, and never check `adjustedCriteria.length===0` for v1. So a legacy-shaped `{version:1, reason:'not_withheld'}` or `{version:1, reason:'item_status_adjusted'}` pool on an otherwise v4 report would be treated as eligible by the current algorithm, and so would a v4-typed block still routed through the legacy branch. In lib/evidence-export.ts, line 247 has the same structure: the v1 branch omits `risks.length===0` and `adjustedCriteria.length===0` from the withheld condition (unlike v2/v3). Checklist item (4) only says 'accept only strict v4 withheld origin'. It does not fix this order or state that the v4 discriminator is checked first.",
+        "reproduction": "Unexecuted trace: a report of `{risks:[], withheldRisks:{version:1, reason:'not_withheld', adjustedCriteria:[], entries:[{originalRiskIndex:0, risk:{…}}]}}` annotated with `{riskOrigin:'withheld', riskIndex:0}`. In the current code, `eligible` is truthy for `version===1 && reason==='item_status_adjusted'` only when the reason matches; a `not_withheld` pool would fail, but an `item_status_adjusted` pool with adjustedCriteria=[] would pass. If a v4 pool is routed through the legacy branch, neither code has a guard for version 4. Under checklist item (4) implemented literally, the result depends on where the v4 check sits.",
+        "suggestion": "Put an explicit version-4 discriminator and whitelist before all legacy checks in both `recordRiskReview` and `riskBindings`. Accept only the exact v4 shape (`risks.length===0`, `adjustedCriteria.length===0`, no scopeCriterionIds, contiguous entries). Reject any v4-typed pool with a legacy reason or a legacy pool carrying v4-only fields. For v1, require `risks.length===0 && adjustedCriteria.length===0` on the not_withheld path."
+      },
+      {
+        "severity": "P2",
+        "file": "lib/risk-repairs.ts",
+        "line": 64,
+        "title": "Pool-less v4 report with nonempty active risks has no explicit rule; legacy handling would publish and repair them",
+        "evidence": "Line 64 accepts `riskIndex < report.risks.length` with no version or pool check. Lines 65–69 then build a feedback source and check citations. Checklist item (5) only says the early v4 rejection must cover 'malformed v4+nonempty active array', which reads as requiring a v4 `withheldRisks` marker. It does not say how a report whose risks are v4-typed but which has no v4 withheld block (or has the legacy not_withheld block) should be handled. In that case the active leads would be treated as authorized published risks. The feedback task becomes eligible for the if/confirm repair flow, which is exactly the unbound add/remove-field work the plan means to prevent.",
+        "reproduction": "Unexecuted trace: with `report.risks=[one lead], report.withheldRisks=undefined` and v4 item statuses possibly present, current code snapshotRiskFeedbackSource returns a source at index 0. `replayRiskRepairs` would then record a task, and `recordRiskRepair` could propose and review a repair for it.",
+        "suggestion": "In snapshotRiskFeedbackSource, treat any v4-typed report as closed for feedback, including one with no withheldRisks, with nonempty active risks, and with legacy v1/v2/v3 metadata. Reject deterministically. State the same rule for the UI: no RiskFeedbackAction for v4 items."
+      },
+      {
+        "severity": "P3",
+        "file": "app/components/DeliveryAssessment.tsx",
+        "line": 154,
+        "title": "Exact-citation requirement does not constrain raw wording placement; only image-gap rows are disclosed",
+        "evidence": "Line 153 renders `reading.title` and `reading.explanation` as the visible heading and notice. For image_evidence_gap rows, line 154 wraps the raw risk title, explanation and suggestion in a disclosure. For every other kind, line 154 renders `risk.explanation` unstyled, and the title is already the raw `risk.title` (assessment-display.ts:52), with `nextStep` equal to `risk.suggestion` (line 58). Citations are rendered outside any risk disclosure (line 155). Checklist item (6) says raw title/explanation/suggestion must go 'ONLY inside explicitly unverified original-wording disclosure, exact citations retained'. It gives no rule about where citations go relative to that disclosure, and it leaves the assessmentRiskPresentation fallback path undefined for v4. If item 6 is implemented only for v4 `withheld.entries` and the active-pool path is left alone, the same regex-driven exclusion could still apply.",
+        "reproduction": "Unexecuted reasoning trace: a v4 entry whose risk text matches the image-gap regexes in assessment-display.ts:45–48 would render as `image_evidence_gap`, which is a different disclosure path and label than the v4 neutral header and unverified disclosure require.",
+        "suggestion": "Define one v4 rendering path for all v4 entries that does not call assessmentRiskPresentation. The neutral numbered header uses only index and neutral label, with the raw wording and its Citations nested inside the same disclosure. Add explicit v4 assertions for raw wording nested inside the disclosure and for no risk present outside it."
+      }
+    ],
+    "limitations": [
+      "Review covered only the supplied packet files. Feedback UI, RiskReviewPanel, RiskRepairPanel, API routes, save/replay of stored assessments, and other callers of recordRiskReview or snapshotRiskFeedbackSource were not supplied, so end-to-end flow was not verified.",
+      "No code was executed and no tests, typecheck, build, or runtime behavior were checked. All reproductions are unexecuted traces.",
+      "Current source lacks v4 branches. Their absence was not counted as a defect. Findings address how the plan's requirements interact with the existing legacy branches.",
+      "The award comparison (BeMyApp IBM Bob 2026 winners page, verified 2026-11-06) was accepted as given and not re-fetched. The plan makes no superiority claim.",
+      "The plan does not require the model provider's authenticity to be proven, and the review does not treat recomputed citations as proof of provider execution.",
+      "No claim is made that item judgments, adjusted criteria, or status values are changed by v4 under the plan. Per the plan, item judgments stay informative."
+    ]
+  }
+}

@@ -1,0 +1,672 @@
+{
+  "schema": "pbp-qualified-answer-remediation-record-v1",
+  "date": "2026-11-06",
+  "scope": "C36–40 bounded source-report presentation, unverified-risk authority, clarify-first feedback, complete-envelope prompting and independent finite source refutation. Cases are authored variants of official educational/diagnostic examples, not independent merchant projects. No browser/backend/acceptance/payment operation is established by these model calls.",
+  "readerGuide": [
+    "The original three application qualifications concerned unobserved visible wording and guessed page-directed action. Finite source facts, unverified proposal separation and scope-first drafts address those boundaries without a word blacklist or forcing correct items unknown.",
+    "Read full raw and application reviews separately. Safe unknown is not a correct change verdict; a strict rejected report leaves required results undelivered.",
+    "The first Google split-page response omitted limitations and was rejected. It also falsely titled the slider absent. Its complete original response remains here; later complete output does not replace it.",
+    "Final known7 regression is not fresh validation. Only a complete independently checked finite source discrepancy may refute a raw supported false positive; source evidence uncertainty and original raw unknown remain unknown. Server corrections are not model accuracy. No perfection or championship claim."
+  ],
+  "previous44CallRecord": "/benchmarks/three-gaps-2026-11-06/source-assessment/latest.json",
+  "accounting": {
+    "phaseCalls": 24,
+    "phaseDistinctCaseVariants": 7,
+    "caseExposureCounts": {
+      "mdn-derived-cross-page-label": 4,
+      "mdn-derived-inert-label-decoys": 4,
+      "c34-fresh-signup-cross-page": 4,
+      "chrome-canvas-original-label-source": 3,
+      "chrome-canvas-derived-cross-page-label": 3,
+      "chrome-canvas-derived-inert-and-literal-visible": 3,
+      "chrome-canvas-original-runtime-conjunction": 3
+    },
+    "newThisPhaseCaseVariants": 4,
+    "newThisPhaseOfficialHtmlPaths": 1,
+    "retryCalls": 0,
+    "phaseCostUsdEstimate": 0.1244316,
+    "previousLinkedCalls": 44,
+    "evaluationCallsInLinkedRecords": 68,
+    "estimatedCostUsdInLinkedRecords": 0.389745,
+    "countingScope": "Only the linked previous44-call record plus this24-call phase. Not the project lifetime or all earlier development/model/Harness usage.",
+    "invoice": false,
+    "humanParticipants": 0,
+    "independentMerchantIntegrations": 0
+  },
+  "reviewerKind": "Root Codex AI, separate from implementation author; not human study",
+  "originalThreeBeforeReview": "reviews/previous-cycle35-root.json",
+  "firstTenWholeAnswerReview": {
+    "artifact": "reviews/first-ten-root.json",
+    "summary": {
+      "attempts": 10,
+      "distinctCases": 7,
+      "criteriaAttempts": 20,
+      "rawStatusMatches": 17,
+      "applicationStatusMatches": 16,
+      "rawReview": {
+        "accepted": 1,
+        "qualified": 6,
+        "rejected": 3
+      },
+      "applicationReview": {
+        "accepted": 7,
+        "qualified_conservative_unknown": 2,
+        "not_delivered": 1
+      },
+      "targetedUnverifiedVisibilityOrGuessedPageActionCount": 0,
+      "retries": 0,
+      "estimatedUsd": 0.0538494
+    }
+  },
+  "intermediateSevenWholeAnswerReview": {
+    "artifact": "reviews/cycle39-seven-root.json",
+    "summary": {
+      "rawAccepted": 3,
+      "rawQualified": 3,
+      "rawRejected": 1,
+      "applicationAccepted": 6,
+      "applicationQualifiedUnknown": 1,
+      "applicationRejectedOrUndelivered": 0,
+      "targetedUnverifiedVisibilityOrGuessedPageRepairPublished": 0
+    }
+  },
+  "finalSevenWholeAnswerReview": {
+    "artifact": "reviews/final-seven-root.json",
+    "summary": {
+      "rawAccepted": 3,
+      "rawQualified": 3,
+      "rawRejected": 1,
+      "applicationAccepted": 5,
+      "applicationQualifiedUnknown": 2,
+      "applicationRejectedOrUndelivered": 0,
+      "targetedUnverifiedVisibilityOrGuessedPageRepairPublished": 0,
+      "rawReferenceAgreement": {
+        "count": 12,
+        "total": 14
+      },
+      "applicationReferenceAgreement": {
+        "count": 12,
+        "total": 14
+      }
+    }
+  },
+  "activeRemainingCases": [
+    {
+      "projectId": "mdn-derived-cross-page-label",
+      "rawWholeAnswer": "rejected_wrong_target_and_verbatim_objection",
+      "applicationWholeAnswer": "qualified_conservative_unknown",
+      "decisionNote": "Raw falsely assigns Contact to index via generic rule evidence, says contact holds all labels when it does not, and invents exact-sentence obligation for the Earth/Our world table relation. App independently establishes bounded source label absence, holds verbatim objection as unknown, and withholds both original risks.",
+      "rawItemCount": 2,
+      "applicationItemCount": 2,
+      "rawRisks": 2,
+      "activeApplicationRisks": 0,
+      "originalWithheldRisks": 2
+    },
+    {
+      "projectId": "chrome-canvas-derived-cross-page-label",
+      "rawWholeAnswer": "qualified_conservative_unknown",
+      "applicationWholeAnswer": "qualified_conservative_unknown",
+      "decisionNote": "Raw and app leave known cross-page label discrepancy unknown, with explicit role ambiguity. No automatic raw-unknown upgrade is allowed. This is a real remaining detection/clarification gap; not a correct diagnosis or a pass.",
+      "rawItemCount": 2,
+      "applicationItemCount": 2,
+      "rawRisks": 1,
+      "activeApplicationRisks": 0,
+      "originalWithheldRisks": 1
+    }
+  ],
+  "controlledReplays": {
+    "artifact": "controlled/three-production-pipeline-replay.json",
+    "providerNetworkCalls": 0,
+    "historicalModeField": "Injected historical report may contain mode=live because the production pipeline uses that field; this controlled receipt is explicitly not a new provider call.",
+    "allOriginalSourceStatesAndCitationSpansPreserved": true
+  },
+  "controlledIndependentRefutation": {
+    "artifact": "controlled/two-independent-source-refutations.json",
+    "providerNetworkCalls": 0,
+    "retainedGenuineRawFalsePassesRefuted": 2,
+    "originalRawSupportedAndExactCitationsPreserved": true,
+    "credit": "Independent finite server source proof, not successful model judgment. This final live batch had zero raw supported false-positive occurrences, so these two retained replays are the direct correction evidence."
+  },
+  "cohorts": [
+    {
+      "id": "known-three-first",
+      "exposure": "Previously exposed three MDN cases; first planned pass of this phase, not first-ever answers.",
+      "report": "records/known-three-first/report.json",
+      "corpus": "records/known-three-first/corpus.json",
+      "requestFreeze": "records/known-three-first/request-freeze.json",
+      "freezeSha256": "b46310632ff88a95be08217a849bd8094a807da28c706fa1a1621cc864920cc8",
+      "calls": 3,
+      "criteria": 6,
+      "rawStatusAgreement": {
+        "count": 6,
+        "total": 6,
+        "fraction": 1
+      },
+      "applicationStatusAgreement": {
+        "count": 6,
+        "total": 6,
+        "fraction": 1
+      },
+      "applicationRejectedReports": 0,
+      "rawFalsePass": {
+        "count": 0,
+        "total": 3,
+        "fraction": 0
+      },
+      "applicationFalsePass": {
+        "count": 0,
+        "total": 3,
+        "fraction": 0
+      },
+      "applicationReferenceDefectUnknown": {
+        "count": 0,
+        "total": 3,
+        "fraction": 0
+      },
+      "applicationCleanUnderAdmission": {
+        "count": 0,
+        "total": 3,
+        "fraction": 0
+      },
+      "rawSupportedRefutedToSourceChanges": 0,
+      "rawIdCoverage": {
+        "attemptedProjects": 3,
+        "contentParsedProjects": 3,
+        "parsedIdProfileProjects": 3,
+        "firstStoppedCompleteItemProjects": {
+          "count": 3,
+          "total": 3,
+          "fraction": 1
+        },
+        "firstCompletedItemProjects": {
+          "count": 3,
+          "total": 3,
+          "fraction": 1
+        },
+        "completeItemCoverageAmongParsedIdProfiles": {
+          "count": 3,
+          "total": 3,
+          "fraction": 1
+        },
+        "completeStoppedItemCoverageAmongParsedIdProfiles": {
+          "count": 3,
+          "total": 3,
+          "fraction": 1
+        },
+        "strictToolResponseProjects": 3,
+        "legacyJsonResponseProjects": 0,
+        "syntaxNormalizedProjects": 0,
+        "normalizedIdProfileProjects": 0,
+        "originalIdProfileProjects": 3,
+        "missingItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 3,
+          "fraction": 0
+        },
+        "duplicateItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 3,
+          "fraction": 0
+        },
+        "unknownIdProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 3,
+          "fraction": 0
+        },
+        "invalidItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 3,
+          "fraction": 0
+        },
+        "unparsedIdProfileProjects": 0,
+        "outputLimitedProjects": 0
+      },
+      "rawExactCitations": {
+        "count": 15,
+        "total": 15,
+        "fraction": 1
+      },
+      "applicationExactCitations": {
+        "count": 15,
+        "total": 15,
+        "fraction": 1
+      },
+      "estimatedUsd": 0.0189762
+    },
+    {
+      "id": "known-three-repeat",
+      "exposure": "Same three cases repeated once by predeclared plan, not new examples; both responses retained.",
+      "report": "records/known-three-repeat/report.json",
+      "corpus": "records/known-three-repeat/corpus.json",
+      "requestFreeze": "records/known-three-repeat/request-freeze.json",
+      "freezeSha256": "646bee20308b2762a0b7c94595eb7fb3956341bf55fe7a3730d09a80a0db0277",
+      "calls": 3,
+      "criteria": 6,
+      "rawStatusAgreement": {
+        "count": 5,
+        "total": 6,
+        "fraction": 0.8333333333333334
+      },
+      "applicationStatusAgreement": {
+        "count": 5,
+        "total": 6,
+        "fraction": 0.8333333333333334
+      },
+      "applicationRejectedReports": 0,
+      "rawFalsePass": {
+        "count": 1,
+        "total": 3,
+        "fraction": 0.3333333333333333
+      },
+      "applicationFalsePass": {
+        "count": 0,
+        "total": 3,
+        "fraction": 0
+      },
+      "applicationReferenceDefectUnknown": {
+        "count": 1,
+        "total": 3,
+        "fraction": 0.3333333333333333
+      },
+      "applicationCleanUnderAdmission": {
+        "count": 0,
+        "total": 3,
+        "fraction": 0
+      },
+      "rawSupportedRefutedToSourceChanges": 0,
+      "rawIdCoverage": {
+        "attemptedProjects": 3,
+        "contentParsedProjects": 3,
+        "parsedIdProfileProjects": 3,
+        "firstStoppedCompleteItemProjects": {
+          "count": 3,
+          "total": 3,
+          "fraction": 1
+        },
+        "firstCompletedItemProjects": {
+          "count": 3,
+          "total": 3,
+          "fraction": 1
+        },
+        "completeItemCoverageAmongParsedIdProfiles": {
+          "count": 3,
+          "total": 3,
+          "fraction": 1
+        },
+        "completeStoppedItemCoverageAmongParsedIdProfiles": {
+          "count": 3,
+          "total": 3,
+          "fraction": 1
+        },
+        "strictToolResponseProjects": 3,
+        "legacyJsonResponseProjects": 0,
+        "syntaxNormalizedProjects": 0,
+        "normalizedIdProfileProjects": 0,
+        "originalIdProfileProjects": 3,
+        "missingItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 3,
+          "fraction": 0
+        },
+        "duplicateItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 3,
+          "fraction": 0
+        },
+        "unknownIdProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 3,
+          "fraction": 0
+        },
+        "invalidItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 3,
+          "fraction": 0
+        },
+        "unparsedIdProfileProjects": 0,
+        "outputLimitedProjects": 0
+      },
+      "rawExactCitations": {
+        "count": 19,
+        "total": 19,
+        "fraction": 1
+      },
+      "applicationExactCitations": {
+        "count": 19,
+        "total": 19,
+        "fraction": 1
+      },
+      "estimatedUsd": 0.018771
+    },
+    {
+      "id": "google-four-first",
+      "exposure": "Actual first attempts on four cases from one new publisher/example path, sealed before tuning; two originals plus two authored mutations, not four independent apps.",
+      "report": "records/google-four-first/report.json",
+      "corpus": "records/google-four-first/corpus.json",
+      "requestFreeze": "records/google-four-first/request-freeze.json",
+      "freezeSha256": "f0cfed1cb8ba1b3521053183f679dcf8a6837beb87a91dfd406e24d06d6c425b",
+      "calls": 4,
+      "criteria": 8,
+      "rawStatusAgreement": {
+        "count": 6,
+        "total": 8,
+        "fraction": 0.75
+      },
+      "applicationStatusAgreement": {
+        "count": 5,
+        "total": 8,
+        "fraction": 0.625
+      },
+      "applicationRejectedReports": 1,
+      "rawFalsePass": {
+        "count": 1,
+        "total": 2,
+        "fraction": 0.5
+      },
+      "applicationFalsePass": {
+        "count": 0,
+        "total": 2,
+        "fraction": 0
+      },
+      "applicationReferenceDefectUnknown": {
+        "count": 1,
+        "total": 2,
+        "fraction": 0.5
+      },
+      "applicationCleanUnderAdmission": {
+        "count": 0,
+        "total": 4,
+        "fraction": 0
+      },
+      "rawSupportedRefutedToSourceChanges": 0,
+      "rawIdCoverage": {
+        "attemptedProjects": 4,
+        "contentParsedProjects": 4,
+        "parsedIdProfileProjects": 4,
+        "firstStoppedCompleteItemProjects": {
+          "count": 4,
+          "total": 4,
+          "fraction": 1
+        },
+        "firstCompletedItemProjects": {
+          "count": 4,
+          "total": 4,
+          "fraction": 1
+        },
+        "completeItemCoverageAmongParsedIdProfiles": {
+          "count": 4,
+          "total": 4,
+          "fraction": 1
+        },
+        "completeStoppedItemCoverageAmongParsedIdProfiles": {
+          "count": 4,
+          "total": 4,
+          "fraction": 1
+        },
+        "strictToolResponseProjects": 4,
+        "legacyJsonResponseProjects": 0,
+        "syntaxNormalizedProjects": 0,
+        "normalizedIdProfileProjects": 0,
+        "originalIdProfileProjects": 4,
+        "missingItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 4,
+          "fraction": 0
+        },
+        "duplicateItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 4,
+          "fraction": 0
+        },
+        "unknownIdProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 4,
+          "fraction": 0
+        },
+        "invalidItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 4,
+          "fraction": 0
+        },
+        "unparsedIdProfileProjects": 0,
+        "outputLimitedProjects": 0
+      },
+      "rawExactCitations": {
+        "count": 25,
+        "total": 25,
+        "fraction": 1
+      },
+      "applicationExactCitations": {
+        "count": 19,
+        "total": 19,
+        "fraction": 1
+      },
+      "estimatedUsd": 0.0161022
+    },
+    {
+      "id": "cycle39-known-seven",
+      "exposure": "All seven now-known cases once after top-key guidance and implicit-owner correction. Not a new holdout or a replacement first attempt.",
+      "report": "records/cycle39-known-seven/report.json",
+      "corpus": "records/cycle39-known-seven/corpus.json",
+      "requestFreeze": "records/cycle39-known-seven/request-freeze.json",
+      "freezeSha256": "19c5764fb065abc9ebd08e128f0e6d854df83ee46411068f701953da8942f477",
+      "calls": 7,
+      "criteria": 14,
+      "rawStatusAgreement": {
+        "count": 13,
+        "total": 14,
+        "fraction": 0.9285714285714286
+      },
+      "applicationStatusAgreement": {
+        "count": 13,
+        "total": 14,
+        "fraction": 0.9285714285714286
+      },
+      "applicationRejectedReports": 0,
+      "rawFalsePass": {
+        "count": 1,
+        "total": 5,
+        "fraction": 0.2
+      },
+      "applicationFalsePass": {
+        "count": 0,
+        "total": 5,
+        "fraction": 0
+      },
+      "applicationReferenceDefectUnknown": {
+        "count": 1,
+        "total": 5,
+        "fraction": 0.2
+      },
+      "applicationCleanUnderAdmission": {
+        "count": 0,
+        "total": 7,
+        "fraction": 0
+      },
+      "rawSupportedRefutedToSourceChanges": 0,
+      "rawIdCoverage": {
+        "attemptedProjects": 7,
+        "contentParsedProjects": 7,
+        "parsedIdProfileProjects": 7,
+        "firstStoppedCompleteItemProjects": {
+          "count": 7,
+          "total": 7,
+          "fraction": 1
+        },
+        "firstCompletedItemProjects": {
+          "count": 7,
+          "total": 7,
+          "fraction": 1
+        },
+        "completeItemCoverageAmongParsedIdProfiles": {
+          "count": 7,
+          "total": 7,
+          "fraction": 1
+        },
+        "completeStoppedItemCoverageAmongParsedIdProfiles": {
+          "count": 7,
+          "total": 7,
+          "fraction": 1
+        },
+        "strictToolResponseProjects": 7,
+        "legacyJsonResponseProjects": 0,
+        "syntaxNormalizedProjects": 0,
+        "normalizedIdProfileProjects": 0,
+        "originalIdProfileProjects": 7,
+        "missingItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 7,
+          "fraction": 0
+        },
+        "duplicateItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 7,
+          "fraction": 0
+        },
+        "unknownIdProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 7,
+          "fraction": 0
+        },
+        "invalidItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 7,
+          "fraction": 0
+        },
+        "unparsedIdProfileProjects": 0,
+        "outputLimitedProjects": 0
+      },
+      "rawExactCitations": {
+        "count": 43,
+        "total": 43,
+        "fraction": 1
+      },
+      "applicationExactCitations": {
+        "count": 43,
+        "total": 43,
+        "fraction": 1
+      },
+      "estimatedUsd": 0.0353223
+    },
+    {
+      "id": "cycle40-known-seven",
+      "exposure": "Same seven known cases once after finite full-source refutation. Server-proved corrections are separate from raw model outcomes; all earlier answers retained.",
+      "report": "records/cycle40-known-seven/report.json",
+      "corpus": "records/cycle40-known-seven/corpus.json",
+      "requestFreeze": "records/cycle40-known-seven/request-freeze.json",
+      "freezeSha256": "2b46d958b0b4afe92037a2a3a6db0df7f327c58ad7b06850aac10f8197177beb",
+      "calls": 7,
+      "criteria": 14,
+      "rawStatusAgreement": {
+        "count": 12,
+        "total": 14,
+        "fraction": 0.8571428571428571
+      },
+      "applicationStatusAgreement": {
+        "count": 12,
+        "total": 14,
+        "fraction": 0.8571428571428571
+      },
+      "applicationRejectedReports": 0,
+      "rawFalsePass": {
+        "count": 0,
+        "total": 5,
+        "fraction": 0
+      },
+      "applicationFalsePass": {
+        "count": 0,
+        "total": 5,
+        "fraction": 0
+      },
+      "applicationReferenceDefectUnknown": {
+        "count": 1,
+        "total": 5,
+        "fraction": 0.2
+      },
+      "applicationCleanUnderAdmission": {
+        "count": 1,
+        "total": 7,
+        "fraction": 0.14285714285714285
+      },
+      "rawSupportedRefutedToSourceChanges": 0,
+      "rawIdCoverage": {
+        "attemptedProjects": 7,
+        "contentParsedProjects": 7,
+        "parsedIdProfileProjects": 7,
+        "firstStoppedCompleteItemProjects": {
+          "count": 7,
+          "total": 7,
+          "fraction": 1
+        },
+        "firstCompletedItemProjects": {
+          "count": 7,
+          "total": 7,
+          "fraction": 1
+        },
+        "completeItemCoverageAmongParsedIdProfiles": {
+          "count": 7,
+          "total": 7,
+          "fraction": 1
+        },
+        "completeStoppedItemCoverageAmongParsedIdProfiles": {
+          "count": 7,
+          "total": 7,
+          "fraction": 1
+        },
+        "strictToolResponseProjects": 7,
+        "legacyJsonResponseProjects": 0,
+        "syntaxNormalizedProjects": 0,
+        "normalizedIdProfileProjects": 0,
+        "originalIdProfileProjects": 7,
+        "missingItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 7,
+          "fraction": 0
+        },
+        "duplicateItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 7,
+          "fraction": 0
+        },
+        "unknownIdProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 7,
+          "fraction": 0
+        },
+        "invalidItemProjectsAmongParsedIdProfiles": {
+          "count": 0,
+          "total": 7,
+          "fraction": 0
+        },
+        "unparsedIdProfileProjects": 0,
+        "outputLimitedProjects": 0
+      },
+      "rawExactCitations": {
+        "count": 38,
+        "total": 38,
+        "fraction": 1
+      },
+      "applicationExactCitations": {
+        "count": 38,
+        "total": 38,
+        "fraction": 1
+      },
+      "estimatedUsd": 0.0352599
+    }
+  ],
+  "remainingLimits": [
+    "Finite source-label facts do not prove visibility, generic prose truth or full browser form ownership. External implicit owner mapping stays unknown.",
+    "Final batch raw false passes: 0; application reference defects left unknown: 1; reference-supported items left unknown: 1; independently refuted raw supported to source changes in this live batch: 0. Two final application unknowns remain, not correct verdicts or pooled accuracy.",
+    "Complete top-level guidance cannot guarantee future model schema compliance; decoder remains strict and exact malformed replay still rejects.",
+    "Model suggestions remain unverified originals unless separately grounded; human comments do not grant repair/acceptance/payment authority.",
+    "No human usability study, independent merchant or same-condition competitor evaluation."
+  ],
+  "awardsComparison": {
+    "source": "https://www.bemyapp.com/insights/ai-builders-challenge-with-ibm-bob-2026-winners.html",
+    "verifiedOn": "2026-11-06",
+    "PHAROS_INC": "AugustChallenge1st place, official description of data/rules/clear reporting; not overall champion claim",
+    "AgentReceipt": "AugustMostInnovative, official description of evidence and assigned authority",
+    "observationLevel": "Official descriptions only, no same-condition superiority measurement"
+  },
+  "manifest": "manifest.json"
+}

@@ -1,0 +1,17 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "completed": true,
+  "errors": [],
+  "report": {
+    "summary": "Reviewed the Cycle39 postreview packet against the claimed behavior. The report-completeness guidance is built from the actual selected tool's `parameters.required` (delivery-assessment.ts:175 constructs the tool once; line 184 passes `tool.function.parameters.required`). In the mocked transport the `tools[0]` sent is that same selected tool, and the fixtures' schemas require all top-level keys, so the prompt text matches the schema actually sent. The strict decoder is unchanged: `keys(output, [...\"risks\", \"limitations\"])` at delivery-assessment.ts:250 rejects a missing limitations key as `structure`, and the known fixture (which has no limitations, fixture line 91) is rejected once with no retry, filling, catalog change or quote mutation (tests lines 101-110). Slots encodings still use `keys(risk, [...])` (line 495) and independently strict nested citation slots (`additionalProperties: false`, tested at lines 50-51). No concrete correctness, security, accessibility or product-flow defect was found within the packet; the only observations are scope limits, not defects.",
+    "findings": [],
+    "limitations": [
+      "No tools other than the skill loader were called; no tests, typecheck or runtime checks were executed, and no file contents or repository state were inspected beyond the supplied packet.",
+      "The packet does not include lib/assessment-completion.ts, so the slot/catalog tool schemas' exact `required` arrays and `additionalProperties` values were not verified from source; only the tests' assertions about them were seen.",
+      "The delivery-assessment.ts source shows the pre-existing call at line 128 to `assessDeliveryWithEncoding(quote, env, fetcher, \"legacy_quotes\")` (defined with 4 parameters at line 131), which looks to be a missing `fetcher` argument. This appears to be a line-numbering/context mismatch in the packet (line 119 already declares a default `fetcher = fetch`) rather than a defect in the Cycle39 change, so it is not reported as a finding; it needs verification against the real file.",
+      "The scope was limited to the prompt-guidance helper, the system-instruction wiring, the strict decode path for this change, and the new tests. Unrelated decoders (publication policy, obligations, evidence checks) were not audited.",
+      "Whether a model will always follow the completeness instruction is unverifiable from source; only the decoder's rejection of incomplete reports is established.",
+      "The followup7 frozen cases were said to be handled separately and were not in scope."
+    ]
+  }
+}

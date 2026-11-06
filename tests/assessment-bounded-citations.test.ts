@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {readFileSync} from "node:fs";
-import type {ProofQuote} from "../lib/contracts.ts";
+import type {ProofAssessmentRisk,ProofQuote} from "../lib/contracts.ts";
 import {assessDelivery,AssessmentResponseError} from "../lib/delivery-assessment.ts";
 import type {AssessmentCitationCatalog} from "../lib/assessment-citation-catalog.ts";
 import {projectQuote,validateProjectCorpus,type EvaluationProject} from "../scripts/run-project-assessment-evaluation.ts";
@@ -108,13 +108,16 @@ test("complete item shells with fixed slots still diagnose omitted criteria as m
 });
 
 test("six full item slots and three full risk slots remain admitted within complete bounded reports",async()=>{
+ let expectedRisks:ProofAssessmentRisk[]=[];
  const c=controlled((out,p)=>{
   const ids=p.citationCatalog.entries.filter(e=>e.excerpt.startsWith("<p>Fact ")).slice(0,6).map(e=>e.id);assert.equal(ids.length,6);
   for(const item of out.items)item.citations=slots(ids,6);
   out.risks=Array.from({length:3},(_,i)=>({title:`Controlled source observation ${i+1}`,explanation:"These are recorded source facts only, without runtime assurance.",suggestion:"Check the remaining operation separately.",citations:slots(ids.slice(0,3),3)}));
+  expectedRisks=out.risks.map(risk=>({...risk,citations:ids.slice(0,3).map(id=>{const{id:_,...span}=p.citationCatalog.entries.find(entry=>entry.id===id)!;return span;})}));
  });
- const report=await c.promise;assert.equal(c.state.calls,1);assert.equal(report.items.length,6);assert.equal(report.risks.length,3);
- assert.ok(report.items.every(i=>i.citations.length===6));assert.ok(report.risks.every(r=>r.citations.length===3));assert.deepEqual(c.q,c.before);
+ const report=await c.promise;assert.equal(c.state.calls,1);assert.equal(report.items.length,6);assert.deepEqual(report.risks,[]);
+ assert.deepEqual(report.withheldRisks,{version:4,reason:"optional_source_leads_unverified",adjustedCriteria:[],entries:expectedRisks.map((risk,originalRiskIndex)=>({originalRiskIndex,risk}))});
+ assert.ok(report.items.every(i=>i.citations.length===6));assert.ok(report.withheldRisks!.entries.every(entry=>entry.risk.citations.length===3));assert.deepEqual(c.q,c.before);
 });
 
 test("fixed short slots cannot bypass the expanded 30000-unit report limit",async()=>{

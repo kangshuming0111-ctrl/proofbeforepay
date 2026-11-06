@@ -1,0 +1,16 @@
+{
+  "schema": "pbp-cycle39-plan-adjudication-v1",
+  "review": "cycle39-plan-deepseek.json",
+  "reviewer": "Codex AI independent source inspection, not human study",
+  "completed": true,
+  "errors": [],
+  "findings": [],
+  "accepted": "Minimal schema-consistent completeness guidance. Read actual selected tool.function.parameters.required rather than encoding-hardcoded keys, and assert only top-level membership. Keep decoder unchanged; exact malformed same-catalog replay remains rejected once. Empty arrays legal but missing keys not repaired.",
+  "notClaims": [
+    "Prompt prevents all omissions",
+    "Prior failed first answer becomes complete",
+    "Unknown becomes a correct source verdict",
+    "Seven known regressions are new unseen examples"
+  ],
+  "evaluationCalls": 0
+}

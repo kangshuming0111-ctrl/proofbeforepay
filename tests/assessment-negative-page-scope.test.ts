@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import type {ProofAssessmentItem,ProofQuote} from "../lib/contracts.ts";
+import type {ProofAssessmentItem,ProofAssessmentRisk,ProofQuote} from "../lib/contracts.ts";
 import type {AssessmentCitationCatalog} from "../lib/assessment-citation-catalog.ts";
 import {assessDelivery} from "../lib/delivery-assessment.ts";
 import {createUniversalTagEvidenceCheck} from "../lib/universal-tag-evidence.ts";
@@ -21,11 +21,12 @@ function fixture(source=alias,options:{missing?:boolean;businessPrice?:number;la
  return projectQuote(p);
 }
 async function run(q:ProofQuote,raw:ProofAssessmentItem["status"]="changes_suggested"){
- const before=structuredClone(q);let calls=0;const result=await assessDelivery(q,{DEEPSEEK_API_KEY:"controlled-offline-no-network"},async(_url,init)=>{
+ const before=structuredClone(q);let calls=0,expectedRisk:ProofAssessmentRisk|undefined;const result=await assessDelivery(q,{DEEPSEEK_API_KEY:"controlled-offline-no-network"},async(_url,init)=>{
  calls++;const packet=JSON.parse(JSON.parse(String(init!.body)).messages[1].content) as {criteria:{id:string}[];citationCatalog:AssessmentCitationCatalog};
  const ids=Object.keys(q.proof.delivery!.files!).map(file=>packet.citationCatalog.entries.find(e=>e.file===file&&e.excerpt.startsWith('<div class="dish">'))!.id),slots=(maximum:number)=>Object.fromEntries(Array.from({length:maximum},(_,i)=>[`c${i+1}`,ids[i]??""]));
+ expectedRisk={title:"Possible menu-tag issue",explanation:"The source alone leaves the business page role unconfirmed.",suggestion:"Ask the buyer to identify the intended full-menu file.",citations:ids.slice(0,3).map(id=>{const{id:_,...span}=packet.citationCatalog.entries.find(entry=>entry.id===id)!;return span;})};
  return Response.json({choices:[{finish_reason:"tool_calls",message:{content:null,tool_calls:[{id:"controlled-source-data",type:"function",function:{name:"submit_source_assessment_v3",arguments:JSON.stringify({catalogId:packet.citationCatalog.catalogId,items:packet.criteria.map(c=>({criterionId:c.id,status:raw,explanation:'The full menu best maps to menu.html, where the tag differs. This is controlled model prose, not a confirmed mapping.',citations:slots(6)})),risks:[{title:"Possible menu-tag issue",explanation:"The source alone leaves the business page role unconfirmed.",suggestion:"Ask the buyer to identify the intended full-menu file.",citations:slots(3)}],limitations:["Controlled response only."]})}}]}}]});
- });assert.equal(calls,1);assert.deepEqual(q,before);return result;
+ });assert.equal(calls,1);assert.deepEqual(q,before);assert.deepEqual(result.withheldRisks!.entries,[{originalRiskIndex:0,risk:expectedRisk}]);return result;
 }
 
 test("a negative model claim cannot assign a homepage/full-menu role by guessing a filename",async()=>{
@@ -53,5 +54,5 @@ test("explicit named-file wrong tags and missing file facts are not blanket-down
 });
 
 test("raw model unknown is never promoted or mislabelled as a newly established page-scope finding",async()=>{
- const q=fixture(),result=await run(q,"insufficient_evidence");assert.equal(result.items[0].status,"insufficient_evidence");assert.equal(result.items[0].evidenceNeed?.reason,"model_unresolved");assert.match(result.items[0].explanation,/controlled model prose/);assert.equal(result.withheldRisks!.reason,"not_withheld");
+ const q=fixture(),result=await run(q,"insufficient_evidence");assert.equal(result.items[0].status,"insufficient_evidence");assert.equal(result.items[0].evidenceNeed?.reason,"model_unresolved");assert.match(result.items[0].explanation,/controlled model prose/);assert.deepEqual(result.risks,[]);assert.equal(result.withheldRisks!.version,4);assert.equal(result.withheldRisks!.reason,"optional_source_leads_unverified");assert.deepEqual(result.withheldRisks!.adjustedCriteria,[]);
 });

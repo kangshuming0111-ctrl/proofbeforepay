@@ -135,9 +135,18 @@ export function publishSourceAssessmentNotes(
       : `${risks.length} optional model indication(s) are withheld: custom requirements still need execution or human observation. Item statuses are unchanged. Original leads remain separate; no per-lead causation, release, acceptance or payment is established.`);
     return{risks:[],limitations,statusAdjustedCount,withheldRisks:{version:3,reason:'custom_scope_requires_observation',scopeCriterionIds:observationScopeIds,adjustedCriteria:[],entries:risks.map((risk,originalRiskIndex)=>({originalRiskIndex,risk:{...risk,citations:risk.citations.map(citation=>({...citation}))}}))}};
   }
-  // Independent copies prevent later presentation edits from mutating the raw
-  // validated response. Retained risks remain AI leads awaiting human review;
-  // neither their presence nor this publication decision changes item status.
-  return {risks: risks.map(risk => ({...risk, citations: risk.citations.map(citation => ({...citation}))})), limitations, statusAdjustedCount,
+  // Optional source-model leads have no independently locked criterion/owner
+  // binding. Even conditional wording cannot authorize a new repair obligation
+  // or establish rendered visibility. Preserve every original rather than
+  // treating its prose as authority; item judgments remain unchanged.
+  if (risks.length) {
+    limitations.push(zh
+      ? `${risks.length} 条可选源码模型提议未建立独立的约定、页面归属或观察依据，已单独保留原文，不作为可执行返工依据。逐项结论未改变；人工意见不解除暂缓，也不代表验收或付款。`
+      : `${risks.length} optional source-model proposal(s) lack independent agreed-scope, page-owner or observation bindings. Originals are retained outside actionable findings. Item findings are unchanged; human opinions do not release the gate, accept work or make a payment.`);
+    return {risks: [], limitations, statusAdjustedCount,
+      withheldRisks: {version: 4, reason: "optional_source_leads_unverified", adjustedCriteria: [],
+        entries: risks.map((risk, originalRiskIndex) => ({originalRiskIndex, risk: {...risk, citations: risk.citations.map(citation => ({...citation}))}}))}};
+  }
+  return {risks: [], limitations, statusAdjustedCount,
     withheldRisks: {version: 1, reason: "not_withheld", adjustedCriteria: [], entries: []}};
 }

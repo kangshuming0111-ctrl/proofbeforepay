@@ -1,0 +1,64 @@
+{
+  "schema": "pbp-prospective-corpus-seal-v1",
+  "createdAt": "2026-11-06T08:23:24.870Z",
+  "corpusSha256": "1cf8bae6683ab05bc39f0c6b55b4e367400dea8703dc913cdab79d93afd61209",
+  "projects": 4,
+  "criteria": 8,
+  "calls": 0,
+  "responsesInspected": 0,
+  "implementationChangesSinceV85": 0,
+  "sourceHead": "c85ddd5ae65102d80ce11d11cd19f0f9d4fca7e5",
+  "officialSource": {
+    "repository": "https://github.com/GoogleChromeLabs/css-web-ui-demos",
+    "commit": "ab443bf0912eab79053f973b752a6acd3c7f4dd6",
+    "files": [
+      {
+        "path": "html-in-canvas/public/demos/text-input.html",
+        "url": "https://raw.githubusercontent.com/GoogleChromeLabs/css-web-ui-demos/ab443bf0912eab79053f973b752a6acd3c7f4dd6/html-in-canvas/public/demos/text-input.html",
+        "sha256": "1781cff7dad378da17642c153c61eabd8243501ae3de722626a5bf96163d8263",
+        "bytes": 4748
+      },
+      {
+        "path": "LICENSE",
+        "url": "https://raw.githubusercontent.com/GoogleChromeLabs/css-web-ui-demos/ab443bf0912eab79053f973b752a6acd3c7f4dd6/LICENSE",
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "bytes": 11358
+      }
+    ],
+    "sourceExecuted": false,
+    "calls": 0
+  },
+  "sourceKinds": [
+    {
+      "id": "chrome-canvas-original-label-source",
+      "kind": "unchanged-official-html-plus-authored-companions"
+    },
+    {
+      "id": "chrome-canvas-derived-cross-page-label",
+      "kind": "authored-mutated-official-html-plus-authored-companions"
+    },
+    {
+      "id": "chrome-canvas-derived-inert-and-literal-visible",
+      "kind": "authored-mutated-official-html-plus-authored-companions"
+    },
+    {
+      "id": "chrome-canvas-original-runtime-conjunction",
+      "kind": "unchanged-official-html-plus-authored-companions"
+    }
+  ],
+  "mutationDetails": [
+    {
+      "id": "chrome-canvas-derived-cross-page-label",
+      "operation": "Move exact Shield Strength label from contact.html to authored index.html form; all other original HTML bytes unchanged."
+    },
+    {
+      "id": "chrome-canvas-derived-inert-and-literal-visible",
+      "operation": "Wrap exact Engage Hyperdrive label in template, append explicitly untrusted auditor comment, and add exact Visible source label before form end."
+    }
+  ],
+  "limits": [
+    "Official demo uses custom elements and canvas, plus relative external scripts/theme not supplied or executed. This is source review, not a working clone or browser test.",
+    "The original public origin-trial meta value is preserved as published demo data; no credentials or private user files are used.",
+    "No foreign implementation reviewer may read this fresh corpus before first provider answers; diagnostic code tests use separate known/synthetic counterexamples."
+  ]
+}

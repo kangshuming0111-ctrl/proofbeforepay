@@ -1,0 +1,19 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "completed": true,
+  "errors": [],
+  "report": {
+    "summary": "I reviewed the supplied source packet as a planning review only. I did not run code, tests, typechecks, or any runtime or browser checks. I cross-checked the current draft-generation and source-parsing code against the product boundaries in the loaded skill: keep the exact original source and truthful source labels; never inherit a false contract citation; keep unclear clauses visible for clarification; do not copy model explanation into a repair instruction; and do not let AI decide acceptance or scope. The proposal correctly keeps the existing UTF-16 limit of 1000, keeps source and explanation excerpt labels truthful, gates on exact matching criterion identity, gates on mapped saved business-check files for the same criterion, and gates on explicit-file label requirements. It also keeps the supported/readOnly/busy states. Still, the proposal leaves several ambiguities that the current packet cannot settle. Because the planned refinement/UI code is absent by design, none of the findings is a defect in current code. They are risks to specify before implementation. For that reason I report no P1, P2, or P3 findings.",
+    "findings": [],
+    "limitations": [
+      "Proposal-only scope: this packet contains no planned feedback-intent, scope-clarification, or UI code. All findings that depend on that code would be speculative, so I report none.",
+      "The packet does not contain the contracts for ProofCriterion/ProofAssessmentItem/ProofBusinessCheckStep. Whether step.file values are absolute, project-relative, or can collide across projects cannot be verified.",
+      "The packet does not contain the UI gating code (supported/readOnly/busy) or the label-rendering code. Whether the Clarify page scope label is shown consistently in zh/en and to both perspectives cannot be confirmed.",
+      "items() in lib/business-checks.ts validates step files only against project.requiredPages (line 46). The proposal's 'validated saved business-check steps for the same criterion' must therefore call validateSavedBusinessChecks/getBusinessCheckPlan-like validation and should not trust raw saved step objects. That requirement cannot be checked without the planned code.",
+      "The 'exact matching locked criterion descriptor' depends on criterion.id equality plus criterion.source. Whether legacy criteria can share identical source strings or ids across versions is not shown, so the collision behavior is unverifiable here.",
+      "The staticMarkupLabelDirective/quotedSourceLabelValues implementations are not in the packet. Edge cases such as an unmatched quote, mixed quoted and unquoted labels, or an extract that does not mention 'Visible' keyword behavior are not verifiable.",
+      "The skill guidance says to verify domain rules with focused counterexample tests and to verify UI changes in a browser. I did not do either, because the task was read-only and the code was absent.",
+      "No review of agent-receipt (Agent Receipt August Most Innovative) or cycle38 comparison records was possible beyond the task description, because those files were not supplied."
+    ]
+  }
+}

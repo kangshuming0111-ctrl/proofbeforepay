@@ -1,0 +1,23 @@
+{
+  "schema": "pbp-cycle36-final-adjudication-v1",
+  "reviewer": "Codex AI independent source review; not human study",
+  "review": "cycle36-post-final-deepseek.json",
+  "completed": true,
+  "errors": [],
+  "findings": [],
+  "summaryClarification": "DeepSeek summary speculated hostile recursive SVG tree/cycle DoS without a finding. HTML text parsed by parse5 yields child-node tree; these walks traverse only childNodes, never parent pointers. Bounded visit/depth limits are fail-closed by design. No new recursion permission or API accepting arbitrary graph is introduced. Do not report that speculation as a reproduced vulnerability.",
+  "verification": {
+    "focusedTestsPassed": 32,
+    "typecheckExit": 0,
+    "knownQualifiedExactReplays": 3,
+    "rawStatusesAndCitationSpansPreserved": true,
+    "newProviderEvaluationCalls": 0
+  },
+  "boundaries": [
+    "Finite HTML-label source descriptor only; not generic rendering or semantic validator.",
+    "Foreign text within label conservatively unknown; not a proven defect.",
+    "Raw unknown never promoted; whole-source absence requires complete input/parse/owner checks.",
+    "No payment, acceptance or membership changes.",
+    "New sealed Google first4 remain uncalled and absent from implementation reviewer packet."
+  ]
+}
