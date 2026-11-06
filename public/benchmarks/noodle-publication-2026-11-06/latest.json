@@ -1,0 +1,49 @@
+{
+  "schema": "proofbeforepay-noodle-negative-publication-record-v1",
+  "scope": "Known authored fictional noodle-shop regressions only; original first responses, requests and references remain frozen. No scope expansion.",
+  "baselineNativeCommit": "fd88798fb1afc4536a90a38d4fff2026959c16bf",
+  "originalRecordRoot": "/benchmarks/noodle-core-2026-11-06/",
+  "replayFile": "publication-replay.json",
+  "summary": {
+    "knownFictionalProjects": 4,
+    "focusedCriteria": 9,
+    "providerCalls": 0,
+    "externalNetworkCalls": 0,
+    "blockedNetworkAttempts": 0,
+    "rawStatusMatches": 9,
+    "originalPublishedStatusMatches": 7,
+    "currentPublishedStatusMatches": 9,
+    "changedPublishedItems": 2,
+    "rawJudgmentsPreserved": true,
+    "originalRequestsPreserved": true,
+    "sourceRequirementsAndScopePreserved": true,
+    "optionalRiskOriginalsPreservedAndWithheld": true
+  },
+  "changedItems": [
+    {
+      "caseId": "f1-sealed-wrong-object",
+      "criterionId": "coverage-1",
+      "reason": "locked_price_mismatch",
+      "originalPublished": "insufficient_evidence",
+      "currentPublished": "changes_suggested"
+    },
+    {
+      "caseId": "f1-sealed-wrong-page",
+      "criterionId": "coverage-2",
+      "reason": "confirmed_form_label_absence",
+      "originalPublished": "insufficient_evidence",
+      "currentPublished": "changes_suggested"
+    }
+  ],
+  "limits": [
+    "Known authored fictional regression inputs; this is a zero-network replay, not a new model experiment or new real-merchant trial.",
+    "9/9 describes these nine status references only, not whole-answer accuracy, browser behavior, backend persistence, security or general reliability.",
+    "Old 7/9 reports and references remain unchanged. Runtime obligations remain unresolved; no automatic scope agreement, acceptance or payment."
+  ],
+  "modelCallAccounting": {
+    "newEvaluationCalls": 0,
+    "retainedRepliesReplayed": 4,
+    "knownInputsNotIndependentNewSamples": true
+  },
+  "reviewsAreAdvisoryNotExecution": true
+}

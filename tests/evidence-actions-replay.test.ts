@@ -8,10 +8,11 @@ import {fileURLToPath} from "node:url";
 import {evidenceReplayImplementationSnapshot,hashEvidenceReplay,stripEvidenceActionMetadata,verifyAdditiveObligationsBaseline,verifyAdjustedCriteriaLineage,verifyRetainedRequestPolicy,verifyV4PublicationMigrationBaseline,verifyWithheldRiskLineage,verifyAssessmentProvenanceMetadata,writeEvidenceReplay} from "../scripts/replay-evidence-actions-2026-11-06.mjs";
 import {deriveAssessmentObligations} from "../lib/assessment-obligations.ts";
 import {validateProjectCorpus} from "../scripts/run-project-assessment-evaluation.ts";
-import type {ProofQuote} from "../lib/contracts.ts";
+import type {ProofAssessment,ProofQuote} from "../lib/contracts.ts";
 import {createAssessmentCitationCatalog,resolveCatalogCitations} from "../lib/assessment-citation-catalog.ts";
 import {resolveScopeClarifications} from "../lib/scope-clarifications.ts";
 import {createAssessmentSourceFindingCheck} from "../lib/assessment-source-findings.ts";
+import {assessDelivery} from "../lib/delivery-assessment.ts";
 
 const root=fileURLToPath(new URL("..",import.meta.url));
 const publicRoot=new URL("../public/benchmarks/citation-relations-2026-11-05/",import.meta.url);
@@ -157,7 +158,7 @@ test("retained replay remains runnable in an exported tree with public fixtures 
   assert.equal(report.projects,6);assert.equal(report.criteria,6);assert.equal(report.apiCalls,0);assert.equal(report.networkCalls,0);assert.equal(report.blockedNetworkAttempts,0);
   let migrated=0,moved=0;
   for(const row of report.rows){assert.equal(row.acceptanceAndPaymentUnchanged,true);const prior=rows.find((prior:{id:string})=>prior.id===row.id).currentApplication.report;
-   assert.equal(row.provenanceMetadataComparison.rawModelItemsVerified,1);assert.equal(row.provenanceMetadataComparison.currentScopeStampVerified,true);assert.equal(row.provenanceMetadataComparison.publishedCoreFieldsUnchanged,true);
+   assert.equal(row.provenanceMetadataComparison.rawModelItemsVerified,1);assert.equal(row.provenanceMetadataComparison.currentScopeStampVerified,true);assert.equal(row.provenanceMetadataComparison.publicationPoliciesVerified,1);assert.equal(row.provenanceMetadataComparison.publishedCoreFieldsUnchanged,true);
    if(row.publicationMigration){migrated++;moved+=prior.risks.length;assert.equal(row.publishedFieldsUnchanged,false);assert.equal(row.publicationMigration.publishedFieldsUnchanged,false);assert.deepEqual(row.publicationMigration.originalActiveRisks,prior.risks);assert.deepEqual(row.publicationMigration.newWithheldEntries.map((entry:{risk:unknown})=>entry.risk),prior.risks);assert.equal(row.publicationMigration.oneToOneOriginalOrderAndCitations,true);assert.equal(row.obligationsComparison.allOtherPublishedCoreFieldsUnchanged,true);}
    else assert.equal(row.publishedFieldsUnchanged,true);
   }
@@ -188,13 +189,13 @@ async function provenanceFixture(){
  const packet={criteria,files,citationCatalog:catalog},wireItems=[{criterionId:criteria[0].id,status:"supported",explanation:"  Original decoded explanation.\n",citations:{c1:catalog.entries[0].id,c2:"",c3:"",c4:"",c5:"",c6:""}}],modelJudgment={status:wireItems[0].status,explanation:wireItems[0].explanation,citations:resolveCatalogCitations([wireItems[0].citations.c1],catalog,6)};
  const previous={id:"retained-provenance-report",deliveryId:quote.proof.delivery!.id,assessedAt:"2026-11-06T00:00:00.000Z",items:[{criterionId:criteria[0].id,status:"supported",explanation:"Published baseline explanation.",citations:modelJudgment.citations,ruleEvidenceIds:[]}],risks:[],limitations:[],coverage};
  const sourceFinding=createAssessmentSourceFindingCheck({files,coverage,language:"en",businessSteps:[],scope})(criteria[0])!;
- const report={...structuredClone(previous),scopeContext:{digest:scope.contextDigest,...scope.stamp},items:[{...structuredClone(previous.items[0]),modelJudgment,sourceFinding,obligations:deriveAssessmentObligations(criteria[0])}]};
+ const report={...structuredClone(previous),publicationPolicy:{schema:"source-publication-v1",reconciledCriterionIds:[] as string[]},scopeContext:{digest:scope.contextDigest,...scope.stamp},items:[{...structuredClone(previous.items[0]),modelJudgment,sourceFinding,obligations:deriveAssessmentObligations(criteria[0])}]};
  return{criteria,quote,packet,wireItems,previous,report};
 }
 test("new provenance is stripped only after exact raw text, source recomputation and historical empty-scope validation",async()=>{
  const f=await provenanceFixture(),before=structuredClone(f),checked=await verifyAssessmentProvenanceMetadata(f.report,f.previous,f.packet,f.quote,f.wireItems);
- assert.deepEqual(f,before);assert.equal(checked.accounting.rawModelItemsVerified,1);assert.equal(checked.accounting.sourceFindingsRecomputed,1);assert.equal(checked.accounting.currentScopeStampVerified,true);assert.equal(checked.accounting.baselineModelItemsRetained,0);
- assert.equal(Object.hasOwn(checked.report,"scopeContext"),false);assert.equal(Object.hasOwn(checked.report.items[0],"modelJudgment"),false);assert.equal(Object.hasOwn(checked.report.items[0],"sourceFinding"),false);
+ assert.deepEqual(f,before);assert.equal(checked.accounting.rawModelItemsVerified,1);assert.equal(checked.accounting.sourceFindingsRecomputed,1);assert.equal(checked.accounting.currentScopeStampVerified,true);assert.equal(checked.accounting.publicationPoliciesVerified,1);assert.equal(checked.accounting.publicationMarkersRecomputed,0);assert.equal(checked.accounting.baselineModelItemsRetained,0);
+ assert.equal(Object.hasOwn(checked.report,"publicationPolicy"),false);assert.equal(Object.hasOwn(checked.report,"scopeContext"),false);assert.equal(Object.hasOwn(checked.report.items[0],"modelJudgment"),false);assert.equal(Object.hasOwn(checked.report.items[0],"sourceFinding"),false);
  assert.equal(verifyAdditiveObligationsBaseline(checked.report,checked.previous,f.criteria).publishedCoreFieldsUnchanged,true);
  const retained=await verifyAssessmentProvenanceMetadata(f.report,structuredClone(f.report),f.packet,f.quote,f.wireItems);assert.equal(retained.accounting.baselineModelItemsRetained,1);assert.equal(retained.accounting.baselineSourceFindingsRetained,1);assert.equal(retained.accounting.baselineScopeStampRetained,true);
  // Independent source facts need not impersonate the published AI verdict.
@@ -202,11 +203,21 @@ test("new provenance is stripped only after exact raw text, source recomputation
 });
 test("forged model, source and scope metadata cannot authorize stripping; unknown or core changes still fail baseline",async()=>{
  const f=await provenanceFixture();
- const rejected:((v:any)=>void)[]=[v=>{v.items[0].modelJudgment.explanation=v.items[0].modelJudgment.explanation.trim();},v=>{v.items[0].modelJudgment.status="changes_suggested";},v=>{v.items[0].modelJudgment.citations[0].start++;},v=>{v.items[0].modelJudgment.extra=true;},v=>{delete v.items[0].modelJudgment;},v=>{v.items[0].sourceFinding.status="insufficient_evidence";},v=>{v.items[0].sourceFinding.files=["unrelated.html"];},v=>{v.items[0].sourceFinding.explanation="Invented source finding";},v=>{v.items[0].sourceFinding.citations[0].excerpt="Wrong source";},v=>{delete v.items[0].sourceFinding;},v=>{v.scopeContext.digest="0".repeat(64);},v=>{v.scopeContext.proposalCount=1;},v=>{v.scopeContext.confirmationCounts=[2];},v=>{v.scopeContext.extra=true;},v=>{delete v.scopeContext;}];
+ const rejected:((v:any)=>void)[]=[v=>{v.items[0].modelJudgment.explanation=v.items[0].modelJudgment.explanation.trim();},v=>{v.items[0].modelJudgment.status="changes_suggested";},v=>{v.items[0].modelJudgment.citations[0].start++;},v=>{v.items[0].modelJudgment.extra=true;},v=>{delete v.items[0].modelJudgment;},v=>{v.items[0].sourceFinding.status="insufficient_evidence";},v=>{v.items[0].sourceFinding.files=["unrelated.html"];},v=>{v.items[0].sourceFinding.explanation="Invented source finding";},v=>{v.items[0].sourceFinding.citations[0].excerpt="Wrong source";},v=>{delete v.items[0].sourceFinding;},v=>{v.scopeContext.digest="0".repeat(64);},v=>{v.scopeContext.proposalCount=1;},v=>{v.scopeContext.confirmationCounts=[2];},v=>{v.scopeContext.extra=true;},v=>{delete v.scopeContext;},v=>{delete v.publicationPolicy;},v=>{v.publicationPolicy.extra=true;},v=>{v.publicationPolicy.reconciledCriterionIds=["coverage-1"];},v=>{v.items[0].publicationBasis={schema:"source-publication-v1",reason:"confirmed_form_label_absence"};v.publicationPolicy.reconciledCriterionIds=["coverage-1"];}];
  for(const mutate of rejected){const r=structuredClone(f.report);mutate(r);await assert.rejects(verifyAssessmentProvenanceMetadata(r,f.previous,f.packet,f.quote,f.wireItems));}
  const badOld=structuredClone(f.report);badOld.items[0].modelJudgment.explanation="Changed original";await assert.rejects(verifyAssessmentProvenanceMetadata(f.report,badOld,f.packet,f.quote,f.wireItems));
  for(const mutate of[(r:any)=>{r.items[0].extra="Unapproved additive field";},(r:any)=>{r.items[0].status="changes_suggested";},(r:any)=>{r.items[0].explanation="Changed published explanation";},(r:any)=>{r.limitations.push("New limit");}]){const r=structuredClone(f.report);mutate(r);const normalized=await verifyAssessmentProvenanceMetadata(r,f.previous,f.packet,f.quote,f.wireItems);assert.throws(()=>verifyAdditiveObligationsBaseline(normalized.report,normalized.previous,f.criteria));}
  const badPacket=structuredClone(f.packet);badPacket.files["contact.html"]+="<p>Injected source</p>";await assert.rejects(verifyAssessmentProvenanceMetadata(f.report,f.previous,badPacket,f.quote,f.wireItems));
+});
+test("valid source-publication metadata is rederived, but it cannot hide a changed historical published verdict",async()=>{
+ const known=JSON.parse(await readFile(new URL("./fixtures/noodle-f1-first-four-replay.json",import.meta.url),"utf8")).cases.find((c:{id:string})=>c.id==="f1-sealed-wrong-object");
+ const quote=known.quote as ProofQuote,packet=JSON.parse(JSON.parse(known.requestBody).messages[1].content),wire=JSON.parse(JSON.parse(known.rawProviderBodyText).choices[0].message.tool_calls[0].function.arguments).items;
+ let calls=0;const report=await assessDelivery(quote,{DEEPSEEK_API_KEY:"controlled-retained-no-network",DEEPSEEK_MODEL:"deepseek-flash"},async(_url,init)=>{calls++;assert.equal(String(init?.body),known.requestBody);return new Response(known.rawProviderBodyText,{status:200,headers:{"content-type":"application/json"}});});assert.equal(calls,1);
+ const id="coverage-1";assert.equal(report.items.find(i=>i.criterionId===id)!.publicationBasis!.reason,"locked_price_mismatch");
+ const retained=await verifyAssessmentProvenanceMetadata(report,structuredClone(report),packet,quote,wire);assert.equal(retained.accounting.publicationMarkersRecomputed,1);assert.equal(retained.accounting.baselinePublicationMarkersRetained,1);assert.equal(Object.hasOwn(retained.report,"publicationPolicy"),false);assert.equal(Object.hasOwn(retained.report.items.find((i:{criterionId:string})=>i.criterionId===id),"publicationBasis"),false);
+ const old=structuredClone(report);delete old.publicationPolicy;const item=old.items.find(i=>i.criterionId===id)!;delete item.publicationBasis;item.status="insufficient_evidence";item.explanation="Historical conservative source-ambiguity status.";item.evidenceNeed={schema:"source-evidence-need-v1",reason:"source_ambiguity",targetFiles:["menu.html"]};
+ const compared=await verifyAssessmentProvenanceMetadata(report,old,packet,quote,wire);assert.throws(()=>verifyAdditiveObligationsBaseline(compared.report,compared.previous,packet.criteria),/field other than/u);
+ for(const mutate of[(r:ProofAssessment)=>{delete r.items.find(i=>i.criterionId===id)!.publicationBasis;},(r:ProofAssessment)=>{r.publicationPolicy!.reconciledCriterionIds=[];},(r:ProofAssessment)=>{r.items.find(i=>i.criterionId===id)!.explanation+=" altered";}]){const r=structuredClone(report);mutate(r);await assert.rejects(verifyAssessmentProvenanceMetadata(r,report,packet,quote,wire));}
 });
 
 test("additive obligation baseline comparison rejects altered metadata and every non-metadata core change",()=>{

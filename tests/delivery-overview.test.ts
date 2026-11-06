@@ -107,3 +107,13 @@ test("feedback is an exact-version bounded advisory draft and never marks eviden
   row.explanation = "😀".repeat(1000);
   const bounded = overviewFeedbackDraft(row, "v2", "en"); assert.ok(bounded.comment.length <= 1000); assert.doesNotMatch(bounded.comment, /[\uD800-\uDBFF]$/u);
 });
+
+test("a marked source publication drafts its real origin without changing version, budget or rule priority",()=>{
+ const value=delivery(),row=deliveryOverview({delivery:value,criteria,review:review(),manualChecks:[]}).rows[0];
+ row.ai!.publicationBasis={schema:"source-publication-v1",reason:"locked_price_mismatch"};const before=structuredClone(row);
+ for(const language of["zh","en"]as const){
+  const draft=overviewFeedbackDraft(row,"exact-current-version",language);assert.match(draft.comment,language==="zh"?/^系统源码核验差异（待买家核对）：/u:/^System source-check difference \(for buyer review\):/u);assert.equal(draft.deliveryId,"exact-current-version");assert.equal(draft.criterionId,row.criterion.id);assert.deepEqual(row,before);
+  const long={...row,explanation:"😀".repeat(1000)},bounded=overviewFeedbackDraft(long,"exact-current-version",language);assert.ok(bounded.comment.length<=1000);assert.doesNotMatch(bounded.comment,/[\uD800-\uDBFF]$/u);
+ }
+ row.rule="fail";assert.match(overviewFeedbackDraft(row,"exact-current-version","en").comment,/^Rule checks found a mismatch/u);
+});

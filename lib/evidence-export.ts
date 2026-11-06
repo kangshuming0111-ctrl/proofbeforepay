@@ -28,6 +28,7 @@ import {assertModelAcceptanceReference,modelReportsFor} from "./model-check-acti
 import {MODEL_SPEC_DIGEST,modelCheckReportFromTrace,validateStoredModelCheckReport} from "./model-checks.ts";
 import {validateRiskRepairRecords,type RiskRepairEvent} from "./risk-repairs.ts";
 import {validateModelArchive} from "./model-report-archive.ts";
+import {createSourcePublicationCheck} from "./assessment-source-publication.ts";
 
 export const EVIDENCE_EXPORT_SCHEMA = "proofbeforepay-evidence-export-v1";
 export const EVIDENCE_EXPORT_RULES = "pbp-static-source-v2";
@@ -181,7 +182,7 @@ function sourceReference(value:unknown,source:string):void{
   requireValue(Number.isSafeInteger(row.start)&&Number.isSafeInteger(row.end)&&(row.start as number)>=0&&(row.end as number)>(row.start as number)&&(row.end as number)<=source.length&&typeof row.excerpt==="string"&&row.excerpt===source.slice(row.start as number,row.end as number),"A source reference does not match its exact UTF-16 span.");
 }
 function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[],observationContext?:ObservationScopeContext):void{
-  const row=object(value,["id","deliveryId","method","mode","model","assessedAt","items","risks","limitations","coverage","usage","withheldRisks","scopeContext"],"AI assessment");
+  const row=object(value,["id","deliveryId","method","mode","model","assessedAt","items","risks","limitations","coverage","usage","withheldRisks","scopeContext","publicationPolicy"],"AI assessment");
   text(row.id,100);text(row.model,200);requireValue(row.deliveryId===delivery.id&&row.method==="source-ai-v1"&&row.mode==="live"&&typeof row.assessedAt==="string"&&Number.isFinite(Date.parse(row.assessedAt)),"AI assessment binding is invalid.");
   const cite=(value:unknown,limit:number)=>array(value,limit,"AI citations").forEach(entry=>{
     const citation=object(entry,["file","start","end","excerpt"],"AI citation"),file=text(citation.file,200);
@@ -189,7 +190,7 @@ function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]
   });
   const items=array(row.items,33,"AI items");
   for(const item of items){
-    const result=object(item,["criterionId","status","explanation","citations","ruleEvidenceIds","evidenceNeed","obligations","modelJudgment","sourceFinding"],"AI item");
+    const result=object(item,["criterionId","status","explanation","citations","ruleEvidenceIds","evidenceNeed","obligations","modelJudgment","sourceFinding","publicationBasis"],"AI item");
     requireValue(agreed.some(criterion=>criterion.id===result.criterionId)&&["supported","changes_suggested","insufficient_evidence"].includes(result.status as string),"AI criterion reference is invalid.");
     text(result.explanation,3000);cite(result.citations,ASSESSMENT_ITEM_CITATION_LIMIT);
     if(result.modelJudgment!==undefined){
@@ -211,6 +212,11 @@ function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]
         requireValue(binding.kind==="page"&&!Object.hasOwn(binding,"formId")||binding.kind==="form"&&typeof binding.formId==="string","The independent scope target is invalid.");if(binding.formId!==undefined)text(binding.formId,120);
       }
     }
+    if(result.publicationBasis!==undefined){
+      const basis=object(result.publicationBasis,["schema","reason"],"Source publication basis");
+      requireValue(basis.schema==="source-publication-v1"&&["locked_price_mismatch","confirmed_form_label_absence"].includes(basis.reason as string),"The source publication reason is unsupported.");
+      requireValue(result.status==="changes_suggested"&&(result.modelJudgment as ProofAssessmentItem["modelJudgment"])?.status==="changes_suggested"&&(result.sourceFinding as ProofAssessmentItem["sourceFinding"])?.status==="changes_suggested","Source reconciliation must preserve a raw change and a separate negative source fact.");
+    }
     if(result.obligations!==undefined)requireValue(isAssessmentObligations(result.obligations,agreed.find(c=>c.id===result.criterionId)!),"AI obligation directions do not match the exact locked wording and named rules.");
     if(result.evidenceNeed!==undefined){
       const need=object(result.evidenceNeed,["schema","reason","targetFiles"],"AI evidence need");
@@ -223,6 +229,11 @@ function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]
   }
   requireValue(new Set(items.map(item=>(item as Record<string,unknown>).criterionId)).size===items.length,"AI criterion references are duplicated.");
   requireValue(items.length===agreed.length&&agreed.every(criterion=>items.some(item=>(item as Record<string,unknown>).criterionId===criterion.id)),"AI assessment must include every agreed criterion exactly once.");
+  const markedIds=agreed.filter(c=>items.some(item=>(item as ProofAssessmentItem).criterionId===c.id&&(item as ProofAssessmentItem).publicationBasis!==undefined)).map(c=>c.id);
+  if(row.publicationPolicy!==undefined){
+    const policy=object(row.publicationPolicy,["schema","reconciledCriterionIds"],"Source publication policy"),ids=array(policy.reconciledCriterionIds,33,"Reconciled criteria");
+    requireValue(policy.schema==="source-publication-v1"&&same(ids,markedIds),"The publication policy must list exactly the marked criteria in agreed order.");
+  }else requireValue(markedIds.length===0,"A source publication basis requires its explicit report policy.");
   const validateRisk=(value:unknown,strict:boolean)=>{
     const risk=object(value,["title","explanation","suggestion","citations"],"AI risk");
     text(risk.title,strict?120:500);text(risk.explanation,strict?600:3000);text(risk.suggestion,strict?400:3000);
@@ -345,11 +356,17 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
       // New source facts are recomputed from current exported bytes and the
       // report's immutable historical scope prefix, never from model prose.
       const checkSource=createAssessmentSourceFindingCheck({files:Object.fromEntries(Object.entries(bundle.delivery.files!).filter(([file])=>["html","css"].includes(staticFileKind(file)??""))),coverage:report.coverage,language:bundle.project.language,businessSteps:getBusinessCheckPlan(scopeQuote),scope:reportScope});
+      const checkPublication=createSourcePublicationCheck({files:Object.fromEntries(Object.entries(bundle.delivery.files!).filter(([file])=>["html","css"].includes(staticFileKind(file)??""))),coverage:report.coverage,language:bundle.project.language,businessSteps:getBusinessCheckPlan(scopeQuote),scope:reportScope,ruleEvidence:bundle.delivery.evidence});
       for(const item of report.items)if(item.modelJudgment!==undefined||item.sourceFinding!==undefined){
         const expected=checkSource(bundle.project.criteria.find(c=>c.id===item.criterionId)!);
         requireValue(same(item.sourceFinding??null,expected??null),"The independent source finding differs from exact source/scope replay.");
         const adjustment=report.withheldRisks?.adjustedCriteria.find(row=>row.criterionId===item.criterionId);
         if(adjustment)requireValue(adjustment.originalStatus===item.modelJudgment?.status,"The retained original AI status conflicts with its adjustment ledger.");
+        if(item.publicationBasis!==undefined){
+          requireValue(item.modelJudgment&&report.publicationPolicy,"Source publication requires the retained model item and explicit report policy.");
+          const decision=checkPublication(bundle.project.criteria.find(c=>c.id===item.criterionId)!,{rawStatus:item.modelJudgment.status,rawCitations:item.modelJudgment.citations,guardedStatus:"insufficient_evidence",guardReason:item.publicationBasis.reason});
+          requireValue(decision&&same(item.publicationBasis,decision.publicationBasis)&&item.status===decision.status&&same(item.sourceFinding,decision.sourceFinding)&&item.explanation===decision.explanation&&same(item.citations,decision.citations)&&item.evidenceNeed===undefined,"The published source reconciliation differs from its original scope, legacy guard or canonical source evidence.");
+        }
       }
     }
     riskBindings(bundle.delivery.riskReviews,bundle.delivery.id,reports);

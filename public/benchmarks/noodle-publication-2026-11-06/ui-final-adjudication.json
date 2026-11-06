@@ -1,0 +1,48 @@
+{
+  "review": "ui-post-final-deepseek.json",
+  "completed": true,
+  "findings": [],
+  "sourceStable": true,
+  "files": [
+    {
+      "file": "app/components/DeliveryAssessment.tsx",
+      "bytes": 36809,
+      "sha256": "224151cba19be1fe9f2df83a39fb4cdd9161c6b15886aed1326d4d405da97455"
+    },
+    {
+      "file": "app/components/DeliveryOverview.tsx",
+      "bytes": 23949,
+      "sha256": "e412a519065c5f0e0e7d9da1eb588f65b609950514a4ac59c1f5653165104a20"
+    },
+    {
+      "file": "lib/delivery-result-focus.ts",
+      "bytes": 21936,
+      "sha256": "00e08f4c361a3aa3bdd95aaeb18aee1582a3ba75f4fd099bf10348e182bf7a4e"
+    },
+    {
+      "file": "lib/delivery-overview.ts",
+      "bytes": 7548,
+      "sha256": "bc0cdbbf70c54461b4c8cf98f91e8d5abc8dae959268febb562fada46d245a7b"
+    },
+    {
+      "file": "tests/noodle-assessment-presentation.test.ts",
+      "bytes": 10169,
+      "sha256": "d5f5ddde5f6259b9262023df63e8b81cf6d1f226ef06b434aa9d4fe9f27a2c81"
+    },
+    {
+      "file": "tests/delivery-result-focus.test.ts",
+      "bytes": 22103,
+      "sha256": "e995d29340e7cd6b02629cbc0c3f16ea4e8cf34ccac41086a5e2cf22e4935753"
+    },
+    {
+      "file": "tests/delivery-overview.test.ts",
+      "bytes": 9776,
+      "sha256": "a49cdb9efccf1df080692b0f2d80103437d2755d11a6469dbae9184cd22231fe"
+    }
+  ],
+  "focusedPassed": 32,
+  "newModelAssessmentCalls": 0,
+  "productionEditsByChild": 0,
+  "legacyAcceptedPayloadsNotModified": true,
+  "rootOwnsFinalFullBuildCua": true
+}

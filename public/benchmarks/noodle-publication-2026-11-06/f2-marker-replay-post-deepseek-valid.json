@@ -1,0 +1,71 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "scripts/replay-evidence-actions-2026-11-06.mjs",
+      "bytes": 42479,
+      "lines": 443,
+      "sha256": "0bfc7bccc98f6bab39d312b9e8503c9d466dac7cacf9e8180b19ecb5744d5502"
+    },
+    {
+      "file": "tests/evidence-actions-replay.test.ts",
+      "bytes": 33626,
+      "lines": 245,
+      "sha256": "58e8d25d3676e34423bf2d63b2da166ae8bdbb288f4e0889af7841a16ffc72f1"
+    },
+    {
+      "file": "lib/assessment-source-publication.ts",
+      "bytes": 5314,
+      "lines": 65,
+      "sha256": "5a8d9bde2b93ab2306da3de2f93687a020853a70a33f2fb4cb73ded2b70a87c3"
+    },
+    {
+      "file": "lib/assessment-source-findings.ts",
+      "bytes": 8176,
+      "lines": 66,
+      "sha256": "33da83fbe3f7eec9661d5225fb3bc1e75f05de1727562a87492837925b9868d0"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"The packet is the retained replay tool (scripts/replay-evidence-actions-2026-11-06.mjs), its direct tests, and the two publication helpers it calls. I found no confirmed correctness defect worth reporting within the packet. The provenance verification does what the task describes. It requires a current publicationPolicy and scopeContext, checks the exact key sets, keeps the marker IDs in the same order as the criteria, and recomputes every marker with the frozen createSourcePublicationCheck. That recomputation uses the retained model status and citations, the item's stored guard reason, and the prepared files and scope. It then strips only modelJudgment, sourceFinding, publicationBasis, publicationPolicy and scopeContext. verifyAdditiveObligationsBaseline still compares every other field of report against the baseline, so a changed verdict, explanation, citation, limitation or unknown field still fails. The tests confirm this: test 212–221 recomputes the real locked_price_mismatch marker and then shows that an old insufficient_evidence/source_ambiguity baseline against the new changes_suggested verdict is rejected, with message /field other than/. test 204–210 checks that forged model, source, scope and policy values cannot authorize stripping. test 140–183 runs the CLI in a separately exported tree on the public 'scope' fixtures (6 projects, 6 criteria). It asserts 0 network calls and 0 blocked network attempts, and checks that the output file is not overwritten. I did find out-of-scope gaps, described under limitations, and treated them as non-findings because they do not contradict the stated scope.\",\"findings\":[],\"limitations\":[\"Only the six supplied files were reviewed, and no code was executed. The claims that tests pass 14/14, that no network was used and that the frozen helper behaves as described are based only on reading source and test assertions, not on running them.\",\"The following packet files were not supplied and so were not reviewed: lib/delivery-assessment.ts (which actually produces publicationPolicy, modelJudgment, sourceFinding and scopeContext), lib/assessment-evidence-scope.ts, source-business-evidence.ts, assessment-label-citations.ts, source-literal-directive.ts, static-resources.ts, scope-clarifications.ts and the shared helpers imported by the tests. The tests show that these integrate correctly for the cases they cover, but integration with the real production producer and with these helper internals is unverified.\",\"Observed but outside this packet's scope, so no findings are filed for them. (1) scripts/replay-evidence-actions-2026-11-06.mjs line 26 uses JSON.stringify with a localeCompare key sort inside the replacer. JSON.parse rebuilds the object one key at a time, so the output order may not match the sort order. This only matters in edge cases, such as nested objects with integer-like or unusual keys where byte order differs from canonical order. (2) In the same file, line 145 accepts any scopeContext object on the previous or baseline report. The actual current stamp is validated only through test 195–203 and does not change what gets stripped. (3) Publication-policy and marker verification covers the publication layer only. The existing independent sourceFinding for items without a marker is still checked by recomputation, and raw modelJudgment by exact equality, so the scope's stated coverage holds.\",\"No runtime, browser, API-route or payment-state checks were performed. The replay intentionally never calls the provider, and this review makes no claim about live model, payment or acceptance behaviour.\",\"Repository AGENTS.md asks for a mandatory comparison with verified champion/award-winning projects in every improvement cycle. That is a process gate, not a code defect, and it is outside this tooling-only packet.\"]}",
+  "report": {
+    "summary": "The packet is the retained replay tool (scripts/replay-evidence-actions-2026-11-06.mjs), its direct tests, and the two publication helpers it calls. I found no confirmed correctness defect worth reporting within the packet. The provenance verification does what the task describes. It requires a current publicationPolicy and scopeContext, checks the exact key sets, keeps the marker IDs in the same order as the criteria, and recomputes every marker with the frozen createSourcePublicationCheck. That recomputation uses the retained model status and citations, the item's stored guard reason, and the prepared files and scope. It then strips only modelJudgment, sourceFinding, publicationBasis, publicationPolicy and scopeContext. verifyAdditiveObligationsBaseline still compares every other field of report against the baseline, so a changed verdict, explanation, citation, limitation or unknown field still fails. The tests confirm this: test 212–221 recomputes the real locked_price_mismatch marker and then shows that an old insufficient_evidence/source_ambiguity baseline against the new changes_suggested verdict is rejected, with message /field other than/. test 204–210 checks that forged model, source, scope and policy values cannot authorize stripping. test 140–183 runs the CLI in a separately exported tree on the public 'scope' fixtures (6 projects, 6 criteria). It asserts 0 network calls and 0 blocked network attempts, and checks that the output file is not overwritten. I did find out-of-scope gaps, described under limitations, and treated them as non-findings because they do not contradict the stated scope.",
+    "findings": [],
+    "limitations": [
+      "Only the six supplied files were reviewed, and no code was executed. The claims that tests pass 14/14, that no network was used and that the frozen helper behaves as described are based only on reading source and test assertions, not on running them.",
+      "The following packet files were not supplied and so were not reviewed: lib/delivery-assessment.ts (which actually produces publicationPolicy, modelJudgment, sourceFinding and scopeContext), lib/assessment-evidence-scope.ts, source-business-evidence.ts, assessment-label-citations.ts, source-literal-directive.ts, static-resources.ts, scope-clarifications.ts and the shared helpers imported by the tests. The tests show that these integrate correctly for the cases they cover, but integration with the real production producer and with these helper internals is unverified.",
+      "Observed but outside this packet's scope, so no findings are filed for them. (1) scripts/replay-evidence-actions-2026-11-06.mjs line 26 uses JSON.stringify with a localeCompare key sort inside the replacer. JSON.parse rebuilds the object one key at a time, so the output order may not match the sort order. This only matters in edge cases, such as nested objects with integer-like or unusual keys where byte order differs from canonical order. (2) In the same file, line 145 accepts any scopeContext object on the previous or baseline report. The actual current stamp is validated only through test 195–203 and does not change what gets stripped. (3) Publication-policy and marker verification covers the publication layer only. The existing independent sourceFinding for items without a marker is still checked by recomputation, and raw modelJudgment by exact equality, so the scope's stated coverage holds.",
+      "No runtime, browser, API-route or payment-state checks were performed. The replay intentionally never calls the provider, and this review makes no claim about live model, payment or acceptance behaviour.",
+      "Repository AGENTS.md asks for a mandatory comparison with verified champion/award-winning projects in every improvement cycle. That is a process gate, not a code defect, and it is outside this tooling-only packet."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

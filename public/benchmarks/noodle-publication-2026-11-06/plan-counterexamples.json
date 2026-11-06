@@ -1,0 +1,169 @@
+{
+  "sourceEdits": 0,
+  "providerCalls": 0,
+  "note": "Read-only hypothetical candidate cloned in memory to test EXISTING raw-vs-published ledger; not implemented restoration, not a verified product fix.",
+  "rows": [
+    {
+      "caseId": "f1-sealed-wrong-object",
+      "criterionId": "coverage-1",
+      "raw": "changes_suggested",
+      "published": "changes_suggested",
+      "independent": "changes_suggested",
+      "originalStatuses": [
+        [
+          "coverage-1",
+          "changes_suggested"
+        ],
+        [
+          "coverage-2",
+          "changes_suggested"
+        ]
+      ],
+      "statusAdjustedCount": 0,
+      "withheldRisks": {
+        "version": 4,
+        "reason": "optional_source_leads_unverified",
+        "adjustedCriteria": [],
+        "entries": [
+          {
+            "originalRiskIndex": 0,
+            "risk": {
+              "title": "牛肉面与Beef noodles的实际标价与锁定AUD18不符",
+              "explanation": "menu.html正文段落分别声明“牛肉面 AUD 28”与“Beef noodles AUD28”，与锁定amountMinor 1800/AUD不一致；AUD18仅出现在template内的牛肉面条目。",
+              "suggestion": "确认模板内AUD18是否应作为正式菜单条目并同步两条菜名价格，再由人工核验。",
+              "citations": [
+                {
+                  "file": "menu.html",
+                  "start": 108,
+                  "end": 125,
+                  "excerpt": "<p>牛肉面 AUD 28</p>"
+                },
+                {
+                  "file": "menu.html",
+                  "start": 125,
+                  "end": 150,
+                  "excerpt": "<p>Beef noodles AUD28</p>"
+                },
+                {
+                  "file": "menu.html",
+                  "start": 0,
+                  "end": 231,
+                  "excerpt": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><p>牛肉面 AUD 28</p><p>Beef noodles AUD28</p><p>Vegetable noodles AUD18</p><template><p>牛肉面 AUD18</p></template></body></html>"
+                }
+              ]
+            }
+          },
+          {
+            "originalRiskIndex": 1,
+            "risk": {
+              "title": "“邮箱”标签位于newsletter表单而非联系表单",
+              "explanation": "contact.html中“姓名”标签位于id=contact表单内，“邮箱”标签位于id=newsletter表单内，联系表单源码只含“姓名”标签。",
+              "suggestion": "确认联系表单是否需同时包含“姓名”和“邮箱”标签，如需则在contact表单内补齐并由人工确认。",
+              "citations": [
+                {
+                  "file": "contact.html",
+                  "start": 0,
+                  "end": 225,
+                  "excerpt": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><form id=\"contact\"><label>姓名<input></label></form><form id=\"newsletter\"><label>邮箱<input></label></form></body></html>"
+                },
+                {
+                  "file": "contact.html",
+                  "start": 127,
+                  "end": 151,
+                  "excerpt": "<label>姓名<input></label>"
+                },
+                {
+                  "file": "contact.html",
+                  "start": 180,
+                  "end": 204,
+                  "excerpt": "<label>邮箱<input></label>"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "activeRisks": []
+    },
+    {
+      "caseId": "f1-sealed-wrong-page",
+      "criterionId": "coverage-2",
+      "raw": "changes_suggested",
+      "published": "changes_suggested",
+      "independent": "changes_suggested",
+      "originalStatuses": [
+        [
+          "page-1",
+          "supported"
+        ],
+        [
+          "page-2",
+          "supported"
+        ],
+        [
+          "page-3",
+          "supported"
+        ],
+        [
+          "mobile",
+          "insufficient_evidence"
+        ],
+        [
+          "coverage-1",
+          "changes_suggested"
+        ],
+        [
+          "coverage-2",
+          "changes_suggested"
+        ]
+      ],
+      "statusAdjustedCount": 0,
+      "withheldRisks": {
+        "version": 4,
+        "reason": "optional_source_leads_unverified",
+        "adjustedCriteria": [],
+        "entries": [
+          {
+            "originalRiskIndex": 0,
+            "risk": {
+              "title": "menu.html 两个菜品价格均为 AUD28，与约定的 AUD18 不符",
+              "explanation": "已确认目标文件 menu.html 中，牛肉面段落与 Beef noodles 段落分别写为 AUD28，按 minor 单位计为 2800，与 businessChecks 期望的 1800 不一致。",
+              "suggestion": "核对 buyer 约定的价格，确认后将 menu.html 中两项标价改为 AUD18（amountMinor 1800）。",
+              "citations": [
+                {
+                  "file": "menu.html",
+                  "start": 108,
+                  "end": 124,
+                  "excerpt": "<p>牛肉面 AUD28</p>"
+                },
+                {
+                  "file": "menu.html",
+                  "start": 124,
+                  "end": 149,
+                  "excerpt": "<p>Beef noodles AUD28</p>"
+                }
+              ]
+            }
+          },
+          {
+            "originalRiskIndex": 1,
+            "risk": {
+              "title": "contact.html 的 contact 表单缺少“邮箱”标签",
+              "explanation": "已确认表单范围内只声明了“姓名”一个 label 与其 input，未见“邮箱”标签；同一源码中的表单仅此一处。",
+              "suggestion": "在 contact.html 的 contact 表单内补充“邮箱”标签字段，并请买家确认字段名称与位置。",
+              "citations": [
+                {
+                  "file": "contact.html",
+                  "start": 127,
+                  "end": 151,
+                  "excerpt": "<label>姓名<input></label>"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "activeRisks": []
+    }
+  ]
+}

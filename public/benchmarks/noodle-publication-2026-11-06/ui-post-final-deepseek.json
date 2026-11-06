@@ -1,0 +1,71 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "app/components/DeliveryAssessment.tsx",
+      "bytes": 36809,
+      "lines": 246,
+      "sha256": "224151cba19be1fe9f2df83a39fb4cdd9161c6b15886aed1326d4d405da97455"
+    },
+    {
+      "file": "app/components/DeliveryOverview.tsx",
+      "bytes": 23949,
+      "lines": 135,
+      "sha256": "e412a519065c5f0e0e7d9da1eb588f65b609950514a4ac59c1f5653165104a20"
+    },
+    {
+      "file": "lib/delivery-result-focus.ts",
+      "bytes": 21936,
+      "lines": 136,
+      "sha256": "00e08f4c361a3aa3bdd95aaeb18aee1582a3ba75f4fd099bf10348e182bf7a4e"
+    },
+    {
+      "file": "lib/delivery-overview.ts",
+      "bytes": 7548,
+      "lines": 120,
+      "sha256": "bc0cdbbf70c54461b4c8cf98f91e8d5abc8dae959268febb562fada46d245a7b"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Narrow delta review of four touched areas only: (1) the marker-specific introduction in overviewFeedbackDraft; (2) the purpose text for marked reports; (3) the v4 pool subtitle; (4) the neutral historical change-count label. All four hold up against the task's constraints. In overviewFeedbackDraft (lib/delivery-overview.ts:111-118), the source-publication introduction is placed after the rule-fail branch, so a failing rule still wins. The introductory wording exactly matches the test's expected (for buyer review) text. The deliveryId and criterionId still come from the same arguments, and the output is still cut with slice(0, 1000), still measured in UTF-16 code units, followed by removal of a dangling high surrogate. The draft is derived without changing the row. DeliveryOverview.tsx:74 and delivery-result-focus.ts:86 only relabel an item when it is changes_suggested and also carries publicationBasis source-publication-v1, a basis that the contract grants only to changes_suggested items. Supported marker items therefore keep the plain label, and model leads are never relabelled as system findings. The purpose text (DeliveryAssessment.tsx:145) and the pool subtitle (line 192) are gated on hasSourcePublication. The unmarked v4 pool therefore keeps its old wording, and an accepted legacy report with no publicationBasis keeps its old strings. The historical comparison label (DeliveryOverview.tsx:132) becomes neutral, as 'Published findings needing changes' in English or '发布结论需修改' in Chinese, whenever either side has a marker. No new report, action or accuracy claim is introduced. No actionable defects were found in this delta.\",\"findings\":[],\"limitations\":[\"Read-only review: I did not execute code, tests or builds, and I do not claim any runtime verification. The stated 32/32 test run is the submitter's evidence and was not reproduced here.\",\"The source packet is a subset. The tests only appear as excerpts; contracts.ts, assessment-feedback.ts, RiskRepairPanel and the CSS were not supplied, so the publicationBasis contract (marked only on changes_suggested) and the 1000-unit bound were checked against the supplied excerpts and the task statement, not against the type definitions.\",\"The excerpts do not cover a case where rule is unreviewed and the item is changes_suggested, a v4 pool with sourceFinding or scopeBinding on items, or how the v4 entries and adjustedCriteria interact with labels. In those cases, lines 64 and 74 and lines 93-126 determine the result outside this delta.\",\"Legacy accepted-report string behavior and zh/en language switching were traced only from the source, not observed in a rendered page.\",\"The effect of the longer English subtitle and purpose texts on the compact desktop layout was not checked, since no CSS was supplied.\"]}",
+  "report": {
+    "summary": "Narrow delta review of four touched areas only: (1) the marker-specific introduction in overviewFeedbackDraft; (2) the purpose text for marked reports; (3) the v4 pool subtitle; (4) the neutral historical change-count label. All four hold up against the task's constraints. In overviewFeedbackDraft (lib/delivery-overview.ts:111-118), the source-publication introduction is placed after the rule-fail branch, so a failing rule still wins. The introductory wording exactly matches the test's expected (for buyer review) text. The deliveryId and criterionId still come from the same arguments, and the output is still cut with slice(0, 1000), still measured in UTF-16 code units, followed by removal of a dangling high surrogate. The draft is derived without changing the row. DeliveryOverview.tsx:74 and delivery-result-focus.ts:86 only relabel an item when it is changes_suggested and also carries publicationBasis source-publication-v1, a basis that the contract grants only to changes_suggested items. Supported marker items therefore keep the plain label, and model leads are never relabelled as system findings. The purpose text (DeliveryAssessment.tsx:145) and the pool subtitle (line 192) are gated on hasSourcePublication. The unmarked v4 pool therefore keeps its old wording, and an accepted legacy report with no publicationBasis keeps its old strings. The historical comparison label (DeliveryOverview.tsx:132) becomes neutral, as 'Published findings needing changes' in English or '发布结论需修改' in Chinese, whenever either side has a marker. No new report, action or accuracy claim is introduced. No actionable defects were found in this delta.",
+    "findings": [],
+    "limitations": [
+      "Read-only review: I did not execute code, tests or builds, and I do not claim any runtime verification. The stated 32/32 test run is the submitter's evidence and was not reproduced here.",
+      "The source packet is a subset. The tests only appear as excerpts; contracts.ts, assessment-feedback.ts, RiskRepairPanel and the CSS were not supplied, so the publicationBasis contract (marked only on changes_suggested) and the 1000-unit bound were checked against the supplied excerpts and the task statement, not against the type definitions.",
+      "The excerpts do not cover a case where rule is unreviewed and the item is changes_suggested, a v4 pool with sourceFinding or scopeBinding on items, or how the v4 entries and adjustedCriteria interact with labels. In those cases, lines 64 and 74 and lines 93-126 determine the result outside this delta.",
+      "Legacy accepted-report string behavior and zh/en language switching were traced only from the source, not observed in a rendered page.",
+      "The effect of the longer English subtitle and purpose texts on the compact desktop layout was not checked, since no CSS was supplied."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

@@ -1,0 +1,53 @@
+{
+  "schema": "noodle-publication-plan-adjudication-v1",
+  "review": "plan-deepseek.json",
+  "validReview": true,
+  "reviewer": "Codex AI independently executed existing publication ledger, not human study",
+  "decisions": [
+    {
+      "finding": 1,
+      "severity": "P1",
+      "decision": "rejected_core_claim_accept_audit_boundary",
+      "reason": "Reviewer substitutes intermediate guard status or rawunknown for explicitly rawchanges. Existing originalStatuses comes from original responseItems and is changes, not intermediate unknown. Actual cloned-candidate calls to existing publisher for both real residuals yield zero adjustedCriteria and v4 unverified optional risk pool, no active risks. Raw=published=source=changes is consistent. No equal-status adjustment is invented. A separate source-publication marker remains useful for explicit provenance, not to fix the claimed ledger contradiction."
+    },
+    {
+      "finding": 2,
+      "severity": "P2",
+      "decision": "rejected_as_proposed_accept_limit_explicitly",
+      "reason": "Proposal explicitly copies the complete sourceFinding citation array only if full count<=6. It never slices/subsets 7-8 citations. Implementation gate/test must enforce exact full-array equality and fail closed over6; no budget relaxation."
+    },
+    {
+      "finding": 3,
+      "severity": "P2",
+      "decision": "rejected",
+      "reason": "Example changes rawstatus to insufficient_evidence, which is explicitly excluded. In the actual two cases modelJudgment.status=changes remains exact; newly restored publishedchanges equals rawchanges so no v1adjustment for these items. Prior7/9 publication is historical artifact, not the raw originalStatuses argument. Existing exporter ledger assertion remains unchanged."
+    },
+    {
+      "finding": 4,
+      "severity": "P3",
+      "decision": "accepted_boundary_refinement",
+      "reason": "Record an internal actual downgrade flag at the specific legacy business_unknown / label source_disagrees branch, not a broad anyunknown restoration. Independent source mismatch and finite family/scope checks are still mandatory. Export rederives predicate from same original criterion/source/scope and exact known legacy guard result."
+    }
+  ],
+  "actualLedgerReproduction": "plan-counterexamples.json",
+  "proposedMarker": {
+    "schema": "source-publication-v1",
+    "reason": [
+      "locked_price_mismatch",
+      "confirmed_form_label_absence"
+    ]
+  },
+  "refinedGate": [
+    "catalog_slots only, exact original rawchanges",
+    "current publishedunknown from an actual matching legacy guard flag",
+    "source_text and no runtime obligation",
+    "current samecriterion independent sourceFinding changes with complete unmodified citation array 1..6",
+    "price only existing buyer confirmed item_price exact target, legacy guard uncertainty due bounded same family; no broad source guard relaxation",
+    "labels only finite FORM descriptor plus effective current two-sided form scope; legacy unscoped no_complete_group check actually returned source_disagrees_with_change",
+    "publish canonical fact explanation/full cites, delete stale evidenceNeed; preserve rawmodel and prior reports",
+    "optional risk leads remain v4 quarantined; no acceptance/payment or automatic scope confirmation",
+    "offline export marker strict whitelist and deterministic same-predicate replay, no fake v1 intermediate-state ledger"
+  ],
+  "productionEdits": 0,
+  "awaitingRootOwnership": true
+}

@@ -93,7 +93,9 @@ export type ProofAssessmentSourceFinding = {
   explanation: string; citations: ProofAssessmentCitation[]; files: string[];
   scopeBinding?: {proposalId: string; proposalDigest: string; file: string; kind: "page" | "form"; formId?: string};
 };
-export type ProofAssessmentItem = { criterionId: string; status: "supported" | "changes_suggested" | "insufficient_evidence"; explanation: string; citations: ProofAssessmentCitation[]; ruleEvidenceIds: string[]; evidenceNeed?: ProofEvidenceNeed; obligations?: import("./assessment-obligations").AssessmentObligations; modelJudgment?: ProofAssessmentModelJudgment; sourceFinding?: ProofAssessmentSourceFinding };
+/** Explicit source-only reconciliation; never rewrites the retained model item. */
+export type ProofAssessmentPublicationBasis = {schema:"source-publication-v1";reason:"locked_price_mismatch"|"confirmed_form_label_absence"};
+export type ProofAssessmentItem = { criterionId: string; status: "supported" | "changes_suggested" | "insufficient_evidence"; explanation: string; citations: ProofAssessmentCitation[]; ruleEvidenceIds: string[]; evidenceNeed?: ProofEvidenceNeed; obligations?: import("./assessment-obligations").AssessmentObligations; modelJudgment?: ProofAssessmentModelJudgment; sourceFinding?: ProofAssessmentSourceFinding; publicationBasis?: ProofAssessmentPublicationBasis };
 export type ProofAssessmentRisk = { title: string; explanation: string; suggestion: string; citations: ProofAssessmentCitation[] };
 /** Validated original AI leads retained outside the active indication pool.
  * v1 preserves status-adjustment publication; v2 records an independently
@@ -112,6 +114,7 @@ export type ProofAssessmentWithheldRisks = ({version: 1; reason: "item_status_ad
 export type ProofRiskReview = { id: string; deliveryId: string; assessmentId: string; riskIndex: number; riskOrigin?: "withheld"; decision: "confirmed" | "rejected" | "needs_evidence"; reason: string; actorRole: ProofRole; reviewedAt: string };
 export type ProofResourceReport = { method: "static-resources-v1"; checked: number; findings: { from: string; reference: string; target?: string; kind: "missing" | "blocked" | "uninspectable" }[] };
 export type ProofAssessment = {
+  publicationPolicy?: {schema:"source-publication-v1";reconciledCriterionIds:string[]};
   scopeContext?: import("./scope-clarifications").ScopeAssessmentContext;
   id: string; deliveryId: string; method: "source-ai-v1"; mode: "live"; model: string; assessedAt: string;
   items: ProofAssessmentItem[]; risks: ProofAssessmentRisk[]; limitations: string[];

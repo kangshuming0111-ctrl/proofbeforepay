@@ -110,6 +110,8 @@ export function overviewFeedbackDraft(row: DeliveryOverviewRow, deliveryId: stri
   const zh = language === "zh";
   const introduction = row.rule === "fail"
     ? zh ? "规则核查发现不符，请按已确认的要求修改：\n" : "Rule checks found a mismatch. Please revise against the agreed requirement:\n"
+    : row.ai?.status === "changes_suggested" && row.ai.publicationBasis?.schema === "source-publication-v1"
+      ? zh ? "系统源码核验差异（待买家核对）：\n" : "System source-check difference (for buyer review):\n"
     : row.ai?.status === "changes_suggested"
       ? zh ? "AI 修改建议（待买家核对）：\n" : "AI change suggestion (for buyer review):\n"
       : zh ? "请补充可复查的交付证据（待买家核对）：\n" : "Please supply verifiable delivery evidence (for buyer review):\n";

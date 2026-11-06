@@ -1,0 +1,111 @@
+{
+  "reviewer": "DeepSeek Harness / deepseek-flash",
+  "dryRun": false,
+  "advisoryOnly": true,
+  "sources": [
+    {
+      "file": "lib/assessment-source-publication.ts",
+      "bytes": 5314,
+      "lines": 65,
+      "sha256": "5a8d9bde2b93ab2306da3de2f93687a020853a70a33f2fb4cb73ded2b70a87c3"
+    },
+    {
+      "file": "lib/delivery-assessment.ts",
+      "bytes": 66973,
+      "lines": 569,
+      "sha256": "b4cd6bac6f243fa5a1df042d5775bab7e1db7d167ce8b159604b032848a8c3fe"
+    },
+    {
+      "file": "lib/contracts.ts",
+      "bytes": 18440,
+      "lines": 266,
+      "sha256": "e4521cfa40dd503d3609d7db1336dbd7ef93b5d26480b40308006eee2c600218"
+    },
+    {
+      "file": "lib/evidence-export.ts",
+      "bytes": 61998,
+      "lines": 491,
+      "sha256": "55981b7d99ed815e7f1a95236995401e84ab796e28621ebd5f2cf49ff24386d1"
+    },
+    {
+      "file": "lib/assessment-source-findings.ts",
+      "bytes": 8176,
+      "lines": 66,
+      "sha256": "33da83fbe3f7eec9661d5225fb3bc1e75f05de1727562a87492837925b9868d0"
+    },
+    {
+      "file": "lib/scope-clarifications.ts",
+      "bytes": 18656,
+      "lines": 107,
+      "sha256": "d873f77a73e5d977b41dd7ded737087195346bf33bd4666691de4603186dffa8"
+    },
+    {
+      "file": "lib/assessment-publication-policy.ts",
+      "bytes": 12720,
+      "lines": 152,
+      "sha256": "360a5106a5d2b90e2011ebf0cef6fb577309d636a8ba4f6843626009c00d0605"
+    },
+    {
+      "file": "tests/assessment-source-publication.test.ts",
+      "bytes": 6856,
+      "lines": 55,
+      "sha256": "bed1681554c7009bcfc408c212c26f85e87873105e720ead0b5a4611eca604d2"
+    },
+    {
+      "file": "tests/noodle-source-first-four-replay.test.ts",
+      "bytes": 3749,
+      "lines": 39,
+      "sha256": "814c9b4602cd8bb19f775318175cd74a1f8450fe7b1b6d32d5452ea91bf20757"
+    },
+    {
+      "file": "scripts/replay-noodle-publication-2026-11-06.mjs",
+      "bytes": 6414,
+      "lines": 89,
+      "sha256": "8528ffd76785535d61d32b23a552cc92a7ccfbd3b9166d71f186c470692c7b02"
+    },
+    {
+      "file": ".agents/skills/proofbeforepay-delivery/SKILL.md",
+      "bytes": 5035,
+      "lines": 38,
+      "sha256": "fd9c1274836f51690b74ac250e83cdc81e144a43bad5ddda77fe0b7a61863488"
+    }
+  ],
+  "skills": [
+    {
+      "name": "proofbeforepay-delivery",
+      "catalogSeen": true,
+      "loaded": true
+    }
+  ],
+  "toolEvents": [
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "called"
+    },
+    {
+      "name": "proofbeforepay-delivery",
+      "status": "loaded"
+    }
+  ],
+  "finalAssistantText": "{\"summary\":\"Reviewed the source-publication-v1 marker, the ordered publicationPolicy.reconciledCriterionIds, the restoration conditions, the complete fact-citation set, the export replay, and the zero-network replay script. The core design holds: restoration requires a raw changes_suggested item that was actually downgraded to insufficient_evidence with a matching guard reason (delivery-assessment.ts:298, 334, 504, 512-520). It also requires a source_text or sourceFinding scope, exact rawCitations, complete HTML coverage, no rule fail, and a canonical sourceFinding. The canonical explanation and citations replace the stale ones, evidenceNeed is cleared, and modelJudgment is left untouched. The export policy is markedIds in agreed order, so a restored item keeps the raw publicChanges_suggested as the original. The originalStatuses map comes from responseItems, the actual raw items, so restored items produce no adjustedCriteria entry and risks land in the v4 withheld pool. The replay script uses the sealed bodies and requests, intercepts every fetch, and asserts 7/9, then 9/9, with exactly 2 changed items. I found no defect that meets the reproducible P1/P2 bar. The notes below record lower-priority consistency observations plus scope limits.\",\"findings\":[],\"limitations\":[\"Read-only packet review only. No tests, typecheck, replay script, export verification, or provider calls were executed in this session. The 7/9 → 9/9 claim is carried from the packet's tests and script, not reproduced here.\",\"The fixture tests/fixtures/noodle-f1-first-four-replay.json was not supplied, so the specific item statuses, rawCitations, scope bindings, and expected reference statuses cannot be verified. The claim that the two restored items have zero v1 adjustments depends on the fixture and on guardedStatus being insufficient_evidence before the raw changes_suggested item.\",\"The following modules were referenced but not supplied, so their exact predicates, citation limits, and fail/pass semantics were not checked: assessment-label-citations.ts, source-business-evidence.ts, assessment-evidence-scope.ts, source-literal-directive.ts, static-resources.ts, assessment-limits.ts, business-checks.ts, assessment-citation-catalog.ts, static-project.ts, and runtime-project.ts.\",\"The export replay (evidence-export.ts:346-373) recomputes sourceFinding and the publication decision from the current exported bytes and the report's historical scope prefix. It cannot detect a report whose saved explanation or citations were altered in a way the decision still reproduces, and it is consistency only, not authentication. That matches the stated design and the limits declared at lines 46-50 and 293-295.\",\"The legacy logic in scripts/replay-noodle-publication-2026-11-06.mjs (lines 40-57) only asserts modelJudgment equality and the two permitted status changes. It does not independently assert unchanged originalStatuses or zero adjustedCriteria for restored items. This is a test-coverage observation, not a demonstrated product defect. Coverage is partly supplied by tests/noodle-source-first-four-replay.test.ts.\",\"Line 23 in tests/noodle-source-first-four-replay.test.ts asserts that the old status is insufficient_evidence for restored items. If a prior publisher had written an intermediate original into modelJudgment, this assertion would catch it, but it depends on the fixture being a true original raw capture.\",\"The earlier plan's claim that the original publisher inserted an intermediate 'unknown' status into the raw record was not reproduced. The supplied code copies modelJudgment before any adjustment (delivery-assessment.ts:295) and builds originalStatuses from the raw items (line 546), so that claim is not repeated here.\",\"The item_price and FORM restoration branches rely on the strict legacy checkers returning kind unknown with locked_price_mismatch or source_disagrees_with_change. Whether those reasons can occur for other triggers (for example, ambiguous content groups) was not fully assessed without their source. The strict guard is unchanged in this packet.\",\"No runtime, security, accessibility, or live-provider behavior is claimed. The findings concentrate on the publication reconciliation path, export consistency, and the replay script.\"]}",
+  "report": {
+    "summary": "Reviewed the source-publication-v1 marker, the ordered publicationPolicy.reconciledCriterionIds, the restoration conditions, the complete fact-citation set, the export replay, and the zero-network replay script. The core design holds: restoration requires a raw changes_suggested item that was actually downgraded to insufficient_evidence with a matching guard reason (delivery-assessment.ts:298, 334, 504, 512-520). It also requires a source_text or sourceFinding scope, exact rawCitations, complete HTML coverage, no rule fail, and a canonical sourceFinding. The canonical explanation and citations replace the stale ones, evidenceNeed is cleared, and modelJudgment is left untouched. The export policy is markedIds in agreed order, so a restored item keeps the raw publicChanges_suggested as the original. The originalStatuses map comes from responseItems, the actual raw items, so restored items produce no adjustedCriteria entry and risks land in the v4 withheld pool. The replay script uses the sealed bodies and requests, intercepts every fetch, and asserts 7/9, then 9/9, with exactly 2 changed items. I found no defect that meets the reproducible P1/P2 bar. The notes below record lower-priority consistency observations plus scope limits.",
+    "findings": [],
+    "limitations": [
+      "Read-only packet review only. No tests, typecheck, replay script, export verification, or provider calls were executed in this session. The 7/9 → 9/9 claim is carried from the packet's tests and script, not reproduced here.",
+      "The fixture tests/fixtures/noodle-f1-first-four-replay.json was not supplied, so the specific item statuses, rawCitations, scope bindings, and expected reference statuses cannot be verified. The claim that the two restored items have zero v1 adjustments depends on the fixture and on guardedStatus being insufficient_evidence before the raw changes_suggested item.",
+      "The following modules were referenced but not supplied, so their exact predicates, citation limits, and fail/pass semantics were not checked: assessment-label-citations.ts, source-business-evidence.ts, assessment-evidence-scope.ts, source-literal-directive.ts, static-resources.ts, assessment-limits.ts, business-checks.ts, assessment-citation-catalog.ts, static-project.ts, and runtime-project.ts.",
+      "The export replay (evidence-export.ts:346-373) recomputes sourceFinding and the publication decision from the current exported bytes and the report's historical scope prefix. It cannot detect a report whose saved explanation or citations were altered in a way the decision still reproduces, and it is consistency only, not authentication. That matches the stated design and the limits declared at lines 46-50 and 293-295.",
+      "The legacy logic in scripts/replay-noodle-publication-2026-11-06.mjs (lines 40-57) only asserts modelJudgment equality and the two permitted status changes. It does not independently assert unchanged originalStatuses or zero adjustedCriteria for restored items. This is a test-coverage observation, not a demonstrated product defect. Coverage is partly supplied by tests/noodle-source-first-four-replay.test.ts.",
+      "Line 23 in tests/noodle-source-first-four-replay.test.ts asserts that the old status is insufficient_evidence for restored items. If a prior publisher had written an intermediate original into modelJudgment, this assertion would catch it, but it depends on the fixture being a true original raw capture.",
+      "The earlier plan's claim that the original publisher inserted an intermediate 'unknown' status into the raw record was not reproduced. The supplied code copies modelJudgment before any adjustment (delivery-assessment.ts:295) and builds originalStatuses from the raw items (line 546), so that claim is not repeated here.",
+      "The item_price and FORM restoration branches rely on the strict legacy checkers returning kind unknown with locked_price_mismatch or source_disagrees_with_change. Whether those reasons can occur for other triggers (for example, ambiguous content groups) was not fully assessed without their source. The strict guard is unchanged in this packet.",
+      "No runtime, security, accessibility, or live-provider behavior is claimed. The findings concentrate on the publication reconciliation path, export consistency, and the replay script."
+    ]
+  },
+  "reportValid": true,
+  "waitReturned": true,
+  "turnCompleted": true,
+  "completed": true,
+  "errors": []
+}

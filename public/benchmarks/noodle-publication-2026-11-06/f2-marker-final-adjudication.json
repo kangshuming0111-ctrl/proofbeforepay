@@ -1,0 +1,50 @@
+{
+  "schema": "noodle-source-publication-f2-final-adjudication-v1",
+  "productionReview": {
+    "file": "post-deepseek.json",
+    "adjudication": "post-adjudication.json",
+    "note": "F1 coherent packet included unchanged final F2 contracts/export; helper producer owned by F1."
+  },
+  "additionalToolReview": {
+    "file": "f2-marker-replay-post-deepseek-valid.json",
+    "reportValid": true,
+    "findings": [],
+    "decision": "No additional confirmed P1/P2; exact current-policy/marker/source reconstruction and immutable-core comparison independently exercised."
+  },
+  "invalidAttemptRetained": {
+    "file": "f2-marker-export-replay-post-deepseek.json",
+    "reason": "report_not_json",
+    "countedAsValid": false
+  },
+  "independentSiblingReview": {
+    "reviewer": "F1 agent readonly",
+    "executedObservations": 12,
+    "conclusion": "Validated marker still preserves actual newchanges vs oldunknown; unchanged baseline rejects. Delete marker/canonical explanation/citations rejected.",
+    "providerCalls": 0,
+    "sourceEdits": 0
+  },
+  "verification": {
+    "newExportTests": 8,
+    "exportRelatedPassed": 68,
+    "exportLog": "f2-marker-export-related.log",
+    "strictReplayPassed": 14,
+    "replayLog": "f2-marker-replay-final.log",
+    "typecheck": "f2-marker-final-type-v2.log",
+    "typecheckExit": 0,
+    "actualExportedTree": "f2-replay-exported-tree/replay-result.json",
+    "actualExportedSummary": "f2-replay-exported-tree/validation-summary.json",
+    "exportedProjects": 6,
+    "exportedCriteria": 6,
+    "apiCalls": 0,
+    "modelCalls": 0,
+    "networkCalls": 0,
+    "blockedNetworkAttempts": 0
+  },
+  "limits": [
+    "Current source publication is an explicit canonical source-only recovery, not a changed original model judgment.",
+    "Only fixed finite rawchanges/legacyunknown/sourcechanges families are eligible; rawunknown/supported/runtime/stale or unconfirmed scopes stay out.",
+    "Markers and exact report policy must match1to1/order, and rederive before stripping metadata for unchanged historical baseline comparison.",
+    "Real baseline verdict/explanation/citation changes still fail; the separate known-nine publication ledger records the intended two recoveries instead.",
+    "Unsigned coherent whole-envelope deletion or rewriting is not authenticated; no identity/provider/acceptance/payment claim."
+  ]
+}

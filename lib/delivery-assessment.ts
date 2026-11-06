@@ -28,6 +28,7 @@ import {makeAssessmentEvidenceNeed} from "./assessment-evidence-needs.ts";
 import {canonicalAssessmentRisk} from "./assessment-risk-fields.ts";
 import {createAssessmentCitationCatalog, resolveCatalogCitations} from "./assessment-citation-catalog.ts";
 import {createAssessmentSourceFindingCheck} from "./assessment-source-findings.ts";
+import {createSourcePublicationCheck,type SourcePublicationGuardReason} from "./assessment-source-publication.ts";
 import {resolveScopeClarifications} from "./scope-clarifications.ts";
 export {AssessmentResponseError} from "./assessment-response.ts";
 
@@ -275,6 +276,7 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
     const businessEvidenceCheck = createSourceBusinessEvidenceCheck(sent, savedBusinessSteps);
     const positiveLiteralCheck = createPositiveLiteralSourceWitnessCheck(sent, savedBusinessSteps);
     const independentSourceCheck = createAssessmentSourceFindingCheck({files: sent, coverage, language: quote.language, businessSteps: savedBusinessSteps, scope: confirmedScope});
+    const sourcePublicationCheck = createSourcePublicationCheck({files: sent, coverage, language: quote.language, businessSteps: savedBusinessSteps, scope: confirmedScope, ruleEvidence: evidence});
     const labelCitationCheck = createAssessmentLabelCitationCheck(sent);
     const labelSourceFactsCheck = createAssessmentLabelSourceFactsCheck(sent, coverage);
     const nativeCitationCheck = createNativeFormCitationCheck(sent);
@@ -293,6 +295,7 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
       const modelJudgment = {status, explanation: originalExplanation, citations: structuredClone(checkedCitations)};
       let evidenceNeed: ProofEvidenceNeed | undefined;
       let labelCitationAdjusted = false;
+      let sourcePublicationGuard: SourcePublicationGuardReason | undefined;
       const need = (reason: ProofEvidenceNeed["reason"], targetFiles: readonly string[] = []) => {
         if (encoding === "catalog_slots") evidenceNeed = makeAssessmentEvidenceNeed(reason, targetFiles, sent);
       };
@@ -328,6 +331,7 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
         if (status === "changes_suggested") {
           const business = businessEvidenceCheck(criterion.id);
           if (business.kind === "unknown") {
+            sourcePublicationGuard = "locked_price_mismatch";
             status = "insufficient_evidence";
             explanation = sourceBusinessEvidenceExplanation(business, quote.language);
             const context = completeMergedUnknownCitations(business);
@@ -497,15 +501,25 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
           if (fact.kind !== "not_applicable") {
             explanation = labelSourceFactExplanation(fact, quote.language);
             if (fact.kind === "unknown") {
+              if (fact.reason === "source_disagrees_with_change") sourcePublicationGuard = "confirmed_form_label_absence";
               status = "insufficient_evidence";
               need(fact.reason === "source_disagrees_with_change" ? "manual_interpretation" : "source_ambiguity");
             }
           }
         }
       }
-      const sourceFinding = encoding === "catalog_slots" ? independentSourceCheck(criterion) : undefined;
+      let sourceFinding = encoding === "catalog_slots" ? independentSourceCheck(criterion) : undefined;
+      const sourcePublication = encoding === "catalog_slots" ? sourcePublicationCheck(criterion, {
+        rawStatus: modelJudgment.status, rawCitations: modelJudgment.citations,
+        guardedStatus: status, guardReason: sourcePublicationGuard,
+      }) : undefined;
+      if (sourcePublication) {
+        status = sourcePublication.status; explanation = sourcePublication.explanation;
+        checkedCitations = sourcePublication.citations; sourceFinding = sourcePublication.sourceFinding;
+        evidenceNeed = undefined;
+      }
       return { criterionId: criterion.id, status, explanation, citations: checkedCitations, ruleEvidenceIds: related.map(entry => entry.id),
-        ...(encoding === "catalog_slots" ? {obligations: deriveAssessmentObligations(criterion), modelJudgment, ...(sourceFinding ? {sourceFinding} : {})} : {}),
+        ...(encoding === "catalog_slots" ? {obligations: deriveAssessmentObligations(criterion), modelJudgment, ...(sourceFinding ? {sourceFinding} : {}), ...(sourcePublication ? {publicationBasis: sourcePublication.publicationBasis} : {})} : {}),
         ...(encoding === "catalog_slots" && status === "insufficient_evidence" ? {evidenceNeed: evidenceNeed ?? makeAssessmentEvidenceNeed("model_unresolved", [], sent)} : {}) };
     });
     // Keep the report in the agreed order regardless of model output order.
@@ -547,7 +561,7 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
     limitations.push(words(quote, "AI 建议与服务端规则分开记录。人工检查和最终验收由买家完成，不会自动验收、授权或付款。", "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."));
     if (Object.keys(files).some(file => !["html", "css"].includes(staticFileKind(file) ?? ""))) limitations.push(words(quote, "文件清单中的图片已经交付，但像素未送交 AI 分析；从文本分析范围省略不等于图片文件缺失或显示失败。", "Raster files in the inventory were delivered, but their pixels were not sent to AI. Omission from text-source coverage does not mean an image file is missing or failed to display."));
     const tokenUsage = usage(response.data.usage, outputTokenLimit, promptTokenUpperEstimate);
-    return { id: crypto.randomUUID(), deliveryId: delivery.id, method: "source-ai-v1", mode: "live", model, assessedAt: new Date().toISOString(), items, risks: publication.risks, limitations, coverage, ...(confirmedScope ? {scopeContext: {digest: confirmedScope.contextDigest, ...confirmedScope.stamp}} : {}), ...(publication.withheldRisks ? {withheldRisks: publication.withheldRisks} : {}), ...(tokenUsage ? { usage: tokenUsage } : {}) };
+    return { id: crypto.randomUUID(), deliveryId: delivery.id, method: "source-ai-v1", mode: "live", model, assessedAt: new Date().toISOString(), items, risks: publication.risks, limitations, coverage, ...(encoding === "catalog_slots" ? {publicationPolicy: {schema: "source-publication-v1", reconciledCriterionIds: items.filter(item => item.publicationBasis).map(item => item.criterionId)}} : {}), ...(confirmedScope ? {scopeContext: {digest: confirmedScope.contextDigest, ...confirmedScope.stamp}} : {}), ...(publication.withheldRisks ? {withheldRisks: publication.withheldRisks} : {}), ...(tokenUsage ? { usage: tokenUsage } : {}) };
   } catch (error) {
     if (error instanceof AssessmentResponseError) throw error;
     throw failure();

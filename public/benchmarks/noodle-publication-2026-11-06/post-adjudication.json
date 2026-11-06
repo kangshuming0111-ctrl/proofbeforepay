@@ -1,0 +1,26 @@
+{
+  "schema": "noodle-publication-post-adjudication-v1",
+  "review": "post-deepseek.json",
+  "validReview": true,
+  "findings": [],
+  "acceptedP1P2": 0,
+  "independentReviewer": "Codex AI; not human study",
+  "evidence": [
+    "focused-tests.log:6/6",
+    "final-focused-tests.log:47/47",
+    "typecheck-after-fixture-annotation.log:0 diagnostics",
+    "Root publication-replay.json independently preserves first4 raw/requests/old7-of9 and changes only2 publication states to9-of9, zero provider/network calls"
+  ],
+  "limits": [
+    "Read-only DeepSeek review is advisory, not execution proof. Replayed source findings are not a new raw AI evaluation or general accuracy rate.",
+    "Unsigned export validates internal source/scope/provenance consistency; no provider, person or execution authenticity claim.",
+    "Policy/marker consistency must not reuse a fictional intermediateunknown as originalStatuses. Rawstatusmap remains originalresponseItems.",
+    "No new runtime/financial/acceptance authority; source-negative publication and optional risk leads remain separated."
+  ],
+  "changesAfterReviewPacket": [
+    {
+      "file": "tests/assessment-source-publication.test.ts",
+      "reason": "Test-only explicit Record<string,string> annotation fixes TS7053; no runtime or production code change."
+    }
+  ]
+}

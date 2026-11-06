@@ -1,0 +1,247 @@
+{
+  "schema": "noodle-publication-before-v1",
+  "baselineNativeCommit": "fd88798fb1afc4536a90a38d4fff2026959c16bf",
+  "fixtureSha256": "49d5602daf71199fb9772e2966c0606e21db99c8b1c64a7c5ae38b61f7277d37",
+  "baselineSummary": {
+    "evaluationCalls": 4,
+    "focusedCriteria": 9,
+    "providerExpectedIds": 13,
+    "providerReturnedKnownIds": 13,
+    "missingProviderIds": 0,
+    "duplicateProviderIds": 0,
+    "unknownProviderIds": 0,
+    "acceptedReports": 4,
+    "rejectedReports": 0,
+    "rawStatusMatches": 9,
+    "publishedStatusMatches": 7,
+    "effectiveSourceOrPublishedMatches": 8,
+    "estimatedCostUsd": 0.0129225
+  },
+  "oldManifestSha256": "9d393c2d1dd08dfb4108543365db80407d242a7af108991c1c624ded7ef5216b",
+  "noSourceOrReferenceChanges": true,
+  "knownFictionalCasesOnly": true,
+  "twoResiduals": [
+    {
+      "caseId": "f1-sealed-wrong-object",
+      "criterionId": "coverage-1",
+      "originalRequirement": "菜单的牛肉面和Beef noodles标价必须为AUD18。",
+      "originalPublishedItem": {
+        "criterionId": "coverage-1",
+        "status": "insufficient_evidence",
+        "explanation": "本项已确认业务检查无法全部在有限的静态简单段落中可靠对应；重复或未定位内容、复杂格式或动态来源仍需其他证据。源码建议不能据此确认为符合，原始约定未改变。",
+        "citations": [
+          {
+            "file": "menu.html",
+            "start": 0,
+            "end": 231,
+            "excerpt": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><p>牛肉面 AUD 28</p><p>Beef noodles AUD28</p><p>Vegetable noodles AUD18</p><template><p>牛肉面 AUD18</p></template></body></html>"
+          },
+          {
+            "file": "menu.html",
+            "start": 108,
+            "end": 125,
+            "excerpt": "<p>牛肉面 AUD 28</p>"
+          },
+          {
+            "file": "menu.html",
+            "start": 125,
+            "end": 150,
+            "excerpt": "<p>Beef noodles AUD28</p>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "eval-evidence-1"
+        ],
+        "obligations": {
+          "schema": "source-obligations-v1",
+          "coverage": "bounded_detection",
+          "sourceLength": 30,
+          "clauses": [
+            {
+              "start": 0,
+              "end": 30,
+              "excerpt": "菜单的牛肉面和Beef noodles标价必须为AUD18。"
+            }
+          ],
+          "items": [
+            {
+              "id": "obligation-1",
+              "kind": "source_content",
+              "clauseIndex": 0,
+              "state": "source_review_required"
+            }
+          ]
+        },
+        "modelJudgment": {
+          "status": "changes_suggested",
+          "explanation": "menu.html正文中牛肉面标为AUD 28、Beef noodles标为AUD28，均非AUD18；仅<template>内一条牛肉面为AUD18，属模板内容且非Beef noodles，不满足两项锁定价格。",
+          "citations": [
+            {
+              "file": "menu.html",
+              "start": 0,
+              "end": 231,
+              "excerpt": "<!doctype html><html lang=\"zh\"><head><meta charset=\"utf-8\"><title>Fictional noodle shop</title></head><body><p>牛肉面 AUD 28</p><p>Beef noodles AUD28</p><p>Vegetable noodles AUD18</p><template><p>牛肉面 AUD18</p></template></body></html>"
+            },
+            {
+              "file": "menu.html",
+              "start": 108,
+              "end": 125,
+              "excerpt": "<p>牛肉面 AUD 28</p>"
+            },
+            {
+              "file": "menu.html",
+              "start": 125,
+              "end": 150,
+              "excerpt": "<p>Beef noodles AUD28</p>"
+            }
+          ]
+        },
+        "sourceFinding": {
+          "version": "source-finding-v1",
+          "status": "insufficient_evidence",
+          "basis": "locked_business_values",
+          "explanation": "本项已确认业务检查无法全部在有限的静态简单段落中可靠对应；重复或未定位内容、复杂格式或动态来源仍需其他证据。源码建议不能据此确认为符合，原始约定未改变。",
+          "citations": [],
+          "files": [
+            "menu.html"
+          ]
+        },
+        "evidenceNeed": {
+          "schema": "source-evidence-need-v1",
+          "reason": "source_ambiguity",
+          "targetFiles": [
+            "menu.html"
+          ]
+        }
+      },
+      "rawProviderSha256": "faf7ff708bc212b568779676f3cbb2d2be9ec61dbe4f22184ba27562374825e7",
+      "requestSha256": "331e8b31bf27975497cbf728fbeae558e7e4ae756ba8a11fc17517cbb093f510",
+      "reference": {
+        "criterionId": "coverage-1",
+        "expectedStatus": "changes_suggested",
+        "rationale": "Independent reference for final server sourceFinding, not a claim of expected raw-model accuracy. Authored fictional source and requirements, not real merchant data.",
+        "relevantFiles": [
+          "menu.html"
+        ],
+        "requiresSemanticReview": true
+      }
+    },
+    {
+      "caseId": "f1-sealed-wrong-page",
+      "criterionId": "coverage-2",
+      "originalRequirement": "联系表单源码必须包含标签“姓名”和“邮箱”。",
+      "originalPublishedItem": {
+        "criterionId": "coverage-2",
+        "status": "insufficient_evidence",
+        "explanation": "现有完整源码、引文或标签所属范围尚不能一致支持这条表单标签结论，需人工核对原文与完整内容；不能以缺少引用推断缺少字段。未观察可见性或运行，也未确认业务页面身份。原始要求和引文未改变。",
+        "citations": [
+          {
+            "file": "contact.html",
+            "start": 127,
+            "end": 151,
+            "excerpt": "<label>姓名<input></label>"
+          },
+          {
+            "file": "index.html",
+            "start": 206,
+            "end": 230,
+            "excerpt": "<label>姓名<input></label>"
+          },
+          {
+            "file": "index.html",
+            "start": 230,
+            "end": 254,
+            "excerpt": "<label>邮箱<input></label>"
+          }
+        ],
+        "ruleEvidenceIds": [
+          "evidence-coverage-2"
+        ],
+        "obligations": {
+          "schema": "source-obligations-v1",
+          "coverage": "bounded_detection",
+          "sourceLength": 22,
+          "clauses": [
+            {
+              "start": 0,
+              "end": 22,
+              "excerpt": "联系表单源码必须包含标签“姓名”和“邮箱”。"
+            }
+          ],
+          "items": [
+            {
+              "id": "obligation-1",
+              "kind": "source_content",
+              "clauseIndex": 0,
+              "state": "source_review_required"
+            }
+          ]
+        },
+        "modelJudgment": {
+          "status": "changes_suggested",
+          "explanation": "约定表单 contact 位于 contact.html，其中仅有“姓名”标签，“邮箱”标签缺失；index.html 的 other 表单含两者，但不属约定范围。",
+          "citations": [
+            {
+              "file": "contact.html",
+              "start": 127,
+              "end": 151,
+              "excerpt": "<label>姓名<input></label>"
+            },
+            {
+              "file": "index.html",
+              "start": 206,
+              "end": 230,
+              "excerpt": "<label>姓名<input></label>"
+            },
+            {
+              "file": "index.html",
+              "start": 230,
+              "end": 254,
+              "excerpt": "<label>邮箱<input></label>"
+            }
+          ]
+        },
+        "sourceFinding": {
+          "version": "source-finding-v1",
+          "status": "changes_suggested",
+          "basis": "declared_html_labels",
+          "explanation": "已完整检查范围内的 HTML，没有任何单一表单包含全部 2 个要求的标签文字声明。检查范围来自双方确认的 contact.html / contact。这是源码事实，不证明渲染可见、表单运行或持久保存；原始 AI 判断另行保留。",
+          "citations": [
+            {
+              "file": "contact.html",
+              "start": 134,
+              "end": 136,
+              "excerpt": "姓名"
+            }
+          ],
+          "files": [
+            "contact.html"
+          ],
+          "scopeBinding": {
+            "proposalId": "6d0a1896-f257-40cc-a8f8-ddb2a1d8b11d",
+            "proposalDigest": "4cc8ae72e221f0ed124a87c2d836cb57b6aa4cccce71045c81d41e550b73ae77",
+            "file": "contact.html",
+            "kind": "form",
+            "formId": "contact"
+          }
+        },
+        "evidenceNeed": {
+          "schema": "source-evidence-need-v1",
+          "reason": "manual_interpretation",
+          "targetFiles": []
+        }
+      },
+      "rawProviderSha256": "5326925526b65aeb884ad873150d2e6d8f556966031c76d77462d53e3d677744",
+      "requestSha256": "616a25ed501f858b3173fe0878d5557609be03b42b96a9f222df8aea9d36550d",
+      "reference": {
+        "criterionId": "coverage-2",
+        "expectedStatus": "changes_suggested",
+        "rationale": "Independent reference for final server sourceFinding, not a claim of expected raw-model accuracy. Authored fictional source and requirements, not real merchant data.",
+        "relevantFiles": [
+          "contact.html"
+        ],
+        "requiresSemanticReview": true
+      }
+    }
+  ]
+}

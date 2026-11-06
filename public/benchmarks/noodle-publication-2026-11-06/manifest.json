@@ -1,0 +1,76 @@
+{
+  "schema": "noodle-publication-public-record-manifest-v1",
+  "allFilesPublicSyntheticOnly": true,
+  "files": [
+    {
+      "file": "before.json",
+      "bytes": 9477,
+      "sha256": "7b9335b808b3b80c0a4a45de4da94af1c2205416f6ba396f2467748c2f3d2f5b"
+    },
+    {
+      "file": "code-validation.json",
+      "bytes": 1106,
+      "sha256": "c19fe9fb5e1859a97d36e1e231c645c6274356f55be3b9c7173d641e18c36ff4"
+    },
+    {
+      "file": "f2-marker-final-adjudication.json",
+      "bytes": 2358,
+      "sha256": "6431523925766990ba2ab1dd9ab73960c3d56475570a5033812f70e42493551d"
+    },
+    {
+      "file": "f2-marker-replay-post-deepseek-valid.json",
+      "bytes": 9303,
+      "sha256": "5d2e878c522d6cebe3099241576a3af54c5e5014b49ac648a7b88335789529a9"
+    },
+    {
+      "file": "latest.json",
+      "bytes": 2015,
+      "sha256": "2100e69bbcc01bef5e0c1de44f15f62c1d5d849172449516726f2940b7e375b9"
+    },
+    {
+      "file": "plan-adjudication.json",
+      "bytes": 3489,
+      "sha256": "0cf7b9ad873098894bf75fae242480f2a747ec71804d18b545fb9cfd1fe64264"
+    },
+    {
+      "file": "plan-counterexamples.json",
+      "bytes": 6200,
+      "sha256": "dd20a04b3c6ef8aea9356cd2110bc85f051cee4970f52bc92f435c0c3d3f5563"
+    },
+    {
+      "file": "plan-deepseek.json",
+      "bytes": 29016,
+      "sha256": "96a8edc0fbf42328f6053f7c96a2a33876d585235ae7688e5e632290cd522a3c"
+    },
+    {
+      "file": "post-adjudication.json",
+      "bytes": 1318,
+      "sha256": "48b0f5403d957850c12e3bbae8fec66368623bf1c8064f7d438f40c588f06f7a"
+    },
+    {
+      "file": "post-deepseek.json",
+      "bytes": 11337,
+      "sha256": "5ebe8f3ad19b72a46e09dc6afeaced7dffa81eaebb3ba00f1fbc85b7b02ad8b3"
+    },
+    {
+      "file": "publication-replay.json",
+      "bytes": 59840,
+      "sha256": "942ba2a6c2620162b8e525a22a7fde59651fd974f2acae701ec2c0275a246132"
+    },
+    {
+      "file": "root-ledger-check.json",
+      "bytes": 1182,
+      "sha256": "8be1828b616de2a5f2b8043177236808405e83e3f0ab7bab4d59a1a54745e113"
+    },
+    {
+      "file": "ui-final-adjudication.json",
+      "bytes": 1478,
+      "sha256": "6f0aa7a86e2c1d7d9861ecb7abefe0809fb41ba844c53d30302adb1b340b0a4b"
+    },
+    {
+      "file": "ui-post-final-deepseek.json",
+      "bytes": 7238,
+      "sha256": "0a97b000e38e02edde280f9b49cf02a0b5ec75b2bf753121586fc49a1a170b98"
+    }
+  ]
+}

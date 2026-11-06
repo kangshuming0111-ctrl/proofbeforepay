@@ -35,3 +35,37 @@ test("a runtime unknown without independent facts keeps its evidence request vis
  const item:ProofAssessmentItem={...base,sourceFinding:undefined,evidenceNeed:{schema:"source-evidence-need-v1",reason:"record_readback",targetFiles:["visit.html"]}};
  const {Component,cleanup}=await assessmentComponentModule();try{const html=renderToStaticMarkup(createElement(Component,{report:report(item),criteria:[{...criterion,source:"The submitted enquiry must persist after restart."}],language:"en",onPrepareFeedback:()=>{}}));assert.ok(!html.includes('class="assessment-published-record"'));assert.ok(html.includes('class="assessment-evidence-need"'));assert.match(html,/Draft an evidence request/u);assert.ok(!html.includes('does not revoke that agreement'));}finally{await cleanup();}
 });
+
+test("both marked publication reasons identify system source authority while preserving the original model and report",async()=>{
+ const {Component,cleanup}=await assessmentComponentModule();try{for(const reason of["locked_price_mismatch","confirmed_form_label_absence"]as const)for(const language of["zh","en"]as const){
+  const item:ProofAssessmentItem={...structuredClone(base),status:"changes_suggested",explanation:"Canonical saved source-check publication.",publicationBasis:{schema:"source-publication-v1",reason},modelJudgment:{status:"changes_suggested",explanation:"Exact retained original model judgment.",citations:[]}};
+  if(reason==="locked_price_mismatch"){item.sourceFinding!.basis="locked_business_values";delete item.sourceFinding!.scopeBinding;}
+  const before=structuredClone(item),html=renderToStaticMarkup(createElement(Component,{report:report(item),criteria:[criterion],language,onPrepareFeedback:()=>{}}));
+  assert.match(html,language==="zh"?/源码核验发布：不符/u:/Source-check publication: mismatch/u);
+  assert.match(html,language==="zh"?/已保存的发布结论/u:/Saved publication findings/u);
+  assert.match(html,language==="zh"?/其余保留原发布建议/u:/other items retain their original publication advice/u);
+  assert.match(html,reason==="locked_price_mismatch"?(language==="zh"?/已锁定菜品与价格/u:/locked item and price/u):(language==="zh"?/双方确认的表单范围/u:/form confirmed by both parties/u));
+  assert.match(html,language==="zh"?/查看本次发布说明（源码核验）/u:/Inspect this publication’s source-check explanation/u);
+  assert.ok(html.includes(item.modelJudgment!.explanation));assert.ok(html.includes(item.explanation));
+  assert.match(html,language==="zh"?/不证明页面可见、实际保存或交付已验收/u:/does not prove visibility, actual storage or accepted delivery/u);
+  assert.deepEqual(item,before);
+ }}finally{await cleanup();}
+});
+
+test("a marked publication does not confuse optional model-lead withholding with its source publication status",async()=>{
+ const {Component,cleanup}=await assessmentComponentModule();try{for(const marked of[false,true]){
+  const item:ProofAssessmentItem={...structuredClone(base),status:"changes_suggested",...(marked?{publicationBasis:{schema:"source-publication-v1" as const,reason:"confirmed_form_label_absence" as const}}:{})},saved=report(item);
+  saved.withheldRisks={version:4,reason:"optional_source_leads_unverified",adjustedCriteria:[],entries:[{originalRiskIndex:0,risk:{title:"Original optional lead",explanation:"Unverified original model wording",suggestion:"Needs independent evidence",citations:[]}}]};const before=structuredClone(saved);
+  const html=renderToStaticMarkup(createElement(Component,{report:saved,criteria:[criterion],language:"en",readOnly:true}));
+  assert.match(html,marked?/withholding does not change published item findings/u:/Independent scope and observations unestablished · item statuses unchanged/u);assert.ok(html.includes('Unverified original model wording'));assert.deepEqual(saved,before);
+ }}finally{await cleanup();}
+});
+
+test("unmarked legacy source findings retain the v89 AI labels and original publication disclosure",async()=>{
+ const {Component,cleanup}=await assessmentComponentModule();const before=structuredClone(base);try{for(const language of["zh","en"]as const){
+  const html=renderToStaticMarkup(createElement(Component,{report:report(base),criteria:[criterion],language,readOnly:true}));
+  assert.match(html,language==="zh"?/AI 逐条交付评估/u:/AI delivery assessment/u);assert.match(html,language==="zh"?/已保存的 AI 建议/u:/Saved AI suggestions/u);
+  assert.match(html,language==="zh"?/查看发布层原说明（独立保留）/u:/Inspect the published explanation \(retained separately\)/u);
+  assert.doesNotMatch(html,/class="assessment-publication-basis"|Source-check publication:|源码核验发布：/u);
+ }assert.deepEqual(base,before);}finally{await cleanup();}
+});

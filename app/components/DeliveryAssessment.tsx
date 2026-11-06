@@ -61,6 +61,7 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
   const poolMarker = report?.withheldRisks as {version?:unknown;reason?:unknown}|undefined;
   const unboundNamespace = poolMarker?.version === 4 || poolMarker?.reason === "optional_source_leads_unverified";
   const publishedRiskCount = unboundNamespace ? 0 : report?.risks.length ?? 0;
+  const hasSourcePublication = !!report?.items.some(item => item.publicationBasis?.schema === "source-publication-v1");
   const withheld = report?.withheldRisks && Array.isArray(report.withheldRisks.adjustedCriteria) && Array.isArray(report.withheldRisks.entries)
     && (report.withheldRisks.version === 1 && ["item_status_adjusted", "not_withheld"].includes(report.withheldRisks.reason)
     || (report.withheldRisks.version === 2 && report.withheldRisks.reason === "source_scope_unestablished" || report.withheldRisks.version === 3 && report.withheldRisks.reason === "custom_scope_requires_observation")
@@ -89,6 +90,7 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
   }, [busy]);
 
   function renderItem(item: ProofAssessment["items"][number], selected = false) {
+    const sourcePublication = item.publicationBasis?.schema === "source-publication-v1" ? item.publicationBasis : undefined;
     const sourceFinding=item.sourceFinding;
     const actionableSource=sourceFinding&&(sourceFinding.basis==="locked_business_values"||sourceFinding.scopeBinding)?sourceFinding:undefined;
     const feedbackItem=actionableSource?{...item,status:actionableSource.status,explanation:actionableSource.explanation,citations:actionableSource.citations,evidenceNeed:undefined}:item;
@@ -110,15 +112,16 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
       <Citations citations={item.citations} language={language} />
     </>;
     return <article className={`assessment-item${selected ? " assessment-item-selected" : ""}`} key={item.criterionId}>
-      <div className="assessment-item-heading"><h4>{titleFor(item.criterionId)}</h4><span className={`assessment-status assessment-status-${item.status}`}>{statusLabel(item.status)}</span></div>
+      <div className="assessment-item-heading"><h4>{titleFor(item.criterionId)}</h4><span className={`assessment-status assessment-status-${item.status}`}>{sourcePublication ? item.status === "changes_suggested" ? tr("源码核验发布：不符", "Source-check publication: mismatch") : item.status === "supported" ? tr("源码核验发布：支持", "Source-check publication: supported") : tr("源码核验发布：未知", "Source-check publication: unknown") : statusLabel(item.status)}</span></div>
+      {sourcePublication && <p className="assessment-publication-basis">{sourcePublication.reason === "locked_price_mismatch" ? tr("发布依据：已锁定菜品与价格的源码核验。", "Publication basis: source checks against the locked item and price.") : tr("发布依据：双方确认的表单范围内，约定标签的源码核验。", "Publication basis: agreed-label source checks within the form confirmed by both parties.")}{tr("原始模型判断独立保留；这不证明页面可见、实际保存或交付已验收。", " The original model judgment is retained separately. This does not prove visibility, actual storage or accepted delivery.")}</p>}
       {lockedSource !== undefined ? <details className="assessment-locked-source">
         <summary><Quote size={12} aria-hidden="true" />{tr("查看完整锁定原文", "Inspect complete locked wording")}<ChevronDown size={13} aria-hidden="true" /></summary>
         <p>{tr("原样保留的验收要求；界面语言切换不会翻译或缩写这段原文。", "The agreed wording is preserved exactly. Changing interface language does not translate or shorten this source.")}</p>
         <blockquote>{lockedSource}</blockquote>
       </details> : <p className="assessment-source-unavailable">{tr("尚未取得此项的锁定原文，暂不能生成带要求的补证草稿。请重新载入当前交付后核对。", "This criterion’s locked wording is unavailable, so an evidence request cannot be prepared. Reload the current delivery and check again.")}</p>}
       {sourceFinding&&<section className="assessment-source-finding" aria-label={tr("系统独立源码事实","Independent system source finding")}><strong>{tr("系统独立源码事实：","Independent source finding: ")}{sourceFinding.status==="supported"?tr("源码关系支持","Source relation supported"):sourceFinding.status==="changes_suggested"?tr("发现源码差异","Source difference found"):tr("仅凭源码仍不确定","Source remains inconclusive")}</strong><p>{sourceFinding.explanation}</p><Citations citations={sourceFinding.citations} language={language}/></section>}
-      {sourceFinding ? <details className="assessment-published-record"><summary>{tr("查看发布层原说明（独立保留）","Inspect the published explanation (retained separately)")}</summary>
-        {sourceFinding.scopeBinding && <p className="assessment-record-basis">{tr("这份报告的页面／表单范围依据见上方双方确认的源码事实。下方保留发布层原说明，不会撤销双方的范围确认；请按上方结论与下一步处理。","This report’s page/form scope is recorded in the two-sided source finding above. The original published explanation below does not revoke that agreement. Follow the source finding and next action above.")}</p>}
+      {sourceFinding ? <details className="assessment-published-record"><summary>{sourcePublication ? tr("查看本次发布说明（源码核验）", "Inspect this publication’s source-check explanation") : tr("查看发布层原说明（独立保留）","Inspect the published explanation (retained separately)")}</summary>
+        {sourceFinding.scopeBinding && <p className="assessment-record-basis">{sourcePublication ? tr("本次发布采用上方双方确认的表单范围和源码事实。范围确认不等于运行成功、验收或付款。", "This publication uses the confirmed form scope and source facts above. Scope confirmation does not establish execution, acceptance or payment.") : tr("这份报告的页面／表单范围依据见上方双方确认的源码事实。下方保留发布层原说明，不会撤销双方的范围确认；请按上方结论与下一步处理。","This report’s page/form scope is recorded in the two-sided source finding above. The original published explanation below does not revoke that agreement. Follow the source finding and next action above.")}</p>}
         {publishedDetails}
       </details> : publishedDetails}
       {item.modelJudgment&&<details className="assessment-original-model"><summary>{tr("查看原始模型判断（独立保留）","Inspect the original model judgment (retained separately)")}</summary><strong>{statusLabel(item.modelJudgment.status)}</strong><p>{item.modelJudgment.explanation}</p><Citations citations={item.modelJudgment.citations} language={language}/></details>}
@@ -133,13 +136,13 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
 
   return <details className="delivery-assessment" ref={panelRef} open={initiallyExpanded} data-has-report={report ? "true" : "false"}>
     <summary className="assessment-heading" id={`${id}-heading`}>
-      <span className="assessment-title"><FileSearch size={16} aria-hidden="true" />{tr("AI 逐条交付评估", "AI delivery assessment")}</span>
-      <span className="assessment-state">{busy ? tr("评估中", "Assessing") : report ? tr("已保存的 AI 建议", "Saved AI suggestions") : readOnly ? tr("未保存评估", "No saved assessment") : tr("按需运行", "Run when needed")}</span>
+      <span className="assessment-title"><FileSearch size={16} aria-hidden="true" />{hasSourcePublication ? tr("交付评估 · 含源码核验", "Delivery assessment · includes source checks") : tr("AI 逐条交付评估", "AI delivery assessment")}</span>
+      <span className="assessment-state">{busy ? tr("评估中", "Assessing") : report ? hasSourcePublication ? tr("已保存的发布结论", "Saved publication findings") : tr("已保存的 AI 建议", "Saved AI suggestions") : readOnly ? tr("未保存评估", "No saved assessment") : tr("按需运行", "Run when needed")}</span>
       <ChevronDown className="assessment-chevron" size={15} aria-hidden="true" />
     </summary>
 
     <div className="assessment-body" aria-labelledby={`${id}-heading`}>
-      <p className="assessment-purpose">{tr("逐条比较已确认的要求与卖家源码；与规则检查、浏览器测量分开记录。请结合引用原文核对每条建议。", "Compares confirmed requirements with the seller's source files. Recorded separately from rule checks and browser measurements. Check each suggestion against the quoted source.")}</p>
+      <p className="assessment-purpose">{hasSourcePublication ? tr("标注“源码核验发布”的项目记录新增源码发布依据；其余保留原发布建议。模型原答另存，请逐项核对来源；这不是整站运行验证。", "Items marked as source-check publications record the added source basis; other items retain their original publication advice. Original model answers are separate. Inspect each item’s origin; this is not a whole-site execution check.") : tr("逐条比较已确认的要求与卖家源码；与规则检查、浏览器测量分开记录。请结合引用原文核对每条建议。", "Compares confirmed requirements with the seller's source files. Recorded separately from rule checks and browser measurements. Check each suggestion against the quoted source.")}</p>
       {!readOnly&&<AssessmentValidationPanel language={language}/>}
 
       {!report ? <>
@@ -155,7 +158,7 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
       </> : <>
         <div className="assessment-report-meta"><span>{tr("真实模型", "Live model")}: <code>{report.model}</code></span><span>{tr("评估于", "Assessed")} <time dateTime={report.assessedAt}>{displayTime(report.assessedAt)}</time></span></div>
         <p className="assessment-saved-note">{tr("显示此交付版本已保存的结果；查看不会再次调用模型。", "Showing the saved result for this delivery version. Viewing it does not call the model again.")}</p>
-        <div className="assessment-findings" role="region" aria-label={tr("AI 逐项内容评估", "AI criterion assessments")}>
+        <div className="assessment-findings" role="region" aria-label={hasSourcePublication ? tr("逐项发布结论与原始模型记录", "Published criterion findings and original model records") : tr("AI 逐项内容评估", "AI criterion assessments")}>
           {selectedItem ? renderItem(selectedItem, true) : <p className="assessment-empty">{selectedCriterionId ? tr("此报告没有当前所选标准的建议，不能据此视为通过。", "This report has no suggestion for the selected criterion; it cannot be treated as a pass.") : tr("此报告没有逐项建议。", "This report has no criterion suggestions.")}</p>}
           {otherItems.length > 0 && <details className="assessment-other-items"><summary>{tr(`查看其余 ${otherItems.length} 条要求`, `Inspect the other ${otherItems.length} criteria`)}<ChevronDown size={13} aria-hidden="true" /></summary><div>{otherItems.map(item => renderItem(item))}</div></details>}
         </div>
@@ -186,7 +189,7 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
           {withheld?.reason === "item_status_adjusted" && <small>{tr(`${withheld.adjustedCriteria.length} 项状态调整后的统一暂缓`, `Report-wide gate after ${withheld.adjustedCriteria.length} item status adjustment(s)`)}</small>}
           {withheld?.reason === "source_scope_unestablished" && <small>{tr("独立约定范围未建立 · 逐项状态未调整", "Agreed indication scope unestablished · item statuses unchanged")}</small>}
           {withheld?.reason === "custom_scope_requires_observation" && <small>{tr("自定义要求待观察 · 逐项状态未调整", "Custom requirements need observation · item statuses unchanged")}</small>}
-          {withheld?.reason === "optional_source_leads_unverified" && <small>{tr("未建立独立约定与观察依据 · 逐项状态未调整", "Independent scope and observations unestablished · item statuses unchanged")}</small>}
+          {withheld?.reason === "optional_source_leads_unverified" && <small>{hasSourcePublication ? tr("可选模型线索未核验 · 本区暂缓不改逐项发布结论", "Optional model leads are unverified · withholding does not change published item findings") : tr("未建立独立约定与观察依据 · 逐项状态未调整", "Independent scope and observations unestablished · item statuses unchanged")}</small>}
           <ChevronDown size={13} aria-hidden="true" /></summary>
           <div className="assessment-withheld-body">
             {!withheld ? <p className="assessment-empty">{report.withheldRisks === undefined
@@ -199,7 +202,7 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
                     : withheld.reason === "custom_scope_requires_observation"
                     ? tr("自定义要求的逐项结论仍为证据不足，并且独立范围检查确认仍需运行或人工观察，因此本报告的可选模型线索统一暂缓。原始线索与引文单独保留；没有改变逐项状态，也没有认定每条线索由某项要求造成。人工意见不解除暂缓，不代表问题已解决、验收或付款。", "The custom items remain insufficient, and an independent scope check requires execution or human observation, so this report’s optional model indications are withheld together. Original wording and citations are retained separately. Item statuses are unchanged; no per-lead causation, release, resolution, acceptance or payment is established by human opinions.")
                     : withheld.reason === "optional_source_leads_unverified"
-                    ? tr("这些可选源码模型提议没有独立绑定约定要求、页面归属或实际观察，因此不作为已发现问题或可执行返工依据。下方仅按编号保留未核验原文；其中的页面名称、可见性与修改建议均不是系统认定。逐项结论保持不变，人工意见不能解除暂缓、验收或付款。", "These optional source-model proposals lack independent bindings to agreed obligations, page identity or actual observations. They are not established findings or authority for repair work. Numbered records retain unverified original wording; their page names, visibility claims and suggestions are not system determinations. Item findings are unchanged, and human opinions do not release the gate, accept work or make a payment.")
+                    ? hasSourcePublication ? tr("这些可选模型提议仍未核验，不作为已发现问题或返工依据；其页面名称、可见性与修改建议均不是系统认定。逐项发布结论按各自标注的依据另行核对，不由本区暂缓或人工意见改写，也不因此验收或付款。", "These optional model proposals remain unverified and are not established findings or repair authority. Their page names, visibility claims and suggestions are not system determinations. Published item findings retain their separately labelled bases; this withholding and human opinions do not rewrite them, accept work or pay.") : tr("这些可选源码模型提议没有独立绑定约定要求、页面归属或实际观察，因此不作为已发现问题或可执行返工依据。下方仅按编号保留未核验原文；其中的页面名称、可见性与修改建议均不是系统认定。逐项结论保持不变，人工意见不能解除暂缓、验收或付款。", "These optional source-model proposals lack independent bindings to agreed obligations, page identity or actual observations. They are not established findings or authority for repair work. Numbered records retain unverified original wording; their page names, visibility claims and suggestions are not system determinations. Item findings are unchanged, and human opinions do not release the gate, accept work or make a payment.")
                     : tr("部分逐项状态经规则或证据校验调整，因此本报告的全部可选 AI 线索统一暂缓。这不表示每条线索都由下列要求造成，也不表示线索已证实、被驳回或问题已解决。", "Some item statuses changed under rule or evidence checks, so this report's optional AI indications were withheld together. This does not establish that every indication is caused by the items below, confirm or reject a defect, or show that an issue was resolved.")}</p>
                   {withheld.reason === "item_status_adjusted" && <details className="assessment-withheld-adjustments"><summary>{tr(`查看状态调整的要求（${withheld.adjustedCriteria.length}）`, `Inspect adjusted requirements (${withheld.adjustedCriteria.length})`)}</summary>
                     <ul>{withheld.adjustedCriteria.map(adjustment => <li key={adjustment.criterionId}><strong>{titleFor(adjustment.criterionId)}</strong><span>{tr("原 AI 建议 → 发布状态：", "Original model suggestion → Published status: ")}{statusLabel(adjustment.originalStatus)} → {statusLabel(adjustment.publishedStatus)}</span></li>)}</ul>

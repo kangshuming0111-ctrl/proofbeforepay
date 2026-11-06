@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T11:42:36.214Z",
+  "generatedAt": "2026-11-06T13:15:20.527Z",
   "scope": "Sanitized source only; not publication or submission",
   "excluded": [
     "credentials",
@@ -373,8 +373,8 @@
     },
     {
       "file": "app/components/DeliveryAssessment.tsx",
-      "bytes": 33547,
-      "sha256": "a514f4e40a688ae8efb59e5800012771a7f0dc60a85bb449c8dd6a9d98d8a204"
+      "bytes": 36809,
+      "sha256": "224151cba19be1fe9f2df83a39fb4cdd9161c6b15886aed1326d4d405da97455"
     },
     {
       "file": "app/components/DeliveryComparison.tsx",
@@ -383,8 +383,8 @@
     },
     {
       "file": "app/components/DeliveryOverview.tsx",
-      "bytes": 22931,
-      "sha256": "5ba4a53ef1e1e42cd29e3cd69e5c5e01e7fb6054b941725518691acf3da5cd91"
+      "bytes": 23949,
+      "sha256": "e412a519065c5f0e0e7d9da1eb588f65b609950514a4ac59c1f5653165104a20"
     },
     {
       "file": "app/components/DeliveryStageEvidence.tsx",
@@ -2007,6 +2007,16 @@
       "sha256": "53a0f2c67c377e515ff3013095737adc1353946d02fe4415670c1510aacc7325"
     },
     {
+      "file": "docs/collaboration/noodle-publication-2026-11-06.md",
+      "bytes": 3496,
+      "sha256": "f267e62dc1dd0922dfc25c1e78b928b6a3fd62d7a30df916e134402959fd1632"
+    },
+    {
+      "file": "docs/collaboration/noodle-publication-2026-11-06/cycle.md",
+      "bytes": 4649,
+      "sha256": "d19c7599d8c9c8aac1ca1230a8518e35898538bf791a07a141016b3d0adc0d08"
+    },
+    {
       "file": "docs/collaboration/onboarding-2026-11-06/cycle-27.md",
       "bytes": 7271,
       "sha256": "4e5a358e0af6ec82bb51e11e980e72e36871c63374a80eb78c6a4c9cf5ca9bda"
@@ -2682,6 +2692,11 @@
       "sha256": "33da83fbe3f7eec9661d5225fb3bc1e75f05de1727562a87492837925b9868d0"
     },
     {
+      "file": "lib/assessment-source-publication.ts",
+      "bytes": 5314,
+      "sha256": "5a8d9bde2b93ab2306da3de2f93687a020853a70a33f2fb4cb73ded2b70a87c3"
+    },
+    {
       "file": "lib/assessment-source-target.ts",
       "bytes": 10399,
       "sha256": "d6c77380bd399e270ac8ab86f732cf8a523f2d21288aa8dea9595f0928940f0d"
@@ -2783,8 +2798,8 @@
     },
     {
       "file": "lib/contracts.ts",
-      "bytes": 18074,
-      "sha256": "191e2b0f4e7fc887a78325a5b7e8b1601c1cceb631b44a7b2a5707e9992e88ea"
+      "bytes": 18440,
+      "sha256": "e4521cfa40dd503d3609d7db1336dbd7ef93b5d26480b40308006eee2c600218"
     },
     {
       "file": "lib/cooperative-stage-evidence.ts",
@@ -2803,8 +2818,8 @@
     },
     {
       "file": "lib/delivery-assessment.ts",
-      "bytes": 65584,
-      "sha256": "b3f5da2ccf150e6c6b021c867634f6a25aae7f0067d91d796d578c266505aa3c"
+      "bytes": 66973,
+      "sha256": "b4cd6bac6f243fa5a1df042d5775bab7e1db7d167ce8b159604b032848a8c3fe"
     },
     {
       "file": "lib/delivery-comparison.ts",
@@ -2818,13 +2833,13 @@
     },
     {
       "file": "lib/delivery-overview.ts",
-      "bytes": 7317,
-      "sha256": "dc1a030169de14ae2f53b0828f8ab08142fe598bfbaaa06334908c68d2da75df"
+      "bytes": 7548,
+      "sha256": "bc0cdbbf70c54461b4c8cf98f91e8d5abc8dae959268febb562fada46d245a7b"
     },
     {
       "file": "lib/delivery-result-focus.ts",
-      "bytes": 21294,
-      "sha256": "afa8ad6ebd47df7488e0efddb0b8dd0f5633aa29cda176c1e9abfd87bc9dab6d"
+      "bytes": 21936,
+      "sha256": "00e08f4c361a3aa3bdd95aaeb18aee1582a3ba75f4fd099bf10348e182bf7a4e"
     },
     {
       "file": "lib/delivery-stage-evidence.ts",
@@ -2888,8 +2903,8 @@
     },
     {
       "file": "lib/evidence-export.ts",
-      "bytes": 59309,
-      "sha256": "17f3f08044e15d044dfe044c7dae5f06e82abfe3bb6a202648c9d2b71dd17679"
+      "bytes": 61998,
+      "sha256": "55981b7d99ed815e7f1a95236995401e84ab796e28621ebd5f2cf49ff24386d1"
     },
     {
       "file": "lib/evidence-followup-sql.ts",
@@ -5187,6 +5202,81 @@
       "sha256": "56c8b1bb7cf5d893cd961c57fd21bbcbf89484a48abb6daa8ad633fc12a4ee10"
     },
     {
+      "file": "public/benchmarks/noodle-publication-2026-11-06/before.json",
+      "bytes": 9477,
+      "sha256": "7b9335b808b3b80c0a4a45de4da94af1c2205416f6ba396f2467748c2f3d2f5b"
+    },
+    {
+      "file": "public/benchmarks/noodle-publication-2026-11-06/code-validation.json",
+      "bytes": 1106,
+      "sha256": "c19fe9fb5e1859a97d36e1e231c645c6274356f55be3b9c7173d641e18c36ff4"
+    },
+    {
+      "file": "public/benchmarks/noodle-publication-2026-11-06/f2-marker-final-adjudication.json",
+      "bytes": 2358,
+      "sha256": "6431523925766990ba2ab1dd9ab73960c3d56475570a5033812f70e42493551d"
+    },
+    {
+      "file": "public/benchmarks/noodle-publication-2026-11-06/f2-marker-replay-post-deepseek-valid.json",
+      "bytes": 9303,
+      "sha256": "5d2e878c522d6cebe3099241576a3af54c5e5014b49ac648a7b88335789529a9"
+    },
+    {
+      "file": "public/benchmarks/noodle-publication-2026-11-06/latest.json",
+      "bytes": 2015,
+      "sha256": "2100e69bbcc01bef5e0c1de44f15f62c1d5d849172449516726f2940b7e375b9"
+    },
+    {
+      "file": "public/benchmarks/noodle-publication-2026-11-06/manifest.json",
+      "bytes": 2331,
+      "sha256": "e47ed815cc84f779f82317f28a223f33f3db42c74354ad4bb915ba9047ab01cb"
+    },
+    {
+      "file": "public/benchmarks/noodle-publication-2026-11-06/plan-adjudication.json",
+      "bytes": 3489,
+      "sha256": "0cf7b9ad873098894bf75fae242480f2a747ec71804d18b545fb9cfd1fe64264"
+    },
+    {
+      "file": "public/benchmarks/noodle-publication-2026-11-06/plan-counterexamples.json",
+      "bytes": 6200,
+      "sha256": "dd20a04b3c6ef8aea9356cd2110bc85f051cee4970f52bc92f435c0c3d3f5563"
+    },
+    {
+      "file": "public/benchmarks/noodle-publication-2026-11-06/plan-deepseek.json",
+      "bytes": 29016,
+      "sha256": "96a8edc0fbf42328f6053f7c96a2a33876d585235ae7688e5e632290cd522a3c"
+    },
+    {
+      "file": "public/benchmarks/noodle-publication-2026-11-06/post-adjudication.json",
+      "bytes": 1318,
+      "sha256": "48b0f5403d957850c12e3bbae8fec66368623bf1c8064f7d438f40c588f06f7a"
+    },
+    {
+      "file": "public/benchmarks/noodle-publication-2026-11-06/post-deepseek.json",
+      "bytes": 11337,
+      "sha256": "5ebe8f3ad19b72a46e09dc6afeaced7dffa81eaebb3ba00f1fbc85b7b02ad8b3"
+    },
+    {
+      "file": "public/benchmarks/noodle-publication-2026-11-06/publication-replay.json",
+      "bytes": 59840,
+      "sha256": "942ba2a6c2620162b8e525a22a7fde59651fd974f2acae701ec2c0275a246132"
+    },
+    {
+      "file": "public/benchmarks/noodle-publication-2026-11-06/root-ledger-check.json",
+      "bytes": 1182,
+      "sha256": "8be1828b616de2a5f2b8043177236808405e83e3f0ab7bab4d59a1a54745e113"
+    },
+    {
+      "file": "public/benchmarks/noodle-publication-2026-11-06/ui-final-adjudication.json",
+      "bytes": 1478,
+      "sha256": "6f0aa7a86e2c1d7d9861ecb7abefe0809fb41ba844c53d30302adb1b340b0a4b"
+    },
+    {
+      "file": "public/benchmarks/noodle-publication-2026-11-06/ui-post-final-deepseek.json",
+      "bytes": 7238,
+      "sha256": "0a97b000e38e02edde280f9b49cf02a0b5ec75b2bf753121586fc49a1a170b98"
+    },
+    {
       "file": "public/benchmarks/qualified-answers-2026-11-06/controlled/root-ro-cycle40-recheck.json",
       "bytes": 10057,
       "sha256": "9941402c8d6cb36ba902981e6eb18484628ec9b7496898745e452ff8d4cc9bb1"
@@ -6708,8 +6798,13 @@
     },
     {
       "file": "scripts/replay-evidence-actions-2026-11-06.mjs",
-      "bytes": 39722,
-      "sha256": "107ea1d55ad91a76f735a03068f9c389918e898f1ba0ab12678db517bc6f6183"
+      "bytes": 42479,
+      "sha256": "0bfc7bccc98f6bab39d312b9e8503c9d466dac7cacf9e8180b19ecb5744d5502"
+    },
+    {
+      "file": "scripts/replay-noodle-publication-2026-11-06.mjs",
+      "bytes": 6414,
+      "sha256": "8528ffd76785535d61d32b23a552cc92a7ccfbd3b9166d71f186c470692c7b02"
     },
     {
       "file": "scripts/replay-publication-policy-2026-11-06.mjs",
@@ -6987,6 +7082,16 @@
       "sha256": "5567d0ebd0eba3cc926ba9bd0e20db580f7c0681548a58ec31c2b17ef04f7bc3"
     },
     {
+      "file": "tests/assessment-source-publication-export.test.ts",
+      "bytes": 14714,
+      "sha256": "0e1ade6a27031ae2a7829ade3f270fae9066d3f41e7ce631f6ed7e9f6a73a36f"
+    },
+    {
+      "file": "tests/assessment-source-publication.test.ts",
+      "bytes": 6878,
+      "sha256": "25c9e57f2c6041998e1e9b3ee3686a449e8e076b035e758f9ca38fd1edf3af2e"
+    },
+    {
       "file": "tests/assessment-source-target.test.ts",
       "bytes": 10971,
       "sha256": "ccbdd07286b20b95d6d5caf6af66c3cd3c0419766e5f34d04fe8778602ffcbc1"
@@ -7178,13 +7283,13 @@
     },
     {
       "file": "tests/delivery-overview.test.ts",
-      "bytes": 8660,
-      "sha256": "0dbe99727835869c739c5e413c9a57422e3a4b16a7dc4d3b18a25aef5fe9e4a7"
+      "bytes": 9776,
+      "sha256": "a49cdb9efccf1df080692b0f2d80103437d2755d11a6469dbae9184cd22231fe"
     },
     {
       "file": "tests/delivery-result-focus.test.ts",
-      "bytes": 18997,
-      "sha256": "15c163e50c721207c4b1ebe3a098cbb957e9a186a2510bfd987d9672956e5802"
+      "bytes": 22103,
+      "sha256": "e995d29340e7cd6b02629cbc0c3f16ea4e8cf34ccac41086a5e2cf22e4935753"
     },
     {
       "file": "tests/delivery-stage-evidence.test.ts",
@@ -7263,8 +7368,8 @@
     },
     {
       "file": "tests/evidence-actions-replay.test.ts",
-      "bytes": 30483,
-      "sha256": "df9bafed6231069650a89c3e966299563d568a5819df80f4a7cf3933cfc0f8a9"
+      "bytes": 33626,
+      "sha256": "58e8d25d3676e34423bf2d63b2da166ae8bdbb288f4e0889af7841a16ffc72f1"
     },
     {
       "file": "tests/evidence-budget.test.ts",
@@ -8033,8 +8138,8 @@
     },
     {
       "file": "tests/noodle-assessment-presentation.test.ts",
-      "bytes": 6174,
-      "sha256": "3bc3be2e29fa82bfc90d843d71f279229652b08b7e92857dd26df2e614dc74d3"
+      "bytes": 10169,
+      "sha256": "d5f5ddde5f6259b9262023df63e8b81cf6d1f226ef06b434aa9d4fe9f27a2c81"
     },
     {
       "file": "tests/noodle-core-api-smoke.py",
@@ -8063,8 +8168,8 @@
     },
     {
       "file": "tests/noodle-source-first-four-replay.test.ts",
-      "bytes": 2595,
-      "sha256": "a807ea50fb915ac3b087d9063c4c5ef3425da69d731514ed2659fc70142d9d51"
+      "bytes": 3749,
+      "sha256": "814c9b4602cd8bb19f775318175cd74a1f8450fe7b1b6d32d5452ea91bf20757"
     },
     {
       "file": "tests/noodle-source-pipeline.test.ts",

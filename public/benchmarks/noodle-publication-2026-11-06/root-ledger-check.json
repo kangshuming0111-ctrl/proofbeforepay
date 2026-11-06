@@ -1,0 +1,40 @@
+{
+  "schema": "noodle-publication-root-ledger-check-v1",
+  "zeroNetwork": true,
+  "checkedAgainst": "publication-replay.json",
+  "rows": [
+    {
+      "caseId": "f1-sealed-equivalent",
+      "actualReconciledIds": [],
+      "actualAdjustedCriteria": [],
+      "riskPolicy": "not_withheld",
+      "activeRiskCount": 0
+    },
+    {
+      "caseId": "f1-sealed-wrong-object",
+      "actualReconciledIds": [
+        "coverage-1"
+      ],
+      "actualAdjustedCriteria": [],
+      "riskPolicy": "optional_source_leads_unverified",
+      "activeRiskCount": 0
+    },
+    {
+      "caseId": "f1-sealed-wrong-page",
+      "actualReconciledIds": [
+        "coverage-2"
+      ],
+      "actualAdjustedCriteria": [],
+      "riskPolicy": "optional_source_leads_unverified",
+      "activeRiskCount": 0
+    },
+    {
+      "caseId": "f1-sealed-runtime-insufficient",
+      "actualReconciledIds": [],
+      "actualAdjustedCriteria": [],
+      "riskPolicy": "not_withheld",
+      "activeRiskCount": 0
+    }
+  ],
+  "conclusion": "Both restored negatives preserve raw status as original; no intermediate unknown is inserted into the adjustment ledger. Optional risk leads stay unverified, not revived."
+}

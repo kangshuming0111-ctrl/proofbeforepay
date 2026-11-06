@@ -1,0 +1,38 @@
+{
+  "schema": "noodle-publication-validation-v1",
+  "baselineNativeCommit": "fd88798fb1afc4536a90a38d4fff2026959c16bf",
+  "allTests": {
+    "pass": 1870,
+    "fail": 0,
+    "log": "full-regression-final.log"
+  },
+  "typecheck": {
+    "exitCode": 0,
+    "log": "typecheck-final.log"
+  },
+  "packager": {
+    "pass": 13,
+    "fail": 0,
+    "log": "judge-pack.log"
+  },
+  "oldPublicRecordManifest": {
+    "files": 19,
+    "allByteHashesUnchanged": true
+  },
+  "retainedReplyReplay": {
+    "knownFictionalProjects": 4,
+    "focusedCriteria": 9,
+    "providerCalls": 0,
+    "externalNetworkCalls": 0,
+    "blockedNetworkAttempts": 0,
+    "rawStatusMatches": 9,
+    "originalPublishedStatusMatches": 7,
+    "currentPublishedStatusMatches": 9,
+    "changedPublishedItems": 2,
+    "rawJudgmentsPreserved": true,
+    "originalRequestsPreserved": true,
+    "sourceRequirementsAndScopePreserved": true,
+    "optionalRiskOriginalsPreservedAndWithheld": true
+  },
+  "newLiveBrowserTest": "Separate post-deployment browser receipt; not included in this pre-deployment code validation or the known-reply replay score."
+}

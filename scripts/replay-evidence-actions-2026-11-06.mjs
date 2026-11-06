@@ -16,6 +16,7 @@ import {isAssessmentObligations} from "../lib/assessment-obligations.ts";
 import {createAssessmentSourceFindingCheck} from "../lib/assessment-source-findings.ts";
 import {resolveAssessmentScopeContext} from "../lib/scope-clarifications.ts";
 import {getBusinessCheckPlan} from "../lib/business-checks.ts";
+import {createSourcePublicationCheck} from "../lib/assessment-source-publication.ts";
 import {prepareProjectEvaluation,projectQuote,validateProjectCorpus} from "./run-project-assessment-evaluation.ts";
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),"..");
@@ -106,12 +107,20 @@ export async function verifyAssessmentProvenanceMetadata(report,previous,packet,
   assert.ok(typeof wire.explanation==="string"&&wire.explanation.trim().length>0&&wire.explanation.length<=600);
   originals.set(wire.criterionId,{status:wire.status,explanation:wire.explanation,citations:resolveCatalogCitations(assessmentCitationSelection(wire.citations,ASSESSMENT_ITEM_CITATION_LIMIT,"catalog_slots"),packet.citationCatalog,ASSESSMENT_ITEM_CITATION_LIMIT)});
  }
- const accounting={schema:"retained-assessment-provenance-additions-v1",rawModelItemsVerified:0,sourceFindingsRecomputed:0,currentScopeStampVerified:false,baselineModelItemsRetained:0,baselineSourceFindingsRetained:0,baselineScopeStampRetained:false,publishedCoreFieldsUnchanged:true};
+ const accounting={schema:"retained-assessment-provenance-additions-v1",rawModelItemsVerified:0,sourceFindingsRecomputed:0,currentScopeStampVerified:false,baselineModelItemsRetained:0,baselineSourceFindingsRetained:0,baselineScopeStampRetained:false,publicationPoliciesVerified:0,publicationMarkersRecomputed:0,baselinePublicationPoliciesRetained:0,baselinePublicationMarkersRetained:0,publishedCoreFieldsUnchanged:true};
  const normalize=async(value,current)=>{
   assert.deepEqual(value.items.map(i=>i.criterionId),packet.criteria.map(c=>c.id));
   if(current)assert.ok(Object.hasOwn(value,"scopeContext"),"Current catalog report lacks its exact scope-context stamp.");
   const scope=await resolveAssessmentScopeContext(quote,value);
   const sourceCheck=createAssessmentSourceFindingCheck({files:packet.files,coverage:value.coverage,language:quote.language,businessSteps:getBusinessCheckPlan(quote),scope});
+  const publicationCheck=createSourcePublicationCheck({files:packet.files,coverage:value.coverage,language:quote.language,businessSteps:getBusinessCheckPlan(quote),scope,ruleEvidence:quote.proof.delivery.evidence});
+  const markedIds=packet.criteria.filter(c=>value.items.some(i=>i.criterionId===c.id&&Object.hasOwn(i,"publicationBasis"))).map(c=>c.id);
+  if(current)assert.ok(Object.hasOwn(value,"publicationPolicy"),"Current catalog report lacks its explicit source-publication policy.");
+  if(Object.hasOwn(value,"publicationPolicy")){
+   assert.ok(object(value.publicationPolicy));assert.deepEqual(Object.keys(value.publicationPolicy).sort(),["reconciledCriterionIds","schema"]);
+   assert.equal(value.publicationPolicy.schema,"source-publication-v1");assert.deepEqual(value.publicationPolicy.reconciledCriterionIds,markedIds,"Publication policy must list exactly the marked criteria in agreed order.");
+   if(current)accounting.publicationPoliciesVerified++;else accounting.baselinePublicationPoliciesRetained++;
+  }else assert.deepEqual(markedIds,[],"An item marker without an explicit report policy cannot be stripped.");
   const copy=structuredClone(value);
   for(const[index,item]of value.items.entries()){
    if(current)assert.ok(Object.hasOwn(item,"modelJudgment"),"Current catalog item lacks its original decoded model judgment.");
@@ -124,9 +133,17 @@ export async function verifyAssessmentProvenanceMetadata(report,previous,packet,
     if(current){accounting.rawModelItemsVerified++;if(expected!==undefined)accounting.sourceFindingsRecomputed++;}
     else{accounting.baselineModelItemsRetained++;if(expected!==undefined)accounting.baselineSourceFindingsRetained++;}
    }else assert.ok(!Object.hasOwn(item,"sourceFinding"),"A sourceFinding without retained modelJudgment cannot be stripped.");
-   delete copy.items[index].modelJudgment;delete copy.items[index].sourceFinding;
+   if(Object.hasOwn(item,"publicationBasis")){
+    assert.ok(object(item.publicationBasis)&&object(item.modelJudgment));assert.deepEqual(Object.keys(item.publicationBasis).sort(),["reason","schema"]);
+    assert.equal(item.publicationBasis.schema,"source-publication-v1");assert.ok(["locked_price_mismatch","confirmed_form_label_absence"].includes(item.publicationBasis.reason));
+    const decision=publicationCheck(packet.criteria[index],{rawStatus:item.modelJudgment.status,rawCitations:item.modelJudgment.citations,guardedStatus:"insufficient_evidence",guardReason:item.publicationBasis.reason});
+    assert.ok(decision,"The source publication marker has no rederived legacy guard and source authority.");assert.deepEqual(item.publicationBasis,decision.publicationBasis);assert.equal(item.status,decision.status);assert.equal(item.explanation,decision.explanation);assert.deepEqual(item.citations,decision.citations);assert.deepEqual(item.sourceFinding,decision.sourceFinding);assert.equal(item.evidenceNeed,undefined);
+    if(current)accounting.publicationMarkersRecomputed++;else accounting.baselinePublicationMarkersRetained++;
+   }
+   delete copy.items[index].modelJudgment;delete copy.items[index].sourceFinding;delete copy.items[index].publicationBasis;
   }
   if(Object.hasOwn(value,"scopeContext")){assert.ok(object(value.scopeContext));if(current)accounting.currentScopeStampVerified=true;else accounting.baselineScopeStampRetained=true;delete copy.scopeContext;}
+  delete copy.publicationPolicy;
   return copy;
  };
  return{report:await normalize(report,true),previous:await normalize(previous,false),accounting};
@@ -402,7 +419,7 @@ export async function replayEvidenceActions({groups,baseline,stage="16",requireE
    statusLineageReportsChecked:rows.filter(row=>row.statusLineage.allAgreedCriteriaCompared).length,statusLineageLedgersVerified:rows.filter(row=>row.statusLineage.ledgerVerified).length,originalToPublishedStatusAdjustments:rows.reduce((n,row)=>n+row.statusLineage.adjustedCriteria.length,0)},
   limits:["Retained original HTTP response bodies, not new model inference or a prompt experiment. Only messages[0].content system policy text may differ from the frozen request; both system hashes and the actual change flag are recorded. All other request bytes remain unchanged, and the actual intercepted request must equal the verified current preparation.","The baseline is the previous publication replay, not the unprocessed R15 response. Only explicitly allowed new evidence-action metadata may differ.",
    "Original raw responses, source files, frozen references, item statuses and report explanations remain unchanged; input hashes are checked again after replay. An explicitly counted v4 publication migration may move the complete unchanged active risks into original-indexed withheld entries and insert only its exact fixed notice; such rows explicitly report publishedFieldsUnchanged=false. Every other core field is compared strictly. New obligation directions are a separately counted additive change and must exactly rederive from each locked criterion; baseline directions, when present, must also validate and remain unchanged.",
-   "Separate modelJudgment additions must equal the retained original decoded provider item character-for-character; independent sourceFinding additions must rederive from the actual prepared file bytes and exact historical scope. Only these specifically validated metadata fields and the verified scope stamp are removed for the old immutable-core comparison; unknown fields still fail. This is neither new model inference nor improved historical model accuracy.",
+   "Separate modelJudgment additions must equal the retained original decoded provider item character-for-character; independent sourceFinding additions must rederive from the actual prepared file bytes and exact historical scope. The explicit source-publication policy and each exact ordered item marker must independently rederive their legacy guard and canonical source adoption before metadata stripping. Only these named verified additions are removed; any resulting status, explanation, citation or other published-core change still fails the unchanged baseline comparison. This is neither new model inference nor improved historical model accuracy.",
    "Evidence requests and quarantined AI leads do not establish a defect, resolution, acceptance or payment. Replaying synthetic or public templates is not a customer test."]};
 }
 
