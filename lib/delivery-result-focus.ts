@@ -4,6 +4,7 @@ import {criterionDisplayTitle} from "./delivery-overview.ts";
 import type {BusinessSpotlightData} from "./business-spotlight.ts";
 import type {DeliveryLayoutSummary} from "./delivery-layout-summary.ts";
 import type {ModelSpotlight} from "./model-spotlight.ts";
+import type {NoodleObservationReview} from "./noodle-observation-review.ts";
 import {evaluateProjectEnquiryReport,validateProjectEnquiryReport} from "./project-enquiry.ts";
 
 export type DeliveryResultTarget = "criterion"|"model"|"business"|"journey"|"runtime"|"enquiry"|"transfer"|"layout"|"details";
@@ -21,6 +22,7 @@ export type DeliveryResultInput = {
   journey?:{summary:{issues:number;unavailable:number}};
   runtime?:{issues:number;unavailable:number};
   enquiry?:ReturnType<typeof evaluateProjectEnquiryReport>;
+  observationReview?:NoodleObservationReview;
   language:Language;
 };
 
@@ -83,7 +85,7 @@ export function deliveryResultFocus(input:DeliveryResultInput):DeliveryResultFoc
   const supplemental=deliveryResultStatus(input).find(row=>["supplemental","source-visibility","deployment-source","time-policy"].includes(row.id)&&row.attention);
   if(supplemental)return focus("supplemental_attention","details",tr("补充证据仍有不符或未确定项","Supplemental evidence has mismatches or unknowns"),supplemental.text);
   const aiChange=overview.rows.find(row=>row.ai?.status==="changes_suggested");
-  if(aiChange)return criterion("ai_change",["source-publication-v1", "source-publication-v2"].includes(aiChange.ai?.publicationBasis?.schema ?? "") ? tr("系统源码核验发布了差异，请核对", "System source checks published a difference to review") : tr("AI 提出了修改建议，请核对","AI suggests changes for you to review"),aiChange);
+  if(aiChange)return criterion("ai_change",["source-publication-v1", "source-publication-v2", "source-publication-v3"].includes(aiChange.ai?.publicationBasis?.schema ?? "") ? tr("系统源码核验发布了差异，请核对", "System source checks published a difference to review") : tr("AI 提出了修改建议，请核对","AI suggests changes for you to review"),aiChange);
   const human=overview.rows.find(row=>row.humanPending);
   if(human)return criterion("human_pending",tr("还有要求需要你亲自确认","Some requirements need your direct check"),human);
   const unreviewed=overview.rows.find(row=>row.rule==="unreviewed");
@@ -93,21 +95,38 @@ export function deliveryResultFocus(input:DeliveryResultInput):DeliveryResultFoc
   if(enquiry?.summary.unknown)return focus("enquiry_unavailable","enquiry",tr("部分咨询后台步骤仍未确定","Some enquiry-backend steps remain uncertain"),tr(`${enquiry.summary.unknown} 个约定步骤未确定；没有观察不等于没有问题。`,`${enquiry.summary.unknown} agreed steps remain uncertain; missing observations do not mean there are no issues.`));
   if(business?.unavailable)return focus("business_unavailable","business",tr("部分业务内容仍需核对","Some business content still needs inspection"),business.groups.find(row=>row.row.current.outcome==="unavailable")?.row.step.source.excerpt??tr("没有获得可用的页面文字观察。","No usable page-text observation was obtained."));
   if(layout.state!=="current"||layout.unavailable)return focus("layout_unknown","layout",tr("页面显示仍有未覆盖的观察","Some page-display observations remain uncovered"),layout.state==="current"?tr(`${layout.unavailable} 次页面宽度观察不可测。`,`${layout.unavailable} page-width observations were unavailable.`):layout.state==="stale"?tr("旧版页面读数不适用于当前交付。","Earlier page readings do not apply to this delivery."):layout.state==="invalid"?tr("保存的页面读数无法可靠核对。","Saved page readings could not be reliably checked."):tr("尚无页面宽度读数；这不证明手机体验或后台功能。","Page-width readings have not been recorded; mobile usability and backend behavior remain unverified."));
-  const insufficient=overview.rows.find(row=>row.ai?.status==="insufficient_evidence");
+  const insufficient=overview.rows.find(row=>row.ai?.status==="insufficient_evidence"
+    && !input.observationReview?.items.some(item=>item.criterionId===row.criterion.id));
   if(insufficient)return criterion("ai_insufficient",tr("AI 有无法独立判断的要求","AI cannot independently determine some requirements"),insufficient);
   if(business?.groups.some(group=>group.row.state==="now_matches"))return focus("revision","business",tr("本次观察转为符合，仍需核对修改","The current observation matches; review the revision"),tr("观察变化不等于问题已修复或买家已验收。","A changed observation does not verify a fix or establish buyer acceptance."));
+  if (input.observationReview?.state === "draft") return focus("observations_selected", "details",
+    tr("人工核对已勾选，可以继续验收", "Human checks selected; continue to acceptance"),
+    tr("勾选将随本版验收保存。", "The selected checks will be saved with acceptance."));
   return focus("saved",first?"criterion":"details",tr("本版检查已保存，验收由买家决定","Checks saved; the buyer decides acceptance"),first?criterionDisplayTitle(first.criterion,language):tr("查看完整记录；验收和付款仍需分别确认。","Inspect the full record; acceptance and payment still need separate confirmation."),first?.criterion.id);
 }
 
 export function deliveryResultStatus(input:DeliveryResultInput):{id:string;text:string;attention:boolean}[]{
-  const {delivery,overview,model,business,layout,journey,runtime,enquiry,language}=input;
+  const {delivery,overview,model,business,layout,journey,runtime,enquiry,language,observationReview}=input;
   const tr=(zh:string,en:string)=>language==="zh"?zh:en;
   const rows:{id:string;text:string;attention:boolean}[]=[];
   const add=(id:string,text:string,attention=false)=>rows.push({id,text,attention});
   add("rules",overview.reviewCurrent?tr(`规则：${overview.ruleFailures} 项不符，${overview.unreviewed} 项未核查`,`Rules: ${overview.ruleFailures} mismatches, ${overview.unreviewed} unchecked requirements`):tr(`规则：本版尚未核查（${overview.unreviewed} 项）`,`Rules: this version not checked (${overview.unreviewed} requirements)`),!overview.reviewCurrent||!!overview.ruleFailures||!!overview.unreviewed);
-  const sourcePublished = delivery.assessment?.deliveryId === delivery.id && delivery.assessment.items.some(item => ["source-publication-v1", "source-publication-v2"].includes(item.publicationBasis?.schema ?? ""));
-  add("ai",overview.assessmentCurrent?sourcePublished?tr(`发布结论（含源码核验）：${overview.aiChanges} 项需修改，${overview.aiInsufficient} 项证据不足`,`Published findings (including source checks): ${overview.aiChanges} needing changes, ${overview.aiInsufficient} insufficient-evidence requirements`):tr(`AI：${overview.aiChanges} 项建议修改，${overview.aiInsufficient} 项证据不足`,`AI: ${overview.aiChanges} change suggestions, ${overview.aiInsufficient} insufficient-evidence requirements`):tr("AI：本版尚无评估","AI: no assessment for this version"),!!overview.aiChanges||!!overview.aiInsufficient);
-  add("human",overview.reviewCurrent?tr(`人工：${overview.humanRemaining} 项待确认，已确认 ${overview.humanConfirmed}/${overview.humanRequired}`,`Human: ${overview.humanRemaining} left, ${overview.humanConfirmed}/${overview.humanRequired} confirmed`):tr("人工：待本版核查后确认","Human: confirm after this version is checked"),!!overview.humanRemaining);
+  const sourcePublished = delivery.assessment?.deliveryId === delivery.id && delivery.assessment.items.some(item => ["source-publication-v1", "source-publication-v2", "source-publication-v3"].includes(item.publicationBasis?.schema ?? ""));
+  if (observationReview && overview.assessmentCurrent) {
+    const unknowns = overview.rows.filter(row => row.ai?.status === "insufficient_evidence");
+    const completed = unknowns.filter(row => observationReview.items.some(item => item.criterionId === row.criterion.id)).length;
+    const remaining = unknowns.length - completed;
+    add("ai",tr(`当前处理：${overview.aiChanges} 项需修改，${remaining} 项仍待补证`, `Current follow-up: ${overview.aiChanges} needing changes, ${remaining} evidence requests left`), !!overview.aiChanges || remaining > 0);
+    add("buyer-observation", observationReview.state === "saved"
+      ? tr(`人工补证：${completed} 项已写入本版验收记录`, `Human evidence: ${completed} checks saved with this delivery’s acceptance`)
+      : tr(`人工补证：已勾选 ${completed} 项，待随验收保存`, `Human evidence: ${completed} checks selected, to be saved with acceptance`));
+  } else {
+    add("ai",overview.assessmentCurrent?sourcePublished?tr(`发布结论（含源码核验）：${overview.aiChanges} 项需修改，${overview.aiInsufficient} 项证据不足`,`Published findings (including source checks): ${overview.aiChanges} needing changes, ${overview.aiInsufficient} insufficient-evidence requirements`):tr(`AI：${overview.aiChanges} 项建议修改，${overview.aiInsufficient} 项证据不足`,`AI: ${overview.aiChanges} change suggestions, ${overview.aiInsufficient} insufficient-evidence requirements`):tr("AI：本版尚无评估","AI: no assessment for this version"),!!overview.aiChanges||!!overview.aiInsufficient);
+  }
+  add("human",overview.reviewCurrent ? observationReview?.state === "draft"
+    ? tr(`人工：${overview.humanRemaining} 项待勾选，已勾选 ${overview.humanConfirmed}/${overview.humanRequired}`, `Human: ${overview.humanRemaining} left, ${overview.humanConfirmed}/${overview.humanRequired} selected`)
+    : tr(`人工：${overview.humanRemaining} 项待确认，已确认 ${overview.humanConfirmed}/${overview.humanRequired}`,`Human: ${overview.humanRemaining} left, ${overview.humanConfirmed}/${overview.humanRequired} confirmed`)
+    : tr("人工：待本版核查后确认","Human: confirm after this version is checked"),!!overview.humanRemaining);
   if(overview.risks?.total)add("risks",tr(`AI 潜在线索：${overview.risks.total} 条，${overview.risks.unreviewed} 条尚未复核`,`Potential AI issues: ${overview.risks.total}, ${overview.risks.unreviewed} without human review`),overview.risks.unreviewed>0);
   if(business)add("business",tr(`业务内容：${business.issues} 次不符，${business.unavailable} 次未确定（${business.observations} 次宽度观察）`,`Business content: ${business.issues} mismatches, ${business.unavailable} uncertain (${business.observations} width observations)`),!!business.issues||!!business.unavailable);
   else if(delivery.businessChecks)add("business",tr("业务内容：报告无法可靠读取","Business content: report cannot be reliably read"),true);

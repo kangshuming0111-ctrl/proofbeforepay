@@ -31,7 +31,7 @@ function prefix(value:string,budget:number):string{
 }
 /** A labelled, editable request, not a finding, a runtime result or a sent mutation.
  * This reads the saved item explanation only; raw provider responses are not an input. */
-export function buildAssessmentFeedbackDraft(criterion:ProofCriterion|undefined,item:ProofAssessmentItem,language:Language,steps:readonly ProofBusinessCheckStep[]=[],presentation?:{basis:"independent_source";confirmedScope:boolean}):AssessmentFeedbackDraft|undefined{
+export function buildAssessmentFeedbackDraft(criterion:ProofCriterion|undefined,item:ProofAssessmentItem,language:Language,steps:readonly ProofBusinessCheckStep[]=[],presentation?:{basis:"independent_source";confirmedScope:boolean},specificNextStep?:string):AssessmentFeedbackDraft|undefined{
  const source=assessmentCriterionSource(criterion,item.criterionId);if(source===undefined)return undefined;
  const zh=language==="zh",sourceBasis=presentation?.basis==="independent_source",clarify=!presentation?.confirmedScope&&needsAssessmentScopeClarification(criterion,item,steps),insufficient=item.status==="insufficient_evidence";
  const explanation=clarify?(zh?"本项使用页面或表单的角色名称，尚无本项明确文件或已核对的锁定映射。模型提出的具体文件修改建议不作为本次范围确认的依据。":"This requirement names a page or form role without its own explicit file or validated locked mapping. A model-suggested filename does not establish that scope."):item.explanation;
@@ -42,7 +42,7 @@ export function buildAssessmentFeedbackDraft(criterion:ProofCriterion|undefined,
   const files=fullFiles.length<=180
    ?(fullFiles?(zh?`相关源码文件（完整）：${fullFiles}`:`Related source files (complete): ${fullFiles}`):"")
    :(zh?`相关文件共 ${need.targetFiles.length} 个；本短草稿未包含完整文件清单。请先展开同一版本的补证提示核对，编辑补全后再发送。本草稿没有截短文件名。`:`There are ${need.targetFiles.length} related files; this short draft omits the full list. Expand this version's evidence-needed file list, check and complete the draft before sending; filenames are not shortened here.`);
-  evidenceAction=`${zh?"补证下一步：":"Next evidence step: "}${need.nextStep}${files?`\n${files}`:""}\n\n`;
+  evidenceAction=`${zh?"补证下一步：":"Next evidence step: "}${specificNextStep ?? need.nextStep}${files?`\n${files}`:""}\n\n`;
  }
  function compose(sourceText:string,explanationText:string,sourceExcerpted:boolean,explanationExcerpted:boolean){
   const intro=clarify?(zh?"范围澄清草稿（待双方确认）：":"Scope clarification draft (for both parties to confirm):"):insufficient

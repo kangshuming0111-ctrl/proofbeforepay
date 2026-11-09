@@ -14,7 +14,7 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test tests/*.test.ts tests/booking-lab.test.mjs tests/booking-policy-backend.test.mjs tests/runtime-policy-backend.test.mjs tests/seller-staging.test.mjs tests/seller-staging-hosted.test.mjs tests/seller-capacity-staging.test.mjs"
+    "test": "node --experimental-strip-types --test tests/*.test.ts tests/booking-lab.test.mjs tests/booking-policy-backend.test.mjs tests/runtime-policy-backend.test.mjs tests/seller-staging.test.mjs tests/seller-staging-hosted.test.mjs tests/seller-capacity-staging.test.mjs tests/judge-pack.test.mjs tests/release-fingerprint.test.mjs tests/historical-ai-summary.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -32,6 +32,7 @@
     "next": "16.3.4",
     "next-themes": "^0.4.6",
     "parse5": "8.0.0",
+    "qrcode-generator": "2.0.4",
     "radix-ui": "^1.6.7",
     "react": "19.2.6",
     "react-day-picker": "^10.0.1",

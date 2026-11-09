@@ -4,8 +4,10 @@ import {createElement} from "react";
 import {renderToStaticMarkup} from "react-dom/server";
 import ts from "typescript";
 import {readFile} from "node:fs/promises";
-import {assessMenuPricePublicationAdmissionV2,isFiniteMenuStylesheetV2,isMenuSourcePublicationSafeV2} from "../lib/menu-source-publication-v2.ts";
+import {assessMenuPricePublicationAdmissionV3,isFiniteMenuStylesheetV2,isMenuSourcePublicationSafeV2} from "../lib/menu-source-publication-v2.ts";
 import {createAssessmentSourceFindingCheck,sourceFindingVersionForPublication} from "../lib/assessment-source-findings.ts";
+import {createMenuDomSourceBusinessFactCheckV2} from "../lib/menu-dom-source-v2.ts";
+import {createMenuDomSourceBusinessFactCheckV3, UNCONFIRMED_MENU_CARD_OWNER} from "../lib/menu-dom-source-v3.ts";
 import {assessDelivery} from "../lib/delivery-assessment.ts";
 import {createRequirementCompletenessCheck,priceOnlyOriginalForVersion} from "../lib/assessment-requirement-completeness.ts";
 import {getBusinessCheckPlan} from "../lib/business-checks.ts";
@@ -58,8 +60,8 @@ function languageQuote(summary:string,labels=['牛肉面','Beef noodles'],templa
 
 const fixture=JSON.parse(await readFile(new URL('./fixtures/noodle-stage3-static-menu.json',import.meta.url),'utf8'));
 const ordinaryCSS=fixture.files['site.css'];
-function menuQuote({shape='complex',wrong=false,template=false,css=ordinaryCSS,transform=(s:string)=>s,original=price}:{shape?:string;wrong?:boolean;template?:boolean;css?:string;transform?:(s:string)=>string;original?:string}={}){
- const q=languageQuote(original),files=structuredClone(fixture.files),amount=wrong?28:18;
+function menuQuote({shape='complex',wrong=false,template=false,css=ordinaryCSS,transform=(s:string)=>s,original=price,expectedLabels}:{shape?:string;wrong?:boolean;template?:boolean;css?:string;transform?:(s:string)=>string;original?:string;expectedLabels?:string[]}={}){
+ const q=languageQuote(original,expectedLabels),files=structuredClone(fixture.files),amount=wrong?28:18;
  const owners=shape==='plain'?[`<p>牛肉面 AUD${amount}</p>`,`<p>Beef noodles AUD${amount}</p>`]:[`<p><strong>牛肉面</strong> <span>AUD${amount}.00</span></p>`,`<div class="menu-item"><h3>Beef noodles</h3><p class="price">AUD ${amount}</p></div>`];
  const old='<p><strong>牛肉面</strong> <span>AUD28.00</span></p><div class="menu-item"><h3>Beef noodles</h3><p class="price">AUD 28</p></div>';
  files['menu.html']=transform(files['menu.html'].replace(old,owners.join('')).replace('</body>',`${template?' '.repeat(400)+'<template><p>牛肉面 AUD18</p><p>Beef noodles AUD18</p></template>':''}</body>`));files['site.css']=css;
@@ -75,12 +77,12 @@ async function controlledOwners(q:ProofQuote,owners:string[],status:'supported'|
   return Response.json({choices:[{finish_reason:'tool_calls',message:{tool_calls:[{type:'function',function:{name:request.tools[0].function.name,arguments:JSON.stringify({catalogId:packet.citationCatalog.catalogId,items,risks:[],limitations:['Controlled callback only.']})}}]}}]});
  });assert.equal(count,1);return report;
 }
-test('schema2 covers ordinary local stylesheet/head/nav plus same-owner inline/card prices with full original quotes',async()=>{
+test('schema3 covers ordinary local stylesheet/head/nav plus same-owner inline/card prices with full original quotes',async()=>{
  for(const shape of ['plain','complex'])for(const template of[false,true]){
   const{q,owners}=menuQuote({shape,template}),report=await controlledOwners(q,owners),item=report.items.find(i=>i.criterionId==='coverage-1')!;
-  assert.equal(item.status,'supported');assert.equal(item.modelJudgment!.status,'supported');assert.equal(item.sourceFinding!.version,'source-finding-v2');assert.equal(item.sourceFinding!.status,'supported');assert.equal(report.publicationPolicy!.schema,'source-publication-v2');
-  if(shape==='complex'||template)assert.deepEqual(item.publicationBasis,{schema:'source-publication-v2',reason:'locked_price_match'});
-  assert.equal(assessMenuPricePublicationAdmissionV2(q.proof.delivery!.files!,item.sourceFinding,item.modelJudgment!.citations,report.coverage),true);
+  assert.equal(item.status,'supported');assert.equal(item.modelJudgment!.status,'supported');assert.equal(item.sourceFinding!.version,'source-finding-v3');assert.equal(item.sourceFinding!.status,'supported');assert.equal(report.publicationPolicy!.schema,'source-publication-v3');
+  if(shape==='complex'||template)assert.deepEqual(item.publicationBasis,{schema:'source-publication-v3',reason:'locked_price_match'});
+  assert.equal(assessMenuPricePublicationAdmissionV3(q.proof.delivery!.files!,item.sourceFinding,item.modelJudgment!.citations,report.coverage),true);
  }
 });
 test('finite CSS qualification is final on ALL plain/complex supported paths, not just source restoration',async()=>{
@@ -90,7 +92,7 @@ test('finite CSS qualification is final on ALL plain/complex supported paths, no
  for(const shape of['plain','complex']){const{q,owners}=menuQuote({shape}),report=await controlledOwners(q,owners,'insufficient_evidence');assert.equal(report.items.find(i=>i.criterionId==='coverage-1')!.status,'insufficient_evidence');}
 });
 test('wrong same-owner prices remain evidenced mismatches; rawunknowns or bad owner quotes are never promoted',async()=>{
- const{q,owners}=menuQuote({wrong:true}),report=await controlledOwners(q,owners,'changes_suggested'),item=report.items.find(i=>i.criterionId==='coverage-1')!;assert.equal(item.status,'changes_suggested');assert.equal(item.sourceFinding!.status,'changes_suggested');assert.deepEqual(item.publicationBasis,{schema:'source-publication-v2',reason:'locked_price_mismatch'});
+ const{q,owners}=menuQuote({wrong:true}),report=await controlledOwners(q,owners,'changes_suggested'),item=report.items.find(i=>i.criterionId==='coverage-1')!;assert.equal(item.status,'changes_suggested');assert.equal(item.sourceFinding!.status,'changes_suggested');assert.deepEqual(item.publicationBasis,{schema:'source-publication-v3',reason:'locked_price_mismatch'});
  for(const selection of['first','inner','inert']){const x=menuQuote({template:true}),r=await controlledOwners(x.q,x.owners,'supported',selection);assert.equal(r.items.find(i=>i.criterionId==='coverage-1')!.status,'insufficient_evidence',selection);}
  const x=menuQuote({original:compound}),r=await controlledOwners(x.q,x.owners);assert.equal(r.items.find(i=>i.criterionId==='coverage-1')!.status,'insufficient_evidence');assert.equal(r.items.find(i=>i.criterionId==='coverage-1')!.sourceFinding!.status,'supported');
 });
@@ -108,9 +110,51 @@ test('finite stylesheet parser consumes all source and does not accept hidden sy
 test('the shared affirmative wrapper rejects omitted/truncated text coverage even on a normal no-marker plain-owner pass',async()=>{
  const{q,owners}=menuQuote({shape:'plain'}),report=await controlledOwners(q,owners),item=report.items.find(i=>i.criterionId==='coverage-1')!,files=q.proof.delivery!.files!;
  assert.equal(item.status,'supported');assert.equal(item.publicationBasis,undefined);
- const check=(coverage:typeof report.coverage)=>assessMenuPricePublicationAdmissionV2(files,item.sourceFinding,item.modelJudgment!.citations,coverage);
+ const check=(coverage:typeof report.coverage)=>assessMenuPricePublicationAdmissionV3(files,item.sourceFinding,item.modelJudgment!.citations,coverage);
  assert.equal(check(report.coverage),true);
  assert.equal(check({...report.coverage,truncatedFiles:['site.css']}),false);
  assert.equal(check({...report.coverage,includedFiles:report.coverage.includedFiles.filter(f=>f!=='site.css'),omittedFiles:['site.css']}),false);
  assert.equal(check({...report.coverage,omittedFiles:['image.png']}),true,'an omitted raster does not become a missing text requirement');
+});
+
+test('card descendants cannot publish an affirmative or negative price for a different card title', async () => {
+  const original = 'The menu must list Beef noodles at AUD18.';
+  for (const [amount, raw, historical] of [[18, 'supported', 'unchanged'], [28, 'changes_suggested', 'mismatch']] as const) {
+    const leaf = `<p class="price">Beef noodles AUD${amount}</p>`;
+    const {q} = menuQuote({
+      original,
+      expectedLabels: ['Beef noodles'],
+      transform: source => source.replace('<h3>Beef noodles</h3><p class="price">AUD 18</p>', `<h3>Vegetable noodles</h3>${leaf}`),
+    });
+    const files = q.proof.delivery!.files!;
+    const steps = getBusinessCheckPlan(q);
+    assert.equal(createMenuDomSourceBusinessFactCheckV2(files, steps)('coverage-1').kind, historical);
+    const owned = createMenuDomSourceBusinessFactCheckV3(files, steps)('coverage-1');
+    assert.equal(owned.kind, 'unknown');
+    assert.ok(owned.kind === 'unknown' && owned.checks.some(check => check.reason === UNCONFIRMED_MENU_CARD_OWNER));
+
+    const report = await controlledOwners(q, [leaf], raw);
+    const item = report.items.find(entry => entry.criterionId === 'coverage-1')!;
+    assert.equal(item.modelJudgment?.status, raw);
+    assert.equal(item.modelJudgment?.citations[0]?.excerpt, leaf);
+    assert.equal(item.sourceFinding?.status, 'insufficient_evidence');
+    assert.equal(item.status, 'insufficient_evidence');
+    assert.equal(item.publicationBasis, undefined);
+  }
+});
+
+test('a nested duplicate cannot supply a sibling card price witness', async () => {
+  const nested = '<div class="menu-item"><h3>Vegetable noodles</h3><p class="price">AUD 24</p><div class="menu-item"><h3>Beef noodles</h3><p class="price">AUD 28</p></div></div>';
+  const {q, owners} = menuQuote({
+    original: 'The menu must list Beef noodles at AUD18.',
+    expectedLabels: ['Beef noodles'],
+    transform: source => source.replace('</body>', `${nested}</body>`),
+  });
+  const files = q.proof.delivery!.files!;
+  const steps = getBusinessCheckPlan(q);
+  for (const reader of [createMenuDomSourceBusinessFactCheckV2, createMenuDomSourceBusinessFactCheckV3]) {
+    assert.equal(reader(files, steps)('coverage-1').kind, 'unknown');
+  }
+  const report = await controlledOwners(q, [owners[1]]);
+  assert.equal(report.items.find(item => item.criterionId === 'coverage-1')?.status, 'insufficient_evidence');
 });

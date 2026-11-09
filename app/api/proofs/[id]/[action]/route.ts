@@ -13,7 +13,7 @@ import {assessmentFailureResponse} from "@/lib/assessment-failure-presentation";
 import { acceptDelivery, joinSeller, prepareReplacement, requestChanges, requireExpectedDelivery, requireWorkflowAction, submitDelivery, type ProofWorkflowAction } from "@/lib/proof-workflow";
 import { createRoleplayDelivery, isDemoRoleplay, isOwnerRoleplay } from "@/lib/proof-demo";
 import { issueInvitation, proofActor, proofResponse, readProofCase, saveProofCase } from "@/lib/proof-store";
-import { authorizeOrder, captureAuthorization, createAuthorizationOrder, reconcileProofPayment, reviewProof, voidAuthorization } from "@/lib/providers";
+import { authorizeOrder, captureAuthorization, createAuthorizationOrder, ProviderError, reconcileProofPayment, reviewProof, voidAuthorization } from "@/lib/providers";
 import { body, handle, HttpError, json, providerEnv } from "@/lib/server";
 import { runtimeDeliveryDigest, savedRuntimePlan } from "@/lib/runtime-project";
 import {resolveUploadRuntimeTarget} from "@/lib/server-runtime-targets";
@@ -100,7 +100,13 @@ export async function POST(request: Request, context: {params: Promise<{id: stri
         // No contract is required and no financial mode or rule finding is changed.
         let assessment;
         try {assessment = await assessDelivery(quote, providerEnv());}
-        catch(error) {if(error instanceof AssessmentResponseError)return json(assessmentFailureResponse(error,quote.language),502);throw error;}
+        catch(error) {
+          if(error instanceof AssessmentResponseError)return json(assessmentFailureResponse(error,quote.language),502);
+          if(error instanceof ProviderError)return json({error:quote.language==="zh"
+            ? "本次 DeepSeek 评估未生成报告。可以先打开交付预览核对网页，或稍后重新运行 AI 评估。已有规则结果和验收决定保持不变。"
+            : "DeepSeek did not produce a report this time. Inspect the delivery preview now, or rerun the AI assessment later. Saved rule results and acceptance decisions are unchanged."},502);
+          throw error;
+        }
         await persist(log({...quote, proof: {...quote.proof, delivery: {...delivery, assessment}}}, "assessed", delivery.id));
         return response();
       }

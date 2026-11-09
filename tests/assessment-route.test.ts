@@ -26,7 +26,7 @@ async function savedInputs() {
 /** Real action route and all assessment/workflow guards; only storage/gateway
  * and environment adapters are isolated. The provider adapts saved statuses/structure into controlled catalog IDs
  * (not an unchanged provider replay): no API key, outbound request, real login or payment is tested. */
-async function routeHarness(language: Language = "zh", changedBody?: (body: string) => string) {
+async function routeHarness(language: Language = "zh", changedBody?: (body: string) => string, upstreamStatus = 200) {
   const saved = await savedInputs(), quote = projectQuote(saved.project);
   const project = parseStaticProject({title: saved.project.title, summary: saved.project.summary, amount: "1.00", requiredPages: ["index.html"], manualRequirements: saved.project.criteria.map(criterion => criterion.source)}, saved.project.language);
   // Keep the exact two locked assessment criteria/evidence from the retained
@@ -70,6 +70,7 @@ async function routeHarness(language: Language = "zh", changedBody?: (body: stri
       assert.equal(url.href, "https://api.deepseek.com/beta/chat/completions", "all other outbound requests are forbidden");
       assert.equal(init?.method, "POST"); assert.equal(init?.redirect, "manual");
       assert.ok(init?.signal instanceof AbortSignal);
+      if (upstreamStatus !== 200) return Response.json({error:{message:"PRIVATE_UPSTREAM_DIAGNOSTIC"}},{status:upstreamStatus});
       const request=JSON.parse(String(init?.body)),packet=JSON.parse(request.messages[1].content),old=JSON.parse(state.responseBody),out=JSON.parse(old.choices[0].message.content);
       assert.equal(request.tool_choice.function.name,"submit_source_assessment_v3");
       assert.equal(packet.citationEncoding,"catalog_slots");
@@ -101,6 +102,17 @@ test("actual assess route returns a Chinese safe 502 missing diagnostic for the 
     assert.match(result.error, /AI 漏答 1 项要求（manual-2）/u); assert.match(result.error, /不会自动重试/u);
     assert.doesNotMatch(JSON.stringify(result), /Every family|Families|synthetic-route-key|index\.html/u);
     assert.equal(h.state.fetches, 1); assert.equal(h.state.saves, 0); assert.equal(h.state.version, 1); assert.deepEqual(h.state.quote, before);
+  } finally {await h.close();}
+});
+
+test("actual assess route provides a usable fallback after upstream rejection without saving or retrying", async () => {
+  const h = await routeHarness("zh", undefined, 503);
+  try {
+    const before = structuredClone(h.state.quote), response = await h.call(), result = await response.json() as {error: string};
+    assert.equal(response.status, 502);
+    assert.match(result.error, /未生成报告.*交付预览.*重新运行 AI/u);
+    assert.doesNotMatch(result.error, /PRIVATE_UPSTREAM_DIAGNOSTIC/u);
+    assert.equal(h.state.fetches, 1); assert.equal(h.state.saves, 0); assert.deepEqual(h.state.quote, before);
   } finally {await h.close();}
 });
 

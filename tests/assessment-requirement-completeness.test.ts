@@ -36,10 +36,34 @@ async function controlled(q:ProofQuote,status:'supported'|'changes_suggested'|'i
 }
 const price='菜单的牛肉面和Beef noodles标价必须为AUD18。',compound='菜单的牛肉面和Beef noodles标价必须为AUD18且营业时间必须为上午11点到晚上8点。';
 
+test('v3 withholds support for unscoped finite prices and symbolic extra duties', async () => {
+  const cases = [
+    ['The menu must list Beef noodles at AUD18.', 'missing_price_scope'],
+    ['菜单的牛肉面标价必须为AUD18。', 'missing_price_scope'],
+    ['The menu must list prices & opening hours.', 'compound_original_unverified'],
+    ['菜单必须列出价格＆营业时间。', 'compound_original_unverified'],
+  ] as const;
+  const historical = createRequirementCompletenessCheck({businessSteps: [], version: 'bilingual-bounded-v2'});
+  const current = createRequirementCompletenessCheck({businessSteps: [], version: 'bilingual-bounded-v3'});
+  for (const [source, reason] of cases) {
+    const q = intake(source, {checks: false, wrong: true});
+    const original = q.proof.criteria.find(row => row.id === 'coverage-1')!;
+    assert.equal(historical(original).kind, 'not_applicable');
+    assert.equal(current(original).reason, reason);
+    const item = (await controlled(q)).items.find(entry => entry.criterionId === 'coverage-1')!;
+    assert.equal(item.modelJudgment?.status, 'supported');
+    assert.equal(item.status, 'insufficient_evidence');
+    assert.equal(item.evidenceNeed?.reason, 'requirement_clarification');
+    assert.equal(item.sourceFinding, undefined);
+  }
+  const quoted = {id: 'coverage-1', title: 'Copy', source: 'The page copy must include the exact text "Prices & opening hours".'};
+  assert.equal(current(quoted).kind, 'not_applicable');
+});
+
 test('one final supported funnel covers normal unchanged and template source restoration without suppressing proven price subfacts',async()=>{
  for(const template of [false,true])for(const hours of [false,true]){
   const q=intake(compound,{template,hours}),report=await controlled(q),item=report.items.find(i=>i.criterionId==='coverage-1')!;
-  assert.equal(item.modelJudgment!.status,'supported');assert.equal(item.sourceFinding!.status,'supported');assert.equal(item.status,'insufficient_evidence');assert.equal(item.publicationBasis,undefined);assert.equal(report.publicationPolicy!.reconciledCriterionIds.length,0);assert.deepEqual(report.requirementCompletenessPolicy,{schema:'requirement-completeness-v1',version:'bilingual-bounded-v2'});
+  assert.equal(item.modelJudgment!.status,'supported');assert.equal(item.sourceFinding!.status,'supported');assert.equal(item.status,'insufficient_evidence');assert.equal(item.publicationBasis,undefined);assert.equal(report.publicationPolicy!.reconciledCriterionIds.length,0);assert.deepEqual(report.requirementCompletenessPolicy,{schema:'requirement-completeness-v1',version:'bilingual-bounded-v3'});
   if(!template){assert.equal(item.evidenceNeed!.reason,'requirement_clarification');assert.match(item.explanation,/价格子事实/u);}
  }
 });

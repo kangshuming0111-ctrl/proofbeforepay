@@ -4,7 +4,7 @@ import {validateSavedEnquiryEvidence,validateEnquiryReportDecision,projectEnquir
 import {ASSESSMENT_ITEM_CITATION_LIMIT, ASSESSMENT_RISK_CITATION_LIMIT} from "./assessment-limits.ts";
 import {ASSESSMENT_EVIDENCE_NEED_REASONS} from "./assessment-evidence-needs.ts";
 import {isAssessmentObligations} from "./assessment-obligations.ts";
-import {createRequirementCompletenessCheck} from "./assessment-requirement-completeness.ts";
+import {BILINGUAL_MENU_PRICE_COMPLETENESS,createRequirementCompletenessCheck,originalBilingualMenuPriceSteps} from "./assessment-requirement-completeness.ts";
 import {finiteContactPresenceScopeCriterionIds,observationOnlyCustomScopeCriterionIds,type ObservationScopeContext} from "./assessment-publication-policy.ts";
 import {staticFileKind} from "./static-resources.ts";
 import type {Language, ProofAssessment, ProofAssessmentItem, ProofCriterion, ProofDelivery, ProofEvidence, ProofQuote, ProofFeedback, StaticProjectSpec} from "./contracts.ts";
@@ -24,7 +24,9 @@ import {validateSavedCoverage} from "./requirement-coverage.ts";
 import {createBrowserCheckReport} from "./browser-check-report.ts";
 import {createBusinessCheckReport,getBusinessCheckPlan} from "./business-checks.ts";
 import {createAssessmentSourceFindingCheck,sourceFindingVersionForPublication} from "./assessment-source-findings.ts";
-import {assessMenuPricePublicationAdmissionV2} from "./menu-source-publication-v2.ts";
+import {assessMenuPricePublicationAdmissionV2,assessMenuPricePublicationAdmissionV3} from "./menu-source-publication-v2.ts";
+import {createStrictMenuPriceEvidenceCheckV3,UNCONFIRMED_MENU_CARD_OWNER} from "./menu-dom-source-v3.ts";
+import {assessScopedLabelPublication} from "./scoped-label-publication.ts";
 import {createLayoutReport} from "./layout-report.ts";
 import {assertModelAcceptanceReference,modelReportsFor} from "./model-check-actions.ts";
 import {MODEL_SPEC_DIGEST,modelCheckReportFromTrace,validateStoredModelCheckReport} from "./model-checks.ts";
@@ -125,7 +127,7 @@ function dataShapes(bundle:EvidenceExport):void{
     for(const entry of Array.isArray(value)?array(value,100,"Observation history"):[value]){
       const report=object(entry,["id","deliveryId","method","receivedAt","reportedByRole","viewportHeight","readings","summary"],"Observation report");
       for(const reading of array(report.readings,100,"Observation readings")){
-        const row=object(reading,["stepId","status","kind","file","viewportWidth","label","target","stylesExpected","stylesLoaded","imagesExpected","imagesLoaded","sourceVisible","sourceHitTarget","activated","destinationMatched","targetVisible","checkId","criterionId","source","expected","blocks","explanation","clientWidth","scrollWidth","overflowPx","outcome","reason"],"Observation reading");
+        const row=object(reading,["stepId","status","kind","file","viewportWidth","label","target","stylesExpected","stylesLoaded","imagesExpected","imagesLoaded","sourceVisible","sourceHitTarget","activated","destinationMatched","targetVisible",...(report.method==="client-browser-checks-noodle-v2"?["clickedLabel","reachedTarget"]:[]),"checkId","criterionId","source","expected","blocks","explanation","clientWidth","scrollWidth","overflowPx","outcome","reason"],"Observation reading");
         if(row.source)sourceReference(row.source,bundle.project.summary.trim());
         if(row.expected)object(row.expected,["kind","text","label","amountMinor","currency"],"Business expectation");
       }
@@ -203,7 +205,8 @@ function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]
     if(result.sourceFinding!==undefined){
       requireValue(result.modelJudgment!==undefined,"A new independent source finding must retain the separate decoded model item.");
       const source=object(result.sourceFinding,["version","status","basis","explanation","citations","files","scopeBinding"],"Independent source finding");
-      requireValue(source.version===((row.publicationPolicy as ProofAssessment["publicationPolicy"])?.schema==="source-publication-v2"?"source-finding-v2":"source-finding-v1")&&["supported","changes_suggested","insufficient_evidence"].includes(source.status as string)&&["declared_html_labels","locked_business_values"].includes(source.basis as string),"The independent source finding schema must match its saved report policy.");
+      const version=sourceFindingVersionForPublication((row.publicationPolicy as ProofAssessment["publicationPolicy"])?.schema);
+      requireValue(source.version===version&&["supported","changes_suggested","insufficient_evidence"].includes(source.status as string)&&["declared_html_labels","locked_business_values"].includes(source.basis as string),"The independent source finding schema must match its saved report policy.");
       text(source.explanation,3000);cite(source.citations,8);
       const files=array(source.files,40,"Independent checked files");
       requireValue(new Set(files).size===files.length,"Independent source files must be unique.");
@@ -216,7 +219,7 @@ function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]
     }
     if(result.publicationBasis!==undefined){
       const basis=object(result.publicationBasis,["schema","reason"],"Source publication basis");
-      requireValue(["source-publication-v1","source-publication-v2"].includes(basis.schema as string)&&basis.schema===(row.publicationPolicy as ProofAssessment["publicationPolicy"])?.schema&&["locked_price_mismatch","confirmed_form_label_absence","locked_price_match"].includes(basis.reason as string),"The source publication reason or saved report schema is unsupported.");
+      requireValue(["source-publication-v1","source-publication-v2","source-publication-v3"].includes(basis.schema as string)&&basis.schema===(row.publicationPolicy as ProofAssessment["publicationPolicy"])?.schema&&["locked_price_mismatch","confirmed_form_label_absence","locked_price_match"].includes(basis.reason as string),"The source publication reason or saved report schema is unsupported.");
       const expectedStatus=basis.reason==="locked_price_match"?"supported":"changes_suggested";
       requireValue(result.status===expectedStatus&&(result.modelJudgment as ProofAssessmentItem["modelJudgment"])?.status===expectedStatus&&(result.sourceFinding as ProofAssessmentItem["sourceFinding"])?.status===expectedStatus,"Source reconciliation must preserve the matching raw status and separate exact source fact.");
     }
@@ -235,12 +238,15 @@ function assessment(value:unknown,delivery:ProofDelivery,agreed:ProofCriterion[]
   const markedIds=agreed.filter(c=>items.some(item=>(item as ProofAssessmentItem).criterionId===c.id&&(item as ProofAssessmentItem).publicationBasis!==undefined)).map(c=>c.id);
   if(row.publicationPolicy!==undefined){
     const policy=object(row.publicationPolicy,["schema","reconciledCriterionIds"],"Source publication policy"),ids=array(policy.reconciledCriterionIds,33,"Reconciled criteria");
-    requireValue(["source-publication-v1","source-publication-v2"].includes(policy.schema as string)&&same(ids,markedIds),"The publication policy must list exactly the marked criteria in agreed order.");
-    if(policy.schema==="source-publication-v2")requireValue(row.requirementCompletenessPolicy!==undefined&&items.every(item=>(item as ProofAssessmentItem).modelJudgment!==undefined),"A version2 source policy must retain its whole-original policy and every original decoded model item.");
+    requireValue(["source-publication-v1","source-publication-v2","source-publication-v3"].includes(policy.schema as string)&&same(ids,markedIds),"The publication policy must list exactly the marked criteria in agreed order.");
+    if(policy.schema!=="source-publication-v1")requireValue(row.requirementCompletenessPolicy!==undefined&&items.every(item=>(item as ProofAssessmentItem).modelJudgment!==undefined),"This source policy must retain its whole-original policy and every original decoded model item.");
+    if(policy.schema==="source-publication-v3")object(row.scopeContext,["digest","proposalCount","confirmationCounts"],"Version3 historical scope context");
   }else requireValue(markedIds.length===0,"A source publication basis requires its explicit report policy.");
   if(row.requirementCompletenessPolicy!==undefined){
     const policy=object(row.requirementCompletenessPolicy,["schema","version"],"Whole-original publication policy");
-    requireValue(policy.schema==="requirement-completeness-v1"&&["bounded-original-zh-v1","bilingual-bounded-v2"].includes(policy.version as string),"Unsupported whole-original publication policy.");
+    const version3=(row.publicationPolicy as ProofAssessment["publicationPolicy"])?.schema==="source-publication-v3";
+    const allowedVersions=version3?["bilingual-bounded-v3",BILINGUAL_MENU_PRICE_COMPLETENESS]:["bounded-original-zh-v1","bilingual-bounded-v2"];
+    requireValue(policy.schema==="requirement-completeness-v1"&&allowedVersions.includes(policy.version as string),"Unsupported whole-original publication policy for this source publication version.");
     requireValue(items.every(item=>(item as ProofAssessmentItem).modelJudgment!==undefined),"A current whole-original policy must retain every original decoded model item.");
   }
   const validateRisk=(value:unknown,strict:boolean)=>{
@@ -362,24 +368,42 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
     immutableIds([...(bundle.delivery.riskReviews??[]),...(bundle.delivery.acceptanceEvidence??[]).flatMap(snapshot=>snapshot.riskReviews??[])]);
     for(const report of reports){const reportScope=await resolveAssessmentScopeContext(scopeQuote,report,mode);
       assessment(report,bundle.delivery,bundle.project.criteria,{hasBusinessChecks:bundle.project.spec?.businessChecks!==undefined&&(!Array.isArray(bundle.project.spec.businessChecks)||bundle.project.spec.businessChecks.length>0)});
+      const savedSteps=getBusinessCheckPlan(scopeQuote);
+      const originalPrice=report.requirementCompletenessPolicy?.version===BILINGUAL_MENU_PRICE_COMPLETENESS
+        ? originalBilingualMenuPriceSteps(scopeQuote,savedSteps) : undefined;
+      requireValue(!originalPrice||originalPrice.criterionIds.length>0,"The report's original-price policy has no matching locked original.");
+      const businessSteps=[...savedSteps,...(originalPrice?.steps??[])];
       if(report.requirementCompletenessPolicy){
-        const checkWholeOriginal=createRequirementCompletenessCheck({businessSteps:getBusinessCheckPlan(scopeQuote),version:report.requirementCompletenessPolicy.version});
+        const checkWholeOriginal=createRequirementCompletenessCheck({businessSteps,version:report.requirementCompletenessPolicy.version});
         for(const item of report.items)requireValue(item.status!=="supported"||checkWholeOriginal(bundle.project.criteria.find(c=>c.id===item.criterionId)!).kind!=="incomplete","A partial price/source fact cannot establish support for the complete locked original requirement.");
       }
       // New source facts are recomputed from current exported bytes and the
       // report's immutable historical scope prefix, never from model prose.
-      const sourceFiles=Object.fromEntries(Object.entries(bundle.delivery.files!).filter(([file])=>["html","css"].includes(staticFileKind(file)??""))),businessSteps=getBusinessCheckPlan(scopeQuote),publicationSchema=report.publicationPolicy?.schema??"source-publication-v1";
+      const sourceFiles=Object.fromEntries(Object.entries(bundle.delivery.files!).filter(([file])=>["html","css"].includes(staticFileKind(file)??""))),publicationSchema=report.publicationPolicy?.schema??"source-publication-v1";
       const checkSource=createAssessmentSourceFindingCheck({files:sourceFiles,coverage:report.coverage,language:bundle.project.language,businessSteps,scope:reportScope,version:sourceFindingVersionForPublication(publicationSchema)});
       const checkPublication=createSourcePublicationCheck({files:sourceFiles,coverage:report.coverage,language:bundle.project.language,businessSteps,scope:reportScope,ruleEvidence:bundle.delivery.evidence,requirementCompletenessVersion:report.requirementCompletenessPolicy?.version??"bounded-original-zh-v1",publicationSchema});
-      for(const item of report.items)if(publicationSchema==="source-publication-v2"||item.modelJudgment!==undefined||item.sourceFinding!==undefined){
-        const expected=checkSource(bundle.project.criteria.find(c=>c.id===item.criterionId)!);
+      const priceAdmission=publicationSchema==="source-publication-v3"?assessMenuPricePublicationAdmissionV3:assessMenuPricePublicationAdmissionV2;
+      const strictPrice=publicationSchema==="source-publication-v3"?createStrictMenuPriceEvidenceCheckV3(sourceFiles,businessSteps):undefined;
+      for(const item of report.items)if(publicationSchema!=="source-publication-v1"||item.modelJudgment!==undefined||item.sourceFinding!==undefined){
+        const criterion=bundle.project.criteria.find(c=>c.id===item.criterionId)!;
+        const expected=checkSource(criterion);
         requireValue(same(item.sourceFinding??null,expected??null),"The independent source finding differs from exact source/scope replay.");
-        if(publicationSchema==="source-publication-v2"&&item.status==="supported"&&businessSteps.some(step=>step.criterionId===item.criterionId&&step.expected.kind==="item_price"))requireValue(item.modelJudgment?.status==="supported"&&assessMenuPricePublicationAdmissionV2(sourceFiles,expected,item.modelJudgment.citations,report.coverage),"Every version2 affirmative price path needs complete source ownership, original citations and finite HTML/CSS eligibility.");
+        if(originalPrice?.criterionIds.includes(criterion.id)&&item.status!=="insufficient_evidence"&&!bundle.delivery.evidence.some(row=>row.criterionId===item.criterionId&&row.finding==="fail"))
+          requireValue(item.publicationBasis?.reason===(item.status==="supported"?"locked_price_match":"locked_price_mismatch"),"A whole bilingual-price decision needs an exact, replayable source publication.");
+        if(publicationSchema!=="source-publication-v1"&&item.status==="supported"&&businessSteps.some(step=>step.criterionId===item.criterionId&&step.expected.kind==="item_price"))requireValue(item.modelJudgment?.status==="supported"&&priceAdmission(sourceFiles,expected,item.modelJudgment.citations,report.coverage),"Every affirmative price path under this policy needs complete source ownership, original citations and finite HTML/CSS eligibility.");
+        if(publicationSchema==="source-publication-v3"&&item.status==="supported"){
+          const scoped=assessScopedLabelPublication(criterion,reportScope,expected,item.modelJudgment,sourceFiles);
+          requireValue(scoped.kind==="not_applicable"||scoped.kind==="witnessed"&&item.explanation===scoped.explanation&&same(item.citations,scoped.citations),"The positive label finding must use the agreed source owner and its original citation witness.");
+        }
+        if(strictPrice&&item.status==="changes_suggested"&&!bundle.delivery.evidence.some(row=>row.criterionId===item.criterionId&&row.finding==="fail")){
+          const evidence=strictPrice(item.criterionId);
+          requireValue(evidence.kind!=="unknown"||!evidence.checks.some(check=>check.reason===UNCONFIRMED_MENU_CARD_OWNER),"A negative price finding cannot be based on an unconfirmed card child.");
+        }
         const adjustment=report.withheldRisks?.adjustedCriteria.find(row=>row.criterionId===item.criterionId);
         if(adjustment)requireValue(adjustment.originalStatus===item.modelJudgment?.status,"The retained original AI status conflicts with its adjustment ledger.");
         if(item.publicationBasis!==undefined){
           requireValue(item.modelJudgment&&report.publicationPolicy,"Source publication requires the retained model item and explicit report policy.");
-          const decision=checkPublication(bundle.project.criteria.find(c=>c.id===item.criterionId)!,{rawStatus:item.modelJudgment.status,rawCitations:item.modelJudgment.citations,guardedStatus:"insufficient_evidence",guardReason:item.publicationBasis.reason});
+          const decision=checkPublication(criterion,{rawStatus:item.modelJudgment.status,rawCitations:item.modelJudgment.citations,guardedStatus:"insufficient_evidence",guardReason:item.publicationBasis.reason});
           requireValue(decision&&same(item.publicationBasis,decision.publicationBasis)&&item.status===decision.status&&same(item.sourceFinding,decision.sourceFinding)&&item.explanation===decision.explanation&&same(item.citations,decision.citations)&&item.evidenceNeed===undefined,"The published source reconciliation differs from its original scope, legacy guard or canonical source evidence.");
         }
       }
@@ -422,7 +446,7 @@ export async function verifyEvidenceExport(input:unknown):Promise<EvidenceVerifi
     const delivery=bundle.delivery;
     const compare=(saved:object,replayed:object)=>requireValue(same(pick(saved,Object.keys(saved).filter(key=>!["id","reportedByRole"].includes(key))),pick(replayed,Object.keys(replayed).filter(key=>key!=="id"))),"Reported observation fields or derived counts differ.");
     const base=structuredClone(quote);delete base.proof.delivery!.browserChecks;delete base.proof.delivery!.businessChecks;delete base.proof.delivery!.layoutReport;
-    for(const report of browserReportsFor(delivery))compare(report,createBrowserCheckReport(base,{deliveryId:delivery.id,previousReportId:null,readings:report.readings.map(row=>pick(row,row.status==="unavailable"?["stepId","status","reason"]:["stepId","status","kind","stylesExpected","stylesLoaded","imagesExpected","imagesLoaded","sourceVisible","sourceHitTarget","activated","destinationMatched","targetVisible"]))},report.receivedAt));
+    for(const report of browserReportsFor(delivery))compare(report,createBrowserCheckReport(base,{deliveryId:delivery.id,previousReportId:null,method:report.method,readings:report.readings.map(row=>pick(row,row.status==="unavailable"?["stepId","status","reason"]:["stepId","status","kind","stylesExpected","stylesLoaded","imagesExpected","imagesLoaded","sourceVisible","sourceHitTarget","activated","destinationMatched","targetVisible","clickedLabel","reachedTarget"]))},report.receivedAt));
     for(const report of businessReportsFor(delivery))compare(report,createBusinessCheckReport(base,{deliveryId:delivery.id,previousReportId:null,readings:report.readings.map(row=>pick(row,["stepId","status","reason","blocks"]))},report.receivedAt));
     for(const report of layoutReportsFor(delivery))compare(report,createLayoutReport(base,{deliveryId:delivery.id,previousReportId:null,readings:report.readings.map(row=>pick(row,["file","viewportWidth","status","reason","clientWidth","scrollWidth"]))},report.receivedAt));
   },"Included client-report fields and derived outcomes are consistent with the locked plan; browser observations themselves are not independently proven.");

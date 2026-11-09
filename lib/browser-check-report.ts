@@ -1,8 +1,36 @@
-import type { ProofBrowserCheckReading, ProofBrowserCheckReason, ProofBrowserCheckReport, ProofBrowserCheckStep, ProofQuote, ProofRole } from "./contracts.ts";
+import type { ProofBrowserCheckMethod, ProofBrowserCheckReading, ProofBrowserCheckReason, ProofBrowserCheckReport, ProofBrowserCheckStep, ProofQuote, ProofRole } from "./contracts.ts";
 import { DomainError } from "./domain.ts";
 import { getLayoutFiles, LAYOUT_HEIGHT, LAYOUT_WIDTHS } from "./layout-report.ts";
 import { assertStaticPath, staticFileKind } from "./static-resources.ts";
 import { withBrowserReport } from "./acceptance-evidence.ts";
+import { validateSavedCoverage } from "./requirement-coverage.ts";
+
+const LEGACY_METHOD = "client-browser-checks-v1";
+export const NOODLE_BROWSER_METHOD = "client-browser-checks-noodle-v2";
+const NOODLE_PAGES = ["index.html", "menu.html", "contact.html"];
+const NOODLE_NAVIGATION = "网站包含首页、菜单页 menu.html 和联系页 contact.html，首页可打开菜单页和联系页。";
+export const NOODLE_LINKS = [{from: "index.html", text: "Menu", to: "menu.html"}, {from: "index.html", text: "Contact", to: "contact.html"}] as const;
+export function browserLinkLabel(value: string) { return value.replace(/\s+/gu, " ").trim(); }
+export function matchesNoodleLinkLabel(actual: string, planned?: string): boolean {
+  const label = browserLinkLabel(actual).toLowerCase();
+  return planned === "Menu" ? ["menu", "菜单"].includes(label)
+    : planned === "Contact" ? ["contact", "联系", "联系我们"].includes(label) : false;
+}
+
+/** Use only the original included clause and locked pages. Seller content
+ * cannot choose the agreement, and post-lock reports cannot change this plan. */
+export function browserCheckMethodFor(quote: ProofQuote): ProofBrowserCheckMethod {
+  const {project, criteria} = quote.proof;
+  if (!project || project.links !== undefined || project.link || project.coverage?.version !== 2
+    || project.coverage.sourceText !== quote.summary.trim() || !Array.isArray(project.requiredPages)
+    || project.requiredPages.length !== NOODLE_PAGES.length || !NOODLE_PAGES.every(file => project.requiredPages.includes(file))) return LEGACY_METHOD;
+  try {
+    const clauses = validateSavedCoverage(project.coverage).decisions.filter(row => row.text === NOODLE_NAVIGATION);
+    if (clauses.length === 1 && clauses[0].disposition === "include" && clauses[0].criterionId
+      && criteria.some(row => row.id === clauses[0].criterionId && row.source === NOODLE_NAVIGATION)) return NOODLE_BROWSER_METHOD;
+  } catch { /* An invalid/missing coverage decision cannot authorize inferred actions. */ }
+  return LEGACY_METHOD;
+}
 
 const REASONS = new Set<ProofBrowserCheckReason>(["missing_file", "load_failed", "snapshot_mismatch", "access_denied", "timeout", "navigation_changed", "ambiguous_link", "unsupported_target", "resource_limit"]);
 export const BROWSER_RESOURCE_LIMIT = 100;
@@ -22,12 +50,15 @@ function flag(value: unknown): boolean {
   return value;
 }
 /** The saved agreement determines the action; a client cannot add an arbitrary URL or test. */
-export function getBrowserCheckPlan(quote: ProofQuote): ProofBrowserCheckStep[] {
+export function getBrowserCheckPlan(quote: ProofQuote, method = browserCheckMethodFor(quote)): ProofBrowserCheckStep[] {
+  if (method !== LEGACY_METHOD && (method !== NOODLE_BROWSER_METHOD || browserCheckMethodFor(quote) !== method)) {
+    throw new DomainError("The saved agreement does not authorize this browser check method.", 409);
+  }
   const pages = getLayoutFiles(quote);
   const steps: ProofBrowserCheckStep[] = pages.flatMap(({file}) => LAYOUT_WIDTHS.map(viewportWidth => ({stepId: `page:${viewportWidth}:${file}`, kind: "page" as const, file, viewportWidth})));
   const project = quote.proof.project;
   if (project?.link && project.links !== undefined) throw new DomainError("The saved agreement has conflicting link requirements.", 409);
-  const links = project?.links ?? (project?.link ? [project.link] : !project && quote.proof.criteria.some(item => item.id === "booking")
+  const links = method === NOODLE_BROWSER_METHOD ? NOODLE_LINKS : project?.links ?? (project?.link ? [project.link] : !project && quote.proof.criteria.some(item => item.id === "booking")
     ? [{from: "index.html", text: "Book a call", to: "contact.html#booking"}] : []);
   if (!Array.isArray(links) || links.length > 5) throw new DomainError("The saved agreement may check up to five local links.", 409);
   const seenLinks = new Set<string>();
@@ -48,11 +79,13 @@ export function getBrowserCheckPlan(quote: ProofQuote): ProofBrowserCheckStep[] 
 }
 /** Validates a complete client observation set. This does not independently verify browser claims. */
 export function createBrowserCheckReport(quote: ProofQuote, value: unknown, receivedAt = new Date().toISOString()): ProofBrowserCheckReport {
-  const input = record(value); keys(input, ["deliveryId", "previousReportId", "readings"]);
+  const input = record(value); keys(input, ["deliveryId", "previousReportId", "readings", "method"]);
   const delivery = quote.proof.delivery;
   if (!delivery || input.deliveryId !== delivery.id) throw new DomainError("Browser checks must use the current delivery version.", 409);
   if (!Object.hasOwn(input, "previousReportId") || input.previousReportId !== (delivery.browserChecks?.id ?? null)) throw new DomainError("Browser observations changed. Refresh before saving a new run.", 409);
-  const plan = getBrowserCheckPlan(quote);
+  const method = input.method === undefined ? LEGACY_METHOD : input.method;
+  if (method !== LEGACY_METHOD && method !== NOODLE_BROWSER_METHOD) throw new DomainError("Unknown browser check method.");
+  const plan = getBrowserCheckPlan(quote, method);
   if (!Array.isArray(input.readings) || input.readings.length !== plan.length) throw new DomainError("Browser observations must cover each planned step and width exactly once.");
   const remaining = new Map(plan.map(step => [step.stepId, step]));
   const rows = new Map<string, ProofBrowserCheckReport["readings"][number]>();
@@ -75,11 +108,26 @@ export function createBrowserCheckReport(quote: ProofQuote, value: unknown, rece
         reading = {stepId: step.stepId, status: "observed", kind: "page", stylesExpected, stylesLoaded, imagesExpected, imagesLoaded};
         outcome = stylesExpected === stylesLoaded && imagesExpected === imagesLoaded ? "expected_observation" : "mismatch";
       } else {
-        keys(row, ["stepId", "status", "kind", "sourceVisible", "sourceHitTarget", "activated", "destinationMatched", "targetVisible"]);
+        const noodle = method === NOODLE_BROWSER_METHOD;
+        keys(row, ["stepId", "status", "kind", "sourceVisible", "sourceHitTarget", "activated", "destinationMatched", "targetVisible", ...(noodle ? ["clickedLabel", "reachedTarget"] : [])]);
         const sourceVisible = flag(row.sourceVisible), sourceHitTarget = flag(row.sourceHitTarget), activated = flag(row.activated), destinationMatched = flag(row.destinationMatched), targetVisible = flag(row.targetVisible);
         if (!sourceVisible && sourceHitTarget || (!sourceVisible || !sourceHitTarget) && activated || !activated && (destinationMatched || targetVisible) || !destinationMatched && targetVisible) throw new DomainError("Browser action flags describe an impossible observation sequence.");
         if (destinationMatched && !Object.hasOwn(delivery.files ?? {}, step.target!.split("#")[0])) throw new DomainError("A missing target page cannot be reported as reached.");
-        reading = {stepId: step.stepId, status: "observed", kind: "link", sourceVisible, sourceHitTarget, activated, destinationMatched, targetVisible};
+        let clickedLabel: string | undefined, reachedTarget: string | undefined;
+        if (noodle) {
+          if (activated) {
+            if (typeof row.clickedLabel !== "string" || row.clickedLabel !== browserLinkLabel(row.clickedLabel) || !matchesNoodleLinkLabel(row.clickedLabel, step.label)) throw new DomainError("A replayable click must record the actual matching link label.");
+            clickedLabel = row.clickedLabel;
+          } else if (Object.hasOwn(row, "clickedLabel") || Object.hasOwn(row, "reachedTarget")) throw new DomainError("An unclicked link cannot have a clicked label or destination.");
+          if (Object.hasOwn(row, "reachedTarget")) {
+            const actual = assertStaticPath(row.reachedTarget);
+            if (staticFileKind(actual) !== "html" || !Object.hasOwn(delivery.files ?? {}, actual)) throw new DomainError("Replay destinations must be saved HTML pages of this delivery.");
+            reachedTarget = actual;
+          }
+          if (destinationMatched !== (reachedTarget === step.target)) throw new DomainError("Replay outcome must agree with the observed destination.");
+        }
+        reading = {stepId: step.stepId, status: "observed", kind: "link", sourceVisible, sourceHitTarget, activated, destinationMatched, targetVisible,
+          ...(clickedLabel === undefined ? {} : {clickedLabel}), ...(reachedTarget === undefined ? {} : {reachedTarget})};
         outcome = sourceVisible && sourceHitTarget && activated && destinationMatched && targetVisible ? "expected_observation" : "mismatch";
       }
     } else throw new DomainError("Browser observations need a supported status and matching step kind.");
@@ -87,14 +135,16 @@ export function createBrowserCheckReport(quote: ProofQuote, value: unknown, rece
   }
   if (typeof receivedAt !== "string" || !Number.isFinite(Date.parse(receivedAt))) throw new DomainError("Invalid browser observation receipt time.");
   const readings = plan.map(step => rows.get(step.stepId)!);
-  return {id: crypto.randomUUID(), deliveryId: delivery.id, method: "client-browser-checks-v1", receivedAt, viewportHeight: LAYOUT_HEIGHT, readings,
+  return {id: crypto.randomUUID(), deliveryId: delivery.id, method, receivedAt, viewportHeight: LAYOUT_HEIGHT, readings,
     summary: {steps: readings.length, observed: readings.filter(row => row.status === "observed").length, issues: readings.filter(row => row.outcome === "mismatch").length, unavailable: readings.filter(row => row.status === "unavailable").length}};
 }
 /** Members may append observations to the current snapshot, including an accepted/paid snapshot. */
 export function recordBrowserChecks(quote: ProofQuote, role: ProofRole, value: unknown, receivedAt?: string): ProofQuote {
   if (role !== "buyer" && role !== "seller") throw new DomainError("Only project members may save browser observations.", 403);
   if (quote.status === "draft" || quote.proof.paymentOperation) throw new DomainError("Lock the scope and finish any pending payment action before saving browser observations.", 409);
-  const browserChecks = createBrowserCheckReport(quote, value, receivedAt);
+  const input = record(value);
+  if ((input.method ?? LEGACY_METHOD) !== browserCheckMethodFor(quote)) throw new DomainError("This browser check plan changed. Refresh before running it again.", 409);
+  const browserChecks = createBrowserCheckReport(quote, input, receivedAt);
   const next = structuredClone(quote);
   next.proof.delivery = withBrowserReport(next.proof.delivery!, {...browserChecks, reportedByRole: role});
   next.proof.audit.push({kind: "browser_checked", at: browserChecks.receivedAt, deliveryId: browserChecks.deliveryId, reportId: browserChecks.id});

@@ -2,21 +2,26 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { ChevronDown, FileClock, Monitor, RotateCcw, Smartphone, X } from "lucide-react";
-import type { Language, ProofCriterion, ProofDeliveryVersion } from "@/lib/contracts";
+import type { Language, ProofCriterion, ProofDeliveryVersion, ProofQuote } from "@/lib/contracts";
 import { deliveryFileUrl } from "@/lib/delivery-upload";
+import { browserReportsFor } from "@/lib/acceptance-evidence";
 import { ResourceChecks } from "./ResourceChecks";
 import { DeliveryAssessment } from "./DeliveryAssessment";
 import { BrowserCheckPanel } from "./BrowserCheckPanel";
 import { EvidenceHistoryPanel,JourneyAgreementReadings,JourneyEvidenceReadings } from "./EvidenceHistoryPanel";
 import {ModelEvidenceReadings} from "./ModelEvidenceReadings";
 import { BusinessChecksPanel } from "./BusinessChecksPanel";
+import { noodleObservationReview } from "@/lib/noodle-observation-review";
 import "../business-check.css";
 
 export type VersionViewerProps = {
   quoteId: string;
+  quote?: ProofQuote;
   version: ProofDeliveryVersion;
   language: Language;
   criteria?: ProofCriterion[];
+  acceptedSnapshotId?: string;
+  mobileCriterionIds?: readonly string[];
   onClose: () => void;
 };
 
@@ -25,10 +30,11 @@ function displayTime(value: string) {
   return Number.isFinite(date.getTime()) ? `${date.toISOString().slice(0, 16).replace("T", " ")} UTC` : value;
 }
 
-export function VersionViewer({ quoteId, version, language, criteria = [], onClose }: VersionViewerProps) {
+export function VersionViewer({ quoteId, quote, version, language, criteria = [], acceptedSnapshotId, mobileCriterionIds, onClose }: VersionViewerProps) {
   const zh = language === "zh";
   const tr = (chinese: string, english: string) => zh ? chinese : english;
   const { delivery } = version;
+  const navigationQuote = quote?.id === quoteId ? {...quote, proof: {...quote.proof, delivery}} : undefined;
   const files = useMemo(() => Object.keys(delivery.files ?? {}).filter(file => /\.html$/iu.test(file)).sort((a, b) => a.toLowerCase() === "index.html" ? -1 : b.toLowerCase() === "index.html" ? 1 : a.localeCompare(b)), [delivery.files]);
   const [selectedFile, setSelectedFile] = useState("");
   const [width, setWidth] = useState<375 | 900>(375);
@@ -44,6 +50,16 @@ export function VersionViewer({ quoteId, version, language, criteria = [], onClo
   const previewUrl = activeFile ? deliveryFileUrl(quoteId,delivery.id,activeFile,true) : "";
   const review = version.review?.deliveryId === delivery.id ? version.review : undefined;
   const assessment = delivery.assessment?.deliveryId === delivery.id ? delivery.assessment : undefined;
+  const acceptedSnapshot = delivery.acceptanceEvidence?.find(snapshot => snapshot.id === acceptedSnapshotId && snapshot.deliveryId === delivery.id);
+  const navigationReport = useMemo(() => {
+    if (!acceptedSnapshotId) return delivery.browserChecks?.deliveryId === delivery.id ? delivery.browserChecks : undefined;
+    if (!acceptedSnapshot || acceptedSnapshot.deliveryId !== delivery.id || !acceptedSnapshot.browserReportId) return;
+    try {return browserReportsFor(delivery).find(report => report.id === acceptedSnapshot.browserReportId);}
+    catch {return;}
+  }, [delivery, acceptedSnapshot, acceptedSnapshotId]);
+  const observationReview = acceptedSnapshot ? noodleObservationReview({
+    deliveryId: delivery.id, report: assessment, criteria, evidence: delivery.evidence, review, mobileCriterionIds, snapshot: acceptedSnapshot,
+  }) : undefined;
   const submission = version.submission?.deliveryId === delivery.id ? version.submission : undefined;
   const feedback = version.feedback.filter(item => item.deliveryId === delivery.id);
 
@@ -129,12 +145,12 @@ export function VersionViewer({ quoteId, version, language, criteria = [], onClo
       <section className="version-viewer-records" aria-label={tr("此历史版本的记录", "Records for this historical version")}>
         <ResourceChecks delivery={delivery} language={language}/>
         {delivery.businessChecks?.deliveryId === delivery.id && <BusinessChecksPanel language={language} report={delivery.businessChecks} readOnly/>}
-        {delivery.browserChecks?.deliveryId === delivery.id && <BrowserCheckPanel language={language} report={delivery.browserChecks} readOnly enabled={false} busy={false} onRun={() => {}} onCancel={() => {}}/>}
+        {delivery.browserChecks?.deliveryId === delivery.id && <BrowserCheckPanel language={language} report={delivery.browserChecks} navigationQuote={navigationQuote} navigationArchived={!version.isCurrent} navigationAcceptance={acceptedSnapshot} deliveryLabel={delivery.label} readOnly enabled={false} busy={false} onRun={() => {}} onCancel={() => {}}/>}
         {delivery.journeyPlan&&<JourneyAgreementReadings plan={delivery.journeyPlan} language={language}/>}
         {delivery.journeyReport&&<details className="version-viewer-details"><summary>{tr("该版最后保存的业务旅程检验","Last saved business journey for this version")}<ChevronDown size={14} aria-hidden="true"/></summary><div className="version-viewer-details-body"><p className="version-viewer-help">{tr("这是该版本的已保存记录，不会加载当前版本或重新操作卖家站。验收时实际引用的报告请见下方证据快照。","This saved record belongs to this version. It does not load the current delivery or operate the seller site again. See the acceptance snapshot below for the report actually referenced at acceptance.")}</p><JourneyEvidenceReadings report={delivery.journeyReport} deliveryId={delivery.id} language={language}/></div></details>}
         {delivery.modelReport&&<details className="version-viewer-details"><summary>{tr("该版最后保存的并发状态检验","Last saved concurrent state check for this version")}</summary><ModelEvidenceReadings report={delivery.modelReport} deliveryId={delivery.id} language={language} context={{delivery,projectId:quoteId}}/></details>}
-        <EvidenceHistoryPanel delivery={delivery} language={language} projectId={quoteId}/>
-        <DeliveryAssessment report={assessment} criteria={criteria} language={language} riskReviews={delivery.riskReviews} readOnly />
+        <EvidenceHistoryPanel delivery={delivery} language={language} projectId={quoteId} acceptedSnapshotId={acceptedSnapshotId} mobileCriterionIds={mobileCriterionIds} navigationQuote={navigationQuote} navigationArchived={!version.isCurrent}/>
+        <DeliveryAssessment report={assessment} criteria={criteria} language={language} riskReviews={delivery.riskReviews} observationReview={observationReview} navigationReport={navigationReport} navigationQuote={navigationQuote} navigationArchived={!version.isCurrent} navigationAccepted={!!acceptedSnapshot && !!navigationReport} readOnly />
         <details className="version-viewer-details"><summary>{tr("卖家交付说明", "Seller's delivery note")}<ChevronDown size={14} aria-hidden="true" /></summary><div className="version-viewer-details-body">{submission ? <><p className="version-viewer-text">{submission.note}</p><p className="version-viewer-help">{tr("卖家陈述，不是独立证明。", "A seller statement, not independent proof.")} <time dateTime={submission.at}>{displayTime(submission.at)}</time></p><code>{submission.deliveryId}</code></> : <p className="version-viewer-help">{tr("没有与此快照版本绑定的交付说明。", "No delivery note is tied to this snapshot version.")}</p>}</div></details>
 
         <details className="version-viewer-details"><summary>{tr(`买家反馈（${feedback.length}）`, `Buyer feedback (${feedback.length})`)}<ChevronDown size={14} aria-hidden="true" /></summary><div className="version-viewer-details-body">{feedback.length ? <ul className="version-viewer-feedback">{feedback.map(item => <li key={item.id}><strong>{tr("验收标准：", "Criterion: ")}{item.criterionId}</strong><p className="version-viewer-text">{item.comment}</p><p className="version-viewer-help"><time dateTime={item.at}>{displayTime(item.at)}</time></p><code>{item.deliveryId}</code></li>)}</ul> : <p className="version-viewer-help">{tr("此快照没有已归档反馈。", "No feedback is archived with this snapshot.")}</p>}</div></details>

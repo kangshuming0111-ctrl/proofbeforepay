@@ -1,6 +1,8 @@
 import type { Language, ProofAssessmentItem, ProofCriterion, ProofDelivery, ProofDeliveryVersion, ProofEvidence, ProofReview } from "./contracts.ts";
 import { assessmentReviewSummary } from "./assessment-display.ts";
 
+export { BUYER_NOODLE_EXAMPLE, buyerProjectTitle, buyerRequirementLines, criterionDisplayDescription, criterionDisplayTitle } from "./requirement-display.ts";
+
 export type OverviewRuleFinding = ProofEvidence["finding"] | "unreviewed";
 export type DeliveryOverviewRow = {
   criterion: ProofCriterion;
@@ -17,15 +19,6 @@ export type DeliveryOverviewInput = {
   manualChecks: string[];
   previousVersion?: ProofDeliveryVersion;
 };
-
-/** Display only: never rewrite the agreed requirement or its stored source reference. */
-export function criterionDisplayTitle(criterion: ProofCriterion, language: Language): string {
-  if (!/^(?:人工要求\s*\d+|Manual requirement\s*\d+)$/iu.test(criterion.title.trim())) return criterion.title;
-  const source = criterion.source.replace(/\s+/gu, " ").trim();
-  if (!source) return language === "zh" ? "已确认的要求" : "Agreed requirement";
-  const characters = Array.from(source);
-  return characters.length > 56 ? `${characters.slice(0, 55).join("")}…` : source;
-}
 
 function rowsFor(input: DeliveryOverviewInput): DeliveryOverviewRow[] {
   const reviewCurrent = input.review?.deliveryId === input.delivery.id;
@@ -110,7 +103,7 @@ export function overviewFeedbackDraft(row: DeliveryOverviewRow, deliveryId: stri
   const zh = language === "zh";
   const introduction = row.rule === "fail"
     ? zh ? "规则核查发现不符，请按已确认的要求修改：\n" : "Rule checks found a mismatch. Please revise against the agreed requirement:\n"
-    : row.ai?.status === "changes_suggested" && ["source-publication-v1", "source-publication-v2"].includes(row.ai.publicationBasis?.schema ?? "")
+    : row.ai?.status === "changes_suggested" && ["source-publication-v1", "source-publication-v2", "source-publication-v3"].includes(row.ai.publicationBasis?.schema ?? "")
       ? zh ? "系统源码核验差异（待买家核对）：\n" : "System source-check difference (for buyer review):\n"
     : row.ai?.status === "changes_suggested"
       ? zh ? "AI 修改建议（待买家核对）：\n" : "AI change suggestion (for buyer review):\n"

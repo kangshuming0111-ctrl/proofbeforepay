@@ -25,7 +25,7 @@ test("one deterministic result keeps rule failure above AI and model suggestions
 });
 
 test("marked source publications change attribution but not counts, inspection identity or rule priority",()=>{
- for(const schema of["source-publication-v1","source-publication-v2"]as const){
+ for(const schema of["source-publication-v1","source-publication-v2","source-publication-v3"]as const){
  const value=input(),item=value.delivery.assessment!.items[0];item.status="changes_suggested";item.publicationBasis={schema,reason:"locked_price_mismatch"};
  value.overview=deliveryOverview({delivery:value.delivery,criteria:value.overview.rows.map(row=>row.criterion),review:{deliveryId:"current",reviewedAt:"2026-11-06T00:00:00Z",mode:"demo",summary:"Synthetic"},manualChecks:[]});
  const before=structuredClone(value);assert.equal(deliveryResultFocus(value).reason,"ai_change");assert.equal(deliveryResultFocus(value).criterionId,"page");assert.match(deliveryResultFocus(value).title,/System source checks published/u);
@@ -134,7 +134,7 @@ test("actual overview keeps one outer inspect button, all original diagnostics m
     // Missing layer callbacks never make the suggested inspection an inert button.
     value.delivery.evidence[0].finding="pass";const noCallback=renderToStaticMarkup(createElement(DeliveryOverview,{...props,onOpenLayout:undefined,language:"en"}));assert.equal((noCallback.slice(0,noCallback.indexOf('<details class="delivery-result-reports">')).match(/<button\b/gu)??[]).length,0);
     // Exercise the actual mixed-report component, preserving the unmarked row's origin.
-    for(const schema of["source-publication-v1","source-publication-v2"]as const)for(const language of["zh","en"]as const){
+    for(const schema of["source-publication-v1","source-publication-v2","source-publication-v3"]as const)for(const language of["zh","en"]as const){
       const mixed=structuredClone(value.delivery),marked=mixed.assessment!.items[0];marked.status="changes_suggested";marked.publicationBasis={schema,reason:"locked_price_mismatch"};
       const other={id:"other",title:"Other requirement",source:"Check another original requirement."};mixed.assessment!.items.push({criterionId:"other",status:"insufficient_evidence",explanation:"Original unknown remains unknown.",citations:[],ruleEvidenceIds:[]});mixed.evidence.push({id:"other-e",criterionId:"other",finding:"pass",file:"index.html",excerpt:"Other source",explanation:"Rule evidence only"});
       const html=renderToStaticMarkup(createElement(DeliveryOverview,{...props,delivery:mixed,criteria:[...props.criteria,other],language}));

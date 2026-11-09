@@ -15,7 +15,7 @@ import {createAssessmentSourceFindingCheck} from "../lib/assessment-source-findi
 import {resolveAssessmentScopeContext} from "../lib/scope-clarifications.ts";
 
 const at="2026-11-07T00:00:00.000Z";
-const policy={schema:"requirement-completeness-v1",version:"bilingual-bounded-v2"} as const;
+const policy={schema:"requirement-completeness-v1",version:"bilingual-bounded-v3"} as const;
 const html=(body:string)=>`<!doctype html><html><head><title>Controlled noodle source</title></head><body>${body}</body></html>`;
 async function scenario({compound=true,template=false,hours=false,typed=true,raw="supported",summaryOverride}:{compound?:boolean;template?:boolean;hours?:boolean;typed?:boolean;raw?:ProofAssessment["items"][number]["status"];summaryOverride?:string}={}){
  const summary=summaryOverride??"菜单的牛肉面和Beef noodles标价必须为AUD18"+(compound?"且营业时间必须为上午11点到晚上8点。":"。"),units=summaryCoverageUnits(summary);
@@ -69,7 +69,7 @@ test("new policy refuses forged whole support even when every price fact is exac
  item.status="supported";delete item.evidenceNeed;item.explanation=item.sourceFinding!.explanation;
  forged.delivery.assessment!.withheldRisks={version:1,reason:"not_withheld",adjustedCriteria:[],entries:[]};
  assert.equal(item.sourceFinding!.status,"supported");assert.equal(await aiCheck(forged),"inconsistent");
- for(const change of[(p:any)=>{p.schema="future";},(p:any)=>{p.version="bilingual-bounded-v3";},(p:any)=>{p.extra=true;},(p:any)=>{delete p.version;}]){
+ for(const change of[(p:any)=>{p.schema="future";},(p:any)=>{p.version="bilingual-bounded-v4";},(p:any)=>{p.version="bilingual-bounded-v2";},(p:any)=>{p.extra=true;},(p:any)=>{delete p.version;}]){
   const altered=structuredClone(bundle);change(altered.delivery.assessment!.requirementCompletenessPolicy);assert.equal(await aiCheck(altered),"inconsistent");
  }
  const noRaw=structuredClone(bundle);delete noRaw.delivery.assessment!.items[0].modelJudgment;assert.equal(await aiCheck(noRaw),"inconsistent");
@@ -135,7 +135,7 @@ test("new bilingual price-only publication replays its named version and cannot 
  }
 });
 
-test("a v1 English unknown and v2 support can coexist without reinterpreting the historical policy",async()=>{
+test("a v1 English unknown and v3 support can coexist without reinterpreting the historical policy",async()=>{
  const{quote,report,item}=await scenario({compound:false,summaryOverride:"The menu must list 牛肉面 and Beef noodles at AUD18.",template:true});
  const criterion=quote.proof.criteria.find(c=>c.id===item.criterionId)!,oldCheck=createRequirementCompletenessCheck({businessSteps:getBusinessCheckPlan(quote),version:"bounded-original-zh-v1"})(criterion);assert.equal(oldCheck.kind,"incomplete");
  const legacy=structuredClone(report);legacy.id="controlled-v1-english-unknown";legacy.requirementCompletenessPolicy={schema:"requirement-completeness-v1",version:"bounded-original-zh-v1"};legacy.publicationPolicy!.reconciledCriterionIds=[];

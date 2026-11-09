@@ -22,11 +22,11 @@ test("four immutable first replies preserve old7/9 records while exactly two pro
    const old=(entry.originalApplication as ProofAssessment).items.find(i=>i.criterionId===item.criterionId)!;assert.deepEqual(item.modelJudgment,old.modelJudgment);
    if(item.criterionId===restoredId){
     assert.equal(old.status,'insufficient_evidence');assert.equal(item.status,'changes_suggested');
-    assert.deepEqual(item.publicationBasis,{schema:'source-publication-v2',reason:expectedReason});
+    assert.deepEqual(item.publicationBasis,{schema:'source-publication-v3',reason:expectedReason});
     assert.equal(item.explanation,item.sourceFinding!.explanation);assert.deepEqual(item.citations,item.sourceFinding!.citations);assert.equal(item.evidenceNeed,undefined);
    }else{assert.equal(item.status,old.status);assert.equal(item.publicationBasis,undefined);}
   }
-  assert.deepEqual(result.publicationPolicy,{schema:'source-publication-v2',reconciledCriterionIds:restoredId?[restoredId]:[]});
+  assert.deepEqual(result.publicationPolicy,{schema:'source-publication-v3',reconciledCriterionIds:restoredId?[restoredId]:[]});
   assert.equal(result.risks.length,0);
   if(restoredId){assert.equal(result.withheldRisks?.reason,'optional_source_leads_unverified');assert.deepEqual(result.withheldRisks!.entries,entry.originalApplication.withheldRisks.entries);}
   for(const ref of entry.reference){const item=result.items.find(i=>i.criterionId===ref.criterionId)!;focused++;rawMatches+=Number(item.modelJudgment?.status===ref.expectedStatus);publishedMatches+=Number(item.status===ref.expectedStatus);sourceMatches+=Number((item.sourceFinding?.status??item.status)===ref.expectedStatus);}

@@ -1000,8 +1000,12 @@ code, pre { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospac
   cursor: pointer; min-height: 40px; padding: 11px 0; font-size: 13px;
   line-height: 1.5; font-weight: 550; color: #45663c;
 }
+.cockpit-grid .scope-criteria > .buyer-scope-criteria-heading {
+  margin: 0; padding: 11px 0; font-size: 13px; line-height: 1.5;
+  font-weight: 600; letter-spacing: 0; color: #45663c;
+}
 .cockpit-grid .scope-criterion { gap: 8px; margin-bottom: 14px; }
-.cockpit-grid .scope-criterion > div { min-width: 0; }
+.cockpit-grid .scope-criterion > div { min-width: 0; overflow-wrap: anywhere; }
 .cockpit-grid .scope-criterion strong,
 .cockpit-grid .scope-criterion p { font-size: 13px; line-height: 1.7; }
 .cockpit-grid .scope-approval { padding: 12px 0; }

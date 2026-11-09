@@ -91,12 +91,20 @@ export function isMenuSourcePublicationSafeV2(files:Record<string,string>,citati
 
 /** Canonical independently rederived fact enters here, never model prose or an
  * unvalidated imported fact. Complete original quotes must cover every owner. */
-export function assessMenuPricePublicationAdmissionV2(files:Record<string,string>,fact:ProofAssessmentSourceFinding|undefined,rawCitations:readonly ProofAssessmentCitation[],coverage:ProofAssessment["coverage"]):boolean{
+function hasCompletePricePublicationEvidence(files:Record<string,string>,fact:ProofAssessmentSourceFinding|undefined,rawCitations:readonly ProofAssessmentCitation[],coverage:ProofAssessment["coverage"], version: "source-finding-v2" | "source-finding-v3", expectedStatus: "supported" | "changes_suggested" = "supported"):boolean{
  const textFile=(file:string)=>["html","css"].includes(staticFileKind(file)??"");
  if(!coverage||coverage.omittedFiles.some(textFile)||coverage.truncatedFiles.some(textFile)
   ||Object.keys(files).filter(textFile).some(file=>!coverage.includedFiles.includes(file))
   ||coverage.includedFiles.filter(textFile).some(file=>!Object.hasOwn(files,file)))return false;
- if(!fact||fact.version!=="source-finding-v2"||fact.status!=="supported"||fact.basis!=="locked_business_values"
+ if(!fact||fact.version!==version||fact.status!==expectedStatus||fact.basis!=="locked_business_values"
   ||!rawCitations.length||rawCitations.length>6||!rawCitations.every(c=>exact(files,c))||!isMenuSourcePublicationSafeV2(files,fact.citations))return false;
  return fact.citations.every(owner=>rawCitations.some(raw=>raw.file===owner.file&&raw.start<=owner.start&&raw.end>=owner.end&&raw.excerpt.slice(owner.start-raw.start,owner.end-raw.start)===owner.excerpt));
+}
+
+export function assessMenuPricePublicationAdmissionV2(files: Record<string, string>, fact: ProofAssessmentSourceFinding | undefined, rawCitations: readonly ProofAssessmentCitation[], coverage: ProofAssessment["coverage"]): boolean {
+  return hasCompletePricePublicationEvidence(files, fact, rawCitations, coverage, "source-finding-v2");
+}
+
+export function assessMenuPricePublicationAdmissionV3(files: Record<string, string>, fact: ProofAssessmentSourceFinding | undefined, rawCitations: readonly ProofAssessmentCitation[], coverage: ProofAssessment["coverage"], expectedStatus: "supported" | "changes_suggested" = "supported"): boolean {
+  return hasCompletePricePublicationEvidence(files, fact, rawCitations, coverage, "source-finding-v3", expectedStatus);
 }

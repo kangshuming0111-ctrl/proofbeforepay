@@ -1,6 +1,7 @@
 import type { ProofAssessment, ProofAssessmentCitation, ProofAssessmentItem, ProofBusinessCheck, ProofEvidenceNeed, ProofQuote } from "./contracts.ts";
-import {assessMenuPricePublicationAdmissionV2} from "./menu-source-publication-v2.ts";
-import {createRequirementCompletenessCheck,requirementCompletenessExplanation} from "./assessment-requirement-completeness.ts";
+import {assessMenuPricePublicationAdmissionV3} from "./menu-source-publication-v2.ts";
+import {createStrictMenuPriceEvidenceCheckV3} from "./menu-dom-source-v3.ts";
+import {BILINGUAL_MENU_PRICE_COMPLETENESS,bilingualMenuPriceOriginal,createRequirementCompletenessCheck,originalBilingualMenuPriceSteps,requirementCompletenessExplanation} from "./assessment-requirement-completeness.ts";
 import { DomainError } from "./domain.ts";
 import { DEFAULT_DEEPSEEK_MODEL, ProviderError, requestJson, type Fetcher, type ProviderEnv } from "./providers.ts";
 import { validateStaticFiles } from "./static-project.ts";
@@ -32,6 +33,7 @@ import {createAssessmentCitationCatalog, resolveCatalogCitations} from "./assess
 import {createAssessmentSourceFindingCheck,sourceFindingVersionForPublication} from "./assessment-source-findings.ts";
 import {createSourcePublicationCheck,type SourcePublicationGuardReason,type SourcePublicationDecision} from "./assessment-source-publication.ts";
 import {resolveScopeClarifications} from "./scope-clarifications.ts";
+import { assessScopedLabelPublication } from "./scoped-label-publication.ts";
 export {AssessmentResponseError} from "./assessment-response.ts";
 
 const CONTROL = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u;
@@ -250,7 +252,10 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
     method: "POST", headers: { Authorization: `Bearer ${env.DEEPSEEK_API_KEY}`, "Content-Type": "application/json" },
     body,
   }, fetcher, 30_000);
-  if (!response.ok) throw new ProviderError("AI source assessment could not complete. The saved rules and buyer decisions remain unchanged.");
+  if (!response.ok) {
+    console.warn("DeepSeek delivery assessment rejected", { status: response.status });
+    throw new ProviderError("AI source assessment could not complete. The saved rules and buyer decisions remain unchanged.");
+  }
   try {
     const completion = assessmentCompletionText(response.data, encoding);
     text(completion.text, 30_000);
@@ -275,12 +280,15 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
     const seen = new Set<string>();
     const exactCopyCheck = createExactCopyEvidenceCheck(sent);
     const presenceCheck = createSourcePresenceEvidenceCheck(sent);
-    const businessEvidenceCheck = createSourceBusinessEvidenceCheck(sent, savedBusinessSteps);
-    const requirementCompletenessCheck = createRequirementCompletenessCheck({businessSteps: savedBusinessSteps, version: "bilingual-bounded-v2"});
-    const sourcePublicationSchema = "source-publication-v2" as const;
+    const businessEvidenceCheck = (encoding === "catalog_slots" ? createStrictMenuPriceEvidenceCheckV3 : createSourceBusinessEvidenceCheck)(sent, savedBusinessSteps);
+    const originalMenuPrice = encoding === "catalog_slots" ? originalBilingualMenuPriceSteps(quote, savedBusinessSteps) : {criterionIds: [], steps: []};
+    const sourceBusinessSteps = [...savedBusinessSteps, ...originalMenuPrice.steps];
+    const requirementCompletenessVersion = originalMenuPrice.criterionIds.length ? BILINGUAL_MENU_PRICE_COMPLETENESS : "bilingual-bounded-v3";
+    const requirementCompletenessCheck = createRequirementCompletenessCheck({businessSteps: savedBusinessSteps, version: requirementCompletenessVersion});
+    const sourcePublicationSchema = "source-publication-v3" as const;
     const positiveLiteralCheck = createPositiveLiteralSourceWitnessCheck(sent, savedBusinessSteps);
-    const independentSourceCheck = createAssessmentSourceFindingCheck({files: sent, coverage, language: quote.language, businessSteps: savedBusinessSteps, scope: confirmedScope, version: sourceFindingVersionForPublication(sourcePublicationSchema)});
-    const sourcePublicationCheck = createSourcePublicationCheck({files: sent, coverage, language: quote.language, businessSteps: savedBusinessSteps, scope: confirmedScope, ruleEvidence: evidence, requirementCompletenessVersion: "bilingual-bounded-v2", publicationSchema: sourcePublicationSchema});
+    const independentSourceCheck = createAssessmentSourceFindingCheck({files: sent, coverage, language: quote.language, businessSteps: sourceBusinessSteps, scope: confirmedScope, version: sourceFindingVersionForPublication(sourcePublicationSchema)});
+    const sourcePublicationCheck = createSourcePublicationCheck({files: sent, coverage, language: quote.language, businessSteps: sourceBusinessSteps, scope: confirmedScope, ruleEvidence: evidence, requirementCompletenessVersion, publicationSchema: sourcePublicationSchema});
     const labelCitationCheck = createAssessmentLabelCitationCheck(sent);
     const labelSourceFactsCheck = createAssessmentLabelSourceFactsCheck(sent, coverage);
     const nativeCitationCheck = createNativeFormCitationCheck(sent);
@@ -299,6 +307,8 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
       const modelJudgment = {status, explanation: originalExplanation, citations: structuredClone(checkedCitations)};
       let evidenceNeed: ProofEvidenceNeed | undefined;
       let labelCitationAdjusted = false;
+      let scopedLabelWitnessed = false;
+      let scopedLabelFinding: ProofAssessmentItem["sourceFinding"];
       let sourcePublicationGuard: SourcePublicationGuardReason | undefined;
       let positivePublication: SourcePublicationDecision | undefined;
       let positiveFallback: {explanation: string; citations: ProofAssessmentCitation[]; evidenceNeed?: ProofEvidenceNeed} | undefined;
@@ -307,6 +317,62 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
       };
       const related = evidence.filter(entry => entry.criterionId === criterion.id);
       const scope = assessmentEvidenceScope(criterion);
+      if (originalMenuPrice.criterionIds.includes(criterion.id) && !related.some(entry => entry.finding === "fail")) {
+        const target = originalMenuPrice.steps.find(step => step.criterionId === criterion.id)?.file;
+        const sourceFinding = independentSourceCheck(criterion);
+        const base = {criterionId: criterion.id, ruleEvidenceIds: related.map(entry => entry.id),
+          obligations: deriveAssessmentObligations(criterion), modelJudgment, ...(sourceFinding ? {sourceFinding} : {})};
+        const publication = status === "insufficient_evidence" ? undefined : sourcePublicationCheck(criterion, {
+          rawStatus: status, rawCitations: checkedCitations, guardedStatus: "insufficient_evidence",
+          guardReason: status === "supported" ? "locked_price_match" : "locked_price_mismatch",
+        });
+        if (publication) return {...base, ...publication};
+
+        const priceLabels = bilingualMenuPriceOriginal(criterion.source)!.labels.map(label => `「${label}」`);
+        const labels = priceLabels.join(" / ");
+        const scoped = confirmedScope?.states.find(state => state.criterionId === criterion.id);
+        const binding = confirmedScope?.bindings.find(state => state.criterionId === criterion.id);
+        const uncitedOwners = sourceFinding?.citations.flatMap((owner, index) => checkedCitations.some(raw => raw.file === owner.file && raw.start <= owner.start && raw.end >= owner.end) ? [] : [priceLabels[index]]) ?? [];
+        let reason: ProofEvidenceNeed["reason"];
+        if (originalMenuPrice.criterionIds.length > 1) {
+          reason = "requirement_clarification";
+          explanation = words(quote,
+            "原文包含多条双语菜单价格要求。请双方逐条确认菜名、金额和适用范围，再核对各条对应的交付证据。",
+            "The locked wording contains several bilingual menu-price requirements. Confirm the names, amounts and scope of each before reviewing its delivery evidence.");
+        } else if (!target || scoped && scoped.status !== "none" && (scoped.status !== "confirmed" || binding?.file !== target)) {
+          reason = "page_scope";
+          explanation = words(quote,
+            "请先核对已锁定原文中菜单页对应的确切交付文件，然后在该页分别核对两种语言的菜名和金额。",
+            "First confirm the exact delivered file for the locked menu-page requirement. Then inspect both named item prices in that page.");
+        } else if (!Object.hasOwn(sent, target) || !sourceFinding || sourceFinding.status === "insufficient_evidence" || sourceFinding.citations.length !== 2) {
+          reason = "source_ambiguity";
+          explanation = words(quote,
+            `请打开 ${target} 核对 ${labels} 各自对应的金额和币种。请卖家补齐缺失的页面或提供能看清两种菜名及各自价格的当前版预览。`,
+            `Open ${target} and inspect the currency and amount attached to each of ${labels}. Ask the seller for the missing page or a current-version preview that shows each name with its own price.`);
+        } else if (!checkedCitations.some(citation => citation.file === target)) {
+          reason = checkedCitations.length ? "page_citations" : "no_citations";
+          explanation = words(quote,
+            `报告未引用菜单文件 ${target}。请打开该页，分别核对 ${labels} 的完整菜名和对应金额。`,
+            `The report has no quotation from ${target}. Open that page and inspect the full name and associated amount for each of ${labels}.`);
+        } else if (uncitedOwners.length) {
+          reason = "field_relationship";
+          explanation = words(quote,
+            `当前引用缺少 ${target} 中 ${uncitedOwners.join(" / ")} 的完整价格段。请打开该页，补充能同时对应菜名、币种和金额的原文。`,
+            `The quotations lack the complete price block for ${uncitedOwners.join(" / ")} in ${target}. Open that page and supply the passage containing the name, currency and amount together.`);
+        } else if (status !== sourceFinding.status) {
+          reason = "model_unresolved";
+          explanation = words(quote,
+            `模型判断与独立源码检查尚未形成一致结论。请打开 ${target}，核对 ${labels} 各自的实际金额和币种。`,
+            `The model and independent source check have no matching conclusion. Open ${target} and review the currency and amount for each of ${labels}.`);
+        } else {
+          reason = "source_ambiguity";
+          explanation = words(quote,
+            `源码结构或样式仍需核对。请打开当前版 ${target} 的浏览器预览，分别查看 ${labels} 及其对应金额和币种。`,
+            `The source structure or styling still needs review. Open the current browser preview of ${target} and inspect ${labels} with their respective amounts and currencies.`);
+        }
+        return {...base, status: "insufficient_evidence", explanation, citations: checkedCitations,
+          evidenceNeed: makeAssessmentEvidenceNeed(reason, target ? [target] : [], sent)};
+      }
       if (related.some(entry => entry.finding === "fail")) {
         status = "changes_suggested";
         explanation = words(quote, "服务端规则已发现本项未通过。请先修复对应规则证据中的问题；AI 源码建议不能覆盖该结果。", "Server rules found a failed check for this requirement. Resolve the linked rule evidence first; AI source suggestions cannot override it.");
@@ -446,7 +512,31 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
               "The source and citations do not completely witness this criterion's named file, labels, control names and declared attributes in their agreed owners. Static compliance is not established. Check the complete scoped source relationship. This is insufficient evidence, not proof of missing delivery, visibility, validation, submission or persistence; requirements and citations are unchanged.");
           }
         }
-        if (status === "supported") {
+        if (encoding === "catalog_slots" && status === "supported"
+          && confirmedScope?.states.some(state => state.criterionId === criterion.id && state.status !== "none")) {
+          scopedLabelFinding = independentSourceCheck(criterion);
+          const scoped = assessScopedLabelPublication(criterion, confirmedScope, scopedLabelFinding, modelJudgment, sent);
+          if (scoped.kind === "witnessed") {
+            scopedLabelWitnessed = true;
+            explanation = scoped.explanation;
+            checkedCitations = scoped.citations;
+          } else if (scoped.kind !== "not_applicable") {
+            status = "insufficient_evidence";
+            checkedCitations = [];
+            if (scoped.kind === "unresolved_scope") {
+              need("page_scope");
+              explanation = words(quote,
+                "本项页面或表单的当前范围尚未确认。请先确认双方约定的目标，再复核标签源码。",
+                "The current page or form scope is unresolved. Confirm the agreed target before checking its declared labels.");
+            } else {
+              need("field_relationship", [scoped.file]);
+              explanation = words(quote,
+                "当前源码和原始引文尚未共同证实双方确认范围内的完整标签。请核对已确认的页面或表单，并补充该处的准确引文。",
+                "The source and original citations do not establish the complete label group in the agreed scope. Check the confirmed page or form and provide exact citations there.");
+            }
+          }
+        }
+        if (status === "supported" && !scopedLabelWitnessed) {
           const labelCoverage = labelCitationCheck(criterion, checkedCitations);
           if (labelCoverage.kind === "incomplete" || labelCoverage.kind === "unknown") {
             status = "insufficient_evidence";
@@ -510,6 +600,7 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
           }
         }
         if (encoding === "catalog_slots" && status !== "insufficient_evidence"
+          && !(status === "supported" && scopedLabelWitnessed)
           && !savedBusinessSteps.some(step => step.criterionId === criterion.id)) {
           const fact = labelSourceFactsCheck(criterion, checkedCitations, status);
           if (fact.kind !== "not_applicable") {
@@ -522,7 +613,7 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
           }
         }
       }
-      let sourceFinding = encoding === "catalog_slots" ? independentSourceCheck(criterion) : undefined;
+      let sourceFinding = encoding === "catalog_slots" ? scopedLabelFinding ?? independentSourceCheck(criterion) : undefined;
       let sourcePublication = encoding === "catalog_slots" ? sourcePublicationCheck(criterion, {
         rawStatus: modelJudgment.status, rawCitations: modelJudgment.citations,
         guardedStatus: status, guardReason: sourcePublicationGuard,
@@ -557,7 +648,7 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
         }
       }
       if (encoding === "catalog_slots" && status === "supported" && savedBusinessSteps.some(step => step.criterionId === criterion.id && step.expected.kind === "item_price")
-        && !assessMenuPricePublicationAdmissionV2(sent, sourceFinding, modelJudgment.citations, coverage)) {
+        && !assessMenuPricePublicationAdmissionV3(sent, sourceFinding, modelJudgment.citations, coverage)) {
         status = "insufficient_evidence";
         explanation = words(quote,
           "已核对的价格声明单独保留，但当前同页完整对象、原始引用或 HTML／CSS 尚未满足本次有限静态发布门槛。请核对相应完整来源或补实际浏览器观察；这不证明页面已隐藏、价格做错、运行成功或交付失败。",
@@ -608,7 +699,7 @@ async function assessDeliveryWithEncoding(quote: ProofQuote, env: ProviderEnv, f
     limitations.push(words(quote, "AI 建议与服务端规则分开记录。人工检查和最终验收由买家完成，不会自动验收、授权或付款。", "AI suggestions are separate from server rules. The buyer completes human checks and final acceptance; no acceptance, authorization or payment is automatic."));
     if (Object.keys(files).some(file => !["html", "css"].includes(staticFileKind(file) ?? ""))) limitations.push(words(quote, "文件清单中的图片已经交付，但像素未送交 AI 分析；从文本分析范围省略不等于图片文件缺失或显示失败。", "Raster files in the inventory were delivered, but their pixels were not sent to AI. Omission from text-source coverage does not mean an image file is missing or failed to display."));
     const tokenUsage = usage(response.data.usage, outputTokenLimit, promptTokenUpperEstimate);
-    return { id: crypto.randomUUID(), deliveryId: delivery.id, method: "source-ai-v1", mode: "live", model, assessedAt: new Date().toISOString(), items, risks: publication.risks, limitations, coverage, ...(encoding === "catalog_slots" ? {publicationPolicy: {schema: sourcePublicationSchema, reconciledCriterionIds: items.filter(item => item.publicationBasis).map(item => item.criterionId)}, requirementCompletenessPolicy: {schema: "requirement-completeness-v1", version: "bilingual-bounded-v2"}} : {}), ...(confirmedScope ? {scopeContext: {digest: confirmedScope.contextDigest, ...confirmedScope.stamp}} : {}), ...(publication.withheldRisks ? {withheldRisks: publication.withheldRisks} : {}), ...(tokenUsage ? { usage: tokenUsage } : {}) };
+    return { id: crypto.randomUUID(), deliveryId: delivery.id, method: "source-ai-v1", mode: "live", model, assessedAt: new Date().toISOString(), items, risks: publication.risks, limitations, coverage, ...(encoding === "catalog_slots" ? {publicationPolicy: {schema: sourcePublicationSchema, reconciledCriterionIds: items.filter(item => item.publicationBasis).map(item => item.criterionId)}, requirementCompletenessPolicy: {schema: "requirement-completeness-v1", version: requirementCompletenessVersion}} : {}), ...(confirmedScope ? {scopeContext: {digest: confirmedScope.contextDigest, ...confirmedScope.stamp}} : {}), ...(publication.withheldRisks ? {withheldRisks: publication.withheldRisks} : {}), ...(tokenUsage ? { usage: tokenUsage } : {}) };
   } catch (error) {
     if (error instanceof AssessmentResponseError) throw error;
     throw failure();

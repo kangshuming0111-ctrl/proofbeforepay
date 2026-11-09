@@ -4,13 +4,14 @@
 import { spawn, spawnSync } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
 import { once } from "node:events";
-import { access, mkdir, mkdtemp, open, readFile, readdir, realpath, rename, symlink, writeFile } from "node:fs/promises";
+import { access, mkdir, mkdtemp, open, readFile, readdir, realpath, symlink, writeFile } from "node:fs/promises";
 import { constants } from "node:fs";
 import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { collectPublicSource } from "./build-judge-pack.mjs";
+import { releaseFingerprint } from "./release-fingerprint.mjs";
 
 const REPO = fileURLToPath(new URL("../", import.meta.url));
 const PNPM = "11.25.0";
@@ -51,12 +52,12 @@ export function cleanJudgeEnvironment(input, runDirectory, node = process.execPa
 
 export function judgeConfig(nonce, port) {
   if (!/^[0-9a-f-]{36}$/u.test(nonce) || !Number.isInteger(port) || port < 1 || port > 65535) throw new Error("Invalid local judge readiness settings.");
-  return `// Generated only inside this isolated judge session. Never used for deployment.\nimport original from "./vite.original.config";\nimport { defineConfig } from "vite";\nexport default defineConfig(async context => {\n  const base = typeof original === "function" ? await original(context) : await original;\n  return { ...base, server: { ...base.server, host: "127.0.0.1", port: ${port}, strictPort: true }, plugins: [\n    { name: "judge-session-readiness", enforce: "pre", configureServer(server) { server.middlewares.use((request, response, next) => {\n      if (request.url?.split("?")[0] !== "/__proofbeforepay_judge_ready") return next();\n      response.setHeader("Content-Type", "application/json"); response.setHeader("Cache-Control", "no-store"); response.end(JSON.stringify({ session: ${JSON.stringify(nonce)}, pid: process.pid, providerFree: true }));\n    }); } }, ...(base.plugins ?? []) ] };\n});\n`;
+  return `// Generated only inside this isolated judge session. Never used for deployment.\nimport original from "./vite.config";\nimport { defineConfig } from "vite";\nexport default defineConfig(async context => {\n  const base = typeof original === "function" ? await original(context) : await original;\n  return { ...base, server: { ...base.server, host: "127.0.0.1", port: ${port}, strictPort: true }, plugins: [\n    { name: "judge-session-readiness", enforce: "pre", configureServer(server) { server.middlewares.use((request, response, next) => {\n      if (request.url?.split("?")[0] !== "/__proofbeforepay_judge_ready") return next();\n      response.setHeader("Content-Type", "application/json"); response.setHeader("Cache-Control", "no-store"); response.end(JSON.stringify({ session: ${JSON.stringify(nonce)}, pid: process.pid, providerFree: true }));\n    }); } }, ...(base.plugins ?? []) ] };\n});\n`;
 }
 
 /** Read-only readiness on the exact reserved loopback origin. A unique generated
  * middleware marker prevents accidentally reporting an unrelated service ready. */
-export async function verifyJudgeReady(origin, nonce, expectedPid, fetcher = fetch, observe = () => {}) {
+export async function verifyJudgeReady(origin, nonce, expectedPid, expectedSource, fetcher = fetch, observe = () => {}) {
   const url = new URL(origin);
   if (url.protocol !== "http:" || url.hostname !== "127.0.0.1" || !url.port || url.username || url.password || url.pathname !== "/" || url.search || url.hash) throw new Error("Judge readiness requires an exact loopback origin.");
   const request = async (route, extra = {}) => {
@@ -76,6 +77,11 @@ export async function verifyJudgeReady(origin, nonce, expectedPid, fetcher = fet
   const config = await json(configResponse, "Provider configuration");
   if (!config) return false;
   if (config.aiMode !== "demo" || config.paymentMode !== "demo") throw new Error("The isolated session unexpectedly enabled a live provider; it will be stopped.");
+  const release = await json(await request("/api/release"), "Local source fingerprint");
+  if (!release) return false;
+  if (release.schema !== expectedSource.schema || release.sha256 !== expectedSource.sha256 || release.files !== expectedSource.files) {
+    throw new Error("The isolated app source fingerprint did not match the copied source; it will be stopped.");
+  }
   // Exercise the existing development-only sign-in. This neither logs in to
   // ChatGPT nor creates a real user. The browser later uses this same entry URL.
   const signIn = await request("/signin-with-chatgpt?return_to=/");
@@ -203,6 +209,7 @@ export async function startJudgeDemo({ sourceRoot = REPO, inputEnv = process.env
     onStatus("Preparing an isolated, provider-free copy…");
     const pack = await prepareJudgeSource(sourceRoot, runDirectory);
     const source = pack.sourceDirectory;
+    const expectedSource = await releaseFingerprint(source);
     // Only dependency code is reused. The running project's source, runtime
     // state and environment files are never symlinked into this session.
     if (await exists(path.join(sourceRoot, "node_modules", "vinext", "package.json")) && await exists(path.join(sourceRoot, "node_modules", "wrangler", "package.json"))) {
@@ -231,10 +238,10 @@ export async function startJudgeDemo({ sourceRoot = REPO, inputEnv = process.env
       await run(process.execPath, [...wrangler, "d1", "execute", "DB", "--local", "--config", "dist/server/wrangler.json", "--persist-to", ".wrangler/state", "--file", `drizzle/${name}`], source, `migration-${name}.log`);
     }
     const port = await reservePort(), nonce = randomUUID(), origin = `http://127.0.0.1:${port}`;
-    await rename(path.join(source, "vite.config.ts"), path.join(source, "vite.original.config.ts"));
-    await writeFile(path.join(source, "vite.config.ts"), judgeConfig(nonce, port), {flag:"wx", mode:0o600});
+    const readinessConfig = "vite.judge.config.ts";
+    await writeFile(path.join(source, readinessConfig), judgeConfig(nonce, port), {flag:"wx", mode:0o600});
     serverLog = await open(path.join(runDirectory, "server.log"), "wx", 0o600);
-    server = spawn(process.execPath, ["--import", "./scripts/sites-env.mjs", "./node_modules/vinext/dist/cli.js", "dev", "--port", String(port), "--hostname", "127.0.0.1"], {cwd:source, env, detached:true, stdio:["ignore", serverLog.fd, serverLog.fd]});
+    server = spawn(process.execPath, ["--import", "./scripts/sites-env.mjs", "./node_modules/vite/bin/vite.js", "--config", readinessConfig], {cwd:source, env, detached:true, stdio:["ignore", serverLog.fd, serverLog.fd]});
     ownedGroups.add(server);
     let serverSpawnError;
     server.once("error", error => { serverSpawnError = error; });
@@ -243,13 +250,13 @@ export async function startJudgeDemo({ sourceRoot = REPO, inputEnv = process.env
     let ready = false, lastReadiness = "The server has not answered its readiness marker";
     while (!ready && Date.now() < deadline && !stopping && !signal?.aborted) {
       if (serverSpawnError || server.exitCode !== null || server.signalCode !== null) break;
-      try { ready = await verifyJudgeReady(origin, nonce, server.pid, fetch, message => { lastReadiness = message; }); }
-      catch (error) { if (error.message.includes("unexpectedly enabled")) throw error; }
+      try { ready = await verifyJudgeReady(origin, nonce, server.pid, expectedSource, fetch, message => { lastReadiness = message; }); }
+      catch (error) { if (error.message.includes("it will be stopped")) throw error; }
       if (!ready) await sleep(250);
     }
     if (!ready) throw new Error(`The isolated app did not become ready. Last check: ${lastReadiness}. Inspect ${path.join(runDirectory, "server.log")}. No unrelated process was stopped; rerun to use a fresh port and database.`);
     const readyRecord = {origin, entryUrl:`${origin}/signin-with-chatgpt?return_to=/`, runDirectory, sourceDirectory:source, serverPid:server.pid,
-      providers:"disabled", auth:"existing loopback-only fixed development account", database:"fresh isolated D1", sourceExportFiles:pack.files,
+      providers:"disabled", auth:"existing loopback-only fixed development account", database:"fresh isolated D1", sourceExportFiles:pack.files, applicationSource:expectedSource,
       mode:smoke ? "readiness-smoke" : "interactive", realModelOrPaymentCalls:0};
     await writeFile(path.join(runDirectory, "ready.json"), JSON.stringify(readyRecord, null, 2) + "\n", {flag:"wx", mode:0o600});
     onStatus(smoke ? `Readiness verified; stopping this smoke-check session. Logs: ${runDirectory}` : `\nReady — open this local demo:\n${readyRecord.entryUrl}\n\nNo API keys or real sign-in are required. This fixed local account is not a second real user.\nAI and payments are simulated; no model or PayPal calls occur.\nSession files and logs: ${runDirectory}\nPress Ctrl+C here to stop only this demo. Running the command again starts a fresh session.\n`);

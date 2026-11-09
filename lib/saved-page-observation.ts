@@ -26,13 +26,13 @@ async function exactText(response: Response, source: string) {
   return new TextDecoder("utf-8", {fatal: true, ignoreBOM: true}).decode(await response.arrayBuffer()) === source;
 }
 /** Only a canonical saved file URL can be fetched or activated by this probe. */
-export function savedBrowserFile(quote: ProofQuote, url: URL, origin: string): string | undefined {
+export function savedBrowserFile(quote: ProofQuote, url: URL, origin: string, archived = false): string | undefined {
   if (url.origin !== origin || url.search || url.username || url.password) return undefined;
-  return Object.keys(quote.proof.delivery?.files ?? {}).find(file => new URL(deliveryFileUrl(quote.id, quote.proof.delivery!.id, file), origin).pathname === url.pathname);
+  return Object.keys(quote.proof.delivery?.files ?? {}).find(file => new URL(deliveryFileUrl(quote.id, quote.proof.delivery!.id, file, archived), origin).pathname === url.pathname);
 }
 export type Snapshot = {frame: HTMLIFrameElement; doc: Document; url: URL; assertCurrent: () => void; verifyStyles: () => Promise<{expected: number; loaded: number}>};
-export async function verifyTextFile(quote: ProofQuote, url: URL, kind: "html" | "css", signal: AbortSignal) {
-  const delivery = quote.proof.delivery!, file = savedBrowserFile(quote, url, window.location.origin);
+export async function verifyTextFile(quote: ProofQuote, url: URL, kind: "html" | "css", signal: AbortSignal, archived = false) {
+  const delivery = quote.proof.delivery!, file = savedBrowserFile(quote, url, window.location.origin, archived);
   if (!file || staticFileKind(file) !== kind) throw new Unavailable("unsupported_target");
   const response = await fetch(url, {credentials: "same-origin", redirect: "error", cache: "no-store", signal});
   if (!response.ok) throw new Unavailable(response.status === 401 || response.status === 403 ? "access_denied" : "load_failed");
@@ -40,10 +40,10 @@ export async function verifyTextFile(quote: ProofQuote, url: URL, kind: "html" |
     || response.headers.get("X-ProofBeforePay-Delivery") !== delivery.id || !await exactText(response, delivery.files![file])) throw new Unavailable("snapshot_mismatch");
   return delivery.files![file];
 }
-export async function snapshot<T>(quote: ProofQuote, file: string, width: number, signal: AbortSignal, inspect: (value: Snapshot) => Promise<T>): Promise<T> {
+export async function snapshot<T>(quote: ProofQuote, file: string, width: number, signal: AbortSignal, inspect: (value: Snapshot) => Promise<T>, archived = false): Promise<T> {
   if (!Object.hasOwn(quote.proof.delivery?.files ?? {}, file)) throw new Unavailable("missing_file");
-  const url = new URL(deliveryFileUrl(quote.id, quote.proof.delivery!.id, file), window.location.origin);
-  const source = await verifyTextFile(quote, url, "html", signal);
+  const url = new URL(deliveryFileUrl(quote.id, quote.proof.delivery!.id, file, archived), window.location.origin);
+  const source = await verifyTextFile(quote, url, "html", signal, archived);
   const expected = new DOMParser().parseFromString(source.replace(/^\uFEFF/u, ""), "text/html");
   if ([...expected.querySelectorAll('meta[http-equiv]')].some(meta => meta.getAttribute("http-equiv")?.toLowerCase() === "refresh")) throw new Unavailable("unsupported_target");
   const frame = document.createElement("iframe");
@@ -72,8 +72,8 @@ export async function snapshot<T>(quote: ProofQuote, file: string, width: number
           verified.add(sheet.href);
           if (verified.size > BROWSER_RESOURCE_LIMIT) throw new Unavailable("resource_limit");
           const cssUrl = new URL(sheet.href, url);
-          if (!findSavedLayoutStylesheet(quote.proof.delivery!.files!, quote.id, quote.proof.delivery!.id, cssUrl, url.origin)) return false;
-          try {await verifyTextFile(quote, cssUrl, "css", signal);} catch (error) {if (error instanceof Unavailable && error.reason === "load_failed") return false; throw error;}
+          if (archived ? staticFileKind(savedBrowserFile(quote, cssUrl, url.origin, true) ?? "") !== "css" : !findSavedLayoutStylesheet(quote.proof.delivery!.files!, quote.id, quote.proof.delivery!.id, cssUrl, url.origin)) return false;
+          try {await verifyTextFile(quote, cssUrl, "css", signal, archived);} catch (error) {if (error instanceof Unavailable && error.reason === "load_failed") return false; throw error;}
         }
         let rules: CSSRuleList;
         try {rules = sheet.cssRules;} catch {return false;}

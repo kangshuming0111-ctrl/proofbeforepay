@@ -5,8 +5,9 @@ import { ArrowUpRight, Check, ChevronDown, Copy, History, Link2, LoaderCircle, S
 import type { Language, ProofDeliveryVersion, ProofQuote, ProofRole } from "@/lib/contracts";
 import {emptyFeedbackDraft,feedbackDraftReducer} from "@/lib/feedback-draft";
 import { criterionDisplayTitle } from "@/lib/delivery-overview";
+import { SellerRevisionFeedback } from "./SellerRevisionFeedback";
 
-export type FeedbackSuggestion = { quoteId: string; deliveryId: string; criterionId: string; comment: string; serial: number; journeyReportId?: string; modelReportId?: string; riskSource?: {assessmentId:string;riskIndex:number} };
+export type FeedbackSuggestion = { quoteId: string; deliveryId: string; criterionId: string; comment: string; serial: number; startBlank?: true; journeyReportId?: string; modelReportId?: string; riskSource?: {assessmentId:string;riskIndex:number} };
 export type CollaborationHistoryHandle = { quoteId: string; reveal: () => void };
 
 export type CollaborationPanelProps = {
@@ -54,6 +55,7 @@ export function CollaborationPanel({ quote, role, language, busy, invitation, ve
   const frozen = Boolean(quote.proof.paymentOperation || authorizationExpired || quote.status === "paid" || ["captured", "voided", "closed_unpaid"].includes(quote.proof.paymentState));
   const canInvite = !demoRoleplay && isBuyer && stage === "awaiting_seller" && !collaboration?.sellerJoinedAt && quote.status === "approved" && quote.proof.paymentState === "unfunded" && !quote.paypalOrderId && !frozen;
   const sellerEditing = !isBuyer && (stage === "in_progress" || stage === "changes_requested");
+  const explainingReturnedStatic = stage === "changes_requested" && !!quote.proof.project;
   const buyerReviewing = isBuyer && stage === "submitted";
   const currentSubmission = collaboration?.submission?.deliveryId === delivery?.id ? collaboration?.submission : undefined;
   const [email, setEmail] = useState(invitation?.email ?? "");
@@ -130,13 +132,13 @@ export function CollaborationPanel({ quote, role, language, busy, invitation, ve
     if(riskRef && (technical||modelTechnical||riskRef.assessmentId!==delivery?.assessment?.id||!Number.isSafeInteger(riskRef.riskIndex)||riskRef.riskIndex<0||riskRef.riskIndex>=delivery.assessment.risks.length))return;
 
     const comment = feedbackSuggestion.comment.slice(0, 1000).replace(/[\uD800-\uDBFF]$/u, "");
-    if (!comment.trim()) return;
+    if (!comment.trim() && (!feedbackSuggestion.startBlank || technical || modelTechnical || riskRef)) return;
     pendingCommentFocus.current = criterionId;
     // Consume an explicit user command once; this is not display state derived on every refresh.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedCriteria(current => ({ ...current, [criterionId]: true }));
     // Existing text always wins. Repeated suggestions never append or overwrite it.
-    dispatchDraft({type:"suggest",criterionId,comment,...(riskRef?{riskSource:riskRef}:{})});
+    if (comment.trim()) dispatchDraft({type:"suggest",criterionId,comment,...(riskRef?{riskSource:riskRef}:{})});
     if (technical) setJourneyDraftReportId(current => current ?? feedbackSuggestion.journeyReportId);
     if (modelTechnical) setModelDraftReportId(current=>current??feedbackSuggestion.modelReportId);
     setSuggestionNotice(true);
@@ -184,7 +186,12 @@ export function CollaborationPanel({ quote, role, language, busy, invitation, ve
   const allFeedback = [...feedbackById.values()].sort((a, b) => a.at.localeCompare(b.at));
   const currentFeedback = allFeedback.filter(item => item.deliveryId === delivery?.id);
   const historicalFeedback = allFeedback.filter(item => item.deliveryId !== delivery?.id);
-  const criterionTitle = (criterionId: string) => criterionId === "model-agreement" ? tr("附加技术协议 · 并发状态", "Additional technical agreement · concurrent state") : criterionId === "journey-agreement" ? tr("附加技术协议 · 业务旅程", "Additional technical agreement · business journey") : criteria.find(criterion => criterion.id === criterionId)?.title ?? criterionId;
+  const criterionTitle = (criterionId: string) => {
+    if (criterionId === "model-agreement") return tr("附加技术协议 · 并发状态", "Additional technical agreement · concurrent state");
+    if (criterionId === "journey-agreement") return tr("附加技术协议 · 业务旅程", "Additional technical agreement · business journey");
+    const criterion = criteria.find(item => item.id === criterionId);
+    return criterion ? criterionDisplayTitle(criterion, language) : criterionId;
+  };
   const feedbackList = (items: typeof allFeedback) => <ul className="collaboration-feedback-list">
     {items.map(item => <li key={item.id}>
       <strong>{criterionTitle(item.criterionId)}</strong>
@@ -229,13 +236,15 @@ export function CollaborationPanel({ quote, role, language, busy, invitation, ve
       </div>}
 
       {sellerEditing && <div className="collaboration-action">
-        <h4>{stage === "changes_requested" ? tr("修改后重新提交验收", "Resubmit after making changes") : tr("提交给买家验收", "Submit for buyer review")}</h4>
+        <h4>{explainingReturnedStatic ? tr("为当前版本补充说明", "Explain the current version") : stage === "changes_requested" ? tr("修改后重新提交验收", "Resubmit after making changes") : tr("提交给买家验收", "Submit for buyer review")}</h4>
+        {delivery && quote.proof.project && stage === "in_progress" && <SellerRevisionFeedback feedback={collaboration?.feedback ?? []} criteria={criteria} currentDeliveryId={delivery.id} current={false} language={language}/>}
+        {explainingReturnedStatic && <p className="collaboration-help">{tr("这里会重新提交当前版本。如果修改了网站文件，请先从上传入口保存修正版。", "This form resubmits the current version. If you changed website files, save the revision from the upload panel first.")}</p>}
         <form className="collaboration-submission-form no-print" onSubmit={submit}>
           <label htmlFor={`${id}-submission-note`}>{tr("交付说明", "Delivery note")}</label>
           <textarea id={`${id}-submission-note`} required maxLength={2000} value={note} onChange={event => setNote(event.target.value)} disabled={busy || frozen} rows={3} aria-describedby={`${id}-seller-note-help ${id}-submit-help`} placeholder={tr("说明交付了什么，以及如何回应买家的反馈。", "Describe what you delivered and how you addressed the buyer's feedback.")} />
           <div className="collaboration-field-meta"><span id={`${id}-seller-note-help`}>{tr("卖家陈述，不是独立验证结果。", "A seller statement, not independent verification.")}</span><span>{note.length} / 2000</span></div>
           <p className="collaboration-help" id={`${id}-submit-help`}>{!delivery ? tr("先上传交付文件，并核查当前版本。", "Upload your delivery files and review the current version first.") : !reviewCurrent ? tr("请先核查当前交付版本，再提交验收。", "Review the current delivery version before submitting it.") : !note.trim() ? tr("填写交付说明后，可提交此版本验收。", "Add a delivery note to submit this version for review.") : tr("提交将绑定当前交付版本，等待买家审核。", "Submission is tied to this delivery version and awaits the buyer's review.")}</p>
-          <button className="collaboration-button" type="submit" disabled={busy || frozen || !submitReady}><Send size={14} aria-hidden="true" />{tr("提交验收", "Submit for review")}</button>
+          <button className="collaboration-button" type="submit" disabled={busy || frozen || !submitReady}><Send size={14} aria-hidden="true" />{explainingReturnedStatic ? tr("提交当前版本和说明", "Resubmit this version with note") : tr("提交验收", "Submit for review")}</button>
         </form>
       </div>}
 
@@ -250,14 +259,14 @@ export function CollaborationPanel({ quote, role, language, busy, invitation, ve
       </details>}
 
       {buyerReviewing && <div className="collaboration-action">
-        <h4>{tr("审核当前交付", "Review this delivery")}</h4>
-        <div className="collaboration-accept no-print"><button className="collaboration-button" type="button" disabled={busy || frozen || !delivery || !reviewCurrent} onClick={onAccept}>{tr("接受交付…", "Accept delivery…")}</button><p className="collaboration-help">{tr("继续到人工核查与确认。接受交付不付款。", "Continue to human checks and confirmation. Accepting the delivery does not make a payment.")}</p></div>
+        <h4>{tr("这个版本可以收下吗？", "Ready to accept this version?")}</h4>
+        <div className="collaboration-accept no-print"><button className="collaboration-button" type="button" disabled={busy || frozen || !delivery || !reviewCurrent} onClick={onAccept}>{tr("接受交付…", "Accept delivery…")}</button><p className="collaboration-help">{tr("先确认网站是否合适；付款要另点确认。", "Confirm the website meets your needs. Payment is a separate step.")}</p></div>
         <form className="collaboration-return-form no-print" onSubmit={returnDelivery}>
           <fieldset disabled={busy || frozen || !delivery}>
-            <legend>{tr("或按验收标准退回修改", "Or request changes against the acceptance criteria")}</legend>
-            <p className="collaboration-help" id={`${id}-return-help`}>{tr("选择至少一项并填写具体意见，每条最多 1000 字。草稿仅保留在本页，点击退回后才提交。", "Select at least one criterion and add a specific comment, up to 1000 characters each. Drafts stay on this page until you request changes.")}</p>
-            {suggestionNotice && Object.keys(selectedCriteria).some(key=>selectedCriteria[key]&&comments[key]?.length) && <p className="collaboration-suggestion-notice" role="status" aria-live="polite">{tr("已定位修改草稿，已有文字保持不变。请核对和编辑，点击“退回修改”后才提交。", "The change draft is ready to review; existing text is preserved. Check and edit it, then click Request changes to send it.")}</p>}
-            {riskDraftConflict&&<p className="collaboration-help" role="status"><strong>{criteria.filter(c=>riskDraftConflicts[c.id]).map(c=>c.title).join("; ")}: </strong>{tr("该标准已有草稿，文字和原有关联保持不变，本次 AI 来源未添加。需要换关联时先清空这一条草稿，再重新准备。","This criterion already has a draft. Its text and existing link were preserved; this AI source was not attached. Clear that draft before preparing a different link.")}</p>}
+            <legend>{tr("需要卖家改哪里？", "What should the seller fix?")}</legend>
+            <p className="collaboration-help" id={`${id}-return-help`}>{tr("勾选要改的项目，再写清楚哪里不对、希望改成什么。点「退回修改」才会发给卖家。", "Select what needs fixing. Say what’s wrong and what you’d like instead. Click ‘Request changes’ to send it to the seller.")}</p>
+            {suggestionNotice && Object.keys(selectedCriteria).some(key=>selectedCriteria[key]&&comments[key]?.length) && <p className="collaboration-suggestion-notice" role="status" aria-live="polite">{tr("已准备好草稿。检查或修改后，点「退回修改」发送。", "Your draft is ready. Review or edit it, then click ‘Request changes’ to send it.")}</p>}
+            {riskDraftConflict&&<p className="collaboration-help" role="status"><strong>{criteria.filter(c=>riskDraftConflicts[c.id]).map(c=>criterionDisplayTitle(c, language)).join("; ")}: </strong>{tr("这项已经有草稿，本次没有添加新的报告链接。若要换链接，请先清空这条草稿。","This item already has a draft. No new report link was added. To change the link, clear this draft first.")}</p>}
             <div className="collaboration-return-fields">{criteria.map((criterion, index) => <div className="collaboration-return-criterion" key={criterion.id}>
               <label className="collaboration-criterion-choice"><input type="checkbox" checked={Boolean(selectedCriteria[criterion.id])} onChange={event => setSelectedCriteria(current => ({ ...current, [criterion.id]: event.target.checked }))} /><span>{criterionDisplayTitle(criterion, language)}</span></label>
               {selectedCriteria[criterion.id] && <div className="collaboration-comment-field"><label htmlFor={`${id}-comment-${index}`}>{tr("具体修改意见", "Requested changes")}</label><textarea id={`${id}-comment-${index}`} ref={field => { if (field) commentFields.current.set(criterion.id, field); else commentFields.current.delete(criterion.id); }} required maxLength={1000} rows={2} value={comments[criterion.id] ?? ""} onChange={event=>dispatchDraft({type:"edit",criterionId:criterion.id,comment:event.target.value})} aria-describedby={`${id}-return-help`} />{riskSources[criterion.id]&&<small>{tr("关联 AI 报告 / 线索","Linked AI assessment / risk")}: {riskSources[criterion.id].assessmentId} / {riskSources[criterion.id].riskIndex+1}<button type="button" className="subtle-button" onClick={()=>dispatchDraft({type:"unlink",criterionId:criterion.id})}>{tr("移除此关联","Remove this link")}</button></small>}<span className="collaboration-comment-count">{(comments[criterion.id] ?? "").length} / 1000</span></div>}
@@ -276,8 +285,8 @@ export function CollaborationPanel({ quote, role, language, busy, invitation, ve
       </div>}
 
       <section className="collaboration-feedback" aria-labelledby={`${id}-feedback-heading`}>
-        <h4 id={`${id}-feedback-heading`}>{tr("当前版本反馈", "Feedback on this version")} <span>{currentFeedback.length}</span></h4>
-        {currentFeedback.length ? <div className="collaboration-feedback-scroll">{feedbackList(currentFeedback)}</div> : <p className="collaboration-help">{tr("当前版本暂无已提交反馈。", "No submitted feedback for the current version.")}</p>}
+        <h4 id={`${id}-feedback-heading`}>{tr("这版的修改意见", "Change requests for this version")} <span>{currentFeedback.length}</span></h4>
+        {currentFeedback.length ? <div className="collaboration-feedback-scroll">{feedbackList(currentFeedback)}</div> : <p className="collaboration-help">{tr("买家还没发修改意见。", "The buyer hasn’t sent any change requests.")}</p>}
         {historicalFeedback.length > 0 && <details className="collaboration-details"><summary>{tr(`历史版本反馈（${historicalFeedback.length}）`, `Earlier-version feedback (${historicalFeedback.length})`)}<ChevronDown size={14} aria-hidden="true" /></summary><div className="collaboration-feedback-scroll collaboration-details-body">{feedbackList(historicalFeedback)}</div></details>}
       </section>
 

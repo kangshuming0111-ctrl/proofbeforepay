@@ -6,9 +6,9 @@ import { DomainError } from "../lib/domain.ts";
 import { ProviderError, type Fetcher } from "../lib/providers.ts";
 
 const env = {DEEPSEEK_API_KEY: "synthetic-provider-test-only", DEEPSEEK_MODEL: "synthetic-model-no-network"};
-function input(summary = "Show Beef noodles AUD 18", excluded: string[] = []) {
-  return {summary, requiredPages: ["index.html", "menu.html"], language: "en", coverage: {version: 1, sourceText: summary.trim(), confirmed: true,
-    decisions: summaryCoverageUnits(summary).map(row => excluded.includes(row.id) ? {id: row.id, disposition: "exclude", reason: "Not part of this milestone"} : {id: row.id, disposition: "include"})}};
+function input(summary = "Show Beef noodles AUD 18", excluded: string[] = [], version: 1 | 2 = 1) {
+  return {summary, requiredPages: ["index.html", "menu.html"], language: "en", coverage: {version, sourceText: summary.trim(), confirmed: true,
+    decisions: summaryCoverageUnits(summary, version).map(row => excluded.includes(row.id) ? {id: row.id, disposition: "exclude", reason: "Not part of this milestone"} : {id: row.id, disposition: "include"})}};
 }
 const price = (criterionId = "coverage-1", patch: Record<string, unknown> = {}) => ({criterionId, file: "menu.html", expected: {kind: "item_price", label: "Beef noodles", amountLiteral: "18", currencyLiteral: "AUD", ...patch}});
 const copy = (text: string, criterionId = "coverage-1", file = "") => ({criterionId, file, expected: {kind: "visible_copy", text}});
@@ -50,6 +50,19 @@ test("real-model redundant full price copy is ignored only beside a fully valida
   // Order independence: the typed candidate may precede the duplicate copy.
   const reversed=await suggestBusinessChecks(value,env,provider(proposal([en,copy("Beef noodles AUD 18","coverage-1","menu-en.html"),zh,copy("+61 3 9000 0000","coverage-3","visit.html")])));
   assert.equal(reversed.candidates.length,3);assert.equal(reversed.unresolved.length,0);
+});
+
+test("suggestions receive and cite the full source when the buyer confirmed explicit lines", async () => {
+  const summary = "On the menu, show Beef noodles AUD 18.\nHome page; show opening hours 11am–8pm.";
+  const result = await suggestBusinessChecks(input(summary, [], 2), env, provider(proposal([price()]), (_, init) => {
+    const packet = JSON.parse(init.body as string);
+    const data = JSON.parse(packet.messages[1].content);
+    assert.equal(data.includedRequirements.length, 2);
+    assert.equal(data.includedRequirements[0].source.excerpt, "On the menu, show Beef noodles AUD 18.");
+  }));
+  assert.equal(result.candidates[0].criterionId, "coverage-1");
+  assert.deepEqual(result.candidates[0].source, {start: 0, end: summary.indexOf("\n"), excerpt: "On the menu, show Beef noodles AUD 18."});
+  assert.deepEqual(result.unresolved.map(row => row.criterionId), ["coverage-2"]);
 });
 
 test("standalone or mismatched price copy is never rescued by another page or another original criterion", async () => {

@@ -4,6 +4,8 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import { gunzipSync } from "node:zlib";
 import { buildJudgePack, collectPublicSource } from "../scripts/build-judge-pack.mjs";
 
 async function fixture(t) {
@@ -27,6 +29,27 @@ test("judge export uses an allowlist and never copies runtime state or pre-exist
   assert.deepEqual((await collectPublicSource(root)).map(entry => entry.relative), ["lib/flow.ts", "package.json"]);
 });
 
+test("judge export omits private notes and removes tracked deployment identity and workstation path from historical copies", async t => {
+  const {root, base} = await fixture(t);
+  const report = "docs/collaboration/award-gap-cycles-2026-11-05/round-2.md";
+  const diagnostic = "public/benchmarks/award-gap-cycles-2026-11-05/concurrency-before.json";
+  const identifier = ["appgdep", "0".repeat(32)].join("_");
+  const machinePath = ["file:", "", "", "Users", "synthetic-operator", "repo", "check.mjs:4"].join("/");
+  for (const [name, body] of [[report, `Earlier deployment: ${identifier}`], [diagnostic, JSON.stringify({stack: machinePath})], ["docs/private-notes.md", "never export"]]) {
+    await mkdir(path.dirname(path.join(root, name)), {recursive: true});
+    await writeFile(path.join(root, name), body);
+  }
+  const result = await buildJudgePack(root, path.join(base, "sanitized"));
+  const manifest = JSON.parse(await readFile(result.manifest, "utf8"));
+  assert.deepEqual(manifest.redacted, [report, diagnostic]);
+  assert.ok(!manifest.files.some(entry => entry.file === "docs/private-notes.md"));
+  assert.equal(await readFile(path.join(result.sourceDirectory, report), "utf8"), "Earlier deployment: [Site identity omitted]");
+  assert.equal(JSON.parse(await readFile(path.join(result.sourceDirectory, diagnostic), "utf8")).stack, "file:///workspace/check.mjs:4");
+  assert.ok((await readFile(path.join(root, report), "utf8")).includes(identifier));
+  await writeFile(path.join(root, "lib/flow.ts"), `export const deployment = "${identifier}";\n`);
+  await assert.rejects(buildJudgePack(root, path.join(base, "blocked")), /Source export needs manual review: lib\/flow\.ts/u);
+});
+
 test("judge export preserves explicit TypeScript module sources needed by clean-checkout imports", async t => {
   const { root, base } = await fixture(t);
   await writeFile(path.join(root, "lib/connector-contract.mts"), "export const protocol = 'synthetic';\n");
@@ -37,7 +60,7 @@ test("judge export preserves explicit TypeScript module sources needed by clean-
   assert.equal(archive.status, 0);
   for (const file of ["lib/connector-contract.mts", "lib/connector-errors.cts"]) {
     assert.ok(manifest.files.some(entry => entry.file === file));
-    assert.ok(archive.stdout.split("\n").includes(`./${file}`));
+    assert.ok(archive.stdout.split(/\r?\n/u).includes(`./${file}`));
     assert.equal(await readFile(path.join(result.sourceDirectory, file), "utf8"), await readFile(path.join(root, file), "utf8"));
   }
 });
@@ -54,7 +77,7 @@ test("judge export includes the enquiry native-service modules and migration wit
   await mkdir(path.join(root,"examples/unrelated-private"),{recursive:true});await writeFile(path.join(root,"examples/unrelated-private/client-notes.md"),"outside the exact source allowlist\n");
   const result=await buildJudgePack(root,path.join(base,"enquiry-export")),manifest=JSON.parse(await readFile(result.manifest,"utf8")),archive=spawnSync("tar",["-tzf",result.archive],{encoding:"utf8"});
   assert.equal(archive.status,0);
-  for(const [name,text]of sources){assert.ok(manifest.files.some(entry=>entry.file===name));assert.ok(archive.stdout.split("\n").includes(`./${name}`));assert.equal(await readFile(path.join(result.sourceDirectory,name),"utf8"),text);}
+  for(const [name,text]of sources){assert.ok(manifest.files.some(entry=>entry.file===name));assert.ok(archive.stdout.split(/\r?\n/u).includes(`./${name}`));assert.equal(await readFile(path.join(result.sourceDirectory,name),"utf8"),text);}
   assert.ok(!manifest.files.some(entry=>entry.file.includes("unrelated-private")));
   assert.ok(!archive.stdout.includes("unrelated-private"));
 });
@@ -66,7 +89,7 @@ test("the delivery-stage handoff includes both runnable examples and excludes th
   for(const directory of ["examples/delivery-stage-staging/outputs","examples/delivery-stage-flask/.venv","examples/unlisted-private"]){await mkdir(path.join(root,directory),{recursive:true});await writeFile(path.join(root,directory,"private.md"),"excluded runtime state\n");}
   const result=await buildJudgePack(root,path.join(base,"stage-export")),manifest=JSON.parse(await readFile(result.manifest,"utf8")),archive=spawnSync("tar",["-tzf",result.archive],{encoding:"utf8"});
   assert.equal(archive.status,0);
-  for(const name of names){assert.ok(manifest.files.some(entry=>entry.file===name));assert.ok(archive.stdout.split("\n").includes(`./${name}`));assert.deepEqual(await readFile(path.join(result.sourceDirectory,name)),await readFile(path.join(root,name)));}
+  for(const name of names){assert.ok(manifest.files.some(entry=>entry.file===name));assert.ok(archive.stdout.split(/\r?\n/u).includes(`./${name}`));assert.deepEqual(await readFile(path.join(result.sourceDirectory,name)),await readFile(path.join(root,name)));}
   assert.ok(!archive.stdout.includes("private.md"));
 });
 
@@ -77,7 +100,7 @@ test("the native FastAPI handoff retains its exact lock and licence without wide
   for(const name of ["operator-notes.txt","requirements-private.txt","LICENSE-personal"]){await writeFile(path.join(directory,name),"not a source input\n");}
   const result=await buildJudgePack(root,path.join(base,"native-export")),manifest=JSON.parse(await readFile(result.manifest,"utf8")),archive=spawnSync("tar",["-tzf",result.archive],{encoding:"utf8"});
   assert.equal(archive.status,0);
-  for(const name of ["requirements.txt","LICENSE"]){const file=`${relative}/${name}`;assert.ok(manifest.files.some(row=>row.file===file));assert.ok(archive.stdout.split("\n").includes(`./${file}`));assert.deepEqual(await readFile(path.join(result.sourceDirectory,file)),await readFile(path.join(directory,name)));}
+  for(const name of ["requirements.txt","LICENSE"]){const file=`${relative}/${name}`;assert.ok(manifest.files.some(row=>row.file===file));assert.ok(archive.stdout.split(/\r?\n/u).includes(`./${file}`));assert.deepEqual(await readFile(path.join(result.sourceDirectory,file)),await readFile(path.join(directory,name)));}
   for(const name of ["operator-notes.txt","requirements-private.txt","LICENSE-personal"]){assert.ok(!manifest.files.some(row=>row.file.endsWith(name)));assert.ok(!archive.stdout.includes(name));}
   for(const name of ["requirements.txt","LICENSE"]){
     const original=await readFile(path.join(directory,name));
@@ -108,21 +131,40 @@ test("real-project source exports retain the six exact upstream licences and exc
   const copied=manifest.files.map(row=>row.file).filter(file=>file.endsWith(".txt"));
   assert.deepEqual(copied,projects.map(name=>`${relative}/${name}-LICENSE.txt`).sort());
   const archive=spawnSync("tar",["-tzf",result.archive],{encoding:"utf8"});assert.equal(archive.status,0);
-  for(const file of copied){assert.deepEqual(await readFile(path.join(result.sourceDirectory,file)),await readFile(path.join(root,file)));assert.ok(archive.stdout.split("\n").includes(`./${file}`));}
+  for(const file of copied){assert.deepEqual(await readFile(path.join(result.sourceDirectory,file)),await readFile(path.join(root,file)));assert.ok(archive.stdout.split(/\r?\n/u).includes(`./${file}`));}
   assert.ok(!archive.stdout.includes("owner-notes"));assert.ok(!archive.stdout.includes("other-LICENSE"));
 });
 
-test("the single pinned benchmark source archive exports byte-for-byte with all frozen member hashes validated", async t => {
+test("the pinned benchmark export strips tar identity without changing any frozen member bytes", async t => {
   const {root,base}=await fixture(t),relative="public/benchmarks/five-remediation-2026-11-05",actual=new URL(`../${relative}/`,import.meta.url);
   await mkdir(path.join(root,relative),{recursive:true});
   const archiveBytes=await readFile(new URL("first-implementation.tar.gz",actual)),freezeBytes=await readFile(new URL("first-freeze.json",actual));
   await writeFile(path.join(root,relative,"first-implementation.tar.gz"),archiveBytes);await writeFile(path.join(root,relative,"first-freeze.json"),freezeBytes);
   for(const name of["arbitrary.tar.gz","first-implementation.tar.gz.bak","private.bin"])await writeFile(path.join(root,relative,name),"not a permitted binary source\n");
   const result=await buildJudgePack(root,path.join(base,"archive-export")),manifest=JSON.parse(await readFile(result.manifest,"utf8")),entry=manifest.files.find(item=>item.file===`${relative}/first-implementation.tar.gz`);
-  assert.equal(entry.bytes,175703);assert.equal(entry.sha256,"08b9d92412311119119bea36d86ee4e403087d83fe535e33719f432269617139");
-  assert.deepEqual(await readFile(path.join(result.sourceDirectory,entry.file)),archiveBytes);
+  const exported=await readFile(path.join(result.sourceDirectory,entry.file));
+  assert.equal(entry.bytes,exported.length);
+  assert.equal(entry.sha256,createHash("sha256").update(exported).digest("hex"));
+  assert.ok(manifest.redacted.includes(entry.file));
+  assert.notDeepEqual(exported,archiveBytes);
+  assert.deepEqual(await readFile(path.join(root,entry.file)),archiveBytes);
+  const expected=new Map(JSON.parse(freezeBytes).snapshot.implementation.map(row=>[row.file,row.sha256]));
+  const tar=gunzipSync(exported);
+  let offset=0;
+  while(tar[offset]!==0){
+    const header=tar.subarray(offset,offset+512);
+    const field=(start,end)=>header.subarray(start,end).toString("utf8").split("\0",1)[0];
+    const size=Number.parseInt(field(124,136),8),name=field(0,100),data=tar.subarray(offset+512,offset+512+size);
+    assert.equal(field(108,116),"0000000");assert.equal(field(116,124),"0000000");
+    assert.equal(field(136,148),"00000000000");assert.equal(field(265,297),"");assert.equal(field(297,329),"");assert.equal(field(156,157),"0");
+    assert.equal(createHash("sha256").update(data).digest("hex"),expected.get(name));
+    expected.delete(name);offset+=512+Math.ceil(size/512)*512;
+  }
+  assert.equal(expected.size,0);
+  const rebuilt=await collectPublicSource(result.sourceDirectory);
+  assert.deepEqual(rebuilt.find(row=>row.relative===entry.file).bytes,exported);
   assert.deepEqual(manifest.files.filter(item=>/\.(?:gz|bin)$/u.test(item.file)).map(item=>item.file),[`${relative}/first-implementation.tar.gz`]);
-  const listed=spawnSync("tar",["-tzf",result.archive],{encoding:"utf8"});assert.equal(listed.status,0);assert.ok(listed.stdout.split("\n").includes(`./${entry.file}`));
+  const listed=spawnSync("tar",["-tzf",result.archive],{encoding:"utf8"});assert.equal(listed.status,0);assert.ok(listed.stdout.split(/\r?\n/u).includes(`./${entry.file}`));
 });
 
 test("tampered, oversized or frozen-source-mismatched baseline archives block export before output creation", async t => {
@@ -144,14 +186,14 @@ test("tampered, oversized or frozen-source-mismatched baseline archives block ex
 test("judge export refuses a source symlink instead of following it outside the source tree", async t => {
   const { root, base } = await fixture(t);
   await writeFile(path.join(base, "outside.ts"), "synthetic external file");
-  await symlink(path.join(base, "outside.ts"), path.join(root, "lib/linked.ts"));
+  try { await symlink(path.join(base, "outside.ts"), path.join(root, "lib/linked.ts")); } catch (error) { if (process.platform === "win32" && error.code === "EPERM") return t.skip("Windows host does not allow file symlinks"); throw error; }
   await assert.rejects(collectPublicSource(root), /Symlink source rejected/u);
 });
 
 test("an allowlisted root document symlink is rejected before its external contents can be copied", async t => {
   const { root, base } = await fixture(t);
   await writeFile(path.join(base, "outside.md"), "synthetic external notes");
-  await symlink(path.join(base, "outside.md"), path.join(root, "AGENTS.md"));
+  try { await symlink(path.join(base, "outside.md"), path.join(root, "AGENTS.md")); } catch (error) { if (process.platform === "win32" && error.code === "EPERM") return t.skip("Windows host does not allow file symlinks"); throw error; }
   await assert.rejects(collectPublicSource(root), /Symlink source rejected: AGENTS\.md/u);
 });
 
@@ -175,7 +217,8 @@ test("judge export strips owner Site identity, emits placeholders and refuses ov
   assert.equal(manifest.files.find(file => file.file === "lib/flow.ts").sha256.length, 64);
   const archiveNames = spawnSync("tar", ["-tzf", result.archive], { encoding: "utf8" });
   assert.equal(archiveNames.status, 0);
-  assert.ok(archiveNames.stdout.split("\n").includes("./SOURCE-MANIFEST.json"));
-  assert.ok(!archiveNames.stdout.split("\n").some(name => /(?:^|\/)\._/u.test(name)));
+  const members = archiveNames.stdout.split(/\r?\n/u);
+  for (const name of ["SOURCE-MANIFEST.json", ".env.example", ".openai/hosting.json"]) assert.ok(members.includes(`./${name}`));
+  assert.ok(!archiveNames.stdout.split(/\r?\n/u).some(name => /(?:^|\/)\._/u.test(name)));
   await assert.rejects(buildJudgePack(root, output), /Output already exists/u);
 });

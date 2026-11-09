@@ -1,9 +1,12 @@
 "use client";
 
 import {useEffect, useId, useRef, useState} from "react";
-import type {Language, ProofAssessment, ProofAssessmentItem, ProofBusinessCheckStep, ProofCriterion, ProofEvidence, ProofQuote, ProofRole} from "@/lib/contracts";
+import type {Language, ProofAssessment, ProofAssessmentItem, ProofBrowserCheckReport, ProofBusinessCheckStep, ProofCriterion, ProofEvidence, ProofQuote, ProofRole} from "@/lib/contracts";
 import {assessmentEvidenceNeedPresentation, isAssessmentEvidenceNeed} from "@/lib/assessment-evidence-needs";
-import {createRequirementCompletenessCheck, requirementCompletenessExplanation} from "@/lib/assessment-requirement-completeness";
+import {BILINGUAL_MENU_PRICE_COMPLETENESS, createRequirementCompletenessCheck, requirementCompletenessExplanation} from "@/lib/assessment-requirement-completeness";
+import {openingHoursEvidenceGuide} from "./noodle-hours-guidance";
+import {hasPublishedBilingualPriceSupport, hasSavedNoodleNavigation, isUnresolvedBilingualPrice, mobileObservationPages, noodleEvidenceGuide, noodleObservationMessage, type MobileAssessmentObservation} from "./noodle-evidence-guidance";
+import type {NoodleObservationReview} from "@/lib/noodle-observation-review";
 import type {ScopeContext, ScopeTargetCandidate} from "@/lib/scope-clarifications";
 import "../scope-clarification.css";
 
@@ -14,22 +17,35 @@ export type RequirementNextStepProps = {
   humanConfirmed?: boolean;
   businessSteps?: readonly ProofBusinessCheckStep[];
   requirementCompletenessPolicy?: ProofAssessment["requirementCompletenessPolicy"];
-  mobileObservation?: {requiredPages: readonly string[]; onOpen?: () => void; disabled?: boolean};
+  mobileObservation?: MobileAssessmentObservation;
+  observationReview?: NoodleObservationReview;
+  navigationReport?: ProofBrowserCheckReport;
   readOnly?: boolean;
   language: Language;
 };
 
 /** A presentation of existing evidence, never a new verdict or acceptance gate. */
-export function RequirementNextStep({criterion, item, evidence = [], humanConfirmed = false, businessSteps = [], requirementCompletenessPolicy, mobileObservation, readOnly = false, language}: RequirementNextStepProps) {
+export function RequirementNextStep({criterion, item, evidence = [], humanConfirmed = false, businessSteps = [], requirementCompletenessPolicy, mobileObservation, observationReview, navigationReport, readOnly = false, language}: RequirementNextStepProps) {
   const tr = (zh: string, en: string) => language === "zh" ? zh : en;
+  const observation = noodleObservationMessage(observationReview, criterion.id, language);
+  if (observation) return <section className="requirement-next-step" aria-label={tr("本项结果与下一步", "This requirement’s result and next step")} data-criterion-id={criterion.id}>
+    <strong>{observation.title}</strong>
+    <p>{observation.detail}</p>
+  </section>;
   const currentItem = item?.criterionId === criterion.id ? item : undefined;
   const model = currentItem?.modelJudgment ?? currentItem;
   const sourceFinding = currentItem?.sourceFinding;
-  const mobilePages=criterion.id==="mobile"&&mobileObservation?.requiredPages.length&&mobileObservation.requiredPages.every(file=>typeof file==="string"&&file.length>0)?mobileObservation.requiredPages:undefined;
-  const completeness=requirementCompletenessPolicy?.schema==="requirement-completeness-v1"&&(requirementCompletenessPolicy.version==="bounded-original-zh-v1"||requirementCompletenessPolicy.version==="bilingual-bounded-v2")
+  const mobilePages = mobileObservationPages(criterion.id, mobileObservation);
+  const pairedMobile = !!mobilePages && (mobileObservation?.criterionIds?.length ?? 0) > 1;
+  const guide = noodleEvidenceGuide(criterion, currentItem, language, navigationReport);
+  const navigationObserved = hasSavedNoodleNavigation(criterion, navigationReport);
+  const unresolvedPrice = isUnresolvedBilingualPrice(criterion, currentItem, requirementCompletenessPolicy);
+  const completeness=requirementCompletenessPolicy?.schema==="requirement-completeness-v1"&&(requirementCompletenessPolicy.version==="bounded-original-zh-v1"||requirementCompletenessPolicy.version==="bilingual-bounded-v2"||requirementCompletenessPolicy.version==="bilingual-bounded-v3"||requirementCompletenessPolicy.version===BILINGUAL_MENU_PRICE_COMPLETENESS)
     ?createRequirementCompletenessCheck({businessSteps,version:requirementCompletenessPolicy.version})(criterion):undefined;
-  const incompleteSourceSupport=sourceFinding?.status==="supported"&&completeness?.kind==="incomplete";
-  const incompleteWholeRequirement=completeness?.kind==="incomplete"&&currentItem?.status!=="changes_suggested"&&sourceFinding?.status!=="changes_suggested";
+  const incomplete = completeness?.kind === "incomplete" && !hasPublishedBilingualPriceSupport(criterion, currentItem, requirementCompletenessPolicy);
+  const incompleteSourceSupport=sourceFinding?.status==="supported"&&incomplete;
+  const incompleteWholeRequirement=incomplete&&currentItem?.status!=="changes_suggested"&&sourceFinding?.status!=="changes_suggested";
+  const hoursGuide = !readOnly && incompleteWholeRequirement ? openingHoursEvidenceGuide(criterion, currentItem, businessSteps, requirementCompletenessPolicy, language) : undefined;
   const currentEvidence = evidence.filter(row => row.criterionId === criterion.id);
   const ruleFailed = currentEvidence.some(row => row.finding === "fail");
   const ruleSupported = currentEvidence.some(row => row.finding === "pass");
@@ -45,18 +61,25 @@ export function RequirementNextStep({criterion, item, evidence = [], humanConfir
   } else if (sourceScopeUnconfirmed && !incompleteWholeRequirement) {
     actor = tr("买卖双方", "Buyer and seller");
     materials = tr("源码事实已经单独列出，但还没有确认本项对应哪个页面或表单。双方先明确确认范围，再回到本项检查；不按猜测的页面要求返工。", "Source facts are listed separately, but this requirement’s page or form has not been agreed. Both parties confirm that scope first, then return to this requirement’s checks. Do not request repairs on a guessed page.");
-  } else if (sourceFinding?.status === "changes_suggested") {
+  } else if (sourceFinding?.status === "changes_suggested" && !unresolvedPrice) {
     actor = tr("卖家补交，买家复核", "Seller supplies a revision; buyer reviews");
     materials = tr("本项已定位的源码证据存在差异。卖家按原始要求修正对应交付并提交新版本，买家重新核对；范围同意不代表修正已经完成。", "The scoped source evidence differs from this requirement. The seller corrects the corresponding delivery and submits a new version for buyer review. Scope agreement does not mean the correction is complete.");
+  } else if (guide) {
+    actor = humanConfirmed ? tr("买家", "Buyer") : guide.actor;
+    materials = humanConfirmed ? recordedHumanStep : unresolvedPrice && currentItem ? currentItem.explanation : guide.instructions;
+  } else if (navigationObserved && !currentItem) {
+    materials = humanConfirmed ? recordedHumanStep : tr("查看「首页导航回放证据」中的两条实际到达记录。核对后，勾选本项人工核对。", "Review both arrival records under Homepage navigation replay evidence, then select the human confirmation for this requirement.");
   } else if (incompleteWholeRequirement && completeness) {
-    actor = tr("买卖双方", "Buyer and seller");
-    materials = `${humanConfirmed ? `${recordedHumanStep} ` : ""}${requirementCompletenessExplanation(completeness, language)}`;
+    actor = !humanConfirmed && hoursGuide ? hoursGuide.actor : tr("买卖双方", "Buyer and seller");
+    materials = !humanConfirmed && hoursGuide ? hoursGuide.instructions : `${humanConfirmed ? `${recordedHumanStep} ` : ""}${requirementCompletenessExplanation(completeness, language)}`;
   } else if (sourceFinding?.status === "supported" && (!need || need.reason === "model_unresolved" || need.reason === "no_citations")) {
     materials = humanConfirmed ? recordedHumanStep : tr("已检查的源码条件有支持。买家核对完整要求；未观察的外观或运行能力分别核对，源码事实本身不替代人工判断或整版验收。", "The checked source conditions have support. The buyer reviews the complete requirement. Unobserved appearance or execution needs separate review; source facts do not replace human judgment or delivery acceptance.");
   } else if (currentItem?.status === "changes_suggested" && !sourceFinding) {
     materials = tr("先核对 AI 引文和锁定要求；确认差异属于本项后，再请卖家修改。AI 建议本身不证明交付不符。", "Compare the AI citations with the locked requirement first. Ask the seller for changes only after checking that the difference belongs to this requirement. An AI suggestion alone does not establish a mismatch.");
   } else if (mobilePages) {
-    materials=humanConfirmed?recordedHumanStep:tr("买家逐页查看约定页面的手机显示：文字是否可读、内容是否被遮挡或横向溢出、主要链接与按钮是否可见。缺页或无法观察时请卖家补交；看过后再主动确认本项。", "The buyer inspects every agreed page on a mobile-sized screen: readable text, clipped or overflowing content, and visible main links and buttons. Ask the seller for missing or unobservable pages, then explicitly confirm this requirement after inspection.");
+    materials = humanConfirmed ? recordedHumanStep : pairedMobile
+      ? tr("还需在 375px 下逐页核对正文可读、导航可操作且无需横向滚动。三页都检查过后，勾选一次即可确认两项移动端要求。若某页打不开或无法检查，请指出页面和缺少的证据。", "At 375px, check every page for readable text, usable navigation and no horizontal scrolling. After inspecting all three pages, confirm both mobile requirements with one checkbox. If a page cannot be inspected, identify the page and the missing evidence.")
+      : tr("买家逐页查看约定页面的手机显示：文字是否可读、内容是否被遮挡或横向溢出、主要链接与按钮是否可见。缺页或无法观察时请卖家补交；看过后再主动确认本项。", "The buyer inspects every agreed page on a mobile-sized screen: readable text, clipped or overflowing content, and visible main links and buttons. Ask the seller for missing or unobservable pages, then explicitly confirm this requirement after inspection.");
   } else if (currentItem?.status === "insufficient_evidence") {
     const reason = need?.reason;
     if (reason === "page_scope" || reason === "requirement_clarification") {
@@ -80,19 +103,22 @@ export function RequirementNextStep({criterion, item, evidence = [], humanConfir
   const ruleLabel = ruleFailed ? tr("不符：规则检查发现差异", "Mismatch: rule check found a difference")
     : ruleSupported && !ruleHuman ? tr("规则证据有支持", "Rule evidence supports the checked facts")
     : currentEvidence.length ? tr("规则仍需人工核对", "Rule evidence needs human review") : tr("规则尚无本项结果", "No rule result for this requirement");
-  const sourceLabel = incompleteSourceSupport ? sourceFinding?.basis==="locked_business_values"
+  const sourceLabel = unresolvedPrice && sourceFinding && sourceFinding.status !== "insufficient_evidence"
+    ? tr("已有独立源码发现，整项仍待核对", "An independent source finding is available; the full requirement still needs review")
+    : incompleteSourceSupport ? sourceFinding?.basis==="locked_business_values"
     ?tr("已核业务值有支持，整条要求仍待核对", "Checked business values have support; the whole requirement still needs review")
     :tr("已核源码子条件有支持，整条要求仍待核对", "Checked source subconditions have support; the whole requirement still needs review")
     : sourceFinding?.status === "supported" ? tr("已证实：源码符合已检查条件", "Established: source meets the checked conditions")
     : sourceFinding?.status === "changes_suggested" ? tr("已证实不符：源码存在差异", "Established mismatch: source differs")
     : sourceFinding ? tr("未知：源码尚不能建立结论", "Unknown: source does not establish a conclusion")
-    : incompleteWholeRequirement ? tr("整条要求仍待核对", "The whole requirement still needs review") : undefined;
+    : guide && !humanConfirmed ? guide.title
+    : incompleteWholeRequirement && !guide ? tr("整条要求仍待核对", "The whole requirement still needs review") : undefined;
   const aiLabel = model?.status === "supported" ? currentItem?.modelJudgment ? tr("AI 原始建议符合：仍需核对", "Original AI suggestion: support, still needs review") : tr("AI 已保存建议符合：仍需核对", "Saved AI suggestion: support, still needs review")
     : model?.status === "changes_suggested" ? currentItem?.modelJudgment ? tr("AI 原始建议修改：待核对", "Original AI suggestion: changes, review needed") : tr("AI 已保存建议修改：待核对", "Saved AI suggestion: changes, review needed")
     : model?.status === "insufficient_evidence" ? currentItem?.modelJudgment ? tr("未知：原 AI 证据不足", "Unknown: insufficient original AI evidence") : tr("未知：已保存 AI 证据不足", "Unknown: insufficient saved AI evidence") : tr("AI 尚未运行", "AI has not run");
   return <section className="requirement-next-step" aria-label={tr("本项结果与下一步", "This requirement’s result and next step")} data-criterion-id={criterion.id}>
     <dl>
-      <div><dt>{tr("当前证据", "Current evidence")}</dt><dd className="requirement-next-step-layers">{sourceLabel && <strong className={sourceFinding?.status === "changes_suggested" ? "requirement-fact-mismatch" : "requirement-source-fact"}>{sourceLabel}</strong>}<span className={ruleFailed ? "requirement-fact-mismatch" : ""}>{ruleLabel}</span><span>{aiLabel}</span><span>{humanConfirmed ? tr("买家已人工确认本项", "Buyer confirmed this requirement manually") : tr("买家尚未人工确认本项", "Buyer has not confirmed this requirement manually")}</span></dd></div>
+      <div><dt>{tr("当前证据", "Current evidence")}</dt><dd className="requirement-next-step-layers">{sourceLabel && <strong className={sourceFinding?.status === "changes_suggested" ? "requirement-fact-mismatch" : "requirement-source-fact"}>{sourceLabel}</strong>}<span className={ruleFailed ? "requirement-fact-mismatch" : ""}>{ruleLabel}</span><span>{aiLabel}</span>{navigationObserved && <span>{tr("浏览器记录了两条首页链接的到达页", "The browser recorded both homepage-link arrivals")}</span>}<span>{humanConfirmed ? tr("买家已人工确认本项", "Buyer confirmed this requirement manually") : tr("买家尚未人工确认本项", "Buyer has not confirmed this requirement manually")}</span></dd></div>
       <div><dt>{tr("接下来谁处理", "Who acts next")}</dt><dd>{actor}</dd></div>
       <div><dt>{tr("需要什么", "What is needed")}</dt><dd>{materials}</dd></div>
     </dl>

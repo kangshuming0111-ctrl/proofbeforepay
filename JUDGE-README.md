@@ -1,5 +1,7 @@
 # ProofBeforePay — local judge handoff
 
+Start with [the concise judge guide](docs/JUDGE-START.md). This longer document retains detailed setup and historical evidence. The export manifest's applicationSource fingerprint must match the hosted /api/release response before claiming source parity; run node scripts/release-fingerprint.mjs inside the exported source to recompute it.
+
 Generating this source export does not by itself publish a repository or submit a Devpost entry. It does not grant access to the authenticated main workspace or establish measured AI results. That workspace retains its configured access audience. The separate public verification lab below is an account-free synthetic deployment, not a grant of access to private projects. See the [dated evaluation](docs/EVALUATION-2026-11-02.md) for separately recorded results and limits.
 
 ## What to try

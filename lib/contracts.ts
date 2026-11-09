@@ -52,13 +52,14 @@ export type ProofLayoutReport = {
   summary: { measured: number; unavailable: number; overflow: number };
 };
 export type ProofBrowserCheckReason = "missing_file" | "load_failed" | "snapshot_mismatch" | "access_denied" | "timeout" | "navigation_changed" | "ambiguous_link" | "unsupported_target" | "resource_limit";
+export type ProofBrowserCheckMethod = "client-browser-checks-v1" | "client-browser-checks-noodle-v2";
 export type ProofBrowserCheckReading =
   | { stepId: string; status: "unavailable"; reason: ProofBrowserCheckReason }
   | { stepId: string; status: "observed"; kind: "page"; stylesExpected: number; stylesLoaded: number; imagesExpected: number; imagesLoaded: number }
-  | { stepId: string; status: "observed"; kind: "link"; sourceVisible: boolean; sourceHitTarget: boolean; activated: boolean; destinationMatched: boolean; targetVisible: boolean };
+  | { stepId: string; status: "observed"; kind: "link"; sourceVisible: boolean; sourceHitTarget: boolean; activated: boolean; destinationMatched: boolean; targetVisible: boolean; clickedLabel?: string; reachedTarget?: string };
 export type ProofBrowserCheckStep = { stepId: string; kind: "page" | "link"; file: string; viewportWidth: ProofLayoutWidth; label?: string; target?: string };
 export type ProofBrowserCheckReport = {
-  id: string; deliveryId: string; method: "client-browser-checks-v1"; receivedAt: string; viewportHeight: 800;
+  id: string; deliveryId: string; method: ProofBrowserCheckMethod; receivedAt: string; viewportHeight: 800;
   reportedByRole?: ProofRole;
   readings: (ProofBrowserCheckReading & ProofBrowserCheckStep & { outcome: "expected_observation" | "mismatch" | "unavailable" })[];
   summary: { steps: number; observed: number; issues: number; unavailable: number };
@@ -87,14 +88,14 @@ export type ProofAssessmentModelJudgment = {status: "supported" | "changes_sugge
 /** Independent, replayable source-only finding. It never attests rendering,
  * persistence, acceptance or payment, and does not rewrite the raw model item. */
 export type ProofAssessmentSourceFinding = {
-  version: "source-finding-v1" | "source-finding-v2";
+  version: "source-finding-v1" | "source-finding-v2" | "source-finding-v3";
   status: "supported" | "changes_suggested" | "insufficient_evidence";
   basis: "declared_html_labels" | "locked_business_values";
   explanation: string; citations: ProofAssessmentCitation[]; files: string[];
   scopeBinding?: {proposalId: string; proposalDigest: string; file: string; kind: "page" | "form"; formId?: string};
 };
 /** Explicit source-only reconciliation; never rewrites the retained model item. */
-export type ProofAssessmentPublicationBasis = {schema:"source-publication-v1"|"source-publication-v2";reason:"locked_price_mismatch"|"confirmed_form_label_absence"|"locked_price_match"};
+export type ProofAssessmentPublicationBasis = {schema:"source-publication-v1"|"source-publication-v2"|"source-publication-v3";reason:"locked_price_mismatch"|"confirmed_form_label_absence"|"locked_price_match"};
 export type ProofAssessmentItem = { criterionId: string; status: "supported" | "changes_suggested" | "insufficient_evidence"; explanation: string; citations: ProofAssessmentCitation[]; ruleEvidenceIds: string[]; evidenceNeed?: ProofEvidenceNeed; obligations?: import("./assessment-obligations").AssessmentObligations; modelJudgment?: ProofAssessmentModelJudgment; sourceFinding?: ProofAssessmentSourceFinding; publicationBasis?: ProofAssessmentPublicationBasis };
 export type ProofAssessmentRisk = { title: string; explanation: string; suggestion: string; citations: ProofAssessmentCitation[] };
 /** Validated original AI leads retained outside the active indication pool.
@@ -116,8 +117,8 @@ export type ProofResourceReport = { method: "static-resources-v1"; checked: numb
 export type ProofAssessment = {
   /** Named whole-original publication guard. Absence preserves historical
    * reports; a newer grammar must use a new version, never reinterpret v1. */
-  requirementCompletenessPolicy?: {schema:"requirement-completeness-v1";version:"bounded-original-zh-v1"|"bilingual-bounded-v2"};
-  publicationPolicy?: {schema:"source-publication-v1"|"source-publication-v2";reconciledCriterionIds:string[]};
+  requirementCompletenessPolicy?: {schema:"requirement-completeness-v1";version:import("./assessment-requirement-completeness").RequirementCompletenessVersion};
+  publicationPolicy?: {schema:ProofAssessmentPublicationBasis["schema"];reconciledCriterionIds:string[]};
   scopeContext?: import("./scope-clarifications").ScopeAssessmentContext;
   id: string; deliveryId: string; method: "source-ai-v1"; mode: "live"; model: string; assessedAt: string;
   items: ProofAssessmentItem[]; risks: ProofAssessmentRisk[]; limitations: string[];
@@ -197,7 +198,7 @@ export type ProofCollaboration = {
 export type ProofDeliveryVersion = { isCurrent?: boolean; delivery: ProofDelivery; review?: ProofReview; submission?: ProofSubmission; feedback: ProofFeedback[]; archivedAt: string; scopeClarifications?: import("./scope-clarifications").ScopeClarification[] };
 export type RequirementCoverageUnit = { id: string; start: number; end: number; text: string };
 export type RequirementCoverageDecision = RequirementCoverageUnit & { disposition: "include" | "exclude"; reason?: string; criterionId?: string };
-export type RequirementCoverage = { version: 1; sourceText: string; confirmedAt: string; decisions: RequirementCoverageDecision[] };
+export type RequirementCoverage = { version: 1 | 2; sourceText: string; confirmedAt: string; decisions: RequirementCoverageDecision[] };
 export type StaticProjectSpec = {
   requiredPages: string[];
   link?: { from: string; text: string; to: string };

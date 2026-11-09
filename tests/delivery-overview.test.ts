@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { ProofAssessment, ProofCriterion, ProofDelivery, ProofDeliveryVersion, ProofEvidence } from "../lib/contracts.ts";
-import { criterionDisplayTitle, deliveryOverview, overviewFeedbackDraft, overviewRowLabel } from "../lib/delivery-overview.ts";
+import { buyerRequirementLines, criterionDisplayDescription, criterionDisplayTitle, deliveryOverview, overviewFeedbackDraft, overviewRowLabel } from "../lib/delivery-overview.ts";
 
 const criteria: ProofCriterion[] = [
   { id: "page-1", title: "Separate page: index.html", source: "Deliver index.html." },
@@ -95,8 +95,32 @@ test("friendly titles are display-only and do not mutate requirements or reports
   assert.equal(criterionDisplayTitle(criteria[1], "en"), criteria[1].source);
   assert.equal(criterionDisplayTitle(criteria[0], "en"), criteria[0].title);
   assert.equal(criterionDisplayTitle({ id: "manual-2", title: "人工要求 2", source: "😀".repeat(70) }, "zh"), `${"😀".repeat(55)}…`);
+  const originalRequirement = {id: "coverage-2", title: "原始需求 2", source: "菜单页展示牛肉面 AUD18。"};
+  assert.equal(criterionDisplayTitle(originalRequirement, "zh"), "菜单页展示牛肉面 AUD18。");
+  assert.equal(originalRequirement.title, "原始需求 2");
   deliveryOverview({ delivery: item, criteria, review: review(), manualChecks: [] });
   assert.deepEqual(item, original); assert.deepEqual(criteria, originalCriteria);
+});
+
+test("built-in page and link checks describe what buyers can try without changing the agreement", () => {
+  const page = Object.freeze({ id: "page-2", title: "独立页面：services.html", source: "交付独立非空 HTML 文档 services.html，包含 HTML doctype、非空 title 与 body。" });
+  const link = Object.freeze({ id: "link", title: "Local link destination", source: "index.html contains a link labelled “Book a call” pointing to contact.html#booking." });
+  assert.equal(criterionDisplayTitle(page, "zh"), "服务页");
+  assert.equal(criterionDisplayDescription(page, "zh"), "「服务页」应该能单独打开，有页面标题和正文。");
+  assert.equal(criterionDisplayTitle(link, "zh"), "从首页点「Book a call」");
+  assert.equal(criterionDisplayDescription(link, "en"), "Selecting “Book a call” on “Home page” should open the booking section on “Contact page”.");
+  assert.match(page.source, /HTML doctype/);
+  assert.match(link.source, /contact\.html#booking/);
+  const sameTitleButCustom = { ...page, source: "Keep the existing booking form and link to our booking provider." };
+  assert.equal(criterionDisplayDescription(sameTitleButCustom, "zh"), sameTitleButCustom.source);
+});
+
+test("the example keeps both menu labels and both prices, and buyer-specific lines stay intact", () => {
+  const source = "菜单页同时展示中文「牛肉面」和英文「Beef noodles」，两种语言所示价格均为 AUD18。";
+  const original = "Keep our phone +61 3 9000 0000 and our link https://example.com/about.html?full=true.";
+  const customPrice = "菜单页同时展示中文「牛肉面」和英文「Beef noodles」，两种语言所示价格均为 AUD25。";
+  const lines = buyerRequirementLines({ summary: [source, original, customPrice].join("\n") }, "zh");
+  assert.deepEqual(lines, ["菜单上请写「牛肉面」和「Beef noodles」，两种写法旁边都标 18 澳元。", original, customPrice]);
 });
 
 test("feedback is an exact-version bounded advisory draft and never marks evidence accepted", () => {
@@ -109,7 +133,7 @@ test("feedback is an exact-version bounded advisory draft and never marks eviden
 });
 
 test("a marked source publication drafts its real origin without changing version, budget or rule priority",()=>{
- for(const schema of["source-publication-v1","source-publication-v2"]as const){
+ for(const schema of["source-publication-v1","source-publication-v2","source-publication-v3"]as const){
  const value=delivery(),row=deliveryOverview({delivery:value,criteria,review:review(),manualChecks:[]}).rows[0];
  row.ai!.publicationBasis={schema,reason:"locked_price_mismatch"};const before=structuredClone(row);
  for(const language of["zh","en"]as const){

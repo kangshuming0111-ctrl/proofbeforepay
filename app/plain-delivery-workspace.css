@@ -1,0 +1,52 @@
+.plain-workspace { min-height: 0; min-width: 0; width: 100%; }
+.plain-workspace-top { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 3px 0 15px; }
+.plain-workspace-top h2 { margin: 3px 0 0; font-size: clamp(24px, 2.5vw, 36px); line-height: 1.18; color: #173e33; overflow-wrap: anywhere; }
+.plain-workspace-role { color: #546d53; font-weight: 650; font-size: .82rem; }
+.plain-workspace-tools { display: flex; align-items: center; flex-shrink: 0; gap: 8px; }
+.plain-workspace-tools .text-button { display: grid; place-items: center; min-width: 38px; min-height: 38px; }
+.plain-workspace-grid { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr) minmax(0, 1.15fr); gap: clamp(10px, 1.5vw, 22px); align-items: stretch; }
+.plain-workspace-card { min-width: 0; background: #fcfdf7; border: 1px solid #d8e1d1; border-radius: 13px; padding: clamp(15px, 1.6vw, 24px); color: #253e33; }
+.plain-workspace-card h3 { margin: 0 0 14px; display: flex; align-items: center; gap: 8px; font-size: clamp(16px, 1.5vw, 21px); line-height: 1.3; color: #234b3b; }
+.plain-workspace-card h3 svg { flex: none; }
+.plain-requirements { border-top: 3px solid #426b4e; }
+.plain-requirements-list { display: grid; gap: 0; margin: 0; padding-left: 1.2em; font-size: clamp(15px, 1.2vw, 18px); line-height: 1.58; overflow-wrap: anywhere; }
+.plain-requirements-list li { padding: 7px 0; }
+.plain-requirements-list li::marker { color: #60805c; }
+.plain-card-detail { display: flex; align-items: center; gap: 5px; text-align: left; margin-top: 11px; min-height: 27px; line-height: 1.35; font-size: .87rem; color: #234e3b; }
+.plain-card-detail svg { flex: none; }
+.plain-handoff-state { display: flex; flex-wrap: wrap; gap: 5px 10px; align-items: baseline; margin-bottom: 13px; color: #465e4c; font-size: .89rem; }
+.plain-handoff-state strong { color: #234e3b; }
+.plain-report-origin,.plain-card-help { margin: 0 0 7px; color: #4d6353; font-size: .83rem; line-height: 1.5; }
+.plain-card-help { margin: 10px 0 0; }
+.plain-check-list { margin: 0; padding: 0; list-style: none; }
+.plain-check-list li { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 6px 0; border-bottom: 1px solid #e2e8da; font-size: .86rem; line-height: 1.32; }
+.plain-check-list li > span { overflow-wrap: anywhere; }
+.plain-check-list li > span:first-child { flex: 1; min-width: 0; }
+.plain-check-findings { display: flex; flex: 0 0 48%; flex-direction: column; align-items: flex-end; gap: 4px; max-width: 48%; }
+.plain-check-findings .plain-check-badge { white-space: normal; text-align: right; overflow-wrap: anywhere; }
+.plain-extra-risks { margin: 12px 0 0; border-left: 3px solid #b77c32; padding: 7px 9px; background: #f7efd9; color: #694919; font-size: .82rem; line-height: 1.5; }
+.plain-check-badge { flex: none; font-size: .73rem; font-weight: 700; padding: 3px 6px; border-radius: 5px; color: #2c503a; background: #e9f1e1; white-space: nowrap; }
+.plain-check-changes_suggested { color: #8a2e25; background: #f8e9e2; }
+.plain-check-insufficient_evidence { color: #75551c; background: #f7efd9; }
+.plain-check-confirmed { color: #224a5c; background: #e5eff2; }
+.plain-workspace-next { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 13px 0 0; }
+.plain-workspace-next p { margin: 0; color: #40584a; font-size: .88rem; line-height: 1.45; }
+.plain-workspace-next > div { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.plain-workspace :is(button, a):focus-visible { outline: 2px solid #226c58; outline-offset: 3px; }
+.plain-workspace-return { align-self: start; margin-bottom: 3px; }
+.cockpit-shell.is-overview .cockpit-main { overflow: auto; }
+.buyer-pages-summary { border: 1px solid #d8e1d1; border-radius: 8px; padding: 10px 12px; color: #234b3b; }
+.buyer-pages-summary p { margin: 5px 0; overflow-wrap: anywhere; }
+.buyer-pages-summary > div { display: flex; gap: 6px; flex-wrap: wrap; }
+
+@media (max-width: 950px) {
+  .plain-workspace-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .plain-requirements { grid-column: 1 / -1; }
+}
+@media (max-width: 600px) {
+  .plain-workspace-top { align-items: start; }
+  .plain-workspace-tools { gap: 4px; }
+  .plain-workspace-grid { grid-template-columns: minmax(0, 1fr); }
+  .plain-workspace-next { align-items: start; flex-direction: column; }
+  .plain-workspace-next > div { justify-content: flex-start; }
+}

@@ -79,7 +79,7 @@ test('the exact plural-page form is generic subject data scoped to exactly two b
 test('English and new Chinese template source publications use v2 while preserving unknown/mismatch guards',async()=>{
  for(const source of ['The menu must list Beef noodles at AUD18.','菜单中Beef noodles的价格必须为18澳元。','菜单中Beef noodles的价格必须为AUD 18.00。'])for(const template of[false,true]){
   const q=languageQuote(source,['Beef noodles'],template),report=await controlled(q),item=report.items.find(i=>i.criterionId==='coverage-1')!;
-  assert.equal(item.status,'supported');assert.equal(item.modelJudgment!.status,'supported');assert.equal(item.sourceFinding!.status,'supported');assert.equal(report.requirementCompletenessPolicy!.version,v2);
+  assert.equal(item.status,'supported');assert.equal(item.modelJudgment!.status,'supported');assert.equal(item.sourceFinding!.status,'supported');assert.equal(report.requirementCompletenessPolicy!.version,"bilingual-bounded-v3");
   assert.equal(item.publicationBasis?.reason,template?'locked_price_match':undefined);
  }
  const q=languageQuote('The menu must list Beef noodles at AUD18.',['Beef noodles']),unknown=await controlled(q,'insufficient_evidence');assert.equal(unknown.items.find(i=>i.criterionId==='coverage-1')!.status,'insufficient_evidence');
@@ -91,6 +91,8 @@ test('named bilingual UI reads full-original completeness independently from sou
  let js=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.ESNext,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022}}).outputText.replace('import "../scope-clarification.css";','');
  for(const name of ['react','react/jsx-runtime'])js=js.replaceAll(JSON.stringify(name),JSON.stringify(import.meta.resolve(name)));
  for(const name of ['assessment-evidence-needs','assessment-requirement-completeness'])js=js.replaceAll(JSON.stringify(`@/lib/${name}`),JSON.stringify(new URL(`../lib/${name}.ts`,import.meta.url).href));
+ js = js.replaceAll('"./noodle-hours-guidance"', JSON.stringify(new URL("../app/components/noodle-hours-guidance.ts", import.meta.url).href));
+ js = js.replaceAll('"./noodle-evidence-guidance"', JSON.stringify(new URL("../app/components/noodle-evidence-guidance.ts", import.meta.url).href));
  const{RequirementNextStep}=await import(`data:text/javascript;base64,${Buffer.from(js).toString('base64')}`),steps=stepsFor(['Beef noodles']);
  const item={criterionId:'coverage-1',status:'insufficient_evidence',explanation:'retained',citations:[],ruleEvidenceIds:[],modelJudgment:{status:'supported',explanation:'raw',citations:[]},sourceFinding:{version:'source-finding-v1',status:'supported',basis:'locked_business_values',explanation:'typed price facts only',citations:[],files:['menu.html']}};
  const render=(original:string,version:string)=>renderToStaticMarkup(createElement(RequirementNextStep,{criterion:criterion(original),item,businessSteps:steps,requirementCompletenessPolicy:{schema:'requirement-completeness-v1',version},language:'en'}));

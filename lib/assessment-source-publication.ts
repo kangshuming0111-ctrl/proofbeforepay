@@ -7,9 +7,10 @@ import {createSourceBusinessEvidenceCheck,createIndependentSourceBusinessFactChe
 import {createAssessmentLabelSourceFactsCheck} from "./assessment-label-citations.ts";
 import {parseSourceLiteralDirective} from "./source-literal-directive.ts";
 import {createMenuDomSourceBusinessFactCheckV2} from "./menu-dom-source-v2.ts";
-import {assessMenuPricePublicationAdmissionV2} from "./menu-source-publication-v2.ts";
+import {createMenuDomSourceBusinessFactCheckV3, createStrictMenuPriceEvidenceCheckV3} from "./menu-dom-source-v3.ts";
+import {assessMenuPricePublicationAdmissionV2, assessMenuPricePublicationAdmissionV3} from "./menu-source-publication-v2.ts";
 import {staticFileKind} from "./static-resources.ts";
-import {priceOnlyOriginalForVersion,type RequirementCompletenessVersion} from "./assessment-requirement-completeness.ts";
+import {BILINGUAL_MENU_PRICE_COMPLETENESS,isOriginalBilingualMenuPriceStep,priceOnlyOriginalForVersion,type RequirementCompletenessVersion} from "./assessment-requirement-completeness.ts";
 
 export type SourcePublicationGuardReason="locked_price_mismatch"|"confirmed_form_label_absence"|"locked_price_match";
 export type SourcePublicationCandidate={
@@ -76,7 +77,15 @@ export function createSourcePublicationCheck(input:SourcePublicationInputs){
  const schema=input.publicationSchema??"source-publication-v1";
  const rules=structuredClone(input.ruleEvidence),completenessVersion=input.requirementCompletenessVersion??"bounded-original-zh-v1";
  const sourceCheck=createAssessmentSourceFindingCheck({...input,files,coverage,businessSteps:steps,scope,version:sourceFindingVersionForPublication(schema)});
- const legacyPrice=createSourceBusinessEvidenceCheck(files,steps),priceFacts=schema==="source-publication-v2"?createMenuDomSourceBusinessFactCheckV2(files,steps):createIndependentSourceBusinessFactCheck(files,steps);
+ const legacyPrice = (schema === "source-publication-v3" ? createStrictMenuPriceEvidenceCheckV3 : createSourceBusinessEvidenceCheck)(files, steps);
+ const readPriceFacts = schema === "source-publication-v3" ? createMenuDomSourceBusinessFactCheckV3
+   : schema === "source-publication-v2" ? createMenuDomSourceBusinessFactCheckV2
+   : createIndependentSourceBusinessFactCheck;
+ const priceFacts = readPriceFacts(files, steps);
+ const restoreReasons = schema === "source-publication-v1" ? ["dynamic_or_unsupported_source"]
+   : ["dynamic_or_unsupported_source", "complex_or_unlocated_item"];
+ const admitPrice = schema === "source-publication-v3" ? assessMenuPricePublicationAdmissionV3
+   : schema === "source-publication-v2" ? assessMenuPricePublicationAdmissionV2 : undefined;
  const legacyLabels=createAssessmentLabelSourceFactsCheck(files,coverage);
  const exact=(c:ProofAssessmentCitation)=>Object.hasOwn(files,c.file)&&Number.isSafeInteger(c.start)&&Number.isSafeInteger(c.end)&&c.start>=0&&c.end>c.start&&c.end<=files[c.file].length&&c.excerpt===files[c.file].slice(c.start,c.end)&&c.excerpt.length<=500;
  return(criterion:ProofCriterion,candidate:SourcePublicationCandidate):SourcePublicationDecision|undefined=>{
@@ -94,14 +103,19 @@ export function createSourcePublicationCheck(input:SourcePublicationInputs){
   if(candidate.guardReason==="locked_price_mismatch"||positive){
    if(fact.basis!=="locked_business_values"||!selected.length||selected.some(s=>s.expected.kind!=="item_price"))return;
    const legacy=legacyPrice(criterion.id),independent=priceFacts(criterion.id);
-   if(positive){
+   if(schema==="source-publication-v3"&&completenessVersion===BILINGUAL_MENU_PRICE_COMPLETENESS&&selected.some(isOriginalBilingualMenuPriceStep)){
+    if(!priceOnlyOriginalForVersion(criterion,selected,completenessVersion)||
+     independent.kind!==(positive?"unchanged":"mismatch")||independent.checks.length!==2||independent.checks.some(check=>check.kind==="unknown"||!check.citation)||fact.citations.length!==2||
+     !assessMenuPricePublicationAdmissionV3(files,fact,candidate.rawCitations,coverage,expectedStatus))return;
+   }else if(positive){
     if(!priceOnlyOriginalForVersion(criterion,selected,completenessVersion))return;
-    if(legacy.kind!=="unknown"||!legacy.checks.length||legacy.checks.some(c=>c.kind!=="unknown"||!(schema==="source-publication-v2"?["dynamic_or_unsupported_source","complex_or_unlocated_item"]:["dynamic_or_unsupported_source"]).includes(c.reason))
+    if(legacy.kind!=="unknown"||!legacy.checks.length||legacy.checks.some(c=>c.kind!=="unknown"||!restoreReasons.includes(c.reason))
      ||independent.kind!=="unchanged"||independent.checks.some(c=>c.kind!=="unchanged"||!c.citation)
      ||legacy.checks.length!==independent.checks.length||legacy.checks.some((c,i)=>c.checkId!==independent.checks[i].checkId||c.file!==independent.checks[i].file)
-     ||assessSourceBusinessCitationWitness(independent,candidate.rawCitations).kind!=="covered"||(schema==="source-publication-v2"?!assessMenuPricePublicationAdmissionV2(files,fact,candidate.rawCitations,coverage):!plainPositivePriceOwners(files,fact.citations)))return;
+     ||assessSourceBusinessCitationWitness(independent,candidate.rawCitations).kind!=="covered"
+     ||!(admitPrice ? admitPrice(files, fact, candidate.rawCitations, coverage) : plainPositivePriceOwners(files, fact.citations)))return;
    }else if(legacy.kind!=="unknown"||!legacy.checks.some(c=>c.kind==="unknown")
-    ||legacy.checks.some(c=>c.kind==="unknown"&&!(schema==="source-publication-v2"?["dynamic_or_unsupported_source","complex_or_unlocated_item"]:["dynamic_or_unsupported_source"]).includes(c.reason))
+    ||legacy.checks.some(c=>c.kind==="unknown"&&!restoreReasons.includes(c.reason))
     ||independent.kind!=="mismatch"||independent.checks.some(c=>c.kind==="unknown"||!c.citation))return;
   }else if(candidate.guardReason==="confirmed_form_label_absence"){
    const descriptor=parseSourceLiteralDirective(criterion.source);

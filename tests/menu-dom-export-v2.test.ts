@@ -28,9 +28,9 @@ async function run({body=card("牛肉面")+card("Beef noodles"),css="body{font-f
 const check=async(bundle:EvidenceExport)=>(await verifyEvidenceExport(bundle)).checks.find(c=>c.id==="ai-source-citations")!.status;
 const affirm=(bundle:EvidenceExport)=>{const report=bundle.delivery.assessment!,item=report.items.find(i=>i.criterionId==="coverage-1")!;item.status="supported";delete item.evidenceNeed;report.withheldRisks={version:1,reason:"not_withheld",adjustedCriteria:[],entries:[]};};
 
-test("schema2 inline/card reports export exact full owners and separate raw/model/source layers",async()=>{
+test("schema3 inline/card reports export exact full owners and separate raw/model/source layers",async()=>{
  for(const body of[card("牛肉面")+card("Beef noodles"),"<p><strong>牛肉面</strong> <span>AUD18</span></p><p><span>Beef noodles</span> <strong>AUD18</strong></p>"]){
-  const{quote,report,item,bundle}=await run({body});assert.equal(report.publicationPolicy!.schema,"source-publication-v2");assert.equal(item.sourceFinding!.version,"source-finding-v2");assert.equal(item.sourceFinding!.status,"supported");assert.equal(item.status,"supported");assert.equal(item.publicationBasis!.schema,"source-publication-v2");
+  const{quote,report,item,bundle}=await run({body});assert.equal(report.publicationPolicy!.schema,"source-publication-v3");assert.equal(item.sourceFinding!.version,"source-finding-v3");assert.equal(item.sourceFinding!.status,"supported");assert.equal(item.status,"supported");assert.equal(item.publicationBasis!.schema,"source-publication-v3");
   assert.ok(item.citations.every(c=>c.excerpt===quote.proof.delivery!.files![c.file].slice(c.start,c.end)));assert.deepEqual(item.citations,item.sourceFinding!.citations);assert.equal(await check(bundle),"consistent");assert.equal(quote.proof.acceptedDeliveryId,undefined);assert.equal(quote.proof.paymentState,"unfunded");
  }
 });
@@ -55,20 +55,21 @@ test("ordinary no-marker price paths reject partial CSS and unsafe CSS while ret
  for(const css of["p{display:none}","body{opacity:0}"]){const sample=await run({body,css});assert.equal(sample.item.status,"insufficient_evidence");assert.equal(sample.item.sourceFinding!.status,"supported");assert.equal(sample.item.publicationBasis,undefined);const fake=structuredClone(sample.bundle);affirm(fake);assert.equal(await check(fake),"inconsistent");}
 });
 
-test("schema2 cannot delete its whole-original policy to approve a compound ordinary requirement",async()=>{
+test("schema3 cannot delete its whole-original policy to approve a compound ordinary requirement",async()=>{
  const{bundle,item}=await run({body:"<p>牛肉面 AUD18</p><p>Beef noodles AUD18</p>",compound:true});assert.equal(item.status,"insufficient_evidence");assert.equal(item.sourceFinding!.status,"supported");assert.equal(item.publicationBasis,undefined);
  const changed=structuredClone(bundle);affirm(changed);delete changed.delivery.assessment!.requirementCompletenessPolicy;assert.equal(await check(changed),"inconsistent");
 });
 
-test("a controlled v1 unknown remains immutable beside a new v2 card result",async()=>{
+test("a controlled v1 unknown remains immutable beside a new v3 card result",async()=>{
  const{quote,report}=await run(),legacy=structuredClone(report);legacy.id="controlled-prior-v1-card-unknown";legacy.publicationPolicy={schema:"source-publication-v1",reconciledCriterionIds:[]};
+ legacy.requirementCompletenessPolicy!.version="bilingual-bounded-v2";
  const source=createAssessmentSourceFindingCheck({files:quote.proof.delivery!.files!,coverage:legacy.coverage,language:quote.language,businessSteps:getBusinessCheckPlan(quote),scope:await resolveAssessmentScopeContext(quote,legacy),version:"source-finding-v1"});
  for(const item of legacy.items){delete item.publicationBasis;const fact=source(quote.proof.criteria.find(c=>c.id===item.criterionId)!);if(fact)item.sourceFinding=fact;else delete item.sourceFinding;if(item.criterionId==="coverage-1"){item.status="insufficient_evidence";item.explanation="Controlled old policy cannot locate this owner; no saved provider execution is claimed.";item.evidenceNeed={schema:"source-evidence-need-v1",reason:"source_ambiguity",targetFiles:["menu.html"]};}}
  legacy.withheldRisks={version:1,reason:"item_status_adjusted",adjustedCriteria:[{criterionId:"coverage-1",originalStatus:"supported",publishedStatus:"insufficient_evidence"}],entries:[]};const before=structuredClone(legacy);quote.proof.delivery!.assessmentHistory=[legacy];const bundle=await createEvidenceExport(quote);assert.equal(await check(bundle),"consistent");assert.deepEqual(bundle.delivery.assessmentHistory,[before]);assert.deepEqual(legacy,before);
  const fake=structuredClone(bundle);fake.delivery.assessmentHistory![0].items.find(i=>i.criterionId==="coverage-1")!.sourceFinding=structuredClone(report.items.find(i=>i.criterionId==="coverage-1")!.sourceFinding);assert.equal(await check(fake),"inconsistent");
 });
 
-test("strict retained replay validates v2 admission without swallowing its real core changes",async()=>{
+test("strict retained replay validates v3 admission without swallowing its real core changes",async()=>{
  const{quote,report,packet,wire}=await run();const same=await verifyAssessmentProvenanceMetadata(report,structuredClone(report),packet,quote,wire);assert.equal(same.accounting.publicationMarkersRecomputed,1);assert.equal(same.report.items.find((i:any)=>i.criterionId==="coverage-1").status,"supported");
  const malformed=structuredClone(report);malformed.items.find(i=>i.criterionId==="coverage-1")!.publicationBasis!.schema="source-publication-v1";await assert.rejects(verifyAssessmentProvenanceMetadata(malformed,report,packet,quote,wire));
 });

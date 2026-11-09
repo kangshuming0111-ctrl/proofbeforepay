@@ -8,6 +8,7 @@ import {spawnSync} from "node:child_process";
 import type {ProofAssessmentItem,ProofQuote} from "../lib/contracts.ts";
 import {createEvidenceExport,verifyEvidenceExport,EVIDENCE_EXPORT_BYTE_LIMIT,EVIDENCE_EXPORT_SCHEMA,EVIDENCE_EXPORT_RULES} from "../lib/evidence-export.ts";
 import {createUploadedDelivery,parseStaticProject} from "../lib/static-project.ts";
+import {summaryCoverageUnits} from "../lib/requirement-coverage.ts";
 import {createProofDelivery,proofCriteria} from "../lib/proof-evidence.ts";
 
 import {recordCaptureConsent} from "../lib/acceptance-evidence.ts";
@@ -64,6 +65,30 @@ test("allowlisted current-delivery export omits identity/payment fields and has 
   assert.ok(!JSON.stringify(bundle).includes("PRIVATE-"));assert.ok(!Object.hasOwn(bundle,"quote"));
   assert.deepEqual(report.limits,{scope:"current-delivery-only",authenticity:"not-proven",backendExecution:"not-proven",modelJudgment:"not-proven",payment:"not-proven",previousVersions:"not-included",networkRequests:0});
   bundle.delivery.files!["index.html"]="changed after export";assert.notEqual(quote.proof.delivery!.files!["index.html"],bundle.delivery.files!["index.html"]);
+});
+
+test("accepted evidence exports replay the saved grouping version and reject a substituted version", async () => {
+  const summary = "Home, include a link to the contact page.\nContact page; show the opening hours.";
+  for (const version of [1, 2] as const) {
+    const q = fixture(), requiredPages = ["index.html", "contact.html"], units = summaryCoverageUnits(summary, version);
+    const parsed = parseStaticProject({title: q.title, summary, amount: "1.00", requiredPages, manualRequirements: [],
+      coverage: {version, sourceText: summary, confirmed: true, decisions: units.map(({id}) => ({id, disposition: "include"}))}}, "en");
+    const delivery = createUploadedDelivery(q.proof.delivery!.files!, parsed.project, "en", 1);
+    q.summary = summary;
+    q.proof.project = parsed.project;
+    q.proof.criteria = parsed.criteria;
+    q.proof.delivery = delivery;
+    q.proof.review!.deliveryId = delivery.id;
+    q.proof.collaboration!.submission!.deliveryId = delivery.id;
+    const bundle = await createEvidenceExport(accepted(q));
+    assert.equal(bundle.project.spec!.coverage!.version, version);
+    assert.deepEqual(bundle.project.spec!.coverage!.decisions.map(row => row.text), units.map(row => row.text));
+    assert.equal((await verifyEvidenceExport(JSON.parse(JSON.stringify(bundle)))).consistency, "consistent");
+    bundle.project.spec!.coverage!.version = version === 1 ? 2 : 1;
+    const invalid = await verifyEvidenceExport(bundle);
+    assert.ok(failedCheck(invalid, "requirements"));
+    assert.ok(failedCheck(invalid, "source-rule-replay"));
+  }
 });
 
 test("href tampering is caught by digest and source replay, even if the attacker updates the self-declared digest",async()=>{

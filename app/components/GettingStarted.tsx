@@ -24,6 +24,7 @@ export function GettingStarted({language, busy, onStart, onExample, onDemo, resu
       <details className="welcome-more">
         <summary>{tr("更多示例与开发者工具", "More examples and developer tools")}</summary>
         <div className="welcome-more-content">
+          <a className="text-button welcome-example" href="/judge.html">{tr("评委入口：演示、源码与证据", "Judge start: demo, source and evidence")}<ArrowRight size={13} aria-hidden="true"/></a>
           {resume && <div className="welcome-new-example"><button type="button" className="text-button welcome-example" disabled={busy} onClick={onDemo}>{tr("开始新的虚构例子", "Start a new fictional example")}<ArrowRight size={13} aria-hidden="true"/></button><small className="welcome-action-note">{demoNote}</small></div>}
           <a className="text-button welcome-example" href={RUNTIME_LAB_ORIGIN} target="_blank" rel="noreferrer">{tr("免账号体验：检查价格与预约后端","No-account lab: prices and booking backend")}<ArrowRight size={13} aria-hidden="true"/></a>
           <a className="text-button welcome-example" href={`${RUNTIME_LAB_ORIGIN}/journeys.html`} target="_blank" rel="noreferrer">{tr("流程实验：表单提交、取消、改期与重试","Journey lab: submit, cancel, reschedule and retry")}<ArrowRight size={13} aria-hidden="true"/></a>
@@ -35,9 +36,9 @@ export function GettingStarted({language, busy, onStart, onExample, onDemo, resu
     <div className="welcome-evidence" aria-label={tr("差异示意，尚未运行检查", "Illustration only; no check has run")}>
       <p className="welcome-illustration-note">{tr("流程示意 · 尚未运行检查", "Workflow illustration · no checks have run")}</p>
       <ol className="welcome-records">
-        <li><span>{tr("同一份约定", "One agreed requirement")}</span><strong>{tr("中文菜单 · 牛肉面 AUD 18", "Chinese menu · 牛肉面 AUD 18")}</strong></li>
-        <li className="welcome-mismatch"><span>{tr("第一次交付", "First delivery")}</span><strong>{tr("牛肉面 AUD 28", "牛肉面 AUD 28")}</strong><p>{tr("把价格差异连回原始要求，起草具体修改意见。", "Link the price difference to the original requirement and draft precise feedback.")}</p></li>
-        <li><span>{tr("修改版 · 仍需买家核对", "Revised delivery · buyer review required")}</span><strong>{tr("牛肉面 AUD 18", "牛肉面 AUD 18")}</strong></li>
+        <li><span>{tr("买家想要", "What the buyer asked for")}</span><strong>{tr("「牛肉面请标 18 澳元。」", "‘Please list beef noodles at AUD 18.’")}</strong></li>
+        <li className="welcome-mismatch"><span>{tr("第一次交付", "First delivery")}</span><strong>{tr("菜单上写的是 28 澳元", "The menu says AUD 28")}</strong><p>{tr("价格不对，请卖家改成 18 澳元。", "The price is wrong. Ask the seller to change it to AUD 18.")}</p></li>
+        <li><span>{tr("卖家改完后", "After the seller’s changes")}</span><strong>{tr("菜单写对了，买家再核对", "The menu now says AUD 18. The buyer checks it.")}</strong></li>
       </ol>
       <p className="welcome-decision"><FileCheck2 size={18} aria-hidden="true"/>{tr("新版本不自动算通过。买家核对变化、明确验收，再单独确认测试付款。", "A revision does not pass automatically. The buyer checks the changes, explicitly accepts a version, then separately confirms test payment.")}</p>
     </div>

@@ -22,6 +22,7 @@ export type DeliveryOverviewProps = {
   criteria: ProofCriterion[];
   review?: ProofReview;
   manualChecks: string[];
+  observationReview?: import("@/lib/noodle-observation-review").NoodleObservationReview;
   language: Language;
   role: ProofRole;
   stage?: ProofCollaboration["stage"];
@@ -43,12 +44,12 @@ export type DeliveryOverviewProps = {
   onInspectLayout?: (file: string, width: ProofLayoutWidth) => void;
 };
 
-export function DeliveryOverview({ delivery, criteria, review, manualChecks, language, role, stage, previousVersion, previousVersionLoading=false, busy = false, onInspect, onPrepareFeedback, onViewHistory, onOpenLayout, onOpenBusiness, onOpenRuntime, onOpenEnquiry, onOpenTransfer, onOpenJourney, onOpenModel, projectId, acceptedSnapshotId, onInspectLayout }: DeliveryOverviewProps) {
+export function DeliveryOverview({ delivery, criteria, review, manualChecks, observationReview, language, role, stage, previousVersion, previousVersionLoading=false, busy = false, onInspect, onPrepareFeedback, onViewHistory, onOpenLayout, onOpenBusiness, onOpenRuntime, onOpenEnquiry, onOpenTransfer, onOpenJourney, onOpenModel, projectId, acceptedSnapshotId, onInspectLayout }: DeliveryOverviewProps) {
   const zh = language === "zh";
   const tr = (chinese: string, english: string) => zh ? chinese : english;
   const overview = deliveryOverview({ delivery, criteria, review, manualChecks, previousVersion });
-  const hasSourcePublication = delivery.assessment?.deliveryId === delivery.id && delivery.assessment.items.some(item => ["source-publication-v1", "source-publication-v2"].includes(item.publicationBasis?.schema ?? ""));
-  const comparedSourcePublication = hasSourcePublication || !!previousVersion?.delivery.assessment?.items.some(item => ["source-publication-v1", "source-publication-v2"].includes(item.publicationBasis?.schema ?? ""));
+  const hasSourcePublication = delivery.assessment?.deliveryId === delivery.id && delivery.assessment.items.some(item => ["source-publication-v1", "source-publication-v2", "source-publication-v3"].includes(item.publicationBasis?.schema ?? ""));
+  const comparedSourcePublication = hasSourcePublication || !!previousVersion?.delivery.assessment?.items.some(item => ["source-publication-v1", "source-publication-v2", "source-publication-v3"].includes(item.publicationBasis?.schema ?? ""));
   const layout = deliveryLayoutSummary(delivery);
   const model=useModelDiagnosis(delivery,{projectId,acceptedSnapshotId,accepted:stage==="accepted"});
   const business = buildBusinessSpotlight(delivery, previousVersion);
@@ -64,14 +65,16 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
   const showPrimary = !business || firstRows[0]?.rule === "fail" || firstRows[0]?.rule === "unreviewed" || firstRows[0]?.ai?.status === "changes_suggested";
   const showDraft = role === "buyer" && stage === "submitted" && !!onPrepareFeedback;
   const enquiry=deliveryResultEnquiry(delivery,projectId);
-  const resultInput={delivery,overview,layout,model,business,journey,runtime:runtimeSummary,enquiry,language};
+  const resultInput={delivery,overview,observationReview,layout,model,business,journey,runtime:runtimeSummary,enquiry,language};
   const focus=deliveryResultFocus(resultInput),statuses=deliveryResultStatus(resultInput);
   const detailsRef=useRef<HTMLDetailsElement>(null);
   const title=stage==="accepted"?tr("买家已接受当前交付","The buyer accepted this delivery"):focus.title;
   const openDetails=()=>{if(detailsRef.current){detailsRef.current.open=true;detailsRef.current.querySelector<HTMLElement>("summary")?.focus();}};
   const inspect=deliveryResultInspection(focus,{criterion:onInspect,model:onOpenModel,business:onOpenBusiness??onOpenLayout,journey:onOpenJourney,runtime:onOpenRuntime,enquiry:onOpenEnquiry,transfer:onOpenTransfer??openDetails,layout:onOpenLayout,details:openDetails});
 
-  const rowLabel = (row: (typeof overview.rows)[number]) => row.rule !== "fail" && row.ai?.status === "changes_suggested" && ["source-publication-v1", "source-publication-v2"].includes(row.ai.publicationBasis?.schema ?? "") ? tr("系统源码核验发布：不符", "System source-check publication: mismatch") : overviewRowLabel(row, language);
+  const rowLabel = (row: (typeof overview.rows)[number]) => observationReview?.items.some(item => item.criterionId === row.criterion.id)
+    ? observationReview.state === "saved" ? tr("人工补证已保存", "Human evidence saved") : tr("已勾选，待随验收保存", "Selected, to be saved with acceptance")
+    : row.rule !== "fail" && row.ai?.status === "changes_suggested" && ["source-publication-v1", "source-publication-v2", "source-publication-v3"].includes(row.ai.publicationBasis?.schema ?? "") ? tr("系统源码核验发布：不符", "System source-check publication: mismatch") : overviewRowLabel(row, language);
 
   const ruleComparison = overview.previous?.ruleFailures !== undefined && overview.ruleFailures !== undefined;
   const aiComparison = overview.previous?.aiChanges !== undefined && overview.aiChanges !== undefined;
@@ -98,14 +101,14 @@ export function DeliveryOverview({ delivery, criteria, review, manualChecks, lan
       <span className={overview.aiChanges ? "overview-attention" : ""}>{hasSourcePublication ? tr("发布结论需修改", "Published findings needing changes") : tr("AI 建议修改", "AI change suggestions")} <strong>{overview.aiChanges ?? tr("未运行", "Not run")}</strong></span>
       {overview.risks && overview.risks.total > 0 && <span>{tr("模型潜在线索", "Potential AI issues")} <strong>{overview.risks.total}</strong></span>}
       {overview.humanRequired && overview.humanRemaining === 0
-        ? <span>{tr("人工已确认", "Human-confirmed")} <strong>{overview.humanConfirmed}/{overview.humanRequired}</strong></span>
+        ? <span>{observationReview?.state === "draft" ? tr("人工已勾选", "Human checks selected") : tr("人工已确认", "Human-confirmed")} <strong>{overview.humanConfirmed}/{overview.humanRequired}</strong></span>
         : <span>{tr("人工待确认", "Human checks left")} <strong>{overview.humanRemaining ?? "—"}</strong></span>}
     </div>
     {delivery.businessChecks && !business && <p className="delivery-overview-note">{tr("业务观察报告无法可靠读取，请打开报告重新核对。", "The business observation report could not be reliably read. Open the report and check again.")}{(onOpenBusiness || onOpenLayout) && <button type="button" disabled={busy} onClick={onOpenBusiness ?? onOpenLayout}>{tr("查看业务报告", "View business report")}</button>}</p>}
     {business && stage === "accepted" && <p className="delivery-overview-note">{tr("以下为当前观察，不改写买家当时接受的版本和证据。", "These are current observations; they do not revise the version or evidence accepted by the buyer.")}</p>}
     {!overview.reviewCurrent && <p className="delivery-overview-note">{tr("此版本尚未核查，不作通过判断。", "This version has not been checked; no pass is claimed.")}</p>}
     {overview.reviewCurrent && !!overview.unreviewed && <p className="delivery-overview-note">{tr(`另有 ${overview.unreviewed} 项尚无完整规则证据。`, `${overview.unreviewed} requirements still lack rule evidence.`)}</p>}
-    {!!overview.aiInsufficient && !!overview.humanConfirmed && <p className="delivery-overview-note">{tr(`AI 有 ${overview.aiInsufficient} 项无法独立判断；人工确认另有记录，原始 AI 建议保留。`, `AI could not independently determine ${overview.aiInsufficient} requirement${overview.aiInsufficient === 1 ? "" : "s"}. Human confirmations and the original AI advice are recorded separately.`)}</p>}
+    {!observationReview && !!overview.aiInsufficient && !!overview.humanConfirmed && <p className="delivery-overview-note">{tr(`AI 有 ${overview.aiInsufficient} 项无法独立判断。可逐项查看源码评估和人工确认状态。`, `AI could not independently determine ${overview.aiInsufficient} requirement${overview.aiInsufficient === 1 ? "" : "s"}. Inspect the source assessment and human check status per requirement.`)}</p>}
     {overview.risks && overview.risks.total > 0 && <p className="delivery-overview-note">{tr(`潜在线索中 ${overview.risks.unreviewed} 条尚无人工复核记录；双方最新意见可在 AI 评估中查看。复核不代表问题已解决。`, `Potential issues without a human review record: ${overview.risks.unreviewed}. Inspect each participant’s latest position in the AI assessment; a review does not establish resolution.`)}</p>}
     {showPrimary && firstRows[0] && <div className="delivery-overview-primary"><span>{rowLabel(firstRows[0])}</span><strong>{criterionDisplayTitle(firstRows[0].criterion, language)}</strong><button type="button" disabled={busy} onClick={() => onInspect(firstRows[0].criterion.id)}>{tr("查看证据", "Inspect")}<ArrowRight size={12} aria-hidden="true"/></button></div>}
     {showPrimary && primaryNeedsAttention && firstRows[0]?.explanation && <p className="delivery-overview-primary-explanation" title={firstRows[0].explanation}>{firstRows[0].explanation}</p>}

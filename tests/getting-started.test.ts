@@ -126,8 +126,9 @@ test("the existing labs, closed scope disclosure and evidence illustration remai
   const Welcome = await component;
   for (const resume of [false, true]) {
     const {value} = props("en", resume), tree = Welcome(value), all = nodes(tree), links = all.filter(node => node.type === "a");
-    assert.deepEqual(links.map(node => node.props?.href), [RUNTIME_LAB_ORIGIN, `${RUNTIME_LAB_ORIGIN}/journeys.html`]);
-    assert.ok(links.every(node => node.props?.target === "_blank" && node.props?.rel === "noreferrer"));
+    assert.deepEqual(links.map(node => node.props?.href), ["/judge.html", RUNTIME_LAB_ORIGIN, `${RUNTIME_LAB_ORIGIN}/journeys.html`]);
+    assert.ok(links.filter(node => node.props?.href !== "/judge.html").every(node => node.props?.target === "_blank" && node.props?.rel === "noreferrer"));
+    assert.equal(links.find(node => node.props?.href === "/judge.html")?.props?.target, undefined);
     assert.equal(within(tree, "welcome-scope").props?.open, undefined);
     assert.match(content(within(tree, "welcome-scope")), /Static checks do not run scripts, form backends or email delivery/u);
     assert.match(content(within(tree, "welcome-illustration-note")), /no checks have run/u);

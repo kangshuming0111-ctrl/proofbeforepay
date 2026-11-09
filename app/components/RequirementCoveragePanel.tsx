@@ -8,6 +8,7 @@ export type CoverageDraftDecision = { id: string; disposition: "include" | "excl
 
 type Props = {
   language: Language;
+  version: RequirementCoverage["version"];
   units: RequirementCoverageUnit[];
   decisions: CoverageDraftDecision[];
   confirmed: boolean;
@@ -17,29 +18,34 @@ type Props = {
 };
 
 /** Displays exact source fragments; it does not claim semantic extraction. */
-export function RequirementCoveragePanel({language, units, decisions, confirmed, disabled, onDecisionChange, onConfirmChange}: Props) {
+export function RequirementCoveragePanel({language, version, units, decisions, confirmed, disabled, onDecisionChange, onConfirmChange}: Props) {
   const id = useId();
   const tr = (zh: string, en: string) => language === "zh" ? zh : en;
   const rows = units.map(unit => ({unit, decision: decisions.find(item => item.id === unit.id) ?? {id: unit.id, disposition: "include" as const}}));
   const unresolved = rows.some(({decision}) => decision.disposition === "pending" || decision.disposition === "exclude" && !decision.reason?.trim());
   const included = rows.filter(({decision}) => decision.disposition === "include").length;
   return <section className="requirement-coverage" aria-labelledby={`${id}-title`}>
-    <div className="requirement-coverage-heading"><h3 id={`${id}-title`}><CheckCheck size={15} aria-hidden="true"/>{tr("逐条确认原始需求", "Account for every source requirement")}</h3><span>{tr(`${included} 条纳入验收`, `${included} included for acceptance`)}</span></div>
-    <p className="requirement-coverage-help" id={`${id}-help`}>{tr("以下按标点整理原文，未调用 AI。纳入的每条会成为独立人工验收项；一条包含多个要求时，需要全部满足。可回上一步用换行拆得更细。", "These are punctuation-based source fragments, without an AI call. Each included row becomes its own human acceptance check; every requirement within that row must be met. Go back and add line breaks to split a compound row further.")}</p>
+    <div className="requirement-coverage-heading"><h3 id={`${id}-title`}><CheckCheck size={15} aria-hidden="true"/>{tr("确认这次要做什么", "Confirm what the seller should deliver")}</h3><span>{tr(`要做 ${included} 条`, `${included} to deliver`)}</span></div>
+    <p className="requirement-coverage-help" id={`${id}-help`}>
+      {version === 2
+        ? tr("你写的每一行都列在下面。", "Each line you wrote is listed below.")
+        : tr("你的要求已按标点分开。要自己分条，可以返回上一步，一行写一件事。", "Your requirements are split at punctuation. Go back and write one thing per line if you want to group them yourself.")}
+      {" "}{tr("选了「这次要做」的内容，交付后会逐条检查。一条里写了几件事，就要全部做到。", "Everything marked ‘Include’ will be checked after delivery. If you put several things on one line, all of them need to be done.")}
+    </p>
     <ol className="requirement-coverage-list" aria-describedby={`${id}-help`}>{rows.map(({unit,decision}, index) => <li key={unit.id} className={`coverage-${decision.disposition}`}>
       <div className="requirement-coverage-row"><span className="requirement-coverage-number" aria-hidden="true">{index + 1}</span><blockquote>{unit.text}</blockquote></div>
-      <label htmlFor={`${id}-${unit.id}`}>{tr("这条要求的处理方式", "How this requirement is handled")}</label>
+      <label htmlFor={`${id}-${unit.id}`}>{tr("这次要做吗？", "Include this requirement?")}</label>
       <select id={`${id}-${unit.id}`} value={decision.disposition} disabled={disabled} onChange={event => onDecisionChange({...decision, disposition: event.target.value as CoverageDraftDecision["disposition"]})}>
-        <option value="include">{tr("纳入人工验收", "Include as a human check")}</option>
-        <option value="pending">{tr("待澄清，暂不创建", "Clarify before creating")}</option>
-        <option value="exclude">{tr("本次明确不做（需说明）", "Explicitly out of scope (give a reason)")}</option>
+        <option value="include">{tr("这次要做", "Include")}</option>
+        <option value="pending">{tr("还要和卖家商量", "Discuss with the seller first")}</option>
+        <option value="exclude">{tr("这次不做（请写原因）", "Leave out (give a reason)")}</option>
       </select>
-      {decision.disposition === "exclude" && <><label htmlFor={`${id}-${unit.id}-reason`}>{tr("排除理由", "Reason for excluding")}</label><textarea id={`${id}-${unit.id}-reason`} value={decision.reason ?? ""} maxLength={300} rows={2} required disabled={disabled} placeholder={tr("例如：真实邮件发送由另一阶段单独验收。", "For example: email delivery will be accepted in a separate milestone.")} onChange={event => onDecisionChange({...decision, reason: event.target.value})}/></>}
-      {decision.disposition === "pending" && <p className="requirement-coverage-warning">{tr("请先与卖家澄清，再选择纳入验收或明确排除。", "Clarify with the seller, then include this requirement or explicitly exclude it.")}</p>}
+      {decision.disposition === "exclude" && <><label htmlFor={`${id}-${unit.id}-reason`}>{tr("为什么这次不做？", "Why are you leaving it out?")}</label><textarea id={`${id}-${unit.id}-reason`} value={decision.reason ?? ""} maxLength={300} rows={2} required disabled={disabled} placeholder={tr("例如：这次先把菜单做好，下次再加预约。", "For example: we’ll finish the menu now and add bookings next time.")} onChange={event => onDecisionChange({...decision, reason: event.target.value})}/></>}
+      {decision.disposition === "pending" && <p className="requirement-coverage-warning">{tr("请先和卖家说清楚，然后选「这次要做」或「这次不做」。", "Agree on this with the seller first, then choose whether to include it.")}</p>}
     </li>)}</ol>
     {!units.length && <p className="requirement-coverage-warning">{tr("先填写网站需求，才能确认每条要求。", "Enter website requirements before confirming coverage.")}</p>}
-    <label className="requirement-coverage-confirm"><input type="checkbox" checked={confirmed} disabled={disabled || !units.length || unresolved} onChange={event => onConfirmChange(event.target.checked)}/><span>{tr("我已逐条核对。纳入的原文都要验收；排除的要求及理由将与约定一起保存。", "I reviewed every row. Included source requirements must be accepted; excluded requirements and their reasons will be saved with the agreement.")}</span></label>
-    {unresolved && <p className="requirement-coverage-warning" role="status">{tr("还有待澄清的条目或未填写的排除理由。处理后才能确认并创建。", "Some rows need clarification or an exclusion reason. Resolve them before confirming and creating.")}</p>}
+    <label className="requirement-coverage-confirm"><input type="checkbox" checked={confirmed} disabled={disabled || !units.length || unresolved} onChange={event => onConfirmChange(event.target.checked)}/><span>{tr("我确认上面哪些要做、哪些不做。双方都能查看这份记录。", "I’ve confirmed what’s included and what’s left out. Both sides can see this record.")}</span></label>
+    {unresolved && <p className="requirement-coverage-warning" role="status">{tr("请先决定哪些要做，并为不做的项目写明原因。", "Decide what to include and add a reason for anything you leave out before continuing.")}</p>}
   </section>;
 }
 

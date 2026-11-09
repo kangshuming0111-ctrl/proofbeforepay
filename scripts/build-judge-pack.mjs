@@ -3,7 +3,8 @@ import { lstat, mkdir, open, readdir, readFile, writeFile } from "node:fs/promis
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
-import { gunzipSync } from "node:zlib";
+import { gunzipSync, gzipSync } from "node:zlib";
+import { fingerprintEntries, isReleaseSource } from "./release-fingerprint.mjs";
 
 // Build a local reviewable export. This never reads runtime credentials, publishes
 // a repository, changes Site access, starts a provider call or installs packages.
@@ -23,15 +24,38 @@ const FASTAPI_HANDOFF_FILES = new Set([
   "examples/delivery-stage-staging/fastapi-native/requirements.txt",
   "examples/delivery-stage-staging/fastapi-native/LICENSE",
 ]);
-// One immutable benchmark source archive, not a general binary/archive allowance.
-// Its members must also match the exact 20 pre-call implementation hashes.
+// One benchmark source archive, not a general binary/archive allowance.
+// The original and metadata-free export must bind the same 20 frozen files.
 const PINNED_SOURCE_ARCHIVES = new Map([["public/benchmarks/five-remediation-2026-11-05/first-implementation.tar.gz", {
   bytes: 175703, sha256: "08b9d92412311119119bea36d86ee4e403087d83fe535e33719f432269617139",
+  canonicalTarSha256: "7958dacbc8e2ae9d9a96a9cfb348672c9ddfeb1d06d054722ee5830ab4e5d2fc",
   maxCompressedBytes: 256 * 1024, maxUncompressedBytes: 1024 * 1024, files: 20,
   freeze: "public/benchmarks/five-remediation-2026-11-05/first-freeze.json",
 }]]);
-const DENIED_PART = /^(?:\.git|node_modules|dist|\.next|\.wrangler|\.sites-runtime|outputs|work|\.codex|__pycache__|\.env(?:\..*)?|\.dev\.vars(?:\..*)?|credentials?|cookies?|secrets?|private[-_]?keys?|auth[-_]?state|storage[-_]?state)$/iu;
+const DENIED_PART = /^(?:\.git|node_modules|dist|\.next|\.wrangler|\.sites-runtime|outputs|work|\.codex|__pycache__|\.env(?:\..*)?|\.dev\.vars(?:\..*)?|credentials?|cookies?|secrets?|private[-_]?(?:keys?|notes?)|personal[-_]?notes?|auth[-_]?state|storage[-_]?state)(?:\.md|\.txt|\.json)?$/iu;
 const SECRET_LIKE = /\bBearer\s+[A-Za-z0-9._~+/=-]{24,}|\bsk-[A-Za-z0-9_-]{24,}|-----BEGIN [A-Z ]*PRIVATE KEY-----/u;
+const SITE_ID = /\bappg(?:prj|ver|dep|repo)_[a-f0-9]{12,}\b/iu;
+const OWNER_STACK_PATH = /file:\/\/\/(?:Users|home)\/[^\s"\\:]+\//u;
+const ID_REDACTIONS = new Set([
+  "docs/collaboration/award-gap-cycles-2026-11-05/round-2.md",
+  "docs/collaboration/award-gap-cycles-2026-11-05/round-4.md",
+  "scripts/winner-benchmark.json",
+]);
+const DIAGNOSTIC_REDACTION = "public/benchmarks/award-gap-cycles-2026-11-05/concurrency-before.json";
+
+function sanitizePublicSource(relative, bytes) {
+  // Only these retained records may change. App sources and other new
+  // matches require inspection rather than silently losing parity.
+  if (PINNED_SOURCE_ARCHIVES.has(relative)) return {relative, bytes, redacted: true};
+  const original = bytes.toString("utf8");
+  let text = original;
+  if (ID_REDACTIONS.has(relative)) text = text.replace(new RegExp(SITE_ID.source, "giu"), "[Site identity omitted]");
+  if (relative === DIAGNOSTIC_REDACTION) text = text.replace(new RegExp(OWNER_STACK_PATH.source, "gu"), "file:///workspace/");
+  if (SITE_ID.test(text) || OWNER_STACK_PATH.test(text) || text !== original && isReleaseSource(relative)) {
+    throw new Error(`Source export needs manual review: ${relative}`);
+  }
+  return text === original ? {relative, bytes} : {relative, bytes: Buffer.from(text), redacted: true};
+}
 
 async function boundedSourceRead(file, maxBytes) {
   const handle = await open(file, "r");
@@ -44,9 +68,28 @@ async function boundedSourceRead(file, maxBytes) {
   } finally {await handle.close();}
 }
 
-async function validatePinnedArchive(root, relative, bytes, pin) {
+/** Rebuild only the verified regular-file members, dropping local UID/GID, names,
+ * timestamps, padding bytes, and PAX metadata from the original archive. */
+function neutralTarMember(name, data) {
+  const header = Buffer.alloc(512);
+  header.write(name, 0, 100, "utf8");
+  const octal = (offset, width, value) => header.write(value.toString(8).padStart(width - 1, "0"), offset, width - 1, "ascii");
+  octal(100, 8, 0o644); octal(108, 8, 0); octal(116, 8, 0);
+  octal(124, 12, data.length); octal(136, 12, 0);
+  header.fill(32, 148, 156); header[156] = 48;
+  header.write("ustar", 257, "ascii"); header.write("00", 263, "ascii");
+  header.write(header.reduce((sum, byte) => sum + byte, 0).toString(8).padStart(6, "0"), 148, 6, "ascii");
+  header[154] = 0;
+  return [header, data, Buffer.alloc((512 - data.length % 512) % 512)];
+}
+
+async function sanitizePinnedArchive(root, relative, bytes, pin) {
   const reject = () => {throw new Error(`Pinned benchmark archive validation failed: ${relative}`);};
-  if (bytes.length !== pin.bytes || bytes.length > pin.maxCompressedBytes || createHash("sha256").update(bytes).digest("hex") !== pin.sha256) reject();
+  const isOriginal = bytes.length === pin.bytes && createHash("sha256").update(bytes).digest("hex") === pin.sha256;
+  if (bytes.length > pin.maxCompressedBytes) reject();
+  let tar;
+  try { tar = gunzipSync(bytes, {maxOutputLength: pin.maxUncompressedBytes}); } catch { reject(); }
+  if (!isOriginal && createHash("sha256").update(tar).digest("hex") !== pin.canonicalTarSha256) reject();
   const freezePath = path.join(root, pin.freeze);
   if ((await lstat(freezePath)).size > 4 * 1024 * 1024) reject();
   const freeze = JSON.parse(new TextDecoder("utf-8", {fatal: true}).decode(await sourceFile(root, pin.freeze)));
@@ -56,7 +99,7 @@ async function validatePinnedArchive(root, relative, bytes, pin) {
     expected.set(row.file, row.sha256);
   }
   if (expected.size !== pin.files) reject();
-  const tar = gunzipSync(bytes, {maxOutputLength: pin.maxUncompressedBytes}), seen = new Set();
+  const seen = new Set(), normalized = [];
   const number = field => {const value = field.toString("ascii").replace(/\0.*$/u, "").trim(); if (!/^[0-7]+$/u.test(value)) reject(); return Number.parseInt(value, 8);};
   const string = field => new TextDecoder("utf-8", {fatal: true}).decode(field.subarray(0, field.indexOf(0) < 0 ? field.length : field.indexOf(0)));
   let at = 0, pendingMtime = false;
@@ -75,12 +118,16 @@ async function validatePinnedArchive(root, relative, bytes, pin) {
     } else {
       if (type !== 48 || !expected.has(name) || seen.has(name) || string(header.subarray(157, 257)) || number(header.subarray(100, 108)) !== 0o644 || createHash("sha256").update(data).digest("hex") !== expected.get(name)) reject();
       const text = new TextDecoder("utf-8", {fatal: true}).decode(data);
-      if (text.includes("\0") || SECRET_LIKE.test(text)) reject();
+      if (text.includes("\0") || SECRET_LIKE.test(text) || SITE_ID.test(text) || OWNER_STACK_PATH.test(text)) reject();
+      normalized.push(...neutralTarMember(name, data));
       seen.add(name); pendingMtime = false;
     }
     at = start + Math.ceil(size / 512) * 512;
   }
   if (pendingMtime || seen.size !== expected.size || tar.length - at < 1024 || !tar.subarray(at).every(byte => byte === 0)) reject();
+  const canonicalTar = Buffer.concat([...normalized, Buffer.alloc(1024)]);
+  if (createHash("sha256").update(canonicalTar).digest("hex") !== pin.canonicalTarSha256) reject();
+  return gzipSync(canonicalTar, {level: 9});
 }
 
 async function sourceFile(root, relative) {
@@ -93,10 +140,10 @@ async function sourceFile(root, relative) {
   const info = await lstat(current);
   if (!info.isFile()) throw new Error(`Non-file source rejected: ${relative}`);
   const pin = PINNED_SOURCE_ARCHIVES.get(relative);
-  if (pin && (info.size !== pin.bytes || info.size > pin.maxCompressedBytes)) throw new Error(`Pinned benchmark archive validation failed: ${relative}`);
+  if (pin && info.size > pin.maxCompressedBytes) throw new Error(`Pinned benchmark archive validation failed: ${relative}`);
   const boundedBytes = pin?.maxCompressedBytes ?? ([...PINNED_SOURCE_ARCHIVES.values()].some(value => value.freeze === relative) ? 4 * 1024 * 1024 : undefined);
   const bytes = boundedBytes === undefined ? await readFile(current) : await boundedSourceRead(current, boundedBytes);
-  if (pin) {await validatePinnedArchive(root, relative, bytes, pin); return bytes;}
+  if (pin) return sanitizePinnedArchive(root, relative, bytes, pin);
   const text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
   if (text.includes("\0") || SECRET_LIKE.test(text)) throw new Error(`Source export needs manual review: ${relative}`);
   return bytes;
@@ -125,11 +172,13 @@ export async function collectPublicSource(root) {
     catch (error) { if (error.code !== "ENOENT") throw error; }
   }
   const result = [];
-  for (const relative of [...new Set(names)].sort()) result.push({ relative, bytes: await sourceFile(root, relative) });
+  for (const relative of [...new Set(names)].sort()) result.push(sanitizePublicSource(relative, await sourceFile(root, relative)));
   return result;
 }
 
 const GUIDE = `# ProofBeforePay — local judge handoff
+
+Start with [the concise judge guide](docs/JUDGE-START.md). This longer document retains detailed setup and historical evidence. The export manifest's applicationSource fingerprint must match the hosted /api/release response before claiming source parity; run node scripts/release-fingerprint.mjs inside the exported source to recompute it.
 
 Generating this source export does not by itself publish a repository or submit a Devpost entry. It does not grant access to the authenticated main workspace or establish measured AI results. That workspace retains its configured access audience. The separate public verification lab below is an account-free synthetic deployment, not a grant of access to private projects. See the [dated evaluation](docs/EVALUATION-2026-11-02.md) for separately recorded results and limits.
 
@@ -250,13 +299,19 @@ export async function buildJudgePack(root, output) {
   await save(".env.example", Buffer.from("# Optional local test credentials only; never commit .dev.vars\nDEEPSEEK_API_KEY=\nDEEPSEEK_MODEL=deepseek-flash\nPAYPAL_CLIENT_ID=\nPAYPAL_CLIENT_SECRET=\n"));
   await save("JUDGE-README.md", Buffer.from(GUIDE));
   await save("DEMO-SCRIPT.md", Buffer.from(DEMO));
-  const manifest = { generatedAt: new Date().toISOString(), scope: "Sanitized source only; not publication or submission", excluded: ["credentials", "runtime data", "Git metadata", "Site identity", "outputs", "dependencies", "builds"], files };
+  const manifest = { generatedAt: new Date().toISOString(), applicationSource: fingerprintEntries(sources), scope: "Sanitized source only; not publication or submission", excluded: ["credentials", "runtime data", "Git metadata", "Site identity", "outputs", "dependencies", "builds"], redacted: sources.filter(entry => entry.redacted).map(entry => entry.relative), files };
   const manifestText = JSON.stringify(manifest, null, 2) + "\n";
   await writeFile(path.join(output, "manifest.json"), manifestText, { flag: "wx" });
   // The manifest does not hash itself; it verifies every exported source file.
   await writeFile(path.join(target, "SOURCE-MANIFEST.json"), manifestText, { flag: "wx" });
   const archive = path.join(output, "ProofBeforePay-source.tar.gz");
-  const result = spawnSync("tar", ["-czf", archive, "-C", target, "."], { encoding: "utf8", env: { ...process.env, COPYFILE_DISABLE: "1" } });
+  const archiveEnv = { ...process.env, TAR_OPTIONS: "", COPYFILE_DISABLE: "1" };
+  const tar = spawnSync("tar", ["--version"], {encoding: "utf8", env: archiveEnv}).stdout ?? "";
+  const metadata = tar.includes("GNU tar")
+    ? ["--owner=0", "--group=0", "--numeric-owner", "--no-xattrs", "--no-acls", "--no-selinux"]
+    : tar.includes("bsdtar") ? ["--uid", "0", "--gid", "0", "--uname", "root", "--gname", "root", "--no-xattrs", "--no-acls", "--no-fflags"] : undefined;
+  if (!metadata) throw new Error("Source files exported; use GNU tar or bsdtar to create a sanitized archive.");
+  const result = spawnSync("tar", [...metadata, "-czf", archive, "-C", target, "."], { encoding: "utf8", env: archiveEnv });
   if (result.status !== 0) throw new Error("Source files exported; archive creation failed.");
   return { output, sourceDirectory: target, archive, manifest: path.join(output, "manifest.json"), files: files.length };
 }

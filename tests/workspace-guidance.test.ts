@@ -26,10 +26,10 @@ function actionEnvironment(extra:Record<string,unknown>={}){
     tr:(_zh:string,en:string)=>en,paymentPending:false,captured:false,voided:false,closedUnpaid:false,expired:false,acceptedCurrent:false,
     quote:{id:"current-project",status:"approved",paymentMode:"demo"},buyer:true,roleplay:false,collaboration:undefined,authorized:false,
     delivery:undefined,deliveryUnlocked:true,customView:true,reviewCurrent:false,
-    focusPanel:spy("focus"),switchWorkspaceRole:spy("switch"),beginDeliveryAcceptance:spy("acceptance-view"),openTransferChecks:spy("transfer-view"),openModelChecks:spy("model-view"),
+    focusPanel:spy("focus"),refreshCase:spy("refresh"),switchWorkspaceRole:spy("switch"),beginDeliveryAcceptance:spy("acceptance-view"),openTransferChecks:spy("transfer-view"),openModelChecks:spy("model-view"),
     mutate:spy("FORBIDDEN_MUTATION"),...extra,
   };
-  return {calls,env,handler:actual(["nextWorkspaceAction"],env).nextWorkspaceAction};
+  return {calls,env,handler:actual(["nextWorkspaceAction","openSharedProgress"],env).nextWorkspaceAction};
 }
 
 // Exact pre-round30 no-delivery branch from e6b5b1d05852af340ba206515478dee75330993b,
@@ -52,9 +52,51 @@ test("four legacy delivery-entry branches choose a display switch, file input or
     assert.ok(!f.calls.some(call=>call.name==="FORBIDDEN_MUTATION"));
   }
 });
+
+test("a returned custom delivery guides the seller to the revision files and points to buyer feedback",()=>{
+  for(const reviewCurrent of[true,false])for(const language of["zh","en"]as const){
+    const f=actionEnvironment({buyer:false,collaboration:{stage:"changes_requested"},delivery:{id:"returned-v1"},reviewCurrent,tr:(zh:string,en:string)=>language==="zh"?zh:en});
+    const next=f.handler();
+    assert.equal(next.label,language==="zh"?"打开修改版上传":"Open revision upload");
+    assert.match(next.help,language==="zh"?/上传入口会显示买家退回本版的意见/u:/The upload panel shows the buyer’s comments/u);
+    assert.deepEqual(f.calls,[]);
+    next.action();
+    assert.deepEqual(f.calls,[{name:"focus",args:["delivery","#deliveryFiles"]}]);
+  }
+});
+
+test("after a reviewed replacement, the seller proceeds to the note and the waiting buyer views delivery progress",()=>{
+  const replacement={collaboration:{stage:"in_progress"},delivery:{id:"replacement-v2"},reviewCurrent:true};
+  const seller=actionEnvironment({...replacement,buyer:false}),buyer=actionEnvironment(replacement);
+  const sellerNext=seller.handler(),buyerNext=buyer.handler();
+  assert.equal(sellerNext.label,"Add a note & submit");
+  assert.equal(buyerNext.label,"View delivery progress");
+  sellerNext.action();buyerNext.action();
+  assert.deepEqual(seller.calls,[{name:"focus",args:["payment",".collaboration-submission-form textarea"]}]);
+  assert.deepEqual(buyer.calls,[{name:"focus",args:["payment"]},{name:"refresh",args:[]}]);
+});
+
+test("a waiting seller reads the current buyer decision while a role rehearsal still switches perspective",()=>{
+  for(const roleplay of [false,true]){
+    const seller=actionEnvironment({buyer:false,roleplay,collaboration:{stage:"submitted"},delivery:{id:"v2"}});
+    seller.handler().action();
+    assert.deepEqual(seller.calls,roleplay
+      ? [{name:"switch",args:["buyer"]}]
+      : [{name:"focus",args:["payment"]},{name:"refresh",args:[]}]);
+  }
+});
+
+test("a buyer waiting for a first or revised submission reads shared progress without switching identity",()=>{
+  for(const stage of ["in_progress","changes_requested"]){
+    const buyer=actionEnvironment({collaboration:{stage}});
+    buyer.handler().action();
+    assert.deepEqual(buyer.calls,[{name:"focus",args:["payment"]},{name:"refresh",args:[]}]);
+  }
+});
+
 test("scope and payment eligibility keep priority over legacy entry; real collaboration never grants seller perspective",()=>{
   const cases:[Record<string,unknown>,Call][]=[
-    [{quote:{id:"p",status:"draft"}},{name:"focus",args:["agreement",".scope-approval button"]}],
+    [{quote:{id:"p",status:"draft"}},{name:"focus",args:["agreement","#buyer-scope-criteria"]}],
     [{deliveryUnlocked:false,customView:false},{name:"focus",args:["payment"]}],
     [{paymentPending:true},{name:"focus",args:["payment"]}],
     [{captured:true},{name:"focus",args:["payment"]}],
@@ -62,8 +104,6 @@ test("scope and payment eligibility keep priority over legacy entry; real collab
     [{closedUnpaid:true},{name:"focus",args:["payment"]}],
     [{expired:true},{name:"focus",args:["payment"]}],
     [{collaboration:{stage:"awaiting_seller"}},{name:"focus",args:["payment",".collaboration-invite-form input"]}],
-    [{collaboration:{stage:"in_progress"}},{name:"focus",args:["payment"]}],
-    [{collaboration:{stage:"changes_requested"}},{name:"focus",args:["payment"]}],
   ];
   for(const[change,expected]of cases){const f=actionEnvironment(change),next=f.handler();assert.equal(f.calls.length,0);next.action();assert.deepEqual(f.calls,[expected]);}
 });
@@ -76,7 +116,7 @@ function focusEnvironment(extra:Record<string,unknown>={}){
   const workspaceRef:{current:unknown}={current:root};let technical:unknown={kind:"journey",deliveryId:"current-delivery",id:0};
   const env:Record<string,unknown>={
     currentQuoteView,workspaceFocusSerial,workspaceRef,sameQuoteResponseView,window:{requestAnimationFrame:(callback:()=>void)=>{queue.push(callback);return queue.length;}},
-    tr:(_zh:string,en:string)=>en,setWorkspaceView:spy("view"),setWorkspacePanel:spy("panel"),setDeliveryTab:spy("tab"),setNotice:spy("notice"),setCriterionIndex:spy("criterion-index"),setShowDeliveryAcceptance:spy("acceptance-visible"),setDeliveryConsent:spy("delivery-consent"),acceptanceRef:{current:acceptance},
+    tr:(_zh:string,en:string)=>en,setWorkspaceView:spy("view"),setWorkspacePanel:spy("panel"),overviewKey:"current-project:buyer",setDetailedWorkspaceKey:spy("detail"),setDeliveryTab:spy("tab"),setNotice:spy("notice"),setCriterionIndex:spy("criterion-index"),setShowDeliveryAcceptance:spy("acceptance-visible"),setDeliveryConsent:spy("delivery-consent"),acceptanceRef:{current:acceptance},
     setTechnicalFocusRequest:(value:unknown)=>{technical=value;calls.push({name:"technical-focus",args:[value]});},
     revealGuidedTarget:(...args:unknown[])=>{calls.push({name:"reveal",args});return true;},
     proof:{criteria:[{id:"current-criterion"}]},delivery:{id:"current-delivery"},
@@ -127,7 +167,7 @@ test("a removed workspace never receives scheduled focus",()=>{
   const f=focusEnvironment(),effects:unknown[]=[];f.handlers.scheduleWorkspaceFocus((root:unknown)=>effects.push(root));f.workspaceRef.current=null;f.flush();assert.deepEqual(effects,[]);
 });
 test("actual focusPanel delegates scoped reveal with a truthful fallback notice and never clicks controls",()=>{
-  for(const[panel,selector,section]of[["agreement",".scope-approval button",".scope-panel"],["delivery","#deliveryFiles",".evidence-panel"],["payment",undefined,".payment-panel"]]as const){
+  for(const[panel,selector,section]of[["agreement","#buyer-scope-criteria",".scope-panel"],["delivery","#deliveryFiles",".evidence-panel"],["payment",undefined,".payment-panel"]]as const){
     const f=focusEnvironment();f.handlers.focusPanel(panel,selector);assert.ok(!f.calls.some(call=>call.name==="reveal"));f.flush();
     assert.deepEqual(f.calls.filter(call=>call.name==="reveal"),[{name:"reveal",args:[f.root,selector??section,section]}]);assert.ok(!f.calls.some(call=>call.name==="notice"||call.name.startsWith("FORBIDDEN_")||call.name==="delivery-consent"));
   }

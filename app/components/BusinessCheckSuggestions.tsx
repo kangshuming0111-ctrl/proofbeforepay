@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { ChevronDown, LoaderCircle, Plus, Sparkles } from "lucide-react";
-import type { Language } from "@/lib/contracts";
+import type { Language, RequirementCoverage } from "@/lib/contracts";
 import type { BusinessCheckSuggestions as Suggestions } from "@/lib/business-check-suggestions";
 import { businessExpectedLabel, type BusinessCheckDraft } from "./BusinessChecksPanel";
 import type { CoverageDraftDecision } from "./RequirementCoveragePanel";
@@ -10,7 +10,7 @@ import "../business-suggestions.css";
 
 export type BusinessSuggestionInput = {
   summary: string; requiredPages: string[]; language: Language;
-  coverage: {version: 1; sourceText: string; confirmed: true; decisions: CoverageDraftDecision[]};
+  coverage: {version: RequirementCoverage["version"]; sourceText: string; confirmed: true; decisions: CoverageDraftDecision[]};
 };
 export type BusinessSuggestionCandidate = Suggestions["candidates"][number];
 function canonicalDecisions(rows: CoverageDraftDecision[]): CoverageDraftDecision[] {
@@ -29,8 +29,8 @@ export function suggestionAlreadyDrafted(candidate: BusinessSuggestionCandidate,
         && /^(?:0|[1-9]\d{0,10})(?:\.\d{1,2})?$/u.test(row.amount.trim()) && Number.isFinite(Number(row.amount)) && Math.round(Number(row.amount) * 100) === candidate.expected.amountMinor));
 }
 
-export function BusinessCheckSuggestions({language, summary, pages, coverageRows, confirmed, scopeReady, aiAvailable, disabled, busy, drafts, onAnalyze, onAdopt, onOpenEditor}: {
-  language: Language; summary: string; pages: string[]; coverageRows: CoverageDraftDecision[];
+export function BusinessCheckSuggestions({language, summary, pages, coverageVersion, coverageRows, confirmed, scopeReady, aiAvailable, disabled, busy, drafts, onAnalyze, onAdopt, onOpenEditor}: {
+  language: Language; summary: string; pages: string[]; coverageVersion: RequirementCoverage["version"]; coverageRows: CoverageDraftDecision[];
   confirmed: boolean; scopeReady: boolean; aiAvailable: boolean; disabled: boolean; busy: boolean; drafts: BusinessCheckDraft[];
   onAnalyze: (input: BusinessSuggestionInput) => Promise<Suggestions>;
   onAdopt: (candidate: BusinessSuggestionCandidate) => void; onOpenEditor: () => void;
@@ -43,7 +43,7 @@ export function BusinessCheckSuggestions({language, summary, pages, coverageRows
   const [notice, setNotice] = useState("");
   const revision = useRef(0), mounted = useRef(true), currentKey = useRef(""), requesting = useRef(false);
   const decisions = canonicalDecisions(coverageRows);
-  const contextKey = JSON.stringify({summary: summary.trim(), pages, decisions: decisionKey(decisions), confirmed, language});
+  const contextKey = JSON.stringify({summary: summary.trim(), pages, coverageVersion, decisions: decisionKey(decisions), confirmed, language});
   useLayoutEffect(() => {
     currentKey.current = contextKey;
     revision.current += 1;
@@ -60,7 +60,7 @@ export function BusinessCheckSuggestions({language, summary, pages, coverageRows
     setError(""); setNotice(""); setSaved(undefined); setSkipped([]);
     try {
       const suggestions = await onAnalyze({summary: summary.trim(), requiredPages: pages, language,
-        coverage: {version: 1, sourceText: summary.trim(), confirmed: true, decisions}});
+        coverage: {version: coverageVersion, sourceText: summary.trim(), confirmed: true, decisions}});
       if (!mounted.current || requestRevision !== revision.current || currentKey.current !== requestKey) return;
       // Bind the visible result to the exact request even if a later server
       // implementation accidentally responds with a different source context.
@@ -79,7 +79,7 @@ export function BusinessCheckSuggestions({language, summary, pages, coverageRows
     <p>{tr("从已确认的需求中提出菜单价格、电话或文案检查。你逐项加入、编辑和确认后，才会成为验收标准。", "Suggest menu prices, contact details or copy from the confirmed requirements. Only the items you add, edit and confirm become agreed checks.")}</p>
     <button type="button" className="button primary" disabled={!canAnalyze} onClick={analyze}>{busy ? <LoaderCircle size={15} className="spin"/> : <Sparkles size={15}/>} {busy ? tr("AI 正在起草检查…", "AI is drafting checks…") : result ? tr("重新起草业务检查", "Draft business checks again") : tr("用 AI 起草业务检查", "Draft business checks with AI")}</button>
     <p className="business-suggestions-help">{!aiAvailable ? tr("当前未配置 AI，仍可在下方手工添加检查。", "AI is not configured here. You can still add checks manually below.")
-      : !confirmed || !scopeReady ? tr("先逐条确认上方原始需求；页面名称可在“补充页面与检查方式”中填写。", "Confirm the original requirements above first. Edit page names under Add pages and checks.")
+      : !confirmed || !scopeReady ? tr("先确认上方的原始需求和必交页面。", "First confirm the original requirements and list the required pages above.")
       : tr("点击即同意把当前需求、范围处理和页面名称发送给 DeepSeek，可能消耗 API 额度。不发送合同附件或交付文件。", "Clicking sends these requirements, scope decisions and page names to DeepSeek and may use API credit. Contract attachments and delivery files are not sent.")}</p>
     {busy && <p role="status">{tr("正在读取需求原文。已有检查不变，请等待本次返回。", "Reading the original requirements. Existing checks are retained; wait for this response.")}</p>}
     {error && <p className="business-suggestions-error" role="alert">{error}</p>}

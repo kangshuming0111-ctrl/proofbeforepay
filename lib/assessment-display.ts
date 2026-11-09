@@ -1,4 +1,4 @@
-import type { Language, ProofAssessment, ProofAssessmentRisk, ProofRiskReview, ProofRole } from "./contracts.ts";
+import type { Language, ProofAssessment, ProofAssessmentRisk, ProofCriterion, ProofRiskReview, ProofRole } from "./contracts.ts";
 
 const roles = ["buyer", "seller"] as const;
 
@@ -21,6 +21,27 @@ export function assessmentReviewSummary(report: ProofAssessment, reviews: ProofR
     });
   }
   return { total: report.risks.length, unreviewed, differingPositions, participants };
+}
+
+/** Only retained risk pools in a recognized display format are inspectable. */
+export function withheldAssessmentRisks(report: ProofAssessment | undefined, criteria: readonly ProofCriterion[]) {
+  const pool = report?.withheldRisks;
+  if (!report || !pool || !Array.isArray(pool.adjustedCriteria) || !Array.isArray(pool.entries)) return undefined;
+  if (pool.version === 1 && ["item_status_adjusted", "not_withheld"].includes(pool.reason)) return pool;
+  if (report.risks.length !== 0 || pool.adjustedCriteria.length !== 0 || pool.entries.length === 0) return undefined;
+  if (pool.version === 4 && pool.reason === "optional_source_leads_unverified") {
+    return report.method === "source-ai-v1" && report.mode === "live"
+      && Object.keys(pool).sort().join(",") === "adjustedCriteria,entries,reason,version"
+      && pool.entries.length <= 5 && pool.entries.every((entry, index) => entry && entry.originalRiskIndex === index && entry.risk)
+      ? pool : undefined;
+  }
+  if (!(pool.version === 2 && pool.reason === "source_scope_unestablished" || pool.version === 3 && pool.reason === "custom_scope_requires_observation")) return undefined;
+  const ids = pool.scopeCriterionIds;
+  if (!Array.isArray(ids) || ids.length === 0 || ids.length > 17 || new Set(ids).size !== ids.length
+    || !ids.every(id => typeof id === "string" && criteria.some(criterion => criterion.id === id))) return undefined;
+  if (pool.version === 3 && (pool.entries.length > 5
+    || !ids.every(id => report.items.some(item => item.criterionId === id && item.status === "insufficient_evidence")))) return undefined;
+  return pool;
 }
 
 /** Historical coverage stays intact; intentionally excluded image pixels are not missing text. */

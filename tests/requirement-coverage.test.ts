@@ -9,7 +9,7 @@ import { createUploadedDelivery, parseStaticProject } from "../lib/static-projec
 
 const summary = "为墨尔本面馆制作手机友好的网站，展示菜单、营业时间、地址，提供可用的预约入口和中文英文切换。";
 const at = "2026-11-02T00:00:00.000Z";
-const request = (source = summary) => ({version: 1, sourceText: source.trim(), confirmed: true, decisions: summaryCoverageUnits(source).map(({id}) => ({id, disposition: "include"}))});
+const request = (source = summary, version: 1 | 2 = 1) => ({version, sourceText: source.trim(), confirmed: true, decisions: summaryCoverageUnits(source, version).map(({id}) => ({id, disposition: "include"}))});
 const invalid = (operation: () => unknown) => assert.throws(operation, DomainError);
 
 test("literal requirement groups preserve every non-whitespace source character and exact UTF-16 spans", () => {
@@ -39,9 +39,48 @@ test("coverage confirmation derives its original spans, IDs, criteria and server
   assert.deepEqual(request().decisions[0], {id: "coverage-1", disposition: "include"});
 });
 
+test("explicit noodle-shop lines keep bilingual prices and mobile scope together across save and replay", () => {
+  const lines = [
+    "网站包含首页、菜单页 menu.html 和联系页 contact.html，首页可打开菜单页和联系页。",
+    "菜单页同时展示中文「牛肉面」和英文「Beef noodles」，两种语言所示价格均为 AUD18。",
+    "联系页展示营业时间为上午 11 点至晚上 8 点（11am–8pm）。",
+    "首页、菜单页和联系页在手机上均可用，正文与导航可阅读及操作，无需横向滚动。",
+  ];
+  const source = lines.join("\n"), pages = ["index.html", "menu.html", "contact.html"];
+  const v1 = confirmCoverage(source, request(source), at);
+  const legacyFragments = ["网站包含首页、", "菜单页 menu.html 和联系页 contact.html，", "首页可打开菜单页和联系页。", "菜单页同时展示中文「牛肉面」和英文「Beef noodles」，", "两种语言所示价格均为 AUD18。", lines[2], "首页、", "菜单页和联系页在手机上均可用，", "正文与导航可阅读及操作，", "无需横向滚动。"];
+  assert.deepEqual(v1.decisions.map(row => row.text), legacyFragments);
+  assert.deepEqual(validateSavedCoverage(JSON.parse(JSON.stringify(v1))), v1);
+
+  const parsed = parseStaticProject({title: "Noodle shop", summary: source, amount: "1.00", requiredPages: pages, manualRequirements: [], coverage: request(source, 2)}, "zh", {requireCoverage: true});
+  const coverage = parsed.project.coverage!;
+  assert.equal(coverage.version, 2);
+  assert.deepEqual(coverage.decisions.map(row => row.text), lines);
+  assert.deepEqual(parsed.project.requiredPages, pages);
+  assert.deepEqual(parsed.criteria.filter(row => row.id.startsWith("coverage-")).map(row => row.source), lines);
+  assert.deepEqual(validateSavedCoverage(JSON.parse(JSON.stringify(coverage))), coverage);
+  invalid(() => validateSavedCoverage({...coverage, version: 1}));
+  invalid(() => validateSavedCoverage({...v1, version: 2}));
+});
+
+test("line grouping handles CRLF, blank lines and UTF-16 offsets without merging or chunking rows", () => {
+  const source = "  🍜 Beef noodles, AUD 18.50.\r\n \t\r\n  Contact page; 11am–8pm.\r  Mobile, menu + contact.   ";
+  const rows = summaryCoverageUnits(source, 2);
+  const normalized = source.trim();
+  assert.deepEqual(rows.map(row => row.text), ["🍜 Beef noodles, AUD 18.50.", "Contact page; 11am–8pm.", "Mobile, menu + contact."]);
+  for (const row of rows) {
+    assert.equal(row.start, normalized.indexOf(row.text));
+    assert.equal(normalized.slice(row.start, row.end), row.text);
+  }
+  assert.equal(summaryCoverageUnits(Array.from({length: 12}, (_, i) => `Page ${i + 1}`).join("\n"), 2).length, 12);
+  assert.equal(summaryCoverageUnits(`${"x".repeat(300)}\nContact`, 2).length, 2);
+  assert.throws(() => summaryCoverageUnits(Array.from({length: 13}, (_, i) => `Page ${i + 1}`).join("\n"), 2), {code: "COVERAGE_LINE_LIMIT"});
+  assert.throws(() => summaryCoverageUnits(`${"x".repeat(301)}\nContact`, 2), {code: "COVERAGE_LINE_LIMIT"});
+});
+
 test("missing, stale, duplicate, forged or unconfirmed coverage cannot become a new custom agreement", () => {
   const valid = request();
-  const cases = [undefined, null, [], {}, {...valid, version: "1"}, {...valid, confirmed: false}, {...valid, confirmed: []}, {...valid, sourceText: `${summary}新要求`}, {...valid, extra: true},
+  const cases = [undefined, null, [], {}, {...valid, version: "1"}, {...valid, version: 3}, {...valid, confirmed: false}, {...valid, confirmed: []}, {...valid, sourceText: `${summary}新要求`}, {...valid, extra: true},
     {...valid, decisions: valid.decisions.slice(1)}, {...valid, decisions: [...valid.decisions, valid.decisions[0]]},
     {...valid, decisions: valid.decisions.map((row, index) => index ? row : {...row, id: "foreign"})},
     {...valid, decisions: valid.decisions.map((row, index) => index ? row : {...row, disposition: "pass"})},

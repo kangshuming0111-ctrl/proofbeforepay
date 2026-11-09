@@ -18,6 +18,8 @@ const components = (async () => {
   for (const name of ["react", "react/jsx-runtime"]) js = js.replaceAll(JSON.stringify(name), JSON.stringify(import.meta.resolve(name)));
   js = js.replaceAll('"@/lib/assessment-evidence-needs"', JSON.stringify(new URL("../lib/assessment-evidence-needs.ts", import.meta.url).href));
   js = js.replaceAll('"@/lib/assessment-requirement-completeness"', JSON.stringify(new URL("../lib/assessment-requirement-completeness.ts", import.meta.url).href));
+  js = js.replaceAll('"./noodle-hours-guidance"', JSON.stringify(new URL("../app/components/noodle-hours-guidance.ts", import.meta.url).href));
+  js = js.replaceAll('"./noodle-evidence-guidance"', JSON.stringify(new URL("../app/components/noodle-evidence-guidance.ts", import.meta.url).href));
   return import(`data:text/javascript;base64,${Buffer.from(js).toString("base64")}`);
 })();
 async function summary(input: Record<string, unknown> = {}, language: "zh" | "en" = "en") {

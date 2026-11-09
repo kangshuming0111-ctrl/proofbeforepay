@@ -45,7 +45,7 @@ const bad=async(b:EvidenceExport)=>assert.equal((await verifyEvidenceExport(b)).
 test("price/form source-publication policy exports with exact canonical evidence and no risk/acceptance release",async()=>{
  for(const kind of["price","form"]as const){const{q,report,bundle,id}=await fixture(kind),item=report.items.find(i=>i.criterionId===id)!;
   assert.equal(item.publicationBasis?.reason,kind==="price"?"locked_price_mismatch":"confirmed_form_label_absence");assert.equal(item.modelJudgment?.status,"changes_suggested");assert.equal(item.status,"changes_suggested");assert.equal(item.explanation,item.sourceFinding!.explanation);assert.deepEqual(item.citations,item.sourceFinding!.citations);assert.equal(item.evidenceNeed,undefined);
-  assert.deepEqual(report.publicationPolicy,{schema:"source-publication-v2",reconciledCriterionIds:[id]});assert.equal((await verifyEvidenceExport(JSON.parse(JSON.stringify(bundle)))).consistency,"consistent");assert.deepEqual(bundle.delivery.assessment,report);
+  assert.deepEqual(report.publicationPolicy,{schema:"source-publication-v3",reconciledCriterionIds:[id]});assert.equal((await verifyEvidenceExport(JSON.parse(JSON.stringify(bundle)))).consistency,"consistent");assert.deepEqual(bundle.delivery.assessment,report);
   assert.deepEqual(report.risks,[]);assert.equal(report.withheldRisks!.version,4);assert.equal(report.withheldRisks!.entries.length,1);assert.equal(q.proof.acceptedDeliveryId,undefined);assert.equal(q.proof.collaboration!.stage,"submitted");assert.equal(q.proof.paymentState,"unfunded");
  }
 });
@@ -56,7 +56,7 @@ test("marker/list deletion, extra keys, fake reasons, order and source adoption 
  }
 });
 test("new empty policy accepts raw unknowns without source reconciliation or marker requirement",async()=>{
- const q=await quote("price"),report=await assessment(q,"insufficient_evidence");q.proof.delivery!.assessment=report;assert.deepEqual(report.publicationPolicy,{schema:"source-publication-v2",reconciledCriterionIds:[]});assert.ok(report.items.every(i=>i.publicationBasis===undefined));assert.equal((await verifyEvidenceExport(await createEvidenceExport(q))).consistency,"consistent");
+ const q=await quote("price"),report=await assessment(q,"insufficient_evidence");q.proof.delivery!.assessment=report;assert.deepEqual(report.publicationPolicy,{schema:"source-publication-v3",reconciledCriterionIds:[]});assert.ok(report.items.every(i=>i.publicationBasis===undefined));assert.equal((await verifyEvidenceExport(await createEvidenceExport(q))).consistency,"consistent");
 });
 test("two independent reconciliations require exact original criterion order and reject fake scope references",async()=>{
  let q=await quote("form");const files={...q.proof.delivery!.files!};files["menu.html"]=files["menu.html"].replace("</body>",'<template><p>牛肉面 AUD18</p></template></body>');q.proof.delivery=createUploadedDelivery(files,q.proof.project!,q.language,1);delete q.proof.scopeClarifications;q.proof.review!.deliveryId=q.proof.delivery.id;q.proof.collaboration!.submission!.deliveryId=q.proof.delivery.id;
@@ -73,6 +73,7 @@ test("unconfirmed scope cannot borrow a previous bilateral decision, while histo
 });
 test("legacy conservative report remains unchanged alongside new marker in the same-version history",async()=>{
  const{q,report,id}=await fixture("form"),legacy=structuredClone(report);legacy.id="legacy-conservative-report";delete legacy.publicationPolicy;const item=legacy.items.find(i=>i.criterionId===id)!;delete item.publicationBasis;item.status="insufficient_evidence";item.explanation="Retained old conservative relationship finding.";item.evidenceNeed={schema:"source-evidence-need-v1",reason:"manual_interpretation",targetFiles:[]};legacy.withheldRisks={version:1,reason:"item_status_adjusted",adjustedCriteria:[{criterionId:id,originalStatus:"changes_suggested",publishedStatus:"insufficient_evidence"}],entries:structuredClone(report.withheldRisks!.entries)};
+ legacy.requirementCompletenessPolicy!.version="bilingual-bounded-v2";
  const oldSource=createAssessmentSourceFindingCheck({files:q.proof.delivery!.files!,coverage:legacy.coverage,language:q.language,businessSteps:getBusinessCheckPlan(q),scope:await resolveScopeClarifications(q),version:"source-finding-v1"});for(const result of legacy.items){const fact=oldSource(q.proof.criteria.find(c=>c.id===result.criterionId)!);if(fact)result.sourceFinding=fact;else delete result.sourceFinding;}
  q.proof.delivery!.assessmentHistory=[legacy];const before=structuredClone(q),bundle=await createEvidenceExport(q);assert.equal((await verifyEvidenceExport(bundle)).consistency,"consistent");assert.deepEqual(bundle.delivery.assessmentHistory,[legacy]);assert.deepEqual(q,before);
 });
@@ -88,7 +89,7 @@ test("selected-revision verification retains a marked archived report and reject
 });
 test("positive price source adoption needs all original owners and replays exact fields without changing old records",async()=>{
  const q=await quote("matched"),before=structuredClone(q),report=await assessment(q,"supported"),item=report.items.find(i=>i.criterionId==="coverage-1")!;assert.deepEqual(q,before);
- assert.equal(item.modelJudgment!.status,"supported");assert.equal(item.status,"supported");assert.equal(item.sourceFinding!.status,"supported");assert.deepEqual(item.publicationBasis,{schema:"source-publication-v2",reason:"locked_price_match"});assert.equal(item.explanation,item.sourceFinding!.explanation);assert.deepEqual(item.citations,item.sourceFinding!.citations);assert.equal(item.evidenceNeed,undefined);assert.ok(item.citations.length===2);
+ assert.equal(item.modelJudgment!.status,"supported");assert.equal(item.status,"supported");assert.equal(item.sourceFinding!.status,"supported");assert.deepEqual(item.publicationBasis,{schema:"source-publication-v3",reason:"locked_price_match"});assert.equal(item.explanation,item.sourceFinding!.explanation);assert.deepEqual(item.citations,item.sourceFinding!.citations);assert.equal(item.evidenceNeed,undefined);assert.ok(item.citations.length===2);
  q.proof.delivery!.assessment=report;const bundle=await createEvidenceExport(q);assert.equal((await verifyEvidenceExport(bundle)).consistency,"consistent");assert.deepEqual(bundle.delivery.assessment!.items.find(i=>i.criterionId===item.criterionId),item);assert.deepEqual(q.proof.delivery!.files,before.proof.delivery!.files);assert.equal(q.proof.paymentState,"unfunded");assert.equal(q.proof.acceptedDeliveryId,undefined);assert.equal(report.risks.length,0);
  const fixture=JSON.parse(await readFile(new URL("./fixtures/noodle-v90-positive-export.json",import.meta.url),"utf8")),original=structuredClone(fixture.core);assert.equal((await verifyEvidenceExport(fixture.core)).consistency,"consistent");assert.equal(fixture.core.delivery.assessment.items.find((i:{criterionId:string})=>i.criterionId==="coverage-1").status,"insufficient_evidence");assert.deepEqual(fixture.core,original);
 });

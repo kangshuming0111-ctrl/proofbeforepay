@@ -22,12 +22,18 @@ export async function assessmentComponentModule(inspectKeys=false){
  obligationOutput=obligationOutput.replaceAll('"@/lib/assessment-obligations"',JSON.stringify(file("lib/assessment-obligations.ts")));
  await writeFile(path.join(dir,"assessment-obligations.mjs"),obligationOutput);output=output.replaceAll('"./AssessmentObligations"','"./assessment-obligations.mjs"');
  for(const name of["react","react/jsx-runtime","lucide-react"])output=output.replaceAll(JSON.stringify(name),JSON.stringify(pathToFileURL(require.resolve(name)).href));
- for(const name of["delivery-overview","assessment-display","assessment-evidence-needs","assessment-requirement-completeness"])output=output.replaceAll(JSON.stringify("@/lib/"+name),JSON.stringify(file("lib/"+name+".ts")));
+ for(const name of["delivery-overview","assessment-display","assessment-evidence-needs","assessment-requirement-completeness","browser-check-report"])output=output.replaceAll(JSON.stringify("@/lib/"+name),JSON.stringify(file("lib/"+name+".ts")));
  output=output.replaceAll('"./assessment-feedback"',JSON.stringify(file("app/components/assessment-feedback.ts")));
+ output=output.replaceAll('"./noodle-hours-guidance"',JSON.stringify(file("app/components/noodle-hours-guidance.ts")));
+ output=output.replaceAll('"./noodle-evidence-guidance"',JSON.stringify(file("app/components/noodle-evidence-guidance.ts")));
  let riskOutput=ts.transpileModule(await readFile(path.join(root,"app/components/RiskRepairPanel.tsx"),"utf8"),{compilerOptions:{module:ts.ModuleKind.ESNext,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022}}).outputText.replace('import "../risk-repairs.css";','');
  for(const name of["react","react/jsx-runtime"])riskOutput=riskOutput.replaceAll(JSON.stringify(name),JSON.stringify(pathToFileURL(require.resolve(name)).href));
  riskOutput=riskOutput.replaceAll('"@/lib/risk-repairs"',JSON.stringify(file("lib/risk-repairs.ts")));
  await writeFile(path.join(dir,"risk-repair.mjs"),riskOutput);output=output.replaceAll('"./RiskRepairPanel"','"./risk-repair.mjs"');
+ let navigationOutput=ts.transpileModule(await readFile(path.join(root,"app/components/NavigationReplayEvidence.tsx"),"utf8"),{compilerOptions:{module:ts.ModuleKind.ESNext,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022}}).outputText;
+ for(const name of["react","react/jsx-runtime","lucide-react"])navigationOutput=navigationOutput.replaceAll(JSON.stringify(name),JSON.stringify(pathToFileURL(require.resolve(name)).href));
+ for(const name of["browser-check-report","browser-check-probe"])navigationOutput=navigationOutput.replaceAll(JSON.stringify("@/lib/"+name),JSON.stringify(file("lib/"+name+".ts")));
+ await writeFile(path.join(dir,"navigation-replay.mjs"),navigationOutput);output=output.replaceAll('"./NavigationReplayEvidence"','"./navigation-replay.mjs"');
  const modulePath=path.join(dir,"assessment.mjs");await writeFile(modulePath,output);
  const loadedModule=await import(pathToFileURL(modulePath).href);return{Component:loadedModule.DeliveryAssessment,cleanup:()=>rm(dir,{recursive:true,force:true})};
 }

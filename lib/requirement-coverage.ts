@@ -20,11 +20,10 @@ function sourceText(value: unknown): string {
   return value.trim();
 }
 
-/** Bounded, literal source spans, not semantic extraction. A compound span must
- * be checked in full; punctuation grouping never declares a requirement met. */
-export function summaryCoverageUnits(summary: string): RequirementCoverageUnit[] {
-  const source = sourceText(summary);
-  const spans: {start: number; end: number}[] = [];
+type SourceSpan = {start: number; end: number};
+
+function punctuationSpans(source: string): SourceSpan[] {
+  const spans: SourceSpan[] = [];
   const add = (from: number, to: number) => {
     while (from < to && /\s/u.test(source[from])) from++;
     while (to > from && /\s/u.test(source[to - 1])) to--;
@@ -49,6 +48,28 @@ export function summaryCoverageUnits(summary: string): RequirementCoverageUnit[]
     if (best < 0) throw new DomainError("Use at most 12 short requirement groups; keep each group under 300 characters.");
     spans.splice(best, 2, {start: spans[best].start, end: spans[best + 1].end});
   }
+  return spans;
+}
+
+function lineSpans(source: string): SourceSpan[] {
+  const spans: SourceSpan[] = [];
+  for (const match of source.matchAll(/[^\r\n]+/gu)) {
+    const line = match[0], text = line.trim();
+    if (!text) continue;
+    if (spans.length >= MAX_UNITS || text.length > MAX_UNIT_LENGTH) {
+      throw new DomainError("Use at most 12 non-empty requirement lines, each up to 300 characters.", 400, "COVERAGE_LINE_LIMIT");
+    }
+    const start = match.index + line.length - line.trimStart().length;
+    spans.push({start, end: start + text.length});
+  }
+  return spans;
+}
+
+/** Version 1 preserves saved punctuation spans. Version 2 preserves explicit
+ * lines. A compound span still has to be checked in full. */
+export function summaryCoverageUnits(summary: string, version: RequirementCoverage["version"] = 1): RequirementCoverageUnit[] {
+  const source = sourceText(summary);
+  const spans = version === 2 ? lineSpans(source) : punctuationSpans(source);
   return spans.map(({start, end}, index) => ({id: `coverage-${index + 1}`, start, end, text: source.slice(start, end)}));
 }
 
@@ -58,9 +79,10 @@ export const coverageUnits = summaryCoverageUnits;
 export function confirmCoverage(summary: string, value: unknown, at = new Date().toISOString()): RequirementCoverage {
   const source = sourceText(summary);
   const input = object(value, ["version", "sourceText", "confirmed", "decisions"], "Requirement coverage");
-  if (input.version !== 1 || input.confirmed !== true || input.sourceText !== source) throw new DomainError("Review every original requirement and confirm the current text before creating the project.");
+  const {version} = input;
+  if ((version !== 1 && version !== 2) || input.confirmed !== true || input.sourceText !== source) throw new DomainError("Review every original requirement and confirm the current text before creating the project.");
   if (typeof at !== "string" || !Number.isFinite(Date.parse(at))) throw new DomainError("Coverage confirmation time is invalid.");
-  const units = summaryCoverageUnits(source);
+  const units = summaryCoverageUnits(source, version);
   if (!Array.isArray(input.decisions) || input.decisions.length !== units.length) throw new DomainError("Every original requirement group needs an included check or an explicit exclusion.");
   const pending = new Map(units.map(unit => [unit.id, unit]));
   const decisions = new Map<string, RequirementCoverageDecision>();
@@ -77,7 +99,7 @@ export function confirmCoverage(summary: string, value: unknown, at = new Date()
       decisions.set(unit.id, {...unit, disposition: "exclude", reason: row.reason.trim()});
     } else throw new DomainError("Choose an included human check or an explicit exclusion for every original requirement.");
   }
-  return {version: 1, sourceText: source, confirmedAt: at, decisions: units.map(unit => decisions.get(unit.id)!)};
+  return {version, sourceText: source, confirmedAt: at, decisions: units.map(unit => decisions.get(unit.id)!)};
 }
 
 /** Revalidate saved records without trusting client-provided spans or IDs. */

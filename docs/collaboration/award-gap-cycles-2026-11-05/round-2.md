@@ -37,7 +37,7 @@ DeepSeek实现后意见及逐条裁定见`onboarding-domain-adjudication.md`与`
 
 ## 发布后浏览器与同维度前后对照（本轮完成）
 
-主站v64，精确源码`b87d848a878bfae5a23215c6ce12087fb061bb1f`，部署`appgdep_6aeb372cd650819180f43c44fea4e37f` succeeded；custom audience和服务端环境版本6不变。Lab19在本轮未改动。
+主站v64，精确源码`b87d848a878bfae5a23215c6ce12087fb061bb1f`，部署`[Site identity omitted]` succeeded；custom audience和服务端环境版本6不变。Lab19在本轮未改动。
 
 实际IAB卖家页选择独立`harbor-workshop-import.html`，开始0/13，每项有标签、selector、源码行及理由；连续13次不同确认后13/13，预检13项各唯一匹配。实际下载预检JSON及四份准备文件，JSON保持runtimeVerified/backendVerified为false，生成selector与独立页面一致。同名文件替换为90,133bytes深树后0/13并明确64层错误；旧报告页明确失效。多form重复ID样例4个create字段都保留两个候选、初始空选择且确认按钮disabled。英文切换后歧义与说明完整。
 

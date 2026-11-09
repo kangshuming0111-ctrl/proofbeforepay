@@ -209,7 +209,7 @@ for file in PUBLIC.rglob('*'):
         continue
     text = file.read_text(encoding='utf-8', errors='strict')
     assert '\x00' not in text and not secret.search(text), f'Credential-shaped content in {file.name}'
-    assert '/Users/erickang/' not in text and '/private/tmp/claude-' not in text and '/var/folders/' not in text, f'Owner-machine path in {file.name}'
+    assert '/Users/' not in text and '/home/' not in text and '/private/tmp/claude-' not in text and '/var/folders/' not in text, f'Owner-machine path in {file.name}'
 assert (OUT / replay_name).read_bytes() == original_replay_bytes
 print(json.dumps({key: summary[key] for key in ['schema', 'newFirst', 'repairNew', 'knownFinal', 'scopeFinal', 'assessmentCalls',
                                                'usageEstimateUsd', 'latestCitationChecks', 'currentPublishedCitationChecks', 'publicationReplay']}, ensure_ascii=False))

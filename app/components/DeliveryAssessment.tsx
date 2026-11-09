@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { ChevronDown, FileSearch, LoaderCircle, Quote, TriangleAlert } from "lucide-react";
-import type { Language, ProofAssessment, ProofAssessmentCitation, ProofBusinessCheckStep, ProofCriterion, ProofRiskReview, ProofRole } from "@/lib/contracts";
+import type { Language, ProofAssessment, ProofAssessmentCitation, ProofBrowserCheckReport, ProofBusinessCheckStep, ProofCriterion, ProofQuote, ProofRiskReview, ProofRole } from "@/lib/contracts";
 import { criterionDisplayTitle } from "@/lib/delivery-overview";
 import "../assessment.css";
 import { RiskReviewPanel } from "./RiskReviewPanel";
@@ -10,15 +10,21 @@ import {RiskFeedbackAction, type RiskFeedbackDraft} from "./RiskRepairPanel";
 import { AssessmentValidationPanel } from "./AssessmentValidationPanel";
 import { assessmentCriterionSource, buildAssessmentFeedbackDraft } from "./assessment-feedback";
 import type { RiskReviewInput } from "@/lib/risk-reviews";
-import { assessmentCoverageGroups, assessmentReviewSummary, assessmentRiskPresentation } from "@/lib/assessment-display";
+import { assessmentCoverageGroups, assessmentReviewSummary, assessmentRiskPresentation, withheldAssessmentRisks } from "@/lib/assessment-display";
 import {assessmentEvidenceNeedPresentation, isAssessmentEvidenceNeed} from "@/lib/assessment-evidence-needs";
 import {AssessmentObligations} from "./AssessmentObligations";
-import {createRequirementCompletenessCheck, requirementCompletenessExplanation} from "@/lib/assessment-requirement-completeness";
+import {BILINGUAL_MENU_PRICE_COMPLETENESS, createRequirementCompletenessCheck, requirementCompletenessExplanation} from "@/lib/assessment-requirement-completeness";
+import {openingHoursEvidenceGuide} from "./noodle-hours-guidance";
+import {hasPublishedBilingualPriceSupport, hasSavedNoodleNavigation, isUnresolvedBilingualPrice, mobileObservationPages, noodleEvidenceGuide, noodleObservationMessage, type MobileAssessmentObservation} from "./noodle-evidence-guidance";
+import type {NoodleObservationReview} from "@/lib/noodle-observation-review";
+import {browserCheckMethodFor, NOODLE_BROWSER_METHOD} from "@/lib/browser-check-report";
+import {NavigationReplayEvidence} from "./NavigationReplayEvidence";
 
 export type DeliveryAssessmentProps = {
   report?: ProofAssessment;
   criteria: ProofCriterion[];
   scopeSteps?: ProofBusinessCheckStep[];
+  confirmedCriteria?: readonly string[];
   language: Language;
   selectedCriterionId?: string;
   enabled?: boolean;
@@ -30,7 +36,14 @@ export type DeliveryAssessmentProps = {
   riskReviews?: ProofRiskReview[];
   actorRole?: ProofRole;
   onSaveRiskReview?: (value: RiskReviewInput) => Promise<boolean>;
-  mobileObservation?: {requiredPages: readonly string[]; onOpen?: () => void; disabled?: boolean};
+  mobileObservation?: MobileAssessmentObservation;
+  observationReview?: NoodleObservationReview;
+  navigationReport?: ProofBrowserCheckReport;
+  navigationQuote?: ProofQuote;
+  navigationArchived?: boolean;
+  navigationAccepted?: boolean;
+  onOpenNavigationChecks?: () => void;
+  navigationChecksDisabled?: boolean;
 };
 
 function displayTime(value: string) {
@@ -50,33 +63,27 @@ function Citations({ citations, language }: { citations: ProofAssessmentCitation
   </details>;
 }
 
-export function DeliveryAssessment({ report, criteria, scopeSteps = [], language, selectedCriterionId, enabled = false, busy = false, configured = false, onRun, onPrepareFeedback, readOnly = false, riskReviews, actorRole, onSaveRiskReview, mobileObservation }: DeliveryAssessmentProps) {
+export function DeliveryAssessment({ report, criteria, scopeSteps = [], confirmedCriteria = [], language, selectedCriterionId, enabled = false, busy = false, configured = false, onRun, onPrepareFeedback, readOnly = false, riskReviews, actorRole, onSaveRiskReview, mobileObservation, observationReview, navigationReport, navigationQuote, navigationArchived, navigationAccepted, onOpenNavigationChecks, navigationChecksDisabled }: DeliveryAssessmentProps) {
   const zh = language === "zh";
   const tr = (chinese: string, english: string) => zh ? chinese : english;
   const id = useId();
   const panelRef = useRef<HTMLDetailsElement>(null);
   const [initiallyExpanded] = useState(!readOnly);
+  const navigationEvidence = navigationReport?.method === NOODLE_BROWSER_METHOD
+    && navigationReport.deliveryId === (report?.deliveryId ?? navigationQuote?.proof.delivery?.id) ? navigationReport : undefined;
+  const showNavigationCheck = !navigationEvidence && !navigationAccepted && !readOnly && !!onOpenNavigationChecks && navigationQuote
+    && browserCheckMethodFor(navigationQuote) === NOODLE_BROWSER_METHOD;
   const selectedItem = selectedCriterionId ? report?.items.find(item => item.criterionId === selectedCriterionId) : report?.items[0];
   const otherItems = report?.items.filter(item => item !== selectedItem) ?? [];
+  const remainingEvidence = report?.items.filter(item => item.status === "insufficient_evidence"
+    && !observationReview?.items.some(row => row.criterionId === item.criterionId)).length;
   const reviewSummary = report ? assessmentReviewSummary(report, riskReviews) : undefined;
   const coverage = report ? assessmentCoverageGroups(report) : undefined;
   const poolMarker = report?.withheldRisks as {version?:unknown;reason?:unknown}|undefined;
   const unboundNamespace = poolMarker?.version === 4 || poolMarker?.reason === "optional_source_leads_unverified";
   const publishedRiskCount = unboundNamespace ? 0 : report?.risks.length ?? 0;
-  const hasSourcePublication = !!report?.items.some(item => ["source-publication-v1", "source-publication-v2"].includes(item.publicationBasis?.schema ?? ""));
-  const withheld = report?.withheldRisks && Array.isArray(report.withheldRisks.adjustedCriteria) && Array.isArray(report.withheldRisks.entries)
-    && (report.withheldRisks.version === 1 && ["item_status_adjusted", "not_withheld"].includes(report.withheldRisks.reason)
-    || (report.withheldRisks.version === 2 && report.withheldRisks.reason === "source_scope_unestablished" || report.withheldRisks.version === 3 && report.withheldRisks.reason === "custom_scope_requires_observation")
-      && Array.isArray(report.withheldRisks.scopeCriterionIds)
-      && (report.withheldRisks.version!==3 || report.withheldRisks.entries.length<=5 && report.withheldRisks.scopeCriterionIds.every(criterionId=>report.items.some(item=>item.criterionId===criterionId&&item.status==='insufficient_evidence'))) && report.withheldRisks.scopeCriterionIds.length > 0 && report.withheldRisks.scopeCriterionIds.length <= 17
-      && new Set(report.withheldRisks.scopeCriterionIds).size === report.withheldRisks.scopeCriterionIds.length && report.withheldRisks.scopeCriterionIds.every(criterionId => typeof criterionId === "string" && criteria.some(criterion => criterion.id === criterionId))
-      && report.withheldRisks.adjustedCriteria.length === 0 && report.withheldRisks.entries.length > 0 && report.risks.length === 0
-    || report.withheldRisks.version === 4 && report.withheldRisks.reason === "optional_source_leads_unverified"
-      && report.method === "source-ai-v1" && report.mode === "live" && report.risks.length === 0
-      && Object.keys(report.withheldRisks).sort().join(",") === "adjustedCriteria,entries,reason,version"
-      && report.withheldRisks.adjustedCriteria.length === 0 && report.withheldRisks.entries.length > 0 && report.withheldRisks.entries.length <= 5
-      && report.withheldRisks.entries.every((entry, index) => entry && entry.originalRiskIndex === index && entry.risk))
-    ? report.withheldRisks : undefined;
+  const hasSourcePublication = !!report?.items.some(item => ["source-publication-v1", "source-publication-v2", "source-publication-v3"].includes(item.publicationBasis?.schema ?? ""));
+  const withheld = withheldAssessmentRisks(report, criteria);
   const titleFor = (criterionId: string) => {
     const criterion = criteria.find(item => item.id === criterionId);
     return criterion ? criterionDisplayTitle(criterion, language) : criterionId;
@@ -92,41 +99,58 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
   }, [busy]);
 
   function renderItem(item: ProofAssessment["items"][number], selected = false) {
-    const sourcePublication = ["source-publication-v1", "source-publication-v2"].includes(item.publicationBasis?.schema ?? "") ? item.publicationBasis : undefined;
+    const sourcePublication = ["source-publication-v1", "source-publication-v2", "source-publication-v3"].includes(item.publicationBasis?.schema ?? "") ? item.publicationBasis : undefined;
     const sourceFinding=item.sourceFinding;
     const criterion = criteria.find(criterion => criterion.id === item.criterionId);
-    const mobilePages=criterion?.id==="mobile"&&mobileObservation?.requiredPages.length&&mobileObservation.requiredPages.every(file=>typeof file==="string"&&file.length>0)?mobileObservation.requiredPages:undefined;
-    const mobileNeed=!!mobilePages&&isAssessmentEvidenceNeed(item.evidenceNeed)&&item.evidenceNeed.reason==="browser_observation";
+    const observation = noodleObservationMessage(observationReview, item.criterionId, language);
+    const mobilePages = mobileObservationPages(criterion?.id, mobileObservation);
+    const pairedMobile = !!mobilePages && (mobileObservation?.criterionIds?.length ?? 0) > 1;
+    const mobileNeed = !!mobilePages && isAssessmentEvidenceNeed(item.evidenceNeed)
+      && (item.evidenceNeed.reason === "browser_observation" || pairedMobile && item.evidenceNeed.reason === "direct_observation");
+    const guide = noodleEvidenceGuide(criterion, item, language, navigationEvidence);
+    const navigationObserved = hasSavedNoodleNavigation(criterion, navigationEvidence);
     const policy=report?.requirementCompletenessPolicy;
-    const completeness=criterion&&policy?.schema==="requirement-completeness-v1"&&(policy.version==="bounded-original-zh-v1"||policy.version==="bilingual-bounded-v2")
+    const completeness=criterion&&policy?.schema==="requirement-completeness-v1"&&(policy.version==="bounded-original-zh-v1"||policy.version==="bilingual-bounded-v2"||policy.version==="bilingual-bounded-v3"||policy.version===BILINGUAL_MENU_PRICE_COMPLETENESS)
       ?createRequirementCompletenessCheck({businessSteps:scopeSteps,version:policy.version})(criterion):undefined;
-    const incompleteSourceSupport=sourceFinding?.status==="supported"&&completeness?.kind==="incomplete";
-    const actionableSource=!incompleteSourceSupport&&sourceFinding&&(sourceFinding.basis==="locked_business_values"||sourceFinding.scopeBinding)?sourceFinding:undefined;
+    const incompleteSourceSupport=sourceFinding?.status==="supported"&&completeness?.kind==="incomplete"&&!hasPublishedBilingualPriceSupport(criterion,item,policy);
+    const unresolvedPrice = isUnresolvedBilingualPrice(criterion,item,policy);
+    const actionableSource=!incompleteSourceSupport&&!unresolvedPrice&&sourceFinding&&(sourceFinding.basis==="locked_business_values"||sourceFinding.scopeBinding)?sourceFinding:undefined;
     const feedbackItem=actionableSource?{...item,status:actionableSource.status,explanation:actionableSource.explanation,citations:actionableSource.citations,evidenceNeed:undefined}:item;
-    const canPrepareFeedback = !readOnly && !!onPrepareFeedback && feedbackItem.status !== "supported";
+    const canPrepareFeedback = !observation && !(navigationObserved && feedbackItem.status === "insufficient_evidence")
+      && !readOnly && !!onPrepareFeedback && feedbackItem.status !== "supported";
     const insufficient = item.status === "insufficient_evidence";
     const incompleteWholeRequirement=insufficient&&completeness?.kind==="incomplete"&&sourceFinding?.status!=="changes_suggested";
     const lockedSource = assessmentCriterionSource(criterion, item.criterionId);
-    const draft = canPrepareFeedback ? buildAssessmentFeedbackDraft(criterion, feedbackItem, language, scopeSteps, actionableSource?{basis:"independent_source",confirmedScope:!!actionableSource.scopeBinding}:undefined) : undefined;
+    const hoursGuide = !readOnly && !confirmedCriteria.includes(item.criterionId) && incompleteWholeRequirement
+      ? openingHoursEvidenceGuide(criterion, item, scopeSteps, policy, language) : undefined;
+    const draft = canPrepareFeedback ? hoursGuide ? {comment:hoursGuide.draft, sourceExcerpted:false, explanationExcerpted:false, intent:undefined}
+      : buildAssessmentFeedbackDraft(criterion, feedbackItem, language, scopeSteps, actionableSource?{basis:"independent_source",confirmedScope:!!actionableSource.scopeBinding}:undefined, guide?.instructions) : undefined;
     const evidenceNeed = insufficient ? assessmentEvidenceNeedPresentation(item.evidenceNeed, language) : undefined;
-    const publishedDetails=<>
+    const publishedDetails = observation ? <details className="assessment-published-record">
+      <summary>{tr("查看当时的源码评估（证据不足）", "View the earlier source assessment (insufficient evidence)")}</summary>
       <p className="assessment-explanation">{item.explanation}</p>
+      <Citations citations={item.citations} language={language} />
+      {criterion && <AssessmentObligations criterion={criterion} value={item.obligations} language={language}/>}
+    </details> : <>
+      {guide ? !unresolvedPrice && <details className="assessment-published-record"><summary>{tr("查看报告原说明", "Inspect the report’s original explanation")}</summary><p className="assessment-explanation">{item.explanation}</p></details> : <p className="assessment-explanation">{item.explanation}</p>}
       {evidenceNeed && <section className="assessment-evidence-need" aria-label={tr("补证方向", "Evidence needed")}>
-        <strong>{incompleteWholeRequirement?tr("整条要求仍待核对", "The whole requirement still needs review"):evidenceNeed.reason}</strong><p>{incompleteWholeRequirement&&completeness?requirementCompletenessExplanation(completeness,language):mobileNeed?tr("买家按下方已约定的全部页面逐页观察手机显示；缺页或无法观察时再请卖家补交。源码和宽度读数不能替代人工确认。", "The buyer inspects mobile presentation on every agreed page listed below. Ask the seller for missing or unobservable pages. Source and width readings do not replace human confirmation."):evidenceNeed.nextStep}</p>
+        <strong>{guide?.title ?? (incompleteWholeRequirement?tr("整条要求仍待核对", "The whole requirement still needs review"):evidenceNeed.reason)}</strong><p>{unresolvedPrice && guide ? item.explanation : guide?.instructions ?? (incompleteWholeRequirement&&completeness?requirementCompletenessExplanation(completeness,language):mobileNeed?tr("买家按下方已约定的全部页面逐页观察手机显示；缺页或无法观察时再请卖家补交。源码和宽度读数不能替代人工确认。", "The buyer inspects mobile presentation on every agreed page listed below. Ask the seller for missing or unobservable pages. Source and width readings do not replace human confirmation."):evidenceNeed.nextStep)}</p>
         {mobileNeed&&mobilePages&&<>
           <p><strong>{tr("约定的全部页面：", "All agreed pages: ")}</strong>{mobilePages.map((file,index)=><span key={`${index}-${file}`}>{index>0?" · ":""}<code>{file}</code></span>)}</p>
           {!readOnly&&mobileObservation?.onOpen&&<div className="assessment-feedback-action no-print"><button type="button" className="button primary" disabled={busy||!!mobileObservation.disabled} onClick={()=>{if(!busy&&!mobileObservation.disabled)mobileObservation.onOpen?.();}}>{tr("打开手机显示检查", "Open mobile checks")}</button><span>{tr("仅打开现有浏览器检查，不运行、确认、验收或付款。", "Opens existing checks only; does not run, confirm, accept or pay.")}</span></div>}
           <p>{tr("先用测量按钮记录各页宽度，再点结果中的 375px 查看；也可在现有预览中逐页选择 375px。预览停用脚本和外部资源，实际交互仍需另行验证。", "Use the measurement button to record page widths, then inspect their 375px results, or choose each page at 375px in the existing preview. Scripts and external resources are disabled; working interactions need separate verification.")}</p>
+          {pairedMobile && <p>{tr("在 375px 下逐页核对正文可读、导航可操作且无需横向滚动。三页都核对后，勾选一次即可确认两项移动端要求。", "At 375px, check each page for readable text, usable navigation and no horizontal scrolling. After inspecting all three pages, confirm both mobile requirements with one checkbox.")}</p>}
         </>}
         {evidenceNeed.targetFiles.length > 0 && <details className="assessment-evidence-need-files"><summary>{tr(`相关源码文件（${evidenceNeed.targetFiles.length}）`, `Related source files (${evidenceNeed.targetFiles.length})`)}</summary>
           <ul>{evidenceNeed.targetFiles.map(file => <li key={file}><code>{file}</code></li>)}</ul>
         </details>}
-        {!incompleteWholeRequirement && !mobileNeed && !evidenceNeed.legacy && !evidenceNeed.targetFiles.length && <p>{tr("尚未定位具体文件，请先按锁定要求确认范围。", "No exact target file was recorded; confirm the scope against the locked requirement.")}</p>}
+        {!guide && !incompleteWholeRequirement && !mobileNeed && !evidenceNeed.legacy && !evidenceNeed.targetFiles.length && <p>{tr("尚未定位具体文件，请先按锁定要求确认范围。", "No exact target file was recorded; confirm the scope against the locked requirement.")}</p>}
       </section>}
       <Citations citations={item.citations} language={language} />
     </>;
     return <article className={`assessment-item${selected ? " assessment-item-selected" : ""}`} key={item.criterionId}>
-      <div className="assessment-item-heading"><h4>{titleFor(item.criterionId)}</h4><span className={`assessment-status assessment-status-${item.status}`}>{sourcePublication ? item.status === "changes_suggested" ? tr("源码核验发布：不符", "Source-check publication: mismatch") : item.status === "supported" ? tr("源码核验发布：支持", "Source-check publication: supported") : tr("源码核验发布：未知", "Source-check publication: unknown") : statusLabel(item.status)}</span></div>
+      <div className="assessment-item-heading"><h4>{titleFor(item.criterionId)}</h4><span className={`assessment-status assessment-status-${observation ? "supported" : item.status}`}>{observation ? observation.title : sourcePublication ? item.status === "changes_suggested" ? tr("源码核验发布：不符", "Source-check publication: mismatch") : item.status === "supported" ? tr("源码核验发布：支持", "Source-check publication: supported") : tr("源码核验发布：未知", "Source-check publication: unknown") : statusLabel(item.status)}</span></div>
+      {observation && <p className="assessment-explanation">{observation.detail}</p>}
       {sourcePublication && <p className="assessment-publication-basis">{sourcePublication.reason === "locked_price_mismatch" || sourcePublication.reason === "locked_price_match" ? tr("发布依据：已锁定菜品与价格的源码核验。", "Publication basis: source checks against the locked item and price.") : tr("发布依据：双方确认的表单范围内，约定标签的源码核验。", "Publication basis: agreed-label source checks within the form confirmed by both parties.")}{tr("原始模型判断独立保留；这不证明页面可见、实际保存或交付已验收。", " The original model judgment is retained separately. This does not prove visibility, actual storage or accepted delivery.")}</p>}
       {lockedSource !== undefined ? <details className="assessment-locked-source">
         <summary><Quote size={12} aria-hidden="true" />{tr("查看完整锁定原文", "Inspect complete locked wording")}<ChevronDown size={13} aria-hidden="true" /></summary>
@@ -139,12 +163,13 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
         {publishedDetails}
       </details> : publishedDetails}
       {item.modelJudgment&&<details className="assessment-original-model"><summary>{tr("查看原始模型判断（独立保留）","Inspect the original model judgment (retained separately)")}</summary><strong>{statusLabel(item.modelJudgment.status)}</strong><p>{item.modelJudgment.explanation}</p><Citations citations={item.modelJudgment.citations} language={language}/></details>}
-      {criterion && <AssessmentObligations criterion={criterion} value={item.obligations} language={language}/>}
+      {!observation && hoursGuide && <section className="assessment-evidence-need" aria-label={hoursGuide.title}><strong>{hoursGuide.title}</strong><p>{hoursGuide.instructions}</p></section>}
+      {!observation && criterion && <AssessmentObligations criterion={criterion} value={item.obligations} language={language}/>}
       {item.ruleEvidenceIds.length > 0 && <p className="assessment-rule-refs">{tr("已关联此要求的规则证据，可与下方核查结果对照。", "Linked to this requirement’s rule evidence; compare it with the rule findings below.")}</p>}
       {canPrepareFeedback && <div className="assessment-feedback-action no-print"><button type="button" className="assessment-feedback-button" disabled={busy || !draft} onClick={() => {
         if (!report || !draft) return;
         onPrepareFeedback?.({ deliveryId: report.deliveryId, criterionId: item.criterionId, comment: draft.comment });
-      }}>{draft?.intent === "scope_clarification" ? tr("先澄清页面归属", "Clarify page scope") : feedbackItem.status === "insufficient_evidence" ? tr("请求补充证据", "Draft an evidence request") : tr("加入修改草稿", "Add to change draft")}</button><span>{tr("仅填入可编辑草稿，不会自动退回。", "Adds an editable draft without sending a change request.")}</span>{draft && (draft.sourceExcerpted || draft.explanationExcerpted) && <p className="assessment-draft-excerpt-note">{tr("草稿上限为 1000 字符，超长部分会明确标为节选。请展开完整锁定原文核对后再编辑发送。", "The draft has a 1000-character limit. Shortened sections are labelled as excerpts. Inspect the complete locked wording before editing and sending.")}</p>}</div>}
+      }}>{hoursGuide ? tr("起草营业时间补证请求", "Draft an opening-hours evidence request") : draft?.intent === "scope_clarification" ? tr("先澄清页面归属", "Clarify page scope") : feedbackItem.status === "insufficient_evidence" ? tr("请求补充证据", "Draft an evidence request") : tr("加入修改草稿", "Add to change draft")}</button><span>{tr("仅填入可编辑草稿，不会自动退回。", "Adds an editable draft without sending a change request.")}</span>{draft && (draft.sourceExcerpted || draft.explanationExcerpted) && <p className="assessment-draft-excerpt-note">{tr("草稿上限为 1000 字符，超长部分会明确标为节选。请展开完整锁定原文核对后再编辑发送。", "The draft has a 1000-character limit. Shortened sections are labelled as excerpts. Inspect the complete locked wording before editing and sending.")}</p>}</div>}
     </article>;
   }
 
@@ -157,6 +182,11 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
 
     <div className="assessment-body" aria-labelledby={`${id}-heading`}>
       <p className="assessment-purpose">{hasSourcePublication ? tr("标注“源码核验发布”的项目记录新增源码发布依据；其余保留原发布建议。模型原答另存，请逐项核对来源；这不是整站运行验证。", "Items marked as source-check publications record the added source basis; other items retain their original publication advice. Original model answers are separate. Inspect each item’s origin; this is not a whole-site execution check.") : tr("逐条比较已确认的要求与卖家源码；与规则检查、浏览器测量分开记录。请结合引用原文核对每条建议。", "Compares confirmed requirements with the seller's source files. Recorded separately from rule checks and browser measurements. Check each suggestion against the quoted source.")}</p>
+      {navigationEvidence && <NavigationReplayEvidence report={navigationEvidence} quote={navigationQuote} language={language} archived={navigationArchived} accepted={navigationAccepted} deliveryLabel={navigationQuote?.proof.delivery?.label}/>}
+      {showNavigationCheck && <div className="navigation-replay-prompt no-print">
+        <p>{tr("保存首页两次点击的实际到达页，买卖双方可按交付版本核对。", "Save the arrival pages for both homepage clicks so each party can inspect them by delivery version.")}</p>
+        <button type="button" className="button primary" onClick={onOpenNavigationChecks} disabled={busy || navigationChecksDisabled}>{tr("打开首页导航实测", "Open homepage navigation checks")}</button>
+      </div>}
       {!readOnly&&<AssessmentValidationPanel language={language}/>}
 
       {!report ? <>
@@ -172,6 +202,12 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], language
       </> : <>
         <div className="assessment-report-meta"><span>{tr("真实模型", "Live model")}: <code>{report.model}</code></span><span>{tr("评估于", "Assessed")} <time dateTime={report.assessedAt}>{displayTime(report.assessedAt)}</time></span></div>
         <p className="assessment-saved-note">{tr("显示此交付版本已保存的结果；查看不会再次调用模型。", "Showing the saved result for this delivery version. Viewing it does not call the model again.")}</p>
+        {observationReview && <p className="assessment-saved-note" aria-live="polite">
+          {observationReview.state === "saved"
+            ? tr(`本版验收已记录 ${observationReview.items.length} 项人工补证`, `This delivery’s acceptance records ${observationReview.items.length} human checks`)
+            : tr(`已勾选 ${observationReview.items.length} 项人工核对，待随本版验收保存`, `${observationReview.items.length} human checks selected, to be saved with acceptance`)}
+          {" · "}{tr(`仍待补证 ${remainingEvidence} 项`, `${remainingEvidence} evidence requests left`)}
+        </p>}
         <div className="assessment-findings" role="region" aria-label={hasSourcePublication ? tr("逐项发布结论与原始模型记录", "Published criterion findings and original model records") : tr("AI 逐项内容评估", "AI criterion assessments")}>
           {selectedItem ? renderItem(selectedItem, true) : <p className="assessment-empty">{selectedCriterionId ? tr("此报告没有当前所选标准的建议，不能据此视为通过。", "This report has no suggestion for the selected criterion; it cannot be treated as a pass.") : tr("此报告没有逐项建议。", "This report has no criterion suggestions.")}</p>}
           {otherItems.length > 0 && <details className="assessment-other-items"><summary>{tr(`查看其余 ${otherItems.length} 条要求`, `Inspect the other ${otherItems.length} criteria`)}<ChevronDown size={13} aria-hidden="true" /></summary><div>{otherItems.map(item => renderItem(item))}</div></details>}

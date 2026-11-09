@@ -111,7 +111,7 @@
       "id": "roleplay-switch-get-after-task-response",
       "passed": false,
       "error": "Late seller projection GET overwrote saved task catalog with catalog-before; records=catalog-before\n+ actual - expected\n\n+ 'catalog-before'\n- 'catalog-with-task'\n           ^\n",
-      "stack": "AssertionError [ERR_ASSERTION]: Late seller projection GET overwrote saved task catalog with catalog-before; records=catalog-before\n+ actual - expected\n\n+ 'catalog-before'\n- 'catalog-with-task'\n           ^\n\n    at file:///Users/erickang/Documents/ChatGPT/deepseek/briefpay/outputs/award-gap-cycles-2026-11-05/round4-independent-page-probe.mjs:37:607\n    at async check (file:///Users/erickang/Documents/ChatGPT/deepseek/briefpay/outputs/award-gap-cycles-2026-11-05/round4-independent-page-probe.mjs:24:47)\n    at async file:///Users/erickang/Documents/ChatGPT/deepseek/briefpay/outputs/award-gap-cycles-2026-11-05/round4-independent-page-probe.mjs:37:1"
+      "stack": "AssertionError [ERR_ASSERTION]: Late seller projection GET overwrote saved task catalog with catalog-before; records=catalog-before\n+ actual - expected\n\n+ 'catalog-before'\n- 'catalog-with-task'\n           ^\n\n    at file:///workspace/round4-independent-page-probe.mjs:37:607\n    at async check (file:///workspace/round4-independent-page-probe.mjs:24:47)\n    at async file:///workspace/round4-independent-page-probe.mjs:37:1"
     }
   ],
   "passed": 11,

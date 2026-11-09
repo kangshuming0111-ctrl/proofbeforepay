@@ -237,7 +237,7 @@
       "priority": "Resolve actual lightweight-history/full-file comparison integration and repeat completed flow",
       "status": "implemented;491tests, fresh typecheck, two permanent isolated API suites and DeepSeek review passed;v39 live pending",
       "observedV38": {
-        "deployment": "appgdep_6ae8b2fd75908191bcf325b003d64883",
+        "deployment": "[Site identity omitted]",
         "localArtifactFiles": 106,
         "strictLayoutMeasured": 2,
         "strictLayoutUnavailable": 0,
