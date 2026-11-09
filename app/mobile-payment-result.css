@@ -1,0 +1,40 @@
+.receipt-mobile-summary,
+.payment-result-refresh,
+.payment-result-busy { display: none; }
+.workspace-return-row { display: contents; }
+
+/* A captured receipt is a result, so its current-panel shortcut is redundant.
+   Expanded records, errors and enlarged text keep their natural page scroll. */
+@media (max-width: 680px) {
+  .proof-app.is-payment-result .cockpit-main { gap: 8px; padding: 10px 14px 12px; }
+  .proof-app.is-payment-result .guided-workspace-bar { display: none; }
+  /* The receipt repeats the saved provider and test-funds disclosure. */
+  .proof-app.is-payment-result .mode-banner:not(.has-config-error) { display: none; }
+  .proof-app.is-payment-result .workspace-return-row { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; }
+  .proof-app.is-payment-result .plain-workspace-return { min-height: 44px; margin: 0; text-align: start; }
+  .proof-app.is-payment-result .payment-result-refresh { display: inline-flex; align-items: center; justify-content: center; margin-left: auto; min-width: 44px; min-height: 44px; }
+  .proof-app.is-payment-result .payment-result-busy { display: block; width: 100%; font-size: 13px; }
+  .proof-app.is-payment-result .cockpit-grid .payment-panel { padding: 12px; gap: 8px; }
+  .proof-app.is-payment-result .payment-panel-heading .section-kicker,
+  .proof-app.is-payment-result .payment-strip.is-captured,
+  .proof-app.is-payment-result .receipt-heading > span,
+  .proof-app.is-payment-result .receipt-heading .section-kicker,
+  .proof-app.is-payment-result .receipt-heading h3,
+  .proof-app.is-payment-result .receipt-total { display: none; }
+  .proof-app.is-payment-result .receipt-mobile-summary { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 12px; }
+  .proof-app.is-payment-result .receipt-mobile-summary > strong { display: inline-flex; align-items: center; gap: 6px; font-size: 15px; }
+  .proof-app.is-payment-result .receipt-mobile-summary > span { font-size: 24px; line-height: 1.3; overflow-wrap: anywhere; }
+  .proof-app.is-payment-result .receipt-mobile-summary small { font-size: 12px; }
+  .proof-app.is-payment-result .receipt-heading { margin-top: 5px; }
+  .proof-app.is-payment-result .receipt-heading p { margin: 0; font-size: 12px; line-height: 1.5; }
+  .proof-app.is-payment-result .receipt-details { margin-top: 8px; }
+  .proof-app.is-payment-result .receipt-details > summary,
+  .proof-app.is-payment-result .completed-collaboration > summary,
+  .proof-app.is-payment-result .readiness-panel > summary { min-height: 44px; box-sizing: border-box; padding: 11px 0; font-size: 13px; line-height: 22px; }
+  .proof-app.is-payment-result .completed-collaboration { padding-top: 0; }
+  .proof-app.is-payment-result .readiness-panel { margin: 0; padding: 0 10px; }
+  .proof-app.is-payment-result .first-use-guide-shell { position: static; }
+  .proof-app.is-payment-result .first-use-guide { margin: 0; }
+  .proof-app.is-payment-result .first-use-guide > summary { box-sizing: border-box; min-height: 44px; padding: 11px 10px; line-height: 22px; }
+  .proof-app.is-payment-result .first-use-guide-body { position: static; width: 100%; max-height: none; overflow: visible; box-shadow: none; }
+}

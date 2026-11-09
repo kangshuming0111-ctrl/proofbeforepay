@@ -33,7 +33,7 @@ export function projectIntakeBlocker(input: ProjectIntakeBlockerInput): ProjectI
   if (!input.coverageConfirmed) return {kind: "coverage", step: 1, selector: ".requirement-coverage-confirm input"};
   if (input.hasRequirementsDraft && !input.requirementsConfirmed) return {kind: "requirements", step: 1, selector: ".requirements-confirm input"};
   if (input.businessCount > 0 && (!input.businessReady || !input.businessConfirmed)) return input.businessReady
-    ? {kind: "business-confirm", step: 1, selector: "#intake-business-checks .business-check-confirm input"}
+    ? {kind: "business-confirm", step: 1, selector: ".buyer-key-details .business-check-confirm input"}
     : {kind: "business-edit", step: 1, selector: "#intake-business-checks .business-check-editor"};
   if (input.runtimeEnabled && (!input.runtimeReady || !input.runtimeConfirmed)) return input.runtimeReady
     ? {kind: "runtime-confirm", step: 1, selector: "#intake-runtime-checks .business-check-editor > label:last-child input"}

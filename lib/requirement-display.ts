@@ -1,4 +1,6 @@
-import type { Language, ProofCriterion, QuoteDraft } from "./contracts.ts";
+import type { Language, ProofCriterion, QuoteDraft, RequirementCoverage } from "./contracts.ts";
+
+import { validateSavedCoverage } from "./requirement-coverage.ts";
 
 type Copy = Record<Language, string>;
 
@@ -29,13 +31,20 @@ const noodleClauses: Array<{ source: string; title: Copy; description: Copy }> =
 export const BUYER_NOODLE_EXAMPLE = {
   zh: {
     title: "我的面馆网站",
-    summary: "我的店在墨尔本，英文菜单上请把 Beef noodles 标成 18 澳元。\n中文菜单上也请把牛肉面标成 18 澳元。\n来店信息页请放电话 +61 3 9000 0000，方便客人打电话问路。\n联系表单里请留两个输入框，分别叫「姓名」和「邮箱」。",
+    summary: "我在墨尔本开了家面馆，想让外国客人也能看懂菜单。英文菜单上的 Beef noodles 请标 18 澳元。\n中文菜单上的牛肉面也请标 18 澳元，两边别写成不同的价。\n请在来店信息页放店里的电话 +61 3 9000 0000，客人找不到店时可以打电话问路。\n客人想留言时，联系表单里要能填「姓名」和「邮箱」。",
   },
   en: {
     title: "A website for my noodle shop",
-    summary: "My shop is in Melbourne, so please list Beef noodles at AUD 18 on the English menu.\nOn the Chinese menu, please list 牛肉面 at AUD 18 too.\nPlease put our number +61 3 9000 0000 on the visit page so customers can call for directions.\nPlease give the contact form two fields labelled ‘姓名’ and ‘邮箱’.",
+    summary: "I run a noodle shop in Melbourne. I’d like English-speaking customers to read the menu too. Please list Beef noodles at AUD 18 on the English menu.\nPlease put 牛肉面 at AUD 18 on the Chinese menu as well, so both show the same price.\nPut our number +61 3 9000 0000 on the visit page so customers can call if they can’t find the shop.\nWhen customers leave us a message, the contact form should have fields labelled ‘姓名’ and ‘邮箱’.",
   },
 } as const;
+
+const starterDetails: Copy[] = [
+  {zh: "英文菜单：Beef noodles 18 澳元", en: "English menu: Beef noodles at AUD 18"},
+  {zh: "中文菜单：牛肉面 18 澳元", en: "Chinese menu: 牛肉面 at AUD 18"},
+  {zh: "来店信息页：店里电话", en: "Visit page: shop phone number"},
+  {zh: "联系表单：能填姓名和邮箱", en: "Contact form: name and email"},
+];
 
 const threePageDemo = [
   "买家约定三页网站和预约入口，卖家提交缺陷版或修订版，买家检查证据后验收。此演示无真实卖家或付款。",
@@ -64,6 +73,24 @@ export function buyerRequirementLines(quote: Pick<QuoteDraft, "summary">, langua
     .map(line => noodleClauses.find(clause => clause.source === line)?.description[language] ?? line);
 }
 
+/** Do not call an original request agreed work unless the saved choices bind to it. */
+export function buyerRequirementSections(quote: Pick<QuoteDraft, "summary">, language: Language, coverage?: RequirementCoverage) {
+  const original = quote.summary;
+  const lines = buyerRequirementLines(quote, language);
+  if (coverage?.sourceText === original.trim()) {
+    try {
+      const { decisions } = validateSavedCoverage(coverage);
+      return {
+        confirmed: true,
+        lines: decisions.filter(row => row.disposition === "include").map(row => noodleClauses.find(clause => clause.source === row.text)?.description[language] ?? row.text),
+        excluded: decisions.filter(row => row.disposition === "exclude"),
+        original,
+      };
+    } catch { /* Invalid or detached records cannot be presented as agreed scope. */ }
+  }
+  return {confirmed: false, lines, excluded: [], original};
+}
+
 export function buyerProjectTitle(quote: Pick<QuoteDraft, "title" | "summary">, language: Language): string {
   if (threePageDemo.includes(quote.summary.trim())) return language === "zh" ? "小店网站示例" : "Small shop website example";
   return quote.title.trim() === "面馆网站交付演练" && noodleClauses.every(clause => quote.summary.includes(clause.source))
@@ -89,6 +116,11 @@ export function buyerPageName(file: string, language: Language): string {
 function plainRequirement(criterion: ProofCriterion, language: Language): {title: string; description: string} | undefined {
   const tr = (zh: string, en: string) => language === "zh" ? zh : en;
   const { id, source, title } = criterion;
+  const starterIndex = [BUYER_NOODLE_EXAMPLE.zh.summary, BUYER_NOODLE_EXAMPLE.en.summary]
+    .map(summary => summary.split("\n").indexOf(source)).find(index => index >= 0);
+  if (starterIndex !== undefined && /^coverage-[1-9]\d*$/u.test(id)) {
+    return {title: starterDetails[starterIndex][language], description: source};
+  }
   const known = noodleClauses.find(clause => clause.source === source);
   if (known) return { title: known.title[language], description: known.description[language] };
 

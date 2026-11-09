@@ -240,6 +240,7 @@ export type ProofPaymentReconciliation =
   | { kind: "closed_unpaid"; reason: "authorization_denied"; verifiedAt: string }
   | { kind: "unresolved"; reason: "pending" | "authorization_still_active" | "provider_unavailable" | "inconsistent_resources" };
 export type ProofEvent = { at: string; kind: "created" | "scope_approved" | "seller_joined" | "authorized" | "delivery_submitted" | "delivery_sent" | "changes_requested" | "delivery_accepted" | "reviewed" | "assessed" | "risk_reviewed" | "risk_repair_proposed" | "risk_repair_reviewed" | "layout_checked" | "browser_checked" | "business_checked" | "accepted" | "captured" | "voided" | "payment_closed" | "payment_reconciled"; deliveryId?: string; reportId?: string; evidenceSnapshotId?: string; feedbackId?: string };
+export type ProofDemoExample = "noodle" | "florist";
 export type ProofState = {
   scopeClarifications?: import("./scope-clarifications").ScopeClarification[];
   requirements?: RequirementAgreement;
@@ -250,6 +251,8 @@ export type ProofState = {
   sandboxCollaboration?: true;
   /** Server-recorded origin; role play alone never permits fixed sample files. */
   demoSampleProject?: boolean;
+  /** Preloaded fictional website and revision, selected only on demo creation. */
+  demoExample?: ProofDemoExample;
   project?: StaticProjectSpec;
   collaboration?: ProofCollaboration;
   criteria: ProofCriterion[];

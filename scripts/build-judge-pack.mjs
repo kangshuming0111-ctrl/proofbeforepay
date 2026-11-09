@@ -218,7 +218,7 @@ The command reuses installed dependencies or installs the pinned lockfile with p
 
 Each invocation starts a fresh session; existing checkout data and previous session files remain untouched. Caller provider settings and local environment files are not copied. Press Ctrl+C to stop only this demo's owned process groups. The helper was exercised on macOS; Linux uses the same path but is not independently validated here. Native Windows users should use WSL2 or the README's manual setup. See docs/JUDGE-DEMO-2026-11-02.md for startup checks, isolation, logs, recovery and the optional noninteractive --smoke check. If pnpm is already installed, \`pnpm judge:demo\` runs the same workflow.
 
-Start with the built-in two-sided demonstration and keep payment in simulated mode. Lock the scope as buyer, switch to seller, prepare the first delivery and inspect the missing Contact page and broken booking target. Submit a note, return it with buyer feedback, prepare the revised delivery, then inspect and explicitly accept the current version. A revision label alone does not mean every requirement passed.
+Open the ready noodle-shop example to inspect the submitted first version. Check the menus and phone, then request changes. In the fictional seller view, send the prepared revision. Switch back to check and explicitly accept the current version. Simulated payment is a separate step. The florist example is also ready and starts with a missing Contact page.
 
 ## Business-content handoff
 

@@ -28,7 +28,7 @@ const component = (async () => {
 })();
 function props(language: "zh" | "en", resume = false, busy = false) {
   const calls: string[] = [];
-  const value: GettingStartedProps = {language, busy, onDemo: () => calls.push("new-example"), onStart: () => calls.push("requirements"), onExample: () => calls.push("noodle-requirements"), ...(resume ? {resumeProject: {title: "Existing shop website", status: "Awaiting seller", onOpen: () => calls.push("existing-project")}} : {})};
+  const value: GettingStartedProps = {language, busy, onDemo: () => calls.push("new-example"), onFlorist: () => calls.push("florist"), onStart: () => calls.push("requirements"), onExample: () => calls.push("noodle-requirements"), ...(resume ? {resumeProject: {title: "Existing shop website", status: "Awaiting seller", onOpen: () => calls.push("existing-project")}} : {})};
   return {value, calls};
 }
 async function render(value: GettingStartedProps) {
@@ -43,11 +43,11 @@ test("new and returning users retain two bilingual primary routes without invoki
     assert.deepEqual(calls, []);
     assert.equal(actions.length, 2);
     assert.ok(actions.every(element => attr(element, "type") === "button"));
-    assert.deepEqual(actions.map(content), [resume ? language === "zh" ? "打开这个项目" : "Open this project" : language === "zh" ? "先体验一个完整例子" : "Try a complete example", language === "zh" ? "填写我的项目要求" : "Enter my requirements"]);
+    assert.deepEqual(actions.map(content), [resume ? language === "zh" ? "打开这个项目" : "Open this project" : language === "zh" ? "直接体验面馆验收" : "Try the noodle-shop delivery", language === "zh" ? "填写我的项目要求" : "Enter my requirements"]);
     assert.equal(Boolean(within(tree, "welcome-resume")), resume);
     const more = within(tree, "welcome-more")!;
     assert.equal(attr(more, "open"), undefined);
-    assert.equal(Boolean(within(more, "welcome-new-example")), resume);
+    assert.equal(Boolean(within(tree, "welcome-new-example")), resume);
   }
 });
 
@@ -56,7 +56,7 @@ test("an invalid runtime resume payload falls back to the working new-user route
     const {value, calls} = props("en");
     const {tree} = await render({...value, resumeProject: invalid as unknown as GettingStartedProps["resumeProject"]});
     const actions = nodes(within(tree, "welcome-actions")!).filter(element => element.tagName === "button");
-    assert.equal(content(actions[0]), "Try a complete example");
+    assert.equal(content(actions[0]), "Try the noodle-shop delivery");
     assert.equal(within(tree, "welcome-resume"), undefined);
     assert.deepEqual(calls, []);
   }
@@ -66,7 +66,7 @@ test("busy disables business actions while the illustration disclosure stays ava
   for (const language of ["zh", "en"] as const) for (const resume of [false, true]) for (const busy of [false, true]) {
     const {value, calls} = props(language, resume, busy), {tree} = await render(value);
     const businessButtons = nodes(tree).filter(element => element.tagName === "button" && !hasClass(element, "welcome-illustration-toggle"));
-    assert.equal(businessButtons.length, resume ? 4 : 3);
+    assert.equal(businessButtons.length, resume ? 5 : 4);
     assert.ok(businessButtons.every(element => (attr(element, "disabled") !== undefined) === busy));
     const disclosure = within(tree, "welcome-illustration-toggle")!;
     assert.equal(disclosure.tagName, "button");
@@ -96,9 +96,9 @@ test("fictional payment and explicit-AI disclosure stays beside its new-example 
     const {value} = props(language, resume), {tree} = await render(value), all = nodes(tree), note = within(tree, "welcome-action-note")!;
     assert.ok(note);
     assert.equal(all.filter(element => hasClass(element, "welcome-action-note")).length, 1);
-    assert.match(content(note), language === "zh" ? /虚构项目和模拟付款/u : /fictional project and simulated payment/u);
+    assert.match(content(note), language === "zh" ? /虚构资料和模拟付款/u : /fictional data and simulated payment/u);
     assert.match(content(note), language === "zh" ? /AI 评估需要你另行点击/u : /AI assessment runs only when you request it/u);
-    assert.equal(nodes(within(tree, "welcome-more")!).includes(note), resume);
+    assert.equal(nodes(within(tree, "welcome-more")!).includes(note), false);
     if (resume) {
       assert.ok(nodes(within(tree, "welcome-new-example")!).includes(note));
       assert.doesNotMatch(content(within(tree, "welcome-resume")!), /fictional|simulated|虚构|模拟/u);
@@ -123,7 +123,7 @@ test("resume title and status are visible escaped data without a claim about chr
 test("the existing labs, closed scope disclosure and evidence illustration remain available", async () => {
   for (const resume of [false, true]) {
     const {value} = props("en", resume), {tree} = await render(value), links = nodes(tree).filter(element => element.tagName === "a");
-    assert.deepEqual(links.map(element => attr(element, "href")), ["/judge.html", RUNTIME_LAB_ORIGIN, `${RUNTIME_LAB_ORIGIN}/journeys.html`]);
+    assert.deepEqual(links.map(element => attr(element, "href")), ["/judge.html", RUNTIME_LAB_ORIGIN, `${RUNTIME_LAB_ORIGIN}/journey.html`, `${RUNTIME_LAB_ORIGIN}/journeys.html`]);
     assert.ok(links.filter(element => attr(element, "href") !== "/judge.html").every(element => attr(element, "target") === "_blank" && attr(element, "rel") === "noreferrer"));
     assert.equal(attr(links.find(element => attr(element, "href") === "/judge.html")!, "target"), undefined);
     assert.equal(attr(within(tree, "welcome-scope")!, "open"), undefined);

@@ -6,19 +6,21 @@ The buyer agrees to a small website, reviews what the seller actually delivered,
 
 | Entry | What it demonstrates | Access / limits |
 | --- | --- | --- |
-| [Main product](https://briefpay-kang-lab.blueheron8.chatgpt.site/) | Saved projects, revisions, rule/source/model evidence, human acceptance and configured Sandbox workflow | Existing invited accounts only. Do not infer judge access from owner access. Owner must arrange test access before judging. |
-| Local source demo | Runnable complete workflow with a fresh local database | Free, no keys; AI and payments simulated. It cannot prove a live model or PayPal integration. |
+| [Main product](https://briefpay-kang-lab.blueheron8.chatgpt.site/) | Saved projects, revisions, rule/source/model evidence, human acceptance and configured Sandbox workflow | Public browsing needs no password. Project actions and private records still require an authorized account. |
+| Local source demo | Runnable complete workflow with a fresh local database | Free, no keys; rule checks run, AI is unavailable, and payments are simulated. It cannot prove a live model or PayPal integration. |
 | [Public verification lab](https://proofbeforepay-verification-lab.blueheron8.chatgpt.site/) | Synthetic website handoff and controlled backend counterexamples | No account. No model or PayPal calls. Separate application and records. |
-| [Dated AI evidence](https://briefpay-kang-lab.blueheron8.chatgpt.site/ai-evidence.html) | Original model statuses, published statuses, source findings and whole-answer caveats side by side | Hosted access uses the same invited accounts. In the local demo, open `/ai-evidence.html`. These are historical author-created cases. |
+| [Dated AI evidence](https://briefpay-kang-lab.blueheron8.chatgpt.site/ai-evidence.html) | Original model statuses, published statuses, source findings and whole-answer caveats side by side | Public, no password. These are author-created cases recorded on 6 November 2026, not a live assessment of your current project. |
 
 ## Reproduce the main loop
 
-1. Open the product and choose **Try a complete example**. Confirm the fictional agreement.
-2. Switch to the example's seller role, save the flawed sample and submit it. This is one-account role play, not two independent people.
-3. Return as buyer. Inspect the website and each failed rule, AI/source indication and human check. Request a specific revision.
-4. Submit the corrected version as seller. As buyer, check the changed evidence and manually confirm what the source cannot establish.
+1. Choose **Try the noodle-shop delivery** (中文：**直接体验面馆验收**). The agreed brief, first seller delivery and rule checks are ready. Creating the example makes no AI or PayPal call. It is one-account role play, not two independent people.
+2. Before accepting, expand **More checks** (中文：**更多检查**) and choose **Open AI checks**, then explicitly select **Assess current delivery with DeepSeek** if configured. Opening the panel does not call the model. Read the saved AI advice alongside rule evidence and inspect its source citations.
+3. Request a specific revision after checking the evidence. Switch to the fictional seller and send the prepared revision.
+4. Return as buyer. Inspect the new website, run this version's checks and request its AI assessment separately. Expand **More checks** and choose **Compare both versions’ evidence**; missing old or new reports remain missing. A newer version is not proof of repair. Manually confirm what the evidence cannot establish.
 5. Accept that version. Reopen its saved evidence. Later reports must not rewrite the acceptance.
 6. In the separate payment step, inspect the displayed provider mode. A local simulated receipt is not a Sandbox receipt. For a real Sandbox demonstration use the configured hosted test flow and a PayPal sandbox buyer; never use real funds.
+
+If AI is not configured, continue with rule checks and manual review. The [6 November AI evidence](https://briefpay-kang-lab.blueheron8.chatgpt.site/ai-evidence.html) shows earlier model calls; it is not a replacement report for either version of this project.
 
 ## Run locally
 
@@ -50,7 +52,7 @@ Open the printed local origin followed by `/signin-with-chatgpt?return_to=/`. Th
 
 ## Check this source against the hosted app
 
-Run `node scripts/release-fingerprint.mjs`. After signing in to the hosted app, compare `schema`, `sha256` and `files` with its `/api/release` JSON and the export's `SOURCE-MANIFEST.json.applicationSource`. Compare matching schemas. Version 2 covers selected application source, build configuration and public text assets, including the judge and AI evidence pages. It normalizes CRLF to LF and excludes credentials, Site identity, runtime records and `public/benchmarks/`. A match checks source parity within that scope. Restart local dev after edits before comparing. Production embeds the fingerprint at build time.
+Run `node scripts/release-fingerprint.mjs`. Compare `schema`, `sha256` and `files` with the hosted app's public `/api/release` JSON and the export's `SOURCE-MANIFEST.json.applicationSource`. Compare matching schemas. Version 2 covers selected application source, build configuration and public text assets, including the judge and AI evidence pages. It normalizes CRLF to LF and excludes credentials, Site identity, runtime records and `public/benchmarks/`. A match checks source parity within that scope. Restart local dev after edits before comparing. Production embeds the fingerprint at build time.
 
 ## Capture the submission video
 

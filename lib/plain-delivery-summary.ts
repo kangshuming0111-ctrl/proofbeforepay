@@ -14,7 +14,7 @@ function summarize(input: DeliveryOverviewInput, frozen: boolean) {
     ? withheldAssessmentRisks(assessment, input.criteria) : undefined;
   const withheldRiskCount = withheld && withheld.reason !== "not_withheld" && withheld.entries.length <= 5
     && withheld.entries.every((entry, index) => entry?.originalRiskIndex === index && entry.risk) ? withheld.entries.length : 0;
-  return {kind: "ready" as const, frozen, ...deliveryOverview(input), withheldRiskCount};
+  return {kind: "ready" as const, deliveryId: input.delivery.id, frozen, ...deliveryOverview(input), withheldRiskCount};
 }
 
 /** Read-only display. Never mix later checks into the evidence the buyer accepted. */

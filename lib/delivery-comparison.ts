@@ -6,7 +6,7 @@ export type ComparisonSection<T> = { state: "available"; data: T } | { state: "u
 export type ComparedDelivery = Pick<ProofDelivery, "id" | "label" | "sequence" | "submittedAt">;
 export type CriterionVersionEvidence = {
   rules: ComparisonSection<{ evidence: ProofEvidence[]; reviewedAt: string }>;
-  ai: ComparisonSection<{ item: ProofAssessmentItem; model: string; assessedAt: string; coverage: ProofAssessment["coverage"]; limitations: string[] }>;
+  ai: ComparisonSection<{ item: ProofAssessmentItem; reportId: string; model: string; assessedAt: string; coverage: ProofAssessment["coverage"]; limitations: string[] }>;
   browser: ComparisonSection<{ readings: ProofLayoutReading[]; relation: "referenced_files" | "delivery_wide"; receivedAt: string }>;
 };
 export type DeliveryComparisonInput = {
@@ -48,7 +48,7 @@ function evidenceFor(delivery: ProofDelivery, review: ProofReview | undefined, c
   const ai: CriterionVersionEvidence["ai"] = !assessment ? unavailable("no_report")
     : assessment.deliveryId !== delivery.id ? unavailable("different_delivery")
     : items.length !== 1 ? unavailable(items.length ? "invalid_report" : "no_criterion_evidence")
-    : { state: "available", data: { item: items[0], model: assessment.model, assessedAt: assessment.assessedAt, coverage: assessment.coverage, limitations: assessment.limitations } };
+    : { state: "available", data: { item: items[0], reportId: assessment.id, model: assessment.model, assessedAt: assessment.assessedAt, coverage: assessment.coverage, limitations: assessment.limitations } };
 
   // A file association does not establish that a layout reading verifies this criterion.
   const referencedFiles = new Set([

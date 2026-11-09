@@ -148,7 +148,7 @@ export function DeliveryAssessment({ report, criteria, scopeSteps = [], confirme
       </section>}
       <Citations citations={item.citations} language={language} />
     </>;
-    return <article className={`assessment-item${selected ? " assessment-item-selected" : ""}`} key={item.criterionId}>
+    return <article className={`assessment-item${selected ? " assessment-item-selected" : ""}`} data-criterion-id={item.criterionId} key={item.criterionId}>
       <div className="assessment-item-heading"><h4>{titleFor(item.criterionId)}</h4><span className={`assessment-status assessment-status-${observation ? "supported" : item.status}`}>{observation ? observation.title : sourcePublication ? item.status === "changes_suggested" ? tr("源码核验发布：不符", "Source-check publication: mismatch") : item.status === "supported" ? tr("源码核验发布：支持", "Source-check publication: supported") : tr("源码核验发布：未知", "Source-check publication: unknown") : statusLabel(item.status)}</span></div>
       {observation && <p className="assessment-explanation">{observation.detail}</p>}
       {sourcePublication && <p className="assessment-publication-basis">{sourcePublication.reason === "locked_price_mismatch" || sourcePublication.reason === "locked_price_match" ? tr("发布依据：已锁定菜品与价格的源码核验。", "Publication basis: source checks against the locked item and price.") : tr("发布依据：双方确认的表单范围内，约定标签的源码核验。", "Publication basis: agreed-label source checks within the form confirmed by both parties.")}{tr("原始模型判断独立保留；这不证明页面可见、实际保存或交付已验收。", " The original model judgment is retained separately. This does not prove visibility, actual storage or accepted delivery.")}</p>}

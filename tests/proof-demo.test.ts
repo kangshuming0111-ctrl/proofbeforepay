@@ -2,7 +2,7 @@ import {acceptDeliveryWithBasis as acceptDelivery} from "./acceptance-client.ts"
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { ProofQuote, ProofRole } from "../lib/contracts.ts";
-import { canUseRoleplaySamples, createRoleplayDelivery, createRoleplayProject, isDemoRoleplay, resolveProofRole } from "../lib/proof-demo.ts";
+import { canUseRoleplaySamples, createPreparedDemoProject, createRoleplayDelivery, createRoleplayProject, isDemoRoleplay, requestPreparedDemo, resolveProofRole } from "../lib/proof-demo.ts";
 import {joinSeller, prepareReplacement, requestChanges, requireWorkflowAction, snapshotVersion, submitDelivery} from "../lib/proof-workflow.ts";
 
 const now = "2026-10-30T00:00:00.000Z";
@@ -118,6 +118,41 @@ test("custom and unmarked role-play origins cannot borrow fixed samples but keep
     assert.equal(createRoleplayDelivery(current, {files}, 2).sequence, 2);
   }
   assert.equal(canUseRoleplaySamples(demo()), true);
+});
+
+test("prepared examples require the simulated owner demo and preserve ordinary draft creation", () => {
+  assert.equal(requestPreparedDemo({mode: "demo", demoRoleplay: true}), undefined);
+  for (const example of ["noodle", "florist"] as const) {
+    const valid = {mode: "demo", demoRoleplay: true, example};
+    assert.equal(requestPreparedDemo(valid), example);
+    for (const invalid of [
+      {...valid, mode: "custom"}, {...valid, demoRoleplay: false}, {...valid, collaborative: true},
+      {...valid, paymentTesting: "sandbox"}, {...valid, paymentTesting: "collaborative-sandbox"},
+      {...valid, example: "unknown"}, {...valid, example: {type: example}},
+    ]) status(() => requestPreparedDemo(invalid), 400);
+  }
+});
+
+test("prepared noodle delivery and revision stay bound to the same shop brief in both languages", () => {
+  for (const language of ["zh", "en"] as const) {
+    const quote = demo(language);
+    const project = createPreparedDemoProject("noodle", language);
+    quote.proof.demoExample = "noodle";
+    quote.proof.project = project.project;
+    quote.proof.criteria = project.criteria;
+    const first = createRoleplayDelivery(quote, {variant: "flawed"}, 1);
+    const revised = createRoleplayDelivery(quote, {variant: "fixed"}, 2);
+    assert.deepEqual(Object.keys(first.files!).sort(), ["index.html", "menu-en.html", "menu-zh.html", "site.css", "visit.html"]);
+    assert.match(first.files!["menu-zh.html"], /<strong>28<\/strong>/u);
+    assert.match(revised.files!["menu-zh.html"], /<strong>18<\/strong>/u);
+    assert.match(first.files!["visit.html"], /9000 9999/u);
+    assert.match(revised.files!["visit.html"], /9000 0000/u);
+    assert.match(revised.files!["visit.html"], /姓名 <input[^>]+>[\s\S]+邮箱 <input[^>]+>/u);
+    assert.equal(first.files!["menu-en.html"], revised.files!["menu-en.html"]);
+    assert.notEqual(first.id, revised.id);
+    assert.deepEqual(project.project.businessChecks?.map(check => check.file), ["menu-en.html", "menu-zh.html", "visit.html"]);
+    assert.ok(revised.evidence.every(entry => entry.finding !== "fail"));
+  }
 });
 
 test("role-play submission, return, revision and human acceptance keep the collaborative state machine", () => {

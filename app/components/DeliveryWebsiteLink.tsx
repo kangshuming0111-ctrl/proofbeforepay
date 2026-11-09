@@ -45,7 +45,7 @@ function PreviewQr({ previewPath, language }: { previewPath: string; language: L
     </svg>
     <div>
       <strong>{zh ? "手机扫码查看" : "Scan to open on your phone"}</strong>
-      <p className="delivery-website-note">{zh ? "请用有项目访问权限的账号。" : "Use an account that can access this project."}</p>
+      <p className="delivery-website-note">{zh ? "手机上请登录能打开这个项目的账号。" : "On your phone, sign in with an account that can open this project."}</p>
     </div>
   </div>;
 }
@@ -63,7 +63,7 @@ export function DeliveryWebsiteLink({ previewPath, language }: { previewPath?: s
     </a>
     <div className="delivery-website-cross-device" data-expanded={qrExpanded}>
       <button type="button" className="delivery-website-qr-toggle" aria-expanded={qrExpanded} aria-controls={qrId} onClick={() => setQrExpanded(value => !value)}>
-        {zh ? "在其他设备打开" : "Open on another device"}<ChevronDown size={16} aria-hidden="true" />
+        {zh ? "显示手机二维码" : "Show phone QR code"}<ChevronDown size={16} aria-hidden="true" />
       </button>
       <div className="delivery-website-qr-content" id={qrId}>
         <PreviewQr key={previewPath} previewPath={previewPath} language={language} />

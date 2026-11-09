@@ -59,6 +59,14 @@
 .collaboration-criterion-choice input { flex-shrink: 0; width: 14px; height: 14px; margin: 3px 0 0; accent-color: #6b8854; }
 .collaboration-criterion-choice span { min-width: 0; }
 .collaboration-comment-field { padding-left: 21px; margin-top: 7px; }
+.collaboration-compact-choice { display: flex; flex-wrap: wrap; align-items: center; gap: 3px 9px; }
+.collaboration-compact-choice .collaboration-criterion-choice { flex: 1 1 135px; min-width: 0; margin: 0; overflow-wrap: anywhere; }
+.collaboration-compact-choice small, .collaboration-edit-comment { flex: none; color: #536a46; font-size: 11px; }
+.collaboration-edit-comment { min-height: 28px; }
+.collaboration-active-comment { padding: 9px; border: 1px solid #dfe6d6; border-radius: 4px; }
+.collaboration-active-comment > label { display: block; margin-bottom: 4px; overflow-wrap: anywhere; }
+.collaboration-active-comment .collaboration-details { margin-top: 5px; }
+.collaboration-active-comment .collaboration-details code { overflow-wrap: anywhere; }
 .collaboration-comment-field label { font-size: 11px; font-weight: 400; }
 .collaboration-comment-count { display: block; margin-top: 3px; color: #7c836d; font-size: 10px; text-align: right; font-variant-numeric: tabular-nums; }
 .collaboration-feedback > h4 { display: flex; align-items: center; gap: 7px; }

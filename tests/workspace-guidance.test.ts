@@ -25,7 +25,7 @@ function actionEnvironment(extra:Record<string,unknown>={}){
   const env:Record<string,unknown>={
     tr:(_zh:string,en:string)=>en,paymentPending:false,captured:false,voided:false,closedUnpaid:false,expired:false,acceptedCurrent:false,
     quote:{id:"current-project",status:"approved",paymentMode:"demo"},buyer:true,roleplay:false,collaboration:undefined,authorized:false,
-    delivery:undefined,deliveryUnlocked:true,customView:true,reviewCurrent:false,
+    preparedDemo:undefined,delivery:undefined,deliveryUnlocked:true,customView:true,reviewCurrent:false,
     focusPanel:spy("focus"),refreshCase:spy("refresh"),switchWorkspaceRole:spy("switch"),beginDeliveryAcceptance:spy("acceptance-view"),openTransferChecks:spy("transfer-view"),openModelChecks:spy("model-view"),
     mutate:spy("FORBIDDEN_MUTATION"),...extra,
   };
@@ -200,4 +200,16 @@ test("resuming an existing project performs one read and only schedules current-
   const env={...f.env,run:async(_name:string,task:()=>Promise<void>)=>task(),request:async(...args:unknown[])=>{f.calls.push({name:"read",args});return{quote:item,role:"buyer"};},apply:(quote:typeof item,role:"buyer"|"seller")=>{f.calls.push({name:"apply",args:[quote,role]});f.currentQuoteView.current={projectId:quote.id,deliveryId:quote.proof.delivery.id,role};},publishQuoteResponseView:(view:QuoteResponseView)=>{f.currentQuoteView.current=view;},setWorkspaceRole:()=>{},clearReturnContext:()=>{},showCaseAddress:()=>{},setLanguage:()=>{},setReconciliation:()=>{},workspaceRole:"buyer"};
   const handlers=actual(["scheduleWorkspaceFocus","openCase"],env);await handlers.openCase(item);assert.deepEqual(f.calls.filter(call=>call.name==="read"),[{name:"read",args:["/api/quotes/resume-project"]}]);assert.ok(!f.calls.some(call=>call.name==="root-focus"));f.flush();assert.ok(f.calls.some(call=>call.name==="root-focus"));assert.ok(!f.calls.some(call=>call.name.startsWith("FORBIDDEN_")));
   f.calls.length=0;await handlers.openCase(item);f.currentQuoteView.current={...f.currentQuoteView.current,projectId:"new-project"};f.flush();assert.ok(!f.calls.some(call=>call.name==="root-focus"));
+});
+
+
+test("only the demo seller can send the prepared revision from workspace guidance", () => {
+  const shared = {preparedDemo: "noodle", roleplay: true, collaboration: {stage: "changes_requested"}, delivery: {id: "v1"}};
+  const buyer = actionEnvironment(shared);
+  buyer.handler().action();
+  assert.deepEqual(buyer.calls, [{name:"switch", args:["seller"]}]);
+  const seller = actionEnvironment({...shared, buyer: false});
+  seller.handler().action();
+  assert.equal(seller.calls[0].args[0], "delivery");
+  assert.deepEqual(seller.calls[0].args[1], {variant: "fixed", submitSample: true});
 });

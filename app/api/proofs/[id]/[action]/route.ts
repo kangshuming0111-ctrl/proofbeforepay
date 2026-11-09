@@ -11,7 +11,7 @@ import { assessDelivery } from "@/lib/delivery-assessment";
 import {AssessmentResponseError} from "@/lib/assessment-response";
 import {assessmentFailureResponse} from "@/lib/assessment-failure-presentation";
 import { acceptDelivery, joinSeller, prepareReplacement, requestChanges, requireExpectedDelivery, requireWorkflowAction, submitDelivery, type ProofWorkflowAction } from "@/lib/proof-workflow";
-import { createRoleplayDelivery, isDemoRoleplay, isOwnerRoleplay } from "@/lib/proof-demo";
+import { createRoleplayDelivery, isDemoRoleplay, isOwnerRoleplay, preparedDemoDeliveryNote } from "@/lib/proof-demo";
 import { issueInvitation, proofActor, proofResponse, readProofCase, saveProofCase } from "@/lib/proof-store";
 import { authorizeOrder, captureAuthorization, createAuthorizationOrder, ProviderError, reconcileProofPayment, reviewProof, voidAuthorization } from "@/lib/providers";
 import { body, handle, HttpError, json, providerEnv } from "@/lib/server";
@@ -111,9 +111,15 @@ export async function POST(request: Request, context: {params: Promise<{id: stri
         return response();
       }
       if (action === "delivery") {
-        if(Object.keys(input).some(key=>!["files","variant","expectedDeliveryId","reviewRules","backendTargetId"].includes(key)))throw new HttpError(400,"Delivery uploads do not accept backend URLs, scripts, credentials or client registration snapshots.");
+        if(Object.keys(input).some(key=>!["files","variant","expectedDeliveryId","reviewRules","backendTargetId","submitSample"].includes(key)))throw new HttpError(400,"Delivery uploads do not accept backend URLs, scripts, credentials or client registration snapshots.");
         requireExpectedDelivery(quote, input);
         if (input.reviewRules !== undefined && typeof input.reviewRules !== "boolean") throw new HttpError(400, "Choose whether to run the delivery's rule checks with a boolean flag.");
+        const sampleExample = quote.proof.demoExample;
+        const sendPreparedRevision = input.submitSample === true;
+        if (input.submitSample !== undefined && (!sendPreparedRevision || !isDemoRoleplay(quote) || !sampleExample
+          || quote.proof.collaboration?.stage !== "changes_requested" || input.variant !== "fixed" || input.files !== undefined)) {
+          throw new HttpError(400, "A prepared revision is available only for a returned built-in demo.");
+        }
         const sequence = quote.proof.audit.filter(event => event.kind === "delivery_submitted").length + 1;
         let delivery;
         if (quote.proof.demoRoleplay) {
@@ -136,11 +142,14 @@ export async function POST(request: Request, context: {params: Promise<{id: stri
         const replaced = quote.proof.collaboration ? prepareReplacement(quote, delivery)
           : {...quote, proof: {...quote.proof, delivery, review: undefined, acceptedAt: undefined, acceptedDeliveryId: undefined, acceptedEvidenceSnapshotId: undefined, manualChecks: undefined}};
         let next = log(replaced, "delivery_submitted", delivery.id);
-        if (input.reviewRules === true) {
+        if (input.reviewRules === true || sendPreparedRevision) {
           // Save the files and their immediate, provider-free rule summary in one CAS.
           // Explicit source assessment, seller submission and buyer decisions stay separate.
           const result = await reviewProof(next, {});
           next = log({...next, aiMode: result.mode, proof: {...next.proof, review: {deliveryId: delivery.id, reviewedAt: new Date().toISOString(), ...result}}}, "reviewed", delivery.id);
+        }
+        if (sendPreparedRevision && sampleExample) {
+          next = submitDelivery(next, {deliveryId: delivery.id, note: preparedDemoDeliveryNote(quote.language, sampleExample, "fixed")});
         }
         await persist(next, true);
       } else if (action === "review") {
