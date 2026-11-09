@@ -1,1 +1,35 @@
 :root{font-family:Arial,sans-serif;color:#203f32;background:#f5f5ed;font-synthesis:none}*{box-sizing:border-box}body{margin:0}main{max-width:1080px;margin:auto;padding:28px 26px 50px}nav,footer{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}a{color:#205d49;text-underline-offset:4px}a:focus-visible,summary:focus-visible{outline:3px solid #d19b46;outline-offset:5px}header{max-width:800px;padding:60px 0 38px}h1{font-size:clamp(34px,5.5vw,64px);letter-spacing:-.045em;line-height:1.05;margin:14px 0 25px}h2{font-size:25px;letter-spacing:-.025em}h3{font-size:21px}.eyebrow{font-size:12px;letter-spacing:.13em;font-weight:bold;color:#63785b}p,li{font-size:17px;line-height:1.65}section{padding:25px 0;border-top:1px solid #cfdbc8}.button{display:inline-block;background:#254e3c;color:#fff;padding:13px 20px;border-radius:8px;text-decoration:none;font-weight:bold}.note{font-size:14px;color:#586a59}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.cards article{padding:22px;background:#fcfdf7;border:1px solid #d4dfcf;border-radius:12px}.cards p{font-size:16px}.steps{padding-left:24px}.steps li{padding:7px 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#e9eee2;padding:16px;border-radius:8px;font-size:13px;line-height:1.6}details{padding:18px 0}summary{cursor:pointer}footer{margin-top:30px;font-size:13px;color:#5b715e}.table-scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #d4dfcf;vertical-align:top}th{background:#e9eee2}.caveat{border-left:3px solid #b77c32;padding:10px 16px;background:#f8efdc}.case{margin:26px 0}.case p{font-size:15px}@media(max-width:720px){.cards{grid-template-columns:1fr}header{padding-top:35px}main{padding:20px 18px}th,td{padding:10px 6px}}
+
+/* Keep the evidence report's shared styles unchanged. */
+.judge-page .mobile-disclosure{padding:0}
+.judge-page .mobile-disclosure summary{display:flex;align-items:center;gap:12px;list-style:none}
+.judge-page .mobile-disclosure summary::-webkit-details-marker{display:none}
+.judge-page .mobile-disclosure summary::after{content:"+";font-size:23px;margin-left:auto;flex:none}
+.judge-page .mobile-disclosure[open] summary::after{content:"−"}
+@media(max-width:600px){
+  .judge-page main{padding:10px max(16px,env(safe-area-inset-right)) 28px max(16px,env(safe-area-inset-left))}
+  .judge-page nav{gap:8px;font-size:14px}
+  .judge-page nav a{display:inline-flex;align-items:center;min-height:44px}
+  .judge-page header{padding:18px 0 22px}
+  .judge-page h1{font-size:clamp(29px,7.5vw,34px);line-height:1.1;margin:10px 0 16px}
+  .judge-page h2{font-size:21px;line-height:1.25;margin:0 0 14px}
+  .judge-page h3{font-size:19px;line-height:1.25;margin:9px 0}
+  .judge-page p,.judge-page li{font-size:15px;line-height:1.5}
+  .judge-page .eyebrow{font-size:10px;letter-spacing:.08em;margin:0}
+  .judge-page .button{display:flex;justify-content:center;align-items:center;min-height:48px;margin-top:18px}
+  .judge-page .note{font-size:13px;line-height:1.5;margin:12px 0 0}
+  .judge-page section{padding:18px 0}
+  .judge-page .cards{gap:10px}
+  .judge-page .cards article{padding:15px 16px}
+  .judge-page .cards p{margin:8px 0 4px}
+  .judge-page .cards a{display:flex;align-items:center;min-height:44px;font-size:14px}
+  .judge-page .mobile-disclosure summary{min-height:44px}
+  .judge-page .mobile-disclosure summary h2{margin:0}
+  .judge-page .steps{margin:12px 0 0;padding-left:20px}
+  .judge-page .steps li{padding:5px 0}
+  .judge-page code{overflow-wrap:anywhere}
+  .judge-page details:not(.mobile-disclosure){padding:8px 0}
+  .judge-page details:not(.mobile-disclosure)>summary{min-height:44px;line-height:44px}
+  .judge-page footer{margin-top:16px;gap:4px}
+  .judge-page footer a{display:flex;align-items:center;min-height:44px}
+}

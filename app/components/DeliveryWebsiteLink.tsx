@@ -1,7 +1,7 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
+import { useEffect, useId, useState } from "react";
 import type { Language } from "@/lib/contracts";
 import "./delivery-website-link.css";
 
@@ -52,6 +52,8 @@ function PreviewQr({ previewPath, language }: { previewPath: string; language: L
 
 /** Give both devices the same saved upload, using its existing project permissions. */
 export function DeliveryWebsiteLink({ previewPath, language }: { previewPath?: string; language: Language }) {
+  const [qrExpanded, setQrExpanded] = useState(false);
+  const qrId = useId();
   const zh = language === "zh";
   if (!previewPath) return <p className="delivery-website-note">{zh ? "卖家交付网站后，这里会出现预览链接和二维码。" : "The preview link and QR code appear here after the seller delivers the website."}</p>;
 
@@ -59,6 +61,13 @@ export function DeliveryWebsiteLink({ previewPath, language }: { previewPath?: s
     <a className="delivery-website-link" href={previewPath} target="_blank" rel="noopener noreferrer" aria-label={zh ? "在新标签页打开网站预览" : "Open website preview in a new tab"}>
       {zh ? "打开网站预览" : "Open website preview"}<ArrowUpRight size={16} aria-hidden="true" />
     </a>
-    <PreviewQr key={previewPath} previewPath={previewPath} language={language} />
+    <div className="delivery-website-cross-device" data-expanded={qrExpanded}>
+      <button type="button" className="delivery-website-qr-toggle" aria-expanded={qrExpanded} aria-controls={qrId} onClick={() => setQrExpanded(value => !value)}>
+        {zh ? "在其他设备打开" : "Open on another device"}<ChevronDown size={16} aria-hidden="true" />
+      </button>
+      <div className="delivery-website-qr-content" id={qrId}>
+        <PreviewQr key={previewPath} previewPath={previewPath} language={language} />
+      </div>
+    </div>
   </div>;
 }

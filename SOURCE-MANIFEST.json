@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-09T10:26:29.865Z",
+  "generatedAt": "2026-11-09T12:57:08.404Z",
   "applicationSource": {
     "schema": "proofbeforepay-app-source-v2",
-    "sha256": "bae9abdbb8e5cdd01d9e1e9317cef7fb7969379c8e8e99b02b4ff17a71491036",
+    "sha256": "79da8c2ad98fe3daf394cdb6b06aac3df234980e65c430c9b86b2c611d2054a1",
     "files": 494
   },
   "scope": "Sanitized source only; not publication or submission",
@@ -410,8 +410,8 @@
     },
     {
       "file": "app/components/DeliveryWebsiteLink.tsx",
-      "bytes": 2972,
-      "sha256": "e0eb7637ca89a265442eabf2c60ebf8e2db25ae4e92abdf9d007b3ebe4ad44a1"
+      "bytes": 3529,
+      "sha256": "6415e4f9f1058e5573de600cffd405d8ce49c0d1363d912a57a750645fc3c74d"
     },
     {
       "file": "app/components/DeploymentSourcePanel.tsx",
@@ -445,8 +445,8 @@
     },
     {
       "file": "app/components/GettingStarted.tsx",
-      "bytes": 5867,
-      "sha256": "cf3f361717fe322342308224297805e3b443d47ad43a0c46ea7efa9b1f156bf4"
+      "bytes": 6559,
+      "sha256": "401e08ad56a886a93317728c15278ec3f1d6adc05f725def2fac22a0e730fede"
     },
     {
       "file": "app/components/LatestAssessmentValidation.tsx",
@@ -495,8 +495,8 @@
     },
     {
       "file": "app/components/PlainDeliveryWorkspace.tsx",
-      "bytes": 9055,
-      "sha256": "dd95af28e8303869dfcdf4298415248358430f114918b76692dd402edaec0666"
+      "bytes": 12789,
+      "sha256": "80ea4422ed42f62f987a65e620c6b3fc683db74722a1335b24888a9085dcdb89"
     },
     {
       "file": "app/components/ProjectIntakeBlocker.tsx",
@@ -645,8 +645,8 @@
     },
     {
       "file": "app/components/delivery-website-link.css",
-      "bytes": 976,
-      "sha256": "335d1ae146c4de0104a89cd0003dc17650b46affef8e4e8848e1b60e3640f5d1"
+      "bytes": 2099,
+      "sha256": "4e13599f7517ae8592fb06e6ca2eff5ed0eb17814ce82b78c9430ad2ff75919c"
     },
     {
       "file": "app/components/enquiry-checks.css",
@@ -865,8 +865,8 @@
     },
     {
       "file": "app/plain-delivery-workspace.css",
-      "bytes": 4470,
-      "sha256": "b53035bed66c627186425f3a617fe67de931881f24e6923ce4a9b904c2979b1b"
+      "bytes": 6416,
+      "sha256": "a75db4dc78d2d7664fc31a7103f61306d136ee13c8abc01c50e6833c0843a65d"
     },
     {
       "file": "app/project-intake-blocker.css",
@@ -955,8 +955,8 @@
     },
     {
       "file": "app/welcome.css",
-      "bytes": 4253,
-      "sha256": "d195bbbb64d2bdd3dcd4ac9a02035ea3ffa76303ddaa1013d5de87b4e511f1d7"
+      "bytes": 5542,
+      "sha256": "f77ba9d1a695cea69592961131c9dec77f399f09358a922a6d31e888fcba1432"
     },
     {
       "file": "cloudflare-env.d.ts",
@@ -2057,6 +2057,11 @@
       "file": "docs/collaboration/gap-closure-next-2026-11-04/visibility-mount-review.json",
       "bytes": 7482,
       "sha256": "4c4b448d6a7a521a3384d8b71ebb3dc05f2d423d8015ae1d7c61b40573ec4d93"
+    },
+    {
+      "file": "docs/collaboration/mobile-fit-2026-11-09.md",
+      "bytes": 6391,
+      "sha256": "10b442470de098e7723ac21ccf214fd5eca9f449a841db2fe6fe5997da9bb03d"
     },
     {
       "file": "docs/collaboration/noodle-audit-followup-2026-11-07/cycle.md",
@@ -6630,18 +6635,18 @@
     },
     {
       "file": "public/judge.css",
-      "bytes": 1829,
-      "sha256": "a213a36260e88c44ad86990b5277f4637b857598a0d86c96ede5799688a14b07"
+      "bytes": 3857,
+      "sha256": "a1930ed19054187048dc6a28227e74f8289e5967c8903c129c596da03bb7e70e"
     },
     {
       "file": "public/judge.html",
-      "bytes": 4410,
-      "sha256": "4d8ae3d1833210ca2e097c92358185354996ca3ab4f46c97d452357f97a6e44d"
+      "bytes": 4772,
+      "sha256": "5293a38e5f9e0b255a2a1a49c492d473c29ad28d6e59ff6654938ccf430d5ddb"
     },
     {
       "file": "public/judge.js",
-      "bytes": 775,
-      "sha256": "cbb89599c3753d0c90af671c0ae01da2d4111ff33c5e11c6dbb468cbce7be776"
+      "bytes": 1036,
+      "sha256": "1a759f85afe380a89d5bb171185139f82f3644023bf5f0fe6d32ab8095fa4395"
     },
     {
       "file": "public/sdk/seller-dom-adapter.d.mts",
@@ -8310,8 +8315,8 @@
     },
     {
       "file": "tests/getting-started.test.ts",
-      "bytes": 9310,
-      "sha256": "b8d1457c9d435014219e76a23cec1cb7ba7e0d93984823c51828ac30b0a4a271"
+      "bytes": 9216,
+      "sha256": "6f99bfd242e010393d9c4c3f6d1756f251a42314b3c86ada68c3b8b661323d9c"
     },
     {
       "file": "tests/guest-capacity-mount.test.ts",
@@ -8625,8 +8630,8 @@
     },
     {
       "file": "tests/plain-delivery-workspace.test.ts",
-      "bytes": 5146,
-      "sha256": "7750a177ee1e6684c5598c370f311d31e929609d11342c1508380c8fc96348f1"
+      "bytes": 5909,
+      "sha256": "264e8d790971319e72e7cd76ecb985a9d0ddee6c9edf8523ff3c777f166e3115"
     },
     {
       "file": "tests/positive-literal-assessment.test.ts",

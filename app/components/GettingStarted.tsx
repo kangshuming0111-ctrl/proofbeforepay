@@ -1,6 +1,7 @@
 "use client";
 
-import { ArrowRight, FileCheck2 } from "lucide-react";
+import { ArrowRight, ChevronDown, FileCheck2 } from "lucide-react";
+import { useId, useState } from "react";
 import type { Language } from "@/lib/contracts";
 import "../welcome.css";
 import {RUNTIME_LAB_ORIGIN} from "@/lib/runtime-project";
@@ -8,6 +9,8 @@ import {RUNTIME_LAB_ORIGIN} from "@/lib/runtime-project";
 export type GettingStartedProps = {language: Language; busy: boolean; onStart: () => void; onExample: () => void; onDemo: () => void; resumeProject?: {title: string; status: string; onOpen: () => void}};
 
 export function GettingStarted({language, busy, onStart, onExample, onDemo, resumeProject}: GettingStartedProps) {
+  const [illustrationExpanded, setIllustrationExpanded] = useState(false);
+  const illustrationId = useId();
   const tr = (zh: string, en: string) => language === "zh" ? zh : en;
   const resume = resumeProject && typeof resumeProject.title === "string" && typeof resumeProject.status === "string" && typeof resumeProject.onOpen === "function" ? resumeProject : undefined;
   const demoNote = tr("例子使用虚构项目和模拟付款。AI 评估需要你另行点击。", "The example uses a fictional project and simulated payment. AI assessment runs only when you request it.");
@@ -33,7 +36,11 @@ export function GettingStarted({language, busy, onStart, onExample, onDemo, resu
       </details>
       <details className="welcome-scope"><summary>{tr("当前可以检查哪些交付？", "What deliveries can I check?")}</summary><p>{tr("静态网站文件夹：HTML、CSS 和本地 PNG/JPEG/WebP。源码、实际浏览器观察和人工判断分别记录；脚本、表单后台及邮件送达不在静态检查范围内。", "Static website folders with HTML, CSS and local PNG/JPEG/WebP images. Source checks, browser observations and human decisions are separate records. Static checks do not run scripts, form backends or email delivery.")}</p></details>
     </div>
-    <div className="welcome-evidence" aria-label={tr("差异示意，尚未运行检查", "Illustration only; no check has run")}>
+    <div className="welcome-evidence" data-expanded={illustrationExpanded} aria-label={tr("差异示意，尚未运行检查", "Illustration only; no check has run")}>
+      <button type="button" className="welcome-illustration-toggle" aria-expanded={illustrationExpanded} aria-controls={illustrationId} onClick={() => setIllustrationExpanded(value => !value)}>
+        {illustrationExpanded ? tr("收起流程示意", "Hide the workflow illustration") : tr("查看流程示意", "See the workflow illustration")}<ChevronDown size={16} aria-hidden="true" />
+      </button>
+      <div className="welcome-illustration-content" id={illustrationId}>
       <p className="welcome-illustration-note">{tr("流程示意 · 尚未运行检查", "Workflow illustration · no checks have run")}</p>
       <ol className="welcome-records">
         <li><span>{tr("买家想要", "What the buyer asked for")}</span><strong>{tr("「牛肉面请标 18 澳元。」", "‘Please list beef noodles at AUD 18.’")}</strong></li>
@@ -41,6 +48,7 @@ export function GettingStarted({language, busy, onStart, onExample, onDemo, resu
         <li><span>{tr("卖家改完后", "After the seller’s changes")}</span><strong>{tr("菜单写对了，买家再核对", "The menu now says AUD 18. The buyer checks it.")}</strong></li>
       </ol>
       <p className="welcome-decision"><FileCheck2 size={18} aria-hidden="true"/>{tr("新版本不自动算通过。买家核对变化、明确验收，再单独确认测试付款。", "A revision does not pass automatically. The buyer checks the changes, explicitly accepts a version, then separately confirms test payment.")}</p>
+      </div>
     </div>
   </section>;
 }

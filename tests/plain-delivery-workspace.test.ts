@@ -48,6 +48,8 @@ test("source publication and a conflicting original model judgment remain separa
   assert.match(html,/Source check: evidence found/u);
   assert.match(html,/Original AI: cannot determine/u);
   assert.match(html,/Rules: mismatch/u);
+  assert.match(html,/1 differ from the original AI judgment/u);
+  assert.match(html,/Published results: changes 0 · unknown 0/u);
 });
 
 test("recognized withheld indications stay separate from published risks and malformed entries stay hidden", async () => {
@@ -59,4 +61,15 @@ test("recognized withheld indications stay separate from published risks and mal
   assert.doesNotMatch(html,/additional AI risk indications to verify/u);
   withheld.withheldRisks.entries[0].originalRiskIndex = 2;
   assert.doesNotMatch(await render(summary(withheld)),/withheld from the risk list/u);
+});
+
+test("an original judgment stays reachable when a historical published result has no source-publication marker", async () => {
+  const historical = structuredClone(report);
+  historical.items[0].status = "insufficient_evidence";
+  historical.items[0].modelJudgment = {status:"supported",explanation:"Original model found evidence",citations:[]};
+  const html = await render(summary(historical));
+  assert.match(html,/1 differ from the original AI judgment/u);
+  assert.match(html,/Published result: cannot determine/u);
+  assert.match(html,/Original AI: evidence found/u);
+  assert.doesNotMatch(html,/>AI: cannot determine/u);
 });
