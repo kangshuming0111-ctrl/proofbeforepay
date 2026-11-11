@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ProofBeforePay · Live demo — the menu said AUD 28</title>
+<meta name="description" content="A delivery can fail while the right answer sits in the file. Run the check yourself — no account needed.">
+<meta property="og:title" content="The menu said AUD 28. They agreed on AUD 18.">
+<meta property="og:description" content="A live demo: the check that catches a price hidden in a display:none paragraph. No account, no model call.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f7f5ec">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/demo.css">
+</head>
+<body class="demo-page">
+
+<a class="skip" href="#check">Skip to the check</a>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="wordmark" href="/">proof<span>before</span>pay</a>
+    <div class="topbar-right">
+      <span class="pill-live"><span class="dot" aria-hidden="true"></span>Live demo · no account</span>
+      <a href="/judge">Judge start</a>
+      <a href="https://github.com/kangshuming0111-ctrl/proofbeforepay">Source</a>
+    </div>
+  </div>
+</header>
+
+<nav class="steps" aria-label="Demo sections">
+  <div class="wrap steps-in">
+    <a href="#agreement" data-step="agreement"><b>1</b>Scope</a>
+    <a href="#delivery" data-step="delivery"><b>2</b>Delivery</a>
+    <a href="#check" data-step="check"><b>3</b>Check</a>
+    <a href="#finding" data-step="finding"><b>4</b>Finding</a>
+    <a href="#accept" data-step="accept"><b>5</b>Accept</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section class="hero">
+    <p class="eyebrow">PAYPAL AI HACKATHON · FICTIONAL EXAMPLE</p>
+    <h1>The menu says <em>AUD&nbsp;28</em>.<br>They agreed on <em>AUD&nbsp;18</em>.</h1>
+    <p class="lede">The page loads. A text search even finds “AUD&nbsp;18” in the file — inside a hidden paragraph. Try this adapted fictional example to see why “the website is done” is not an answer.</p>
+    <div class="hero-cta">
+      <a class="btn" href="#check">Run the check yourself <span aria-hidden="true">↓</span></a>
+      <a class="btn-quiet" href="/">Open the real workbench <span class="btn-note">invited accounts</span></a>
+    </div>
+    <dl class="hero-facts">
+      <div><dt>Two versions</dt><dd>Adapted fictional example</dd></div>
+      <div><dt>Checks</dt><dd>Three local field checks</dd></div>
+      <div><dt>Payment</dt><dd>Separate historical test</dd></div>
+    </dl>
+  </section>
+
+  <section id="agreement" class="step">
+    <p class="step-no">01 / 05</p>
+    <h2>The buyer writes a sentence. It becomes a checklist.</h2>
+    <p class="sub">In the workbench, a buyer describes the website and confirms the checklist before work starts. Here, a fictional noodle shop's requirements are already filled in for you.</p>
+
+    <ol class="clauses">
+      <li>
+        <div class="clause-head"><span class="tag">Price</span><span class="file">menu.html</span></div>
+        <p class="quote">“On the menu, the <mark>House ramen</mark> is <mark>AUD 18</mark>.”</p>
+        <p class="expect">Agreed amount <b>AUD 18.00</b></p>
+      </li>
+      <li>
+        <div class="clause-head"><span class="tag">Phone</span><span class="file">visit.html</span></div>
+        <p class="quote">“Put the shop number on the visit page: <mark>+61 3 9000 0000</mark>.”</p>
+        <p class="expect">Agreed value <b>+61 3 9000 0000</b></p>
+      </li>
+      <li>
+        <div class="clause-head"><span class="tag">Hours</span><span class="file">visit.html</span></div>
+        <p class="quote">“We’re open <mark>Monday to Friday, 11am to 8pm</mark>.”</p>
+        <p class="expect">Agreed value <b>11:00–20:00</b></p>
+      </li>
+      <li class="clause-human">
+        <div class="clause-head"><span class="tag tag-human">Human</span><span class="file">no file check</span></div>
+        <p class="quote">“Customers on a phone must still be able to read and tap it.”</p>
+        <p class="expect">Stays a human decision — the tool never marks this passed.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section id="delivery" class="step">
+    <p class="step-no">02 / 05</p>
+    <h2>Inspect two example deliveries.</h2>
+    <p class="sub">These three-page examples adapt the project's bilingual noodle-shop fixture. Version 1 has two wrong values; version 2 fixes them. They are illustrative files, not a replay of the historical AI or payment records below.</p>
+
+    <div class="switch" role="group" aria-label="Choose a delivery version">
+      <button type="button" class="switch-btn is-on" data-version="v1" aria-pressed="true">Version 1 <span>as delivered</span></button>
+      <button type="button" class="switch-btn" data-version="v2" aria-pressed="false">Version 2 <span>after revision</span></button>
+    </div>
+
+    <div class="browser">
+      <div class="browser-bar">
+        <span class="browser-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="browser-url" id="url">laneway-noodles.example/menu.html</span>
+        <span class="browser-lock" id="version-tag">v1</span>
+      </div>
+      <div class="tabs" id="tabs" role="tablist" aria-label="Delivered pages">
+        <button type="button" role="tab" data-page="index.html" aria-selected="false" tabindex="-1">Home</button>
+        <button type="button" role="tab" data-page="menu.html" aria-selected="true" tabindex="0">Menu</button>
+        <button type="button" role="tab" data-page="visit.html" aria-selected="false" tabindex="-1">Visit</button>
+      </div>
+      <iframe id="preview" title="Delivered website preview" sandbox="allow-same-origin" src="about:blank"></iframe>
+    </div>
+    <p class="caption">Three delivered pages, rendered as the browser sees them. Scripts and form posts do not run.</p>
+  </section>
+
+  <section id="check" class="step step-check">
+    <p class="step-no">03 / 05</p>
+    <h2>Run the three checks.</h2>
+    <p class="sub">The button checks the price row, telephone and hours in these fixed example pages using their rendered text and styles. This local demonstration makes no AI call and does not assess an arbitrary website.</p>
+
+    <button type="button" class="btn btn-run" id="run">Run the checks <span aria-hidden="true">→</span></button>
+    <noscript><p class="noscript">JavaScript is off, so the local check cannot run here. The links to separate historical AI and payment evidence below remain readable.</p></noscript>
+
+    <div class="results" id="results" aria-live="polite" aria-atomic="true" hidden>
+      <div class="result-head">
+        <span>Check</span><span>Agreed</span><span>Delivered</span><span>Result</span>
+      </div>
+      <div id="rows"></div>
+      <p class="verdict" id="verdict"></p>
+    </div>
+
+    <aside class="grep">
+      <div class="grep-head"><span class="grep-label">Meanwhile, a source-only check</span><code>grep -c "AUD 18" menu.html</code></div>
+      <p class="grep-out"><span class="grep-count" id="grep-count">1</span> <span id="grep-where">match — inside a paragraph with <code>style="display:none"</code>.</span></p>
+      <p class="grep-point" id="grep-point">The correct price <b>is</b> in the file. It is not on the page. Checking only whether this literal string exists would miss the wrong visible price. The local row check above catches it.</p>
+    </aside>
+  </section>
+
+  <section id="finding" class="step">
+    <p class="step-no">04 / 05</p>
+    <h2>The AI reads the source. It does not decide.</h2>
+    <p class="sub">The application can ask DeepSeek to inspect bounded source evidence. For examples of actual model answers, open the separate archived cases below. This page makes no model call.</p>
+
+    <div class="readers">
+      <p class="readers-title">Keep the evidence sources distinct.</p>
+      <ol>
+        <li>
+          <span class="r-who">Text search</span>
+          <span class="r-saw"><code>"AUD 18"</code> exists in <code>menu.html</code> — in a hidden paragraph.</span>
+          <span class="badge badge-fail">v1 decoy</span>
+        </li>
+        <li>
+          <span class="r-who">DeepSeek · archive</span>
+          <span class="r-saw">Separate earlier cases retain original answers, source citations and review caveats.</span>
+          <span class="badge badge-human">historical</span>
+        </li>
+        <li>
+          <span class="r-who">Browser · rendered</span>
+          <span class="r-saw">Run the local check above: v1 reads 28; v2 reads 18.</span>
+          <span class="badge badge-human">local check</span>
+        </li>
+      </ol>
+      <p class="readers-note">The historical model cases are not reports for these adapted pages. The buyer makes the decision in the workbench; payment remains a separate act.</p>
+    </div>
+
+    <article class="report">
+      <div class="report-top">
+        <span class="tag tag-ai">Separate archived AI cases</span>
+        <span class="report-date">6 November 2026</span>
+      </div>
+      <table class="report-table">
+        <tbody>
+          <tr><th>Cases</th><td>Four author-created fictional noodle-shop variants</td></tr>
+          <tr><th>Recorded</th><td>Four original model calls; nine selected status labels</td></tr>
+          <tr><th>Inspect</th><td>Original model judgments, application decisions and source findings are shown separately.</td></tr>
+          <tr><th>Limits</th><td>Whole-answer caveats are retained. These cases do not establish accuracy on unseen customers.</td></tr>
+          <tr><th>Reach</th><td>Advisory only. It cannot accept work, change the amount, or move money.</td></tr>
+        </tbody>
+      </table>
+      <p class="report-foot"><a href="/ai-evidence">Inspect the archived cases and caveats →</a> · <a href="/benchmarks/noodle-core-2026-11-06/first-live.json">Original saved record</a></p>
+    </article>
+  </section>
+
+  <section id="accept" class="step">
+    <p class="step-no">05 / 05</p>
+    <h2>Accept one exact version. Then pay — separately.</h2>
+    <p class="sub">In the workbench, acceptance freezes the evidence that existed at that moment. A later report is a supplement, never a replacement. This page creates no acceptance or payment; the earlier Sandbox exercise below is separate from this example.</p>
+
+    <div class="duo">
+      <article class="card card-accept">
+        <p class="card-kicker">WORKBENCH BEHAVIOR</p>
+        <h3>Accept an exact version</h3>
+        <ul class="kv">
+          <li><span>Decision</span><b>Buyer confirms</b></li>
+          <li><span>Evidence</span><b>Snapshot at acceptance</b></li>
+          <li><span>Later reports</span><b>Separate supplements</b></li>
+          <li><span>This demo</span><b>No saved acceptance</b></li>
+        </ul>
+        <p class="card-note">Zero mismatches alone does not accept a delivery. Human checks and an explicit decision remain necessary.</p>
+      </article>
+
+      <article class="card card-pay">
+        <p class="card-kicker">EARLIER SEPARATE SANDBOX EXERCISE</p>
+        <h3>AUD 1.00 · test capture</h3>
+        <ul class="kv">
+          <li><span>Flow</span><b>Orders v2 authorize → capture</b></li>
+          <li><span>Accounts</span><b>2; one developer operated both</b></li>
+          <li><span>Scope</span><b>Earlier authenticated workflow</b></li>
+          <li><span>This demo</span><b>No PayPal request</b></li>
+        </ul>
+        <p class="card-note">Virtual test funds went to the configured Sandbox merchant. This was not seller settlement or escrow. <a href="https://github.com/kangshuming0111-ctrl/proofbeforepay/blob/codex/public-release/docs/PROJECT-STORY.md">Read the historical exercise summary</a>.</p>
+      </article>
+    </div>
+
+    <p class="close-line">A page can look finished while one important line still says 28.</p>
+  </section>
+
+  <section class="proof">
+    <div class="proof-col">
+      <h3>What this walkthrough shows</h3>
+      <ol>
+        <li>A local example can fail while its file contains the right answer.</li>
+        <li>Archived AI answers are available for separate inspection.</li>
+        <li>The workbench separates acceptance from payment.</li>
+      </ol>
+    </div>
+    <div class="proof-col">
+      <h3>What it does not claim</h3>
+      <ul>
+        <li>Not escrow, not a security audit, not a guarantee for arbitrary code.</li>
+        <li>AI reads source text, not image pixels, and cannot release money.</li>
+        <li>This adapted example saves no project, acceptance or payment.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="foot-in">
+      <p><b>ProofBeforePay</b> — agree the scope, inspect the delivery, accept the exact version, then confirm payment.</p>
+      <p class="foot-links">
+        <a href="/judge">Judge start</a>
+        <a href="/">Workbench</a>
+        <a href="/ai-evidence">AI evidence</a>
+        <a href="https://github.com/kangshuming0111-ctrl/proofbeforepay">MIT source</a>
+      </p>
+    </div>
+  </footer>
+
+</main>
+
+<div id="offscreen" class="offscreen-host" aria-hidden="true"></div>
+
+<script src="/demo.js" defer></script>
+</body>
+</html>
